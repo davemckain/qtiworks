@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+
+Web deployment descriptor
+
+Copyright (c) 2011, The University of Edinburgh
+All Rights Reserved
+
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.4"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+  <display-name>QTIEngine</display-name>
+  <description>New QTIEngine</description>
+  <servlet>
+    <description>Test</description>
+    <servlet-name>TestServlet</servlet-name>
+    <servlet-class>uk.ac.ed.ph.qtiengine.TestServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestServlet</servlet-name>
+    <url-pattern>/test</url-pattern>
+  </servlet-mapping>
+</web-app>
