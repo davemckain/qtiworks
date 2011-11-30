@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://mathassess.qtitools.org/xsd/mathassess"
+	xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mathassess.qtitools.org/xsd/mathassess">
+
+	<xsd:import namespace="http://www.imsglobal.org/xsd/imsqti_v2p1"
+		schemaLocation="imsqti_v2p1.xsd" />
+
+	<!-- Enumeration: textFormat -->
+
+	<xsd:simpleType name="casType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="text/x-maxima" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="returnTypeCard">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="mathsContent" />
+			<xsd:enumeration value="integer" />
+			<xsd:enumeration value="integerMultiple" />
+			<xsd:enumeration value="integerOrdered" />
+			<xsd:enumeration value="float" />
+			<xsd:enumeration value="floatMultiple" />
+			<xsd:enumeration value="floatOrdered" />
+			<xsd:enumeration value="boolean" />
+			<xsd:enumeration value="booleanMultiple" />
+			<xsd:enumeration value="booleanOrdered" />
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="stringMultiple" />
+			<xsd:enumeration value="stringOrdered" />
+			<xsd:enumeration value="point" />
+			<xsd:enumeration value="pointMultiple" />
+			<xsd:enumeration value="pointOrdered" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="actionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="equal" />
+			<xsd:enumeration value="syntequal" />
+			<xsd:enumeration value="code" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="simplifyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="true|false" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:attribute name="syntax" type="casType" />
+	<xsd:attribute name="returnType" type="returnTypeCard" />
+	<xsd:attribute name="action" type="actionType" />
+	<xsd:attribute name="code" type="xsd:string" />
+	<xsd:attribute name="simplify" type="simplifyType" />
+	<xsd:attribute name="expectedLength" type="xsd:integer" />
+	<xsd:attribute name="printIdentifier" type="qti:identifier.Type" />
+	<xsd:attribute name="comment" type="xsd:string" />
+</xsd:schema>

@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!--
+
+$Id: pom.xml 714 2011-03-31 16:41:29Z davemckain $
+
+Copyright (c) 2011, The University of Edinburgh
+All Rights Reserved
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.ac.ed.ph.newqti</groupId>
+  <artifactId>newqti</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>newqti-jqtiplus</module>
+    <module>newqti-unrefactored</module>
+    <module>newqti-mathassess</module>
+  </modules>
+  <properties>
+    <mathassess-tools.version>1.4-SNAPSHOT</mathassess-tools.version>
+    <junit.version>4.10</junit.version>
+    <slf4j.version>1.5.11</slf4j.version>
+    <log4j.version>1.2.16</log4j.version>
+    <maven.site.url>http://snuggletex.sourceforge.net/maven/</maven.site.url>
+  </properties>
+  <repositories>
+    <repository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>http://www2.ph.ed.ac.uk/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <name>NewQTI</name>
+  <url>http://snuggletex.sourceforge.net</url>
+  <description>
+    This is significant refactoring of JQTI and MathAssessEngine.
+  </description>
+  <inceptionYear>2011</inceptionYear>
+  <organization>
+    <name>The University of Edinburgh</name>
+    <url>http://www.ed.ac.uk</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>BSD License (3 clause)</name>
+      <url>LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>davemckain</id>
+      <name>David McKain</name>
+      <email>david.mckain&#xa0;[at]&#xa0;ed.ac.uk</email>
+      <url>http://www2.ph.ed.ac.uk/~dmckain/</url>
+      <organization>School of Physics and Astronomy, University of Edinburgh</organization>
+      <organizationUrl>http://www.ph.ed.ac.uk</organizationUrl>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</connection>
+    <developerConnection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</developerConnection>
+    <url>http://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</url>
+  </scm>
+  <issueManagement>
+    <system>sourceforge</system>
+    <url>http://sourceforge.net/tracker/?group_id=221375</url>
+  </issueManagement>
+  <distributionManagement>
+    <!-- (This is not intended for general use!) -->
+    <repository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>file:///Disk/webteam/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>www2.ph.ed.ac.uk</id>
+      <url>file:///Disk/webteam/maven2</url>
+    </snapshotRepository>
+    <site>
+      <!--
+      Reminder! Need to create a shell on sourceforge first before trying to do
+      a site deployment.
+
+      ssh -t davemckain,snuggletex@shell.sourceforge.net create
+      -->
+      <id>sourceforge.net</id>
+      <url>scp://shell.sourceforge.net/home/groups/s/sn/snuggletex/htdocs/maven</url>
+    </site>
+  </distributionManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.8</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.3.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>cim</report>
+              <report>dependencies</report>
+              <report>dependency-convergence</report>
+              <report>dependency-management</report>
+              <report>help</report>
+              <report>index</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <!-- UNUSED <report>mailing-list</report>-->
+              <report>plugin-management</report>
+              <report>plugins</report>
+              <report>project-team</report>
+              <report>scm</report>
+              <report>summary</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.8</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.4</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

@@ -1,0 +1,127 @@
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="false"
+  identifier="test" timeDependent="false"
+  title="Math Operator Example">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="RESPONSE_rounded" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <templateDeclaration identifier="PiOver4" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="sinPiOver4" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="max" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="min" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="negativeZero" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="bad" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="test1" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="test2" cardinality="single" baseType="integer"/>
+  <templateDeclaration identifier="meanIn" cardinality="multiple" baseType="float"/>
+  <templateDeclaration identifier="mean" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="popSD" cardinality="single" baseType="float"/>
+  <templateProcessing>
+    <setTemplateValue identifier="PiOver4">
+      <divide>
+        <mathConstant name="pi"/>
+        <baseValue baseType="integer">4</baseValue>
+      </divide>
+    </setTemplateValue>
+    <setTemplateValue identifier="sinPiOver4">
+      <mathOperator name="sin">
+        <variable identifier="PiOver4"/>
+      </mathOperator>
+    </setTemplateValue>
+    <setTemplateValue identifier="max">
+      <max>
+        <variable identifier="PiOver4"/>
+        <variable identifier="sinPiOver4"/>
+      </max>
+    </setTemplateValue>
+    <setTemplateValue identifier="min">
+      <min>
+        <variable identifier="PiOver4"/>
+        <variable identifier="sinPiOver4"/>
+        <baseValue baseType="float">-INF</baseValue>
+      </min>
+    </setTemplateValue>
+    <setTemplateValue identifier="negativeZero">
+      <baseValue baseType="float">-0</baseValue>
+    </setTemplateValue>
+    <setTemplateValue identifier="bad">
+      <sum>
+        <variable identifier="max"/>
+        <mathOperator name="floor">
+          <baseValue baseType="float">3.2</baseValue>
+        </mathOperator>
+      </sum>
+    </setTemplateValue>
+    <setTemplateValue identifier="test1">
+      <baseValue baseType="float">2147483650.0</baseValue>
+    </setTemplateValue>
+    <setTemplateValue identifier="test2">
+      <round>
+        <variable identifier="test1"/>
+      </round>
+    </setTemplateValue>
+    <setTemplateValue identifier="meanIn">
+      <multiple>
+        <baseValue baseType="float">1</baseValue>
+        <baseValue baseType="float">3</baseValue>
+      </multiple>
+    </setTemplateValue>
+    <setTemplateValue identifier="mean">
+      <statsOperator name="mean">
+        <variable identifier="meanIn"/>
+      </statsOperator>
+    </setTemplateValue>
+    <setTemplateValue identifier="popSD">
+      <statsOperator name="popSD">
+        <ordered>
+          <baseValue baseType="float">1</baseValue>
+          <baseValue baseType="float">2</baseValue>
+          <baseValue baseType="float">4</baseValue>
+        </ordered>
+      </statsOperator>
+    </setTemplateValue>
+  </templateProcessing>
+  <itemBody>
+    <p>
+      Calculate
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <mi>sin</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open='(' close=')'>
+          <mfrac>
+            <mi>&#x3c0;</mi>
+            <mn>4</mn>
+          </mfrac>
+        </mfenced>
+      </math>.
+      (Give your answer to 3 signficant figures)
+    </p>
+    <p>
+      <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="4"/>
+    </p>
+  </itemBody>
+  <responseProcessing>
+    <setOutcomeValue identifier="RESPONSE_rounded">
+      <roundTo roundingMode="significantFigures" figures="3">
+        <variable identifier="RESPONSE"/>
+      </roundTo>
+    </setOutcomeValue>
+    <responseCondition>
+      <responseIf>
+        <equalRounded roundingMode="significantFigures" figures="3">
+          <variable identifier="RESPONSE"/>
+          <variable identifier="sinPiOver4"/>
+        </equalRounded>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1.0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+  </responseProcessing>
+</assessmentItem>

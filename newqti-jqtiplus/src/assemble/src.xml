@@ -1,0 +1,49 @@
+<!--
+
+Assembly descriptor for the source bundle.
+
+$Id: full.xml 554 2010-04-26 10:23:22Z davemckain $
+
+Copyright (c) 2010, The University of Edinburgh
+All Rights Reserved
+
+-->
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>src</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <!-- Binaries -->
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <!-- Include README and other stuff at top level -->
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <includes>
+        <include>README</include>
+        <include>AUTHORS</include>
+        <include>COPYING</include>
+      </includes>
+    </fileSet>
+    <!-- Put rest of project source in 'src' container directory -->
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <outputDirectory>src</outputDirectory>
+      <includes>
+        <include>src/**</include>
+        <include>pom.xml</include>
+      </includes>
+      <excludes>
+        <exclude>src/assemble/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>

@@ -1,0 +1,544 @@
+/*
+<LICENCE>
+
+Copyright (c) 2008, University of Southampton
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+  * Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+  *    Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+  *    Neither the name of the University of Southampton nor the names of its
+    contributors may be used to endorse or promote products derived from this
+    software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+</LICENCE>
+*/
+
+package uk.ac.ed.ph.jqtiplus.node.expression;
+
+import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.control.ToRemove;
+import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception.QTIValidationException;
+import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Abstract super class for all expressions.
+ *
+ * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
+ * @see uk.ac.ed.ph.jqtiplus.value.BaseType
+ * 
+ * @author Jiri Kajaba
+ */
+public abstract class AbstractExpression extends AbstractObject implements Expression
+{
+    private static final long serialVersionUID = 1L;
+
+    /** Expression logger. Used with all expressions. */
+    private static Logger logger = LoggerFactory.getLogger(AbstractExpression.class);
+
+    /**
+     * Constructs expression.
+     *
+     * @param parent parent of this expression
+     */
+    public AbstractExpression(ExpressionParent parent)
+    {
+        super(parent);
+
+        getNodeGroups().add(new ExpressionGroup(this, getType().getMinimum(), getType().getMaximum()));
+    }
+
+    @Override
+    public ExpressionParent getParent()
+    {
+        return (ExpressionParent) super.getParent();
+    }
+
+    public ExpressionType getType()
+    {
+        return ExpressionType.getType(getClassTag());
+    }
+
+    public boolean isVariable()
+    {
+        for (Expression child : getChildren())
+            if (child.isVariable())
+                return true;
+
+        return false;
+    }
+
+    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index)
+    {
+        return getType().getRequiredCardinalities(index);
+    }
+
+    /**
+     * Gets list of all acceptable cardinalities which can child expression at given position produce.
+     * <p>
+     * This method is used when same cardinality is required (contains, match).
+     * @param context TODO
+     * @param index position of child expression in this parent
+     * @param includeParent whether parent requirements should be used during calculation
+     *
+     * @return list of all acceptable cardinalities which can child expression at given position produce
+     * @see #getRequiredCardinalities
+     */
+    protected Cardinality[] getRequiredSameCardinalities(ValidationContext context, int index, boolean includeParent)
+    {
+        Cardinality[] required = getType().getRequiredCardinalities(index);
+
+        if (includeParent)
+            required = Cardinality.intersection(required, getParentRequiredCardinalities(context));
+
+        for (int i = 0; i < index && i < getChildren().size(); i++)
+        {
+            Expression child = getChildren().get(i);
+
+            Cardinality[] newRequired = Cardinality.intersection(required, child.getProducedCardinalities(context));
+            if (newRequired.length == 0)
+                break;
+
+            required = newRequired;
+        }
+
+        return required;
+    }
+
+    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index)
+    {
+        return getType().getRequiredBaseTypes(index);
+    }
+
+    /**
+     * Gets list of all acceptable baseTypes which can child expression at given position produce.
+     * <p>
+     * This method is used when same baseType is required (contains, delete, index, match, ...).
+     * @param context TODO
+     * @param index position of child expression in this parent
+     * @param includeParent whether parent requirements should be used during calculation
+     *
+     * @return list of all acceptable baseTypes which can child expression at given position produce
+     * @see #getRequiredBaseTypes
+     */
+    protected BaseType[] getRequiredSameBaseTypes(ValidationContext context, int index, boolean includeParent)
+    {
+        BaseType[] required = getType().getRequiredBaseTypes(index);
+
+        if (includeParent)
+            required = BaseType.intersection(required, getParentRequiredBaseTypes(context));
+
+        for (int i = 0; i < index && i < getChildren().size(); i++)
+        {
+            Expression child = getChildren().get(i);
+
+            BaseType[] newRequired = BaseType.intersection(required, child.getProducedBaseTypes(context));
+            if (newRequired.length == 0)
+                break;
+
+            required = newRequired;
+        }
+
+        return required;
+    }
+
+    public Cardinality[] getProducedCardinalities(ValidationContext context)
+    {
+        return getType().getProducedCardinalities();
+    }
+
+    public BaseType[] getProducedBaseTypes(ValidationContext context)
+    {
+        return getType().getProducedBaseTypes();
+    }
+
+    /**
+     * Gets list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result).
+     * <p>
+     * This method is used in numerical expressions (product, subtract, sum).
+     * <ol>
+     * <li>if any of children doesn't produce integer nor float, result is empty set</li>
+     * <li>if one of children produces only float, result is float</li>
+     * <li>if none of all children produces float, result is integer</li>
+     * <li>otherwise result is set of integer and float</li>
+     * </ol>
+     * @param context TODO
+     *
+     * @return list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result)
+     * @see #getProducedBaseTypes
+     */
+    protected BaseType[] getProducedNumericalBaseTypes(ValidationContext context)
+    {
+        boolean floatFound = false;
+        for (Expression child : getChildren())
+        {
+            BaseType[] produced = child.getProducedBaseTypes(context);
+            boolean integerPresent = Arrays.binarySearch(produced, BaseType.INTEGER) >= 0;
+            boolean floatPresent = Arrays.binarySearch(produced, BaseType.FLOAT) >= 0;
+            if (!integerPresent && !floatPresent)
+                return new BaseType[] {};
+
+            if (!integerPresent && floatPresent)
+                return new BaseType[] {BaseType.FLOAT};
+
+            if (floatPresent)
+                floatFound = true;
+        }
+
+        if (getChildren().size() == 0 || floatFound)
+            return getType().getProducedBaseTypes();
+        else
+            return new BaseType[] {BaseType.INTEGER};
+    }
+    
+    /**
+     * Gets list of all acceptable cardinalities for this expression from its parent.
+     * <ol>
+     * <li>evaluates index of this expression in parent</li>
+     * <li>calls parent's <code>getRequiredCardinalities(index)</code> method</li>
+     * </ol>
+     * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
+     * returns list of all cardinalities.
+     * @param context TODO
+     *
+     * @return list of all acceptable cardinalities for this expression from its parent
+     */
+    protected Cardinality[] getParentRequiredCardinalities(ValidationContext context)
+    {
+        if (getParent() != null)
+        {
+            int index = getParent().getNodeGroups().get(getClassTag()).getChildren().indexOf(this);
+
+            return getParent().getRequiredCardinalities(context, index);
+        }
+
+        return Cardinality.values();
+    }
+
+    /**
+     * Gets list of all acceptable baseTypes for this expression from its parent.
+     * <ol>
+     * <li>evaluates index of this expression in parent</li>
+     * <li>calls parent's <code>getRequiredBaseTypes(index)</code> method</li>
+     * </ol>
+     * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
+     * returns list of all baseTypes.
+     * @param context TODO
+     *
+     * @return list of all acceptable baseTypes for this expression from its parent
+     */
+    protected BaseType[] getParentRequiredBaseTypes(ValidationContext context)
+    {
+        if (getParent() != null)
+        {
+            int index = getParent().getNodeGroups().get(getClassTag()).getChildren().indexOf(this);
+
+            return getParent().getRequiredBaseTypes(context, index);
+        }
+
+        return BaseType.values();
+    }
+
+    @Override
+    public ValidationResult validate(ValidationContext context) {
+        ValidationResult result = validateThisOnly(context);
+
+        // This is unusual order, because previous code logically belongs to parent validation.
+        result.add(super.validate(context));
+
+        return result;
+    }
+    
+    /** Validates this Expression only, without descending into children */
+    private ValidationResult validateThisOnly(ValidationContext context) {
+        ValidationResult result = new ValidationResult();
+
+        Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
+        Cardinality[] producedCardinalities = getProducedCardinalities(context);
+
+        if (!check(requiredCardinalities, producedCardinalities)) {
+            result.add(new CardinalityValidationError(this, requiredCardinalities, producedCardinalities));
+        }
+
+        BaseType[] requiredBaseTypes = getParentRequiredBaseTypes(context);
+        BaseType[] producedBaseTypes = getProducedBaseTypes(context);
+        
+        if (!check(requiredBaseTypes, producedBaseTypes)) {
+            result.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
+        }
+        
+        return result;
+    }
+
+    /**
+     * Returns true if list of produced objects contains at least one object from list of required objects (or both
+     * lists are empty); false otherwise.
+     *
+     * @param required list with required objects
+     * @param produced list with produced objects
+     * @return true if both lists are empty or intersection of these lists is not empty; false otherwise
+     */
+    private boolean check(Object[] required, Object[] produced)
+    {
+        if (required.length == 0 && produced.length == 0)
+            return true;
+
+        for (Object object : produced)
+            if (Arrays.binarySearch(required, object) >= 0)
+                return true;
+
+        return false;
+    }
+
+    public List<Expression> getChildren()
+    {
+        return getNodeGroups().getExpressionGroup().getExpressions();
+    }
+    
+    /**
+     * Gets the evaluated values of all the child expressions.
+     * 
+     * @return list of values from children
+     */
+    public final List<Value> getChildValues(ProcessingContext context) {
+        List<Value> values = new ArrayList<Value>();
+
+        for (Expression expression : getChildren()) {
+            values.add(expression.getValue(context));
+        }
+
+        return values;
+    }
+
+    /**
+     * Returns true if any subexpression is NULL; false otherwise.
+     * @param context TODO
+     *
+     * @return true if any subexpression is NULL; false otherwise
+     */
+    protected boolean isAnyChildNull(ProcessingContext context)
+    {
+        for (Expression child : getChildren())
+            if (child.isNull(context))
+                return true;
+
+        return false;
+    }
+
+    /**
+     * Returns first subexpression. This is convenient method only.
+     * Use this method instead of <code>getChildren().get(0)</code>.
+     *
+     * @return first subexpression
+     */
+    protected Expression getFirstChild()
+    {
+        return getChildren().get(0);
+    }
+
+    /**
+     * Returns second subexpression. This is convenient method only.
+     * Use this method instead of <code>getChildren().get(1)</code>.
+     *
+     * @return second subexpression
+     */
+    protected Expression getSecondChild()
+    {
+        return getChildren().get(1);
+    }
+
+@ToRemove
+// FIXME: Make sure this can now be deleted
+//    public void reset(ProcessingContext context) {
+//        value = null;
+//        for (Expression child : getChildren()) {
+//            child.reset(context);
+//        }
+//    }
+
+    /**
+     * Evaluates this Expression.
+     * <p>
+     * Note that this may result in a {@link QTIValidationException} triggered
+     * by run-time errors that are not detected using the "static" validation
+     * process. (In particular, baseType checking does not happen until run-time.)
+     * <p>
+     * For convenience, any resulting {@link QTIValidationException} will contain
+     * as many combined {@link ValidationItem}s as possible.
+     * 
+     * @throws QTIValidationException
+     */
+    public final Value evaluate(ProcessingContext context) {
+        return evaluate(context, 0);
+    }
+
+    /**
+     * Evaluates this expression and all its children.
+     *
+     * @param depth of this expression in expression tree (root's depth = 0)
+     * @return result of evaluation
+     * @see #evaluate(ProcessingContext)
+     * 
+     * @throws QTIValidationException
+     */
+    private Value evaluate(ProcessingContext context, int depth) {
+        if (getChildren().size() > 0) {
+            logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
+        }
+
+        ValidationResult combinedValidationResult = new ValidationResult();
+        Value value = context.getExpressionValue(this);
+        if (value==null || isVariable()) {
+            // 1) Evaluates all children.
+            for (Expression child : getChildren()) {
+                try {
+                    if (child instanceof AbstractExpression) {
+                        ((AbstractExpression) child).evaluate(context, depth + 1);
+                    }
+                    else {
+                        child.evaluate(context);
+                    }
+                }
+                catch (QTIValidationException e) {
+                    combinedValidationResult.add(e.getValidationResult());
+                }
+            }
+
+            // 2) Validates this expression (but not its children, since they will have been done in 1 above).
+            ValidationResult thisValidationResult = validateThisOnly(context);
+            if (thisValidationResult.getAllItems().size() > 0) {
+                for (ValidationError error : thisValidationResult.getErrors()) {
+                    logger.error("{}: {}", error.getNode().computeXPath(), error.getMessage());
+                    combinedValidationResult.add(error);
+                }
+            }
+
+            // 3) Evaluates this expression.
+            if (combinedValidationResult.getAllItems().isEmpty()) {
+                try {
+                    value = evaluateSelf(context, depth);
+                }
+                catch (QTIValidationException e) {
+                    combinedValidationResult.add(e.getValidationResult());
+                }
+            }
+        }
+        else {
+            logger.debug("{}Value of {} was already evaluated.", formatIndent(depth), getClass().getSimpleName());
+        }
+        
+        // If we got any validation errors during evaluating, wrap them combined result into an Exception
+        if (!combinedValidationResult.getAllItems().isEmpty()) {
+            throw new QTIValidationException(combinedValidationResult);
+        }
+        
+        if (value==null) {
+        	value = NullValue.INSTANCE;
+        }
+
+        // Logs result of evaluation.
+        String format = "{}{} -> {}({})";
+        Object[] arguments = new Object[] {formatIndent(depth), getClass().getSimpleName(), value.getBaseType(), value};
+
+        if (!(getParent() instanceof Expression))
+            logger.info(format, arguments);
+        else
+            logger.debug(format, arguments);
+
+        /* Save value back into context */
+        context.setExpressionValue(this, value);
+        return value;
+    }
+    
+    protected String formatIndent(int depth) {
+    	return "(" + depth + ") ";
+    }
+
+    /**
+     * Evaluates this expression. All children must be already evaluated. Contains no checks.
+     * @param context TODO
+     * @param depth depth of this expression in expression tree (root's depth = 0)
+     *
+     * @return result of evaluation
+     */
+    protected abstract Value evaluateSelf(ProcessingContext context, int depth);
+
+    public boolean isNull(ProcessingContext context) throws NullPointerException
+    {
+        return getValue(context).isNull();
+    }
+
+    public Cardinality getCardinality(ProcessingContext context) throws NullPointerException
+    {
+        return getValue(context).getCardinality();
+    }
+
+    public BaseType getBaseType(ProcessingContext context) throws NullPointerException
+    {
+        return getValue(context).getBaseType();
+    }
+
+    public final Value getValue(ProcessingContext context) throws NullPointerException
+    {
+    	Value result = context.getExpressionValue(this);
+    	if (result==null) {
+    		logger.error("Value for expression " +  getClass().getSimpleName() + " is not set; returning NULL");
+    		result = NullValue.INSTANCE;
+    	}
+        return result;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(getClassTag());
+        builder.append("(");
+        for (int i = 0; i < getChildren().size(); i++)
+        {
+            builder.append(getChildren().get(i));
+            if (i < getChildren().size() - 1)
+                builder.append(", ");
+        }
+        builder.append(")");
+
+        return builder.toString();
+    }
+}

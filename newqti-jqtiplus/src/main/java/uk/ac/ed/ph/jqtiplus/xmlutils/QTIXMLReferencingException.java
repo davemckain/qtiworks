@@ -1,0 +1,40 @@
+/* $Id: QTIXMLReferencingException.java 2766 2011-07-21 17:02:08Z davemckain $
+ *
+ * Copyright 2011 University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.jqtiplus.xmlutils;
+
+import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+
+/**
+ * This Exception is thrown if a referenced XML resource (e.g. a {@link ResponseProcessing}
+ * template) could not be successfully resolved and instantiated.
+ * 
+ * @author  David McKain
+ * @version $Revision: 2766 $
+ */
+public class QTIXMLReferencingException extends QTIRuntimeException {
+
+    private static final long serialVersionUID = 5628758708191965953L;
+    
+    /** Result of reading in XML, if we got that far */
+    private final XMLParseResult xmlReadResult;
+
+    public QTIXMLReferencingException(String message, Throwable cause) {
+        this(message, null, cause);
+    }
+    
+    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult) {
+        this(message, xmlParseResult, null);
+    }
+    
+    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, Throwable cause) {
+        super(message, cause);
+        this.xmlReadResult = xmlParseResult;
+    }
+
+    public XMLParseResult getXMLParseResult() {
+        return xmlReadResult;
+    }
+}
