@@ -25,6 +25,8 @@ import java.util.List;
 
 public class RPTemplateTest {
     
+    public static int bob = 5;
+    
     public static void main(String[] args) {
         URI inputUri = URI.create("classpath:/rpTest.xml");
         
