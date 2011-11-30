@@ -11,13 +11,16 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleQTIObjectCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+
+import org.qtitools.mathassess.MathAssessConstants;
+import org.qtitools.mathassess.MathAssessExtensionPackage;
+
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
 import java.net.URI;
@@ -25,9 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.qtitools.mathassess.MathAssessConstants;
-import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 public class MathAssessTest {
     
@@ -43,7 +43,7 @@ public class MathAssessTest {
         
         try {
             System.out.println("Reading and validating");
-            SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
+            SupportedXMLReader xmlReader = new SupportedXMLReader(true);
             
             /* FIXME: Can this somehow be integrated with the package stuff? */
             xmlReader.getRegisteredSchemaMap().put(MathAssessConstants.MATHASSESS_NAMESPACE_URI, MathAssessConstants.MATHASSESS_SCHEMA_LOCATION);

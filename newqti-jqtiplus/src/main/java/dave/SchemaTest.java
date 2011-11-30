@@ -8,7 +8,6 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
@@ -22,10 +21,10 @@ public class SchemaTest {
     
     public static void main(String[] args) throws Exception {
         JQTIController jqtiController = new JQTIController();
-        SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
+        SupportedXMLReader xmlReader = new SupportedXMLReader(true);
         QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
         
-        URI inputFileUri = URI.create("classpath:mathextensions.xml");
+        URI inputFileUri = URI.create("classpath:/mathextensions.xml");
         QTIReadResult<AssessmentItem> result = objectManager.getQTIObject(inputFileUri, AssessmentItem.class);
         AssessmentItem item = result.getJQTIObject();
         

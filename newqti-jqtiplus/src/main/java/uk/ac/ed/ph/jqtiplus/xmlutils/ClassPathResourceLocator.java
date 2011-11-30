@@ -39,6 +39,11 @@ public final class ClassPathResourceLocator implements ResourceLocator {
     // -------------------------------------------
     
     public ClassPathResourceLocator() {
+        this(null);
+    }
+    
+    public ClassPathResourceLocator(String basePath) {
+        this.basePath = basePath;
     }
     
     public String getBasePath() {

@@ -27,19 +27,17 @@ public final class ClassPathHTTPResourceLocator implements ResourceLocator {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassPathHTTPResourceLocator.class);
 
-    public static final String DEFAULT_BASE_PATH = "uk/ac/ed/ph/jqtiplus";
-    
+    /** basePath to search in. null is treated as blank */
     private String basePath;
     
     public ClassPathHTTPResourceLocator() {
-        this(DEFAULT_BASE_PATH);
+        this(null);
     }
     
     public ClassPathHTTPResourceLocator(String basePath) {
         this.basePath = basePath;
     }
     
-
     public String getBasePath() {
         return basePath;
     }
@@ -54,7 +52,7 @@ public final class ClassPathHTTPResourceLocator implements ResourceLocator {
         String scheme = systemIdUri.getScheme();
         if ("http".equals(scheme)) {
             String relativeSystemId = systemIdUri.toString().substring("http://".length());
-            String resultingPath = basePath + "/" + relativeSystemId;
+            String resultingPath = basePath!=null ? basePath + "/" + relativeSystemId : relativeSystemId;
             return loadResource(systemIdUri, resultingPath);
         }
         return null;

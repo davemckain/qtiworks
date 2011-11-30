@@ -12,7 +12,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
@@ -32,7 +31,7 @@ public class RPTemplateTest {
         JQTIController jqtiController = new JQTIController();
         
         System.out.println("Reading and validating");
-        SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
+        SupportedXMLReader xmlReader = new SupportedXMLReader(true);
         QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
 
         QTIReadResult<AssessmentItem> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentItem.class);

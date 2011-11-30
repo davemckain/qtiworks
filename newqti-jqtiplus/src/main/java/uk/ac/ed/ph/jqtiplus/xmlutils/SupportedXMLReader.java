@@ -47,6 +47,12 @@ public final class SupportedXMLReader {
     
     private static final Logger logger = LoggerFactory.getLogger(SupportedXMLReader.class);
     
+    /** 
+     * Base path within ClassPath to search in when using the default {@link ClassPathHTTPResourceLocator}
+     * instance of {@link #parserResourceLocator}.
+     */
+    public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus";
+    
     /** {@link ResourceLocator} used to locate schema files (and DTD-related entities if used) */
     private final ResourceLocator parserResourceLocator;
     
@@ -55,6 +61,17 @@ public final class SupportedXMLReader {
     
     /** Map containing details of each schema registered with this reader. Keys are namespace URI, value is schema URI */
     private final Map<String, String> registeredSchemaMap;
+    
+    /**
+     * Creates an instance of this reader that uses a {@link ClassPathHTTPResourceLocator}
+     * to search for parser resources below the base path {@link #DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH},
+     * which is where the schemas bundled within this project have been packaged.
+     * 
+     * @param schemaValidating
+     */
+    public SupportedXMLReader(final boolean schemaValidating) {
+        this(new ClassPathHTTPResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH), schemaValidating);
+    }
     
     public SupportedXMLReader(final ResourceLocator parserResourceLocator, final boolean schemaValidating) {
         this.parserResourceLocator = parserResourceLocator;
