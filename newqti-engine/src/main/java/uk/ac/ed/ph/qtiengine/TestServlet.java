@@ -1,7 +1,5 @@
 package uk.ac.ed.ph.qtiengine;
 
-import uk.ac.ed.ph.snuggletex.SnuggleSession;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServlet;
