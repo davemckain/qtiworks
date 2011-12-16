@@ -55,6 +55,6 @@
 	<xsd:attribute name="code" type="xsd:string" />
 	<xsd:attribute name="simplify" type="simplifyType" />
 	<xsd:attribute name="expectedLength" type="xsd:integer" />
-	<xsd:attribute name="printIdentifier" type="qti:identifier.Type" />
+	<xsd:attribute name="printIdentifier" type="qti:Identifier.Type" />
 	<xsd:attribute name="comment" type="xsd:string" />
 </xsd:schema>
