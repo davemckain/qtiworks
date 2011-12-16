@@ -75,10 +75,12 @@ public abstract class AbstractNode implements XmlNode
         this.groups = new NodeGroupList(this);
     }
 
+    @Override
     public XmlNode getParent() {
         return parent;
     }
 
+    @Override
     public XmlNode getParentRoot() {
         XmlNode node = this;
         while (node.getParent() != null) {
@@ -87,16 +89,19 @@ public abstract class AbstractNode implements XmlNode
         return node;
     }
 
+    @Override
     public AttributeList getAttributes()
     {
         return attributes;
     }
 
+    @Override
     public NodeGroupList getNodeGroups()
     {
         return groups;
     }
 
+    @Override
     public void load(JQTIController jqtiController, Element sourceElement)
     {
         // 1) Read all attributes.
@@ -134,16 +139,19 @@ public abstract class AbstractNode implements XmlNode
      * @param JQTIController TODO
      * @param node xml source
      */
+    @SuppressWarnings("static-method")
     protected void readChildNode(@SuppressWarnings("unused") JQTIController jqtiController, Node node)
     {
         throw new QTIParseException("Unsupported child: " + node.getLocalName());
     }
 
+    @Override
     public final String toXmlString()
     {
         return toXmlString(0, false);
     }
 
+    @Override
     public String toXmlString(int depth, boolean printDefaultAttributes)
     {
         StringBuilder builder = new StringBuilder();
@@ -174,8 +182,6 @@ public abstract class AbstractNode implements XmlNode
         return builder.toString();
     }
     
-    public abstract String getClassTag();
-
     /**
      * Prints attributes of this node into xml string.
      *
@@ -204,6 +210,7 @@ public abstract class AbstractNode implements XmlNode
         return getClassTag();
     }
 
+    @Override
     public String computeXPathComponent() {
         XmlNode parentNode = getParent();
         int position = 1;
@@ -214,6 +221,7 @@ public abstract class AbstractNode implements XmlNode
                     if (child==this) {
                         break SEARCH;
                     }
+                    ++position;
                 }
             }
             return getClassTag() + "[" + position + "]";
@@ -221,6 +229,7 @@ public abstract class AbstractNode implements XmlNode
         return getClassTag();
     }
     
+    @Override
     public String computeXPath() {
         StringBuilder pathBuilder = new StringBuilder();
         buildXPath(pathBuilder, this);
@@ -237,8 +246,8 @@ public abstract class AbstractNode implements XmlNode
         }
     }
 
-    public ValidationResult validate(ValidationContext context)
-    {
+    @Override
+    public ValidationResult validate(ValidationContext context) {
         ValidationResult result = new ValidationResult();
 
         result.add(validateAttributes(context));
