@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
@@ -43,12 +42,12 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -383,15 +382,6 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
         return getChildren().get(1);
     }
 
-@ToRemove
-// FIXME: Make sure this can now be deleted
-//    public void reset(ProcessingContext context) {
-//        value = null;
-//        for (Expression child : getChildren()) {
-//            child.reset(context);
-//        }
-//    }
-
     /**
      * Evaluates this Expression.
      * <p>
@@ -404,6 +394,7 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
      * 
      * @throws QTIValidationException
      */
+    @Override
     public final Value evaluate(ProcessingContext context) {
         return evaluate(context, 0);
     }
@@ -486,7 +477,7 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
         return value;
     }
     
-    protected String formatIndent(int depth) {
+    protected static String formatIndent(int depth) {
     	return "(" + depth + ") ";
     }
 
@@ -499,23 +490,23 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
      */
     protected abstract Value evaluateSelf(ProcessingContext context, int depth);
 
-    public boolean isNull(ProcessingContext context) throws NullPointerException
-    {
+    @Override
+    public boolean isNull(ProcessingContext context) {
         return getValue(context).isNull();
     }
 
-    public Cardinality getCardinality(ProcessingContext context) throws NullPointerException
-    {
+    @Override
+    public Cardinality getCardinality(ProcessingContext context) {
         return getValue(context).getCardinality();
     }
 
-    public BaseType getBaseType(ProcessingContext context) throws NullPointerException
-    {
+    @Override
+    public BaseType getBaseType(ProcessingContext context) {
         return getValue(context).getBaseType();
     }
 
-    public final Value getValue(ProcessingContext context) throws NullPointerException
-    {
+    @Override
+    public final Value getValue(ProcessingContext context) {
     	Value result = context.getExpressionValue(this);
     	if (result==null) {
     		logger.error("Value for expression " +  getClass().getSimpleName() + " is not set; returning NULL");

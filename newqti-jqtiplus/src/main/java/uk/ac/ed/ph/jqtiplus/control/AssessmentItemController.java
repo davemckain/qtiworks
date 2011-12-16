@@ -21,6 +21,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
@@ -43,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -64,6 +65,9 @@ import org.slf4j.LoggerFactory;
 public final class AssessmentItemController {
     
     protected static Logger logger = LoggerFactory.getLogger(AssessmentItemController.class);
+    
+    /** FIXME: Make this settable! */
+    public static int MAX_TEMPLATE_PROCESSING_TRIES = 100;
     
     private final AssessmentItemManager itemManager;
     private final AssessmentItem item;
@@ -307,7 +311,7 @@ public final class AssessmentItemController {
             return;
         }
         
-        ItemProcessingContext processingContext = new ItemProcessingContextImpl();
+        ItemProcessingContext context = new ItemProcessingContextImpl();
         
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
@@ -318,26 +322,11 @@ public final class AssessmentItemController {
             setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
             itemState.setResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, new IntegerValue(0));
             
-            /* Initialise template defaults with any externally provided defaults */
-            if (templateDefaults!=null) {
-                for (TemplateDefault templateDefault : templateDefaults) {
-                    TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
-                    if (declaration != null) {
-                        Value defaultValue = templateDefault.evaluate(processingContext);
-                        itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
-                    }
-                }
-            }
-
-            /* Initialise template values. */
-            for (TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
-                initValue(templateDeclaration);
-            }
-
-            /* Perform templateProcessing. */
-            TemplateProcessing templateProcessing = item.getTemplateProcessing();
-            if (templateProcessing != null) {
-                templateProcessing.evaluate(processingContext);
+            /* Perform template processing as many times as required. */
+            int templateProcessingAttemptNumber = 0;
+            boolean templateProcessingCompleted = false;
+            while (!templateProcessingCompleted) {
+                templateProcessingCompleted = doTemplateProcessing(context, templateDefaults, ++templateProcessingAttemptNumber);
             }
             
             /* Initialises outcomeDeclaration's values. */
@@ -363,6 +352,61 @@ public final class AssessmentItemController {
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
         }
+    }
+    
+    
+    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber) {
+        logger.info("Template Processing attempt #{} starting", attemptNumber);
+        
+        /* Initialise template defaults with any externally provided defaults */
+        if (templateDefaults!=null) {
+            logger.debug("Setting template default values");
+            for (TemplateDefault templateDefault : templateDefaults) {
+                TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
+                if (declaration != null) {
+                    Value defaultValue = templateDefault.evaluate(context);
+                    itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                }
+            }
+        }
+
+        /* Initialise template values. */
+        for (TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+            initValue(templateDeclaration);
+        }
+
+        if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
+            logger.warn("Exceeded maxmimum number of template processing retries - leaving variables at default values");
+            return true;
+        }
+
+        /* Perform templateProcessing. */
+        TemplateProcessing templateProcessing = item.getTemplateProcessing();
+        if (templateProcessing != null) {
+            logger.debug("Evaluating template processing rules");
+            try {
+                for (TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
+                    templateProcessingRule.evaluate(context);
+                }
+            }
+            catch (TemplateProcessingInterrupt e) {
+                switch (e.getInterruptType()) {
+                    case EXIT_TEMPLATE:
+                        /* Exit template processing */
+                        logger.info("Template processing interrupted by exitTemplate");
+                        return true;
+
+                    case TEMPLATE_CONSTRAINT_FAILURE:
+                        /* Failed templateCondition, so try again. */
+                        logger.info("Template processing interrupted by failed templateConstraint");
+                        return false;
+
+                    default:
+                        break;
+                }
+            }
+        }
+        return true;
     }
     
     /**

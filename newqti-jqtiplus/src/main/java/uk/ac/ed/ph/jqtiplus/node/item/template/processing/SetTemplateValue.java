@@ -81,6 +81,7 @@ public class SetTemplateValue extends ProcessTemplateValue
         return CLASS_TAG;
     }
 
+    @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index)
     {
         ItemValidationContext itemContext = (ItemValidationContext) context;
@@ -94,6 +95,7 @@ public class SetTemplateValue extends ProcessTemplateValue
         return Cardinality.values();
     }
 
+    @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index)
     {
         ItemValidationContext itemContext = (ItemValidationContext) context;

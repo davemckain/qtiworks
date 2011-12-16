@@ -34,17 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
-
 
 /**
  * Template processing takes place each time the candidate submits the responses for an item (when in individual submission mode)
@@ -56,28 +53,20 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class TemplateProcessing extends AbstractObject
-{
-    private static final long serialVersionUID = 1L;
-    
-    /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateProcessing";
-
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of this object
-     */
-    public TemplateProcessing(AssessmentItem parent)
-    {
+public class TemplateProcessing extends AbstractObject {
+	
+	private static final long serialVersionUID = 4102163277727881279L;
+	
+	/** Name of this class in xml schema. */
+	public static final String CLASS_TAG = "templateProcessing";
+	
+    public TemplateProcessing(AssessmentItem parent) {
         super(parent);
-
-        getNodeGroups().add(new TemplateRuleGroup(this));
+        getNodeGroups().add(new TemplateProcessingRuleGroup(this));
     }
 
     @Override
-    public String getClassTag()
-    {
+    public String getClassTag() {
         return CLASS_TAG;
     }
 
@@ -86,9 +75,9 @@ public class TemplateProcessing extends AbstractObject
      *
      * @return templateRule children
      */
-    public List<TemplateRule> getTemplateRules()
+    public List<TemplateProcessingRule> getTemplateProcessingRules()
     {
-        return getNodeGroups().getTemplateRuleGroup().getTemplateRules();
+        return getNodeGroups().getTemplateProcessingRuleGroup().getTemplateProcessingRules();
     }
 
     @Override
@@ -96,23 +85,9 @@ public class TemplateProcessing extends AbstractObject
     {
         ValidationResult result = super.validateChildren(context);
 
-        if (getTemplateRules().size() == 0)
+        if (getTemplateProcessingRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
 
         return result;
-    }
-
-    /**
-     * Evaluates all child templateRules.
-     * @param context TODO
-     */
-    public void evaluate(ProcessingContext context)
-    {
-        try {
-        for (TemplateRule templateRule : getTemplateRules())
-            templateRule.evaluate(context);
-        } catch (QTIProcessingInterrupt interrupt) {
-            //do nothing
-        }
     }
 }

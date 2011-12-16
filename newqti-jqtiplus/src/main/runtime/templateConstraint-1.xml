@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="templateConstraint-1" title="Roots of a quadratic equation 1"
+    adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="2">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+    <templateDeclaration identifier="iA" cardinality="single" baseType="integer" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>1</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="iB" cardinality="single" baseType="integer" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>2</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="iC" cardinality="single" baseType="integer" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>-1</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="absB" cardinality="single" baseType="integer"
+        mathVariable="true" paramVariable="false">
+        <defaultValue>
+            <value>2</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="absC" cardinality="single" baseType="integer"
+        mathVariable="true" paramVariable="false">
+        <defaultValue>
+            <value>1</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="sB" cardinality="single" baseType="string" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>+</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="sC" cardinality="single" baseType="string" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>-</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration identifier="sX" cardinality="single" baseType="string" mathVariable="true"
+        paramVariable="false">
+        <defaultValue>
+            <value>x</value>
+        </defaultValue>
+    </templateDeclaration>
+    <!--the templateConstraint is used immediately after the values of iA, iB and iC are assigned -->
+    <templateProcessing>
+        <setTemplateValue identifier="iA">
+            <product>
+                <randomInteger max="6" min="1"/>
+                <randomInteger max="1" min="-1" step="2"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iB">
+            <product>
+                <randomInteger max="6" min="1"/>
+                <randomInteger max="1" min="-1" step="2"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iC">
+            <product>
+                <randomInteger max="6" min="1"/>
+                <randomInteger max="1" min="-1" step="2"/>
+            </product>
+        </setTemplateValue>
+        <templateConstraint>
+            <gt>
+                <subtract>
+                    <power>
+                        <variable identifier="iB"/>
+                        <baseValue baseType="integer">2</baseValue>
+                    </power>
+                    <product>
+                        <baseValue baseType="integer">4</baseValue>
+                        <variable identifier="iA"/>
+                        <variable identifier="iC"/>
+                    </product>
+                </subtract>
+                <baseValue baseType="integer">0</baseValue>
+            </gt>
+        </templateConstraint>
+        <setTemplateValue identifier="sX">
+            <random>
+                <multiple>
+                    <baseValue baseType="string">x</baseValue>
+                    <baseValue baseType="string">y</baseValue>
+                    <baseValue baseType="string">z</baseValue>
+                </multiple>
+            </random>
+        </setTemplateValue>
+        <templateCondition>
+            <templateIf>
+                <lt>
+                    <variable identifier="iB"/>
+                    <baseValue baseType="integer">0</baseValue>
+                </lt>
+                <setTemplateValue identifier="sB">
+                    <baseValue baseType="string">-</baseValue>
+                </setTemplateValue>
+                <setTemplateValue identifier="absB">
+                    <product>
+                        <variable identifier="iB"/>
+                        <baseValue baseType="integer">-1</baseValue>
+                    </product>
+                </setTemplateValue>
+            </templateIf>
+            <templateElse>
+                <setTemplateValue identifier="sB">
+                    <baseValue baseType="string">+</baseValue>
+                </setTemplateValue>
+                <setTemplateValue identifier="absB">
+                    <variable identifier="iB"/>
+                </setTemplateValue>
+            </templateElse>
+        </templateCondition>
+        <templateCondition>
+            <templateIf>
+                <lt>
+                    <variable identifier="iC"/>
+                    <baseValue baseType="integer">0</baseValue>
+                </lt>
+                <setTemplateValue identifier="sC">
+                    <baseValue baseType="string">-</baseValue>
+                </setTemplateValue>
+                <setTemplateValue identifier="absC">
+                    <product>
+                        <variable identifier="iC"/>
+                        <baseValue baseType="integer">-1</baseValue>
+                    </product>
+                </setTemplateValue>
+            </templateIf>
+            <templateElse>
+                <setTemplateValue identifier="sC">
+                    <baseValue baseType="string">+</baseValue>
+                </setTemplateValue>
+                <setTemplateValue identifier="absC">
+                    <variable identifier="iC"/>
+                </setTemplateValue>
+            </templateElse>
+        </templateCondition>
+    </templateProcessing>
+    <itemBody>
+        <p>Here is a quadratic equation:</p>
+        <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+            <mi>iA</mi>
+            <msup>
+                <mi>sX</mi>
+                <mn>2</mn>
+            </msup>
+            <mi>sB</mi>
+            <mi>absB</mi>
+            <mi>sX</mi>
+            <mi>sC</mi>
+            <mi>absC</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+        </math>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+            <prompt>This equation has real roots.</prompt>
+            <simpleChoice identifier="ChoiceA">Yes</simpleChoice>
+            <simpleChoice identifier="ChoiceB">No</simpleChoice>
+            <simpleChoice identifier="ChoiceC">Don't know</simpleChoice>
+        </choiceInteraction>
+        <p>
+            <feedbackInline outcomeIdentifier="FEEDBACK" showHide="show" identifier="OK"> Yes, the
+                roots are real because the discriminant, <math
+                    xmlns="http://www.w3.org/1998/Math/MathML">
+                    <msup>
+                        <mi>b</mi>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <mn>4</mn>
+                    <mi>a</mi>
+                    <mi>c</mi>
+                </math>, is greater than zero.</feedbackInline>
+            <feedbackInline outcomeIdentifier="FEEDBACK" showHide="show" identifier="No"> The roots
+                are real because the discriminant, <math
+                    xmlns="http://www.w3.org/1998/Math/MathML">
+                    <msup>
+                        <mi>b</mi>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <mn>4</mn>
+                    <mi>a</mi>
+                    <mi>c</mi>
+                </math>, is greater than zero.</feedbackInline>
+        </p>
+    </itemBody>
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <isNull>
+                    <variable identifier="RESPONSE"/>
+                </isNull>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+                <responseCondition>
+                    <responseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <correct identifier="RESPONSE"/>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">2.0</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType="identifier">OK</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElse>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0.0</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType="identifier">No</baseValue>
+                        </setOutcomeValue>
+                    </responseElse>
+                </responseCondition>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>

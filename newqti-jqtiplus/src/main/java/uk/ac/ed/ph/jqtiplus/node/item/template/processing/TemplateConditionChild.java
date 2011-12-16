@@ -94,7 +94,7 @@ public abstract class TemplateConditionChild extends AbstractObject
      * @return true
      * @throws QTIProcessingInterrupt 
      */
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt
     {
         for (TemplateRule templateRule : getTemplateRules())
             templateRule.evaluate(context);

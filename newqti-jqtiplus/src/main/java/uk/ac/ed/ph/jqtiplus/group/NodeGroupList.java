@@ -88,6 +88,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingGroup;
+import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.DefaultValueGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.InterpolationTableEntryGroup;
@@ -174,6 +175,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateElse;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateElseIf;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateIf;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTableEntry;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
@@ -209,8 +211,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.VariableMapping;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -829,6 +829,17 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup>
     public TemplateProcessingGroup getTemplateProcessingGroup() throws QTINodeGroupException
     {
         return (TemplateProcessingGroup) get(TemplateProcessing.CLASS_TAG);
+    }
+    
+    /**
+     * Gets templateProcessingRule group.
+     *
+     * @return templateProcessing group
+     * @throws QTINodeGroupException if group is not found
+     */
+    public TemplateProcessingRuleGroup getTemplateProcessingRuleGroup() throws QTINodeGroupException
+    {
+        return (TemplateProcessingRuleGroup) get(TemplateProcessingRule.DISPLAY_NAME);
     }
     
     /**

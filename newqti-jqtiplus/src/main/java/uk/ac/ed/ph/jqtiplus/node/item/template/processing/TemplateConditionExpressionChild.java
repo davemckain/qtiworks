@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -89,18 +88,20 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+    @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index)
     {
         return new Cardinality[] {Cardinality.SINGLE};
     }
 
+    @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index)
     {
         return new BaseType[] {BaseType.BOOLEAN};
     }
 
     @Override
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt
     {
         Value value = getExpression().evaluate(context);
         

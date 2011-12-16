@@ -76,6 +76,7 @@ public class SetDefaultValue extends ProcessTemplateValue
         return CLASS_TAG;
     }
 
+    @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index)
     {
         if (getIdentifier() != null)
@@ -88,6 +89,7 @@ public class SetDefaultValue extends ProcessTemplateValue
         return Cardinality.values();
     }
 
+    @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index)
     {
         if (getIdentifier() != null)

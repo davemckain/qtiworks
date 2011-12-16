@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
@@ -156,7 +155,7 @@ public class TemplateCondition extends TemplateRule
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt
     {
         for (TemplateConditionChild child : getConditionChildren())
             if (child.evaluate(context))

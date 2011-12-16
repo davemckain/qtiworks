@@ -35,8 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingInterrupt.InterruptType;
 
 
 /**
@@ -61,8 +61,8 @@ public class ExitTemplate extends TemplateRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt {
-        throw new QTIProcessingInterrupt();
+    public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt {
+        throw new TemplateProcessingInterrupt(InterruptType.EXIT_TEMPLATE);
     }
 
     @Override
