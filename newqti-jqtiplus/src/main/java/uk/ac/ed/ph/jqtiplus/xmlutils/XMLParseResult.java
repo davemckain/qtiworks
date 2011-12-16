@@ -23,6 +23,7 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     private static final long serialVersionUID = -6558013135849907488L;
     
     private final String systemId;
+    private boolean parsed;
     private boolean validated;
     private final List<SAXParseException> warnings;
     private final List<SAXParseException> errors;
@@ -32,6 +33,7 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     
     public XMLParseResult(String systemId) {
         this.systemId = systemId;
+        this.parsed = false;
         this.validated = false;
         this.warnings = new ArrayList<SAXParseException>();
         this.errors = new ArrayList<SAXParseException>();
@@ -43,8 +45,17 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     public String getSystemId() {
         return systemId;
     }
+    
+    
+    public boolean isParsed() {
+        return parsed;
+    }
 
+    public void setParsed(boolean parsed) {
+        this.parsed = parsed;
+    }
 
+    
     public boolean isValidated() {
         return validated;
     }
@@ -84,15 +95,18 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     
     //---------------------------------------------------------
 
+    @Override
     public void warning(SAXParseException exception) {
         warnings.add(exception);
     }
     
+    @Override
     public void error(SAXParseException exception) throws SAXParseException {
         errors.add(exception);
         throw exception;
     }
     
+    @Override
     public void fatalError(SAXParseException exception) throws SAXParseException {
         fatalErrors.add(exception);
         throw exception;
@@ -104,12 +118,14 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
             + "(systemId=" + systemId
+            + ",parsed=" + parsed
             + ",validated=" + validated
             + ",warnings=" + warnings
             + ",errors=" + errors
             + ",fatalErrors=" + fatalErrors
             + ",supportedSchemaNamespaces=" + supportedSchemaNamespaces
             + ",unsupportedSchemaNamespaces=" + unsupportedSchemaNamespaces
+            + ",schemaValid=" + isSchemaValid()
             + ")";
     }
 }

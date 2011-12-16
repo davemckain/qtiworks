@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * <tt>classpath:/path/to/resource.txt</tt>
  * <p>
  * For example, <tt>classpath:/hello.txt</tt> looks in the ClassPath for
- * <tt>$BASE_PATH/hello.txt</tt>
+ * <tt>[basePath]/hello.txt</tt>
  * <p>
  * Note that the '/' after the ':' is important here. I have enforced this to
  * make sure the URI resolution works nicely.
@@ -56,6 +56,7 @@ public final class ClassPathResourceLocator implements ResourceLocator {
 
     // -------------------------------------------
 
+    @Override
     public InputStream findResource(final URI systemIdUri) {
         String scheme = systemIdUri.getScheme();
         InputStream result = null;

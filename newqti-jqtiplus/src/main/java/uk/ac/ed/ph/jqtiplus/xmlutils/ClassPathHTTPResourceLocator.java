@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ResourceLocator} that looks for HTTP resources
- * in the ClassPath using a simple naming mechanism.
+ * in the ClassPath using a simple naming mechanism as follows:
  * <p>
- * This is used to load "provided" resources, such as schemas, DTDs, standard
- * resource processing templates etc.
+ * A resource with URL <tt>http://server/path</tt> is mapped to a resource
+ * <tt>[basePath]/server/path</tt>, which is then looked up within the ClassPath.
+ * <p>
+ * This can be used to load "provided" or bundled resources, such as schemas, DTDs,
+ * standard resource processing templates etc.
  * 
  * @author  David McKain
  * @version $Revision: 2754 $
@@ -48,6 +51,7 @@ public final class ClassPathHTTPResourceLocator implements ResourceLocator {
     
     // -------------------------------------------
 
+    @Override
     public InputStream findResource(final URI systemIdUri) {
         String scheme = systemIdUri.getScheme();
         if ("http".equals(scheme)) {
@@ -68,7 +72,6 @@ public final class ClassPathHTTPResourceLocator implements ResourceLocator {
         }
         return resourceStream;
     }
-    
     
     @Override
     public String toString() {

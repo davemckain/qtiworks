@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -141,7 +140,7 @@ public enum RootNodeTypes {
      * @param sourceElement source node
      * @return loaded root node
      */
-    public static XmlObject load(JQTIController jqtiController, Element sourceElement, URI systemId) {
+    public static RootNode load(JQTIController jqtiController, Element sourceElement, URI systemId) {
         RootNode root = getInstance(sourceElement.getLocalName());
         root.load(jqtiController, sourceElement);
         root.setSystemId(systemId);

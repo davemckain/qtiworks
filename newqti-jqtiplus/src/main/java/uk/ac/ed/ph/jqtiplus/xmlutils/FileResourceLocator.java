@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *  Loads resources having a <tt>file:</tt> URI
+ * Loads resources having a <tt>file:</tt> URI
  *
  * @author  David McKain
  * @version $Revision: 2720 $
@@ -25,6 +25,7 @@ public class FileResourceLocator implements ResourceLocator {
     
     private static final Logger logger = LoggerFactory.getLogger(FileResourceLocator.class);
     
+    @Override
     public InputStream findResource(URI systemIdUri) {
         if ("file".equals(systemIdUri.getScheme())) {
             try {

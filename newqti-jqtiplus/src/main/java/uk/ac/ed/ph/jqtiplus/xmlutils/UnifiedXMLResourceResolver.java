@@ -1,4 +1,4 @@
-/* $Id: UnifiedXMLResourceResolver.java 2718 2011-06-10 15:07:30Z davemckain $
+/* $Id: UnifiedXMLResourceResolver.java 2812 2011-12-14 17:45:57Z davemckain $
  *
  * Copyright (c) 2010, The University of Edinburgh.
  * All Rights Reserved
@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  * @see ResourceLocator
  * 
  * @author  David McKain
- * @version $Revision: 2718 $
+ * @version $Revision: 2812 $
  */
 public final class UnifiedXMLResourceResolver implements EntityResolver, URIResolver, LSResourceResolver {
 
@@ -107,6 +107,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
     //-------------------------------------------
     // DTD resolution
 
+    @Override
     public InputSource resolveEntity(String publicId, String systemId) {
         if (logger.isDebugEnabled()) {
             logger.debug("resolveEntity(publicId={}, systemId={})", publicId, systemId);
@@ -137,6 +138,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
     //-------------------------------------------
     // XSD resolution
     
+    @Override
     public LSInput resolveResource(String type, String namespaceUri, String publicId,
             String systemId, String baseUriString) {
         if (logger.isDebugEnabled()) {
@@ -182,6 +184,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
     //-------------------------------------------
     // URI resolution for XSLT
     
+    @Override
     public Source resolve(String href, String base) throws TransformerException {
         logger.debug("resolve(href={}, base={}", href, base);
         
@@ -266,7 +269,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
     
     //-------------------------------------------
     
-    private URI makeURI(String uriString, String failureMessageTemplate) {
+    private static URI makeURI(String uriString, String failureMessageTemplate) {
         try {
             return new URI(uriString);
         }
@@ -276,7 +279,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
         }
     }
     
-    private void maybeFail(boolean shouldFail, String message) {
+    private static void maybeFail(boolean shouldFail, String message) {
         logger.warn(message);
         if (shouldFail) {
             throw new QTIXMLException(message);

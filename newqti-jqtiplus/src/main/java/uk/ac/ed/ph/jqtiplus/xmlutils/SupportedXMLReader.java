@@ -5,11 +5,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-
 import uk.ac.ed.ph.jqtiplus.QTIConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -41,10 +41,12 @@ import org.xml.sax.SAXParseException;
  * and validate against the 2.1 schema instead.
  * 
  * @author  David McKain
- * @version $Revision: 2766 $
+ * @version $Revision: 2824 $
  */
-public final class SupportedXMLReader {
+public final class SupportedXMLReader implements Serializable {
     
+    private static final long serialVersionUID = 3647116039217223320L;
+
     private static final Logger logger = LoggerFactory.getLogger(SupportedXMLReader.class);
     
     /** 
@@ -53,43 +55,66 @@ public final class SupportedXMLReader {
      */
     public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus";
     
-    /** {@link ResourceLocator} used to locate schema files (and DTD-related entities if used) */
-    private final ResourceLocator parserResourceLocator;
+    public static final ResourceLocator DEFAULT_PARSER_RESOURCE_LOCATOR = new ClassPathHTTPResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
     
-    /** Whether to perform schema validation */
-    private final boolean schemaValidating;
-    
-    /** Map containing details of each schema registered with this reader. Keys are namespace URI, value is schema URI */
-    private final Map<String, String> registeredSchemaMap;
-    
-    /**
-     * Creates an instance of this reader that uses a {@link ClassPathHTTPResourceLocator}
-     * to search for parser resources below the base path {@link #DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH},
-     * which is where the schemas bundled within this project have been packaged.
-     * 
-     * @param schemaValidating
-     */
-    public SupportedXMLReader(final boolean schemaValidating) {
-        this(new ClassPathHTTPResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH), schemaValidating);
+    public static final Map<String, String> DEFAULT_SCHEMA_MAP;
+    static {
+        DEFAULT_SCHEMA_MAP = new HashMap<String, String>();
+        DEFAULT_SCHEMA_MAP.put(QTIConstants.QTI_21_NAMESPACE, QTIConstants.QTI_21_SCHEMA_LOCATION);
     }
     
-    public SupportedXMLReader(final ResourceLocator parserResourceLocator, final boolean schemaValidating) {
-        this.parserResourceLocator = parserResourceLocator;
+    /** 
+     * {@link ResourceLocator} used to locate schema files (and DTD-related entities if used).
+     * Default is {@link #DEFAULT_PARSER_RESOURCE_LOCATOR}
+     */
+    private ResourceLocator parserResourceLocator;
+    
+    /** 
+     * Whether to perform schema validation.
+     * Default is true
+     */
+    private boolean schemaValidating;
+    
+    /** 
+     * Map containing details of each schema registered with this reader. Keys are namespace URI, value is schema URI.
+     * Default is {@link #DEFAULT_SCHEMA_MAP}
+     */
+    private Map<String, String> registeredSchemaMap;
+    
+    public SupportedXMLReader() {
+        this(true);
+    }
+    
+    public SupportedXMLReader(final boolean schemaValidating) {
         this.schemaValidating = schemaValidating;
-        this.registeredSchemaMap = new HashMap<String, String>();
-        this.registeredSchemaMap.put(QTIConstants.QTI_21_NAMESPACE, QTIConstants.QTI_21_SCHEMA_LOCATION);
+        this.parserResourceLocator = DEFAULT_PARSER_RESOURCE_LOCATOR;
+        this.registeredSchemaMap = DEFAULT_SCHEMA_MAP;
     }
 
     public ResourceLocator getParserResourceLocator() {
         return parserResourceLocator;
     }
     
+    public void setParserResourceLocator(ResourceLocator parserResourceLocator) {
+        this.parserResourceLocator = parserResourceLocator;
+    }
+
+
     public boolean isSchemaValidating() {
         return schemaValidating;
     }
     
+    public void setSchemaValidating(boolean schemaValidating) {
+        this.schemaValidating = schemaValidating;
+    }
+    
+    
     public Map<String, String> getRegisteredSchemaMap() {
         return registeredSchemaMap;
+    }
+
+    public void setRegisteredSchemaMap(Map<String, String> registeredSchemaMap) {
+        this.registeredSchemaMap = registeredSchemaMap;
     }
     
     //--------------------------------------------------
@@ -100,6 +125,8 @@ public final class SupportedXMLReader {
      * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(String systemId, ResourceLocator inputResourceLocator) {
+        ConstraintUtilities.ensureNotNull(systemId, "systemId");
+        ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
         try {
             return read(new URI(systemId), inputResourceLocator);
         }
@@ -114,6 +141,8 @@ public final class SupportedXMLReader {
      * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator) {
+        ConstraintUtilities.ensureNotNull(systemIdUri, "systemIdUri");
+        ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
         logger.debug("Locating resource at {} using locator {}", systemIdUri, inputResourceLocator);
         InputStream inputStream = inputResourceLocator.findResource(systemIdUri);
         if (inputStream==null) {
@@ -133,8 +162,9 @@ public final class SupportedXMLReader {
      * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(InputSource inputSource) {
-        ConstraintUtilities.ensureNotNull(parserResourceLocator, "parserResourceLocator");
         ConstraintUtilities.ensureNotNull(inputSource, "inputSource");
+        ConstraintUtilities.ensureNotNull(parserResourceLocator, "parserResourceLocator");
+        ConstraintUtilities.ensureNotNull(registeredSchemaMap, "registeredSchemaMap");
         
         String systemId = inputSource.getSystemId();
         XMLParseResult xmlParseResult = new XMLParseResult(systemId);
@@ -159,6 +189,7 @@ public final class SupportedXMLReader {
                 /* If we had any non-fatal errors, now throw SAXParseException */ 
                 throw xmlParseResult.getErrors().get(0);
             }
+            xmlParseResult.setParsed(true);
             logger.debug("XML parse of {} completed successfully", systemId);
             
             if (schemaValidating) {
@@ -224,6 +255,7 @@ public final class SupportedXMLReader {
         catch (Exception e) {
             throw new QTIXMLException("Unexpected Exception during parsing", e);
         }
+        logger.info("Result of read is {}", xmlParseResult);
         return new XMLReadResult(document, xmlParseResult);
     }
     

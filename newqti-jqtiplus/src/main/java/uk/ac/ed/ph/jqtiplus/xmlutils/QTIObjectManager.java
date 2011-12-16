@@ -7,9 +7,8 @@ package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
-
 
 import java.net.URI;
 
@@ -62,7 +61,7 @@ public final class QTIObjectManager {
      *   loaded by the {@link #inputResourceLocator}
      */
     @SuppressWarnings("unchecked")
-    public <E extends XmlObject> QTIReadResult<E> getQTIObject(URI systemId, Class<E> resultClass) {
+    public <E extends RootNode> QTIReadResult<E> getQTIObject(URI systemId, Class<E> resultClass) {
         /* Try cache first */
         QTIReadResult<E> result = null;
         synchronized (qtiObjectCache) {
@@ -83,9 +82,9 @@ public final class QTIObjectManager {
      * @throws QTIXMLResourceNotFoundException the XML resource with the given System ID could not be
      *   loaded by the {@link #inputResourceLocator}
      */
-    private <E extends XmlObject> QTIReadResult<E> readQTI(URI systemId, Class<E> resultClass) {
+    private <E extends RootNode> QTIReadResult<E> readQTI(URI systemId, Class<E> resultClass) {
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
-         * alllows us to resolve things like response processing templates and anything else that might be pre-loaded
+         * allows us to resolve things like response processing templates and anything else that might be pre-loaded
          * this way.
          */
         ChainedResourceLocator resourceLocator = new ChainedResourceLocator(supportedXMLReader.getParserResourceLocator(), inputResourceLocator);
@@ -100,7 +99,7 @@ public final class QTIObjectManager {
         if (document!=null) {
             logger.debug("Instantiating JQTI Object hierarchy from root Element {}; expecting to create {}", document.getDocumentElement().getLocalName(), resultClass.getSimpleName());
             try {
-                XmlObject xmlObject = RootNodeTypes.load(jqtiController, document.getDocumentElement(), systemId);
+                RootNode xmlObject = RootNodeTypes.load(jqtiController, document.getDocumentElement(), systemId);
                 if (!resultClass.isInstance(xmlObject)) {
                     throw new QTIXMLException("QTI XML was instantiated into an instance of "
                             + xmlObject.getClass().getSimpleName()
