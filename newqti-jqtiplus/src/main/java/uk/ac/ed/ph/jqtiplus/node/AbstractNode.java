@@ -221,7 +221,9 @@ public abstract class AbstractNode implements XmlNode
                     if (child==this) {
                         break SEARCH;
                     }
-                    ++position;
+                    if (getClassTag().equals(child.getClassTag())) {
+                        position++;
+                    }
                 }
             }
             return getClassTag() + "[" + position + "]";
