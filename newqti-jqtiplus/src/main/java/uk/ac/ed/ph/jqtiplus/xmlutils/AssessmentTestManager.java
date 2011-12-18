@@ -6,7 +6,6 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.control.TestValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -19,6 +18,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -113,9 +113,9 @@ public final class AssessmentTestManager implements TestValidationContext {
             if (xmlParseResult.isValidated() && !xmlParseResult.isSchemaValid()) {
                 throw new QTIXMLReferencingException("Schema validation failed on referenced assessmentItem at URI " + resolvedItemUri, xmlParseResult);
             }
-            QTIParseException qtiParseException = qtiReadResult.getQTIParseException();
-            if (qtiParseException!=null) {
-                throw new QTIXMLReferencingException("JQTI Object construction failed on referenced assessmentItem at URI " + resolvedItemUri, qtiParseException);
+            List<QTIParseError> qtiParseErrors = qtiReadResult.getQTIParseErrors();
+            if (!qtiParseErrors.isEmpty()) {
+                throw new QTIXMLReferencingException("JQTI Object construction failed on responseProcessing template", xmlParseResult, qtiParseErrors);
             }
             logger.info("Resolved assessmentItem with href {} to {}", rawHref, qtiReadResult);
             return qtiReadResult.getJQTIObject();

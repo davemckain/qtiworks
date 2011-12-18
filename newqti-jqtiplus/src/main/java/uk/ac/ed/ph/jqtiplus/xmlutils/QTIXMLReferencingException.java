@@ -6,6 +6,9 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+
+import java.util.List;
 
 /**
  * This Exception is thrown if a referenced XML resource (e.g. a {@link ResponseProcessing}
@@ -20,21 +23,33 @@ public class QTIXMLReferencingException extends QTIRuntimeException {
     
     /** Result of reading in XML, if we got that far */
     private final XMLParseResult xmlReadResult;
+    
+    /** QTI Parse errors, if we got that far */
+    private final List<QTIParseError> qtiParseErrors;
 
     public QTIXMLReferencingException(String message, Throwable cause) {
-        this(message, null, cause);
+        this(message, null, null, cause);
     }
     
     public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult) {
-        this(message, xmlParseResult, null);
+        this(message, xmlParseResult, null, null);
     }
     
-    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, Throwable cause) {
+    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QTIParseError> qtiParseErrors) {
+        this(message, xmlParseResult, qtiParseErrors, null);
+    }
+    
+    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QTIParseError> qtiParseErrors, Throwable cause) {
         super(message, cause);
         this.xmlReadResult = xmlParseResult;
+        this.qtiParseErrors = qtiParseErrors;
     }
 
     public XMLParseResult getXMLParseResult() {
         return xmlReadResult;
+    }
+
+    public List<QTIParseError> getQtiParseErrors() {
+        return qtiParseErrors;
     }
 }

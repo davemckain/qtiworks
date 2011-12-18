@@ -36,9 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.shared;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -52,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,10 +205,15 @@ public class FieldValue extends AbstractObject
     }
 
     @Override
-    protected void readChildren(JQTIController jqtiController, Element element)
-    {
-        if (getBaseType() != null && element.getTextContent().length() != 0)
-            singleValue = getBaseType().parseSingleValue(element.getTextContent());
+    protected void readChildren(Element element, LoadingContext context) {
+        if (getBaseType() != null && element.getTextContent().length() != 0) {
+            try {
+                singleValue = getBaseType().parseSingleValue(element.getTextContent());
+            }
+            catch (QTIParseException e) {
+                context.parseError(e, element);
+            }
+        }
     }
 
     @Override

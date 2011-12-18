@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.JQTI;
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
@@ -44,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -52,8 +50,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.net.URI;
 import java.util.List;
-
-import javax.xml.XMLConstants;
 
 /**
  * A test is A group of assessmentItems with an associated set of rules that determine which of the items the candidate sees,
@@ -106,10 +102,6 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentI
         super(null); // Test doesn't have any parent.
         
         getAttributes().add(new StringAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
-
-        getAttributes().add(0, new StringAttribute(this, XMLConstants.XMLNS_ATTRIBUTE, QTIConstants.QTI_21_NAMESPACE, null, true));
-        getAttributes().add(1, new StringAttribute(this, RootNode.ATTR_XSI_NAME_SPACE_NAME, RootNode.ATTR_XSI_NAME_SPACE_VALUE, null, true));
-        getAttributes().add(2, new StringAttribute(this, RootNode.ATTR_XSI_SCHEMA_LOCATION_NAME, RootNode.ATTR_XSI_SCHEMA_LOCATION_VALUE, null, true));
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, ATTR_TOOL_NAME_DEFAULT_VALUE));

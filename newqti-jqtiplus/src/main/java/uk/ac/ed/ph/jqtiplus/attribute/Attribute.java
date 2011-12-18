@@ -34,10 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -87,35 +88,33 @@ public interface Attribute extends Validatable {
     /**
      * Loads attribute's value from given source node.
      * Source node must contain attributes (one of them can be this attribute).
-     *
      * @param node source node
      */
-    public void load(Node node);
+    public void load(Element owner, Node node, LoadingContext context);
 
     /**
      * Loads attribute's value from given source string.
      * Source string must contain only attribute's value, nothing else.
-     *
      * @param value source string
      */
-    public void load(String value);
+    public void load(Element owner, String value, LoadingContext context);
 
-    /**
-     * Gets loaded attribute's value.
-     * If attribute has not string baseType loaded value can be different from value.
-     * For example if we have integer attribute, loaded value is a10, but value is null (a10 is not valid integer).
-     * This approach enables to load test even if there are errors.
-     *
-     * @return loaded attribute's value
-     */
-    public String getLoadedValue();
-
-    /**
-     * Gets parse exception (if there were problem while loading) or null.
-     *
-     * @return parse exception (if there were problem while loading) or null
-     */
-    public QTIParseException getLoadingProblem();
+//    /**
+//     * Gets loaded attribute's value.
+//     * If attribute has not string baseType loaded value can be different from value.
+//     * For example if we have integer attribute, loaded value is a10, but value is null (a10 is not valid integer).
+//     * This approach enables to load test even if there are errors.
+//     *
+//     * @return loaded attribute's value
+//     */
+//    public String getLoadedValue();
+//
+//    /**
+//     * Gets parse exception (if there were problem while loading) or null.
+//     *
+//     * @return parse exception (if there were problem while loading) or null
+//     */
+//    public QTIParseException getLoadingProblem();
 
     /**
      * Gets attribute converted to string (name="value").

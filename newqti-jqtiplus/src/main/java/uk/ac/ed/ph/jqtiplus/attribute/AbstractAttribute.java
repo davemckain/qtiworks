@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -70,19 +69,19 @@ public abstract class AbstractAttribute implements Attribute
     /** Is this attribute supported (true) or not supported (false). */
     private boolean supported;
 
-    /**
-     * Loaded value.
-     *
-     * @see #getLoadedValue()
-     */
-    private String loadedValue;
-
-    /**
-     * Loading problem.
-     *
-     * @see #getLoadingProblem()
-     */
-    private QTIParseException loadingProblem;
+//    /**
+//     * Loaded value.
+//     *
+//     * @see #getLoadedValue()
+//     */
+//    private String loadedValue;
+//
+//    /**
+//     * Loading problem.
+//     *
+//     * @see #getLoadingProblem()
+//     */
+//    private QTIParseException loadingProblem;
 
     /**
      * Constructs attribute.
@@ -135,37 +134,37 @@ public abstract class AbstractAttribute implements Attribute
         this.supported = supported;
     }
 
-    public String getLoadedValue()
-    {
-        return loadedValue;
-    }
-
-    /**
-     * Sets new loaded value.
-     *
-     * @param loadedValue new loaded value
-     * @see #getLoadedValue
-     */
-    protected void setLoadedValue(String loadedValue)
-    {
-        this.loadedValue = loadedValue;
-    }
-
-    public QTIParseException getLoadingProblem()
-    {
-        return loadingProblem;
-    }
-
-    /**
-     * Sets new loading problem.
-     *
-     * @param loadingProblem loading problem.
-     * @see #getLoadingProblem
-     */
-    protected void setLoadingProblem(QTIParseException loadingProblem)
-    {
-        this.loadingProblem = loadingProblem;
-    }
+//    public String getLoadedValue()
+//    {
+//        return loadedValue;
+//    }
+//
+//    /**
+//     * Sets new loaded value.
+//     *
+//     * @param loadedValue new loaded value
+//     * @see #getLoadedValue
+//     */
+//    protected void setLoadedValue(String loadedValue)
+//    {
+//        this.loadedValue = loadedValue;
+//    }
+//
+//    public QTIParseException getLoadingProblem()
+//    {
+//        return loadingProblem;
+//    }
+//
+//    /**
+//     * Sets new loading problem.
+//     *
+//     * @param loadingProblem loading problem.
+//     * @see #getLoadingProblem
+//     */
+//    protected void setLoadingProblem(QTIParseException loadingProblem)
+//    {
+//        this.loadingProblem = loadingProblem;
+//    }
 
     @Override
     public String toString()
@@ -193,8 +192,8 @@ public abstract class AbstractAttribute implements Attribute
         StringBuilder builder = new StringBuilder();
 
         String value = valueToString();
-        if (value.length() == 0 && getLoadedValue() != null)
-            value = getLoadedValue();
+//        if (value.length() == 0 && getLoadedValue() != null)
+//            value = getLoadedValue();
         String defaultValue = defaultValueToString();
 
         if (value.length() != 0 && (!value.equals(defaultValue) || required || printDefaultValue))
@@ -214,9 +213,10 @@ public abstract class AbstractAttribute implements Attribute
 
         if (supported)
         {
-            if (getLoadingProblem() != null)
-                result.add(new AttributeValidationError(this, getLoadingProblem().getMessage()));
-            else if (required && valueToString().length() == 0)
+//            if (getLoadingProblem() != null)
+//                result.add(new AttributeValidationError(this, getLoadingProblem().getMessage()));
+//            else
+            if (required && valueToString().length() == 0)
                 result.add(new AttributeValidationError(this, "Required attribute is not defined: " + name));
         }
         else {

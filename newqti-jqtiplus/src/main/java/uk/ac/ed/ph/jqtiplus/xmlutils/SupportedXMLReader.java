@@ -20,8 +20,10 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -31,7 +33,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 
 /**
  * Provides support for locating, reading, parsing and optionally validating the XML
@@ -48,6 +52,9 @@ public final class SupportedXMLReader implements Serializable {
     private static final long serialVersionUID = 3647116039217223320L;
 
     private static final Logger logger = LoggerFactory.getLogger(SupportedXMLReader.class);
+
+    /** Name of the DOM "user object" where SAX {@link Locator} information will be stowed while parsing */
+    public static final String LOCATION_INFORMATION_NAME = "locationInformation";
     
     /** 
      * Base path within ClassPath to search in when using the default {@link ClassPathHTTPResourceLocator}
@@ -143,30 +150,12 @@ public final class SupportedXMLReader implements Serializable {
     public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemIdUri, "systemIdUri");
         ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
-        logger.debug("Locating resource at {} using locator {}", systemIdUri, inputResourceLocator);
-        InputStream inputStream = inputResourceLocator.findResource(systemIdUri);
-        if (inputStream==null) {
-            throw new QTIXMLResourceNotFoundException(inputResourceLocator, systemIdUri.toString());
-        }
-        return read(inputStream, systemIdUri);
-    }
-    
-    private XMLReadResult read(InputStream inputStream, URI systemIdUri) {
-        InputSource source = new InputSource(inputStream);
-        source.setSystemId(systemIdUri.toString());
-        return read(source);
-    }
-    
-    /**
-     * @throws QTIXMLReadException if a parsing and/or schema validation error occurred when reading the XML
-     * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
-     */
-    public XMLReadResult read(InputSource inputSource) {
-        ConstraintUtilities.ensureNotNull(inputSource, "inputSource");
+        
+        /* Ensure bean properties are set */
         ConstraintUtilities.ensureNotNull(parserResourceLocator, "parserResourceLocator");
         ConstraintUtilities.ensureNotNull(registeredSchemaMap, "registeredSchemaMap");
         
-        String systemId = inputSource.getSystemId();
+        String systemId = systemIdUri.toString();
         XMLParseResult xmlParseResult = new XMLParseResult(systemId);
         Document document = null;
         logger.info("Reading QTI XML Resource with System ID {}", systemId);
@@ -177,6 +166,7 @@ public final class SupportedXMLReader implements Serializable {
             resourceResolver.setFailOnMissedEntityResolution(false);
             resourceResolver.setFailOnMissedLRResourceResolution(true);
             
+            /* Create DOM Document. (We'll wire this up for parsing, even though we're now doing a SAX parse) */
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setNamespaceAware(true);
             dbFactory.setXIncludeAware(true);
@@ -184,7 +174,30 @@ public final class SupportedXMLReader implements Serializable {
             DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
             documentBuilder.setEntityResolver(resourceResolver);
             documentBuilder.setErrorHandler(xmlParseResult);
-            document = documentBuilder.parse(inputSource); /* Fatal errors will cause SAXParseException */
+            document = documentBuilder.newDocument();
+            
+            /* Configure SAX parser */
+            SAXParserFactory spFactory = SAXParserFactory.newInstance();
+            spFactory.setNamespaceAware(true);
+            spFactory.setValidating(false);
+            spFactory.setXIncludeAware(true);
+            spFactory.setFeature("http://xml.org/sax/features/validation", false);
+            spFactory.setFeature("http://xml.org/sax/features/external-general-entities", true);
+            spFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+            spFactory.setFeature("http://xml.org/sax/features/lexical-handler/parameter-entities", false);
+            SAXParser saxParser = spFactory.newSAXParser();
+            XMLReader xmlReader = saxParser.getXMLReader();
+            xmlReader.setEntityResolver(resourceResolver);
+            xmlReader.setErrorHandler(xmlParseResult);
+
+            /* Parse input and convert to a DOM containing SAX Locator information */
+            InputSource inputSource = new InputSource();
+            inputSource.setByteStream(ensureLocateInput(systemIdUri, inputResourceLocator));
+            inputSource.setSystemId(systemId);
+            
+            SimpleDOMBuilderHandler handler = new SimpleDOMBuilderHandler(document);
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(inputSource); /* Fatal errors will cause SAXParseException */
             if (!xmlParseResult.getErrors().isEmpty()) {
                 /* If we had any non-fatal errors, now throw SAXParseException */ 
                 throw xmlParseResult.getErrors().get(0);
@@ -238,9 +251,12 @@ public final class SupportedXMLReader implements Serializable {
                 sf.setErrorHandler(xmlParseResult);
                 Schema schema = sf.newSchema(schemaSources);
 
-                /* Now validate */
+                /* Now validate. Note that we read in the input again, as this will let the parser provide source
+                 * information to the schema validator. (I couldn't work out a way of passing source information
+                 * when validating from a DOM.)
+                 */
                 logger.debug("Schema validaton of {} starting", systemId);
-                DOMSource input = new DOMSource(document, systemId);
+                StreamSource input = new StreamSource(ensureLocateInput(systemIdUri, inputResourceLocator), systemId);
                 Validator validator = schema.newValidator();
                 validator.setResourceResolver(resourceResolver);
                 validator.setErrorHandler(xmlParseResult);
@@ -259,6 +275,24 @@ public final class SupportedXMLReader implements Serializable {
         return new XMLReadResult(document, xmlParseResult);
     }
     
+    private static InputStream ensureLocateInput(URI systemIdUri, ResourceLocator inputResourceLocator) {
+        logger.debug("Locating resource at {} using locator {}", systemIdUri, inputResourceLocator);
+        InputStream inputStream = inputResourceLocator.findResource(systemIdUri);
+        if (inputStream==null) {
+            throw new QTIXMLResourceNotFoundException(inputResourceLocator, systemIdUri.toString());
+        }
+        return inputStream;
+    }
+    
+    public static XMLSourceLocationInformation extractLocationInformation(Element element) {
+        XMLSourceLocationInformation result = null;
+        Object locationData = element.getUserData(LOCATION_INFORMATION_NAME);
+        if (locationData!=null && locationData instanceof XMLSourceLocationInformation) {
+            result = (XMLSourceLocationInformation) locationData;
+        }
+        return result;
+    }
+ 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()

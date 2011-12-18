@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -142,7 +142,7 @@ public class BaseValue extends AbstractExpression
     }
 
     @Override
-    protected void readChildren(JQTIController jqtiController, Element element)
+    protected void readChildren(Element element, LoadingContext context)
     {
         if (getBaseTypeAttrValue() != null && element.getTextContent().length() != 0)
             singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent());

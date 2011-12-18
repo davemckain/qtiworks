@@ -34,14 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.block;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,26 +85,26 @@ public abstract class ContainerBlock extends AbstractObject
     }
 
     @Override
-    protected void readChildren(JQTIController jqtiController, Element element)
+    protected void readChildren(Element element, LoadingContext context)
     {
         children.clear();
 
         NodeList nodes = element.getChildNodes();
 
-        for (int i = 0; i < nodes.getLength(); i++)
+        for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE ||
-                nodes.item(i).getNodeType() == Node.TEXT_NODE)
-                readChildNode(jqtiController, nodes.item(i));
+                nodes.item(i).getNodeType() == Node.TEXT_NODE) {
+                readChildNode(nodes.item(i), context);
+            }
+        }
     }
 
     @Override
-    protected void readChildNode(JQTIController jqtiController, Node node)
-    {
-        if (node.getNodeType() == Node.ELEMENT_NODE)
-        {
+    protected void readChildNode(Node node, LoadingContext context) {
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
             UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName());
             children.add(unsupportedBlock);
-            unsupportedBlock.load(jqtiController, (Element) node);
+            unsupportedBlock.load((Element) node, context);
         }
         else if (node.getNodeType() == Node.TEXT_NODE)
         {

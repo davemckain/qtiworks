@@ -35,11 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -129,31 +131,22 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute {
         return defaultValue;
     }
 
-    public void load(Node node)
-    {
-        load(node.getNodeValue());
+    public void load(Element owner, Node node, LoadingContext context) {
+        load(owner, node.getNodeValue(), context);
     }
 
-    public void load(String value)
-    {
-        setLoadedValue(value);
-        setLoadingProblem(null);
-
-        if (value != null && value.length() != 0)
-        {
-            try
-            {
+    public void load(Element owner, String value, LoadingContext context) {
+        if (value != null && value.length() != 0) {
+            try {
                 this.value.clear();
                 List<String> values = splitValue(value);
-
-                for (String string : values)
+                for (String string : values) {
                     this.value.add(parseValue(string));
+                }
             }
-            catch (QTIParseException ex)
-            {
+            catch (QTIParseException ex) {
                 this.value.clear();
-                logger.error(ex.getMessage());
-                setLoadingProblem(ex);
+                context.parseError(ex, owner);
             }
         }
         else

@@ -35,10 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
 
@@ -54,7 +53,9 @@ public interface XmlNode extends Validatable {
 
     /** Default indent. */
     static final String INDENT = "  ";
-
+    
+    XMLSourceLocationInformation getXMLSourceLocationInformation();
+    
     /**
      * Gets parent of this node or null (if node is root; for example AssessmentTest).
      * <p>
@@ -96,10 +97,11 @@ public interface XmlNode extends Validatable {
 
     /**
      * Loads this node from given DOM source {@link Element}.
-     * @param JQTIController TODO
      * @param sourceElement source node (DOM) for this node
+     * @param context TODO
+     * @param JQTIController TODO
      */
-    void load(JQTIController jqtiController, Element sourceElement);
+    void load(Element sourceElement, LoadingContext context);
 
     /**
      * Prints this node and all its children into string.

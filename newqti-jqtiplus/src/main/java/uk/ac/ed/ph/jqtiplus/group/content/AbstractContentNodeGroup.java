@@ -34,11 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
-
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -79,14 +78,14 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
     }
 
     @Override
-    public void load(JQTIController jqtiController, Element node) {
+    public void load(Element node, LoadingContext context) {
         NodeList childNodes = node.getChildNodes();
         for (int i=0; i<childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                XmlNode child = createChild(jqtiController, (Element) childNode);
+                XmlNode child = createChild((Element) childNode, context);
                 getChildren().add(child);
-                child.load(jqtiController, (Element) childNode);
+                child.load((Element) childNode, context);
             }
             else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
                 TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);

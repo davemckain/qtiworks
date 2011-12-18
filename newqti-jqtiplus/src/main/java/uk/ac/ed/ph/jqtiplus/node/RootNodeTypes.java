@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -140,10 +139,10 @@ public enum RootNodeTypes {
      * @param sourceElement source node
      * @return loaded root node
      */
-    public static RootNode load(JQTIController jqtiController, Element sourceElement, URI systemId) {
+    public static RootNode load(Element sourceElement, URI systemId, LoadingContext context) {
         RootNode root = getInstance(sourceElement.getLocalName());
-        root.load(jqtiController, sourceElement);
         root.setSystemId(systemId);
+        root.load(sourceElement, context);
         return root;
     }
 }

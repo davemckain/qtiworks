@@ -38,12 +38,12 @@ import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,21 +176,22 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         return maximum;
     }
 
-    public void load(JQTIController jqtiController, Element node) {
+    public void load(Element node, LoadingContext context) {
         NodeList childNodes = node.getChildNodes();
         for (int i=0; i<childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType()==Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                XmlNode child = createChild(jqtiController, (Element) childNode);
+                XmlNode child = createChild((Element) childNode, context);
                 children.add(child);
-                child.load(jqtiController, (Element) childNode);
+                child.load((Element) childNode, context);
             }
         }
     }
     
-    protected XmlNode createChild(JQTIController jqtiController, Element childElement) {
+    protected XmlNode createChild(Element childElement, LoadingContext context) {
         String localName = childElement.getLocalName();
         XmlNode result;
+        JQTIController jqtiController = context.getJQTIController();
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             ExpressionParent expressionParent = (ExpressionParent) getParent();

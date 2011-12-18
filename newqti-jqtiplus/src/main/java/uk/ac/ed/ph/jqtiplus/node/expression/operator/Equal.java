@@ -247,9 +247,7 @@ public class Equal extends AbstractExpression
                     getSecondTolerance() + ") cannot be negative."));
 
         if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT &&
-            getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getLoadingProblem() == null &&
-            (getTolerances().size() == 0 || getTolerances().size() > 2))
-        {
+            (getTolerances().size() == 0 || getTolerances().size() > 2)) {
             result.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Invalid attribute " +
                     ATTR_TOLERANCES_NAME + " length (" + getTolerances().size() + ")."));
         }

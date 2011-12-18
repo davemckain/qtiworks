@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
@@ -47,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +102,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
     
     @Override
-    protected void readChildren(JQTIController jqtiController, Element element)
+    protected void readChildren(Element element, LoadingContext context)
     {
         children.clear();
 
@@ -112,17 +111,17 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
         for (int i = 0; i < nodes.getLength(); i++)
             if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE ||
                 nodes.item(i).getNodeType() == Node.TEXT_NODE)
-                readChildNode(jqtiController, nodes.item(i));
+                readChildNode(nodes.item(i), context);
     }
 
     @Override
-    protected void readChildNode(JQTIController jqtiController, Node node)
+    protected void readChildNode(Node node, LoadingContext context)
     {
         if (node.getNodeType() == Node.ELEMENT_NODE)
         {
             UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName());
             children.add(unsupportedBlock);
-            unsupportedBlock.load(jqtiController, (Element) node);
+            unsupportedBlock.load((Element) node, context);
         }
         else if (node.getNodeType() == Node.TEXT_NODE)
         {
@@ -147,8 +146,8 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    public void load(JQTIController jqtiController, Element sourceElement) {
-        super.load(jqtiController, sourceElement);
+    public void load(Element sourceElement, LoadingContext context) {
+        super.load(sourceElement, context);
         
         if (getAttributes().getStringAttribute(ATTR_DEFAULT_NAME_SPACE_NAME).getValue() == null)
             getAttributes().getStringAttribute(ATTR_DEFAULT_NAME_SPACE_NAME).setValue(ATTR_DEFAULT_NAME_SPACE_VALUE);

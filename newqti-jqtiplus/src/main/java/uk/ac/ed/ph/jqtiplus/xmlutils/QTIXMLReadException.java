@@ -20,7 +20,7 @@ public class QTIXMLReadException extends QTIRuntimeException {
     private final XMLParseResult xmlParseResult;
     
     public QTIXMLReadException(final XMLParseResult xmlParseResult) {
-        super("QTI XML could not be parsed and/or schema-validated: " + xmlParseResult);
+        super("A fatal error was encounterd during parsing and/or schema validation: " + xmlParseResult);
         this.xmlParseResult = xmlParseResult;
     }
     

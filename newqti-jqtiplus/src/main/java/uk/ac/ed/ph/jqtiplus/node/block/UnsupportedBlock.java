@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.block;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 
 
@@ -74,7 +75,7 @@ public class UnsupportedBlock extends ContainerBlock
     }
 
     @Override
-    protected void loadAttributes(Element element)
+    protected void loadAttributes(Element element, LoadingContext context)
     {
         getAttributes().clear();
 

@@ -101,9 +101,8 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     }
     
     @Override
-    public void error(SAXParseException exception) throws SAXParseException {
+    public void error(SAXParseException exception) {
         errors.add(exception);
-        throw exception;
     }
     
     @Override
@@ -120,12 +119,12 @@ public class XMLParseResult implements Serializable, ErrorHandler {
             + "(systemId=" + systemId
             + ",parsed=" + parsed
             + ",validated=" + validated
+            + ",schemaValid=" + isSchemaValid()
             + ",warnings=" + warnings
             + ",errors=" + errors
             + ",fatalErrors=" + fatalErrors
             + ",supportedSchemaNamespaces=" + supportedSchemaNamespaces
             + ",unsupportedSchemaNamespaces=" + unsupportedSchemaNamespaces
-            + ",schemaValid=" + isSchemaValid()
             + ")";
     }
 }

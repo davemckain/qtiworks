@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 
 
 import org.w3c.dom.Element;
@@ -107,7 +107,7 @@ public class CandidateComment extends AbstractObject
     }
 
     @Override
-    protected void readChildren(JQTIController jqtiController, Element element)
+    protected void readChildren(Element element, LoadingContext context)
     {
         textContent = element.getTextContent();
     }

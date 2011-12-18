@@ -68,10 +68,10 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,7 +79,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * Container for all attributes of one node.
@@ -192,36 +192,27 @@ public class AttributeList implements Validatable, Iterable<Attribute>
      * Loads attribute's values from given source node.
      * If there is unsupported (unknown) attribute, it creates new optional StringAttribute with set unsupported flag.
      *
-     * @param node source node
+     * @param element source node
      */
-    public void load(Node node)
-    {
-        for (int i = 0; i < attributes.size(); i++)
-        {
+    public void load(Element element, LoadingContext context) {
+        for (int i = 0; i < attributes.size(); i++) {
             Attribute attribute = attributes.get(i);
-            if (attribute.isSupported())
-                attribute.load((String) null);
-            else
+            if (attribute.isSupported()) {
+                attribute.load(element, (String) null, context);
+            }
+            else {
                 attributes.remove(i);
+            }
         }
 
-        for (int i = 0; i < node.getAttributes().getLength(); i++)
-        {
-            Attribute attribute = get(node.getAttributes().item(i).getNodeName(), true);
-
-            if (attribute == null)
-            {
-                attribute = new StringAttribute(parent, node.getAttributes().item(i).getNodeName(), null);
+        for (int i = 0; i < element.getAttributes().getLength(); i++) {
+            Attribute attribute = get(element.getAttributes().item(i).getNodeName(), true);
+            if (attribute == null) {
+                attribute = new StringAttribute(parent, element.getAttributes().item(i).getNodeName(), null);
                 ((StringAttribute) attribute).setSupported(false);
                 attributes.add(attribute);
-//                if (!(attribute.getName().startsWith("xmlns:") || 
-//                        attribute.getName().startsWith("xsi:") || 
-//                        attribute.getName().startsWith("xml:") ||
-//                        this.getParent().getClassTag().startsWith("custom")))
-//                logger.warn("Unsupported attribute: {}", attribute.getFullName());
             }
-
-            attribute.load(node.getAttributes().item(i));
+            attribute.load(element, element.getAttributes().item(i), context);
         }
     }
 

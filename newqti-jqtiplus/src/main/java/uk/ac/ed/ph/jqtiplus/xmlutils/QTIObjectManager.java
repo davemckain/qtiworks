@@ -6,15 +6,20 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
+import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Manages the loading of QTI resources
@@ -93,13 +98,26 @@ public final class QTIObjectManager {
         XMLReadResult xmlReadResult = supportedXMLReader.read(systemId, resourceLocator);
         Document document = xmlReadResult.getDocument();
         
+        final List<QTIParseError> qtiParseErrors = new ArrayList<QTIParseError>();
+        LoadingContext loadingContext = new LoadingContext() {
+            @Override
+            public JQTIController getJQTIController() {
+                return jqtiController;
+            }
+            
+            @Override
+            public void parseError(QTIParseException exception, Element owner) {
+                QTIParseError error = new QTIParseError(exception, owner, SupportedXMLReader.extractLocationInformation(owner));
+                qtiParseErrors.add(error);
+            }
+        };
+        
         /* if XML parse succeeded, instantiate JQTI Object */
         E jqtiObject = null;
-        QTIParseException qtiParseException = null;
         if (document!=null) {
             logger.debug("Instantiating JQTI Object hierarchy from root Element {}; expecting to create {}", document.getDocumentElement().getLocalName(), resultClass.getSimpleName());
             try {
-                RootNode xmlObject = RootNodeTypes.load(jqtiController, document.getDocumentElement(), systemId);
+                RootNode xmlObject = RootNodeTypes.load(document.getDocumentElement(), systemId, loadingContext);
                 if (!resultClass.isInstance(xmlObject)) {
                     throw new QTIXMLException("QTI XML was instantiated into an instance of "
                             + xmlObject.getClass().getSimpleName()
@@ -109,11 +127,10 @@ public final class QTIObjectManager {
                 jqtiObject = resultClass.cast(xmlObject);
             }
             catch (QTIParseException e) {
-                /* Thrown during JQTI Object building, e.g. if an integer 4.0 is encountered */
-                qtiParseException = e;
+                throw new QTILogicException("All QTIParseExceptions should now be caught before this point!", e);
             }
         }
-        return new QTIReadResult<E>(jqtiObject, xmlReadResult.getXMLParseResult(), qtiParseException);
+        return new QTIReadResult<E>(jqtiObject, xmlReadResult.getXMLParseResult(), qtiParseErrors);
     }
     
     @Override

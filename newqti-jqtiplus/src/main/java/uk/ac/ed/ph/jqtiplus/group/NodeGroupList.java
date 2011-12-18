@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
@@ -123,6 +122,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -314,15 +314,14 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup>
      * <li>Unsupported (unknown) children are skipped.</li>
      * <li>Wrong order of children is ignored (children are loaded in correct order).</li>
      * </ul>
-     * @param JQTIController TODO
      * @param element source node
      */
-    public void load(JQTIController jqtiController, Element element)
+    public void load(Element element, LoadingContext context)
     {
         for (NodeGroup child : groups)
         {
             child.getChildren().clear();
-            child.load(jqtiController, element);
+            child.load(element, context);
         }
     }
 

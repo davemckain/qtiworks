@@ -5,10 +5,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * FIXME: Document this type!
@@ -22,12 +22,12 @@ public final class QTIReadResult<E extends XmlObject> implements Serializable {
     
     private final E jqtiObject;
     private final XMLParseResult xmlParseResult;
-    private final QTIParseException qtiParseException;
+    private final List<QTIParseError> qtiParseErrors;
 
-    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, QTIParseException qtiParseException) {
+    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QTIParseError> qtiParseErrors) {
         this.jqtiObject = jqtiObject;
         this.xmlParseResult = xmlParseResult;
-        this.qtiParseException = qtiParseException;
+        this.qtiParseErrors = qtiParseErrors;
     }
 
     public E getJQTIObject() {
@@ -38,16 +38,16 @@ public final class QTIReadResult<E extends XmlObject> implements Serializable {
         return xmlParseResult;
     }
     
-    public QTIParseException getQTIParseException() {
-        return qtiParseException;
+    public List<QTIParseError> getQTIParseErrors() {
+        return qtiParseErrors;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
             + "(jqtiObject=" + jqtiObject
             + ",xmlParseResult=" + xmlParseResult
-            + ",qtiParseException=" + qtiParseException
+            + ",qtiParseErrors=" + qtiParseErrors
             + ")";
     }
 }

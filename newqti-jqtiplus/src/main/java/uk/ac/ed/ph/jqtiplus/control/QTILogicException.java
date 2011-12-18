@@ -14,4 +14,8 @@ public class QTILogicException extends QTIRuntimeException {
     public QTILogicException(String message) {
         super(message);
     }
+
+    public QTILogicException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

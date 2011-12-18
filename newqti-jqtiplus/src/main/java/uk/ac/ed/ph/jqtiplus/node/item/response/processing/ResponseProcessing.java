@@ -35,8 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
@@ -51,8 +49,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.net.URI;
 import java.util.List;
-
-import javax.xml.XMLConstants;
 
 /**
  * Response processing takes place each time the candidate submits the responses for an item (when in individual submission mode)
@@ -91,11 +87,6 @@ public class ResponseProcessing extends AbstractObject implements RootNode {
     public ResponseProcessing(AssessmentItem parent) {
         super(parent);
         
-        /* FIXME: JQTI doesn't really "get" namespace declarations properly, so I need to declare these in the case where we're loading from a template */
-        getAttributes().add(new StringAttribute(this, XMLConstants.XMLNS_ATTRIBUTE, QTIConstants.QTI_21_NAMESPACE, null, false));
-        getAttributes().add(new StringAttribute(this, RootNode.ATTR_XSI_NAME_SPACE_NAME, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, null, false));
-        getAttributes().add(new StringAttribute(this, RootNode.ATTR_XSI_SCHEMA_LOCATION_NAME, QTIConstants.QTI_21_NAMESPACE + " " + QTIConstants.QTI_21_SCHEMA_LOCATION, null, false));
-
         getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_NAME, null, null, false));
         getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_LOCATION_NAME, null, null, false));
 

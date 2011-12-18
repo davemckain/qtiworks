@@ -22,6 +22,11 @@
   <templateDeclaration identifier="meanIn" cardinality="multiple" baseType="float"/>
   <templateDeclaration identifier="mean" cardinality="single" baseType="float"/>
   <templateDeclaration identifier="popSD" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="temp" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>1.1</value>
+    </defaultValue>
+  </templateDeclaration>
   <templateProcessing>
     <setTemplateValue identifier="PiOver4">
       <divide>

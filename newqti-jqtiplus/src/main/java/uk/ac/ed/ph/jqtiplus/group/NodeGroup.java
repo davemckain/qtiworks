@@ -34,13 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-
 
 import java.io.Serializable;
 import java.util.List;
@@ -143,10 +142,9 @@ public interface NodeGroup extends Validatable, Serializable {
 
     /**
      * Loads children from given source node (DOM).
-     * @param JQTIController TODO
      * @param sourceElement source node (DOM)
      */
-    void load(JQTIController jqtiController, Element sourceElement);
+    void load(Element sourceElement, LoadingContext context);
     
     /**
      * Creates child with given QTI class name.

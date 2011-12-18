@@ -34,8 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.TestResultGroup;
@@ -44,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.net.URI;
 import java.util.List;
-
-import javax.xml.XMLConstants;
 
 /**
  * An Assessment Result is used to report the results of A candidate's interaction with A test and/or one or more items
@@ -69,11 +65,7 @@ public class AssessmentResult extends AbstractObject implements RootNode
      */
     public AssessmentResult()
     {
-        super(null); // Result doesn't have any parent.
-
-        getAttributes().add(0, new StringAttribute(this, XMLConstants.XMLNS_ATTRIBUTE, QTIConstants.QTI_21_NAMESPACE, null, true));
-        getAttributes().add(1, new StringAttribute(this, RootNode.ATTR_XSI_NAME_SPACE_NAME, RootNode.ATTR_XSI_NAME_SPACE_VALUE, null, true));
-        getAttributes().add(2, new StringAttribute(this, RootNode.ATTR_XSI_SCHEMA_LOCATION_NAME, RootNode.ATTR_XSI_SCHEMA_LOCATION_VALUE, null, true));
+        super(null);
 
         getNodeGroups().add(new ContextGroup(this));
         getNodeGroups().add(new TestResultGroup(this));

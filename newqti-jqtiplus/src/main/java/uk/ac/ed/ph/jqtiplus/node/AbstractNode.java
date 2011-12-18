@@ -35,12 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,6 +65,9 @@ public abstract class AbstractNode implements XmlNode
     /** Node groups of this node (contains all its children). */
     private final NodeGroupList groups;
     
+    /** Information about the location of this Node in the original source XML, if loaded that way */
+    private XMLSourceLocationInformation xmlSourceLocationInformation;
+    
     /**
      * Constructs node.
      *
@@ -73,6 +77,22 @@ public abstract class AbstractNode implements XmlNode
         this.parent = parent;
         this.attributes = new AttributeList(this);
         this.groups = new NodeGroupList(this);
+        this.xmlSourceLocationInformation = null;
+    }
+    
+    public XMLSourceLocationInformation getXMLSourceLocationInformation() {
+        return xmlSourceLocationInformation;
+    }
+    
+    public void setXmlSourceLocationInformation(XMLSourceLocationInformation xmlSourceLocationInformation) {
+        this.xmlSourceLocationInformation = xmlSourceLocationInformation;
+    }
+    
+    /**
+     * @return the groups
+     */
+    public NodeGroupList getGroups() {
+        return groups;
     }
 
     @Override
@@ -102,13 +122,15 @@ public abstract class AbstractNode implements XmlNode
     }
 
     @Override
-    public void load(JQTIController jqtiController, Element sourceElement)
-    {
+    public void load(Element sourceElement, LoadingContext context) {
+        /* Extract SAX Locator data stowed away by SupportedXMLReader, if used */
+        this.xmlSourceLocationInformation = SupportedXMLReader.extractLocationInformation(sourceElement);
+        
         // 1) Read all attributes.
-        loadAttributes(sourceElement);
+        loadAttributes(sourceElement, context);
 
         // 2) Read all children nodes and/or content.
-        readChildren(jqtiController, sourceElement);
+        readChildren(sourceElement, context);
     }
 
     /**
@@ -116,32 +138,27 @@ public abstract class AbstractNode implements XmlNode
      *
      * @param element xml source
      */
-    protected void loadAttributes(Element element)
-    {
-        attributes.load(element);
+    protected void loadAttributes(Element element, LoadingContext context) {
+        attributes.load(element, context);
     }
 
     /**
      * Reads all children nodes and/or content from given xml source.
      * Every subclass must implement its own children nodes and/or content reading.
      * If there are no children nodes and content do nothing (you don't even need to override this method).
-     * @param jqtiController TODO
      * @param element xml source
      */
-    protected void readChildren(JQTIController jqtiController, Element element)
-    {
-        groups.load(jqtiController, element);
+    protected void readChildren(Element element, LoadingContext context) {
+        groups.load(element, context);
     }
 
     /**
      * Reads one child from given xml source.
      * Every subclass must implement its own child reading.
-     * @param JQTIController TODO
      * @param node xml source
      */
-    @SuppressWarnings("static-method")
-    protected void readChildNode(@SuppressWarnings("unused") JQTIController jqtiController, Node node)
-    {
+    @SuppressWarnings({ "static-method", "unused" })
+    protected void readChildNode(Node node, LoadingContext context) {
         throw new QTIParseException("Unsupported child: " + node.getLocalName());
     }
 

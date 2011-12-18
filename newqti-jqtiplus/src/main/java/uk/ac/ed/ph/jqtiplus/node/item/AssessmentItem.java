@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item;
 
 import uk.ac.ed.ph.jqtiplus.JQTI;
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.ItemBodyGroup;
@@ -49,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -63,8 +61,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
 import java.util.List;
-
-import javax.xml.XMLConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,10 +153,6 @@ public class AssessmentItem extends AbstractObject implements AssessmentItemOrTe
         
         getAttributes().add(new StringAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
         
-        getAttributes().add(0, new StringAttribute(this, XMLConstants.XMLNS_ATTRIBUTE, QTIConstants.QTI_21_NAMESPACE, null, true));
-        getAttributes().add(1, new StringAttribute(this, RootNode.ATTR_XSI_NAME_SPACE_NAME, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, null, true));
-        getAttributes().add(2, new StringAttribute(this, RootNode.ATTR_XSI_SCHEMA_LOCATION_NAME, QTIConstants.QTI_21_NAMESPACE + " " + QTIConstants.QTI_21_SCHEMA_LOCATION, null, true));
-
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, ATTR_LABEL_DEFAULT_VALUE));
         getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, ATTR_LANG_DEFAULT_VALUE));

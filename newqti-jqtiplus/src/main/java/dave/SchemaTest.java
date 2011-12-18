@@ -34,6 +34,8 @@ public class SchemaTest {
         System.out.println("Warnings are: " + xmlParseResult.getWarnings());
         System.out.println("Supported schemas: " + xmlParseResult.getSupportedSchemaNamespaces());
         
+        System.out.println("Result: " + result);
+        
         AssessmentItemManager itemManager = new AssessmentItemManager(objectManager, item);
         System.out.println("JQTI validation: " + itemManager.validateItem());
     }
