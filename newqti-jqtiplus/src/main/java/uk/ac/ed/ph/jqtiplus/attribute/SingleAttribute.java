@@ -164,7 +164,8 @@ public abstract class SingleAttribute extends AbstractAttribute
      * @param value string value
      * @return parsed value
      */
-    protected abstract Object parseValue(String value);
+    protected abstract Object parseValue(String value)
+           ;
 
     public String valueToString()
     {

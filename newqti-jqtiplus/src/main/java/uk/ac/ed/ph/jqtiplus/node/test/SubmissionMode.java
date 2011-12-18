@@ -94,7 +94,7 @@ public enum SubmissionMode
      * @return parsed <code>SubmissionMode</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>SubmissionMode</code>
      */
-    public static SubmissionMode parseSubmissionMode(String submissionMode) throws QTIParseException
+    public static SubmissionMode parseSubmissionMode(String submissionMode)
     {
         SubmissionMode result = submissionModes.get(submissionMode);
 

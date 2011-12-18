@@ -150,7 +150,7 @@ public enum TableCellScope
      * @return parsed <code>TableCellScopeType</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>TableCellScopeType</code>
      */
-    public static TableCellScope parseTableCellScope(String tableCellScope) throws QTIParseException
+    public static TableCellScope parseTableCellScope(String tableCellScope)
     {
         TableCellScope result = types.get(tableCellScope);
 

@@ -162,7 +162,7 @@ public enum Cardinality
      * @return parsed <code>Cardinality</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>Cardinality</code>
      */
-    public static Cardinality parseCardinality(String cardinality) throws QTIParseException
+    public static Cardinality parseCardinality(String cardinality)
     {
         Cardinality result = cardinalities.get(cardinality);
 

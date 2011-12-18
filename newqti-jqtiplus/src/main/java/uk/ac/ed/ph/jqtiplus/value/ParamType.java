@@ -117,7 +117,7 @@ public enum ParamType
      * @return parsed <code>ParamType</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>ParamType</code>
      */
-    public static ParamType parseParamType(String paramType) throws QTIParseException
+    public static ParamType parseParamType(String paramType)
     {
         ParamType result = types.get(paramType);
 

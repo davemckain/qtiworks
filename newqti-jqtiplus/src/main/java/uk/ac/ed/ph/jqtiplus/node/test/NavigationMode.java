@@ -95,7 +95,7 @@ public enum NavigationMode
      * @return parsed <code>NavigationMode</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>NavigationMode</code>
      */
-    public static NavigationMode parseNavigationMode(String navigationMode) throws QTIParseException
+    public static NavigationMode parseNavigationMode(String navigationMode)
     {
         NavigationMode result = navigationModes.get(navigationMode);
 

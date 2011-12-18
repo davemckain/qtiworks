@@ -74,7 +74,7 @@ public class IntegerValue extends NumberValue
      * @param value <code>String</code> representation of <code>IntegerValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
      */
-    public IntegerValue(String value) throws QTIParseException
+    public IntegerValue(String value)
     {
         this.intValue = parseInteger(value);
     }
@@ -137,7 +137,7 @@ public class IntegerValue extends NumberValue
      * @return parsed <code>int</code>
      * @throws QTIParseException if <code>String</code> representation of <code>int</code> is not valid
      */
-    public static int parseInteger(String value) throws QTIParseException
+    public static int parseInteger(String value)
     {
         return parseInteger(value, 10);
     }
@@ -150,7 +150,7 @@ public class IntegerValue extends NumberValue
      * @return parsed <code>int</code>
      * @throws QTIParseException if <code>String</code> representation of <code>int</code> is not valid
      */
-    public static int parseInteger(String value, int radix) throws QTIParseException
+    public static int parseInteger(String value, int radix)
     {
         if (value != null) 
             value = value.trim();

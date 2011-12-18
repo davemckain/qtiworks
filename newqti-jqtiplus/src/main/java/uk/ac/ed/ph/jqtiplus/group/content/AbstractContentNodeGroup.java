@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.content;
 
+import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -83,9 +84,14 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
         for (int i=0; i<childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                XmlNode child = createChild((Element) childNode, context);
-                getChildren().add(child);
-                child.load((Element) childNode, context);
+                try {
+                    XmlNode child = createChild((Element) childNode, context.getJQTIController());
+                    getChildren().add(child);
+                    child.load((Element) childNode, context);
+                }
+                catch (QTIParseException e) {
+                    context.parseError(e, (Element) childNode);
+                }
             }
             else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
                 TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);

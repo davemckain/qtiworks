@@ -149,7 +149,7 @@ public enum TextFormat
      * @return parsed <code>TextFormat</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>TextFormat</code>
      */
-    public static TextFormat parseTextFormat(String textFormat) throws QTIParseException
+    public static TextFormat parseTextFormat(String textFormat)
     {
         TextFormat result = formats.get(textFormat);
 

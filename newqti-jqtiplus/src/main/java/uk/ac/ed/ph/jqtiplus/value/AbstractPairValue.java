@@ -89,7 +89,7 @@ public abstract class AbstractPairValue extends SingleValue {
      * @throws QTIParseException if <code>String</code> representation of
      *             <code>AbstractPairValue</code> is not valid
      */
-    public AbstractPairValue(String value) throws QTIParseException {
+    public AbstractPairValue(String value) {
         if (value != null)
             value = value.trim();
 

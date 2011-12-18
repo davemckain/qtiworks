@@ -80,7 +80,7 @@ public class PairValue extends AbstractPairValue {
      * @param value <code>String</code> representation of <code>PairValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>PairValue</code> is not valid
      */
-    public PairValue(String value) throws QTIParseException
+    public PairValue(String value)
     {
         super(value);
     }

@@ -62,7 +62,7 @@ public class StringValue extends SingleValue
      * @param value <code>String</code> representation of <code>StringValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>StringValue</code> is not valid
      */
-    public StringValue(String value) throws QTIParseException
+    public StringValue(String value)
     {
         if (value == null || value.length() == 0)
             throw new QTIParseException("Invalid string '" + value + "'. Length is not valid.");

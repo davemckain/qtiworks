@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.group;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -181,17 +182,24 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         for (int i=0; i<childNodes.getLength(); i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType()==Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                XmlNode child = createChild((Element) childNode, context);
-                children.add(child);
-                child.load((Element) childNode, context);
+                try {
+                    XmlNode child = createChild((Element) childNode, context.getJQTIController());
+                    children.add(child);
+                    child.load((Element) childNode, context);
+                }
+                catch (QTIParseException e) {
+                    context.parseError(e, (Element) childNode);
+                }
             }
         }
     }
     
-    protected XmlNode createChild(Element childElement, LoadingContext context) {
+    /**
+     * @throws QTIParseException
+     */
+    protected XmlNode createChild(Element childElement, JQTIController jqtiController) {
         String localName = childElement.getLocalName();
         XmlNode result;
-        JQTIController jqtiController = context.getJQTIController();
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             ExpressionParent expressionParent = (ExpressionParent) getParent();
@@ -209,26 +217,22 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         return result;
     }
     
-    public String toXmlString(int depth, boolean printDefaultAttributes)
-    {
+    public String toXmlString(int depth, boolean printDefaultAttributes) {
         StringBuilder builder = new StringBuilder();
-
-        for (XmlNode child : children)
+        for (XmlNode child : children) {
             builder.append(child.toXmlString(depth, printDefaultAttributes));
-
+        }
         return builder.toString();
     }
 
-    public ValidationResult validate(ValidationContext context)
-    {
+    public ValidationResult validate(ValidationContext context) {
         ValidationResult result = new ValidationResult();
-
-        if (minimum != null && children.size() < minimum)
+        if (minimum != null && children.size() < minimum) {
             result.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
-
-        if (maximum != null && children.size() > maximum)
+        }
+        if (maximum != null && children.size() > maximum) {
             result.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
-
+        }
         return result;
     }
 }

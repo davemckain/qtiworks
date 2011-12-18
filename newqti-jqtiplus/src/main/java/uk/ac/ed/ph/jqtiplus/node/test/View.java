@@ -98,7 +98,7 @@ public enum View
      * @return parsed <code>View</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>View</code>
      */
-    public static View parseView(String view) throws QTIParseException
+    public static View parseView(String view)
     {
         View result = views.get(view);
 

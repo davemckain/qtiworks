@@ -93,7 +93,7 @@ public class FileValue extends SingleValue
      * @param value <code>String</code> representation of <code>FileValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>FileValue</code> is not valid
      */
-    public FileValue(String value) throws QTIParseException
+    public FileValue(String value)
     {
         if (value == null || value.length() == 0)
             throw new QTIParseException("Invalid file '" + value + "'. Length is not valid.");

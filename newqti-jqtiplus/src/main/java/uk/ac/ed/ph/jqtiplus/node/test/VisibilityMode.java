@@ -94,7 +94,7 @@ public enum VisibilityMode
      * @return parsed <code>VisibilityMode</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>VisibilityMode</code>
      */
-    public static VisibilityMode parseVisibilityMode(String visibilityMode) throws QTIParseException
+    public static VisibilityMode parseVisibilityMode(String visibilityMode)
     {
         VisibilityMode result = visibilityModes.get(visibilityMode);
 

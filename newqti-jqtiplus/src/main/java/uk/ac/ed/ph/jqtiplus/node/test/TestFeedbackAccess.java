@@ -89,7 +89,7 @@ public enum TestFeedbackAccess
      * @return parsed <code>TestFeedbackAccess</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>TestFeedbackAccess</code>
      */
-    public static TestFeedbackAccess parseTestFeedbackAccess(String testFeedbackAccess) throws QTIParseException
+    public static TestFeedbackAccess parseTestFeedbackAccess(String testFeedbackAccess)
     {
         TestFeedbackAccess result = testFeedbackAccesses.get(testFeedbackAccess);
 

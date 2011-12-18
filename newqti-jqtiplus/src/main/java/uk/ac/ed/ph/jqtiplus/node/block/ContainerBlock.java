@@ -85,32 +85,28 @@ public abstract class ContainerBlock extends AbstractObject
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context)
-    {
+    protected void readChildren(Element element, LoadingContext context) {
         children.clear();
 
         NodeList nodes = element.getChildNodes();
-
         for (int i = 0; i < nodes.getLength(); i++) {
-            if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE ||
-                nodes.item(i).getNodeType() == Node.TEXT_NODE) {
-                readChildNode(nodes.item(i), context);
+            Node node = nodes.item(i);
+            short nodeType = node.getNodeType();
+            if (nodeType == Node.ELEMENT_NODE || nodeType == Node.TEXT_NODE) {
+                readChildNode(node, context);
             }
         }
     }
 
-    @Override
-    protected void readChildNode(Node node, LoadingContext context) {
+    private void readChildNode(Node node, LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName());
             children.add(unsupportedBlock);
             unsupportedBlock.load((Element) node, context);
         }
-        else if (node.getNodeType() == Node.TEXT_NODE)
-        {
+        else if (node.getNodeType() == Node.TEXT_NODE) {
             String textContent = node.getTextContent().trim();
-            if (textContent.length() > 0)
-            {
+            if (textContent.length() > 0) {
                 TextRun textRun = new TextRun(this, textContent);
                 children.add(textRun);
             }

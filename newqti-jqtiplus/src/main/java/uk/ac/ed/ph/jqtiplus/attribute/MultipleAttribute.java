@@ -178,7 +178,8 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute {
      * @param value string value
      * @return parsed value
      */
-    protected abstract E parseValue(String value);
+    protected abstract E parseValue(String value) 
+           ;
 
     public String valueToString()
     {

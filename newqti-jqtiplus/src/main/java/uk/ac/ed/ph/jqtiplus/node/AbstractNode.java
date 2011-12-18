@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -44,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Parent of all xml nodes.
@@ -150,16 +148,6 @@ public abstract class AbstractNode implements XmlNode
      */
     protected void readChildren(Element element, LoadingContext context) {
         groups.load(element, context);
-    }
-
-    /**
-     * Reads one child from given xml source.
-     * Every subclass must implement its own child reading.
-     * @param node xml source
-     */
-    @SuppressWarnings({ "static-method", "unused" })
-    protected void readChildNode(Node node, LoadingContext context) {
-        throw new QTIParseException("Unsupported child: " + node.getLocalName());
     }
 
     @Override

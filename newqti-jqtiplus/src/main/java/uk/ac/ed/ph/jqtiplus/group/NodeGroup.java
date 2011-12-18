@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
+import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -150,8 +151,10 @@ public interface NodeGroup extends Validatable, Serializable {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names (otherwise it is ignored).
+     * 
      * @param classTag QTI class name
      * @return created child
+     * @throws QTIParseException
      */
     XmlNode create(String classTag);
 

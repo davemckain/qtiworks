@@ -114,7 +114,7 @@ public enum Orientation
      * @return parsed <code>Orientation</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>Orientation</code>
      */
-    public static Orientation parseOrientation(String orientation) throws QTIParseException
+    public static Orientation parseOrientation(String orientation)
     {
         Orientation result = orientations.get(orientation);
 

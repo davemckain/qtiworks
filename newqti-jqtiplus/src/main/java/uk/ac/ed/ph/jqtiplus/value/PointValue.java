@@ -79,7 +79,7 @@ public class PointValue extends SingleValue
      * @param value <code>String</code> representation of <code>PointValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>PointValue</code> is not valid
      */
-    public PointValue(String value) throws QTIParseException
+    public PointValue(String value)
     {
         if (value == null || value.length() == 0)
             throw new QTIParseException("Invalid point '" + value + "'. Length is not valid.");

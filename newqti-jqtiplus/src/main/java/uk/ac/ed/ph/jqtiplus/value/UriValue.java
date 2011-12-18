@@ -132,7 +132,7 @@ public class UriValue extends SingleValue
      * @return parsed <code>URI</code>
      * @throws QTIParseException if <code>String</code> representation of <code>URI</code> is not valid
      */
-    public static URI parseUri(String value) throws QTIParseException
+    public static URI parseUri(String value)
     {
         if (value == null || value.length() == 0)
             throw new QTIParseException("Invalid uri '" + value + "'. Length is not valid.");

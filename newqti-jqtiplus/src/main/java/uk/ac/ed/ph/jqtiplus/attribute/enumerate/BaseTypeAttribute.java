@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
-
 /**
  * Attribute with baseType value.
  * 

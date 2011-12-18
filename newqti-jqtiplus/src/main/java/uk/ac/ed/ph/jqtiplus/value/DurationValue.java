@@ -78,7 +78,7 @@ public class DurationValue extends SingleValue
      * @param value <code>String</code> representation of <code>DurationValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>DurationValue</code> is not valid
      */
-    public DurationValue(String value) throws QTIParseException
+    public DurationValue(String value)
     {
         try
         {

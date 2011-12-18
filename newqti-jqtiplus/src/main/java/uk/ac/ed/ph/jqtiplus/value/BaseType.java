@@ -73,7 +73,7 @@ public enum BaseType
     IDENTIFIER ("identifier")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new IdentifierValue(singleValue);
         }
@@ -87,7 +87,7 @@ public enum BaseType
     BOOLEAN ("boolean")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return BooleanValue.valueOf(singleValue);
         }
@@ -101,7 +101,7 @@ public enum BaseType
     INTEGER ("integer")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new IntegerValue(singleValue);
         }
@@ -115,7 +115,7 @@ public enum BaseType
     FLOAT ("float")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new FloatValue(singleValue);
         }
@@ -129,7 +129,7 @@ public enum BaseType
     STRING ("string")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             if (singleValue == null || singleValue.length() == 0)
                 return null;
@@ -145,7 +145,7 @@ public enum BaseType
     POINT ("point")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new PointValue(singleValue);
         }
@@ -159,7 +159,7 @@ public enum BaseType
     PAIR ("pair")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new PairValue(singleValue);
         }
@@ -173,7 +173,7 @@ public enum BaseType
     DIRECTED_PAIR ("directedPair")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new DirectedPairValue(singleValue);
         }
@@ -187,7 +187,7 @@ public enum BaseType
     DURATION ("duration")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new DurationValue(singleValue);
         }
@@ -201,7 +201,7 @@ public enum BaseType
     FILE ("file")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new FileValue(singleValue);
         }
@@ -215,7 +215,7 @@ public enum BaseType
     URI ("uri")
     {
         @Override
-        public SingleValue parseSingleValue(String singleValue) throws QTIParseException
+        public SingleValue parseSingleValue(String singleValue)
         {
             return new UriValue(singleValue);
         }
@@ -368,7 +368,7 @@ public enum BaseType
      * @return parsed <code>SingleValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
      */
-    public abstract SingleValue parseSingleValue(String singleValue) throws QTIParseException;
+    public abstract SingleValue parseSingleValue(String singleValue);
 
     @Override
     public String toString()
@@ -383,7 +383,7 @@ public enum BaseType
      * @return parsed <code>BaseType</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>BaseType</code>
      */
-    public static BaseType parseBaseType(String baseType) throws QTIParseException
+    public static BaseType parseBaseType(String baseType)
     {
         BaseType result = baseTypes.get(baseType);
 

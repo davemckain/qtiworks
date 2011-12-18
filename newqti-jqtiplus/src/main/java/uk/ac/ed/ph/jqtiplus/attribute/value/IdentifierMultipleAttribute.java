@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
-
 import java.util.List;
 
 /**

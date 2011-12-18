@@ -76,7 +76,7 @@ public class FloatValue extends NumberValue
      * @param value <code>String</code> representation of <code>FloatValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>FloatValue</code> is not valid
      */
-    public FloatValue(String value) throws QTIParseException
+    public FloatValue(String value)
     {
         this.doubleValue = parseFloat(value);
     }
@@ -128,7 +128,7 @@ public class FloatValue extends NumberValue
      * @return parsed <code>double</code>
      * @throws QTIParseException if <code>String</code> representation of <code>double</code> is not valid
      */
-    public static double parseFloat(String value) throws QTIParseException {
+    public static double parseFloat(String value) {
         if (value != null) {
             value = value.trim();
         }

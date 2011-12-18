@@ -81,7 +81,7 @@ public class DirectedPairValue extends AbstractPairValue {
      * @param value <code>String</code> representation of <code>DirectedPairValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>DirectedPairValue</code> is not valid
      */
-    public DirectedPairValue(String value) throws QTIParseException
+    public DirectedPairValue(String value)
     {
         super(value);
     }

@@ -111,7 +111,7 @@ public enum SessionStatus
      * @return parsed <code>SessionStatus</code> from given <code>String</code>
      * @throws QTIParseException if given <code>String</code> is not valid <code>SessionStatus</code>
      */
-    public static SessionStatus parseSessionStatus(String sessionStatus) throws QTIParseException
+    public static SessionStatus parseSessionStatus(String sessionStatus)
     {
         SessionStatus result = sessionStatuses.get(sessionStatus);
 

@@ -83,7 +83,7 @@ public class BooleanValue extends SingleValue
      * @param value <code>String</code> representation of <code>BooleanValue</code>
      * @throws QTIParseException if <code>String</code> representation of <code>BooleanValue</code> is not valid
      */
-    private BooleanValue(String value) throws QTIParseException
+    private BooleanValue(String value)
     {
         this.booleanValue = parseBoolean(value);
     }
@@ -133,7 +133,7 @@ public class BooleanValue extends SingleValue
      * @return parsed <code>boolean</code>
      * @throws QTIParseException if <code>String</code> representation of <code>boolean</code> is not valid
      */
-    public static boolean parseBoolean(String value) throws QTIParseException
+    public static boolean parseBoolean(String value)
     {
         if (value != null) 
             value = value.trim();
