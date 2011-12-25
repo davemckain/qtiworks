@@ -123,9 +123,9 @@ public class RecordEx extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getIdentifiers().size() != getChildren().size())
             result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Invalid number of identifiers. Expected: " + getChildren().size() + ", but found: " + getIdentifiers().size() + "."));
@@ -136,19 +136,15 @@ public class RecordEx extends AbstractExpression
                 identifiers.add(identifier);
             else
                 result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Duplicate identifier: " + identifier));
-
-        return result;
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getChildren().size() == 0)
             result.add(new ValidationWarning(this, "Container should contain some children."));
-
-        return result;
     }
 
     @Override

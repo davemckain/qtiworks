@@ -150,12 +150,12 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context) {
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
         //mark all attributes as supported... we currently don't properly validate them
         for (Attribute attribute : getAttributes()) {
             attribute.setSupported(true);
         }
         
-        return super.validateAttributes(context);
+        super.validateAttributes(context, result);
     }
 }

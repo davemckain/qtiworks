@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -103,7 +104,7 @@ public class SetDefaultValue extends ProcessTemplateValue
     }
 
     @Override
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         ItemProcessingContext itemContext = (ItemProcessingContext) context;
         AssessmentItem item = getParentItem();
@@ -124,9 +125,9 @@ public class SetDefaultValue extends ProcessTemplateValue
     }
     
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
         
         Identifier identifier = getIdentifier();
         if (identifier!=null) {
@@ -135,6 +136,5 @@ public class SetDefaultValue extends ProcessTemplateValue
                 result.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
             }
         }
-        return result;
     }
 }

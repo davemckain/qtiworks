@@ -35,10 +35,8 @@ public final class UnsupportedCustomOperator extends CustomOperator {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = new ValidationResult();
+    public void validate(ValidationContext context, ValidationResult result) {
         result.add(new ValidationWarning(this, "customOperator with class attribute " + getClassAttr() + " is not supported"));
-        return result;
     }
     
     @Override

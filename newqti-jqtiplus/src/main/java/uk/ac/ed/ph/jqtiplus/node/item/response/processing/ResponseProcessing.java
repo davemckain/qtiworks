@@ -40,12 +40,15 @@ import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 import java.net.URI;
 import java.util.List;
@@ -134,8 +137,7 @@ public class ResponseProcessing extends AbstractObject implements RootNode {
     }
     
     @Override
-    protected ValidationResult validateChildren(ValidationContext context) {
-        ValidationResult result = new ValidationResult();
+    protected void validateChildren(ValidationContext context, ValidationResult result) {
         if (getResponseRules().isEmpty()) {
             /* No responseRules */
             if (getTemplate()==null && getTemplateLocation()==null) {
@@ -144,22 +146,28 @@ public class ResponseProcessing extends AbstractObject implements RootNode {
             }
             else {
                 /* External template specified, so pull it out and validate down into it */
-                ResponseProcessing resolvedResponseProcessing = ((ItemValidationContext) context).getResolvedResponseProcessing();
-                result.add(resolvedResponseProcessing.validate(context));
+                ResponseProcessing resolvedResponseProcessing;
+                try {
+                    resolvedResponseProcessing = ((ItemValidationContext) context).getResolvedResponseProcessing();
+                    resolvedResponseProcessing.validate(context, result);
+                }
+                catch (ReferencingException e) {
+                    result.add(new ValidationError(this, "Could not resolve responseProcessing template", e));
+                }
             }
         }
         else {
             /* responseRules present, so descend into them */
-            result.add(super.validateChildren(context));
+           super.validateChildren(context, result);
         }
-        return result;
     }
 
     /**
      * Evaluates all child outcomeRules.
-     * @param context TODO
+     * 
+     * @throws RuntimeValidationException 
      */
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         try {
             for (ResponseRule responseRule : getResponseRules()) {
                 responseRule.evaluate(context);

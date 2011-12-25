@@ -165,9 +165,9 @@ public class RandomInteger extends RandomExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum())
             result.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
@@ -175,8 +175,6 @@ public class RandomInteger extends RandomExpression
 
         if (getStep() != null && getStep() < 1)
             result.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME), "Attribute " + ATTR_STEP_NAME + " (" + getStep() + ") must be positive."));
-
-        return result;
     }
 
     @Override

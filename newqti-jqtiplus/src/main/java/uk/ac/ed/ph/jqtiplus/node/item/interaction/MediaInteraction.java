@@ -258,8 +258,8 @@ public class MediaInteraction extends BlockInteraction {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -270,8 +270,6 @@ public class MediaInteraction extends BlockInteraction {
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
         }
-        
-        return result;    
     }
 
     @Override

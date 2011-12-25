@@ -22,7 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author  David McKain
  * @version $Revision$
  */
-class SimpleDOMBuilderHandler extends DefaultHandler {
+public final class SimpleDOMBuilderHandler extends DefaultHandler {
     
     private final Document document;
     private Locator locator;

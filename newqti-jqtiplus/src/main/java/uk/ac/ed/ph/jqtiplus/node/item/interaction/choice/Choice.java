@@ -47,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
-
 import java.util.List;
 
 /**
@@ -208,8 +207,8 @@ public abstract class Choice extends BodyElement {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         ItemValidationContext itemContext = (ItemValidationContext) context;
         
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
@@ -230,8 +229,6 @@ public abstract class Choice extends BodyElement {
         if (item.getOutcomeDeclaration(identifier)!=null) {
             result.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a outcome variable"));
         }
-        
-        return result;
     }
     
 }

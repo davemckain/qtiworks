@@ -204,8 +204,8 @@ public class PositionObjectInteraction extends BlockInteraction {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMinChoices() != null && getMinChoices() > getMaxChoices()) 
             result.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
@@ -228,8 +228,6 @@ public class PositionObjectInteraction extends BlockInteraction {
             if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
     
     

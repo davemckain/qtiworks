@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -46,8 +45,10 @@ import java.util.Arrays;
  * 
  * @author Jiri Kajaba
  */
-public class CardinalityValidationError extends ValidationError
-{
+public class CardinalityValidationError extends ValidationError {
+    
+    private static final long serialVersionUID = -169690431325492280L;
+
     /**
      * Constructs validation item.
      *
@@ -58,12 +59,6 @@ public class CardinalityValidationError extends ValidationError
     public CardinalityValidationError(XmlNode source, Cardinality[] expected, Cardinality[] found)
     {
         super(source, createMessage(expected, found));
-    }
-
-    @Override
-    public QTICardinalityException createException()
-    {
-        return new QTICardinalityException(getMessage());
     }
 
     private static String createMessage(Cardinality[] expected, Cardinality[] found)

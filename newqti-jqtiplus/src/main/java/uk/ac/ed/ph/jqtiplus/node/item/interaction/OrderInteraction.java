@@ -54,7 +54,6 @@ import uk.ac.ed.ph.jqtiplus.value.Orientation;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -273,8 +272,8 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMinChoices() != null && getMinChoices() < 1)
             result.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
@@ -294,8 +293,6 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered())
                 result.add(new ValidationError(this, "Response variable must have ordered cardinality"));
         }
-        
-        return result;
     }
 
     @Override

@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
@@ -108,27 +109,23 @@ public abstract class AbstractJump extends AbstractObject implements ExpressionP
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = super.validate(context);
-
+    public void validate(ValidationContext context, ValidationResult result) {
         TestPart parentTestPart = getParent().getParentTestPart();
-        if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null)
-        {
-            if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled())
+        if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
+            if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {
                 result.add(new ValidationWarning(this, "Jump will be ignored for modes: " +
                         parentTestPart.getNavigationMode() + " " + parentTestPart.getSubmissionMode()));
+            }
         }
-
-        return result;
     }
 
     /**
      * Evaluates condition of this jump.
      *
      * @return evaluated condition of this jump
+     * @throws RuntimeValidationException 
      */
-    public boolean evaluate(ProcessingContext context) {
+    public boolean evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
 
         if (value.isNull()) {

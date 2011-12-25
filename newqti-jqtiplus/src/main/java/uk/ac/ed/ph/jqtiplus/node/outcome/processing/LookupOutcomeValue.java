@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
@@ -100,22 +101,19 @@ public class LookupOutcomeValue extends ProcessOutcomeValue
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
 
-        if (getIdentifier() != null)
-        {
+        if (getIdentifier() != null) {
             OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() == null)
+            if (declaration != null && declaration.getLookupTable() == null) {
                 result.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME + " in " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
+            }
         }
-
-        return result;
     }
 
     @Override
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {

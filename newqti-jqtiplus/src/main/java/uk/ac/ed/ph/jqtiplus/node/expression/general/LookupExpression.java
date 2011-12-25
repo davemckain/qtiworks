@@ -58,6 +58,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 import java.util.Map;
 
@@ -117,8 +119,8 @@ public abstract class LookupExpression extends AbstractExpression {
     }
 
     @Override
-    protected final ValidationResult validateAttributes(ValidationContext context) {
-        ValidationResult result = super.validateAttributes(context);
+    protected final void validateAttributes(ValidationContext context, ValidationResult result) {
+        super.validateAttributes(context, result);
         VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
         Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         if (context instanceof ItemValidationContext) {
@@ -164,18 +166,23 @@ public abstract class LookupExpression extends AbstractExpression {
                 }
                 else {
                     AssessmentItemRef itemRef = (AssessmentItemRef) controlObject;
-                    AssessmentItem item = testContext.resolveItem(itemRef).getItem();
-                    VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
-                    if (declaration==null) {
-                        result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                "Cannot find variable declaration " + itemVarIdentifier + " in item " + itemRefIdentifier));
+                    try {
+                        AssessmentItemValidator assessmentItemValidator = testContext.resolveItem(itemRef);
+                        AssessmentItem item = assessmentItemValidator.getItem();
+                        VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
+                        if (declaration==null) {
+                            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+                                    "Cannot find variable declaration " + itemVarIdentifier + " in item " + itemRefIdentifier));
+                        }
+                        validateTargetVariableDeclaration(result, declaration);
+                        validateAdditionalAttributes(result, itemRef);
                     }
-                    validateTargetVariableDeclaration(result, declaration);
-                    validateAdditionalAttributes(result, itemRef);
+                    catch (ReferencingException e) {
+                        result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Could not resolve referenced item with identifier " + itemRefIdentifier + " and href " + itemRef.getHref()));
+                    }
                 }
             }
         }
-        return result;
     }
     
     @SuppressWarnings("unused")
@@ -192,27 +199,34 @@ public abstract class LookupExpression extends AbstractExpression {
     
     @Override
     public BaseType[] getProducedBaseTypes(ValidationContext context) {
-        VariableDeclaration declaration = lookupTargetVariableDeclaration(context);
-        
-        if (declaration != null && declaration.getBaseType() != null) {
-            return new BaseType[] {declaration.getBaseType()};
+        VariableDeclaration declaration;
+        try {
+            declaration = lookupTargetVariableDeclaration(context);
+            if (declaration != null && declaration.getBaseType() != null) {
+                return new BaseType[] {declaration.getBaseType()};
+            }
         }
-
+        catch (ReferencingException e) {
+        }
         return super.getProducedBaseTypes(context);
     }
 
     @Override
     public Cardinality[] getProducedCardinalities(ValidationContext context) {
-        VariableDeclaration declaration = lookupTargetVariableDeclaration(context);
-        
-        if (declaration != null && declaration.getCardinality() != null) {
-            return new Cardinality[] {declaration.getCardinality()};
+        VariableDeclaration declaration;
+        try {
+            declaration = lookupTargetVariableDeclaration(context);
+            if (declaration != null && declaration.getCardinality() != null) {
+                return new Cardinality[] {declaration.getCardinality()};
+            }
         }
-
+        catch (ReferencingException e) {
+        }
         return super.getProducedCardinalities(context);
     }
     
-    public VariableDeclaration lookupTargetVariableDeclaration(ValidationContext context) {
+    public VariableDeclaration lookupTargetVariableDeclaration(ValidationContext context)
+            throws ReferencingException {
         return context.resolveVariableReference(getIdentifier());
     }
     

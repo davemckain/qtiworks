@@ -5,7 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author  David McKain
  * @version $Revision: 2801 $
  */
-public final class QTIReadResult<E extends XmlObject> implements Serializable {
+public final class QTIReadResult<E extends RootNode> implements Serializable {
 
     private static final long serialVersionUID = -6470500039269477402L;
     

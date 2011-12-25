@@ -7,6 +7,7 @@ package uk.ac.ed.ph.jqtiplus.control;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
@@ -297,9 +298,12 @@ public final class AssessmentItemController {
      * 
      * An item should only be initialised if it is going to be rendered/presented
      * 
-     * @param templateDefaults given templateDefaults values 
+     * @param templateDefaults given templateDefaults values
+     *  
+     * @throws RuntimeValidationException if a runtime validation error is detected during template
+     *   processing. 
      */
-    public void initialize(List<TemplateDefault> templateDefaults) {
+    public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
         // DM: Changed behaviour here in order to suit MathAssess project better. We now only
         // initialise an item once. The previous JQTI behaviour allowed items to be reinitialised,
         // which had the effect of rebuilding template variables, which caused randomised questions
@@ -355,7 +359,8 @@ public final class AssessmentItemController {
     }
     
     
-    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber) {
+    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
+            throws RuntimeValidationException {
         logger.info("Template Processing attempt #{} starting", attemptNumber);
         
         /* Initialise template defaults with any externally provided defaults */
@@ -456,8 +461,9 @@ public final class AssessmentItemController {
     
     /**
      * Process the responses
+     * @throws RuntimeValidationException 
      */
-    public void processResponses() {
+    public void processResponses() throws RuntimeValidationException {
         ItemProcessingContext processingContext = new ItemProcessingContextImpl();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {

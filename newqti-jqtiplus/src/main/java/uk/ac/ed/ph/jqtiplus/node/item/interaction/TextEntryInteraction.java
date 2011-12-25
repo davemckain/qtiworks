@@ -150,8 +150,8 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -175,8 +175,6 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString())
                 result.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
         }
-        
-        return result;
     }
 
     @Override

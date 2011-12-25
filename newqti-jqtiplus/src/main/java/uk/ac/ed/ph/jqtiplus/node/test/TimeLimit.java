@@ -160,16 +160,14 @@ public class TimeLimit extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getMinimum() != null && getMinimum() < 0)
             result.add(new ValidationError(this, "Minimum time cannot be negative."));
 
         if (getMaximum() != null && getMaximum() < 0)
             result.add(new ValidationError(this, "Maximum time cannot be negative."));
-
-        return result;
     }
 }

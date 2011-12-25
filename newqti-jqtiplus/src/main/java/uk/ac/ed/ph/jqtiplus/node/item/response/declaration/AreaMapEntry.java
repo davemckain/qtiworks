@@ -83,14 +83,10 @@ public class AreaMapEntry extends AbstractObject {
     }
     
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
-
         if (getShape() != null)
-            result.add(getShape().validateCoords(getAttributes().get(ATTR_COORDS_NAME), convertCoordinates(getCoordinates())));
-
-        return result;
+            getShape().validateCoords(getAttributes().get(ATTR_COORDS_NAME), result, convertCoordinates(getCoordinates()));
     }
 
     

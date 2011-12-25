@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -94,21 +95,20 @@ public class OutcomeProcessing extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getOutcomeRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
-
-        return result;
     }
 
     /**
      * Evaluates all child outcomeRules.
-     * @param context TODO
+     * 
+     * @throws RuntimeValidationException 
      */
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         TestProcessingContext testContext = (TestProcessingContext) context;
         try {
             for (OutcomeRule outcomeRule : getOutcomeRules()) {

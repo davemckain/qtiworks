@@ -254,45 +254,30 @@ public abstract class AbstractNode implements XmlNode
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = new ValidationResult();
-
-        result.add(validateAttributes(context));
-        result.add(validateChildren(context));
-
-        return result;
+    public void validate(ValidationContext context, ValidationResult result) {
+        validateAttributes(context, result);
+        validateChildren(context, result);
     }
 
     /**
      * Validates attributes of this node.
-     * @param context TODO
      *
      * @return result of validation
      */
-    protected ValidationResult validateAttributes(ValidationContext context)
-    {
-        return attributes.validate(context);
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+        attributes.validate(context, result);
     }
 
     /**
      * Validates children (body) of this node.
-     * @param context TODO
-     *
-     * @return result of validation
      */
-    protected ValidationResult validateChildren(ValidationContext context)
-    {
-        ValidationResult result = groups.validate(context);
-
-        for (int i = 0; i < groups.size(); i++)
-        {
+    protected void validateChildren(ValidationContext context, ValidationResult result) {
+        for (int i = 0; i < groups.size(); i++) {
             NodeGroup node = groups.get(i);
-
-            for (XmlNode child : node.getChildren())
-                result.add(child.validate(context));
+            for (XmlNode child : node.getChildren()) {
+                child.validate(context, result);
+            }
         }
-
-        return result;
     }
 
     /**

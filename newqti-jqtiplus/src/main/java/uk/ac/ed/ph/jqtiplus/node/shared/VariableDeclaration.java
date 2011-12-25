@@ -180,9 +180,9 @@ public abstract class VariableDeclaration extends AbstractObject implements Uniq
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
         
         validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME), getIdentifier());
 
@@ -195,8 +195,6 @@ public abstract class VariableDeclaration extends AbstractObject implements Uniq
             if (cardinality.isRecord() && getBaseType() != null)
                 result.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
         }
-
-        return result;
     }
 
     @Override

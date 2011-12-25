@@ -135,14 +135,13 @@ public class EqualRounded extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getRoundingMode() != null && getFigures() != null)
-            result.add(getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), getFigures()));
+            getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), result, getFigures());
 
-        return result;
     }
 
     @Override

@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -100,7 +101,7 @@ public abstract class OutcomeConditionExpressionChild extends OutcomeConditionCh
     }
 
     @Override
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException
     {
         Value value = getExpression().evaluate(context);
 

@@ -5,10 +5,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.control;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
  * @author  David McKain
@@ -19,10 +19,7 @@ public interface TestValidationContext extends ValidationContext {
     /** Returns owning AssessmentTest */
     AssessmentTest getTest();
     
-    /**
-     * Returns an {@link AssessmentItemManager} for the {@link AssessmentItem} referred to by
-     * the given {@link AssessmentItemRef} in the current test.
-     */
-    AssessmentItemManager resolveItem(AssessmentItemRef assessmentItemRef);
+    AssessmentItemValidator resolveItem(AssessmentItemRef assessmentItemRef)
+            throws ReferencingException;
 
 }

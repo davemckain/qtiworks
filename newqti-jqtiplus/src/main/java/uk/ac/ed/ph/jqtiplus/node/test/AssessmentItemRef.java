@@ -48,7 +48,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -321,36 +322,31 @@ public class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         TestValidationContext testContext = (TestValidationContext) context;
-        AssessmentItemManager itemManager = testContext.resolveItem(this);
-        
-        ValidationResult itemResult = itemManager.validateItem();
-        if (itemResult.getErrors().size() > 0) {
-            result.add(new ValidationError(this, "Referenced item with identifier " + getIdentifier() + " and href " + getHref() + " contains " + itemResult.getErrors().size() + " validation error(s)"));
+        AssessmentItemValidator assessmentItemValidator;
+        try {
+            assessmentItemValidator = testContext.resolveItem(this);
+            ValidationResult itemResult = assessmentItemValidator.validate();
+            result.addChildResult(itemResult);
+            if (itemResult.getErrors().size() > 0) {
+                result.add(new ValidationError(this, "Referenced item with identifier " + getIdentifier() + " and href " + getHref() + " contains " + itemResult.getErrors().size() + " validation error(s)"));
+            }
+            if (itemResult.getWarnings().size() > 0) {
+                result.add(new ValidationWarning(this, "Referenced item with identifier " + getIdentifier() + " and href " + getHref() + " contains " + itemResult.getWarnings().size() + " validation warning(s)"));
+            }
         }
-        if (itemResult.getWarnings().size() > 0) {
-            result.add(new ValidationWarning(this, "Referenced item with identifier " + getIdentifier() + " and href " + getHref() + " contains " + itemResult.getWarnings().size() + " validation warning(s)"));
+        catch (ReferencingException e) {
+            result.add(new ValidationError(this, "Could not resolve referenced item with href " + getHref()));
         }
-
-        return result;
     }
     
-//    private void initialiseAssessmentItem() {
-//        File sourceFile = new File(getParentTest().getSourceFile().getParentFile(), getHref().getPath());
-//        AssessmentItem newItem = new AssessmentItem();
-//        newItem.load(sourceFile, jqtiController);
-//        
-//        /* (This will wire up the new AssessmentItem to forward Lifecycle events up through the owning AssessmentTest) */
-//        setItem(newItem);
-//    }
-
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         for (int i = 0; i < getWeights().size(); i++)
         {
@@ -362,8 +358,6 @@ public class AssessmentItemRef extends SectionPart {
                         result.add(new ValidationError(this, "Duplicate weight identifier: " + weight.getIdentifier()));
             }
         }
-
-        return result;
     }
 //
 //    @Override

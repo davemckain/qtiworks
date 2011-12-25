@@ -10,7 +10,7 @@ import java.io.Serializable;
 import org.w3c.dom.Document;
 
 /**
- * Encapsulates the result of XML parsing and validation
+ * Encapsulates the result of QTI XML reading
  * 
  * @author  David McKain
  * @version $Revision: 2749 $

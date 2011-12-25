@@ -34,15 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
-import java.util.List;
-
-
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.InterpolationTableEntryGroup;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+
+import java.util.List;
 
 /**
  * An interpolationTable transforms A source float (or integer) by finding the first interpolationTableEntry
@@ -119,9 +118,9 @@ public class InterpolationTable extends LookupTable
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         Double lastValue = null;
         for (InterpolationTableEntry entry : getInterpolationEntries())
@@ -139,7 +138,5 @@ public class InterpolationTable extends LookupTable
                 }
             }
         }
-
-        return result;
     }
 }

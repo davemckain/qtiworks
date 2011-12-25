@@ -138,15 +138,13 @@ public class RandomFloat extends RandomExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum())
             result.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
                     ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
-
-        return result;
     }
 
     @Override

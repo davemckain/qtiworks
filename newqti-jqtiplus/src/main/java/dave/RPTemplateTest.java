@@ -5,9 +5,9 @@
  */
 package dave;
 
-
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RPTemplateTest {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RuntimeValidationException {
         URI inputUri = URI.create("classpath:/rpTest.xml");
         
         JQTIController jqtiController = new JQTIController();

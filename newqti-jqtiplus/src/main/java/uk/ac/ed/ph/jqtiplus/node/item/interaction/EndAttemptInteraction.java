@@ -145,9 +145,9 @@ public class EndAttemptInteraction extends InlineInteraction {
     
     
     @Override
-    public ValidationResult validate(ValidationContext context) 
+    public void validate(ValidationContext context, ValidationResult result) 
     {
-        ValidationResult result = super.validate(context);
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -157,8 +157,6 @@ public class EndAttemptInteraction extends InlineInteraction {
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
         }
-        
-        return result;
     }
 
     @Override

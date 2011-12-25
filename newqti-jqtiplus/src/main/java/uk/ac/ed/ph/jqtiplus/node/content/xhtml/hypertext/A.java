@@ -34,9 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext;
 
-import java.net.URI;
-
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
@@ -44,6 +41,8 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+
+import java.net.URI;
 
 /**
  * Although a inherits from simpleInline it must not contain, either directly or indirectly, another a.
@@ -85,14 +84,13 @@ public class A extends AbstractSimpleInline {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. 
-        if (search(A.class).size() > 0)
+        if (search(A.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + CLASS_TAG + " children"));
-        
-        return result;
+        }
     }
     
     /**

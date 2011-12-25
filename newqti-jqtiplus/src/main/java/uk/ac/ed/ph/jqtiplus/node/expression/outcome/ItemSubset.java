@@ -138,34 +138,25 @@ public abstract class ItemSubset extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
-    {
-        ValidationResult result = super.validateAttributes(context);
-
-        if (getIdentifier() != null && getParentTest().lookupDescendentOrSelf(getIdentifier()) == null)
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+        if (getIdentifier() != null && getParentTest().lookupDescendentOrSelf(getIdentifier()) == null) {
             result.add(new ValidationWarning(this, "Cannot find control object: " + getIdentifier()));
-
-        return result;
+        }
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = super.validate(context);
-
+    public void validate(ValidationContext context, ValidationResult result) {
         XmlObject parent = getParent();
 
-        while (parent != null)
-        {
-            if (parent instanceof OutcomeProcessing)
+        while (parent != null) {
+            if (parent instanceof OutcomeProcessing) {
                 break;
-
+            }
             parent = parent.getParent();
         }
 
-        if (parent == null)
+        if (parent == null) {
             result.add(new ValidationError(this, "Outcome expression can be used only in outcome processing."));
-
-        return result;
+        }
     }
 }

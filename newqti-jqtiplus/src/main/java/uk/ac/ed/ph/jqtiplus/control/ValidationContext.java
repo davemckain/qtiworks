@@ -8,6 +8,7 @@ package uk.ac.ed.ph.jqtiplus.control;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
  * FIXME: We need to merge this slightly with {@link ItemProcessingContext}
@@ -23,7 +24,10 @@ public interface ValidationContext {
      * Resolves a reference to a variable specified using a {@link VariableReferenceIdentifier}.
      * <p>
      * This encapsulates the special forms for referring to items within tests.
+     * 
+     * @throws ReferencingException
      */
-    VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier);
+    VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
+            throws ReferencingException;
     
 }

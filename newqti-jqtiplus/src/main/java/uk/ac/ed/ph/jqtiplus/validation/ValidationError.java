@@ -34,27 +34,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-
 
 /**
  * Validation item of error type.
  * 
  * @author Jiri Kajaba
  */
-public class ValidationError extends AbstractValidationItem
-{
+public class ValidationError extends AbstractValidationItem {
+    
+    private static final long serialVersionUID = 8636935313209399027L;
+
     /**
      * Constructs validation item.
      *
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public ValidationError(XmlNode node, String message)
-    {
+    public ValidationError(XmlNode node, String message) {
         this(node, node, message);
+    }
+    
+    public ValidationError(XmlNode node, String message, Throwable cause) {
+        this(node, node, message, cause);
     }
 
     /**
@@ -64,23 +66,16 @@ public class ValidationError extends AbstractValidationItem
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public ValidationError(Validatable source, XmlNode node, String message)
-    {
+    public ValidationError(Validatable source, XmlNode node, String message) {
         super(source, node, message);
+    }
+    
+    public ValidationError(Validatable source, XmlNode node, String message, Throwable cause) {
+        super(source, node, message, cause);
     }
 
     public ValidationType getType()
     {
         return ValidationType.ERROR;
-    }
-
-    /**
-     * Creates exception from this error.
-     *
-     * @return exception from this error
-     */
-    public QTIRuntimeException createException()
-    {
-        return new QTIValidationException(this);
     }
 }

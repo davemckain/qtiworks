@@ -36,13 +36,17 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
+import java.io.Serializable;
+
 /**
  * Abstract implementation of ValidationItem.
  * 
  * @author Jiri Kajaba
  */
-public abstract class AbstractValidationItem implements ValidationItem
-{
+public abstract class AbstractValidationItem implements ValidationItem, Serializable {
+    
+    private static final long serialVersionUID = -965289438371398086L;
+
     /** Source of this item. */
     private Validatable source;
 
@@ -51,6 +55,8 @@ public abstract class AbstractValidationItem implements ValidationItem
 
     /** Message of this item. */
     private String message;
+    
+    private Throwable cause;
 
     /**
      * Constructs validation item.
@@ -59,11 +65,15 @@ public abstract class AbstractValidationItem implements ValidationItem
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public AbstractValidationItem(Validatable source, XmlNode node, String message)
-    {
+    public AbstractValidationItem(Validatable source, XmlNode node, String message) {
+        this(source, node, message, null);
+    }
+    
+    public AbstractValidationItem(Validatable source, XmlNode node, String message, Throwable cause) {
         this.source = source;
         this.node = node;
         this.message = message;
+        this.cause = cause;
     }
 
     public Validatable getSource()
@@ -76,14 +86,13 @@ public abstract class AbstractValidationItem implements ValidationItem
         return node;
     }
     
-    public void setNode(XmlNode node)
-    {
-        this.node = node;
-    }
-
     public String getMessage()
     {
         return message;
+    }
+    
+    public Throwable getCause() {
+        return cause;
     }
 
     @Override
@@ -93,7 +102,10 @@ public abstract class AbstractValidationItem implements ValidationItem
 
         builder.append(getType());
         builder.append(": ");
-        builder.append(getMessage());
+        builder.append(message);
+        if (cause!=null) {
+            builder.append(" [").append(cause.getMessage()).append("] ");
+        }
         builder.append(" (");
         builder.append(getNode().computeXPath());
         builder.append(")");

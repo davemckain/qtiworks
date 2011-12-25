@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
@@ -43,8 +42,10 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class ItemFlowValidationError extends ValidationError
-{
+public class ItemFlowValidationError extends ValidationError {
+    
+    private static final long serialVersionUID = 7969204121175178914L;
+
     /**
      * Constructs validation item.
      *
@@ -54,11 +55,5 @@ public class ItemFlowValidationError extends ValidationError
     public ItemFlowValidationError(XmlNode source, String message)
     {
         super(source, message);
-    }
-
-    @Override
-    public QTIItemFlowException createException()
-    {
-        return new QTIItemFlowException(getNode(), getMessage());
     }
 }

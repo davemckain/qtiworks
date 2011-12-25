@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -102,7 +103,7 @@ public class TemplateConstraint extends TemplateProcessingRule implements Expres
 	}
 
 	@Override
-	public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt {
+	public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
 		Value value = getExpression().evaluate(context);
 		if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
 			throw new TemplateProcessingInterrupt(InterruptType.TEMPLATE_CONSTRAINT_FAILURE);

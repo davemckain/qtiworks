@@ -153,9 +153,9 @@ public abstract class FeedbackElement extends BodyElement {
     }
     
     @Override
-    public ValidationResult validateAttributes(ValidationContext context)
+    public void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getOutcomeIdentifier() != null)
         {
@@ -170,19 +170,15 @@ public abstract class FeedbackElement extends BodyElement {
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier())
                 result.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER  + ", but found: " + declaration.getBaseType()));
         }
-
-        return result;
     }
     
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getChildren().size() == 0)
             result.add(new ValidationWarning(this, "Feedback should contain something."));
-
-        return result;
     }
     
     /**

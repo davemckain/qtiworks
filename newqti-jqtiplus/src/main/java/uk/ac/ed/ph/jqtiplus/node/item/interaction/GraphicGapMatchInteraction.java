@@ -53,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -163,8 +162,8 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -175,8 +174,6 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
     
     @Override

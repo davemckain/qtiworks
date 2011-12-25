@@ -260,8 +260,8 @@ public class SliderInteraction extends BlockInteraction {
     }    
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -272,8 +272,6 @@ public class SliderInteraction extends BlockInteraction {
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isNumeric())
                 result.add(new ValidationError(this, "Response variable must have numeric base type"));
         }
-        
-        return result;
     }
     
     @Override

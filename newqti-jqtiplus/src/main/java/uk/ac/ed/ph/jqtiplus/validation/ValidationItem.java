@@ -41,22 +41,22 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public interface ValidationItem
-{
+public interface ValidationItem {
+    
     /**
      * Gets type of this item.
      *
      * @return type of this item
      * @see ValidationType
      */
-    public ValidationType getType();
+    ValidationType getType();
 
     /**
      * Gets source of this item.
      *
      * @return source of this item
      */
-    public Validatable getSource();
+    Validatable getSource();
     
     /**
      * Gets source node of this item.
@@ -68,14 +68,17 @@ public interface ValidationItem
      *
      * @return source node of this item
      */
-    public XmlNode getNode();
+    XmlNode getNode();
 
-    public void setNode(XmlNode node);
-    
     /**
      * Gets message of this item.
      *
      * @return message of this item
      */
-    public String getMessage();
+    String getMessage();
+    
+    /**
+     * Gets optional "cause" associated with this item
+     */
+    Throwable getCause();
 }

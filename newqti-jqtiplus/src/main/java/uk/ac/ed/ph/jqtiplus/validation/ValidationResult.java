@@ -34,8 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,16 +48,23 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class ValidationResult
-{
+public class ValidationResult implements Serializable {
+    
+    private static final long serialVersionUID = 7987550924957601153L;
+    
+    private final AssessmentItemOrTest owner;
+
     /** Container of all errors. */
-    private List<ValidationError> errors;
+    private final List<ValidationError> errors;
 
     /** Container of all warnings. */
-    private List<ValidationWarning> warnings;
+    private final List<ValidationWarning> warnings;
 
     /** Container of all infos. */
-    private List<ValidationInfo> infos;
+    private final List<ValidationInfo> infos;
+
+    /** Child results (if applicable, e.g. results of items within tests) */
+    private final List<ValidationResult> childResults;
 
     /**
      * Container of all validation items.
@@ -69,12 +79,21 @@ public class ValidationResult
     /**
      * Constructs validation result container.
      */
-    public ValidationResult()
-    {
-        errors = new ArrayList<ValidationError>();
-        warnings = new ArrayList<ValidationWarning>();
-        infos = new ArrayList<ValidationInfo>();
-        allItems = new ArrayList<ValidationItem>();
+    public ValidationResult(AssessmentItemOrTest owner) {
+        this.owner = owner;
+        this.errors = new ArrayList<ValidationError>();
+        this.warnings = new ArrayList<ValidationWarning>();
+        this.infos = new ArrayList<ValidationInfo>();
+        this.allItems = new ArrayList<ValidationItem>();
+        this.childResults = new ArrayList<ValidationResult>();
+    }
+    
+    public AssessmentItemOrTest getOwner() {
+        return owner;
+    }
+    
+    public List<ValidationResult> getChildResults() {
+        return childResults;
     }
 
     /**
@@ -85,8 +104,7 @@ public class ValidationResult
      * @return all errors of this container
      * @see #getErrors(XmlNode)
      */
-    public List<ValidationError> getErrors()
-    {
+    public List<ValidationError> getErrors() {
         return errors;
     }
 
@@ -99,10 +117,8 @@ public class ValidationResult
      * @return all errors of this container for given source node
      * @see #getErrors()
      */
-    @SuppressWarnings ("unchecked")
-    public List<ValidationError> getErrors(XmlNode source)
-    {
-        return (List<ValidationError>) get(errors, source);
+    public List<ValidationError> getErrors(XmlNode source){
+        return get(errors, source);
     }
 
     /**
@@ -113,8 +129,7 @@ public class ValidationResult
      * @return all warnings of this container
      * @see #getWarnings(XmlNode)
      */
-    public List<ValidationWarning> getWarnings()
-    {
+    public List<ValidationWarning> getWarnings() {
         return warnings;
     }
 
@@ -127,10 +142,8 @@ public class ValidationResult
      * @return all warnings of this container for given source node
      * @see #getWarnings()
      */
-    @SuppressWarnings ("unchecked")
-    public List<ValidationWarning> getWarnings(XmlNode source)
-    {
-        return (List<ValidationWarning>) get(warnings, source);
+    public List<ValidationWarning> getWarnings(XmlNode source) {
+        return get(warnings, source);
     }
 
     /**
@@ -141,8 +154,7 @@ public class ValidationResult
      * @return all infos of this container
      * @see #getInfos(XmlNode)
      */
-    public List<ValidationInfo> getInfos()
-    {
+    public List<ValidationInfo> getInfos() {
         return infos;
     }
 
@@ -155,10 +167,8 @@ public class ValidationResult
      * @return all infos of this container for given source node
      * @see #getInfos()
      */
-    @SuppressWarnings ("unchecked")
-    public List<ValidationInfo> getInfos(XmlNode source)
-    {
-        return (List<ValidationInfo>) get(infos, source);
+    public List<ValidationInfo> getInfos(XmlNode source) {
+        return get(infos, source);
     }
 
     /**
@@ -169,8 +179,7 @@ public class ValidationResult
      * @return all validation items (error, warning, info) of this container
      * @see #getAllItems(XmlNode)
      */
-    public List<ValidationItem> getAllItems()
-    {
+    public List<ValidationItem> getAllItems() {
         return allItems;
     }
 
@@ -183,10 +192,8 @@ public class ValidationResult
      * @return all validation items (error, warning, info) of this container for given source node
      * @see #getAllItems()
      */
-    @SuppressWarnings ("unchecked")
-    public List<ValidationItem> getAllItems(XmlNode source)
-    {
-        return (List<ValidationItem>) get(allItems, source);
+    public List<ValidationItem> getAllItems(XmlNode source) {
+        return get(allItems, source);
     }
 
     /**
@@ -196,14 +203,13 @@ public class ValidationResult
      * @param source given source node
      * @return all validation items from given source list of validation items for given source node
      */
-    private List<? extends ValidationItem> get(List<? extends ValidationItem> items, XmlNode source)
-    {
-        List<ValidationItem> result = new ArrayList<ValidationItem>();
-
-        for (ValidationItem item : items)
-            if (item.getNode() == source)
+    private static <E extends ValidationItem> List<E> get(List<E> items, XmlNode source) {
+        List<E> result = new ArrayList<E>();
+        for (E item : items) {
+            if (item.getNode() == source) {
                 result.add(item);
-
+            }
+        }
         return result;
     }
 
@@ -217,60 +223,41 @@ public class ValidationResult
      *
      * @param item item to be added
      */
-    public void add(ValidationItem item)
-    {
-        if (item == null)
-            return;
-
-        if (item instanceof ValidationError)
+    public void add(ValidationItem item) {
+        ConstraintUtilities.ensureNotNull(item);
+        if (item instanceof ValidationError) {
             errors.add((ValidationError) item);
-        else if (item instanceof ValidationWarning)
+        }
+        else if (item instanceof ValidationWarning) {
             warnings.add((ValidationWarning) item);
-        else if (item instanceof ValidationInfo)
+        }
+        else if (item instanceof ValidationInfo) {
             infos.add((ValidationInfo) item);
-        else
-            throw new AssertionError("Unsupported validation item: " + item.getClass().getName());
-
+        }
+        else {
+            throw new IllegalArgumentException("Unsupported validation item: " + item.getClass().getName());
+        }
         allItems.add(item);
     }
-
-    /**
-     * Adds all validation items from given container into this container.
-     *
-     * @param result container with validation items to be added
-     */
-    public void add(ValidationResult result)
-    {
-        for (ValidationItem item : result.getAllItems())
+    
+    public void addAll(Iterable<ValidationItem> items) {
+        for (ValidationItem item : items) {
             add(item);
+        }
     }
 
+    public void addChildResult(ValidationResult result) {
+        childResults.add(result);
+    }
+    
     @Override
-    public String toString()
-    {
-        StringBuilder builder = new StringBuilder();
-        if (toString(builder, errors) + toString(builder, warnings) + toString(builder, infos)==0) {
-        	builder.append("Validation succeeded with no errors, warnings or information items");
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Prints given list of validation items into string.
-     *
-     * @param items given list of validation items
-     * @return string with printed validation items
-     */
-    private int toString(StringBuilder builder, List<? extends ValidationItem> items)
-    {
-        int index = 1;
-        for (ValidationItem item : items)
-        {
-            builder.append(index++);
-            builder.append(") ");
-            builder.append(item.toString());
-            builder.append(XmlNode.NEW_LINE);
-        }
-        return items.size();
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(owner=" + owner
+                + ",errors=" + errors
+                + ",warnings=" + warnings
+                + ",infos=" + infos
+                + ",childResults=" + childResults
+                + ")";
     }
 }

@@ -25,15 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Not thread-safe
- * FIXME: Document this!
  * 
  * @author  David McKain
  * @version $Revision: 2801 $
  */
 public final class AssessmentTestManager implements TestValidationContext {
     
-    protected static Logger logger = LoggerFactory.getLogger(AssessmentTestManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestManager.class);
     
     private final QTIObjectManager qtiObjectManager;
     private final AssessmentTest test;

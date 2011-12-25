@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -87,18 +88,16 @@ public class ResponseProcessingFragment extends ResponseRule
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getResponseRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
-
-        return result;
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException
     {
         for (ResponseRule responseRule : getResponseRules())
             responseRule.evaluate(context);

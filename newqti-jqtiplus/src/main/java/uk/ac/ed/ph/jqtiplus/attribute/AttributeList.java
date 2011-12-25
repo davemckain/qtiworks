@@ -328,14 +328,10 @@ public class AttributeList implements Validatable, Iterable<Attribute>
         return builder.toString();
     }
 
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = new ValidationResult();
-
-        for (Attribute attribute : attributes)
-            result.add(attribute.validate(context));
-
-        return result;
+    public void validate(ValidationContext context, ValidationResult result) {
+        for (Attribute attribute : attributes) {
+            attribute.validate(context, result);
+        }
     }
 
     /**

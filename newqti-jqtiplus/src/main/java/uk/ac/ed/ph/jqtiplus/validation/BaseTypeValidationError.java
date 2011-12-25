@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
@@ -46,8 +45,10 @@ import java.util.Arrays;
  * 
  * @author Jiri Kajaba
  */
-public class BaseTypeValidationError extends ValidationError
-{
+public class BaseTypeValidationError extends ValidationError {
+    
+    private static final long serialVersionUID = -4077590083626073849L;
+
     /**
      * Constructs validation item.
      *
@@ -58,12 +59,6 @@ public class BaseTypeValidationError extends ValidationError
     public BaseTypeValidationError(XmlNode source, BaseType[] expected, BaseType[] found)
     {
         super(source, createMessage(expected, found));
-    }
-
-    @Override
-    public QTIBaseTypeException createException()
-    {
-        return new QTIBaseTypeException(getMessage());
     }
 
     private static String createMessage(BaseType[] expected, BaseType[] found)

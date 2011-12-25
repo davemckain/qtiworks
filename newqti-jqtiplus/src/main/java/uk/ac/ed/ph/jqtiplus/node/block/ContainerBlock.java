@@ -125,13 +125,11 @@ public abstract class ContainerBlock extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
-    {
-        ValidationResult result = super.validateChildren(context);
+    protected void validateChildren(ValidationContext context, ValidationResult result) {
+        super.validateChildren(context, result);
 
-        for (XmlNode child : children)
-            result.add(child.validate(context));
-
-        return result;
+        for (XmlNode child : children) {
+            child.validate(context, result);
+        }
     }
 }

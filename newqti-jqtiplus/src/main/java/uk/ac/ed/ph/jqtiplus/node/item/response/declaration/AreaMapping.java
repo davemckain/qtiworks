@@ -183,8 +183,8 @@ public class AreaMapping extends AbstractObject {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getLowerBound() != null && getUpperBound() != null && getLowerBound() > getUpperBound())
             result.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
@@ -194,8 +194,6 @@ public class AreaMapping extends AbstractObject {
             if (declaration.getBaseType() != null && !declaration.getBaseType().isPoint())
                 result.add(new ValidationError(this, "Base type must be point."));
         }
-        
-        return result;
     }
     
     /**

@@ -34,9 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
-import java.util.List;
-
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
@@ -49,6 +46,8 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+
+import java.util.List;
 
 /**
  * An abstract class associated with an outcomeDeclaration used to create A lookup table from A numeric source value
@@ -151,9 +150,9 @@ public abstract class LookupTable extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null)
@@ -164,14 +163,12 @@ public abstract class LookupTable extends AbstractObject
 
         if (getParent().getBaseType() != null)
             getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).setBaseType(getParent().getBaseType());
-
-        return result;
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         for (int i = 0; i < getLookupEntries().size(); i++)
         {
@@ -186,7 +183,5 @@ public abstract class LookupTable extends AbstractObject
                 }
             }
         }
-
-        return result;
     }
 }

@@ -34,11 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -46,6 +41,10 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * GraphicInteraction abstract class
@@ -103,12 +102,10 @@ public abstract class GraphicInteraction extends BlockInteraction {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
             
         if (getObject() != null && getObject().getType() !=null && !getObject().getType().startsWith("image/"))
             result.add(new ValidationError(this, "Object child must have an image type"));
-        
-        return result;
     }
 }

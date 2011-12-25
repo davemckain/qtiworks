@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -77,28 +78,26 @@ public abstract class OutcomeConditionChild extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getOutcomeRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
-
-        return result;
     }
 
     /**
      * Evaluates all child outcomeRules and returns true.
-     * @param context TODO
      *
      * @return true
      * @throws QTIProcessingInterrupt 
+     * @throws RuntimeValidationException 
      */
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt
+    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException
     {
-        for (OutcomeRule outcomeRule : getOutcomeRules())
+        for (OutcomeRule outcomeRule : getOutcomeRules()) {
             outcomeRule.evaluate(context);
-
+        }
         return true;
     }
 }

@@ -16,7 +16,6 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.List;
 
 /**
@@ -83,8 +82,8 @@ public class MathOperator extends AbstractExpression {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
 
         /* Make sure number of children is correct */
         MathOperatorTarget operation = getTarget();
@@ -93,6 +92,5 @@ public class MathOperator extends AbstractExpression {
                     + " expects " + operation.getArgumentCount() + " children, not "
                     + getChildren().size()));
         }
-        return result;
     }
 }

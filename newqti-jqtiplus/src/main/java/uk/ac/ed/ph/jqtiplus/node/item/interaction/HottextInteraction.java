@@ -51,7 +51,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -192,8 +191,8 @@ public class HottextInteraction extends BlockInteraction {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) 
             result.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
@@ -213,8 +212,6 @@ public class HottextInteraction extends BlockInteraction {
             if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
 
     @Override

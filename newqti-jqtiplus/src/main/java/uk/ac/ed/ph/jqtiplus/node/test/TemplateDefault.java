@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
@@ -164,8 +165,9 @@ public class TemplateDefault extends AbstractObject implements ExpressionParent
      * Evaluates this object.
      *
      * @return result of evaluation
+     * @throws RuntimeValidationException 
      */
-    public Value evaluate(ProcessingContext context) {
+    public Value evaluate(ProcessingContext context) throws RuntimeValidationException {
         return getExpression().evaluate(context);
     }
 }

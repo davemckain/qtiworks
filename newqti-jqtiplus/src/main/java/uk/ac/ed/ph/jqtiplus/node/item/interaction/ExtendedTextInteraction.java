@@ -290,8 +290,8 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMaxStrings() != null) {
             if (getMaxStrings() < getMinStrings())
@@ -329,8 +329,6 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString())
                 result.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
         }
-        
-        return result;
     }
 
 

@@ -62,9 +62,9 @@ public enum Shape
         private static final int COORDS_LENGTH = 0;
 
         @Override
-        public ValidationResult validateCoords(Attribute attribute, int[] coords)
+        public void validateCoords(Attribute attribute, ValidationResult result, int[] coords)
         {
-            return validateCoordsLength(attribute, coords, COORDS_LENGTH);
+            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
         }
 
         @Override
@@ -86,13 +86,13 @@ public enum Shape
         private static final int BOTTOM_Y = 3;
 
         @Override
-        public ValidationResult validateCoords(Attribute attribute, int[] coords)
+        public void validateCoords(Attribute attribute, ValidationResult result, int[] coords)
         {
-            ValidationResult result = validateCoordsLength(attribute, coords, COORDS_LENGTH);
+            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH)
             {
-                result.add(validatePositiveCoords(attribute, coords));
+                validatePositiveCoords(attribute, result, coords);
 
                 if (coords[LEFT_X] >= coords[RIGHT_X])
                     result.add(new AttributeValidationError(attribute, "Left-x (" + coords[LEFT_X] +
@@ -102,8 +102,6 @@ public enum Shape
                     result.add(new AttributeValidationError(attribute, "Top-y (" + coords[TOP_Y] +
                             ") cannot be larger or equal than bottom-y (" + coords[BOTTOM_Y] + ")."));
             }
-
-            return result;
         }
 
         @Override
@@ -130,19 +128,17 @@ public enum Shape
         private static final int RADIUS = 2;
 
         @Override
-        public ValidationResult validateCoords(Attribute attribute, int[] coords)
+        public void validateCoords(Attribute attribute, ValidationResult result, int[] coords)
         {
-            ValidationResult result = validateCoordsLength(attribute, coords, COORDS_LENGTH);
+            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH)
             {
                 if (coords[RADIUS] < 1)
                     result.add(new AttributeValidationError(attribute, "Radius (" + coords[RADIUS] + ") must be positive."));
 
-                result.add(validatePositiveCoords(attribute, coords));
+                validatePositiveCoords(attribute, result, coords);
             }
-
-            return result;
         }
 
         @Override
@@ -163,10 +159,8 @@ public enum Shape
         private static final int MINIMUM_COORDS_LENGTH = 6;
 
         @Override
-        public ValidationResult validateCoords(Attribute attribute, int[] coords)
+        public void validateCoords(Attribute attribute, ValidationResult result, int[] coords)
         {
-            ValidationResult result = new ValidationResult();
-
             boolean sameLastPoint = false;
             if (coords.length > 1 && coords[0] == coords[coords.length - 2] && coords[1] == coords[coords.length -1])
                 sameLastPoint = true;
@@ -185,10 +179,8 @@ public enum Shape
                     result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
                             toString() + " shape. Expected even number of coordinates, but found: " + coords.length));
 
-                result.add(validatePositiveCoords(attribute, coords));
+                validatePositiveCoords(attribute, result, coords);
             }
-
-            return result;
         }
 
         @Override
@@ -273,9 +265,9 @@ public enum Shape
         private static final int V_RADIUS = 3;
 
         @Override
-        public ValidationResult validateCoords(Attribute attribute, int[] coords)
+        public void validateCoords(Attribute attribute, ValidationResult result, int[] coords)
         {
-            ValidationResult result = validateCoordsLength(attribute, coords, COORDS_LENGTH);
+            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH)
             {
@@ -285,10 +277,8 @@ public enum Shape
                 if (coords[V_RADIUS] < 1)
                     result.add(new AttributeValidationError(attribute, "V-radius (" + coords[V_RADIUS] + ") must be positive."));
 
-                result.add(validatePositiveCoords(attribute, coords));
+                validatePositiveCoords(attribute, result, coords);
             }
-
-            return result;
         }
 
         @Override
@@ -325,47 +315,39 @@ public enum Shape
      * Validates coords attribute.
      *
      * @param attribute attribute to be validated
+     * @param result TODO
      * @param coords attribute's value to be validated
-     * @return validation result
      */
-    public abstract ValidationResult validateCoords(Attribute attribute, int[] coords);
+    public abstract void validateCoords(Attribute attribute, ValidationResult result, int[] coords);
 
     /**
      * Validates length of coords attribute (number of coordinates).
      *
      * @param attribute attribute to be validated
+     * @param result TODO
      * @param coords attribute's value to be validated
      * @param expectedLength expected length of coords attribute (number of coordinates)
-     * @return validation result
      */
-    protected ValidationResult validateCoordsLength(Attribute attribute, int[] coords, int expectedLength)
+    protected void validateCoordsLength(Attribute attribute, ValidationResult result, int[] coords, int expectedLength)
     {
-        ValidationResult result = new ValidationResult();
-
         if (coords.length != expectedLength)
             result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
                     toString() + " shape. Expected: " + expectedLength + ", but found: " + coords.length));
-
-        return result;
     }
 
     /**
      * Validates if all coordinates are greater or equal than zero.
      *
      * @param attribute attribute to be validated
+     * @param result TODO
      * @param coords attribute's value to be validated
-     * @return validation result
      */
-    protected ValidationResult validatePositiveCoords(Attribute attribute, int[] coords)
+    protected void validatePositiveCoords(Attribute attribute, ValidationResult result, int[] coords)
     {
-        ValidationResult result = new ValidationResult();
-
         for (int i = 0; i < coords.length; i++)
             if (coords[i] < 0)
                 result.add(new AttributeValidationError(attribute, "Coordinte (" + coords[i] + ") at (" + (i + 1) +
                         ") cannot be negative."));
-
-        return result;
     }
 
     /**

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.control.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
@@ -55,7 +54,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.View;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-
+import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 import java.net.URI;
 import java.util.List;
@@ -275,9 +274,9 @@ public class OutcomeDeclaration extends VariableDeclaration {
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getNormalMaximum() != null)
         {
@@ -303,20 +302,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
         {
             result.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME + " cannot be lower than attribute " + ATTR_NORMAL_MINIMUM_NAME + "."));
         }
-
-        return result;
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
 // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
 // which would be comment in summative assessment scenarios
 //        if (context instanceof TestValidationContext && !isRead(context, getParentRoot())) {
 //            result.add(new ValidationWarning(this, "Outcome declaration is never read."));
 //        }
-        return result;
     }
 
     /**
@@ -334,9 +330,14 @@ public class OutcomeDeclaration extends VariableDeclaration {
         }
         else if (xmlNode instanceof LookupExpression) {
             LookupExpression expression = (LookupExpression) xmlNode;
-            VariableDeclaration targetVariableDeclaration = expression.lookupTargetVariableDeclaration(context);
-            if (targetVariableDeclaration!=null && targetVariableDeclaration.equals(this)) {
-                return true;
+            VariableDeclaration targetVariableDeclaration;
+            try {
+                targetVariableDeclaration = expression.lookupTargetVariableDeclaration(context);
+                if (targetVariableDeclaration!=null && targetVariableDeclaration.equals(this)) {
+                    return true;
+                }
+            }
+            catch (ReferencingException e) {
             }
         }
         else if (xmlNode instanceof TestFeedback) {

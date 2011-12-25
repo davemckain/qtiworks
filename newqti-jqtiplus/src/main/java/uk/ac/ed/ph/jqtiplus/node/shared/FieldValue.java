@@ -223,9 +223,9 @@ public class FieldValue extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null)
@@ -242,22 +242,18 @@ public class FieldValue extends AbstractObject
             if (!cardinality.isRecord() && getBaseTypeAttrValue() != null)
                 result.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
         }
-
-        return result;
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (singleValue == null)
             result.add(new ValidationError(this, "Value is not defined."));
 
         if (singleValue != null && getBaseType() != null && singleValue.getBaseType() != getBaseType())
             result.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType()));
-
-        return result;
     }
 
     /**

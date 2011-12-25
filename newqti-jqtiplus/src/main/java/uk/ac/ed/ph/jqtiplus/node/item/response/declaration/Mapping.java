@@ -182,8 +182,8 @@ public class Mapping extends AbstractObject {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getLowerBound() != null && getUpperBound() != null && getLowerBound() > getUpperBound())
             result.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
@@ -206,8 +206,6 @@ public class Mapping extends AbstractObject {
                 result.add(new ValidationError(this, "Only String base types may be used with case insensitive mapEntries."));
             }
         }
-        
-        return result;
     }
 
     /**

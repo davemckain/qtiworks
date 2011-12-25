@@ -154,9 +154,9 @@ public class DefaultValue extends AbstractObject implements FieldValueParent
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null)
@@ -164,8 +164,6 @@ public class DefaultValue extends AbstractObject implements FieldValueParent
             if (cardinality.isSingle() && getFieldValues().size() > 1)
                 result.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
         }
-
-        return result;
     }
 
     /**

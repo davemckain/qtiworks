@@ -127,9 +127,9 @@ public class Index extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getIndex() != null && getIndex() < 1)
             result.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
@@ -142,8 +142,6 @@ public class Index extends AbstractExpression
                 result.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
                         ordered.getChildren().size() + ", but found: " + getIndex()));
         }
-
-        return result;
     }
 
     @Override

@@ -221,25 +221,21 @@ public class TestFeedback extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getOutcomeIdentifier() != null && getParentTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null)
             result.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
-
-        return result;
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getChildren().size() == 0)
             result.add(new ValidationWarning(this, "Feedback should contain something."));
-
-        return result;
     }
 
     private List<FlowStatic> getChildren() {

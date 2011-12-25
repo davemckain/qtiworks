@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
 
 
 /**
@@ -43,8 +42,10 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
  * 
  * @author Jiri Kajaba
  */
-public class AttributeValidationError extends ValidationError
-{
+public class AttributeValidationError extends ValidationError {
+    
+    private static final long serialVersionUID = 6551918301279497855L;
+
     /**
      * Constructs validation item.
      *
@@ -54,11 +55,5 @@ public class AttributeValidationError extends ValidationError
     public AttributeValidationError(Attribute attribute, String message)
     {
         super(attribute, attribute.getParent(), message);
-    }
-
-    @Override
-    public QTIAttributeException createException()
-    {
-        return new QTIAttributeException(getMessage());
     }
 }

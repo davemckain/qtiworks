@@ -199,9 +199,9 @@ public class BranchRule extends AbstractJump
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         TestPart parentTestPart = getParent().getParentTestPart();
         if (getTarget() != null && parentTestPart.areJumpsEnabled())
@@ -261,8 +261,6 @@ public class BranchRule extends AbstractJump
                 }
             }
         }
-
-        return result;
     }
 
     /**

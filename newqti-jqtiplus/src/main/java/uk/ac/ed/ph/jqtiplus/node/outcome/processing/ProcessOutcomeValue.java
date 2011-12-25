@@ -126,13 +126,11 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getIdentifier() != null && getParentTest().getOutcomeDeclaration(getIdentifier()) == null)
             result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
-
-        return result;
     }
 }

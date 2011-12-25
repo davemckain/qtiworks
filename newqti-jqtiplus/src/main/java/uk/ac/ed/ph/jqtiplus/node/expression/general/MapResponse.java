@@ -116,8 +116,8 @@ public class MapResponse extends AbstractExpression
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         ItemValidationContext itemContext = (ItemValidationContext) context;
         AssessmentItem item = itemContext.getItem();
@@ -129,8 +129,6 @@ public class MapResponse extends AbstractExpression
             result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), 
                     "Cannot find mapping for response declaration: " + getIdentifier()));
         }
-        
-        return result;
     }
 
     @Override

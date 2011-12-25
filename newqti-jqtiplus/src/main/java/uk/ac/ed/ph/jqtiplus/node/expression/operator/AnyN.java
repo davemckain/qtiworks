@@ -140,10 +140,8 @@ public class AnyN extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
-
         if (getMinimum() != null && getMinimum() < 0)
             result.add(new ValidationWarning(this, "Attribute " + ATTR_MINIMUM_NAME + " (" + getMinimum() +
                     ") should be positive."));
@@ -152,7 +150,6 @@ public class AnyN extends AbstractExpression
             result.add(new ValidationWarning(this, "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
                     ") should be greater than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
 
-        return result;
     }
 
     @Override

@@ -59,7 +59,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.List;
 
 /**
@@ -174,8 +173,8 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     }
     
     @Override
-    public ValidationResult validateAttributes(ValidationContext context) {
-        ValidationResult result = super.validateAttributes(context);
+    public void validateAttributes(ValidationContext context, ValidationResult result) {
+        super.validateAttributes(context, result);
 
         if (getIdentifier() != null) {
             VariableDeclaration declaration = null;
@@ -207,8 +206,6 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
                         + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
             }
         }
-
-        return result;
     }
 
     public SingleValue evaluate(ProcessingContext context) {

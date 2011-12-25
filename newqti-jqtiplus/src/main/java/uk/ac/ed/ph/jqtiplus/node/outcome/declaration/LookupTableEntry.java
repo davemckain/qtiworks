@@ -101,13 +101,11 @@ public abstract class LookupTableEntry extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getParent().getParent().getBaseType() != null)
             getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).setBaseType(getParent().getParent().getBaseType());
-
-        return result;
     }
 }

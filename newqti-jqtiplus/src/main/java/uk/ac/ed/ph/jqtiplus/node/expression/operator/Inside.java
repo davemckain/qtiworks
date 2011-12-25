@@ -132,14 +132,12 @@ public class Inside extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getShape() != null)
-            result.add(getShape().validateCoords(getAttributes().get(ATTR_COORDINATES_NAME), convertCoordinates(getCoordinates())));
-
-        return result;
+            getShape().validateCoords(getAttributes().get(ATTR_COORDINATES_NAME), result, convertCoordinates(getCoordinates()));
     }
 
     @Override

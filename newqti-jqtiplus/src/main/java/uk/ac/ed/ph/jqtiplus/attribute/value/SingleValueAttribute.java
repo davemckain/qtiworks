@@ -161,13 +161,11 @@ public class SingleValueAttribute extends SingleAttribute
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context)
+    public void validate(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validate(context);
+        super.validate(context, result);
 
         if (getValue() != null && getValue().getBaseType() != baseType)
             result.add(new AttributeValidationError(this, "BaseType of " + getName() + " attribute does not match. Expected:  " + baseType + ", but found: " + getValue().getBaseType()));
-
-        return result;
     }
 }

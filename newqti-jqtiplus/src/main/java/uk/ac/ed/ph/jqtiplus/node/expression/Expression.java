@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -136,8 +137,9 @@ public interface Expression extends ExpressionParent
      * @param context TODO
      *
      * @return result of evaluation
+     * @throws RuntimeValidationException 
      */
-    public Value evaluate(ProcessingContext context);
+    public Value evaluate(ProcessingContext context) throws RuntimeValidationException;
 
     /**
      * Returns true if evaluated result of this expression is NULL; false otherwise.

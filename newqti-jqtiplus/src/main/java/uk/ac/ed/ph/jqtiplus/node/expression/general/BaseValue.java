@@ -172,17 +172,15 @@ public class BaseValue extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (singleValue == null)
             result.add(new ValidationError(this, "Value is not defined."));
 
         if (singleValue != null && getBaseTypeAttrValue() != null && singleValue.getBaseType() != getBaseTypeAttrValue())
             result.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseTypeAttrValue() + ", but found: " + singleValue.getBaseType()));
-
-        return result;
     }
 
     @Override

@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -101,7 +102,7 @@ public class SetCorrectResponse extends ProcessTemplateValue
     }
 
     @Override
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         ItemProcessingContext itemContext = (ItemProcessingContext) context;
 
@@ -114,14 +115,12 @@ public class SetCorrectResponse extends ProcessTemplateValue
     }
     
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
         ItemValidationContext itemContext = (ItemValidationContext) context;
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getIdentifier() != null && itemContext.getItem().getResponseDeclaration(getIdentifier()) == null)
             result.add(new ValidationError(this, "Cannot find " + ResponseDeclaration.CLASS_TAG + ": " + getIdentifier()));
-
-        return result;
     }
 }

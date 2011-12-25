@@ -234,8 +234,8 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) 
             result.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
@@ -255,8 +255,6 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
             if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
 
     @Override

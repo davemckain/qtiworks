@@ -36,13 +36,11 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
 /**
  * Abstract parent for setResponseValue and lookupResponseValue classes.
@@ -121,13 +119,5 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
     public void setExpression(Expression expression)
     {
         getNodeGroups().getExpressionGroup().setExpression(expression);
-    }
-
-    @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
-    {
-        ValidationResult result = super.validateAttributes(context);
-
-        return result;
     }
 }

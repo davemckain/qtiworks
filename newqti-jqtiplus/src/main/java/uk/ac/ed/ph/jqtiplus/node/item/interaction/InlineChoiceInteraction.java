@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -189,8 +188,8 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -201,8 +200,6 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
         }
-        
-        return result;
     }
     
     @Override

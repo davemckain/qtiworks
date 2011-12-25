@@ -151,13 +151,11 @@ public class ResponseDeclaration extends VariableDeclaration
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getAreaMapping() != null && getBaseType() != null && !getBaseType().isPoint())
             result.add(new ValidationError(this, "Base type must be point when using areaMapping."));
-        
-        return result;
     }
 
     public Boolean isCorrectResponse(AssessmentItemController itemController) {

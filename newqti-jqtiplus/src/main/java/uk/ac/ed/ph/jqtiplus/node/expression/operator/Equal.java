@@ -234,9 +234,9 @@ public class Equal extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getFirstTolerance() < 0)
             result.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Attribute " + ATTR_TOLERANCES_NAME + " (" +
@@ -251,8 +251,6 @@ public class Equal extends AbstractExpression
             result.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Invalid attribute " +
                     ATTR_TOLERANCES_NAME + " length (" + getTolerances().size() + ")."));
         }
-
-        return result;
     }
 
     @Override

@@ -52,7 +52,6 @@ import uk.ac.ed.ph.jqtiplus.value.PairValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -232,8 +231,8 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMinAssociations() > getMaxAssociations())
             result.add(new ValidationError(this, "Minimum number of associations must be less than or equal to maximum number of associations"));
@@ -252,8 +251,6 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
                 }
             }
         }
-        
-        return result;
     }
 
     @Override

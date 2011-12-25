@@ -207,12 +207,8 @@ public abstract class AbstractAttribute implements Attribute
         return builder.toString();
     }
 
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = new ValidationResult();
-
-        if (supported)
-        {
+    public void validate(ValidationContext context, ValidationResult result) {
+        if (supported) {
 //            if (getLoadingProblem() != null)
 //                result.add(new AttributeValidationError(this, getLoadingProblem().getMessage()));
 //            else
@@ -223,7 +219,5 @@ public abstract class AbstractAttribute implements Attribute
             if (!(name.startsWith("xmlns:") || name.startsWith("xsi:") || name.startsWith("xml:")))
                 result.add(new ValidationWarning(this, "Unsupported attribute: " + name));
         }
-
-        return result;
     }
 }

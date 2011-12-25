@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -77,28 +78,25 @@ public abstract class TemplateConditionChild extends AbstractObject
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getTemplateRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
-
-        return result;
     }
 
     /**
      * Evaluates all child templateRules and returns true.
-     * @param context TODO
      *
      * @return true
+     * @throws RuntimeValidationException 
      * @throws QTIProcessingInterrupt 
      */
-    public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt
-    {
-        for (TemplateRule templateRule : getTemplateRules())
+    public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+        for (TemplateRule templateRule : getTemplateRules()) {
             templateRule.evaluate(context);
-
+        }
         return true;
     }
 }

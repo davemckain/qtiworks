@@ -208,8 +208,8 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMinChoices() != null && getMinChoices() < 1)
             result.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
@@ -229,8 +229,6 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered())
                 result.add(new ValidationError(this, "Response variable must have ordered cardinality"));
         }
-        
-        return result;
     }
     
     

@@ -13,7 +13,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 /**
- * FIXME: Document this type!
+ * Encapsulates the diagnostic results of parsing (and optionally validating) QTI XML
  * 
  * @author  David McKain
  * @version $Revision: 2749 $

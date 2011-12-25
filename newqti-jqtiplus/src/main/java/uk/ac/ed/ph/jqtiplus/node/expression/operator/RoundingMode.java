@@ -59,14 +59,11 @@ public enum RoundingMode
     SIGNIFICANT_FIGURES("significantFigures")
     {
         @Override
-        public ValidationResult validateFigures(Attribute attribute, int figures)
+        public void validateFigures(Attribute attribute, ValidationResult result, int figures)
         {
-            ValidationResult result = new ValidationResult();
-
-            if (figures < 1)
+            if (figures < 1) {
                 result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") must be positive."));
-
-            return result;
+            }
         }
 
         @Override
@@ -110,14 +107,10 @@ public enum RoundingMode
     DECIMAL_PLACES("decimalPlaces")
     {
         @Override
-        public ValidationResult validateFigures(Attribute attribute, int figures)
-        {
-            ValidationResult result = new ValidationResult();
-
-            if (figures < 0)
+        public void validateFigures(Attribute attribute, ValidationResult result, int figures) {
+            if (figures < 0) {
                 result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") cannot be negative."));
-
-            return result;
+            }
         }
 
         @Override
@@ -154,9 +147,8 @@ public enum RoundingMode
      *
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
-     * @return result of validation
      */
-    public abstract ValidationResult validateFigures(Attribute attribute, int figures);
+    public abstract void validateFigures(Attribute attribute, ValidationResult result, int figures);
 
     /**
      * Rounds given number for given number of figures.

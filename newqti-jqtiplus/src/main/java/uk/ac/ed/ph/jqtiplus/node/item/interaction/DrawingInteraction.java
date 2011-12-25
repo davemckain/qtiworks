@@ -121,8 +121,8 @@ public class DrawingInteraction extends BlockInteraction {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -136,8 +136,6 @@ public class DrawingInteraction extends BlockInteraction {
         
         if (getObject() != null && getObject().getType() !=null && !getObject().getType().startsWith("image/"))
             result.add(new ValidationError(this, "Object child must have an image type"));
-        
-        return result;    
     }
 
     @Override

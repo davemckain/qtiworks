@@ -194,9 +194,6 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         }
     }
     
-    /**
-     * @throws QTIParseException
-     */
     protected XmlNode createChild(Element childElement, JQTIController jqtiController) {
         String localName = childElement.getLocalName();
         XmlNode result;
@@ -225,14 +222,12 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         return builder.toString();
     }
 
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = new ValidationResult();
+    public void validate(ValidationContext context, ValidationResult result) {
         if (minimum != null && children.size() < minimum) {
             result.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
         }
         if (maximum != null && children.size() > maximum) {
             result.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
         }
-        return result;
     }
 }

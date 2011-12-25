@@ -94,6 +94,14 @@ public abstract class AbstractObject extends AbstractNode implements XmlObject
 
         return null;
     }
+    
+    public AssessmentItemOrTest getParentItemOrTest() {
+        XmlNode root = getParentRoot();
+        if (root instanceof AssessmentItemOrTest) {
+            return (AssessmentItemOrTest) root;
+        }
+        return null;
+    }
 
     public AssessmentResult getParentResult()
     {

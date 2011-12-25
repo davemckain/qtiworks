@@ -164,8 +164,8 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -181,8 +181,6 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
                 }
             }
         }
-        
-        return result;
     }
     
     

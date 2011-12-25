@@ -43,8 +43,10 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class ValidationWarning extends AbstractValidationItem
-{
+public class ValidationWarning extends AbstractValidationItem {
+    
+    private static final long serialVersionUID = -4293271893741927980L;
+
     /**
      * Constructs validation item.
      *

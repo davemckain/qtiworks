@@ -133,9 +133,9 @@ public class Selection extends AbstractObject {
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getParent() != null && getSelect() != null)
         {
@@ -150,7 +150,5 @@ public class Selection extends AbstractObject {
             if (!getWithReplacement() && getSelect() > getParent().getSectionParts().size())
                 result.add(new ValidationError(this, "Invalid selection. Required no more than: " + getParent().getSectionParts().size() + ", but found: " + getSelect()));
         }
-
-        return result;
     }
 }

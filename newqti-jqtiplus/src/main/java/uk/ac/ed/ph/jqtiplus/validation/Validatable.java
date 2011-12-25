@@ -43,13 +43,12 @@ import java.io.Serializable;
  * 
  * @author Jiri Kajaba
  */
-public interface Validatable extends Serializable
-{
+public interface Validatable extends Serializable {
+    
     /**
-     * Validates this object.
-     * @param context TODO
+     * Validates this object, appending to the given {@link ValidationResult}
      *
      * @return validation result
      */
-    public ValidationResult validate(ValidationContext context);
+    public void validate(ValidationContext context, ValidationResult result);
 }

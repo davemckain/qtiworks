@@ -131,9 +131,9 @@ public class FieldValue extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context)
+    protected void validateAttributes(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateAttributes(context);
+        super.validateAttributes(context, result);
 
         if (getIdentifier() != null && getChildren().size() != 0 && getChildren().get(0) instanceof RecordEx)
         {
@@ -141,8 +141,6 @@ public class FieldValue extends AbstractExpression
             if (!record.getIdentifiers().contains(getIdentifier()))
                 result.add(new ValidationWarning(this, "Cannot find field with identifier: " + getIdentifier()));
         }
-
-        return result;
     }
 
     @Override

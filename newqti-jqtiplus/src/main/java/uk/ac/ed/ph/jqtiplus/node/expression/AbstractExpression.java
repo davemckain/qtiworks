@@ -36,12 +36,11 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIValidationException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -275,19 +274,15 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = validateThisOnly(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        validateThisOnly(context, result);
 
         // This is unusual order, because previous code logically belongs to parent validation.
-        result.add(super.validate(context));
-
-        return result;
+        super.validate(context, result);
     }
     
     /** Validates this Expression only, without descending into children */
-    private ValidationResult validateThisOnly(ValidationContext context) {
-        ValidationResult result = new ValidationResult();
-
+    private void validateThisOnly(ValidationContext context, ValidationResult result) {
         Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
@@ -301,8 +296,6 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
         if (!check(requiredBaseTypes, producedBaseTypes)) {
             result.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
         }
-        
-        return result;
     }
 
     /**
@@ -385,18 +378,21 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
     /**
      * Evaluates this Expression.
      * <p>
-     * Note that this may result in a {@link QTIValidationException} triggered
+     * Note that this may result in a {@link RuntimeValidationException} triggered
      * by run-time errors that are not detected using the "static" validation
      * process. (In particular, baseType checking does not happen until run-time.)
      * <p>
-     * For convenience, any resulting {@link QTIValidationException} will contain
+     * For convenience, any resulting {@link RuntimeValidationException} will contain
      * as many combined {@link ValidationItem}s as possible.
-     * 
-     * @throws QTIValidationException
      */
     @Override
-    public final Value evaluate(ProcessingContext context) {
-        return evaluate(context, 0);
+    public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
+        ValidationResult runtimeValidationResult = new ValidationResult(getParentItemOrTest());
+        Value result = evaluate(context, runtimeValidationResult, 0);
+        if (!runtimeValidationResult.getAllItems().isEmpty()) {
+            throw new RuntimeValidationException(runtimeValidationResult);
+        }
+        return result;
     }
 
     /**
@@ -405,58 +401,38 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
      * @param depth of this expression in expression tree (root's depth = 0)
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
-     * 
-     * @throws QTIValidationException
      */
-    private Value evaluate(ProcessingContext context, int depth) {
+    private Value evaluate(ProcessingContext context, ValidationResult runtimeValidationResult, int depth) {
         if (getChildren().size() > 0) {
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }
 
-        ValidationResult combinedValidationResult = new ValidationResult();
         Value value = context.getExpressionValue(this);
         if (value==null || isVariable()) {
             // 1) Evaluates all children.
             for (Expression child : getChildren()) {
-                try {
-                    if (child instanceof AbstractExpression) {
-                        ((AbstractExpression) child).evaluate(context, depth + 1);
-                    }
-                    else {
+                if (child instanceof AbstractExpression) {
+                    ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
+                }
+                else {
+                    /* (This only happens if an extension implements Expression directly) */
+                    try {
                         child.evaluate(context);
                     }
-                }
-                catch (QTIValidationException e) {
-                    combinedValidationResult.add(e.getValidationResult());
+                    catch (RuntimeValidationException e) {
+                        runtimeValidationResult.addAll(e.getValidationResult().getAllItems());
+                    }
                 }
             }
 
             // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-            ValidationResult thisValidationResult = validateThisOnly(context);
-            if (thisValidationResult.getAllItems().size() > 0) {
-                for (ValidationError error : thisValidationResult.getErrors()) {
-                    logger.error("{}: {}", error.getNode().computeXPath(), error.getMessage());
-                    combinedValidationResult.add(error);
-                }
-            }
+            validateThisOnly(context, runtimeValidationResult);
 
             // 3) Evaluates this expression.
-            if (combinedValidationResult.getAllItems().isEmpty()) {
-                try {
-                    value = evaluateSelf(context, depth);
-                }
-                catch (QTIValidationException e) {
-                    combinedValidationResult.add(e.getValidationResult());
-                }
-            }
+            value = evaluateSelf(context, depth);
         }
         else {
             logger.debug("{}Value of {} was already evaluated.", formatIndent(depth), getClass().getSimpleName());
-        }
-        
-        // If we got any validation errors during evaluating, wrap them combined result into an Exception
-        if (!combinedValidationResult.getAllItems().isEmpty()) {
-            throw new QTIValidationException(combinedValidationResult);
         }
         
         if (value==null) {
@@ -483,7 +459,7 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
 
     /**
      * Evaluates this expression. All children must be already evaluated. Contains no checks.
-     * @param context TODO
+     * 
      * @param depth depth of this expression in expression tree (root's depth = 0)
      *
      * @return result of evaluation

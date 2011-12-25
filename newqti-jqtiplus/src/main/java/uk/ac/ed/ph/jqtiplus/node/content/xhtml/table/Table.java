@@ -34,11 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.CaptionGroup;
@@ -54,6 +49,10 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Attribute : summary [0..1]: string
@@ -232,13 +231,12 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
-        if (getColgroups().size() > 0 && getCols().size() > 0)
+        if (getColgroups().size() > 0 && getCols().size() > 0) {
             result.add(new ValidationError(this, CLASS_TAG + " cannot contain both " + Colgroup.CLASS_TAG + " and " + Col.CLASS_TAG + " children"));
-        
-        return result;
+        }
     }
     
     

@@ -41,8 +41,10 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class ValidationInfo extends AbstractValidationItem
-{
+public class ValidationInfo extends AbstractValidationItem {
+    
+    private static final long serialVersionUID = -1019892031021482363L;
+
     /**
      * Constructs validation item.
      *

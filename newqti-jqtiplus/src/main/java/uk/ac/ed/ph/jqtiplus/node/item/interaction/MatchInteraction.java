@@ -226,8 +226,8 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMaxAssociations() != 0 && getMinAssociations() > getMaxAssociations()) 
             result.add(new ValidationError(this, "Minimum number of associations can't be bigger than maximum number"));
@@ -247,8 +247,6 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
             if (declaration != null && getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
 
     @Override

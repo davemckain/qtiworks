@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 
@@ -61,6 +62,10 @@ public abstract class TemplateProcessingRule extends AbstractObject
 
 	/**
 	 * Evaluates this rule and all its children.
+	 * 
+	 * @throws RuntimeValidationException 
+	 * @throws TemplateProcessingInterrupt
 	 */
-	public abstract void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt;
+	public abstract void evaluate(ProcessingContext context)
+	        throws TemplateProcessingInterrupt, RuntimeValidationException;
 }

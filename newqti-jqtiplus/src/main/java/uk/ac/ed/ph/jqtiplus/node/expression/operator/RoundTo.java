@@ -18,7 +18,6 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.math.BigDecimal;
 
 /**
@@ -98,14 +97,12 @@ public class RoundTo extends AbstractExpression {
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context) {
-        ValidationResult result = super.validateAttributes(context);
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+        super.validateAttributes(context, result);
 
         if (getRoundingMode() != null && getFigures() != null)
-            result.add(getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME),
-                    getFigures()));
-
-        return result;
+            getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), result,
+                    getFigures());
     }
 
     @Override

@@ -196,8 +196,8 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -214,8 +214,6 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
             if (declaration != null && countGaps() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
     
     private int countGaps() {

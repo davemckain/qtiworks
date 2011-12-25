@@ -74,8 +74,8 @@ public class InlineChoice extends Choice {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         List<Interaction> interactions = new ArrayList<Interaction>(); 
         search(getChildren(), Interaction.class, interactions);
@@ -83,8 +83,6 @@ public class InlineChoice extends Choice {
         if (interactions.size() > 0) {
             result.add(new ValidationError(this, CLASS_TAG + " cannot contain nested interactions"));
         }
-        
-        return result;
     }
     
     @Override

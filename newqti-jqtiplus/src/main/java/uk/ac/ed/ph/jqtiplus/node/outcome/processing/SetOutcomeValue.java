@@ -37,6 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -105,9 +106,9 @@ public class SetOutcomeValue extends ProcessOutcomeValue
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context)
+    public void validate(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validate(context);
+        super.validate(context, result);
 
         if (getIdentifier() != null)
         {
@@ -115,12 +116,10 @@ public class SetOutcomeValue extends ProcessOutcomeValue
             if (declaration != null && declaration.getLookupTable() != null)
                 result.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME + " in " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
         }
-
-        return result;
     }
 
     @Override
-    public void evaluate(ProcessingContext context) {
+    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
 
         OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());

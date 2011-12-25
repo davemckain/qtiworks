@@ -109,10 +109,10 @@ public class MapResponsePoint extends AbstractExpression
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context)
+    public void validate(ValidationContext context, ValidationResult result)
     {
         ItemValidationContext itemContext = (ItemValidationContext) context;
-        ValidationResult result = super.validate(context);
+        super.validate(context, result);
 
         ResponseDeclaration responseDeclaration = itemContext.getItem().getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
@@ -122,8 +122,6 @@ public class MapResponsePoint extends AbstractExpression
             if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint())
                 result.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of point base type."));
         }
-
-        return result;
     }
 
     @Override

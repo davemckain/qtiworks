@@ -52,7 +52,6 @@ import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.util.List;
 
 /**
@@ -120,8 +119,8 @@ public abstract class Interaction extends BodyElement {
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getResponseIdentifier() != null)
         {
@@ -129,8 +128,6 @@ public abstract class Interaction extends BodyElement {
             if (declaration == null)
                 result.add(new ValidationError(this, "Response declaration for variable ("+getResponseIdentifier()+") not found"));
         }
-        
-        return result;
     }
     
     /**

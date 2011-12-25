@@ -216,8 +216,8 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         if (getMaxChoices() < getMinChoices())
             result.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
@@ -237,8 +237,6 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
             if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
         }
-        
-        return result;
     }
     
     

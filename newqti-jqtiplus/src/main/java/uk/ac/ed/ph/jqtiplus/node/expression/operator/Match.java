@@ -98,9 +98,9 @@ public class Match extends AbstractExpression
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         for (Expression expression : getChildren())
         {
@@ -115,8 +115,6 @@ public class Match extends AbstractExpression
                 }
             }
         }
-
-        return result;
     }
 
     @Override

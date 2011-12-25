@@ -75,24 +75,28 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
     }
 
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
         
         //Although pre inherits from atomicBlock it must not contain, either directly 
         //or indirectly, any of the following objects: img, object, big, small, sub, sup.
-        if (search(Img.class).size() > 0)
+        if (search(Img.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Img.CLASS_TAG + " children"));
-        if (search(Object.class).size() > 0)
+        }
+        if (search(Object.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Object.CLASS_TAG + " children"));
-        if (search(Big.class).size() > 0)
+        }
+        if (search(Big.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Big.CLASS_TAG + " children"));
-        if (search(Small.class).size() > 0)
+        }
+        if (search(Small.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Small.CLASS_TAG + " children"));
-        if (search(Sub.class).size() > 0)
+        }
+        if (search(Sub.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sub.CLASS_TAG + " children"));
-        if (search(Sup.class).size() > 0)
+        }
+        if (search(Sup.class).size() > 0) {
             result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sup.CLASS_TAG + " children"));
-        
-        return result;
+        }
     }
 }

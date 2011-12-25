@@ -32,36 +32,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </LICENCE>
 */
 
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
+import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
-
 /**
- * This exception is used for propagating validation problems.
- * This class is equivalent to <code>QTIEvaluationException</code> for validation.
+ * Thrown if validation problems are detected at runtime (e.g. response processing)
  * 
  * @author Jiri Kajaba
  */
-public class QTIValidationException extends QTIRuntimeException {
+public class RuntimeValidationException extends QTIException {
 
-    private static final long serialVersionUID = -1647639383413827616L;
+    private static final long serialVersionUID = 1114808435234903326L;
     
     private final ValidationResult validationResult;
-
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * Detailed message is created from given ValidationItem.
-     *
-     * @param item ValidationItem
-     */
-    public QTIValidationException(ValidationItem item) {
-        super(createMessage(item));
-        this.validationResult = new ValidationResult();
-        validationResult.add(item);
-    }
 
     /**
      * Constructs A new exception with the specified detailed message.
@@ -69,32 +54,12 @@ public class QTIValidationException extends QTIRuntimeException {
      *
      * @param result ValidationResult
      */
-    public QTIValidationException(ValidationResult result) {
-        super(createMessage(result));
+    public RuntimeValidationException(ValidationResult result) {
+        super("Runtime validaiton errors determined");
         this.validationResult = result;
     }
     
     public ValidationResult getValidationResult() {
         return validationResult;
-    }
-
-    /**
-     * Creates exception message from given ValidationItem.
-     *
-     * @param item ValidationItem
-     * @return exception message from given ValidationItem
-     */
-    private static String createMessage(ValidationItem item) {
-        return "Validation failed." + XmlNode.NEW_LINE + item.toString();
-    }
-
-    /**
-     * Creates exception message from given ValidationResult.
-     *
-     * @param result ValidationResult
-     * @return exception message from given ValidationResult
-     */
-    private static String createMessage(ValidationResult result) {
-        return "Validation failed." + XmlNode.NEW_LINE + result.toString();
     }
 }

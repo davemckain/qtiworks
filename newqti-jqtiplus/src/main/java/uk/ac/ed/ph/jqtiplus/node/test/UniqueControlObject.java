@@ -92,11 +92,9 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
     }
 
     @Override
-    protected ValidationResult validateAttributes(ValidationContext context) {
-        ValidationResult result = super.validateAttributes(context);
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+        super.validateAttributes(context, result);
         
         validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME), getIdentifier());
-
-        return result;
     }
 }

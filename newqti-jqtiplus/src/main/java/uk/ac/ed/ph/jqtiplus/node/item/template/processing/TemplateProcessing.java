@@ -81,13 +81,11 @@ public class TemplateProcessing extends AbstractObject {
     }
 
     @Override
-    protected ValidationResult validateChildren(ValidationContext context)
+    protected void validateChildren(ValidationContext context, ValidationResult result)
     {
-        ValidationResult result = super.validateChildren(context);
+        super.validateChildren(context, result);
 
         if (getTemplateProcessingRules().size() == 0)
             result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
-
-        return result;
     }
 }

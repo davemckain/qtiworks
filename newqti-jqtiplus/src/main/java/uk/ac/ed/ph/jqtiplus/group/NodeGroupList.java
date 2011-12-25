@@ -379,14 +379,10 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup>
         return builder.toString();
     }
 
-    public ValidationResult validate(ValidationContext context)
-    {
-        ValidationResult result = new ValidationResult();
-
-        for (NodeGroup child : groups)
-            result.add(child.validate(context));
-
-        return result;
+    public void validate(ValidationContext context, ValidationResult result) {
+        for (NodeGroup child : groups) {
+            child.validate(context, result);
+        }
     }
 
     /**
