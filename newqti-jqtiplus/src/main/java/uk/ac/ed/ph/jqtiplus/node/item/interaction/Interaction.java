@@ -115,7 +115,7 @@ public abstract class Interaction extends BodyElement {
      */
     public ResponseDeclaration getResponseDeclaration()
     {
-        return getParentItem().getResponseDeclaration(getResponseIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
     
     @Override

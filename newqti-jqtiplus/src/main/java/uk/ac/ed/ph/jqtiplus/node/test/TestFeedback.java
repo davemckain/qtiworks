@@ -225,7 +225,7 @@ public class TestFeedback extends AbstractObject
     {
         super.validateAttributes(context, result);
 
-        if (getOutcomeIdentifier() != null && getParentTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null)
+        if (getOutcomeIdentifier() != null && getRootNode(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null)
             result.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
     }
 

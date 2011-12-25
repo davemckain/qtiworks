@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -85,7 +86,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue
     {
         if (getIdentifier() != null)
         {
-            OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+            OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null)
                 return new Cardinality[] {declaration.getCardinality()};
         }
@@ -97,7 +98,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue
     {
         if (getIdentifier() != null)
         {
-            OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+            OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null)
                 return new BaseType[] {declaration.getBaseType()};
         }
@@ -112,7 +113,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue
 
         if (getIdentifier() != null)
         {
-            OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+            OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null)
                 result.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME + " in " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
         }

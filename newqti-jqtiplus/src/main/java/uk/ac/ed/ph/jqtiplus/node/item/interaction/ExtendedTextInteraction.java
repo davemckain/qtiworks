@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -286,7 +287,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     public ResponseDeclaration getStringIdentifierResponseDeclaration()
     {
         if (getStringIdentifier() == null) return null;
-        return getParentItem().getResponseDeclaration(getStringIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
     }
     
     @Override

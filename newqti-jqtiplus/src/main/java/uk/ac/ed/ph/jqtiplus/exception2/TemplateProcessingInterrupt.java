@@ -3,9 +3,11 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.ExitTemplate;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
 
 /**
  * Interrupt exception thrown to stop the normal flow of template processing, which

@@ -34,19 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.control.ToRemove;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-
-
 /**
  * Parent of all xml objects.
  * 
  * @author Jiri Kajaba
  */
-public interface XmlObject extends XmlNode
-{
+public interface XmlObject extends XmlNode {
+    
     /**
      * Gets parent of this object or null (if object is root; for example AssessmentTest).
      * <p>
@@ -56,33 +50,7 @@ public interface XmlObject extends XmlNode
      * @return parent of this object or null (if object is root; for example AssessmentTest)
      */
     public XmlObject getParent();
+    
+    <E extends RootNode> E getRootNode(Class<E> rootClass);
 
-/* Parents used to be mutable, but only to facilitate ordering in tests. This is smelly so is removed now */
-@ToRemove
-//    /**
-//     * Sets the parent of this object.
-//     * @param parent Parent object to set
-//     */
-//    public void setParent(XmlObject parent);
-
-    /**
-     * Gets root assessmentTest or null (if root is different type).
-     *
-     * @return root assessmentTest or null (if root is different type)
-     */
-    public AssessmentTest getParentTest();
-
-    /**
-     * Gets root assessmentItem or null (if root is different type).
-     *
-     * @return root assessmentItem or null (if root is different type)
-     */
-    public AssessmentItem getParentItem();
-
-    /**
-     * Gets root assessmentResult or null (if root is different type).
-     *
-     * @return root assessmentResult or null (if root is different type)
-     */
-    public AssessmentResult getParentResult();
 }

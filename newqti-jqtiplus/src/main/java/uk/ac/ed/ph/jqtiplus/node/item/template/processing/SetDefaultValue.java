@@ -82,7 +82,7 @@ public class SetDefaultValue extends ProcessTemplateValue
     {
         if (getIdentifier() != null)
         {
-            ResponseDeclaration declaration = getParentItem().getResponseDeclaration(getIdentifier());
+            ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null)
                 return new Cardinality[] {declaration.getCardinality()};
         }
@@ -95,7 +95,7 @@ public class SetDefaultValue extends ProcessTemplateValue
     {
         if (getIdentifier() != null)
         {
-            ResponseDeclaration declaration = getParentItem().getResponseDeclaration(getIdentifier());
+            ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null)
                 return new BaseType[] {declaration.getBaseType()};
         }
@@ -107,7 +107,7 @@ public class SetDefaultValue extends ProcessTemplateValue
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         ItemProcessingContext itemContext = (ItemProcessingContext) context;
-        AssessmentItem item = getParentItem();
+        AssessmentItem item = getRootNode(AssessmentItem.class);
 
         ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
         if (responseDeclaration!=null) {
@@ -131,7 +131,7 @@ public class SetDefaultValue extends ProcessTemplateValue
         
         Identifier identifier = getIdentifier();
         if (identifier!=null) {
-            AssessmentItem item = getParentItem();
+            AssessmentItem item = getRootNode(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier)==null && item.getOutcomeDeclaration(identifier)==null) {
                 result.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
             }

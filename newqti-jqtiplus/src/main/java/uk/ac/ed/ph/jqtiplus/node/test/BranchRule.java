@@ -128,7 +128,7 @@ public class BranchRule extends AbstractJump
     public ControlObject<?> getTargetControlObject()
     {
         if (isExitTest())
-            return getParentTest();
+            return getRootNode(AssessmentTest.class);
         else if (isExitTestPart())
         {
             if (getParent() instanceof TestPart)
@@ -144,7 +144,7 @@ public class BranchRule extends AbstractJump
                 return null;
         }
         else
-            return getParentTest().lookupDescendentOrSelf(getTarget());
+            return getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
     }
 
     /**
@@ -221,7 +221,7 @@ public class BranchRule extends AbstractJump
             }
             else
             {
-                ControlObject<?> targetControlObject = getParentTest().lookupDescendentOrSelf(getTarget());
+                ControlObject<?> targetControlObject = getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
 
                 if (targetControlObject == null)
                 {

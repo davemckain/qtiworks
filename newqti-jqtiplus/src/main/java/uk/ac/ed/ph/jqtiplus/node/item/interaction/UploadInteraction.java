@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -110,7 +111,7 @@ public class UploadInteraction extends BlockInteraction {
         
         if (getResponseIdentifier() != null)
         {
-            ResponseDeclaration declaration = getParentItem().getResponseDeclaration(getResponseIdentifier());
+            ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
             

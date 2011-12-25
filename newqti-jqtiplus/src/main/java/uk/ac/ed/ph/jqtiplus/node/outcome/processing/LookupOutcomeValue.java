@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -89,7 +90,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue
     {
         if (getIdentifier() != null)
         {
-            OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+            OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null)
             {
                 if (declaration.getLookupTable() instanceof MatchTable)
@@ -105,7 +106,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue
         super.validate(context, result);
 
         if (getIdentifier() != null) {
-            OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+            OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {
                 result.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME + " in " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
             }
@@ -122,7 +123,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue
             }
             numberValue = (NumberValue) value;
         }
-        OutcomeDeclaration declaration = getParentTest().getOutcomeDeclaration(getIdentifier());
+        OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
         context.setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

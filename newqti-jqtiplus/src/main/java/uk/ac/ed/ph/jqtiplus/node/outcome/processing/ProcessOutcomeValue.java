@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -130,7 +131,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     {
         super.validateAttributes(context, result);
 
-        if (getIdentifier() != null && getParentTest().getOutcomeDeclaration(getIdentifier()) == null)
+        if (getIdentifier() != null && getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier()) == null)
             result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
     }
 }

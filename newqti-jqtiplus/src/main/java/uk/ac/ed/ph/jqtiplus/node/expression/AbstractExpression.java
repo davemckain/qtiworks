@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
@@ -387,7 +388,7 @@ public abstract class AbstractExpression extends AbstractObject implements Expre
      */
     @Override
     public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
-        ValidationResult runtimeValidationResult = new ValidationResult(getParentItemOrTest());
+        ValidationResult runtimeValidationResult = new ValidationResult(getRootNode(AssessmentItemOrTest.class));
         Value result = evaluate(context, runtimeValidationResult, 0);
         if (!runtimeValidationResult.getAllItems().isEmpty()) {
             throw new RuntimeValidationException(runtimeValidationResult);

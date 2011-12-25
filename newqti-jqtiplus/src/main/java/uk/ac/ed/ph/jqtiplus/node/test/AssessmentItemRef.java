@@ -134,7 +134,7 @@ public class AssessmentItemRef extends SectionPart {
 //        /* Create a LifecycleListener to attach to Items that will forward Lifecycle events
 //         * via the owning AssessmentTest
 //         */
-//        lifecycleEventProxy = new LifecycleEventProxy(getParentTest());
+//        lifecycleEventProxy = new LifecycleEventProxy(getRootNode(AssessmentTest.class));
 //        
 //        initNewState();
     }
@@ -612,7 +612,7 @@ public class AssessmentItemRef extends SectionPart {
 //        if (!getItemSessionControl().getAllowSkipping())
 //            throw new QTIItemFlowException(this, "It is not allowed to skip this item: ");
 //
-//        currentState.timeRecord.skip(getParentTest().getTimer().getCurrentTime());
+//        currentState.timeRecord.skip(getRootNode(AssessmentTest.class).getTimer().getCurrentTime());
 //        currentState.skipped = true;
 //        setFinished();
 //    }
@@ -641,7 +641,7 @@ public class AssessmentItemRef extends SectionPart {
 //        if (isFinished())
 //            throw new QTIItemFlowException(this, "Item reference is already finished.");
 //
-//        currentState.timeRecord.timeOut(getParentTest().getTimer().getCurrentTime());
+//        currentState.timeRecord.timeOut(getRootNode(AssessmentTest.class).getTimer().getCurrentTime());
 //        currentState.timedOut = true;
 //        setFinished();
 //    }
@@ -671,7 +671,7 @@ public class AssessmentItemRef extends SectionPart {
 //        if (isFinished())
 //            throw new QTIItemFlowException(this, "Item reference is already finished.");
 //
-//        currentState.timeRecord.submit(getParentTest().getTimer().getCurrentTime());
+//        currentState.timeRecord.submit(getRootNode(AssessmentTest.class).getTimer().getCurrentTime());
 //
 //        if (outcomes == null)
 //            outcomes = new TreeMap<String, Value>();
