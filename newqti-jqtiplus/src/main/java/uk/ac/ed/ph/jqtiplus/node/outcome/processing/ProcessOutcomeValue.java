@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -64,7 +64,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
      *
      * @param parent parent of this rule.
      */
-    public ProcessOutcomeValue(XmlObject parent)
+    public ProcessOutcomeValue(XmlNode parent)
     {
         super(parent);
 

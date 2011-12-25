@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public enum TemplateRuleType
     TEMPLATE_CONDITION (TemplateCondition.CLASS_TAG)
     {
         @Override
-        public TemplateRule create(XmlObject parent)
+        public TemplateRule create(XmlNode parent)
         {
             return new TemplateCondition(parent);
         }
@@ -73,7 +73,7 @@ public enum TemplateRuleType
     SET_TEMPLATE_VALUE (SetTemplateValue.CLASS_TAG)
     {
         @Override
-        public TemplateRule create(XmlObject parent)
+        public TemplateRule create(XmlNode parent)
         {
             return new SetTemplateValue(parent);
         }
@@ -87,7 +87,7 @@ public enum TemplateRuleType
     EXIT_TEMPLATE (ExitTemplate.CLASS_TAG)
     {
         @Override
-        public TemplateRule create(XmlObject parent)
+        public TemplateRule create(XmlNode parent)
         {
             return new ExitTemplate(parent);
         }
@@ -101,7 +101,7 @@ public enum TemplateRuleType
     SET_CORRECT_RESPONSE (SetCorrectResponse.CLASS_TAG)
     {
         @Override
-        public TemplateRule create(XmlObject parent)
+        public TemplateRule create(XmlNode parent)
         {
             return new SetCorrectResponse(parent);
         }
@@ -115,7 +115,7 @@ public enum TemplateRuleType
     SET_DEFAULT_VALUE (SetDefaultValue.CLASS_TAG)
     {
         @Override
-        public TemplateRule create(XmlObject parent)
+        public TemplateRule create(XmlNode parent)
         {
             return new SetDefaultValue(parent);
         }
@@ -144,7 +144,7 @@ public enum TemplateRuleType
      * @param parent parent of created template rule
      * @return created template rule
      */
-    public abstract TemplateRule create(XmlObject parent);
+    public abstract TemplateRule create(XmlNode parent);
 
     @Override
     public String toString()
@@ -159,7 +159,7 @@ public enum TemplateRuleType
      * @param classTag CLASS_TAG of created template rule
      * @return created template rule
      */
-    public static TemplateRule getInstance(XmlObject parent, String classTag)
+    public static TemplateRule getInstance(XmlNode parent, String classTag)
     {
         TemplateRuleType templateRuleType = templateRuleTypes.get(classTag);
 

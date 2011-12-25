@@ -38,8 +38,8 @@ package uk.ac.ed.ph.jqtiplus.node.item;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class CorrectResponse extends AbstractObject implements FieldValueParent
+public class CorrectResponse extends AbstractNode implements FieldValueParent
 {
     private static final long serialVersionUID = 1L;
     
@@ -81,7 +81,7 @@ public class CorrectResponse extends AbstractObject implements FieldValueParent
      *
      * @param xmlObject parent of this object
      */
-    public CorrectResponse(XmlObject xmlObject)
+    public CorrectResponse(XmlNode xmlObject)
     {
         super(xmlObject);
 
@@ -96,7 +96,7 @@ public class CorrectResponse extends AbstractObject implements FieldValueParent
      * @param xmlObject parent of this object
      * @param value value to use
      */
-    public CorrectResponse(XmlObject xmlObject, Value value)
+    public CorrectResponse(XmlNode xmlObject, Value value)
     {
         this(xmlObject);
 

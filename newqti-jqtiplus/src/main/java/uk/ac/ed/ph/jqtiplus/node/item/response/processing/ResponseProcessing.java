@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -63,7 +63,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class ResponseProcessing extends AbstractObject implements RootNode {
+public class ResponseProcessing extends AbstractNode implements RootNode {
     
     private static final long serialVersionUID = -4551768580135824154L;
 

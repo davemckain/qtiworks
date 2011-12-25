@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -62,7 +62,7 @@ public class Q extends AbstractSimpleInline implements SimpleInline {
      *
      * @param parent parent of constructed object
      */
-    public Q(XmlObject parent) {
+    public Q(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, null, null, false));

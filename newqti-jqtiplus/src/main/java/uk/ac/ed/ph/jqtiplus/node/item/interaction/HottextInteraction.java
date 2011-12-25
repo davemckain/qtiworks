@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Hottext;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -109,7 +109,7 @@ public class HottextInteraction extends BlockInteraction {
      *  
      * @param parent Parent node
      */
-    public HottextInteraction(XmlObject parent) {
+    public HottextInteraction(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));

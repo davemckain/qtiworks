@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.block;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
 import org.w3c.dom.Element;
@@ -61,7 +61,7 @@ public class UnsupportedBlock extends ContainerBlock
      * @param parent parent of this block
      * @param name class tag of this block
      */
-    public UnsupportedBlock(XmlObject parent, String name)
+    public UnsupportedBlock(XmlNode parent, String name)
     {
         super(parent);
 

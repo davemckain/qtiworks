@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRuleType;
 
@@ -59,7 +59,7 @@ public class OutcomeRuleGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public OutcomeRuleGroup(XmlObject parent)
+    public OutcomeRuleGroup(XmlNode parent)
     {
         super(parent, OutcomeRule.DISPLAY_NAME, null, null);
 
@@ -94,6 +94,6 @@ public class OutcomeRuleGroup extends AbstractNodeGroup
      */
     public OutcomeRule create(String classTag)
     {
-        return OutcomeRuleType.getInstance((XmlObject) getParent(), classTag);
+        return OutcomeRuleType.getInstance((XmlNode) getParent(), classTag);
     }
 }

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
@@ -52,7 +52,7 @@ public abstract class InlineInteraction extends Interaction implements Inline, F
      *  
      * @param parent Parent node
      */
-    public InlineInteraction(XmlObject parent) {
+    public InlineInteraction(XmlNode parent) {
         super(parent);
     }
 }

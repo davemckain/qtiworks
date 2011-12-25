@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -118,7 +118,7 @@ public class MediaInteraction extends BlockInteraction {
      *  
      * @param parent Parent node
      */
-    public MediaInteraction(XmlObject parent) {
+    public MediaInteraction(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_AUTOSTART_NAME, null, null, true));

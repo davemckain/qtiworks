@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.TextOrVariableGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class GapText extends GapChoice {
      *
      * @param parent parent of constructed object
      */
-    public GapText(XmlObject parent) {
+    public GapText(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new TextOrVariableGroup(this));

@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
@@ -60,7 +60,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class TemplateDefault extends AbstractObject implements ExpressionParent
+public class TemplateDefault extends AbstractNode implements ExpressionParent
 {
     private static final long serialVersionUID = 1L;
     

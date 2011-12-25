@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.template.TemplateElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackElement;
@@ -89,7 +89,7 @@ public class ItemBody extends BodyElement
      * Constructs assessmentItem.
      * @param parent The parent assessmentItem of this itemBody.
      */
-    public ItemBody(XmlObject parent)
+    public ItemBody(XmlNode parent)
     {
         super(parent);
         

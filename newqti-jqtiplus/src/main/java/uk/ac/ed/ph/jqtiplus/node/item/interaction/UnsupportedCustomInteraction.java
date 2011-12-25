@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -52,7 +52,7 @@ public final class UnsupportedCustomInteraction extends CustomInteraction {
 
     private static final long serialVersionUID = -2114615308065207715L;
 
-    public UnsupportedCustomInteraction(XmlObject parent) {
+    public UnsupportedCustomInteraction(XmlNode parent) {
         super(null, parent);
     }
 

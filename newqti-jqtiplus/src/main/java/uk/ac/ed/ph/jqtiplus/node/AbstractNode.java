@@ -35,9 +35,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
@@ -86,9 +91,6 @@ public abstract class AbstractNode implements XmlNode
         this.xmlSourceLocationInformation = xmlSourceLocationInformation;
     }
     
-    /**
-     * @return the groups
-     */
     public NodeGroupList getGroups() {
         return groups;
     }
@@ -99,12 +101,21 @@ public abstract class AbstractNode implements XmlNode
     }
 
     @Override
-    public XmlNode getParentRoot() {
+    public RootNode getRootNode() {
         XmlNode node = this;
         while (node.getParent() != null) {
             node = node.getParent();
         }
-        return node;
+        return (RootNode) node;
+    }
+    
+    public <E extends RootNode> E getRootNode(Class<E> rootClass) {
+        XmlNode root = getRootNode();
+        E result = null;
+        if (rootClass.isInstance(root)) {
+            result = rootClass.cast(root);
+        }
+        return result;
     }
 
     @Override
@@ -279,6 +290,38 @@ public abstract class AbstractNode implements XmlNode
             }
         }
     }
+    
+    /** Helper method to validate a unique identifier (definition) attribute */
+    protected void validateUniqueIdentifier(ValidationResult result, IdentifierAttribute identifierAttribute, Identifier identifier) {
+        if (identifier!= null) {
+            if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier.toString())) {
+                result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
+            }
+            if (!validateUniqueIdentifier(getRootNode(), identifier)) {
+                result.add(new AttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute));
+            }
+        }
+    }
+
+    private boolean validateUniqueIdentifier(XmlNode parent, Object identifier) {
+        if (parent != this && parent instanceof UniqueNode) {
+            Object parentIdentifier = ((UniqueNode<?>) parent).getIdentifier();
+            if (identifier.equals(parentIdentifier)) {
+                return false;
+            }
+        }
+
+        NodeGroupList groups = parent.getNodeGroups();
+        for (int i = 0; i < groups.size(); i++) {
+            NodeGroup group = groups.get(i);
+            for (XmlNode child : group.getChildren())
+                if (!validateUniqueIdentifier(child, identifier)) {
+                    return false;
+                }
+        }
+
+        return true;
+    }
 
     /**
      * Prints indent into xml string.
@@ -325,8 +368,11 @@ public abstract class AbstractNode implements XmlNode
                     if (asAttribute) {
                         /* (We're always writing attributes within double-quotes so need to escape in this case) */
                         builder.append("&quot;");
-                        break;
                     }
+                    else {
+                        builder.append('"');
+                    }
+                    break;
                     
                 default:
                     builder.append(c);

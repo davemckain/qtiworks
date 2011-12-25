@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.list.DlElementGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -61,7 +61,7 @@ public class Dl extends BodyElement implements BlockStatic, FlowStatic {
      *
      * @param parent parent of constructed object
      */
-    public Dl(XmlObject parent) {
+    public Dl(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new DlElementGroup(this));

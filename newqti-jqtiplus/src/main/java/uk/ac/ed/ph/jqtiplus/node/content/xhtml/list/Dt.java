@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class Dt extends DlElement {
      *
      * @param parent parent of constructed object
      */
-    public Dt(XmlObject parent) {
+    public Dt(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new InlineGroup(this));

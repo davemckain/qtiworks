@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
@@ -64,7 +64,7 @@ public abstract class CustomInteraction extends Interaction implements Block, Fl
      *
      * @param parent parent of constructed object
      */
-    public CustomInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlObject parent) {
+    public CustomInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(parent);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }

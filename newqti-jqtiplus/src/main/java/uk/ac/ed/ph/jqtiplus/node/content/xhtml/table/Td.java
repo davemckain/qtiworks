@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * td
@@ -53,7 +53,7 @@ public class Td extends TableCell {
      *
      * @param parent parent of constructed object
      */
-    public Td(XmlObject parent) {
+    public Td(XmlNode parent) {
         super(parent);
     }
 

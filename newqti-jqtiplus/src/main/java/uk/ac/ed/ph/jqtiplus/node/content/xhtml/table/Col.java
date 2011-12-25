@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class Col extends BodyElement {
      *
      * @param parent parent of constructed object
      */
-    public Col(XmlObject parent) {
+    public Col(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE));

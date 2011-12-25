@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt.InterruptType;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
 /**
@@ -57,7 +57,7 @@ public class ExitTemplate extends TemplateRule {
      *
      * @param parent parent of constructed object
      */
-    public ExitTemplate(XmlObject parent) {
+    public ExitTemplate(XmlNode parent) {
         super(parent);
     }
 

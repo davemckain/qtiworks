@@ -40,7 +40,7 @@ import java.util.List;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseRule;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseRuleType;
 
@@ -58,7 +58,7 @@ public class ResponseRuleGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public ResponseRuleGroup(XmlObject parent)
+    public ResponseRuleGroup(XmlNode parent)
     {
         super(parent, ResponseRule.DISPLAY_NAME, null, null);
 
@@ -93,6 +93,6 @@ public class ResponseRuleGroup extends AbstractNodeGroup
      */
     public ResponseRule create(String classTag)
     {
-        return ResponseRuleType.getInstance((XmlObject) getParent(), classTag);
+        return ResponseRuleType.getInstance((XmlNode) getParent(), classTag);
     }
 }

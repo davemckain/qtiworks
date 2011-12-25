@@ -37,8 +37,8 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
 /**
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
  * 
  * @author Jonathon Hare
  */
-public abstract class ResponseRule extends AbstractObject
+public abstract class ResponseRule extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     
@@ -58,7 +58,7 @@ public abstract class ResponseRule extends AbstractObject
      *
      * @param parent parent of this rule
      */
-    public ResponseRule(XmlObject parent)
+    public ResponseRule(XmlNode parent)
     {
         super(parent);
     }

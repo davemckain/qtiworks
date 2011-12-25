@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemVariableGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 
 
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public abstract class AbstractResult extends AbstractObject implements IdentifiableObject<String> {
+public abstract class AbstractResult extends AbstractNode implements IdentifiableObject<String> {
     
     private static final long serialVersionUID = -7547227519468855801L;
 

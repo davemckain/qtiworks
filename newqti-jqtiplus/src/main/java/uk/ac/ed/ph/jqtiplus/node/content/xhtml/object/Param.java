@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ParamTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.ObjectFlow;
 import uk.ac.ed.ph.jqtiplus.value.ParamType;
 
@@ -76,7 +76,7 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * @author Jonathon Hare
  *
  */
-public class Param extends AbstractObject implements ObjectFlow {
+public class Param extends AbstractNode implements ObjectFlow {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */
@@ -99,7 +99,7 @@ public class Param extends AbstractObject implements ObjectFlow {
      *
      * @param parent parent of constructed object
      */
-    public Param(XmlObject parent) {
+    public Param(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME));

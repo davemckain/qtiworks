@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
 
@@ -62,7 +62,7 @@ public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
      *
      * @param parent parent of constructed object
      */
-    public Blockquote(XmlObject parent) {
+    public Blockquote(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, null, null, false));

@@ -38,7 +38,7 @@ import java.util.List;
 
 
 import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public class CandidateResponse extends AbstractObject implements FieldValueParent {
+public class CandidateResponse extends AbstractNode implements FieldValueParent {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */

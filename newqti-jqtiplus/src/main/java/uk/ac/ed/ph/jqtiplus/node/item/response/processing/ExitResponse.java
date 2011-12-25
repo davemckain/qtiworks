@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
 /**
@@ -56,7 +56,7 @@ public class ExitResponse extends ResponseRule {
      *
      * @param parent parent of constructed object
      */
-    public ExitResponse(XmlObject parent) {
+    public ExitResponse(XmlNode parent) {
         super(parent);
     }
 

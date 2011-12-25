@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class ResponseCondition extends ResponseRule
      *
      * @param parent parent of this rule
      */
-    public ResponseCondition(XmlObject parent)
+    public ResponseCondition(XmlNode parent)
     {
         super(parent);
 

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
@@ -58,7 +58,7 @@ public class FlowGroup extends AbstractContentNodeGroup
      *
      * @param parent parent of created group
      */
-    public FlowGroup(XmlObject parent)
+    public FlowGroup(XmlNode parent)
     {
         super(parent, Flow.DISPLAY_NAME, null, null);
 
@@ -68,9 +68,9 @@ public class FlowGroup extends AbstractContentNodeGroup
     }
 
     @Override
-    public XmlObject getParent()
+    public XmlNode getParent()
     {
-        return (XmlObject) super.getParent();
+        return (XmlNode) super.getParent();
     }
 
     @Override

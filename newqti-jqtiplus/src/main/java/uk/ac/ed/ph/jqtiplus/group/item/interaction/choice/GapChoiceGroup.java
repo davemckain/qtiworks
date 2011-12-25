@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.AbstractContentNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 
@@ -79,9 +79,9 @@ public class GapChoiceGroup extends AbstractContentNodeGroup
     }
 
     @Override
-    public XmlObject getParent()
+    public XmlNode getParent()
     {
-        return (XmlObject) super.getParent();
+        return (XmlNode) super.getParent();
     }
 
     @Override

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class Prompt extends BodyElement {
      *  
      * @param parent Parent node
      */
-    public Prompt(XmlObject parent) {
+    public Prompt(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new InlineStaticGroup(this));

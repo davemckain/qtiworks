@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectFlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
@@ -83,7 +83,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
      *
      * @param parent parent of constructed object
      */
-    public Object(XmlObject parent) {
+    public Object(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME));

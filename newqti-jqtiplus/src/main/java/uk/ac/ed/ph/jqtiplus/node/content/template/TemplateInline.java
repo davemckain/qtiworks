@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.template;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
@@ -60,7 +60,7 @@ public class TemplateInline extends TemplateElement implements FlowStatic, Inlin
      *
      * @param parent parent of constructed object
      */
-    public TemplateInline(XmlObject parent) {
+    public TemplateInline(XmlNode parent) {
         super(parent);
         getNodeGroups().add(new InlineStaticGroup(this));
     }

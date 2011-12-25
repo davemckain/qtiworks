@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ShapeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 
@@ -62,7 +62,7 @@ public class HotspotChoice extends Choice implements Hotspot {
      *
      * @param parent parent of constructed object
      */
-    public HotspotChoice(XmlObject parent) {
+    public HotspotChoice(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));

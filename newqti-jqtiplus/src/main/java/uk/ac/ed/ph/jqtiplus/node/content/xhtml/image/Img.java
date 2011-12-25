@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.image;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
@@ -86,7 +86,7 @@ public class Img extends BodyElement implements AtomicInline {
      *
      * @param parent parent of constructed object
      */
-    public Img(XmlObject parent) {
+    public Img(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new UriAttribute(this, ATTR_SRC_NAME));

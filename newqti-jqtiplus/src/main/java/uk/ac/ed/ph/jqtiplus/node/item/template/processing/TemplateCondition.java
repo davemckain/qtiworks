@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class TemplateCondition extends TemplateRule
      *
      * @param parent parent of this rule
      */
-    public TemplateCondition(XmlObject parent)
+    public TemplateCondition(XmlNode parent)
     {
         super(parent);
 

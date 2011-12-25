@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 
@@ -52,7 +52,7 @@ public abstract class DlElement extends BodyElement {
      *
      * @param parent parent of constructed object
      */
-    public DlElement(XmlObject parent) {
+    public DlElement(XmlNode parent) {
         super(parent);
     }
 }

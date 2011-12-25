@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class TemplateProcessing extends AbstractObject {
+public class TemplateProcessing extends AbstractNode {
 	
 	private static final long serialVersionUID = 4102163277727881279L;
 	

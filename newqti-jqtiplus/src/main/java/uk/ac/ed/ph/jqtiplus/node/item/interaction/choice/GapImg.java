@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class GapImg extends GapChoice {
      *
      * @param parent parent of constructed object
      */
-    public GapImg(XmlObject parent) {
+    public GapImg(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, null, null, false));

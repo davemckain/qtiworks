@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
  * 
  * @author Jiri Kajaba
  */
-public class TimeLimit extends AbstractObject
+public class TimeLimit extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -204,7 +204,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
             result = jqtiController.createCustomOperator(expressionParent, operatorClass);
         }
         else if ("customInteraction".equals(localName)) {
-            XmlObject parentObject = (XmlObject) getParent();
+            XmlNode parentObject = (XmlNode) getParent();
             String interactionClass = childElement.getAttribute("class");
             result = jqtiController.createCustomInteraction(parentObject, interactionClass);
         }

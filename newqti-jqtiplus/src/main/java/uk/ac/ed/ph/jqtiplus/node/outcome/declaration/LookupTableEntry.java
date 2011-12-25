@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  * 
  * @author Jiri Kajaba
  */
-public abstract class LookupTableEntry extends AbstractObject
+public abstract class LookupTableEntry extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

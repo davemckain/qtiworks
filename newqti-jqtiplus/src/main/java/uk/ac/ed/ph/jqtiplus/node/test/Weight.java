@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * 
  * @author Jiri Kajaba
  */
-public class Weight extends AbstractObject implements IdentifiableObject<Identifier> {
+public class Weight extends AbstractNode implements IdentifiableObject<Identifier> {
     
     private static final long serialVersionUID = -115358594629456681L;
 

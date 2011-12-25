@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
@@ -161,7 +161,7 @@ public enum ContentType {
      */    
     ASSOCIATE_INTERACTION(AssociateInteraction.CLASS_TAG, AssociateInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new AssociateInteraction(parent);
         }
     },
@@ -170,7 +170,7 @@ public enum ContentType {
      */
     CHOICE_INTERACTION(ChoiceInteraction.CLASS_TAG, ChoiceInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new ChoiceInteraction(parent);
         }
     },
@@ -179,7 +179,7 @@ public enum ContentType {
      */
     DRAWING_INTERACTION(DrawingInteraction.CLASS_TAG, DrawingInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new DrawingInteraction(parent);
         }
     },
@@ -188,7 +188,7 @@ public enum ContentType {
      */
     EXTENDED_TEXT_INTERACTION(ExtendedTextInteraction.CLASS_TAG, ExtendedTextInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new ExtendedTextInteraction(parent);
         }
     },
@@ -197,7 +197,7 @@ public enum ContentType {
      */
     GAP_MATCH_INTERACTION(GapMatchInteraction.CLASS_TAG, GapMatchInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GapMatchInteraction(parent);
         }
     },
@@ -206,7 +206,7 @@ public enum ContentType {
      */
     GRAPHIC_ASSOCIATE_INTERACTION(GraphicAssociateInteraction.CLASS_TAG, GraphicAssociateInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GraphicAssociateInteraction(parent);
         }
     },
@@ -215,7 +215,7 @@ public enum ContentType {
      */
     GRAPHIC_GAP_MATCH_INTERACTION(GraphicGapMatchInteraction.CLASS_TAG, GraphicGapMatchInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GraphicGapMatchInteraction(parent);
         }
     },
@@ -224,7 +224,7 @@ public enum ContentType {
      */
     GRAPHIC_ORDER_INTERACTION(GraphicOrderInteraction.CLASS_TAG, GraphicOrderInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GraphicOrderInteraction(parent);
         }
     },
@@ -233,7 +233,7 @@ public enum ContentType {
      */
     HOTSPOT_INTERACTION(HotspotInteraction.CLASS_TAG, HotspotInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new HotspotInteraction(parent);
         }
     },
@@ -242,7 +242,7 @@ public enum ContentType {
      */
     SELECT_POINT_INTERACTION(SelectPointInteraction.CLASS_TAG, SelectPointInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new SelectPointInteraction(parent);
         }
     },
@@ -251,7 +251,7 @@ public enum ContentType {
      */
     HOTTEXT_INTERACTION(HottextInteraction.CLASS_TAG, HottextInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new HottextInteraction(parent);
         }
     },
@@ -260,7 +260,7 @@ public enum ContentType {
      */
     MATCH_INTERACTION(MatchInteraction.CLASS_TAG, MatchInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new MatchInteraction(parent);
         }
     },
@@ -269,7 +269,7 @@ public enum ContentType {
      */
     MEDIA_INTERACTION(MediaInteraction.CLASS_TAG, MediaInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new MediaInteraction(parent);
         }
     },
@@ -278,7 +278,7 @@ public enum ContentType {
      */
     ORDER_INTERACTION(OrderInteraction.CLASS_TAG, OrderInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new OrderInteraction(parent);
         }
     },
@@ -287,7 +287,7 @@ public enum ContentType {
      */
     SLIDER_INTERACTION(SliderInteraction.CLASS_TAG, SliderInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new SliderInteraction(parent);
         }
     },
@@ -296,7 +296,7 @@ public enum ContentType {
      */
     UPLOAD_INTERACTION(UploadInteraction.CLASS_TAG, UploadInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new UploadInteraction(parent);
         }
     },
@@ -306,7 +306,7 @@ public enum ContentType {
      */
     ADDRESS(Address.CLASS_TAG, Address.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Address(parent);
         }
     },
@@ -315,7 +315,7 @@ public enum ContentType {
      */
     H1(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H1(parent);
         }
     },
@@ -324,7 +324,7 @@ public enum ContentType {
      */
     H2(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H2(parent);
         }
     },
@@ -333,7 +333,7 @@ public enum ContentType {
      */
     H3(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H3(parent);
         }
     },
@@ -342,7 +342,7 @@ public enum ContentType {
      */
     H4(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H4(parent);
         }
     },
@@ -351,7 +351,7 @@ public enum ContentType {
      */
     H5(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H5(parent);
         }
     },
@@ -360,7 +360,7 @@ public enum ContentType {
      */
     H6(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new H6(parent);
         }
     },
@@ -369,7 +369,7 @@ public enum ContentType {
      */
     P(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new P(parent);
         }
     },
@@ -378,7 +378,7 @@ public enum ContentType {
      */
     PRE(Pre.CLASS_TAG, Pre.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Pre(parent);
         }
     },
@@ -387,14 +387,14 @@ public enum ContentType {
      */
     DIV(Div.CLASS_TAG, Div.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Div(parent);
         }
     },
     
     INFOCONTROL(InfoControl.CLASS_TAG, InfoControl.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new InfoControl(parent);
         }
     },
@@ -404,7 +404,7 @@ public enum ContentType {
      */
     DL(Dl.CLASS_TAG, Dl.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Dl(parent);
         }
     },
@@ -413,7 +413,7 @@ public enum ContentType {
      */
     HR(Hr.CLASS_TAG, Hr.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Hr(parent);
         }
     },
@@ -422,7 +422,7 @@ public enum ContentType {
      */
     MATH(Math.CLASS_TAG, Math.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Math(parent);
         }
     },
@@ -431,7 +431,7 @@ public enum ContentType {
      */
     OL(Ol.CLASS_TAG, Ol.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Ol(parent);
         }
     },
@@ -440,7 +440,7 @@ public enum ContentType {
      */
     BLOCKQUOTE(Blockquote.CLASS_TAG, Blockquote.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Blockquote(parent);
         }
     },
@@ -449,7 +449,7 @@ public enum ContentType {
      */
     FEEDBACK_BLOCK(FeedbackBlock.CLASS_TAG, FeedbackBlock.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new FeedbackBlock(parent);
         }
     },
@@ -458,7 +458,7 @@ public enum ContentType {
      */
     RUBRIC_BLOCK(RubricBlock.CLASS_TAG, RubricBlock.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new RubricBlock(parent);
         }
     },
@@ -467,7 +467,7 @@ public enum ContentType {
      */
     TABLE(Table.CLASS_TAG, Table.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Table(parent);
         }
     },
@@ -476,7 +476,7 @@ public enum ContentType {
      */
     UL(Ul.CLASS_TAG, Ul.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Ul(parent);
         }
     },    
@@ -485,7 +485,7 @@ public enum ContentType {
      */
     CUSTOM_INTERACTION(CustomInteraction.CLASS_TAG, CustomInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             throw new QTILogicException("customInteractions should have been intercepted before this method got called");
         }
     },
@@ -494,7 +494,7 @@ public enum ContentType {
      */
     POSITION_OBJECT_STAGE(PositionObjectStage.CLASS_TAG, PositionObjectStage.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new PositionObjectStage(parent);
         }
     },
@@ -503,7 +503,7 @@ public enum ContentType {
      */
     POSITION_OBJECT_INTERACTION(PositionObjectInteraction.CLASS_TAG, PositionObjectInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new PositionObjectInteraction(parent);
         }
     },
@@ -512,7 +512,7 @@ public enum ContentType {
      */
     END_ATTEMPT_INTERACTION(EndAttemptInteraction.CLASS_TAG, EndAttemptInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new EndAttemptInteraction(parent);
         }
     },
@@ -521,7 +521,7 @@ public enum ContentType {
      */
     INLINE_CHOICE_INTERACTION(InlineChoiceInteraction.CLASS_TAG, InlineChoiceInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new InlineChoiceInteraction(parent);
         }
     },
@@ -530,7 +530,7 @@ public enum ContentType {
      */
     TEXT_ENTRY_INTERACTION(TextEntryInteraction.CLASS_TAG, TextEntryInteraction.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new TextEntryInteraction(parent);
         }
     },
@@ -540,7 +540,7 @@ public enum ContentType {
      */
     BR(Br.CLASS_TAG, Br.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Br(parent);
         }
     },
@@ -549,7 +549,7 @@ public enum ContentType {
      */
     IMG(Img.CLASS_TAG, Img.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Img(parent);
         }
     }, 
@@ -558,7 +558,7 @@ public enum ContentType {
      */
     GAP(Gap.CLASS_TAG, Gap.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Gap(parent);
         }
     },
@@ -567,7 +567,7 @@ public enum ContentType {
      */
     HOTTEXT(Hottext.CLASS_TAG, Hottext.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Hottext(parent);
         }
     }, 
@@ -576,7 +576,7 @@ public enum ContentType {
      */
     OBJECT(uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object(parent);
         }
     },
@@ -585,7 +585,7 @@ public enum ContentType {
      */
     PRINTED_VARIABLE(PrintedVariable.CLASS_TAG, PrintedVariable.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new PrintedVariable(parent);
         }
     },
@@ -594,7 +594,7 @@ public enum ContentType {
      */
     A(uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new A(parent);
         }
     },
@@ -603,7 +603,7 @@ public enum ContentType {
      */
     ABBR(Abbr.CLASS_TAG, Abbr.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Abbr(parent);
         }
     },
@@ -612,7 +612,7 @@ public enum ContentType {
      */
     ACRONYM(Acronym.CLASS_TAG, Acronym.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Acronym(parent);
         }
     },
@@ -621,7 +621,7 @@ public enum ContentType {
      */
     B(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new B(parent);
         }
     },
@@ -630,7 +630,7 @@ public enum ContentType {
      */
     BIG(Big.CLASS_TAG, Big.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Big(parent);
         }
     },
@@ -639,7 +639,7 @@ public enum ContentType {
      */
     CITE(Cite.CLASS_TAG, Cite.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Cite(parent);
         }
     },
@@ -648,7 +648,7 @@ public enum ContentType {
      */
     CODE(Code.CLASS_TAG, Code.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Code(parent);
         }
     },
@@ -657,7 +657,7 @@ public enum ContentType {
      */
     DFN(Dfn.CLASS_TAG, Dfn.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Dfn(parent);
         }
     },
@@ -666,7 +666,7 @@ public enum ContentType {
      */
     EM(Em.CLASS_TAG, Em.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Em(parent);
         }
     },
@@ -675,7 +675,7 @@ public enum ContentType {
      */
     FEEDBACK_INLINE(FeedbackInline.CLASS_TAG, FeedbackInline.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new FeedbackInline(parent);
         }
     },
@@ -684,7 +684,7 @@ public enum ContentType {
      */
     I(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new I(parent);
         }
     },
@@ -693,7 +693,7 @@ public enum ContentType {
      */
     KBD(Kbd.CLASS_TAG, Kbd.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Kbd(parent);
         }
     },
@@ -702,7 +702,7 @@ public enum ContentType {
      */
     Q(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Q(parent);
         }
     },
@@ -711,7 +711,7 @@ public enum ContentType {
      */
     SAMP(Samp.CLASS_TAG, Samp.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Samp(parent);
         }
     },
@@ -720,7 +720,7 @@ public enum ContentType {
      */
     SMALL(Small.CLASS_TAG, Small.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Small(parent);
         }
     },
@@ -729,7 +729,7 @@ public enum ContentType {
      */
     SPAN(Span.CLASS_TAG, Span.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Span(parent);
         }
     },
@@ -738,7 +738,7 @@ public enum ContentType {
      */
     STRONG(Strong.CLASS_TAG, Strong.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Strong(parent);
         }
     },
@@ -747,7 +747,7 @@ public enum ContentType {
      */
     SUB(Sub.CLASS_TAG, Sub.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Sub(parent);
         }
     },
@@ -756,7 +756,7 @@ public enum ContentType {
      */
     SUP(Sup.CLASS_TAG, Sup.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Sup(parent);
         }
     },
@@ -765,7 +765,7 @@ public enum ContentType {
      */
     TT(Tt.CLASS_TAG, Tt.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Tt(parent);
         }
     },
@@ -774,7 +774,7 @@ public enum ContentType {
      */
     VAR(Var.CLASS_TAG, Var.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Var(parent);
         }
     }, 
@@ -783,7 +783,7 @@ public enum ContentType {
      */
     TEMPLATE_INLINE(TemplateInline.CLASS_TAG, TemplateInline.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new TemplateInline(parent);
         }
     },
@@ -792,7 +792,7 @@ public enum ContentType {
      */
     TEXT_RUN(TextRun.DISPLAY_NAME, TextRun.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new TextRun(parent, "");
         }
     },
@@ -801,7 +801,7 @@ public enum ContentType {
      */
     PARAM(Param.CLASS_TAG, Param.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Param(parent);
         }
     },
@@ -810,7 +810,7 @@ public enum ContentType {
      */
     CAPTION(Caption.CLASS_TAG, Caption.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Caption(parent);
         }
     },
@@ -819,7 +819,7 @@ public enum ContentType {
      */
     SIMPLE_CHOICE(SimpleChoice.CLASS_TAG, SimpleChoice.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new SimpleChoice(parent);
         }
     },
@@ -828,7 +828,7 @@ public enum ContentType {
      */
     SIMPLE_ASSOCIABLE_CHOICE(SimpleAssociableChoice.CLASS_TAG, SimpleAssociableChoice.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new SimpleAssociableChoice(parent);
         }
     },
@@ -837,7 +837,7 @@ public enum ContentType {
      */
     SIMPLE_MATCH_SET(SimpleMatchSet.CLASS_TAG, SimpleMatchSet.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new SimpleMatchSet(parent);
         }
     },
@@ -846,7 +846,7 @@ public enum ContentType {
      */
     GAP_IMG(GapImg.CLASS_TAG, GapImg.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GapImg(parent);
         }
     },
@@ -855,7 +855,7 @@ public enum ContentType {
      */
     GAP_TEXT(GapText.CLASS_TAG, GapText.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new GapText(parent);
         }
     },
@@ -864,7 +864,7 @@ public enum ContentType {
      */
     ASSOCIABLE_HOTSPOT(AssociableHotspot.CLASS_TAG, AssociableHotspot.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new AssociableHotspot(parent);
         }
     },
@@ -873,7 +873,7 @@ public enum ContentType {
      */
     HOTSPOT_CHOICE(HotspotChoice.CLASS_TAG, HotspotChoice.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new HotspotChoice(parent);
         }
     },
@@ -882,7 +882,7 @@ public enum ContentType {
      */
     INLINE_CHOICE(InlineChoice.CLASS_TAG, InlineChoice.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new InlineChoice(parent);
         }
     },
@@ -891,7 +891,7 @@ public enum ContentType {
      */
     COL(Col.CLASS_TAG, Col.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Col(parent);
         }
     },
@@ -900,7 +900,7 @@ public enum ContentType {
      */
     COLGROUP(Colgroup.CLASS_TAG, Colgroup.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Colgroup(parent);
         }
     },
@@ -909,7 +909,7 @@ public enum ContentType {
      */
     DD(Dd.CLASS_TAG, Dd.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Dd(parent);
         }
     },
@@ -918,7 +918,7 @@ public enum ContentType {
      */
     DT(Dt.CLASS_TAG, Dt.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Dt(parent);
         }
     },
@@ -927,7 +927,7 @@ public enum ContentType {
      */
     ITEM_BODY(ItemBody.CLASS_TAG, ItemBody.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new ItemBody(parent);
         }
     },
@@ -936,7 +936,7 @@ public enum ContentType {
      */
     LI(Li.CLASS_TAG, Li.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Li(parent);
         }
     },
@@ -945,7 +945,7 @@ public enum ContentType {
      */
     PROMPT(Prompt.CLASS_TAG, Prompt.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Prompt(parent);
         }
     },
@@ -954,7 +954,7 @@ public enum ContentType {
      */
     TD(Td.CLASS_TAG, Td.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Td(parent);
         }
     },
@@ -963,7 +963,7 @@ public enum ContentType {
      */
     TH(Th.CLASS_TAG, Th.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Th(parent);
         }
     },
@@ -972,7 +972,7 @@ public enum ContentType {
      */
     TBODY(Tbody.CLASS_TAG, Tbody.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Tbody(parent);
         }
     },
@@ -981,7 +981,7 @@ public enum ContentType {
      */
     TFOOT(Tfoot.CLASS_TAG, Tfoot.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Tfoot(parent);
         }
     },
@@ -990,7 +990,7 @@ public enum ContentType {
      */
     THEAD(Thead.CLASS_TAG, Thead.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Thead(parent);
         }
     },
@@ -999,7 +999,7 @@ public enum ContentType {
      */
     TR(Tr.CLASS_TAG, Tr.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new Tr(parent);
         }
     },
@@ -1008,7 +1008,7 @@ public enum ContentType {
      */
     TEMPLATE_BLOCK(TemplateBlock.CLASS_TAG, TemplateBlock.class) {
         @Override
-        public XmlObject create(XmlObject parent) {
+        public XmlNode create(XmlNode parent) {
             return new TemplateBlock(parent);
         }
     }
@@ -1218,7 +1218,7 @@ public enum ContentType {
      * @param parent parent of created block
      * @return created block
      */
-    public abstract XmlObject create(XmlObject parent);
+    public abstract XmlNode create(XmlNode parent);
 
     @Override
     public String toString()
@@ -1249,7 +1249,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created content
      * @return created content
      */
-    public static XmlObject getInstance(XmlObject parent, String classTag)
+    public static XmlNode getInstance(XmlNode parent, String classTag)
     {
         ContentType contentType = contentTypes.get(classTag);
 
@@ -1266,7 +1266,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created block
      * @return created block
      */
-    public static Block getBlockInstance(XmlObject parent, String classTag)
+    public static Block getBlockInstance(XmlNode parent, String classTag)
     {
         ContentType blockType = blockTypes.get(classTag);
 
@@ -1283,7 +1283,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created inline
      * @return created inline
      */
-    public static Inline getInlineInstance(XmlObject parent, String classTag)
+    public static Inline getInlineInstance(XmlNode parent, String classTag)
     {
         ContentType inlineType = inlineTypes.get(classTag);
 
@@ -1300,7 +1300,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created flow
      * @return created flow
      */
-    public static Flow getFlowInstance(XmlObject parent, String classTag)
+    public static Flow getFlowInstance(XmlNode parent, String classTag)
     {
         ContentType flowType = flowTypes.get(classTag);
 
@@ -1317,7 +1317,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created objectFlow
      * @return created objectFlow
      */
-    public static ObjectFlow getObjectFlowInstance(XmlObject parent, String classTag)
+    public static ObjectFlow getObjectFlowInstance(XmlNode parent, String classTag)
     {
         ContentType flowType = objectFlowTypes.get(classTag);
 
@@ -1334,7 +1334,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created inlineStatic
      * @return created inlineStatic
      */
-    public static InlineStatic getInlineStaticInstance(XmlObject parent, String classTag)
+    public static InlineStatic getInlineStaticInstance(XmlNode parent, String classTag)
     {
         ContentType inlineType = inlineStaticTypes.get(classTag);
 
@@ -1351,7 +1351,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created flowStatic
      * @return created flowStatic
      */
-    public static FlowStatic getFlowStaticInstance(XmlObject parent, String classTag)
+    public static FlowStatic getFlowStaticInstance(XmlNode parent, String classTag)
     {
         ContentType flowStaticType = flowStaticTypes.get(classTag);
 
@@ -1368,7 +1368,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created textOrVariable
      * @return created textOrVariable
      */
-    public static TextOrVariable getTextOrVariableInstance(XmlObject parent, String classTag)
+    public static TextOrVariable getTextOrVariableInstance(XmlNode parent, String classTag)
     {
         ContentType textOrVariable = textOrVariableTypes.get(classTag);
 
@@ -1385,7 +1385,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created blockStatic
      * @return created blockStatic
      */
-    public static BlockStatic getBlockStaticInstance(XmlObject parent, String classTag)
+    public static BlockStatic getBlockStaticInstance(XmlNode parent, String classTag)
     {
         ContentType blockStatic = blockStaticTypes.get(classTag);
 
@@ -1402,7 +1402,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created gapChoice
      * @return created gapChoice
      */
-    public static GapChoice getGapChoiceInstance(XmlObject parent, String classTag)
+    public static GapChoice getGapChoiceInstance(XmlNode parent, String classTag)
     {
         ContentType gapChoice = gapChoiceTypes.get(classTag);
 
@@ -1419,7 +1419,7 @@ public enum ContentType {
      * @param classTag CLASS_TAG of created interaction
      * @return created interaction
      */
-    public static Interaction getInteractionInstance(XmlObject parent, String classTag)
+    public static Interaction getInteractionInstance(XmlNode parent, String classTag)
     {
         ContentType interaction = interactionTypes.get(classTag);
 

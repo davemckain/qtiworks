@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
@@ -98,7 +98,7 @@ public abstract class TableCell extends BodyElement {
      *
      * @param parent parent of constructed object
      */
-    public TableCell(XmlObject parent) {
+    public TableCell(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, null, null, false));

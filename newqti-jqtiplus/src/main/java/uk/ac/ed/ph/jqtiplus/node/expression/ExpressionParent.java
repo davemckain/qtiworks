@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * 
  * @author Jiri Kajaba
  */
-public interface ExpressionParent extends XmlObject
+public interface ExpressionParent extends XmlNode
 {
     /**
      * Gets list of all acceptable cardinalities which can child expression at given position produce.

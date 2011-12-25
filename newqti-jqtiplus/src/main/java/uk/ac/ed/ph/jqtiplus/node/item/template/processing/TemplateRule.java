@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Abstract parent of all template rules.
@@ -53,7 +53,7 @@ public abstract class TemplateRule extends TemplateProcessingRule {
      *
      * @param parent parent of this rule
      */
-    public TemplateRule(XmlObject parent)
+    public TemplateRule(XmlNode parent)
     {
         super(parent);
     }

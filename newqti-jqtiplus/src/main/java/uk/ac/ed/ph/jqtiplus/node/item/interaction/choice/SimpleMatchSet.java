@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.SimpleAssociableChoiceGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ import java.util.List;
  * @author Jonathon Hare
  *
  */
-public class SimpleMatchSet extends AbstractObject implements SimpleAssociableChoiceContainer {
+public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoiceContainer {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */
@@ -59,7 +59,7 @@ public class SimpleMatchSet extends AbstractObject implements SimpleAssociableCh
      *
      * @param parent parent of constructed object
      */
-    public SimpleMatchSet(XmlObject parent) {
+    public SimpleMatchSet(XmlNode parent) {
         super(parent);
 
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this));

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
@@ -56,7 +56,7 @@ public class H2 extends AbstractAtomicBlock implements AtomicBlock {
      *
      * @param parent parent of constructed object
      */
-    public H2(XmlObject parent) {
+    public H2(XmlNode parent) {
         super(parent);
     }
 

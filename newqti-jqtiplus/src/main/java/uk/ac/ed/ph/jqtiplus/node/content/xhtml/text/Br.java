@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
@@ -59,7 +59,7 @@ public class Br extends BodyElement implements AtomicInline {
      *
      * @param parent parent of constructed object
      */
-    public Br(XmlObject parent) {
+    public Br(XmlNode parent) {
         super(parent);
     }
 

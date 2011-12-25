@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -61,7 +61,7 @@ public class Div extends BodyElement implements BlockStatic, FlowStatic {
      *
      * @param parent parent of constructed object
      */
-    public Div(XmlObject parent) {
+    public Div(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new FlowGroup(this));

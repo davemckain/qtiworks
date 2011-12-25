@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoiceContainer;
 
@@ -94,6 +94,6 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup
      */
     public SimpleAssociableChoice create(String classTag)
     {
-        return new SimpleAssociableChoice((XmlObject) getParent());
+        return new SimpleAssociableChoice((XmlNode) getParent());
     }
 }

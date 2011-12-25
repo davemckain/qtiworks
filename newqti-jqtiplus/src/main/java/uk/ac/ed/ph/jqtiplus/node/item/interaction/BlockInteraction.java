@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PromptGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
@@ -56,7 +56,7 @@ public abstract class BlockInteraction extends Interaction implements Block, Flo
      *  
      * @param parent Parent node
      */
-    public BlockInteraction(XmlObject parent) {
+    public BlockInteraction(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new PromptGroup(this));

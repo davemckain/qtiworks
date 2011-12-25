@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -60,7 +60,7 @@ public abstract class GraphicInteraction extends BlockInteraction {
      *
      * @param parent parent of constructed object
      */
-    public GraphicInteraction(XmlObject parent) {
+    public GraphicInteraction(XmlNode parent) {
         super(parent);
 
         getNodeGroups().add(new ObjectGroup(this, true));

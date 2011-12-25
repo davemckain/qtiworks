@@ -37,9 +37,9 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -77,7 +77,7 @@ import java.util.List;
  * @author Jonathon Hare
  *
  */
-public abstract class BodyElement extends AbstractObject {
+public abstract class BodyElement extends AbstractNode {
 
     private static final long serialVersionUID = 876241954731607171L;
 
@@ -101,7 +101,7 @@ public abstract class BodyElement extends AbstractObject {
      *
      * @param parent parent of this bodyElement
      */
-    public BodyElement(XmlObject parent)
+    public BodyElement(XmlNode parent)
     {
         super(parent);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, null, null, false));

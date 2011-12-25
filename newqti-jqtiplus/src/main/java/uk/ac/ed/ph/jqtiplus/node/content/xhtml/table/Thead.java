@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TrGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class Thead extends BodyElement {
      *
      * @param parent parent of constructed object
      */
-    public Thead(XmlObject parent) {
+    public Thead(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new TrGroup(this));

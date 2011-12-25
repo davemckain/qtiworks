@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.CardinalityAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.DefaultValueGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
@@ -60,7 +60,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * 
  * @author Jiri Kajaba
  */
-public abstract class VariableDeclaration extends AbstractObject implements UniqueNode<Identifier> {
+public abstract class VariableDeclaration extends AbstractNode implements UniqueNode<Identifier> {
 
     private static final long serialVersionUID = -2027681803807985451L;
 

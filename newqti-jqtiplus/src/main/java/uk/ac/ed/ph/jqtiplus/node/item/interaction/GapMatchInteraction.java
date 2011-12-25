@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.GapChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoiceContainer;
@@ -110,7 +110,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
      *  
      * @param parent Parent node
      */
-    public GapMatchInteraction(XmlObject parent) {
+    public GapMatchInteraction(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));

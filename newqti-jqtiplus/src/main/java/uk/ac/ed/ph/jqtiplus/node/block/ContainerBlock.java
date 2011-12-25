@@ -35,10 +35,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.block;
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
@@ -55,7 +55,7 @@ import org.w3c.dom.NodeList;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public abstract class ContainerBlock extends AbstractObject
+public abstract class ContainerBlock extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     
@@ -67,7 +67,7 @@ public abstract class ContainerBlock extends AbstractObject
      *
      * @param parent parent of this block
      */
-    public ContainerBlock(XmlObject parent)
+    public ContainerBlock(XmlNode parent)
     {
         super(parent);
 

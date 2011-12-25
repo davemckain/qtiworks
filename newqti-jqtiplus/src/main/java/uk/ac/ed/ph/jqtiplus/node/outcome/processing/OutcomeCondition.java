@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class OutcomeCondition extends OutcomeRule
      *
      * @param parent parent of this rule
      */
-    public OutcomeCondition(XmlObject parent)
+    public OutcomeCondition(XmlNode parent)
     {
         super(parent);
 

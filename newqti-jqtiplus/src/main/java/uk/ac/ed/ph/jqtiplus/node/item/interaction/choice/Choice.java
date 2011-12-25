@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
@@ -109,7 +109,7 @@ public abstract class Choice extends BodyElement {
      *  
      * @param parent Parent node
      */
-    public Choice(XmlObject parent) {
+    public Choice(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));

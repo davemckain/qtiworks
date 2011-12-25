@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 
@@ -79,9 +79,9 @@ public class BlockStaticGroup extends AbstractContentNodeGroup
     }
 
     @Override
-    public XmlObject getParent()
+    public XmlNode getParent()
     {
-        return (XmlObject) super.getParent();
+        return (XmlNode) super.getParent();
     }
 
     @Override

@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -80,7 +80,7 @@ public abstract class Interaction extends BodyElement {
      *  
      * @param parent Parent node
      */
-    public Interaction(XmlObject parent) {
+    public Interaction(XmlNode parent) {
         super(parent);
     
         getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, null, null, true));

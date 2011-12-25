@@ -37,15 +37,15 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Abstract parent of all template processing rules.
  * 
  * @author Jonathon Hare
  */
-public abstract class TemplateProcessingRule extends AbstractObject
+public abstract class TemplateProcessingRule extends AbstractNode
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -57,7 +57,7 @@ public abstract class TemplateProcessingRule extends AbstractObject
 	 *
 	 * @param parent parent of this rule
 	 */
-	public TemplateProcessingRule(XmlObject parent) {
+	public TemplateProcessingRule(XmlNode parent) {
 		super(parent);
 	}
 

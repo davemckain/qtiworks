@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -64,7 +64,7 @@ public class SetCorrectResponse extends ProcessTemplateValue
      *
      * @param parent parent of this rule
      */
-    public SetCorrectResponse(XmlObject parent)
+    public SetCorrectResponse(XmlNode parent)
     {
         super(parent);
     }

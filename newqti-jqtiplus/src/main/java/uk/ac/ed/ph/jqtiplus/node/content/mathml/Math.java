@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
@@ -83,7 +83,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
      *
      * @param parent parent of constructed object
      */
-    public Math(XmlObject parent) {
+    public Math(XmlNode parent) {
         super(parent);
     
         getAttributes().add(0, new StringAttribute(this, ATTR_DEFAULT_NAME_SPACE_NAME, ATTR_DEFAULT_NAME_SPACE_VALUE, null, true));

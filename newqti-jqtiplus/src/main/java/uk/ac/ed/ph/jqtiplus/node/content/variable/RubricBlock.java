@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
@@ -67,7 +67,7 @@ public class RubricBlock extends BodyElement implements SimpleBlock
      *
      * @param parent parent of this block
      */
-    public RubricBlock(XmlObject parent)
+    public RubricBlock(XmlNode parent)
     {
         super(parent);
 

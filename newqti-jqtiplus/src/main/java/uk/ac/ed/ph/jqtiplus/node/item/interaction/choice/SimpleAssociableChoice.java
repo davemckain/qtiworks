@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
      *  
      * @param parent Parent node
      */
-    public SimpleAssociableChoice(XmlObject parent) {
+    public SimpleAssociableChoice(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));

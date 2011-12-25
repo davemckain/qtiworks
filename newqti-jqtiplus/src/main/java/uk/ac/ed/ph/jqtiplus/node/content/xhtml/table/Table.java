@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TbodyGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TfootGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TheadGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -88,7 +88,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
      *
      * @param parent parent of constructed object
      */
-    public Table(XmlObject parent) {
+    public Table(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, null, null, false));

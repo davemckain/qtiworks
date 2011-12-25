@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class TestFeedback extends AbstractObject
+public class TestFeedback extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

@@ -45,7 +45,7 @@ package uk.ac.ed.ph.jqtiplus.node;
  * 
  * @author David McKain
  */
-public interface IdentifiableObject<E> extends XmlObject {
+public interface IdentifiableObject<E> extends XmlNode {
     
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";

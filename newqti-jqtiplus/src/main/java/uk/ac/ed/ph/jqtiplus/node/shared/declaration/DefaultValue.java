@@ -38,7 +38,7 @@ package uk.ac.ed.ph.jqtiplus.node.shared.declaration;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -58,7 +58,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class DefaultValue extends AbstractObject implements FieldValueParent
+public class DefaultValue extends AbstractNode implements FieldValueParent
 {
     private static final long serialVersionUID = 1L;
     

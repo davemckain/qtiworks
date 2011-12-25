@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group.item;
 
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 
 
@@ -54,7 +54,7 @@ public class CorrectResponseGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public CorrectResponseGroup(XmlObject parent)
+    public CorrectResponseGroup(XmlNode parent)
     {
         super(parent, CorrectResponse.CLASS_TAG, false);
     }
@@ -90,6 +90,6 @@ public class CorrectResponseGroup extends AbstractNodeGroup
      */
     public CorrectResponse create(String classTag)
     {
-        return new CorrectResponse((XmlObject) getParent());
+        return new CorrectResponse((XmlNode) getParent());
     }
 }

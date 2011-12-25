@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
@@ -78,7 +78,7 @@ public abstract class FeedbackElement extends BodyElement {
      *
      * @param parent parent of this element
      */
-    public FeedbackElement(XmlObject parent) {
+    public FeedbackElement(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));

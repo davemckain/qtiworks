@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -124,7 +124,7 @@ public class SliderInteraction extends BlockInteraction {
      *  
      * @param parent Parent node
      */
-    public SliderInteraction(XmlObject parent) {
+    public SliderInteraction(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME));

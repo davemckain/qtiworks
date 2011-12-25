@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 
 /**
@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
  * 
  * @author Jiri Kajaba
  */
-public class ItemSessionControl extends AbstractObject
+public class ItemSessionControl extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

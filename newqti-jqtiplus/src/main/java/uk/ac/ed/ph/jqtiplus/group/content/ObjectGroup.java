@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
 
@@ -55,7 +55,7 @@ public class ObjectGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public ObjectGroup(XmlObject parent)
+    public ObjectGroup(XmlNode parent)
     {
         super(parent, Object.CLASS_TAG, false);
     }
@@ -66,7 +66,7 @@ public class ObjectGroup extends AbstractNodeGroup
      * @param parent parent of created group
      * @param required if true then group is mandatory
      */
-    public ObjectGroup(XmlObject parent, boolean required)
+    public ObjectGroup(XmlNode parent, boolean required)
     {
         super(parent, Object.CLASS_TAG, true);
     }
@@ -102,6 +102,6 @@ public class ObjectGroup extends AbstractNodeGroup
      */
     public Object create(String classTag)
     {
-        return new Object((XmlObject) getParent());
+        return new Object((XmlNode) getParent());
     }
 }

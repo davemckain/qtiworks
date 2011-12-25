@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -61,7 +61,7 @@ public enum ResponseRuleType
     LOOKUP_OUTCOME_VALUE (LookupOutcomeValue.CLASS_TAG)
     {
         @Override
-        public ResponseRule create(XmlObject parent)
+        public ResponseRule create(XmlNode parent)
         {
             return new LookupOutcomeValue(parent);
         }
@@ -75,7 +75,7 @@ public enum ResponseRuleType
     RESPONSE_CONDITION (ResponseCondition.CLASS_TAG)
     {
         @Override
-        public ResponseRule create(XmlObject parent)
+        public ResponseRule create(XmlNode parent)
         {
             return new ResponseCondition(parent);
         }
@@ -89,7 +89,7 @@ public enum ResponseRuleType
     RESPONSE_PROCESSING_FRAGMENT (ResponseProcessingFragment.CLASS_TAG)
     {
         @Override
-        public ResponseRule create(XmlObject parent)
+        public ResponseRule create(XmlNode parent)
         {
             return new ResponseProcessingFragment(parent);
         }
@@ -103,7 +103,7 @@ public enum ResponseRuleType
     SET_OUTCOME_VALUE (SetOutcomeValue.CLASS_TAG)
     {
         @Override
-        public ResponseRule create(XmlObject parent)
+        public ResponseRule create(XmlNode parent)
         {
             return new SetOutcomeValue(parent);
         }
@@ -117,7 +117,7 @@ public enum ResponseRuleType
     EXIT_RESPONSE (ExitResponse.CLASS_TAG)
     {
         @Override
-        public ResponseRule create(XmlObject parent)
+        public ResponseRule create(XmlNode parent)
         {
             return new ExitResponse(parent);
         }
@@ -146,7 +146,7 @@ public enum ResponseRuleType
      * @param parent parent of created response rule
      * @return created response rule
      */
-    public abstract ResponseRule create(XmlObject parent);
+    public abstract ResponseRule create(XmlNode parent);
 
     @Override
     public String toString()
@@ -161,7 +161,7 @@ public enum ResponseRuleType
      * @param classTag CLASS_TAG of created response rule
      * @return created response rule
      */
-    public static ResponseRule getInstance(XmlObject parent, String classTag)
+    public static ResponseRule getInstance(XmlNode parent, String classTag)
     {
         ResponseRuleType responseRuleType = responseRuleTypes.get(classTag);
 

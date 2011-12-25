@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -64,7 +64,7 @@ public class ResponseProcessingFragment extends ResponseRule
      *
      * @param parent parent of this rule
      */
-    public ResponseProcessingFragment(XmlObject parent)
+    public ResponseProcessingFragment(XmlNode parent)
     {
         super(parent);
 

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.image.Img;
@@ -65,7 +65,7 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
      *
      * @param parent parent of constructed object
      */
-    public Pre(XmlObject parent) {
+    public Pre(XmlNode parent) {
         super(parent);
     }
 

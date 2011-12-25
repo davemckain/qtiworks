@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 
 
@@ -45,7 +45,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jiri Kajaba
  */
-public class CandidateComment extends AbstractObject
+public class CandidateComment extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

@@ -40,7 +40,7 @@ import java.util.List;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRuleType;
 
@@ -58,7 +58,7 @@ public class TemplateRuleGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public TemplateRuleGroup(XmlObject parent)
+    public TemplateRuleGroup(XmlNode parent)
     {
         super(parent, TemplateRule.DISPLAY_NAME, null, null);
 
@@ -93,6 +93,6 @@ public class TemplateRuleGroup extends AbstractNodeGroup
      */
     public TemplateRule create(String classTag)
     {
-        return TemplateRuleType.getInstance((XmlObject) getParent(), classTag);
+        return TemplateRuleType.getInstance((XmlNode) getParent(), classTag);
     }
 }

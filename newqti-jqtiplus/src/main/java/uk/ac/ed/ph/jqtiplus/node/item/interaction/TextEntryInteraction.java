@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -83,7 +83,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
      *  
      * @param parent Parent node
      */
-    public TextEntryInteraction(XmlObject parent) {
+    public TextEntryInteraction(XmlNode parent) {
         super(parent);
         
         //for StringInteraction...

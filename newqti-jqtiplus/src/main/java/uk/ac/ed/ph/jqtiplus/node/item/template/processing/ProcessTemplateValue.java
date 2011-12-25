@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -59,7 +59,7 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
      *
      * @param parent parent of this rule.
      */
-    public ProcessTemplateValue(XmlObject parent)
+    public ProcessTemplateValue(XmlNode parent)
     {
         super(parent);
 

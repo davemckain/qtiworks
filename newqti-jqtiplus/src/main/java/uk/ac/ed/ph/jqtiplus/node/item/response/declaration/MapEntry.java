@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
 
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  * 
  * @author Jonathon Hare
  */
-public class MapEntry extends AbstractObject {
+public class MapEntry extends AbstractNode {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */

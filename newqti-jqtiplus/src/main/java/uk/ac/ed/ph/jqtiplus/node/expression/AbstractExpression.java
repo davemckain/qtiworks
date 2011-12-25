@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Jiri Kajaba
  */
-public abstract class AbstractExpression extends AbstractObject implements Expression
+public abstract class AbstractExpression extends AbstractNode implements Expression
 {
     private static final long serialVersionUID = 1L;
 

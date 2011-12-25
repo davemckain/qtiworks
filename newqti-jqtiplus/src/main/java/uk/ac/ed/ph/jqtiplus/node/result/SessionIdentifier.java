@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 import java.net.URI;
 
@@ -48,7 +48,7 @@ import java.net.URI;
  * 
  * @author Jiri Kajaba
  */
-public class SessionIdentifier extends AbstractObject
+public class SessionIdentifier extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

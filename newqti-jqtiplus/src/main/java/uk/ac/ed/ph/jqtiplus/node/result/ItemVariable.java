@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.CardinalityAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * 
  * @author Jiri Kajaba
  */
-public abstract class ItemVariable extends AbstractObject {
+public abstract class ItemVariable extends AbstractNode {
 
     private static final long serialVersionUID = -7574012966913693854L;
 

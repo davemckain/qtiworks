@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -71,7 +71,7 @@ public class SetOutcomeValue extends ProcessResponseValue
      *
      * @param parent parent of this rule
      */
-    public SetOutcomeValue(XmlObject parent)
+    public SetOutcomeValue(XmlNode parent)
     {
         super(parent);
     }

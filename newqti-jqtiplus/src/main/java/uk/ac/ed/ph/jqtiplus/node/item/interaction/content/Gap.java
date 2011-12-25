@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.AssociableChoice;
 
@@ -71,7 +71,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
      *
      * @param parent parent of constructed object
      */
-    public Gap(XmlObject parent) {
+    public Gap(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE));

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.group.result.IdentificationGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.SessionIdentifierGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class Context extends AbstractObject
+public class Context extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

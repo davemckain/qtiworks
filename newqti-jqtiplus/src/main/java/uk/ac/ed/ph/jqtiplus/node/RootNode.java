@@ -15,7 +15,7 @@ import java.net.URI;
  * @author  David McKain
  * @version $Revision$
  */
-public interface RootNode extends XmlObject {
+public interface RootNode extends XmlNode {
     
     /** Header of xml file. */
     @ToRefactor

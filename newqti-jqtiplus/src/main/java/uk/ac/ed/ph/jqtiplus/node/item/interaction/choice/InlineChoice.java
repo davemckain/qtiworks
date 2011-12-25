@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.TextOrVariableGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -67,7 +67,7 @@ public class InlineChoice extends Choice {
      *  
      * @param parent Parent node
      */
-    public InlineChoice(XmlObject parent) {
+    public InlineChoice(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new TextOrVariableGroup(this));

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public abstract class AbstractSimpleInline extends BodyElement implements Simple
      *
      * @param parent parent of constructed object
      */
-    public AbstractSimpleInline(XmlObject parent) {
+    public AbstractSimpleInline(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new InlineGroup(this));

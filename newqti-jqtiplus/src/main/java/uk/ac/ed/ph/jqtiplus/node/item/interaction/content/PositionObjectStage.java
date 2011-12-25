@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PositionObjectInteractionGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.PositionObjectInteraction;
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Jonathon Hare
  *
  */
-public class PositionObjectStage extends AbstractObject implements Block {
+public class PositionObjectStage extends AbstractNode implements Block {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */
@@ -62,7 +62,7 @@ public class PositionObjectStage extends AbstractObject implements Block {
      *
      * @param parent parent of constructed object
      */
-    public PositionObjectStage(XmlObject parent) {
+    public PositionObjectStage(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new ObjectGroup(this, true));

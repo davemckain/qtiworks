@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public abstract class ResponseConditionChild extends AbstractObject
+public abstract class ResponseConditionChild extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
 

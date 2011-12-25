@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 
 
@@ -46,7 +46,7 @@ import org.w3c.dom.Text;
  * 
  * @author Jonathon Hare
  */
-public class TextRun extends AbstractObject implements FlowStatic, InlineStatic, TextOrVariable
+public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, TextOrVariable
 {
     private static final long serialVersionUID = 1L;
     
@@ -62,7 +62,7 @@ public class TextRun extends AbstractObject implements FlowStatic, InlineStatic,
      * @param parent parent of this block
      * @param textContent text content of this block
      */
-    public TextRun(XmlObject parent, String textContent)
+    public TextRun(XmlNode parent, String textContent)
     {
         super(parent);
 

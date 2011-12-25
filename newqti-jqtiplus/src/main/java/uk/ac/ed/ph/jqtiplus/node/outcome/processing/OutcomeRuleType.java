@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +60,7 @@ public enum OutcomeRuleType
     LOOKUP_OUTCOME_VALUE (LookupOutcomeValue.CLASS_TAG)
     {
         @Override
-        public OutcomeRule create(XmlObject parent)
+        public OutcomeRule create(XmlNode parent)
         {
             return new LookupOutcomeValue(parent);
         }
@@ -74,7 +74,7 @@ public enum OutcomeRuleType
     OUTCOME_CONDITION (OutcomeCondition.CLASS_TAG)
     {
         @Override
-        public OutcomeRule create(XmlObject parent)
+        public OutcomeRule create(XmlNode parent)
         {
             return new OutcomeCondition(parent);
         }
@@ -88,7 +88,7 @@ public enum OutcomeRuleType
     OUTCOME_PROCESSING_FRAGMENT (OutcomeProcessingFragment.CLASS_TAG)
     {
         @Override
-        public OutcomeRule create(XmlObject parent)
+        public OutcomeRule create(XmlNode parent)
         {
             return new OutcomeProcessingFragment(parent);
         }
@@ -102,7 +102,7 @@ public enum OutcomeRuleType
     SET_OUTCOME_VALUE (SetOutcomeValue.CLASS_TAG)
     {
         @Override
-        public OutcomeRule create(XmlObject parent)
+        public OutcomeRule create(XmlNode parent)
         {
             return new SetOutcomeValue(parent);
         }
@@ -115,7 +115,7 @@ public enum OutcomeRuleType
     EXIT_TEST (ExitTest.CLASS_TAG)
     {
         @Override
-        public OutcomeRule create(XmlObject parent)
+        public OutcomeRule create(XmlNode parent)
         {
             return new ExitTest(parent);
         }
@@ -144,7 +144,7 @@ public enum OutcomeRuleType
      * @param parent parent of created outcome rule
      * @return created outcome rule
      */
-    public abstract OutcomeRule create(XmlObject parent);
+    public abstract OutcomeRule create(XmlNode parent);
 
     @Override
     public String toString()
@@ -159,7 +159,7 @@ public enum OutcomeRuleType
      * @param classTag CLASS_TAG of created outcome rule
      * @return created outcome rule
      */
-    public static OutcomeRule getInstance(XmlObject parent, String classTag)
+    public static OutcomeRule getInstance(XmlNode parent, String classTag)
     {
         OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(classTag);
 

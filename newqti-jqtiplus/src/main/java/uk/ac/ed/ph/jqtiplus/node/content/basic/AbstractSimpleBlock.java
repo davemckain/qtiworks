@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public abstract class AbstractSimpleBlock extends BodyElement implements SimpleB
      *
      * @param parent parent of constructed object
      */
-    public AbstractSimpleBlock(XmlObject parent) {
+    public AbstractSimpleBlock(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new BlockGroup(this));

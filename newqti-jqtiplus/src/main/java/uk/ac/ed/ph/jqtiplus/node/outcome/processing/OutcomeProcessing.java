@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -59,7 +59,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class OutcomeProcessing extends AbstractObject
+public class OutcomeProcessing extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

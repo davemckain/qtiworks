@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapImg;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class GapImgGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public GapImgGroup(XmlObject parent)
+    public GapImgGroup(XmlNode parent)
     {
         super(parent, GapImg.CLASS_TAG, null, null);
     }
@@ -68,7 +68,7 @@ public class GapImgGroup extends AbstractNodeGroup
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public GapImgGroup(XmlObject parent, Integer minimum)
+    public GapImgGroup(XmlNode parent, Integer minimum)
     {
         super(parent, GapImg.CLASS_TAG, minimum, null);
     }
@@ -93,6 +93,6 @@ public class GapImgGroup extends AbstractNodeGroup
      */
     public GapImg create(String classTag)
     {
-        return new GapImg((XmlObject) getParent());
+        return new GapImg((XmlNode) getParent());
     }
 }

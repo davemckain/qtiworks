@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
@@ -72,7 +72,7 @@ public class Hottext extends Choice implements InlineStatic, FlowStatic {
      *
      * @param parent parent of constructed object
      */
-    public Hottext(XmlObject parent) {
+    public Hottext(XmlNode parent) {
         super(parent);
 
         getNodeGroups().add(new InlineStaticGroup(this));

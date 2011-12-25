@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -56,7 +56,7 @@ public class Sub extends AbstractSimpleInline implements SimpleInline {
      *
      * @param parent parent of constructed object
      */
-    public Sub(XmlObject parent) {
+    public Sub(XmlNode parent) {
         super(parent);
     }
 

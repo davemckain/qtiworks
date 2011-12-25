@@ -40,7 +40,7 @@ import java.util.List;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspotContainer;
 
@@ -94,6 +94,6 @@ public class AssociableHotspotGroup extends AbstractNodeGroup
      */
     public AssociableHotspot create(String classTag)
     {
-        return new AssociableHotspot((XmlObject) getParent());
+        return new AssociableHotspot((XmlNode) getParent());
     }
 }

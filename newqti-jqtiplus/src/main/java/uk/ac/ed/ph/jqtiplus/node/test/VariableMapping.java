@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * 
  * @author Jiri Kajaba
  */
-public class VariableMapping extends AbstractObject
+public class VariableMapping extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

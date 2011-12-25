@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -58,7 +58,7 @@ public class FeedbackInline extends FeedbackElement implements SimpleInline {
      *
      * @param parent parent of this element
      */
-    public FeedbackInline(XmlObject parent) {
+    public FeedbackInline(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new InlineGroup(this));

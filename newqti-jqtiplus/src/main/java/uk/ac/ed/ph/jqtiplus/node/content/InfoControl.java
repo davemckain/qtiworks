@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public class InfoControl extends BodyElement implements Block {
      *
      * @param parent parent of constructed object
      */
-    public InfoControl(XmlObject parent) {
+    public InfoControl(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new FlowGroup(this));

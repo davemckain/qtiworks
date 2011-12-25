@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.TestResultGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.net.URI;
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class AssessmentResult extends AbstractObject implements RootNode
+public class AssessmentResult extends AbstractNode implements RootNode
 {
     private static final long serialVersionUID = 1L;
     

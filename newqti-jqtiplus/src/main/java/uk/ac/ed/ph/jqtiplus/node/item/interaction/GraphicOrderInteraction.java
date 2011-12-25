@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic.HotspotChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -111,7 +111,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
      *  
      * @param parent Parent node
      */
-    public GraphicOrderInteraction(XmlObject parent) {
+    public GraphicOrderInteraction(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));

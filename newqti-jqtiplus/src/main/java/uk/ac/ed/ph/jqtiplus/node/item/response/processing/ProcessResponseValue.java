@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -59,7 +59,7 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
      *
      * @param parent parent of this rule.
      */
-    public ProcessResponseValue(XmlObject parent)
+    public ProcessResponseValue(XmlNode parent)
     {
         super(parent);
 

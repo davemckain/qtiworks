@@ -65,7 +65,7 @@ public interface XmlNode extends Validatable {
      * @return parent of this node or null (if node is root; for example AssessmentTest)
      */
     XmlNode getParent();
-
+    
     /**
      * Gets root of this node or node itself (if node is root; for example AssessmentTest).
      * <p>
@@ -74,7 +74,9 @@ public interface XmlNode extends Validatable {
      *
      * @return root of this node or node itself (if node is root; for example AssessmentTest)
      */
-    XmlNode getParentRoot();
+    RootNode getRootNode();
+    
+    <E extends RootNode> E getRootNode(Class<E> rootClass);
 
     /**
      * Gets list (container) of all attributes.
@@ -97,9 +99,6 @@ public interface XmlNode extends Validatable {
 
     /**
      * Loads this node from given DOM source {@link Element}.
-     * @param sourceElement source node (DOM) for this node
-     * @param context TODO
-     * @param JQTIController TODO
      */
     void load(Element sourceElement, LoadingContext context);
 

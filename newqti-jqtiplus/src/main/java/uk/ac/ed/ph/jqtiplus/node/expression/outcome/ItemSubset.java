@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
@@ -147,7 +147,7 @@ public abstract class ItemSubset extends AbstractExpression
 
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
-        XmlObject parent = getParent();
+        XmlNode parent = getParent();
 
         while (parent != null) {
             if (parent instanceof OutcomeProcessing) {

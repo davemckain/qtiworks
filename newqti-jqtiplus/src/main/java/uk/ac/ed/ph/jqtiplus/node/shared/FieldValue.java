@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -68,7 +68,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jiri Kajaba
  */
-public class FieldValue extends AbstractObject
+public class FieldValue extends AbstractNode
 {
     private static final long serialVersionUID = 1L;
     

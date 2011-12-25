@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 
 /**
@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
  * 
  * @author Jiri Kajaba
  */
-public class Ordering extends AbstractObject {
+public class Ordering extends AbstractNode {
     
     private static final long serialVersionUID = 8836454929046981760L;
 

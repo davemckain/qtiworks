@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 import java.net.URI;
 
@@ -47,7 +47,7 @@ import java.net.URI;
  * 
  * @author Jonathon Hare
  */
-public class Stylesheet extends AbstractObject {
+public class Stylesheet extends AbstractNode {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */

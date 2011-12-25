@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTINotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMapEntryGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponsePoint;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class AreaMapping extends AbstractObject {
+public class AreaMapping extends AbstractNode {
     private static final long serialVersionUID = 1L;
 
     /** Name of this class in xml schema. */

@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
 
@@ -58,7 +58,7 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
      *
      * @param parent parent of this element
      */
-    public FeedbackBlock(XmlObject parent) {
+    public FeedbackBlock(XmlNode parent) {
         super(parent);
     
         getNodeGroups().add(new BlockGroup(this));

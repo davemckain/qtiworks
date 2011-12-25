@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class Li extends BodyElement {
      *
      * @param parent parent of constructed object
      */
-    public Li(XmlObject parent) {
+    public Li(XmlNode parent) {
         super(parent);
         
         getNodeGroups().add(new FlowGroup(this));

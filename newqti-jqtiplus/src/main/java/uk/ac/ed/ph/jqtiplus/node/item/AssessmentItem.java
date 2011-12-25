@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseProcessingGro
 import uk.ac.ed.ph.jqtiplus.group.item.template.declaration.TemplateDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public class AssessmentItem extends AbstractObject implements AssessmentItemOrTest {
+public class AssessmentItem extends AbstractNode implements AssessmentItemOrTest {
     
     private static final long serialVersionUID = 4723748473878175232L;
 

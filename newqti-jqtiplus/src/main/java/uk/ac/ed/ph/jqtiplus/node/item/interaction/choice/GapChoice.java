@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 
 /**
@@ -77,7 +77,7 @@ public abstract class GapChoice extends AssociableChoice {
      *  
      * @param parent Parent node
      */
-    public GapChoice(XmlObject parent) {
+    public GapChoice(XmlNode parent) {
         super(parent);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));

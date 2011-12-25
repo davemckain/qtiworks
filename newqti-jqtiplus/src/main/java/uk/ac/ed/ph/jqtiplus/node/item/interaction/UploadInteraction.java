@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -72,7 +72,7 @@ public class UploadInteraction extends BlockInteraction {
      *
      * @param parent parent of constructed object
      */
-    public UploadInteraction(XmlObject parent) {
+    public UploadInteraction(XmlNode parent) {
         super(parent);
         
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
