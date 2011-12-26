@@ -13,15 +13,11 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 import java.io.Serializable;
 import java.util.Map;
 
 /**
- * FIXME: This now extends {@link AssessmentItemOrTestLogic}, since I cast this a few times. There's scope
- * for refactoring and tidying things up, as some "evaluation"-type methods take a {@link ProcessingContext}
- * whereas others take {@link AssessmentItemOrTestLogic} or related. It's a bit messy, isn't it?!
- * @author dmckain
+ * FIXME: This needs refactored!
  *
  */
 public interface ProcessingContext extends ValidationContext, Serializable {

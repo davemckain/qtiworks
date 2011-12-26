@@ -54,7 +54,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public interface AssessmentItemOrTest extends RootNode, IdentifiableObject<String> {
+public interface AssessmentObject extends RootNode, IdentifiableObject<String> {
     
     List<OutcomeDeclaration> getOutcomeDeclarations();
     

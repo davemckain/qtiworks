@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.LookupTableGroup;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ContainerBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
@@ -106,7 +106,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      *
      * @param parent parent of this object
      */
-    public OutcomeDeclaration(AssessmentItemOrTest parent)
+    public OutcomeDeclaration(AssessmentObject parent)
     {
         super(parent);
 

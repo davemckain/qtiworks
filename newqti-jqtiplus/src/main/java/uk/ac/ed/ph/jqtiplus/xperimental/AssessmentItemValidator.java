@@ -6,7 +6,7 @@
 package uk.ac.ed.ph.jqtiplus.xperimental;
 
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -50,7 +50,7 @@ public final class AssessmentItemValidator implements ItemValidationContext {
     }
     
     @Override
-    public AssessmentItemOrTest getOwner() {
+    public AssessmentObject getOwner() {
         return item;
     }
     

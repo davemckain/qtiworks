@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 
@@ -57,7 +57,7 @@ public class OutcomeDeclarationGroup extends AbstractNodeGroup
      *
      * @param parent parent of created group
      */
-    public OutcomeDeclarationGroup(AssessmentItemOrTest parent)
+    public OutcomeDeclarationGroup(AssessmentObject parent)
     {
         super(parent, OutcomeDeclaration.CLASS_TAG, null, null);
     }
@@ -82,6 +82,6 @@ public class OutcomeDeclarationGroup extends AbstractNodeGroup
      */
     public OutcomeDeclaration create(String classTag)
     {
-        return new OutcomeDeclaration((AssessmentItemOrTest) getParent());
+        return new OutcomeDeclaration((AssessmentObject) getParent());
     }
 }

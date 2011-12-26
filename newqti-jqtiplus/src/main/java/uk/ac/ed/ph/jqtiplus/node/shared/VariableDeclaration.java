@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.DefaultValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
@@ -78,7 +78,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
      *
      * @param parent parent of this object
      */
-    public VariableDeclaration(AssessmentItemOrTest parent)
+    public VariableDeclaration(AssessmentObject parent)
     {
         super(parent);
 

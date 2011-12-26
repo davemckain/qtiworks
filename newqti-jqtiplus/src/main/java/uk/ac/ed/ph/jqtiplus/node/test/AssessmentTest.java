@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
@@ -59,7 +59,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class AssessmentTest extends ControlObject<String> implements AssessmentItemOrTest {
+public class AssessmentTest extends ControlObject<String> implements AssessmentObject {
     
     private static final long serialVersionUID = 7638099859697920203L;
 

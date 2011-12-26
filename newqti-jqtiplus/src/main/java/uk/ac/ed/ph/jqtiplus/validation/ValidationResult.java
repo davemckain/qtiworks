@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.io.Serializable;
@@ -52,7 +52,7 @@ public class ValidationResult implements Serializable {
     
     private static final long serialVersionUID = 7987550924957601153L;
     
-    private final AssessmentItemOrTest owner;
+    private final AssessmentObject owner;
 
     /** Container of all errors. */
     private final List<ValidationError> errors;
@@ -79,7 +79,7 @@ public class ValidationResult implements Serializable {
     /**
      * Constructs validation result container.
      */
-    public ValidationResult(AssessmentItemOrTest owner) {
+    public ValidationResult(AssessmentObject owner) {
         this.owner = owner;
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
@@ -88,7 +88,7 @@ public class ValidationResult implements Serializable {
         this.childResults = new ArrayList<ValidationResult>();
     }
     
-    public AssessmentItemOrTest getOwner() {
+    public AssessmentObject getOwner() {
         return owner;
     }
     

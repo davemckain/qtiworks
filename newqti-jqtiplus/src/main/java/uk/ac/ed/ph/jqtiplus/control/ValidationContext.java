@@ -5,7 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.control;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentItemOrTest;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
@@ -18,7 +18,7 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
  */
 public interface ValidationContext {
     
-    AssessmentItemOrTest getOwner();
+    AssessmentObject getOwner();
     
     /**
      * Resolves a reference to a variable specified using a {@link VariableReferenceIdentifier}.
