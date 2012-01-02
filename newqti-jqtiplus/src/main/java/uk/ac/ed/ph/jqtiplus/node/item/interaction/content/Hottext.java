@@ -36,13 +36,11 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 
 import java.util.List;
-
 
 /**
  * 

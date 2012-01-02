@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.SimpleMatchSetGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSet;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSetContainer;
@@ -58,7 +57,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * 

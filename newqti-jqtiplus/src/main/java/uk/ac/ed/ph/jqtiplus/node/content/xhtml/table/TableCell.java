@@ -40,13 +40,11 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
 
 import java.util.List;
-
 
 /**
  * In XHTML, table cells are represented by either th or td and these share

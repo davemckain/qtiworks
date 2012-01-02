@@ -85,7 +85,7 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                 try {
-                    XmlNode child = createChild((Element) childNode, context.getJQTIController());
+                    XmlNode child = createChild((Element) childNode, context.getJQTIExtensionManager());
                     getChildren().add(child);
                     child.load((Element) childNode, context);
                 }

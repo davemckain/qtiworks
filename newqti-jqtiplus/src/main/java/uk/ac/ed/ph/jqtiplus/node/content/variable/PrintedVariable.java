@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.control.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;

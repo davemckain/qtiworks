@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -48,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 
 /**
  * The drawing interaction allows the candidate to use a common set of drawing 

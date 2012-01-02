@@ -90,6 +90,6 @@ public class CorrectResponseGroup extends AbstractNodeGroup
      */
     public CorrectResponse create(String classTag)
     {
-        return new CorrectResponse((XmlNode) getParent());
+        return new CorrectResponse(getParent());
     }
 }

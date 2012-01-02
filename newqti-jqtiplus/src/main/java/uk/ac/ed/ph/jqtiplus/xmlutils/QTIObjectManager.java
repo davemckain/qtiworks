@@ -1,4 +1,4 @@
-/* $Id: QTIObjectManager.java 2801 2011-10-05 07:57:43Z davemckain $
+/* $Id: QTIObjectLoader.java 2801 2011-10-05 07:57:43Z davemckain $
  *
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
@@ -7,6 +7,7 @@ package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
+import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
@@ -27,6 +28,7 @@ import org.w3c.dom.Element;
  * @author  David McKain
  * @version $Revision: 2801 $
  */
+@Deprecated
 public final class QTIObjectManager {
     
     private static final Logger logger = LoggerFactory.getLogger(QTIObjectManager.class);
@@ -101,7 +103,7 @@ public final class QTIObjectManager {
         final List<QTIParseError> qtiParseErrors = new ArrayList<QTIParseError>();
         LoadingContext loadingContext = new LoadingContext() {
             @Override
-            public JQTIController getJQTIController() {
+            public JQTIExtensionManager getJQTIExtensionManager() {
                 return jqtiController;
             }
             

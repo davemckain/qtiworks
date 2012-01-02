@@ -36,11 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
-
 
 /**
  * Prompt for interaction

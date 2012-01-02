@@ -36,11 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
-
 
 /**
  * li

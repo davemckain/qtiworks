@@ -34,15 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import java.util.List;
-
-
-
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRuleType;
+
+import java.util.List;
 
 /**
  * Group of outcomeRule children.

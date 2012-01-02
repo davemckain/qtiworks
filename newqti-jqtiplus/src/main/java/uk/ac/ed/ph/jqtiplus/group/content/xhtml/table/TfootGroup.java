@@ -91,6 +91,6 @@ public class TfootGroup extends AbstractNodeGroup
      */
     public Tfoot create(String classTag)
     {
-        return new Tfoot((Table) getParent());
+        return new Tfoot(getParent());
     }
 }

@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRuleType;

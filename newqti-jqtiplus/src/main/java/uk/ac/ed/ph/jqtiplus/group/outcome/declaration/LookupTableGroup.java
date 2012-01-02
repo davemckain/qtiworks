@@ -41,9 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 
-
-
-
 /**
  * Group of lookupTable child.
  * 

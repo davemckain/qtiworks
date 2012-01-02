@@ -83,6 +83,6 @@ public class LiGroup extends AbstractNodeGroup
      */
     public Li create(String classTag)
     {
-        return new Li((BodyElement) getParent());
+        return new Li(getParent());
     }
 }

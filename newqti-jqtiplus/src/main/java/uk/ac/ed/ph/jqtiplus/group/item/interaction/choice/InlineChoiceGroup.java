@@ -93,6 +93,6 @@ public class InlineChoiceGroup extends AbstractNodeGroup
      */
     public InlineChoice create(String classTag)
     {
-        return new InlineChoice((InlineChoiceInteraction) getParent());
+        return new InlineChoice(getParent());
     }
 }

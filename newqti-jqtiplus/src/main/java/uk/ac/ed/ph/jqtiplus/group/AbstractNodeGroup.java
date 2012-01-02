@@ -34,13 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -183,7 +182,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType()==Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                 try {
-                    XmlNode child = createChild((Element) childNode, context.getJQTIController());
+                    XmlNode child = createChild((Element) childNode, context.getJQTIExtensionManager());
                     children.add(child);
                     child.load((Element) childNode, context);
                 }
@@ -194,19 +193,19 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         }
     }
     
-    protected XmlNode createChild(Element childElement, JQTIController jqtiController) {
+    protected XmlNode createChild(Element childElement, JQTIExtensionManager jqtiExtensionManager) {
         String localName = childElement.getLocalName();
         XmlNode result;
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             ExpressionParent expressionParent = (ExpressionParent) getParent();
             String operatorClass = childElement.getAttribute("class");
-            result = jqtiController.createCustomOperator(expressionParent, operatorClass);
+            result = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
         }
         else if ("customInteraction".equals(localName)) {
-            XmlNode parentObject = (XmlNode) getParent();
+            XmlNode parentObject = getParent();
             String interactionClass = childElement.getAttribute("class");
-            result = jqtiController.createCustomInteraction(parentObject, interactionClass);
+            result = jqtiExtensionManager.createCustomInteraction(parentObject, interactionClass);
         }
         else {
             result = create(localName);

@@ -48,8 +48,7 @@ public class QTINodeGroupException extends QTIRuntimeException
      *
      * @param message the detail message
      */
-    public QTINodeGroupException(String message)
-    {
+    public QTINodeGroupException(String message) {
         super(message);
     }
 }

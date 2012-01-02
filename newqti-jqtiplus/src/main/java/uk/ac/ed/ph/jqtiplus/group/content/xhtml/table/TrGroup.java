@@ -83,6 +83,6 @@ public class TrGroup extends AbstractNodeGroup
      */
     public Tr create(String classTag)
     {
-        return new Tr((BodyElement) getParent());
+        return new Tr(getParent());
     }
 }

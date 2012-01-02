@@ -35,14 +35,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
 import java.util.List;
-
-
-
 
 /**
  * Group of inlineStatic children.
@@ -65,12 +61,6 @@ public class InlineStaticGroup extends AbstractContentNodeGroup
         getAllSupportedClasses().clear();
         for (ContentType type : ContentType.inlineStaticValues())
             getAllSupportedClasses().add(type.getClassTag());
-    }
-
-    @Override
-    public XmlNode getParent()
-    {
-        return (XmlNode) super.getParent();
     }
 
     @Override

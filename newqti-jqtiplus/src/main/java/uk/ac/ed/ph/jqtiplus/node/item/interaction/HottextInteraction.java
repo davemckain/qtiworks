@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Hottext;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;

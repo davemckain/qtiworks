@@ -36,13 +36,11 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
-
 
 /**
  * div

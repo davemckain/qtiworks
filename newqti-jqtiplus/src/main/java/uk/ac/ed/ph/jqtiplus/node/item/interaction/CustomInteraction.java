@@ -36,10 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
-
 
 import java.util.List;
 

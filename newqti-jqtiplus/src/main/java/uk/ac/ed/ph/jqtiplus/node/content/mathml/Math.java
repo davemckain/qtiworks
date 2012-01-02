@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;

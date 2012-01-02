@@ -48,13 +48,7 @@ public class RuntimeValidationException extends QTIException {
     
     private final ValidationResult validationResult;
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * Detailed message is created from given ValidationResult.
-     *
-     * @param result ValidationResult
-     */
-    public RuntimeValidationException(ValidationResult result) {
+    public RuntimeValidationException(final ValidationResult result) {
         super("Runtime validaiton errors determined");
         this.validationResult = result;
     }

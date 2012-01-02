@@ -38,12 +38,10 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ShapeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 
 import java.util.List;
-
 
 /**
  * hotspotChoice

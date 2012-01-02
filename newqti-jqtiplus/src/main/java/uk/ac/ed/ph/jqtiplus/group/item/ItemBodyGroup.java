@@ -90,6 +90,6 @@ public class ItemBodyGroup extends AbstractNodeGroup
      */
     public ItemBody create(String classTag)
     {
-        return new ItemBody((AssessmentItem) getParent());
+        return new ItemBody(getParent());
     }
 }

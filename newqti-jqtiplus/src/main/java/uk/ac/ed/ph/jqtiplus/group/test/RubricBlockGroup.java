@@ -83,6 +83,6 @@ public class RubricBlockGroup extends AbstractNodeGroup
      */
     public RubricBlock create(String classTag)
     {
-        return new RubricBlock((AssessmentSection) getParent());
+        return new RubricBlock(getParent());
     }
 }

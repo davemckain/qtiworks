@@ -91,6 +91,6 @@ public class CaptionGroup extends AbstractNodeGroup
      */
     public Caption create(String classTag)
     {
-        return new Caption((Table) getParent());
+        return new Caption(getParent());
     }
 }

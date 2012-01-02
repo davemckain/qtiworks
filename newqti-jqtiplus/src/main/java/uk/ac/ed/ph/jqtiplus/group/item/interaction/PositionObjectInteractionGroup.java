@@ -93,6 +93,6 @@ public class PositionObjectInteractionGroup extends AbstractNodeGroup
      */
     public PositionObjectInteraction create(String classTag)
     {
-        return new PositionObjectInteraction((PositionObjectStage) getParent());
+        return new PositionObjectInteraction(getParent());
     }
 }

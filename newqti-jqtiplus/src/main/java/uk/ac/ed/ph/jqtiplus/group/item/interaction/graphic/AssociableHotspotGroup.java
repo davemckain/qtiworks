@@ -34,15 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic;
 
-import java.util.List;
-
-
-
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspotContainer;
+
+import java.util.List;
 
 /**
  * Group of associableHotspot children.
@@ -94,6 +91,6 @@ public class AssociableHotspotGroup extends AbstractNodeGroup
      */
     public AssociableHotspot create(String classTag)
     {
-        return new AssociableHotspot((XmlNode) getParent());
+        return new AssociableHotspot(getParent());
     }
 }

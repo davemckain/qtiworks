@@ -34,15 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic;
 
-import java.util.List;
-
-
-
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoiceContainer;
+
+import java.util.List;
 
 /**
  * Group of hotspotChoice children.

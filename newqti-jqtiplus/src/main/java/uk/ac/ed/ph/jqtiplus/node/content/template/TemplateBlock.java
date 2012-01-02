@@ -36,12 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.content.template;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
-
 
 /**
  * templateBlock 

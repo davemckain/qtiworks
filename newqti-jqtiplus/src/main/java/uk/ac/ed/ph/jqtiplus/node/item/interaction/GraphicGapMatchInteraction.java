@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.GapImgGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic.AssociableHotspotGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapImg;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;

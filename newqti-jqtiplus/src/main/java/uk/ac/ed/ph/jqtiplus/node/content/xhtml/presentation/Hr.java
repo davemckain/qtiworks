@@ -35,13 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
-
 
 /**
  * hr

@@ -47,6 +47,7 @@ import org.xml.sax.XMLReader;
  * @author  David McKain
  * @version $Revision: 2824 $
  */
+@Deprecated
 public final class SupportedXMLReader implements Serializable {
     
     private static final long serialVersionUID = 3647116039217223320L;

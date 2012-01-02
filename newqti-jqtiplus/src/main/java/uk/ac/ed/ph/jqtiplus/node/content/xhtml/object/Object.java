@@ -37,13 +37,11 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectFlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
 import java.util.List;
-
 
 /**
  * Contains : objectFlow [*]

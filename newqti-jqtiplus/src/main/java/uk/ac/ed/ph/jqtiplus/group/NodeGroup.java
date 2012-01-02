@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
+import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
@@ -154,7 +155,9 @@ public interface NodeGroup extends Validatable, Serializable {
      * 
      * @param classTag QTI class name
      * @return created child
+     * 
      * @throws QTIParseException
+     * @throws QTINodeGroupException
      */
     XmlNode create(String classTag);
 

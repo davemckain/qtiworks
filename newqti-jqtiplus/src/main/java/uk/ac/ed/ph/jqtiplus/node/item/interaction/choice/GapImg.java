@@ -37,11 +37,9 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
 import java.util.List;
-
 
 /**
  * A gap image contains a single image object to be inserted into a gap by the candidate.

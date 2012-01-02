@@ -132,7 +132,7 @@ public abstract class AbstractNode implements XmlNode
 
     @Override
     public void load(Element sourceElement, LoadingContext context) {
-        /* Extract SAX Locator data stowed away by SupportedXMLReader, if used */
+        /* Extract SAX Locator data stowed away by QTIXMLReader, if used */
         this.xmlSourceLocationInformation = SupportedXMLReader.extractLocationInformation(sourceElement);
         
         // 1) Read all attributes.

@@ -37,11 +37,9 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.ColGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
-
 
 /**
  * colgroup

@@ -37,7 +37,6 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.template.TemplateElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackElement;
@@ -48,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 
 /**
  * The item body contains the text, graphics, media objects, and interactions that describe 

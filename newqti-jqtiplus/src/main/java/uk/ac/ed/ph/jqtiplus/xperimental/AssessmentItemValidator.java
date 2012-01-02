@@ -72,15 +72,15 @@ public final class AssessmentItemValidator implements ItemValidationContext {
             attemptedUris.add(templateUri);
             resolutionResult = resolver.resolve(item, templateUri, ResponseProcessing.class);
         }
-        if (resolutionResult==null) {
+        if (resolutionResult==null || resolutionResult.getJQTIObject()==null) {
             templateUri = responseProcessing.getTemplateLocation();
             if (templateUri!=null) {
                 attemptedUris.add(templateUri);
                 resolutionResult = resolver.resolve(item, templateUri, ResponseProcessing.class);
             }
         }
-        if (resolutionResult==null) {
-            throw new ReferencingException("Could not load responseProcessing template from URI(s) " + attemptedUris);
+        if (resolutionResult==null || resolutionResult.getJQTIObject()==null) {
+            throw new ReferencingException("Could not obtain responseProcessing template from URI(s) " + attemptedUris);
         }
         logger.info("Resolved responseProcessing template using href {} to {}", templateUri, resolutionResult);
         return resolutionResult.getJQTIObject();

@@ -83,6 +83,6 @@ public class TbodyGroup extends AbstractNodeGroup
      */
     public Tbody create(String classTag)
     {
-        return new Tbody((Table) getParent());
+        return new Tbody(getParent());
     }
 }

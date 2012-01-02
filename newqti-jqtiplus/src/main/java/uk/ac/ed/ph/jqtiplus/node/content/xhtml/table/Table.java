@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TbodyGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TfootGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TheadGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;

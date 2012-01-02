@@ -36,12 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.AssociableChoice;
 
 import java.util.List;
-
 
 /**
  * 

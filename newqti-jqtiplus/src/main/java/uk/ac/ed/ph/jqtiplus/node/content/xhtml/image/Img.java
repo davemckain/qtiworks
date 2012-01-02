@@ -37,13 +37,11 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.image;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
 import java.net.URI;
 import java.util.List;
-
 
 /**
  * 

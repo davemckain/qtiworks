@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
+import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
@@ -115,21 +115,24 @@ public enum RootNodeTypes {
     }
 
     /**
-     * Creates root node.
+     * Creates root node with given classTag
      *
      * @param classTag CLASS_TAG of created root node
      * @return created root node
+     * 
+     * @throws IllegalArgumentException if the given classTag does not correspond to a root Node
+     * @throws QTILogicException if the resulting {@link RootNode} could not be instantiated
      */
     public static RootNode getInstance(String classTag) {
         RootNodeTypes rootNodeType = rootNodeTypesMap.get(classTag);
-        if (rootNodeType == null) {
-            throw new QTINodeGroupException("Unsupported root node " + classTag);
+        if (rootNodeType==null) {
+            throw new IllegalArgumentException("Class Tag " + classTag + " does not correspond to a QTI Root Node");
         }
         try {
             return rootNodeType.getRootNodeClass().newInstance();
         }
         catch (Exception e) {
-            throw new QTINodeGroupException("Could not instantiate root node Class " + classTag);
+            throw new QTILogicException("Could not instantiate root node Class " + classTag, e);
         }
     }
 
@@ -138,6 +141,9 @@ public enum RootNodeTypes {
      *
      * @param sourceElement source node
      * @return loaded root node
+     * 
+     * @throws IllegalArgumentException if the given classTag does not correspond to a root Node
+     * @throws QTILogicException if the resulting {@link RootNode} could not be instantiated
      */
     public static RootNode load(Element sourceElement, URI systemId, LoadingContext context) {
         RootNode root = getInstance(sourceElement.getLocalName());

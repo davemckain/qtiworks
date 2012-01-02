@@ -37,7 +37,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PromptGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 

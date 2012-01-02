@@ -36,10 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.List;
-
 
 /**
  * dt

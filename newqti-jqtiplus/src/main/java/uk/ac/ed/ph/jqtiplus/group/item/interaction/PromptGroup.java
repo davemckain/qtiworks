@@ -90,6 +90,6 @@ public class PromptGroup extends AbstractNodeGroup
      */
     public Prompt create(String classTag)
     {
-        return new Prompt((BlockInteraction) getParent());
+        return new Prompt(getParent());
     }
 }

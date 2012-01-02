@@ -36,13 +36,10 @@ package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSet;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSetContainer;
 
 import java.util.List;
-
-
 
 /**
  * Group of simpleMatchSet children.

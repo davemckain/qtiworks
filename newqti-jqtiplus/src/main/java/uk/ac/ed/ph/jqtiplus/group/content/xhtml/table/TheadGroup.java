@@ -91,6 +91,6 @@ public class TheadGroup extends AbstractNodeGroup
      */
     public Thead create(String classTag)
     {
-        return new Thead((Table) getParent());
+        return new Thead(getParent());
     }
 }

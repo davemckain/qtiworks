@@ -316,7 +316,7 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent
     }
     
 //    @Override
-//    public void load(JQTIController jqtiController, Element sourceElement) {
+//    public void load(JQTIExtensionManager jqtiController, Element sourceElement) {
 //        super.load(jqtiController, sourceElement);
 //        evaluate();
 //    }

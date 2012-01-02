@@ -12,7 +12,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.UnsupportedCustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.UnsupportedCustomInteraction;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author  David McKain
  * @version $Revision$
  */
+@Deprecated
 public final class JQTIController {
     
     private static final Logger logger = LoggerFactory.getLogger(JQTIController.class);

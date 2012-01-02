@@ -83,6 +83,6 @@ public class ColGroup extends AbstractNodeGroup
      */
     public Col create(String classTag)
     {
-        return new Col((BodyElement) getParent());
+        return new Col(getParent());
     }
 }
