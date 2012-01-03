@@ -107,4 +107,9 @@ public class DirectedPairValue extends AbstractPairValue {
 
         return sourceValue.equals(value.sourceValue) && destValue.equals(value.destValue);
     }
+    
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 }

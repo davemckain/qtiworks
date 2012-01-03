@@ -107,4 +107,10 @@ public class PairValue extends AbstractPairValue {
         return (sourceValue.equals(value.sourceValue) && destValue.equals(value.destValue)) ||
                 (sourceValue.equals(value.destValue) && destValue.equals(value.sourceValue));
     }
+
+    @Override
+    public int hashCode() {
+        /* (Slightly artificial implementation has to reflect non-directional nature of this value) */
+        return sourceValue.hashCode() + destValue.hashCode();
+    }
 }

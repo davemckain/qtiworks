@@ -124,7 +124,7 @@ public abstract class AbstractPairValue extends SingleValue {
      * 
      * @return source (first) identifier
      */
-    public Identifier sourceValue() {
+    public final Identifier sourceValue() {
         return sourceValue;
     }
 
@@ -133,17 +133,12 @@ public abstract class AbstractPairValue extends SingleValue {
      * 
      * @return destination (second) identifier
      */
-    public Identifier destValue() {
+    public final Identifier destValue() {
         return destValue;
     }
 
     @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    @Override
-    public String toString() {
+    public final String toString() {
         return sourceValue + " " + destValue;
     }
 }
