@@ -5,7 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.io.Serializable;

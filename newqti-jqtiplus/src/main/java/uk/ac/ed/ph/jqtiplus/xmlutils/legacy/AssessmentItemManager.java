@@ -7,7 +7,7 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;

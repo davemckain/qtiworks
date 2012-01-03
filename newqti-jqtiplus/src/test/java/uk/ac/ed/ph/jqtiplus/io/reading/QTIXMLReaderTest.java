@@ -3,7 +3,7 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
+package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -166,7 +166,7 @@ public class QTIXMLReaderTest {
     }
     
     private URI makeSystemId(String testFileName) {
-        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/io/reading/xml/" + testFileName);
+        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/io/reading/" + testFileName);
     }
 
 }

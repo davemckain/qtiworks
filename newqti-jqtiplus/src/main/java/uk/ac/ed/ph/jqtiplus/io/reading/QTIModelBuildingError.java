@@ -3,7 +3,7 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.objects;
+package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;

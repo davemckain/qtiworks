@@ -3,7 +3,7 @@
  * Copyright (c) 2011, The University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
+package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.QTIConstants;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;

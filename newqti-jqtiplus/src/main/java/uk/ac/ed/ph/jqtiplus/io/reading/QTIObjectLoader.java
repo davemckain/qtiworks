@@ -3,13 +3,12 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.objects;
+package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLReader;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
@@ -19,7 +18,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceReader;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferenceResolver;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -130,7 +128,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
     }
     
     @Override
-    public <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass) {
+    public <E extends RootNode> XMLResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass) {
         logger.info("Resolving href {} against base RootNode having System ID {}", href, baseObject.getSystemId());
         URI baseUri = baseObject.getSystemId();
         if (baseUri==null) {
