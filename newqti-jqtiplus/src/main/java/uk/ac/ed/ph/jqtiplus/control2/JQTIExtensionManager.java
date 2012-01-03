@@ -33,7 +33,7 @@ public final class JQTIExtensionManager {
     private static final Logger logger = LoggerFactory.getLogger(JQTIExtensionManager.class);
     
     private final List<JQTIExtensionPackage> extensionPackages;
-    private final Map<String, String> schemaInformation;
+    private final Map<String, String> extensionSchemaMap;
     
     public JQTIExtensionManager(JQTIExtensionPackage... jqtiExtensionPackages) {
         this(Arrays.asList(jqtiExtensionPackages));
@@ -41,18 +41,18 @@ public final class JQTIExtensionManager {
     
     public JQTIExtensionManager(List<JQTIExtensionPackage> jqtiExtensionPackages) {
         this.extensionPackages = Collections.unmodifiableList(jqtiExtensionPackages);
-        this.schemaInformation = Collections.unmodifiableMap(buildSchemaInformation());
+        this.extensionSchemaMap = Collections.unmodifiableMap(buildExtensionSchemaMap());
     }
     
     public List<JQTIExtensionPackage> getExtensionPackages() {
         return extensionPackages;
     }
     
-    public Map<String, String> getSchemaInformation() {
-        return schemaInformation;
+    public Map<String, String> getExtensionSchemaMap() {
+        return extensionSchemaMap;
     }
     
-    private Map<String, String> buildSchemaInformation() {
+    private Map<String, String> buildExtensionSchemaMap() {
         Map<String, String> result = new HashMap<String, String>();
         for (JQTIExtensionPackage extensionPackage : extensionPackages) {
             result.putAll(extensionPackage.getSchemaInformation());

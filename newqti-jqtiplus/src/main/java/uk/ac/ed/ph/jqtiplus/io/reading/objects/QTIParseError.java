@@ -11,6 +11,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 import org.w3c.dom.Element;
 
 /**
+ * FIXME: Document this!
+ * 
  * @author  David McKain
  * @version $Revision$
  */

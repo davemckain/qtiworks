@@ -13,17 +13,16 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceReader;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferenceResolver;
 import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,22 +41,14 @@ public final class QTIObjectLoader implements ReferenceResolver {
     
     private final JQTIExtensionManager jqtiExtensionManager;
     private final ResourceLocator inputResourceLocator;
-    private final ResourceLocator parserResourceLocator;
     private final boolean schemaValidating;
     private final QTIXMLReader qtiXMLReader;
     
     public QTIObjectLoader(JQTIExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator, ResourceLocator inputResourceLocator, boolean schemaValidating) {
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.qtiXMLReader = new QTIXMLReader();
         this.inputResourceLocator = inputResourceLocator;
-        this.parserResourceLocator = parserResourceLocator;
         this.schemaValidating = schemaValidating;
-        
-        /* Build up Map of registered schemas */
-        qtiXMLReader.setParserResourceLocator(parserResourceLocator);
-        Map<String, String> schemaMap = new HashMap<String, String>(QTIXMLReader.DEFAULT_SCHEMA_MAP);
-        schemaMap.putAll(jqtiExtensionManager.getSchemaInformation());
-        qtiXMLReader.setRegisteredSchemaMap(schemaMap);
+        this.qtiXMLReader = new QTIXMLReader(parserResourceLocator, jqtiExtensionManager.getExtensionSchemaMap());
     }
     
     public JQTIExtensionManager getJQTIExtensionManager() {
@@ -69,7 +60,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
     }
     
     public ResourceLocator getParserResourceLocator() {
-        return parserResourceLocator;
+        return qtiXMLReader.getParserResourceLocator();
     }
 
     public boolean isSchemaValidating() {
@@ -106,7 +97,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
             
             @Override
             public void parseError(QTIParseException exception, Element owner) {
-                QTIParseError error = new QTIParseError(exception, owner, QTIXMLReader.extractLocationInformation(owner));
+                QTIParseError error = new QTIParseError(exception, owner, XMLResourceReader.extractLocationInformation(owner));
                 qtiParseErrors.add(error);
             }
         };
@@ -164,7 +155,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
             + "(jqtiExtensionManager=" + jqtiExtensionManager
-            + ",qtiXMLReader=" + qtiXMLReader
+            + ",parserResourceLocator=" + getParserResourceLocator()
             + ",inputResourceLocator=" + inputResourceLocator
             + ",schemaValidating=" + schemaValidating
             + ")";
