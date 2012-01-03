@@ -11,7 +11,8 @@ import java.io.Reader;
 import org.w3c.dom.ls.LSInput;
 
 /**
- * Default POJO implementation of {@link LSInput}.
+ * Default POJO implementation of {@link LSInput}, which the JDK bizarrely doesn't think
+ * to provide.
  * 
  * @author  David McKain
  * @version $Revision: 2712 $

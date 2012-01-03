@@ -7,13 +7,13 @@ package dave;
 
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.XMLParseResult;
 
 import java.net.URI;
 

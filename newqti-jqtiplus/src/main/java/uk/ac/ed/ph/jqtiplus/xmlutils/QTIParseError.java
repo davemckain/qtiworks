@@ -6,6 +6,7 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
 

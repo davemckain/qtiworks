@@ -5,6 +5,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLException;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;

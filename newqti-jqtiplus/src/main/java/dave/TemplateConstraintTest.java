@@ -11,13 +11,13 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.XMLParseResult;
 
 import java.net.URI;
 

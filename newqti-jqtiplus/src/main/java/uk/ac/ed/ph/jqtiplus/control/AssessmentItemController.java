@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

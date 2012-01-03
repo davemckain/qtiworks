@@ -7,7 +7,7 @@ package uk.ac.ed.ph.jqtiplus.control;
 
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentTestManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
