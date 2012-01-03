@@ -151,7 +151,7 @@ public abstract class SingleAttribute extends AbstractAttribute
             }
             catch (QTIParseException ex) {
                 this.value = null;
-                context.parseError(ex, owner);
+                context.modelBuildingError(ex, owner);
             }
         }
         else

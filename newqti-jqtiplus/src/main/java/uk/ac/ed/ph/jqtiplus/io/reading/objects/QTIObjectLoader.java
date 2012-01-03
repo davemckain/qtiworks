@@ -8,6 +8,7 @@ package uk.ac.ed.ph.jqtiplus.io.reading.objects;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLReader;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
@@ -88,7 +89,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
         XMLReadResult xmlReadResult = qtiXMLReader.read(systemId, resourceLocator, schemaValidating);
         Document document = xmlReadResult.getDocument();
         
-        final List<QTIParseError> qtiParseErrors = new ArrayList<QTIParseError>();
+        final List<QTIModelBuildingError> qtiModelBuildingErrors = new ArrayList<QTIModelBuildingError>();
         LoadingContext loadingContext = new LoadingContext() {
             @Override
             public JQTIExtensionManager getJQTIExtensionManager() {
@@ -96,9 +97,9 @@ public final class QTIObjectLoader implements ReferenceResolver {
             }
             
             @Override
-            public void parseError(QTIParseException exception, Element owner) {
-                QTIParseError error = new QTIParseError(exception, owner, XMLResourceReader.extractLocationInformation(owner));
-                qtiParseErrors.add(error);
+            public void modelBuildingError(QTIModelException exception, Element owner) {
+                QTIModelBuildingError error = new QTIModelBuildingError(exception, owner, XMLResourceReader.extractLocationInformation(owner));
+                qtiModelBuildingErrors.add(error);
             }
         };
         
@@ -123,7 +124,7 @@ public final class QTIObjectLoader implements ReferenceResolver {
                 throw new QTILogicException("All QTIParseExceptions should have been caught before this point!", e);
             }
         }
-        QTIReadResult<E> result = new QTIReadResult<E>(jqtiObject, xmlReadResult.getXMLParseResult(), qtiParseErrors);
+        QTIReadResult<E> result = new QTIReadResult<E>(jqtiObject, xmlReadResult.getXMLParseResult(), qtiModelBuildingErrors);
         logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }

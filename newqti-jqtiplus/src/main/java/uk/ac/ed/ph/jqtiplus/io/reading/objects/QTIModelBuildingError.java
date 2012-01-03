@@ -5,7 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.io.reading.objects;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
@@ -16,19 +16,19 @@ import org.w3c.dom.Element;
  * @author  David McKain
  * @version $Revision$
  */
-public final class QTIParseError {
+public final class QTIModelBuildingError {
     
-    private final QTIParseException exception;
+    private final QTIModelException exception;
     private final Element element;
     private final XMLSourceLocationInformation location;
     
-    public QTIParseError(QTIParseException exception, Element element, XMLSourceLocationInformation location) {
+    public QTIModelBuildingError(QTIModelException exception, Element element, XMLSourceLocationInformation location) {
         this.exception = exception;
         this.element = element;
         this.location = location;
     }
 
-    public QTIParseException getException() {
+    public QTIModelException getException() {
         return exception;
     }
     

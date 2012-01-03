@@ -34,8 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.HashMap;
@@ -115,12 +114,7 @@ public enum DlElementType {
      */
     public static DlElementType getType(String classTag)
     {
-        DlElementType dlElementType = dlElementTypes.get(classTag);
-
-        if (dlElementType == null)
-            throw new QTINodeGroupException("Unsupported dlElement element: " + classTag);
-
-        return dlElementType;
+        return dlElementTypes.get(classTag);
     }
     
     /**
@@ -134,8 +128,9 @@ public enum DlElementType {
     {
         DlElementType dlElementType = dlElementTypes.get(classTag);
 
-        if (dlElementType == null)
-            throw new QTIParseException("Unsupported inline element: " + classTag);
+        if (dlElementType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return dlElementType.create(parent);
     }

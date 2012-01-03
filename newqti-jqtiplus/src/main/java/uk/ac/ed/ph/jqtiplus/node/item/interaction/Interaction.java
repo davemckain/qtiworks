@@ -37,7 +37,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -149,15 +149,15 @@ public abstract class Interaction extends BodyElement {
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found
      * confusing.)
-     * @param itemController TODO
      * @param responseList Response to process
      * 
      * @see AssessmentItem#setResponses
      * 
-     * @throws QTIParseException if the response cannot be bound to the
+     * @throws ResponseBindingException if the response cannot be bound to the
      *   value encoded by the responseList
      */
-    public void bindResponse(AssessmentItemController itemController, List<String> responseList) {
+    public void bindResponse(AssessmentItemController itemController, List<String> responseList)
+            throws ResponseBindingException {
         ResponseDeclaration responseDeclaration = getResponseDeclaration();
         Value value = bindResponse(responseDeclaration, responseList);
         itemController.getItemState().setResponseValue(this, value);
@@ -177,10 +177,12 @@ public abstract class Interaction extends BodyElement {
      * 
      * @see #bindResponse(AssessmentItemController, List)
      * 
-     * @throws QTIParseException if the response cannot be bound to the
+     * @throws ResponseBindingException if the response cannot be bound to the
      *   value encoded by the responseList
      */
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) {
+    @SuppressWarnings("static-method")
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList)
+            throws ResponseBindingException {
         Value value = null;
         
         if (responseDeclaration.getCardinality() == Cardinality.SINGLE) {
@@ -211,8 +213,6 @@ public abstract class Interaction extends BodyElement {
     /**
      * Validate the response associated with this interaction.
      * This is called after {@link #bindResponse(AssessmentItemController, List)}
-     * @param itemController TODO
-     * @param responseValue TODO
      * 
      * @return true if the response is valid, false otherwise
      */

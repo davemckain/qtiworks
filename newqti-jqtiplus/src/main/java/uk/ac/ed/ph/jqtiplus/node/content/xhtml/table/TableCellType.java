@@ -7,14 +7,14 @@ All rights reserved.
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
-  * Redistributions of source code must retain the above copyright notice, this
+ * Redistributions of source code must retain the above copyright notice, this
     list of conditions and the following disclaimer.
 
-  *    Redistributions in binary form must reproduce the above copyright notice,
+ *    Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
     and/or other materials provided with the distribution.
 
-  *    Neither the name of the University of Southampton nor the names of its
+ *    Neither the name of the University of Southampton nor the names of its
     contributors may be used to endorse or promote products derived from this
     software without specific prior written permission.
 
@@ -30,12 +30,11 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 </LICENCE>
-*/
+ */
 
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,46 +44,47 @@ import java.util.Map;
  * tableCell types
  * 
  * @author Jonathon Hare
- *
  */
 public enum TableCellType {
     /**
-     * td 
+     * td
      */
     TD(Td.CLASS_TAG) {
+
         @Override
         public TableCell create(Tr parent) {
             return new Td(parent);
         }
     },
     /**
-     * th 
+     * th
      */
     TH(Th.CLASS_TAG) {
+
         @Override
         public TableCell create(Tr parent) {
             return new Th(parent);
         }
     };
-    
+
     private static Map<String, TableCellType> tableCellTypes;
-    
+
     static {
         tableCellTypes = new HashMap<String, TableCellType>();
 
         for (TableCellType tableCellType : TableCellType.values())
             tableCellTypes.put(tableCellType.tableCellType, tableCellType);
     }
-    
+
     private String tableCellType;
-    
+
     TableCellType(String inlineType) {
         this.tableCellType = inlineType;
     }
-    
+
     /**
      * Gets CLASS_TAG of this tableCell type.
-     *
+     * 
      * @return CLASS_TAG of this tableCell type
      */
     public String getClassTag()
@@ -94,7 +94,7 @@ public enum TableCellType {
 
     /**
      * Creates tableCell element.
-     *
+     * 
      * @param parent parent of created tableCell
      * @return created tableCell
      */
@@ -108,23 +108,18 @@ public enum TableCellType {
 
     /**
      * Gets tableCell type for given CLASS_TAG.
-     *
+     * 
      * @param classTag CLASS_TAG
      * @return tableCell type for given CLASS_TAG
      */
     public static TableCellType getType(String classTag)
     {
-        TableCellType tableCellType = tableCellTypes.get(classTag);
-
-        if (tableCellType == null)
-            throw new QTINodeGroupException("Unsupported tableCell element: " + classTag);
-
-        return tableCellType;
+        return tableCellTypes.get(classTag);
     }
-    
+
     /**
      * Creates tableCell element.
-     *
+     * 
      * @param parent parent of created tableCell
      * @param classTag CLASS_TAG of created tableCell
      * @return created expression
@@ -133,8 +128,9 @@ public enum TableCellType {
     {
         TableCellType tableCellType = tableCellTypes.get(classTag);
 
-        if (tableCellType == null)
-            throw new QTIParseException("Unsupported inline element: " + classTag);
+        if (tableCellType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return tableCellType.create(parent);
     }

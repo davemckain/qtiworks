@@ -34,14 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
+
 /**
- * This exception is used for reporting problems with node groups.
+ * This exception is used for reporting inconsistent use of {@link NodeGroup}s
  * 
  * @author Jiri Kajaba
  */
-public class QTINodeGroupException extends QTIRuntimeException
-{
-    private static final long serialVersionUID = 1L;
+public final class QTINodeGroupException extends QTIModelException {
+
+    private static final long serialVersionUID = -1425955381105959375L;
 
     /**
      * Constructs A new exception with the specified detailed message.

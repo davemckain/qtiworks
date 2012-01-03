@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
@@ -101,11 +101,14 @@ public class LookupTableGroup extends AbstractNodeGroup
      */
     public LookupTable create(String classTag)
     {
-        if (classTag.equals(MatchTable.CLASS_TAG))
+        if (classTag.equals(MatchTable.CLASS_TAG)) {
             return new MatchTable((OutcomeDeclaration) getParent());
-        else if (classTag.equals(InterpolationTable.CLASS_TAG))
+        }
+        else if (classTag.equals(InterpolationTable.CLASS_TAG)) {
             return new InterpolationTable((OutcomeDeclaration) getParent());
-        else
-            throw new QTINodeGroupException("Unsupported " + LookupTable.DISPLAY_NAME + ": " + classTag);
+        }
+        else {
+            throw new QTIIllegalChildException(getParent(), classTag);
+        }
     }
 }

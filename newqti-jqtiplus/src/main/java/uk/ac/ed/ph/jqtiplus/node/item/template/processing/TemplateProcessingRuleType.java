@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -174,8 +174,9 @@ public enum TemplateProcessingRuleType
 	{
 		TemplateProcessingRuleType templateRuleType = templateRuleTypes.get(classTag);
 
-		if (templateRuleType == null)
-			throw new QTIParseException("Unsupported template rule: " + classTag);
+		if (templateRuleType == null) {
+		    throw new QTIIllegalChildException(parent, classTag);
+		}
 
 		return templateRuleType.create(parent);
 	}

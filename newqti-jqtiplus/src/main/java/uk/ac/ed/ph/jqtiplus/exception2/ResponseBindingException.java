@@ -32,24 +32,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </LICENCE>
 */
 
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 
 /**
- * This exception is used for propagating errors when parsing/converting literal Strings
- * into QTI types, allowed attribute valuess etc.
- * 
- * @author Jiri Kajaba
+ * Exception thrown when a response cannot be bound to an interaction
  */
-public final class QTIParseException extends QTIModelException {
+public final class ResponseBindingException extends QTIException {
 
-    private static final long serialVersionUID = -696709617768595326L;
+    private static final long serialVersionUID = 1727673548938417208L;
 
     /**
      * Constructs A new exception with <code>null</code> as its detailed message.
      */
-    protected QTIParseException()
+    protected ResponseBindingException()
     {
         super();
     }
@@ -59,7 +56,7 @@ public final class QTIParseException extends QTIModelException {
      *
      * @param message the detail message
      */
-    public QTIParseException(String message)
+    public ResponseBindingException(String message)
     {
         super(message);
     }
@@ -70,7 +67,7 @@ public final class QTIParseException extends QTIModelException {
      * @param message the detail message
      * @param cause the cause
      */
-    public QTIParseException(String message, Throwable cause)
+    public ResponseBindingException(String message, Throwable cause)
     {
         super(message, cause);
     }
@@ -81,7 +78,7 @@ public final class QTIParseException extends QTIModelException {
      *
      * @param cause the cause
      */
-    public QTIParseException(Throwable cause)
+    public ResponseBindingException(Throwable cause)
     {
         super(cause);
     }

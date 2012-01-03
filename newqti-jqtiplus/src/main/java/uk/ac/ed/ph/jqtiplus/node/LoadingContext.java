@@ -6,7 +6,7 @@
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 
 import org.w3c.dom.Element;
 
@@ -19,6 +19,6 @@ public interface LoadingContext {
     
     JQTIExtensionManager getJQTIExtensionManager();
     
-    void parseError(QTIParseException exception, Element element);
-
+    void modelBuildingError(QTIModelException exception, Element element);
+    
 }

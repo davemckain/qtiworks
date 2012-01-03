@@ -121,8 +121,9 @@ public enum ParamType
     {
         ParamType result = types.get(paramType);
 
-        if (result == null)
+        if (result == null) {
             throw new QTIParseException("Invalid " + CLASS_TAG + " '" + paramType + "'.");
+        }
 
         return result;
     }

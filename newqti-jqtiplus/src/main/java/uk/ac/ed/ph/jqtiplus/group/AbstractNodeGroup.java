@@ -37,7 +37,8 @@ package uk.ac.ed.ph.jqtiplus.group;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -186,13 +187,16 @@ public abstract class AbstractNodeGroup implements NodeGroup {
                     children.add(child);
                     child.load((Element) childNode, context);
                 }
-                catch (QTIParseException e) {
-                    context.parseError(e, (Element) childNode);
+                catch (QTIModelException e) {
+                    context.modelBuildingError(e, (Element) childNode);
                 }
             }
         }
     }
     
+    /**
+     * @throws QTIIllegalChildException
+     */
     protected XmlNode createChild(Element childElement, JQTIExtensionManager jqtiExtensionManager) {
         String localName = childElement.getLocalName();
         XmlNode result;

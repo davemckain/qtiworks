@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -42,9 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 
 import java.util.List;
-
-
-
 
 /**
  * Group of sectionPart children.
@@ -95,11 +92,14 @@ public class SectionPartGroup extends AbstractNodeGroup
      */
     public SectionPart create(String classTag)
     {
-        if (classTag.equals(AssessmentSection.CLASS_TAG))
+        if (classTag.equals(AssessmentSection.CLASS_TAG)) {
             return new AssessmentSection((AssessmentSection) getParent());
-        else if (classTag.equals(AssessmentItemRef.CLASS_TAG))
+        }
+        else if (classTag.equals(AssessmentItemRef.CLASS_TAG)) {
             return new AssessmentItemRef((AssessmentSection) getParent());
-        else
-            throw new QTINodeGroupException("Unsupported " + SectionPart.DISPLAY_NAME + ": " + classTag);
+        }
+        else {
+            throw new QTIIllegalChildException(getParent(), classTag);
+        }
     }
 }

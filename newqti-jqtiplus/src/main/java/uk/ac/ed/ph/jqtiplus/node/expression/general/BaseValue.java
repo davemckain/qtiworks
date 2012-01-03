@@ -148,7 +148,7 @@ public class BaseValue extends AbstractExpression
                 singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent());
             }
             catch (QTIParseException e) {
-                context.parseError(e, element);
+                context.modelBuildingError(e, element);
             }
         }
     }

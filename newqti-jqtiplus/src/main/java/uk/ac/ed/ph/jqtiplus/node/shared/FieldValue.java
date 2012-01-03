@@ -211,7 +211,7 @@ public class FieldValue extends AbstractNode
                 singleValue = getBaseType().parseSingleValue(element.getTextContent());
             }
             catch (QTIParseException e) {
-                context.parseError(e, element);
+                context.modelBuildingError(e, element);
             }
         }
     }

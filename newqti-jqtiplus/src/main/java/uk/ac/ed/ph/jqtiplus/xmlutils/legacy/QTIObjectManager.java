@@ -9,7 +9,7 @@ import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIParseError;
+import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
@@ -104,7 +104,7 @@ public final class QTIObjectManager {
         XMLReadResult xmlReadResult = supportedXMLReader.read(systemId, resourceLocator);
         Document document = xmlReadResult.getDocument();
         
-        final List<QTIParseError> qtiParseErrors = new ArrayList<QTIParseError>();
+        final List<QTIModelBuildingError> qtiParseErrors = new ArrayList<QTIModelBuildingError>();
         LoadingContext loadingContext = new LoadingContext() {
             @Override
             public JQTIExtensionManager getJQTIExtensionManager() {
@@ -113,7 +113,7 @@ public final class QTIObjectManager {
             
             @Override
             public void parseError(QTIParseException exception, Element owner) {
-                QTIParseError error = new QTIParseError(exception, owner, SupportedXMLReader.extractLocationInformation(owner));
+                QTIModelBuildingError error = new QTIModelBuildingError(exception, owner, SupportedXMLReader.extractLocationInformation(owner));
                 qtiParseErrors.add(error);
             }
         };

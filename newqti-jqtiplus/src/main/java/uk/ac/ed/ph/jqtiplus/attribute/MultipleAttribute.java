@@ -146,7 +146,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute {
             }
             catch (QTIParseException ex) {
                 this.value.clear();
-                context.parseError(ex, owner);
+                context.modelBuildingError(ex, owner);
             }
         }
         else

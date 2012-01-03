@@ -24,12 +24,12 @@ public final class QTIReadResult<E extends RootNode> implements ResolutionResult
     
     private final E jqtiObject;
     private final XMLParseResult xmlParseResult;
-    private final List<QTIParseError> qtiParseErrors;
+    private final List<QTIModelBuildingError> qtiModelBuildingErrors;
 
-    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QTIParseError> qtiParseErrors) {
+    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QTIModelBuildingError> qtiModelBuildingErrors) {
         this.jqtiObject = jqtiObject;
         this.xmlParseResult = xmlParseResult;
-        this.qtiParseErrors = qtiParseErrors;
+        this.qtiModelBuildingErrors = qtiModelBuildingErrors;
     }
 
     public E getJQTIObject() {
@@ -40,8 +40,8 @@ public final class QTIReadResult<E extends RootNode> implements ResolutionResult
         return xmlParseResult;
     }
     
-    public List<QTIParseError> getQTIParseErrors() {
-        return qtiParseErrors;
+    public List<QTIModelBuildingError> getQTIModelBuildingErrors() {
+        return qtiModelBuildingErrors;
     }
 
     @Override
@@ -49,7 +49,7 @@ public final class QTIReadResult<E extends RootNode> implements ResolutionResult
         return getClass().getSimpleName() + "@" + hashCode()
             + "(jqtiObject=" + jqtiObject
             + ",xmlParseResult=" + xmlParseResult
-            + ",qtiParseErrors=" + qtiParseErrors
+            + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
             + ")";
     }
 }

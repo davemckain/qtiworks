@@ -38,8 +38,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Correct;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Default;
@@ -1454,11 +1453,7 @@ public enum ExpressionType
      * @return expression type for given CLASS_TAG
      */
     public static ExpressionType getType(String classTag) {
-        ExpressionType expressionType = expressionTypes.get(classTag);
-        if (expressionType == null) {
-            throw new QTINodeGroupException("Unsupported expression: " + classTag);
-        }
-        return expressionType;
+        return expressionTypes.get(classTag);
     }
 
 @ToRemove
@@ -1512,8 +1507,9 @@ public enum ExpressionType
     {
         ExpressionType expressionType = expressionTypes.get(classTag);
 
-        if (expressionType == null)
-            throw new QTIParseException("Unsupported expression: " + classTag);
+        if (expressionType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return expressionType.create(parent);
     }

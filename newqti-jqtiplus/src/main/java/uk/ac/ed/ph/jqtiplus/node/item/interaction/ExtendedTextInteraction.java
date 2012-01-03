@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -334,7 +334,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
 
     @Override
-    public void bindResponse(AssessmentItemController itemController, List<String> responseList) {
+    public void bindResponse(AssessmentItemController itemController, List<String> responseList) throws ResponseBindingException {
         super.bindResponse(itemController, responseList);
         
         /* Also handle stringIdentifier binding if required */
@@ -345,14 +345,14 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
     
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) {
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) throws ResponseBindingException {
         //handle record special case
         Value result;
         if (responseDeclaration.getCardinality().isRecord()) {
             String responseString = null;
             if (responseList != null) {
                 if (responseList.size() > 1) {
-                    throw new QTIParseException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
+                    throw new ResponseBindingException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
                 responseString = responseList.get(0);
             }

@@ -6,7 +6,7 @@
 package uk.ac.ed.ph.jqtiplus.control;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
@@ -452,7 +452,7 @@ public final class AssessmentItemController {
                     logger.warn("setResponses couldn't find interaction for identifier " + responseIdentifier);
                 }
             }
-            catch (QTIParseException e) {
+            catch (ResponseBindingException e) {
                 badResponses.add(responseIdentifier);
             }
         }

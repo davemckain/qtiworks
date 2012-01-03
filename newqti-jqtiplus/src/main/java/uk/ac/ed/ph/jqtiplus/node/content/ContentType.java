@@ -35,8 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package uk.ac.ed.ph.jqtiplus.node.content;
 
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -1234,12 +1233,7 @@ public enum ContentType {
      */
     public static ContentType getType(String classTag)
     {
-        ContentType contentType = contentTypes.get(classTag);
-
-        if (contentType == null)
-            throw new QTINodeGroupException("Unsupported content element: " + classTag);
-
-        return contentType;
+        return contentTypes.get(classTag);
     }
     
     /**
@@ -1253,8 +1247,9 @@ public enum ContentType {
     {
         ContentType contentType = contentTypes.get(classTag);
 
-        if (contentType == null)
-            throw new QTIParseException("Unsupported content element: " + classTag);
+        if (contentType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return contentType.create(parent);
     }
@@ -1270,8 +1265,9 @@ public enum ContentType {
     {
         ContentType blockType = blockTypes.get(classTag);
 
-        if (blockType == null)
-            throw new QTIParseException("Unsupported block element: " + classTag);
+        if (blockType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (Block) blockType.create(parent);
     }
@@ -1287,8 +1283,9 @@ public enum ContentType {
     {
         ContentType inlineType = inlineTypes.get(classTag);
 
-        if (inlineType == null)
-            throw new QTIParseException("Unsupported inline element: " + classTag);
+        if (inlineType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (Inline) inlineType.create(parent);
     }
@@ -1304,8 +1301,9 @@ public enum ContentType {
     {
         ContentType flowType = flowTypes.get(classTag);
 
-        if (flowType == null)
-            throw new QTIParseException("Unsupported flow element: " + classTag);
+        if (flowType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (Flow) flowType.create(parent);
     }
@@ -1321,8 +1319,9 @@ public enum ContentType {
     {
         ContentType flowType = objectFlowTypes.get(classTag);
 
-        if (flowType == null)
-            throw new QTIParseException("Unsupported objectFlow element: " + classTag);
+        if (flowType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (ObjectFlow) flowType.create(parent);
     }
@@ -1338,8 +1337,9 @@ public enum ContentType {
     {
         ContentType inlineType = inlineStaticTypes.get(classTag);
 
-        if (inlineType == null)
-            throw new QTIParseException("Unsupported inlineStatic element: " + classTag);
+        if (inlineType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (InlineStatic) inlineType.create(parent);
     }
@@ -1355,8 +1355,9 @@ public enum ContentType {
     {
         ContentType flowStaticType = flowStaticTypes.get(classTag);
 
-        if (flowStaticType == null)
-            throw new QTIParseException("Unsupported flowStatic element: " + classTag);
+        if (flowStaticType == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (FlowStatic) flowStaticType.create(parent);
     }
@@ -1372,8 +1373,9 @@ public enum ContentType {
     {
         ContentType textOrVariable = textOrVariableTypes.get(classTag);
 
-        if (textOrVariable == null)
-            throw new QTIParseException("Unsupported textOrVariable element: " + classTag);
+        if (textOrVariable == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (TextOrVariable) textOrVariable.create(parent);
     }
@@ -1389,8 +1391,9 @@ public enum ContentType {
     {
         ContentType blockStatic = blockStaticTypes.get(classTag);
 
-        if (blockStatic == null)
-            throw new QTIParseException("Unsupported blockStatic element: " + classTag);
+        if (blockStatic == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (BlockStatic) blockStatic.create(parent);
     }
@@ -1406,8 +1409,9 @@ public enum ContentType {
     {
         ContentType gapChoice = gapChoiceTypes.get(classTag);
 
-        if (gapChoice == null)
-            throw new QTIParseException("Unsupported gapChoice element: " + classTag);
+        if (gapChoice == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (GapChoice) gapChoice.create(parent);
     }
@@ -1423,8 +1427,9 @@ public enum ContentType {
     {
         ContentType interaction = interactionTypes.get(classTag);
 
-        if (interaction == null)
-            throw new QTIParseException("Unsupported interaction element: " + classTag);
+        if (interaction == null) {
+            throw new QTIIllegalChildException(parent, classTag);
+        }
 
         return (Interaction) interaction.create(parent);
     }
