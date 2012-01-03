@@ -7,7 +7,7 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.control.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLException;
+import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIParseError;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -15,7 +15,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public final class AssessmentItemManager implements ItemValidationContext {
     
     /**
      * @throws QTIXMLReferencingException
-     * @throws QTIXMLException
+     * @throws XMLReaderException
      */
     public ResponseProcessing getResolvedResponseProcessing() {
         if (resolvedResponseProcessing==null) {

@@ -3,9 +3,7 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
-
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
+package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Trivial SAX {@link DefaultHandler} that builds a DOM {@link Document}, handling only the types of
- * SAX events we'd expect in QTI documents.
+ * SAX events we'd expect in documents that do not contain complex DTDs.
  * 
  * @author  David McKain
  * @version $Revision$
@@ -66,7 +64,7 @@ public final class SimpleDOMBuilderHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) {
         if (currentNode==null) {
-            throw new QTILogicException("Inconsistent state: currentNode==null");
+            throw new IllegalStateException("Inconsistent state at endElement: currentNode==null");
         }
         currentNode = currentNode.getParentNode();
     }
@@ -74,14 +72,14 @@ public final class SimpleDOMBuilderHandler extends DefaultHandler {
     @Override
     public void endDocument() {
         if (currentNode!=document) {
-            throw new QTILogicException("Inconsistent state at end of document: currentNode=" + currentNode);
+            throw new IllegalStateException("Inconsistent state at endDocument: currentNode=" + currentNode);
         }
     }
     
     private void storeLocationInformation(Node node) {
         if (locator!=null) {
             XMLSourceLocationInformation info = new XMLSourceLocationInformation(locator.getPublicId(), locator.getSystemId(), locator.getColumnNumber(), locator.getLineNumber());
-            node.setUserData(QTIXMLReader.LOCATION_INFORMATION_NAME, info, null);
+            node.setUserData(XMLResourceReader.LOCATION_INFORMATION_NAME, info, null);
         }
     }
 }

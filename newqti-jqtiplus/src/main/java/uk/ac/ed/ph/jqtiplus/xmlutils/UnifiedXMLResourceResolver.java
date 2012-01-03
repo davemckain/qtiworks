@@ -5,7 +5,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLException;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -32,10 +31,10 @@ import org.xml.sax.InputSource;
  * By default, all of the resolve methods work as specified if the resolve
  * resource cannot or will not be handled by your {@link ResourceLocator}.
  * This behaviour can be changed by setting the various <tt>setFailOnMissedXXX</tt> to true,
- * which will instead result in a {@link QTIXMLException} (or {@link TransformerException}
+ * which will instead result in a {@link XMLReaderException} (or {@link TransformerException}
  * in the case of {@link URIResolver}). This can be useful if all of the
  * resources that you will be searching for are under complete control of the system, as this
- * can indicate a mis-configuration or missing resource.
+ * can indicate a misconfiguration or missing resource.
  * 
  * @see ResourceLocator
  * 
@@ -284,7 +283,7 @@ public final class UnifiedXMLResourceResolver implements EntityResolver, URIReso
     private static void maybeFail(boolean shouldFail, String message) {
         logger.warn(message);
         if (shouldFail) {
-            throw new QTIXMLException(message);
+            throw new XMLReaderException(message);
         }
     }
 }

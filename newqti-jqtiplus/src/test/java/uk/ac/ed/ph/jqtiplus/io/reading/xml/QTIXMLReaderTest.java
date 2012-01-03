@@ -13,7 +13,12 @@ import static org.junit.Assert.assertTrue;
 
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 
+import java.io.InputStream;
 import java.net.URI;
 
 import org.junit.Test;
@@ -25,7 +30,7 @@ import org.junit.Test;
 @SuppressWarnings("static-method")
 public class QTIXMLReaderTest {
     
-    @Test(expected=QTIXMLResourceNotFoundException.class)
+    @Test(expected=XMLResourceNotFoundException.class)
     public void testReadNotFound() throws Exception {
         readTestFile("notfound.xml", false);
     }
@@ -136,9 +141,25 @@ public class QTIXMLReaderTest {
         assertEquals(1, parseResult.getUnsupportedSchemaNamespaces().size()); /* (Unsupported) */
     }
     
+    @Test(expected=XMLReaderException.class)
+    public void testBadSchemaClassPath() throws Exception {
+        QTIXMLReader reader = new QTIXMLReader(new NoResourceLocator());
+        ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
+        reader.read(makeSystemId("choice.xml"), inputResourceLocator, true);
+    }
+    
     //-------------------------------
     
-    private XMLReadResult readTestFile(String testFileName, boolean schemaValiadating) throws QTIXMLResourceNotFoundException {
+    static class NoResourceLocator implements ResourceLocator {
+        private static final long serialVersionUID = -3305449197115182185L;
+
+        @Override
+        public InputStream findResource(URI systemIdUri) {
+            return null;
+        }
+    }
+    
+    private XMLReadResult readTestFile(String testFileName, boolean schemaValiadating) throws XMLResourceNotFoundException {
         QTIXMLReader reader = new QTIXMLReader();
         ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         return reader.read(makeSystemId(testFileName), inputResourceLocator, schemaValiadating);

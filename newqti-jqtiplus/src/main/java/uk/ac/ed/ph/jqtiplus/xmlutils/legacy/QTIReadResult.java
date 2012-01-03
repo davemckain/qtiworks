@@ -5,8 +5,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
+import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIParseError;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
 
 import java.io.Serializable;
 import java.util.List;

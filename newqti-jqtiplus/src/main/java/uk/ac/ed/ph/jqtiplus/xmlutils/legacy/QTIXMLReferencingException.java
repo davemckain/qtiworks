@@ -6,8 +6,8 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIParseError;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
 
 import java.util.List;
 

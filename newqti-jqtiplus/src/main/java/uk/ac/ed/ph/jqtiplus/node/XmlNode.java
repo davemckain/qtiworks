@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
 

@@ -3,7 +3,7 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
+package uk.ac.ed.ph.jqtiplus.io.reading.objects;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 

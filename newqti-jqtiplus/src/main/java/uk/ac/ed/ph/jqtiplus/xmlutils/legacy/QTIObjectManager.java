@@ -9,12 +9,12 @@ import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLException;
+import uk.ac.ed.ph.jqtiplus.io.reading.objects.QTIParseError;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 
 import java.net.URI;
@@ -125,7 +125,7 @@ public final class QTIObjectManager {
             try {
                 RootNode xmlObject = RootNodeTypes.load(document.getDocumentElement(), systemId, loadingContext);
                 if (!resultClass.isInstance(xmlObject)) {
-                    throw new QTIXMLException("QTI XML was instantiated into an instance of "
+                    throw new XMLReaderException("QTI XML was instantiated into an instance of "
                             + xmlObject.getClass().getSimpleName()
                             + ", not the requested "
                             + resultClass.getSimpleName());

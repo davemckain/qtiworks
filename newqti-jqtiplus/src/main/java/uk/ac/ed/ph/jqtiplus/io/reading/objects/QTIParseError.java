@@ -3,10 +3,10 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.io.reading.objects;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import org.w3c.dom.Element;
 

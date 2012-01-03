@@ -7,12 +7,12 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.QTIConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.SimpleDOMBuilderHandler;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDOMBuilderHandler;
 import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXMLResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -136,7 +136,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *   located using the given {@link ResourceLocator}
-     * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(String systemId, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemId, "systemId");
@@ -152,7 +152,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *   located using the given {@link ResourceLocator}
-     * @throws QTIXMLException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemIdUri, "systemIdUri");
@@ -276,7 +276,7 @@ public final class SupportedXMLReader implements Serializable {
             throw new QTIXMLReadException(xmlParseResult);
         }
         catch (Exception e) {
-            throw new QTIXMLException("Unexpected Exception during parsing", e);
+            throw new XMLReaderException("Unexpected Exception during parsing", e);
         }
         logger.info("Result of read is {}", xmlParseResult);
         return new XMLReadResult(document, xmlParseResult);

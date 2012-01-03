@@ -3,9 +3,7 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
-
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 /**
  * Runtime exception thrown when unexpected XML errors occur.
@@ -16,23 +14,23 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
  * @author  David McKain
  * @version $Revision: 2766 $
  */
-public class QTIXMLException extends QTIRuntimeException {
+public class XMLReaderException extends RuntimeException {
 
     private static final long serialVersionUID = -8067028187234814860L;
 
-    public QTIXMLException() {
+    public XMLReaderException() {
         super();
     }
 
-    public QTIXMLException(String message, Throwable cause) {
+    public XMLReaderException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public QTIXMLException(String message) {
+    public XMLReaderException(String message) {
         super(message);
     }
 
-    public QTIXMLException(Throwable cause) {
+    public XMLReaderException(Throwable cause) {
         super(cause);
     }
 }

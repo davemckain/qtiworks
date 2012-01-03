@@ -3,26 +3,23 @@
  * Copyright 2011 University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.jqtiplus.io.reading.xml;
-
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 /**
- * Exception thrown when a required XML resource cannot be found.
+ * Exception thrown by {@link XMLResourceReader} when a required XML resource cannot be found.
  * 
  * @author  David McKain
  * @version $Revision: 2766 $
  */
-public class QTIXMLResourceNotFoundException extends QTIException {
+public final class XMLResourceNotFoundException extends Exception {
 
     private static final long serialVersionUID = 4325972690545164979L;
     
     private final ResourceLocator resourceLocator;
     private final String systemId;
     
-    public QTIXMLResourceNotFoundException(final ResourceLocator resourceLocator, final String systemId) {
-        super("Could not locate required XML resource with systemId " + systemId + " using ResourceLocator " + resourceLocator);
+    public XMLResourceNotFoundException(final ResourceLocator resourceLocator, final String systemId) {
+        super("Could not locate required XML input resource with systemId " + systemId + " using ResourceLocator " + resourceLocator);
         this.resourceLocator = resourceLocator;
         this.systemId = systemId;
     }

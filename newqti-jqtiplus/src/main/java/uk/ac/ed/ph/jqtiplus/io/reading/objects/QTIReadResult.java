@@ -5,9 +5,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.io.reading.objects;
 
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLParseResult;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;

@@ -9,15 +9,13 @@ import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLReader;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.QTIXMLResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.WrongQTIXMLRootNodeException;
-import uk.ac.ed.ph.jqtiplus.io.reading.xml.XMLReadResult;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIParseError;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferenceResolver;
 import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
@@ -81,12 +79,12 @@ public final class QTIObjectLoader implements ReferenceResolver {
     //--------------------------------------------------------------------------
 
     /**
-     * @throws QTIXMLResourceNotFoundException the XML resource with the given System ID could not be
+     * @throws XMLResourceNotFoundException the XML resource with the given System ID could not be
      *   located by the {@link #getInputResourceLocator()}
      * @throws WrongQTIXMLRootNodeException
      */
     public <E extends RootNode> QTIReadResult<E> readQTI(URI systemId, Class<E> resultClass)
-            throws QTIXMLResourceNotFoundException, WrongQTIXMLRootNodeException {
+            throws XMLResourceNotFoundException, WrongQTIXMLRootNodeException {
         logger.info("Attempting to read QTI Object at system ID {}, expecting result class {}", systemId, resultClass);
         
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
