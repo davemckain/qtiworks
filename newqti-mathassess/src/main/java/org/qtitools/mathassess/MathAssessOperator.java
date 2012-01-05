@@ -43,15 +43,16 @@ import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
 
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
@@ -94,7 +95,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      * one is found return the prefix, otherwise return empty string
      */
     protected String getNamespacePrefix() {
-        AbstractObject parent = this;
+        AbstractNode parent = this;
         while (parent != null) {
             for (Attribute attr : parent.getAttributes()) {
                 if (attr.getName() != null && attr.getName().startsWith("xmlns:")
@@ -102,7 +103,7 @@ public abstract class MathAssessOperator extends CustomOperator {
                         && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI))
                     return attr.getName().substring(6) + ":";
             }
-            parent = (AbstractObject) parent.getParent();
+            parent = (AbstractNode) parent.getParent();
         }
         return "";
     }
@@ -175,14 +176,16 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     private List<VariableDeclaration> getAllReadableVariableDeclarations() {
         List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
-
-        if (getParentItem() != null) {
-            declarations.addAll(getParentItem().getResponseDeclarations());
-            declarations.addAll(getParentItem().getTemplateDeclarations());
-            declarations.addAll(getParentItem().getOutcomeDeclarations());
+        
+        AssessmentItem item = getRootNode(AssessmentItem.class);
+        AssessmentTest test = getRootNode(AssessmentTest.class);
+        if (item!=null) {
+            declarations.addAll(item.getResponseDeclarations());
+            declarations.addAll(item.getTemplateDeclarations());
+            declarations.addAll(item.getOutcomeDeclarations());
         }
-        else if (getParentTest() != null) {
-            declarations.addAll(getParentItem().getOutcomeDeclarations());
+        else if (test!=null) {
+            declarations.addAll(test.getOutcomeDeclarations());
         }
 
         return declarations;
@@ -206,21 +209,23 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     private List<VariableDeclaration> getAllWriteableVariableDeclarations() {
         List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
-
-        if (getParentItem() != null) {
-            declarations.addAll(getParentItem().getTemplateDeclarations());
-            declarations.addAll(getParentItem().getOutcomeDeclarations());
+        
+        AssessmentItem item = getRootNode(AssessmentItem.class);
+        AssessmentTest test = getRootNode(AssessmentTest.class);
+        if (item!=null) {
+            declarations.addAll(item.getTemplateDeclarations());
+            declarations.addAll(item.getOutcomeDeclarations());
         }
-        else if (getParentTest() != null) {
-            declarations.addAll(getParentItem().getOutcomeDeclarations());
+        else if (test!=null) {
+            declarations.addAll(test.getOutcomeDeclarations());
         }
 
         return declarations;
     }
 
     @Override
-    public final ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public final void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
 
         /* First make sure that variable names are all acceptable */
         for (VariableDeclaration decl : getAllReadableVariableDeclarations()) {
@@ -242,8 +247,6 @@ public abstract class MathAssessOperator extends CustomOperator {
         
         /* Get subclass to validate remaining attrs and/or children */
         doAdditionalValidation(context, result);
-
-        return result;
     }
     
     protected abstract void doAdditionalValidation(ValidationContext context, ValidationResult result);

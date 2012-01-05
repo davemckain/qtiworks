@@ -8,7 +8,7 @@ package org.qtitools.mathassess;
 import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.control.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -20,6 +20,9 @@ import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
 import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +39,15 @@ public final class MathAssessExtensionPackage implements JQTIExtensionPackage {
     private static final Logger logger = LoggerFactory.getLogger(MathAssessExtensionPackage.class);
     
     private final ThreadLocal<QTIMaximaSession> sessionThreadLocal;
+    private final Map<String, String> schemaInformation;
     
     private StylesheetCache stylesheetCache;
     private PooledQTIMaximaSessionManager pooledQTIMaximaSessionManager;
     
     public MathAssessExtensionPackage() {
         this.sessionThreadLocal = new ThreadLocal<QTIMaximaSession>();
+        this.schemaInformation = new HashMap<String, String>();
+        this.schemaInformation.put(MathAssessConstants.MATHASSESS_NAMESPACE_URI, MathAssessConstants.MATHASSESS_SCHEMA_LOCATION);   
     }
     
     public StylesheetCache getStylesheetCache() {
@@ -77,6 +83,12 @@ public final class MathAssessExtensionPackage implements JQTIExtensionPackage {
     
     //------------------------------------------------------------------------
     
+    @Override
+    public Map<String,String> getSchemaInformation() {
+        return schemaInformation;
+    }
+    
+    @Override
     public CustomOperator createCustomOperator(ExpressionParent expressionParent, String operatorClassName) {
         if (MathAssessConstants.CAS_COMPARE_CLASS.equals(operatorClassName)) {
             return new CasCompare(this, expressionParent);
@@ -93,7 +105,8 @@ public final class MathAssessExtensionPackage implements JQTIExtensionPackage {
         return null;
     }
 
-    public CustomInteraction createCustomInteraction(XmlObject parentObject, String interactionClassName) {
+    @Override
+    public CustomInteraction createCustomInteraction(XmlNode parentObject, String interactionClassName) {
         if (MathAssessConstants.MATH_ENTRY_INTERACTION_CLASS.equals(interactionClassName)) {
             return new MathEntryInteraction(this, parentObject);
         }
@@ -102,6 +115,7 @@ public final class MathAssessExtensionPackage implements JQTIExtensionPackage {
     
     //------------------------------------------------------------------------
     
+    @Override
     public void lifecycleEvent(Object controller, LifecycleEventType eventType) {
         logger.info("Received lifecycle event " + eventType);
         switch (eventType) {

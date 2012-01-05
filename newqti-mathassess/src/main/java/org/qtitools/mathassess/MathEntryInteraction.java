@@ -47,8 +47,9 @@ import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
@@ -58,7 +59,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
 
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
@@ -84,7 +84,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
-    public MathEntryInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlObject parent) {
+    public MathEntryInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
         // add a namespace prefix to this if none there, and no global prefix
@@ -104,7 +104,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      * one is found return the prefix, otherwise return empty string
      */
     protected String getNamespacePrefix() {
-        AbstractObject parent = this;
+        AbstractNode parent = this;
         while (parent != null) {
             for (Attribute attr : parent.getAttributes()) {
                 if (attr.getName() != null && attr.getName().startsWith("xmlns:")
@@ -112,7 +112,7 @@ public final class MathEntryInteraction extends CustomInteraction {
                         && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI))
                     return attr.getName().substring(6) + ":";
             }
-            parent = (AbstractObject) parent.getParent();
+            parent = (AbstractNode) parent.getParent();
         }
         return "";
     }
@@ -165,12 +165,12 @@ public final class MathEntryInteraction extends CustomInteraction {
         if (getPrintIdentifier() == null) {
             return null;
         }
-        return getParentItem().getResponseDeclaration(getPrintIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
     }
     
     @Override
-    public ValidationResult validate(ValidationContext context) {
-        ValidationResult result = super.validate(context);
+    public void validate(ValidationContext context, ValidationResult result) {
+        super.validate(context, result);
 
         if (getResponseIdentifier() != null) {
             ResponseDeclaration declaration = getResponseDeclaration();
@@ -192,8 +192,6 @@ public final class MathEntryInteraction extends CustomInteraction {
                 result.add(new ValidationError(this, "printIdentifier response variable must have string base type"));
             }
         }
-
-        return result;
     }
     
     @Override
