@@ -47,77 +47,93 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>And</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.And
  */
 @RunWith(Parameterized.class)
 public class AndRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<and>" +
-                "<multiple>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</multiple>" +
-            "</and>", QTICardinalityException.class},
-            // ordered {"<and>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</and>", QTICardinalityException.class},
-            // record {"<and>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</recordEx>" +
-            "</and>", QTICardinalityException.class},
-            // identifier {"<and>" +
-                "<baseValue baseType='identifier'>true</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // boolean + integer {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // integer {"<and>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // float {"<and>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // string {"<and>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // point {"<and>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // pair {"<and>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // directedPair {"<and>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // duration {"<and>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // file {"<and>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
-            // uri {"<and>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</and>", QTIBaseTypeException.class},
+                // multiple
+                { "<and>" +
+                        "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>" +
+                        "</and>", QTICardinalityException.class },
+                // ordered
+                { "<and>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</and>", QTICardinalityException.class },
+                // record
+                { "<and>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</recordEx>" +
+                        "</and>", QTICardinalityException.class },
+                // identifier
+                { "<and>" +
+                        "<baseValue baseType='identifier'>true</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // boolean + integer
+                { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // integer
+                { "<and>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // float
+                { "<and>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // string
+                { "<and>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // point
+                { "<and>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // pair
+                { "<and>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // directedPair
+                { "<and>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // duration
+                { "<and>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // file
+                { "<and>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
+                // uri
+                { "<and>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</and>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>And</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public AndRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

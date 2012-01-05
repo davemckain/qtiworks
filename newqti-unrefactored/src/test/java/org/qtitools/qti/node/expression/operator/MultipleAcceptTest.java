@@ -58,12 +58,14 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Multiple</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Multiple
  */
 @RunWith(Parameterized.class)
 public class MultipleAcceptTest extends ExpressionAcceptTest {
+
     private static final MultipleValue MULTIPLE_1__1_2_3;
+
     private static final MultipleValue MULTIPLE_2__1_2_3_4_5_6_7;
 
     static {
@@ -85,85 +87,98 @@ public class MultipleAcceptTest extends ExpressionAcceptTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<multiple>" +
-            "</multiple>", NullValue.INSTANCE}, {"<multiple>" +
-                "<null/>" +
-            "</multiple>", NullValue.INSTANCE}, {"<multiple>" +
-                "</multiple>", new MultipleValue()}, {"<multiple>" +
-                    "<null/>" +
-                "</multiple>", new MultipleValue()},
-            // identifier {"<multiple>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</multiple>", new MultipleValue(new IdentifierValue("identifier"))},
-            // boolean {"<multiple>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</multiple>", new MultipleValue(BooleanValue.TRUE)}, {"<multiple>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</multiple>", new MultipleValue(BooleanValue.FALSE)},
-            // integer {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</multiple>", new MultipleValue(new IntegerValue(1))}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", MULTIPLE_1__1_2_3}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", MULTIPLE_1__1_2_3}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>6</baseValue>" +
-                "<baseValue baseType='integer'>7</baseValue>" +
-            "</multiple>", MULTIPLE_2__1_2_3_4_5_6_7},
-            // float {"<multiple>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</multiple>", new MultipleValue(new FloatValue(1))},
-            // string {"<multiple>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</multiple>", new MultipleValue(new StringValue("string"))},
-            // point {"<multiple>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</multiple>", new MultipleValue(new PointValue(1, 1))},
-            // pair {"<multiple>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</multiple>", new MultipleValue(new PairValue("identifier_1", "identifier_2"))},
-            // directedPair {"<multiple>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</multiple>", new MultipleValue(new DirectedPairValue("identifier_1", "identifier_2"))},
-            // duration {"<multiple>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</multiple>", new MultipleValue(new DurationValue(1))},
-            // file {"<multiple>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</multiple>", new MultipleValue(new FileValue("file"))},
-            // uri {"<multiple>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</multiple>", new MultipleValue(new UriValue("uri"))},
-            // multiple {"<multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</multiple>", new MultipleValue(new IntegerValue(1))},
+                // null
+                { "<multiple>" +
+                        "</multiple>", NullValue.INSTANCE }, { "<multiple>" +
+                        "<null/>" +
+                        "</multiple>", NullValue.INSTANCE }, { "<multiple>" +
+                        "</multiple>", new MultipleValue() }, { "<multiple>" +
+                        "<null/>" +
+                        "</multiple>", new MultipleValue() },
+                // identifier
+                { "<multiple>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</multiple>", new MultipleValue(new IdentifierValue("identifier")) },
+                // boolean
+                { "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>", new MultipleValue(BooleanValue.TRUE) }, { "<multiple>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</multiple>", new MultipleValue(BooleanValue.FALSE) },
+                // integer
+                { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>", new MultipleValue(new IntegerValue(1)) }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>", MULTIPLE_1__1_2_3 }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>", MULTIPLE_1__1_2_3 }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</multiple>", MULTIPLE_2__1_2_3_4_5_6_7 },
+                // float
+                { "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>", new MultipleValue(new FloatValue(1)) },
+                // string
+                { "<multiple>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</multiple>", new MultipleValue(new StringValue("string")) },
+                // point
+                { "<multiple>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</multiple>", new MultipleValue(new PointValue(1, 1)) },
+                // pair
+                { "<multiple>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</multiple>", new MultipleValue(new PairValue("identifier_1", "identifier_2")) },
+                // directedPair
+                { "<multiple>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</multiple>", new MultipleValue(new DirectedPairValue("identifier_1", "identifier_2")) },
+                // duration
+                { "<multiple>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</multiple>", new MultipleValue(new DurationValue(1)) },
+                // file
+                { "<multiple>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</multiple>", new MultipleValue(new FileValue("file")) },
+                // uri
+                { "<multiple>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</multiple>", new MultipleValue(new UriValue("uri")) },
+                // multiple
+                { "<multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</multiple>", new MultipleValue(new IntegerValue(1)) },
         });
     }
 
     /**
      * Constructs <code>Multiple</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

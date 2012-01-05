@@ -50,152 +50,156 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Delete</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Delete
  */
 @RunWith(Parameterized.class)
 public class DeleteAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<delete>" +
-                "<null/>" +
-                "<null/>" +
-            "</delete>", null}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</delete>", null}, {"<delete>" +
-                "<null/>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", null}, {"<delete>" +
-                "<null/>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</delete>", null},
-            // multiple {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", null}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", null}, {"<delete>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2),
-                    new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(2), new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2)})}, {"<delete>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(1),
-                    new IntegerValue(3)})},
-            // ordered {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</delete>", null}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</delete>", null}, {"<delete>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2),
-                    new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(2), new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(3)})}, {"<delete>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2)})}, {"<delete>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(1),
-                    new IntegerValue(3)})},
+                // null
+                { "<delete>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<null/>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<null/>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", null },
+                // multiple
+                { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2),
+                        new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(2), new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", new MultipleValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(1),
+                        new IntegerValue(3) }) },
+                // ordered
+                { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", null }, { "<delete>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2),
+                        new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(2), new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(3) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(2) }) }, { "<delete>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", new OrderedValue(new SingleValue[] { new IntegerValue(1), new IntegerValue(1),
+                        new IntegerValue(3) }) },
         });
     }
 
     /**
      * Constructs <code>Delete</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public DeleteAcceptTest(String xml, ListValue expectedValue) {
-        super(xml, (expectedValue != null) ? expectedValue : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? expectedValue : NullValue.INSTANCE);
     }
 }

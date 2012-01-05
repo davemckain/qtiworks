@@ -41,16 +41,20 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 
 public class HelloWorldOperator extends AbstractExpression {
+
+    private static final long serialVersionUID = 5788585841338857331L;
+
     public HelloWorldOperator(ExpressionParent parent) {
         super(parent);
-        
+
         getAttributes().add(new StringAttribute(this, "string", null));
     }
 
     @Override
     protected Value evaluateSelf(int depth) {
-        if (getAttributes().getStringAttribute("string").getValue() == null)
+        if (getAttributes().getStringAttribute("string").getValue() == null) {
             return new StringValue("hello world");
+        }
         return new StringValue(getAttributes().getStringAttribute("string").getValue());
     }
 

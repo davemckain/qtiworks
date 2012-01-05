@@ -56,36 +56,81 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>BaseValue</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue
  */
 @RunWith(Parameterized.class)
 public class BaseValueAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // identifier {"<baseValue baseType='identifier'>identifier</baseValue>", new IdentifierValue("identifier")}, {"<baseValue baseType='identifier'>Identifier</baseValue>", new IdentifierValue("Identifier")}, {"<baseValue baseType='identifier'>IDENTIFIER</baseValue>", new IdentifierValue("IDENTIFIER")}, {"<baseValue baseType='identifier'>identifier_1</baseValue>", new IdentifierValue("identifier_1")},
-            // boolean {"<baseValue baseType='boolean'>true</baseValue>", BooleanValue.TRUE}, {"<baseValue baseType='boolean'>false</baseValue>", BooleanValue.FALSE}, {"<baseValue baseType='boolean'>1</baseValue>", BooleanValue.TRUE}, {"<baseValue baseType='boolean'>0</baseValue>", BooleanValue.FALSE},
-            // integer {"<baseValue baseType='integer'>1234</baseValue>", new IntegerValue(1234)}, {"<baseValue baseType='integer'>3</baseValue>", new IntegerValue(3)}, {"<baseValue baseType='integer'>1</baseValue>", new IntegerValue(1)}, {"<baseValue baseType='integer'>0</baseValue>", new IntegerValue(0)}, {"<baseValue baseType='integer'>+0</baseValue>", new IntegerValue(0)}, {"<baseValue baseType='integer'>-0</baseValue>", new IntegerValue(0)}, {"<baseValue baseType='integer'>-1</baseValue>", new IntegerValue(-1)}, {"<baseValue baseType='integer'>-3</baseValue>", new IntegerValue(-3)}, {"<baseValue baseType='integer'>-1234</baseValue>", new IntegerValue(-1234)},
-            // float {"<baseValue baseType='float'>123.45</baseValue>", new FloatValue(123.45)}, {"<baseValue baseType='float'>59</baseValue>", new FloatValue(59)}, {"<baseValue baseType='float'>3.9999</baseValue>", new FloatValue(3.9999)}, {"<baseValue baseType='float'>1.0</baseValue>", new FloatValue(1)}, {"<baseValue baseType='float'>1</baseValue>", new FloatValue(1)}, {"<baseValue baseType='float'>0.0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>+0.0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>-0.0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>+0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>-0</baseValue>", new FloatValue(0)}, {"<baseValue baseType='float'>-1.0</baseValue>", new FloatValue(-1)}, {"<baseValue baseType='float'>-1</baseValue>", new FloatValue(-1)}, {"<baseValue baseType='float'>-3.9999</baseValue>", new FloatValue(-3.9999)}, {"<baseValue baseType='float'>-59</baseValue>", new FloatValue(-59)}, {"<baseValue baseType='float'>-123.45</baseValue>", new FloatValue(-123.45)},
-            // string {"<baseValue baseType='string'>string</baseValue>", new StringValue("string")}, {"<baseValue baseType='string'>String</baseValue>", new StringValue("String")}, {"<baseValue baseType='string'>STRING</baseValue>", new StringValue("STRING")}, {"<baseValue baseType='string'>sTrInG</baseValue>", new StringValue("sTrInG")}, {"<baseValue baseType='string'>1</baseValue>", new StringValue("1")}, {"<baseValue baseType='string'>true</baseValue>", new StringValue("true")},
-            // point {"<baseValue baseType='point'>1 1</baseValue>", new PointValue(1, 1)},
-            // pair {"<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>", new PairValue("identifier_1", "identifier_2")},
-            // directedPair {"<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>", new DirectedPairValue("identifier_1", "identifier_2")},
-            // duration {"<baseValue baseType='duration'>1</baseValue>", new DurationValue(1)},
-            // file {"<baseValue baseType='file'>file</baseValue>", new FileValue("file")},
-            // uri {"<baseValue baseType='uri'>uri</baseValue>", new UriValue("uri")},
+                // identifier
+                { "<baseValue baseType='identifier'>identifier</baseValue>", new IdentifierValue("identifier") },
+                { "<baseValue baseType='identifier'>Identifier</baseValue>", new IdentifierValue("Identifier") },
+                { "<baseValue baseType='identifier'>IDENTIFIER</baseValue>", new IdentifierValue("IDENTIFIER") },
+                { "<baseValue baseType='identifier'>identifier_1</baseValue>", new IdentifierValue("identifier_1") },
+                // boolean
+                { "<baseValue baseType='boolean'>true</baseValue>", BooleanValue.TRUE },
+                { "<baseValue baseType='boolean'>false</baseValue>", BooleanValue.FALSE },
+                { "<baseValue baseType='boolean'>1</baseValue>", BooleanValue.TRUE },
+                { "<baseValue baseType='boolean'>0</baseValue>", BooleanValue.FALSE },
+                // integer
+                { "<baseValue baseType='integer'>1234</baseValue>", new IntegerValue(1234) },
+                { "<baseValue baseType='integer'>3</baseValue>", new IntegerValue(3) },
+                { "<baseValue baseType='integer'>1</baseValue>", new IntegerValue(1) },
+                { "<baseValue baseType='integer'>0</baseValue>", new IntegerValue(0) },
+                { "<baseValue baseType='integer'>+0</baseValue>", new IntegerValue(0) },
+                { "<baseValue baseType='integer'>-0</baseValue>", new IntegerValue(0) },
+                { "<baseValue baseType='integer'>-1</baseValue>", new IntegerValue(-1) },
+                { "<baseValue baseType='integer'>-3</baseValue>", new IntegerValue(-3) },
+                { "<baseValue baseType='integer'>-1234</baseValue>", new IntegerValue(-1234) },
+                // float
+                { "<baseValue baseType='float'>123.45</baseValue>", new FloatValue(123.45) },
+                { "<baseValue baseType='float'>59</baseValue>", new FloatValue(59) },
+                { "<baseValue baseType='float'>3.9999</baseValue>", new FloatValue(3.9999) },
+                { "<baseValue baseType='float'>1.0</baseValue>", new FloatValue(1) }, { "<baseValue baseType='float'>1</baseValue>", new FloatValue(1) },
+                { "<baseValue baseType='float'>0.0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>+0.0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>-0.0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>+0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>-0</baseValue>", new FloatValue(0) },
+                { "<baseValue baseType='float'>-1.0</baseValue>", new FloatValue(-1) },
+                { "<baseValue baseType='float'>-1</baseValue>", new FloatValue(-1) },
+                { "<baseValue baseType='float'>-3.9999</baseValue>", new FloatValue(-3.9999) },
+                { "<baseValue baseType='float'>-59</baseValue>", new FloatValue(-59) },
+                { "<baseValue baseType='float'>-123.45</baseValue>", new FloatValue(-123.45) },
+                // string
+                { "<baseValue baseType='string'>string</baseValue>", new StringValue("string") },
+                { "<baseValue baseType='string'>String</baseValue>", new StringValue("String") },
+                { "<baseValue baseType='string'>STRING</baseValue>", new StringValue("STRING") },
+                { "<baseValue baseType='string'>sTrInG</baseValue>", new StringValue("sTrInG") },
+                { "<baseValue baseType='string'>1</baseValue>", new StringValue("1") },
+                { "<baseValue baseType='string'>true</baseValue>", new StringValue("true") },
+                // point
+                { "<baseValue baseType='point'>1 1</baseValue>", new PointValue(1, 1) },
+                // pair
+                { "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>", new PairValue("identifier_1", "identifier_2") },
+                // directedPair
+                { "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>", new DirectedPairValue("identifier_1", "identifier_2") },
+                // duration
+                { "<baseValue baseType='duration'>1</baseValue>", new DurationValue(1) },
+                // file
+                { "<baseValue baseType='file'>file</baseValue>", new FileValue("file") },
+                // uri
+                { "<baseValue baseType='uri'>uri</baseValue>", new UriValue("uri") },
         });
     }
 
     /**
      * Constructs <code>BaseValue</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

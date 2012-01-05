@@ -46,31 +46,34 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>BooleanValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>BooleanValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.BooleanValue
  */
 @RunWith(Parameterized.class)
 public class BooleanValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"true", true}, {"1", true}, {"false", false}, {"0", false},
+        return Arrays.asList(new Object[][] { { "true", true }, { "1", true }, { "false", false }, { "0", false },
         });
     }
 
-    private String string;
-    private Boolean expectedBoolean;
+    private final String string;
+
+    private final Boolean expectedBoolean;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedBoolean expected parsed value
      */

@@ -47,72 +47,87 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Round</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Round
  */
 @RunWith(Parameterized.class)
 public class RoundRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<round>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</multiple>" +
-            "</round>", QTICardinalityException.class},
-            // ordered {"<round>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</ordered>" +
-            "</round>", QTICardinalityException.class},
-            // record {"<round>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</recordEx>" +
-            "</round>", QTICardinalityException.class},
-            // identifier {"<round>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // boolean {"<round>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // integer {"<round>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // string {"<round>" +
-                "<baseValue baseType='string'>1.0</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // point {"<round>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // pair {"<round>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // directedPair {"<round>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // duration {"<round>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // file {"<round>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
-            // uri {"<round>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</round>", QTIBaseTypeException.class},
+                // multiple
+                { "<round>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>" +
+                        "</round>", QTICardinalityException.class },
+                // ordered
+                { "<round>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</ordered>" +
+                        "</round>", QTICardinalityException.class },
+                // record
+                { "<round>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</round>", QTICardinalityException.class },
+                // identifier
+                { "<round>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // boolean
+                { "<round>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // integer
+                { "<round>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // string
+                { "<round>" +
+                        "<baseValue baseType='string'>1.0</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // point
+                { "<round>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // pair
+                { "<round>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // directedPair
+                { "<round>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // duration
+                { "<round>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // file
+                { "<round>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
+                // uri
+                { "<round>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</round>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Round</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public RoundRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

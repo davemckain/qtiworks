@@ -45,36 +45,37 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class IdentifierTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"Identifier-01.xml"}, {"Identifier-02.xml"},
+        return Arrays.asList(new Object[][] { { "Identifier-01.xml" }, { "Identifier-02.xml" },
         });
     }
 
-    private String fileName;
+    private final String fileName;
 
     public IdentifierTest(String fileName) {
         this.fileName = fileName;
     }
 
-//    @Test (expected = QTIEvaluationException.class)
+    // @Test (expected = QTIEvaluationException.class)
     @Test
     public void test() {
-        AssessmentTest test = new AssessmentTest();
+        final AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource(fileName), jqtiController);
 
-//        System.out.println(test.getAssessmentResult().toXmlString());
+        // System.out.println(test.getAssessmentResult().toXmlString());
 
-//        System.out.println(test.toXmlString());
-//        System.out.println();
-//
-//        test.processOutcome();
-//
-//        System.out.print("condition = " + test.getOutcomeValue("condition"));
+        // System.out.println(test.toXmlString());
+        // System.out.println();
+        //
+        // test.processOutcome();
+        //
+        // System.out.print("condition = " + test.getOutcomeValue("condition"));
     }
 }

@@ -47,59 +47,65 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Record</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.RecordEx
  */
 @RunWith(Parameterized.class)
 public class RecordRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // attributes {"<recordEx identifiers='key_1 key_2 key_3 key_2 key_5'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</recordEx>", QTIAttributeException.class},
-            // multiple {"<recordEx identifiers='key_1'>" +
-                "<multiple/>" +
-            "</recordEx>", QTICardinalityException.class}, {"<recordEx identifiers='key_1 key_2 key_3'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</recordEx>", QTICardinalityException.class},
-            // ordered {"<recordEx identifiers='key_1'>" +
-                "<ordered/>" +
-            "</recordEx>", QTICardinalityException.class}, {"<recordEx identifiers='key_1 key_2 key_3'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</recordEx>", QTICardinalityException.class},
-            // record {"<recordEx identifiers='key_1'>" +
-                "<recordEx/>" +
-            "</recordEx>", QTICardinalityException.class}, {"<recordEx identifiers='key_1'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</recordEx>", QTICardinalityException.class},
+                // attributes
+                { "<recordEx identifiers='key_1 key_2 key_3 key_2 key_5'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</recordEx>", QTIAttributeException.class },
+                // multiple
+                { "<recordEx identifiers='key_1'>" +
+                        "<multiple/>" +
+                        "</recordEx>", QTICardinalityException.class }, { "<recordEx identifiers='key_1 key_2 key_3'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</recordEx>", QTICardinalityException.class },
+                // ordered
+                { "<recordEx identifiers='key_1'>" +
+                        "<ordered/>" +
+                        "</recordEx>", QTICardinalityException.class }, { "<recordEx identifiers='key_1 key_2 key_3'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</recordEx>", QTICardinalityException.class },
+                // record
+                { "<recordEx identifiers='key_1'>" +
+                        "<recordEx/>" +
+                        "</recordEx>", QTICardinalityException.class }, { "<recordEx identifiers='key_1'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</recordEx>", QTICardinalityException.class },
         });
     }
 
     /**
      * Constructs <code>Record</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public RecordRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

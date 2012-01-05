@@ -57,123 +57,136 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Index</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Index
  */
 @RunWith(Parameterized.class)
 public class IndexAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<index n='1'>" +
-                "<null/>" +
-            "</index>", NullValue.INSTANCE}, {"<index n='1'>" +
-                "<ordered/>" +
-            "</index>", NullValue.INSTANCE}, {"<index n='1'>" +
-                "<ordered>" +
-                    "<null/>" +
-                "</ordered>" +
-            "</index>", NullValue.INSTANCE},
-            // identifier {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "</ordered>" +
-            "</index>", new IdentifierValue("identifier")},
-            // boolean {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</index>", BooleanValue.TRUE}, {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>false</baseValue>" +
-                "</ordered>" +
-            "</index>", BooleanValue.FALSE},
-            // integer {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</index>", new IntegerValue(1)}, {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</index>", new IntegerValue(1)}, {"<index n='2'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</index>", new IntegerValue(2)}, {"<index n='3'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</index>", new IntegerValue(3)}, {"<index n='4'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</index>", NullValue.INSTANCE}, {"<index n='5'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</index>", NullValue.INSTANCE},
-            // float {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</ordered>" +
-            "</index>", new FloatValue(1)},
-            // string {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</ordered>" +
-            "</index>", new StringValue("string")},
-            // point {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='point'>1 1</baseValue>" +
-                "</ordered>" +
-            "</index>", new PointValue(1, 1)},
-            // pair {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "</ordered>" +
-            "</index>", new PairValue("identifier_1", "identifier_2")},
-            // directedPair {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "</ordered>" +
-            "</index>", new DirectedPairValue("identifier_1", "identifier_2")},
-            // duration {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</ordered>" +
-            "</index>", new DurationValue(1)},
-            // file {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='file'>file</baseValue>" +
-                "</ordered>" +
-            "</index>", new FileValue("file")},
-            // uri {"<index n='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='uri'>uri</baseValue>" +
-                "</ordered>" +
-            "</index>", new UriValue("uri")},
+                // null
+                { "<index n='1'>" +
+                        "<null/>" +
+                        "</index>", NullValue.INSTANCE }, { "<index n='1'>" +
+                        "<ordered/>" +
+                        "</index>", NullValue.INSTANCE }, { "<index n='1'>" +
+                        "<ordered>" +
+                        "<null/>" +
+                        "</ordered>" +
+                        "</index>", NullValue.INSTANCE },
+                // identifier
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new IdentifierValue("identifier") },
+                // boolean
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</index>", BooleanValue.TRUE }, { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</ordered>" +
+                        "</index>", BooleanValue.FALSE },
+                // integer
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new IntegerValue(1) }, { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new IntegerValue(1) }, { "<index n='2'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new IntegerValue(2) }, { "<index n='3'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new IntegerValue(3) }, { "<index n='4'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</index>", NullValue.INSTANCE }, { "<index n='5'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</index>", NullValue.INSTANCE },
+                // float
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new FloatValue(1) },
+                // string
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new StringValue("string") },
+                // point
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new PointValue(1, 1) },
+                // pair
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new PairValue("identifier_1", "identifier_2") },
+                // directedPair
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new DirectedPairValue("identifier_1", "identifier_2") },
+                // duration
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new DurationValue(1) },
+                // file
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new FileValue("file") },
+                // uri
+                { "<index n='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</ordered>" +
+                        "</index>", new UriValue("uri") },
         });
     }
 
     /**
      * Constructs <code>Index</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

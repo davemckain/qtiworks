@@ -46,92 +46,96 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>IntegerDivide</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerDivide
  */
 @RunWith(Parameterized.class)
 public class IntegerDivideAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<integerDivide>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</integerDivide>", null}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</integerDivide>", null}, {"<integerDivide>" +
-                "<null/>" +
-                "<null/>" +
-            "</integerDivide>", null}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</integerDivide>", null},
-            // positive {"<integerDivide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerDivide>", 0}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</integerDivide>", 0}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-            "</integerDivide>", 0}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerDivide>", 1}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</integerDivide>", 3}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</integerDivide>", 2},
-            // negative {"<integerDivide>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerDivide>", -1}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</integerDivide>", 0}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</integerDivide>", -1}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-            "</integerDivide>", -1}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerDivide>", -2}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</integerDivide>", 1}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</integerDivide>", -3}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-            "</integerDivide>", 3}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</integerDivide>", -2}, {"<integerDivide>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</integerDivide>", 2},
+                // null
+                { "<integerDivide>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</integerDivide>", null }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</integerDivide>", null }, { "<integerDivide>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</integerDivide>", null }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</integerDivide>", null },
+                // positive
+                { "<integerDivide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerDivide>", 0 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</integerDivide>", 0 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</integerDivide>", 0 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerDivide>", 1 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</integerDivide>", 3 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</integerDivide>", 2 },
+                // negative
+                { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerDivide>", -1 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</integerDivide>", 0 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</integerDivide>", -1 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</integerDivide>", -1 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerDivide>", -2 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</integerDivide>", 1 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</integerDivide>", -3 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "</integerDivide>", 3 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</integerDivide>", -2 }, { "<integerDivide>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</integerDivide>", 2 },
         });
     }
 
     /**
      * Constructs <code>IntegerDivide</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public IntegerDivideAcceptTest(String xml, Integer expectedValue) {
-        super(xml, (expectedValue != null) ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
     }
 }

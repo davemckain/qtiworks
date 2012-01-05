@@ -49,61 +49,62 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class FullAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"<isNull>" +
+        return Arrays.asList(new Object[][] { { "<isNull>" +
                 "<and>" +
-                    "<or>" +
-                        "<baseValue baseType='boolean'>true</baseValue>" +
-                    "</or>" +
-                    "<match>" +
-                        "<multiple>" +
-                            "<index n='3'>" +
-                                "<ordered>" +
-                                    "<baseValue baseType='integer'>1</baseValue>" +
-                                    "<baseValue baseType='integer'>2</baseValue>" +
-                                    "<baseValue baseType='integer'>3</baseValue>" +
-                                "</ordered>" +
-                            "</index>" +
-                            "<baseValue baseType='integer'>2</baseValue>" +
-                            "<baseValue baseType='integer'>1</baseValue>" +
-                        "</multiple>" +
-                        "<multiple>" +
-                            "<baseValue baseType='integer'>1</baseValue>" +
-                            "<baseValue baseType='integer'>2</baseValue>" +
-                            "<baseValue baseType='integer'>3</baseValue>" +
-                        "</multiple>" +
-                    "</match>" +
-                    "<isNull>" +
-                        "<multiple>" +
-                            "<baseValue baseType='float'>1.0</baseValue>" +
-                            "<randomFloat min='0.5' max='2.7'/>" +
-                        "</multiple>" +
-                    "</isNull>" +
-                    "<not>" +
-                        "<isNull>" +
-                            "<multiple>" +
-                                "<null/>" +
-                            "</multiple>" +
-                        "</isNull>" +
-                    "</not>" +
+                "<or>" +
+                "<baseValue baseType='boolean'>true</baseValue>" +
+                "</or>" +
+                "<match>" +
+                "<multiple>" +
+                "<index n='3'>" +
+                "<ordered>" +
+                "<baseValue baseType='integer'>1</baseValue>" +
+                "<baseValue baseType='integer'>2</baseValue>" +
+                "<baseValue baseType='integer'>3</baseValue>" +
+                "</ordered>" +
+                "</index>" +
+                "<baseValue baseType='integer'>2</baseValue>" +
+                "<baseValue baseType='integer'>1</baseValue>" +
+                "</multiple>" +
+                "<multiple>" +
+                "<baseValue baseType='integer'>1</baseValue>" +
+                "<baseValue baseType='integer'>2</baseValue>" +
+                "<baseValue baseType='integer'>3</baseValue>" +
+                "</multiple>" +
+                "</match>" +
+                "<isNull>" +
+                "<multiple>" +
+                "<baseValue baseType='float'>1.0</baseValue>" +
+                "<randomFloat min='0.5' max='2.7'/>" +
+                "</multiple>" +
+                "</isNull>" +
+                "<not>" +
+                "<isNull>" +
+                "<multiple>" +
+                "<null/>" +
+                "</multiple>" +
+                "</isNull>" +
+                "</not>" +
                 "</and>" +
-            "</isNull>", BooleanValue.FALSE},
+                "</isNull>", BooleanValue.FALSE },
         });
     }
 
     /**
      * Constructs expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public FullAcceptTest(String xml, Value expectedValue) {
-        super(xml, (expectedValue != null) ? expectedValue : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? expectedValue : NullValue.INSTANCE);
     }
 }

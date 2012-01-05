@@ -37,17 +37,18 @@ import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 /**
- * Start node is node on beginning of test, test part, section or item reference.
+ * Start node is node on beginning of test, test part, section or item
+ * reference.
  * 
  * @author Jiri Kajaba
  */
 public class StartNode extends BorderNode {
-    
+
     private static final long serialVersionUID = 1527773509376502425L;
 
     /**
      * Constructs node.
-     *
+     * 
      * @param object assessment object (test)
      */
     public StartNode(AssessmentTest object) {
@@ -56,7 +57,7 @@ public class StartNode extends BorderNode {
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
      * @param object assessment object (test part, section or item reference)
      */

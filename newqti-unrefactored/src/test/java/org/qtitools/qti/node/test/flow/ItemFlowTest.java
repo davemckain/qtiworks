@@ -38,8 +38,10 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import org.junit.Test;
 
 public abstract class ItemFlowTest {
-    private String fileName;
-    private Step[] steps;
+
+    private final String fileName;
+
+    private final Step[] steps;
 
     public ItemFlowTest(String fileName, Step[] steps) {
         this.fileName = fileName;
@@ -48,13 +50,13 @@ public abstract class ItemFlowTest {
 
     @Test
     public void test() {
-        AssessmentTest test = new AssessmentTest();
+        final AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource(fileName), jqtiController);
 
-        ItemFlow flow = new DefaultItemFlow(test);
+        final ItemFlow flow = new DefaultItemFlow(test);
 
         for (int i = 0; i < steps.length; i++) {
-            Step step = steps[i];
+            final Step step = steps[i];
             step.process(flow);
         }
     }

@@ -44,12 +44,14 @@ import org.w3c.dom.Node;
  * Superclass for all expression tests.
  */
 public abstract class ExpressionTest {
-    private String xml;
+
+    private final String xml;
+
     private Expression expression;
 
     /**
      * Constructs expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public ExpressionTest(String xml) {
@@ -58,7 +60,7 @@ public abstract class ExpressionTest {
 
     /**
      * Gets xml data used for creation tested expression.
-     *
+     * 
      * @return xml data used for creation tested expression
      */
     protected String getXml() {
@@ -67,19 +69,20 @@ public abstract class ExpressionTest {
 
     /**
      * Creates tested expression from given xml data.
-     *
+     * 
      * @return tested expression from give xml data
      */
     protected Expression getExpression() {
         if (expression == null) {
-            Node node = AbstractNode.getElement(xml);
+            final Node node = AbstractNode.getElement(xml);
             expression = ExpressionType.getInstance(null, node.getNodeName());
             expression.load(node, jqtiController);
 
-            ValidationResult result = expression.validate(context, this);
+            final ValidationResult result = expression.validate(context, this);
 
-            if (result.getErrors().size() > 0)
+            if (result.getErrors().size() > 0) {
                 throw result.getErrors().get(0).createException();
+            }
         }
 
         return expression;

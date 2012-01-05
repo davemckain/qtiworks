@@ -46,64 +46,67 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Power</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Power
  */
 @RunWith(Parameterized.class)
 public class PowerAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<power>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</power>", null}, {"<power>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</power>", null}, {"<power>" +
-                "<null/>" +
-                "<null/>" +
-            "</power>", null},
-            // not null {"<power>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</power>", 1.0}, {"<power>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</power>", 1.0}, {"<power>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</power>", 8.0}, {"<power>" +
-                "<baseValue baseType='float'>2.34</baseValue>" +
-                "<baseValue baseType='float'>5.67</baseValue>" +
-            "</power>", 124.00920162755502}, {"<power>" +
-                "<baseValue baseType='float'>2.34</baseValue>" +
-                "<baseValue baseType='float'>-5.67</baseValue>" +
-            "</power>", 0.008063917732519283}, {"<power>" +
-                "<baseValue baseType='float'>2</baseValue>" +
-                "<baseValue baseType='float'>-9999</baseValue>" +
-            "</power>", 0.0}, {"<power>" +
-                "<baseValue baseType='float'>2</baseValue>" +
-                "<baseValue baseType='float'>9999</baseValue>" +
-            "</power>", Double.POSITIVE_INFINITY}, {"<power>" +
-                "<baseValue baseType='float'>-2</baseValue>" +
-                "<baseValue baseType='float'>9999</baseValue>" +
-            "</power>", Double.NEGATIVE_INFINITY},
+                // null
+                { "<power>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</power>", null }, { "<power>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</power>", null }, { "<power>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</power>", null },
+                // not null
+                { "<power>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</power>", 1.0 }, { "<power>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</power>", 1.0 }, { "<power>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</power>", 8.0 }, { "<power>" +
+                        "<baseValue baseType='float'>2.34</baseValue>" +
+                        "<baseValue baseType='float'>5.67</baseValue>" +
+                        "</power>", 124.00920162755502 }, { "<power>" +
+                        "<baseValue baseType='float'>2.34</baseValue>" +
+                        "<baseValue baseType='float'>-5.67</baseValue>" +
+                        "</power>", 0.008063917732519283 }, { "<power>" +
+                        "<baseValue baseType='float'>2</baseValue>" +
+                        "<baseValue baseType='float'>-9999</baseValue>" +
+                        "</power>", 0.0 }, { "<power>" +
+                        "<baseValue baseType='float'>2</baseValue>" +
+                        "<baseValue baseType='float'>9999</baseValue>" +
+                        "</power>", Double.POSITIVE_INFINITY }, { "<power>" +
+                        "<baseValue baseType='float'>-2</baseValue>" +
+                        "<baseValue baseType='float'>9999</baseValue>" +
+                        "</power>", Double.NEGATIVE_INFINITY },
         });
     }
 
     /**
      * Constructs <code>Power</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public PowerAcceptTest(String xml, Double expectedValue) {
-        super(xml, (expectedValue != null) ? new FloatValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new FloatValue(expectedValue) : NullValue.INSTANCE);
     }
 }

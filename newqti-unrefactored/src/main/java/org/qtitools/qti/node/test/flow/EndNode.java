@@ -41,14 +41,15 @@ import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
  * @author Jiri Kajaba
  */
 public class EndNode extends BorderNode {
-    
+
     private static final long serialVersionUID = 550851615337379966L;
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
-     * @param object assessment object (test, test part, section or item reference)
+     * @param object assessment object (test, test part, section or item
+     *            reference)
      */
     public EndNode(Node prev, ControlObject<?> object) {
         super(prev, object);

@@ -46,35 +46,36 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Not</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Not
  */
 @RunWith(Parameterized.class)
 public class NotAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"<not>" +
+        return Arrays.asList(new Object[][] { { "<not>" +
                 "<null/>" +
-            "</not>", null}, {"<not>" +
+                "</not>", null }, { "<not>" +
                 "<baseValue baseType='boolean'>true</baseValue>" +
-            "</not>", false}, {"<not>" +
+                "</not>", false }, { "<not>" +
                 "<baseValue baseType='boolean'>false</baseValue>" +
-            "</not>", true},
+                "</not>", true },
         });
     }
 
     /**
      * Constructs <code>Not</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public NotAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 public class PreConditionNode extends JumpNode {
 
     private static final long serialVersionUID = -3782618631062124181L;
+
     private static final Logger logger = LoggerFactory.getLogger(PreConditionNode.class);
 
     /**
@@ -78,10 +79,12 @@ public class PreConditionNode extends JumpNode {
                 condition);
 
         Node target = null;
-        if (condition)
+        if (condition) {
             target = getNext();
-        else
+        }
+        else {
             target = getTarget();
+        }
 
         logger.debug("Evaludation of precondition {} finished. Next target is {}.", getIndex(),
                 target.getIndex());

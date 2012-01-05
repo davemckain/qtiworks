@@ -40,47 +40,54 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 
 public class State {
-    private boolean testPresented;
-    private boolean testFinished;
-//    private String testPart;
-//    private Boolean testPartPresented;
-//    private Boolean testPartFinished;
-    private String itemRef;
-    private Boolean itemRefPresented;
-    private Boolean itemRefFinished;
 
-    public State
-        ( boolean testPresented
-        , boolean testFinished
-        , String testPart
-        , Boolean testPartPresented
-        , Boolean testPartFinished
-        , String itemRef
-        , Boolean itemRefPresented
-        , Boolean itemRefFinished ) {
+    private final boolean testPresented;
+
+    private final boolean testFinished;
+
+    // private String testPart;
+    // private Boolean testPartPresented;
+    // private Boolean testPartFinished;
+    private final String itemRef;
+
+    private final Boolean itemRefPresented;
+
+    private final Boolean itemRefFinished;
+
+    public State(boolean testPresented
+            , boolean testFinished
+            , String testPart
+            , Boolean testPartPresented
+            , Boolean testPartFinished
+            , String itemRef
+            , Boolean itemRefPresented
+            , Boolean itemRefFinished) {
         this.testPresented = testPresented;
         this.testFinished = testFinished;
-//        this.testPart = testPart;
-//        this.testPartPresented = testPartPresented;
-//        this.testPartFinished = testPartFinished;
+        // this.testPart = testPart;
+        // this.testPartPresented = testPartPresented;
+        // this.testPartFinished = testPartFinished;
         this.itemRef = itemRef;
         this.itemRefPresented = itemRefPresented;
         this.itemRefFinished = itemRefFinished;
     }
 
     public void check(ItemFlow flow) {
-        AssessmentTest test = flow.getTest();
+        final AssessmentTest test = flow.getTest();
         assertEquals(testPresented, test.isPresented());
         assertEquals(testFinished, test.isFinished());
 
-//        TestPart testPart = flow.getCurrentTestPart();
-//        assertEquals(this.testPart, (testPart != null) ? testPart.getIdentifier() : null);
-//        assertEquals(this.testPartPresented, (testPart != null) ? testPart.isPresented() : null);
-//        assertEquals(this.testPartFinished, (testPart != null) ? testPart.isFinished() : null);
+        // TestPart testPart = flow.getCurrentTestPart();
+        // assertEquals(this.testPart, (testPart != null) ?
+        // testPart.getIdentifier() : null);
+        // assertEquals(this.testPartPresented, (testPart != null) ?
+        // testPart.isPresented() : null);
+        // assertEquals(this.testPartFinished, (testPart != null) ?
+        // testPart.isFinished() : null);
 
-        AssessmentItemRef itemRef = flow.getCurrentItemRef();
-        assertEquals(this.itemRef, (itemRef != null) ? itemRef.getIdentifier() : null);
-        assertEquals(this.itemRefPresented, (itemRef != null) ? itemRef.isPresented() : null);
-        assertEquals(this.itemRefFinished, (itemRef != null) ? itemRef.isFinished() : null);
+        final AssessmentItemRef itemRef = flow.getCurrentItemRef();
+        assertEquals(this.itemRef, itemRef != null ? itemRef.getIdentifier() : null);
+        assertEquals(this.itemRefPresented, itemRef != null ? itemRef.isPresented() : null);
+        assertEquals(this.itemRefFinished, itemRef != null ? itemRef.isFinished() : null);
     }
 }

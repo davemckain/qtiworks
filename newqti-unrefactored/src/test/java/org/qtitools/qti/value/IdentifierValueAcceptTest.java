@@ -46,31 +46,36 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>IdentifierValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>IdentifierValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  */
 @RunWith(Parameterized.class)
 public class IdentifierValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"identifier", "identifier"}, {"Identifier", "Identifier"}, {"IdenTifier", "IdenTifier"}, {"IDENTIFIER", "IDENTIFIER"}, {"identifier-123_A", "identifier-123_A"}, {"_identifier", "_identifier"}, {"_Identifier", "_Identifier"}, {"_IdenTifier", "_IdenTifier"}, {"_IDENTIFIER", "_IDENTIFIER"}, {"_identifier-123_A", "_identifier-123_A"},
+        return Arrays.asList(new Object[][] { { "identifier", "identifier" }, { "Identifier", "Identifier" }, { "IdenTifier", "IdenTifier" },
+                { "IDENTIFIER", "IDENTIFIER" }, { "identifier-123_A", "identifier-123_A" }, { "_identifier", "_identifier" }, { "_Identifier", "_Identifier" },
+                { "_IdenTifier", "_IdenTifier" }, { "_IDENTIFIER", "_IDENTIFIER" }, { "_identifier-123_A", "_identifier-123_A" },
         });
     }
 
-    private String string;
-    private String expectedIdentifier;
+    private final String string;
+
+    private final String expectedIdentifier;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedIdentifier expected parsed value
      */

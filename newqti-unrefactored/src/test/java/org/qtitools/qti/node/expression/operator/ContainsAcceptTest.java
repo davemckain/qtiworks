@@ -46,336 +46,342 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Contains</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Contains
  */
 @RunWith(Parameterized.class)
 public class ContainsAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<contains>" +
-                "<null/>" +
-                "<null/>" +
-            "</contains>", null},
-            // null + multiple {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<null/>" +
-            "</contains>", null}, {"<contains>" +
-                "<null/>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</contains>", null},
-            // null + ordered {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<null/>" +
-            "</contains>", null}, {"<contains>" +
-                "<null/>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</contains>", null},
-            // multiple {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</contains>", true}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</multiple>" +
-            "</contains>", false}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</contains>", true}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                "</multiple>" +
-            "</contains>", false}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</contains>", true}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</multiple>" +
-            "</contains>", true}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                "</multiple>" +
-            "</contains>", false}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</multiple>" +
-            "</contains>", true}, {"<contains>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</multiple>" +
-            "</contains>", false},
-            // ordered {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>0</baseValue>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                    "<baseValue baseType='integer'>8</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>7</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                "</ordered>" +
-            "</contains>", false}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                    "<baseValue baseType='integer'>6</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                    "<baseValue baseType='integer'>5</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</ordered>" +
-            "</contains>", true}, {"<contains>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</ordered>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</contains>", true},
+                // null
+                { "<contains>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</contains>", null },
+                // null + multiple
+                { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<null/>" +
+                        "</contains>", null }, { "<contains>" +
+                        "<null/>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", null },
+                // null + ordered
+                { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<null/>" +
+                        "</contains>", null }, { "<contains>" +
+                        "<null/>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", null },
+                // multiple
+                { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</multiple>" +
+                        "</contains>", false },
+                // ordered
+                { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "<baseValue baseType='integer'>8</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", false }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true }, { "<contains>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</ordered>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</contains>", true },
         });
     }
 
     /**
      * Constructs <code>Contains</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public ContainsAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

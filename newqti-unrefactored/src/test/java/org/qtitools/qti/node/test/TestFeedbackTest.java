@@ -53,64 +53,77 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class TestFeedbackTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"TestFeedback-01.xml", "Test", TestFeedbackAccess.DURING, new String[] {"T-D-S-1", "T-D-S-2", "T-D-S-3", "T-D-H-2", "T-D-H-3"}}, {"TestFeedback-01.xml", "Test", TestFeedbackAccess.AT_END, new String[] {"T-E-S-1"}}, {"TestFeedback-01.xml", "P01", TestFeedbackAccess.DURING, new String[] {"P-D-S-1", "P-D-S-2", "P-D-S-3", "P-D-H-2", "P-D-H-3"}}, {"TestFeedback-01.xml", "P01", TestFeedbackAccess.AT_END, new String[] {"P-E-S-1"}},
+        return Arrays.asList(new Object[][] {
+                { "TestFeedback-01.xml", "Test", TestFeedbackAccess.DURING, new String[] { "T-D-S-1", "T-D-S-2", "T-D-S-3", "T-D-H-2", "T-D-H-3" } },
+                { "TestFeedback-01.xml", "Test", TestFeedbackAccess.AT_END, new String[] { "T-E-S-1" } },
+                { "TestFeedback-01.xml", "P01", TestFeedbackAccess.DURING, new String[] { "P-D-S-1", "P-D-S-2", "P-D-S-3", "P-D-H-2", "P-D-H-3" } },
+                { "TestFeedback-01.xml", "P01", TestFeedbackAccess.AT_END, new String[] { "P-E-S-1" } },
         });
     }
 
-    private String fileName;
-    private String identifier;
-    private TestFeedbackAccess access;
-    private List<String> expectedFeedbackTitles;
+    private final String fileName;
+
+    private final String identifier;
+
+    private final TestFeedbackAccess access;
+
+    private final List<String> expectedFeedbackTitles;
 
     public TestFeedbackTest(String fileName, String identifier, TestFeedbackAccess access, String[] expectedFeedbackTitles) {
         this.fileName = fileName;
         this.identifier = identifier;
         this.access = access;
-        this.expectedFeedbackTitles = (expectedFeedbackTitles != null)
-            ? Arrays.asList(expectedFeedbackTitles) : new ArrayList<String>();
+        this.expectedFeedbackTitles = expectedFeedbackTitles != null
+                ? Arrays.asList(expectedFeedbackTitles) : new ArrayList<String>();
     }
 
     private List<String> getFeedbackTitles(AssessmentTest test, String identifier, TestFeedbackAccess access) {
-        List<String> feedbackTitles = new ArrayList<String>();
+        final List<String> feedbackTitles = new ArrayList<String>();
 
         List<TestFeedback> feedbacks = null;
 
-        if (test.getIdentifier().equals(identifier))
+        if (test.getIdentifier().equals(identifier)) {
             feedbacks = test.getTestFeedbacks(access);
-        else
-            for (TestPart testPart : test.getTestParts())
+        }
+        else {
+            for (final TestPart testPart : test.getTestParts()) {
                 if (testPart.getIdentifier().equals(identifier)) {
                     feedbacks = testPart.getTestFeedbacks(access);
                     break;
                 }
+            }
+        }
 
-        if (feedbacks == null)
+        if (feedbacks == null) {
             throw new QTIEvaluationException("Cannot find: " + identifier);
+        }
 
-        for (TestFeedback feedback : feedbacks)
+        for (final TestFeedback feedback : feedbacks) {
             feedbackTitles.add(feedback.getTitle());
+        }
 
         return feedbackTitles;
     }
 
     @Test
     public void test() {
-        AssessmentTest test = new AssessmentTest();
+        final AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource(fileName), jqtiController);
 
-//        System.out.println(test.toXmlString());
-//        System.out.println();
+        // System.out.println(test.toXmlString());
+        // System.out.println();
 
         test.getOutcomeProcessing().evaluate();
 
-        List<String> feedbackTitles = getFeedbackTitles(test, identifier, access);
+        final List<String> feedbackTitles = getFeedbackTitles(test, identifier, access);
 
         assertEquals(expectedFeedbackTitles, feedbackTitles);
     }

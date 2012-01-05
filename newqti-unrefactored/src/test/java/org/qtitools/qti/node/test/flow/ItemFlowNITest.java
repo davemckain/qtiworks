@@ -42,20 +42,43 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class ItemFlowNITest extends ItemFlowTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // preCondition {"ItemFlow-pre-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-pre-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}},
-            // branchRule
-            // preCondition + branchRule {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I04", "I03", "I02", "I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I03", "I01", "I05"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I03", "I01", "I05", "I01"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I04", "I02"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I04", "I02", "I04"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I02", "I01", "I04", "I05"}}}, {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I02", "I01", "I04", "I05", "I04", "I05"}}}, {"ItemFlow-full-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}}, {"ItemFlow-full-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I08", "I07", "I06", "I05", "I04", "I03", "I02", "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}}, {"ItemFlow-full-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I07", "I04", "I01", "I07"}}}, {"ItemFlow-full-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I02", "I05", "I06", "I07", "I08", "I02", "I09"}}}, {"ItemFlow-full-03.xml", new String[][] { {"I01", "I02", "I03", "I04", "I05", "I06"}, {"I07", "I08", "I09", "I10", "I11", "I12", "I13"}, {"I14", "I15", "I16", "I17", "I18", "I19"}
-            }},
-            // time
-//            {"ItemFlow-time-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I03", "I01", "I05"}}},
+                // preCondition
+                { "ItemFlow-pre-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-pre-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                // branchRule
+                // preCondition + branchRule
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I04", "I03", "I02", "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I03", "I01", "I05" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I03", "I01", "I05", "I01" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I04", "I02" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I04", "I02", "I04" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I02", "I01", "I04", "I05" } } },
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I02", "I01", "I04", "I05", "I04", "I05" } } },
+                { "ItemFlow-full-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                {
+                        "ItemFlow-full-02.xml",
+                        new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I08", "I07", "I06", "I05", "I04", "I03", "I02",
+                                "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                { "ItemFlow-full-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09", "I07", "I04", "I01", "I07" } } },
+                { "ItemFlow-full-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I02", "I05", "I06", "I07", "I08", "I02", "I09" } } },
+                {
+                        "ItemFlow-full-03.xml",
+                        new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06" }, { "I07", "I08", "I09", "I10", "I11", "I12", "I13" },
+                                { "I14", "I15", "I16", "I17", "I18", "I19" }
+                        } },
+                // time
+                // {"ItemFlow-time-01.xml", new String[][] {{"I01", "I02",
+                // "I03", "I04", "I05", "I03", "I01", "I05"}}},
         });
     }
 

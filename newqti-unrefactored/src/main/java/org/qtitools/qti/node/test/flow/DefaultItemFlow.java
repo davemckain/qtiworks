@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultItemFlow implements ItemFlow {
 
     private static final long serialVersionUID = 4655582905124838753L;
+
     private static Logger logger = LoggerFactory.getLogger(DefaultItemFlow.class);
 
     protected StartNode start;
@@ -81,11 +82,12 @@ public class DefaultItemFlow implements ItemFlow {
     }
 
     private StartNode initItemFlow(AssessmentTest test) {
-        StartNode start = new StartNode(test);
+        final StartNode start = new StartNode(test);
 
         Node last = start;
-        for (TestPart child : test.getTestParts())
+        for (final TestPart child : test.getTestParts()) {
             last = initItemFlow(last, child);
+        }
 
         last = new EndNode(last, test);
 
@@ -97,19 +99,22 @@ public class DefaultItemFlow implements ItemFlow {
     private Node initItemFlow(Node last, AbstractPart parent) {
         last = new StartNode(last, parent);
 
-        for (PreCondition preCondition : parent.getPreConditions())
+        for (final PreCondition preCondition : parent.getPreConditions()) {
             last = new PreConditionNode(last, preCondition);
+        }
 
         if (parent instanceof AssessmentItemRef) {
             last = new ItemRefNode(last, (AssessmentItemRef) parent);
         }
         else {
-            for (AbstractPart child : parent.getChildren())
+            for (final AbstractPart child : parent.getChildren()) {
                 last = initItemFlow(last, child);
+            }
         }
 
-        for (BranchRule branchRule : parent.getBranchRules())
+        for (final BranchRule branchRule : parent.getBranchRules()) {
             last = new BranchRuleNode(last, branchRule);
+        }
 
         last = new EndNode(last, parent);
 
@@ -120,13 +125,13 @@ public class DefaultItemFlow implements ItemFlow {
         Node node = start;
         while (node != null) {
             if (node.isPreCondition()) {
-                PreConditionNode condition = (PreConditionNode) node;
-                Node target = findPreConditionTarget(condition);
+                final PreConditionNode condition = (PreConditionNode) node;
+                final Node target = findPreConditionTarget(condition);
                 condition.setTarget(target);
             }
             else if (node.isBranchRule()) {
-                BranchRuleNode branch = (BranchRuleNode) node;
-                Node target = findBranchRuleTarget(branch);
+                final BranchRuleNode branch = (BranchRuleNode) node;
+                final Node target = findBranchRuleTarget(branch);
                 branch.setTarget(target);
             }
 
@@ -135,14 +140,15 @@ public class DefaultItemFlow implements ItemFlow {
     }
 
     private Node findPreConditionTarget(PreConditionNode preCondition) {
-        AbstractPart parent = preCondition.getPreCondition().getParent();
+        final AbstractPart parent = preCondition.getPreCondition().getParent();
 
         Node node = preCondition.getNext();
         while (node.getNext() != null) {
             if (node.isEnd()) {
-                EndNode end = (EndNode) node;
-                if (end.getObject() == parent)
+                final EndNode end = (EndNode) node;
+                if (end.getObject() == parent) {
                     break;
+                }
             }
 
             node = node.getNext();
@@ -152,28 +158,31 @@ public class DefaultItemFlow implements ItemFlow {
     }
 
     private Node findBranchRuleTarget(BranchRuleNode branchRule) {
-        boolean isSpecial = branchRule.getBranchRule().isSpecial();
-        ControlObject<?> target = branchRule.getBranchRule().getTargetControlObject();
+        final boolean isSpecial = branchRule.getBranchRule().isSpecial();
+        final ControlObject<?> target = branchRule.getBranchRule().getTargetControlObject();
 
         Node node = branchRule.getNext();
         while (node.getNext() != null) {
             if (isSpecial) {
                 if (node.isBranchRule()) {
-                    BranchRuleNode branch = (BranchRuleNode) node;
-                    if (branch.getBranchRule().getParent() == target)
+                    final BranchRuleNode branch = (BranchRuleNode) node;
+                    if (branch.getBranchRule().getParent() == target) {
                         break;
+                    }
                 }
                 else if (node.isEnd()) {
-                    EndNode end = (EndNode) node;
-                    if (end.getObject() == target)
+                    final EndNode end = (EndNode) node;
+                    if (end.getObject() == target) {
                         break;
+                    }
                 }
             }
             else {
                 if (node.isStart()) {
-                    StartNode start = (StartNode) node;
-                    if (start.getObject() == target)
+                    final StartNode start = (StartNode) node;
+                    if (start.getObject() == target) {
                         break;
+                    }
                 }
             }
 
@@ -188,7 +197,7 @@ public class DefaultItemFlow implements ItemFlow {
     }
 
     public AssessmentTest getTest() {
-        AssessmentTest test = (AssessmentTest) start.getObject();
+        final AssessmentTest test = (AssessmentTest) start.getObject();
 
         logger.debug("Assessment test is {}.", test.getIdentifier());
 
@@ -196,28 +205,28 @@ public class DefaultItemFlow implements ItemFlow {
     }
 
     public TestPart getCurrentTestPart() {
-        TestPart testPart = (current != null) ? current.getItemRef().getParentTestPart() : null;
+        final TestPart testPart = current != null ? current.getItemRef().getParentTestPart() : null;
 
-        logger.debug("Current test part is {}.", (testPart != null) ? testPart.getIdentifier()
+        logger.debug("Current test part is {}.", testPart != null ? testPart.getIdentifier()
                 : "NULL");
 
         return testPart;
     }
 
     public AssessmentItemRef getCurrentItemRef() {
-        logger.debug("Current item ref is {} in node {}.", (current != null) ? current.getItemRef()
-                .getIdentifier() : "NULL", (current != null) ? current.getIndex() : "NULL");
+        logger.debug("Current item ref is {} in node {}.", current != null ? current.getItemRef()
+                .getIdentifier() : "NULL", current != null ? current.getIndex() : "NULL");
 
-        return (current != null) ? current.getItemRef() : null;
+        return current != null ? current.getItemRef() : null;
     }
 
     public boolean hasPrevItemRef(boolean includeFinished) {
         logger.debug("Has previous item ref requested. Include finished: {}", includeFinished);
 
-        ItemRefNode node = findPrevItemRef(includeFinished);
+        final ItemRefNode node = findPrevItemRef(includeFinished);
 
-        logger.info("Previous item ref is {} in node {}.", (node != null) ? node.getItemRef()
-                .getIdentifier() : "NULL", (node != null) ? node.getIndex() : "NULL");
+        logger.info("Previous item ref is {} in node {}.", node != null ? node.getItemRef()
+                .getIdentifier() : "NULL", node != null ? node.getIndex() : "NULL");
 
         return node != null;
     }
@@ -225,9 +234,9 @@ public class DefaultItemFlow implements ItemFlow {
     public AssessmentItemRef getPrevItemRef(boolean includeFinished) {
         logger.debug("Previous item ref requested. Include finished: {}", includeFinished);
 
-        ItemRefNode node = findPrevItemRef(includeFinished);
+        final ItemRefNode node = findPrevItemRef(includeFinished);
         if (node != null) {
-            long currentTime = ((AssessmentTest) start.getObject()).getTimer().getCurrentTime();
+            final long currentTime = ((AssessmentTest) start.getObject()).getTimer().getCurrentTime();
 
             current.getItemRef().getTimeRecord().exit(currentTime);
             node.getItemRef().getTimeRecord().enter(currentTime);
@@ -235,32 +244,36 @@ public class DefaultItemFlow implements ItemFlow {
             current = node;
         }
 
-        logger.info("Previous item ref is {} in node {}.", (node != null) ? node.getItemRef()
-                .getIdentifier() : "NULL", (node != null) ? node.getIndex() : "NULL");
+        logger.info("Previous item ref is {} in node {}.", node != null ? node.getItemRef()
+                .getIdentifier() : "NULL", node != null ? node.getIndex() : "NULL");
 
-        return (node != null) ? node.getItemRef() : null;
+        return node != null ? node.getItemRef() : null;
     }
 
     protected ItemRefNode findPrevItemRef(boolean includeFinished) {
         ItemRefNode node = null;
 
-        if (current != null)
+        if (current != null) {
             node = current.getPrevItemRef();
+        }
 
         while (node != null) {
-            if (!node.getItemRef().isFinished() && node.getItemRef().passMaximumTimeLimit())
+            if (!node.getItemRef().isFinished() && node.getItemRef().passMaximumTimeLimit()) {
                 break;
+            }
 
-            if (includeFinished && node.getItemRef().getItemSessionControl().getAllowReview())
+            if (includeFinished && node.getItemRef().getItemSessionControl().getAllowReview()) {
                 break;
+            }
 
             node = node.getPrevItemRef();
         }
 
         // Only item reference in same test part is considered.
         if (node != null) {
-            if (node.getItemRef().getParentTestPart() != current.getItemRef().getParentTestPart())
+            if (node.getItemRef().getParentTestPart() != current.getItemRef().getParentTestPart()) {
                 node = null;
+            }
         }
 
         return node;
@@ -277,13 +290,14 @@ public class DefaultItemFlow implements ItemFlow {
             // Only item reference in same test part is considered.
             if (node != null) {
                 if (node.getItemRef().getParentTestPart() != current.getItemRef()
-                        .getParentTestPart())
+                        .getParentTestPart()) {
                     node = null;
+                }
             }
         }
 
-        logger.info("Next item ref is {} in node {}.", (node != null) ? node.getItemRef()
-                .getIdentifier() : "NULL", (node != null) ? node.getIndex() : "NULL");
+        logger.info("Next item ref is {} in node {}.", node != null ? node.getItemRef()
+                .getIdentifier() : "NULL", node != null ? node.getIndex() : "NULL");
 
         return node != null;
     }
@@ -291,17 +305,18 @@ public class DefaultItemFlow implements ItemFlow {
     public AssessmentItemRef getNextItemRef(boolean includeFinished) {
         logger.debug("Next item ref requested. Include finished: {}", includeFinished);
 
-        ItemRefNode node = findNextItemRef(includeFinished);
+        final ItemRefNode node = findNextItemRef(includeFinished);
 
-        long currentTime = ((AssessmentTest) start.getObject()).getTimer().getCurrentTime();
+        final long currentTime = ((AssessmentTest) start.getObject()).getTimer().getCurrentTime();
 
         if (current != null) {
             current.getItemRef().getTimeRecord().exit(currentTime);
 
             if (node == null
                     || node.getItemRef().getParentTestPart() != current.getItemRef()
-                            .getParentTestPart())
+                            .getParentTestPart()) {
                 current.getItemRef().getParentTestPart().setFinished();
+            }
         }
 
         current = node;
@@ -310,22 +325,25 @@ public class DefaultItemFlow implements ItemFlow {
             current.getItemRef().getTimeRecord().enter(currentTime);
             current.getItemRef().setPresented();
         }
-        else
+        else {
             ((AssessmentTest) start.getObject()).setFinished();
+        }
 
-        logger.info("Next item ref is {} in node {}.", (current != null) ? current.getItemRef()
-                .getIdentifier() : "NULL", (current != null) ? current.getIndex() : "NULL");
+        logger.info("Next item ref is {} in node {}.", current != null ? current.getItemRef()
+                .getIdentifier() : "NULL", current != null ? current.getIndex() : "NULL");
 
-        AssessmentItemRef itemRef = (current != null) ? current.getItemRef() : null;
-        if (itemRef != null && itemRef.getItem() != null)
+        final AssessmentItemRef itemRef = current != null ? current.getItemRef() : null;
+        if (itemRef != null && itemRef.getItem() != null) {
             itemRef.getItem().initialize(itemRef.getTemplateDefaults());
+        }
 
         return itemRef;
     }
 
     private ItemRefNode findNextItemRef(boolean includeFinished) {
-        if (isFinished())
+        if (isFinished()) {
             return null;
+        }
 
         ItemRefNode node = null;
 
@@ -334,33 +352,39 @@ public class DefaultItemFlow implements ItemFlow {
 
             node = current.getNextItemRef();
             while (node != null) {
-                if (!node.getItemRef().isFinished() && node.getItemRef().passMaximumTimeLimit())
+                if (!node.getItemRef().isFinished() && node.getItemRef().passMaximumTimeLimit()) {
                     break;
+                }
 
-                if (includeFinished && node.getItemRef().getItemSessionControl().getAllowReview())
+                if (includeFinished && node.getItemRef().getItemSessionControl().getAllowReview()) {
                     break;
+                }
 
                 node = node.getNextItemRef();
             }
 
-            if (node == null)
+            if (node == null) {
                 node = getNextItemRef(current);
+            }
         }
-        else
+        else {
             node = getNextItemRef(start);
+        }
 
-        if (node != null && node.getPrevItemRef() == null)
+        if (node != null && node.getPrevItemRef() == null) {
             node.setPrevItemRef(current);
+        }
 
-        if (current != null && current.getNextItemRef() == null)
+        if (current != null && current.getNextItemRef() == null) {
             current.setNextItemRef(node);
+        }
 
         return node;
     }
 
     private void checkUnfinished(AssessmentItemRef itemRef) {
         if (!itemRef.isFinished()) {
-            TestPart testPart = itemRef.getParentTestPart();
+            final TestPart testPart = itemRef.getParentTestPart();
             if (testPart.getNavigationMode() == NavigationMode.LINEAR
                     && testPart.getSubmissionMode() == SubmissionMode.INDIVIDUAL) {
                 logger.error("Cannot leave unfinished item ref {} in node {}.",
@@ -376,11 +400,12 @@ public class DefaultItemFlow implements ItemFlow {
         Node node = start;
         while (node.getNext() != null) {
             if (node.isJump()) {
-                JumpNode jump = (JumpNode) node;
+                final JumpNode jump = (JumpNode) node;
                 node = jump.evaluate();
             }
-            else
+            else {
                 node = node.getNext();
+            }
 
             if (node.isItemRef()) {
                 result = (ItemRefNode) node;
@@ -393,7 +418,7 @@ public class DefaultItemFlow implements ItemFlow {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
         Node node = start;
         while (node != null) {

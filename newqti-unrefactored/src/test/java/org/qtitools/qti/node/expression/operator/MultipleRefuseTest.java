@@ -47,55 +47,60 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Multiple</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Multiple
  */
 @RunWith(Parameterized.class)
 public class MultipleRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // ordered {"<multiple>" +
-                "<ordered/>" +
-            "</multiple>", QTICardinalityException.class}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", QTICardinalityException.class},
-            // record {"<multiple>" +
-                "<recordEx/>" +
-            "</multiple>", QTICardinalityException.class}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</recordEx>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", QTICardinalityException.class},
-            // mixing different baseTypes {"<multiple>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</multiple>", QTIBaseTypeException.class}, {"<multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>2</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", QTIBaseTypeException.class},
+                // ordered
+                { "<multiple>" +
+                        "<ordered/>" +
+                        "</multiple>", QTICardinalityException.class }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>", QTICardinalityException.class },
+                // record
+                { "<multiple>" +
+                        "<recordEx/>" +
+                        "</multiple>", QTICardinalityException.class }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</recordEx>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>", QTICardinalityException.class },
+                // mixing different baseTypes
+                { "<multiple>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>", QTIBaseTypeException.class }, { "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>2</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Multiple</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public MultipleRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

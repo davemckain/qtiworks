@@ -58,42 +58,68 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>DirectedPairValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>DirectedPairValue</code> implementation of <code>equals</code>
+ * and <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.DirectedPairValue
  */
 @RunWith(Parameterized.class)
 public class DirectedPairValueTest extends ValueTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new DirectedPairValue("ident1", "ident2"), null},
-            // NullValue {false, new DirectedPairValue("ident1", "ident2"), NullValue.INSTANCE},
-            // IdentifierValue {false, new DirectedPairValue("ident1", "ident2"), new IdentifierValue("identifier")},
-            // BooleanValue {false, new DirectedPairValue("ident1", "ident2"), BooleanValue.TRUE}, {false, new DirectedPairValue("ident1", "ident2"), BooleanValue.FALSE},
-            // IntegerValue {false, new DirectedPairValue("ident1", "ident2"), new IntegerValue(1)},
-            // FloatValue {false, new DirectedPairValue("ident1", "ident2"), new FloatValue(1)},
-            // StringValue {false, new DirectedPairValue("ident1", "ident2"), new StringValue("string")},
-            // PointValue {false, new DirectedPairValue("ident1", "ident2"), new PointValue(1, 1)},
-            // PairValue {false, new DirectedPairValue("ident1", "ident2"), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {true, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident1", "ident2")}, {false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident2", "ident1")}, {false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident3", "ident2")}, {false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident1", "ident4")}, {false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident3", "ident4")},
-            // DurationValue {false, new DirectedPairValue("ident1", "ident2"), new DurationValue(1)},
-            // FileValue {false, new DirectedPairValue("ident1", "ident2"), new FileValue("file")},
-            // UriValue {false, new DirectedPairValue("ident1", "ident2"), new UriValue("uri")},
-            // MultipleValue {false, new DirectedPairValue("ident1", "ident2"), new MultipleValue()}, {false, new DirectedPairValue("ident1", "ident2"), new MultipleValue(new DirectedPairValue("ident1", "ident2"))},
-            // OrderedValue {false, new DirectedPairValue("ident1", "ident2"), new OrderedValue()}, {false, new DirectedPairValue("ident1", "ident2"), new OrderedValue(new DirectedPairValue("ident1", "ident2"))},
-            // RecordValue {false, new DirectedPairValue("ident1", "ident2"), new RecordValue()}, {false, new DirectedPairValue("ident1", "ident2"), new RecordValue("identifier", new DirectedPairValue("ident1", "ident2"))},
+                // null
+                { false, new DirectedPairValue("ident1", "ident2"), null },
+                // NullValue
+                { false, new DirectedPairValue("ident1", "ident2"), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new DirectedPairValue("ident1", "ident2"), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new DirectedPairValue("ident1", "ident2"), BooleanValue.TRUE },
+                { false, new DirectedPairValue("ident1", "ident2"), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new DirectedPairValue("ident1", "ident2"), new IntegerValue(1) },
+                // FloatValue
+                { false, new DirectedPairValue("ident1", "ident2"), new FloatValue(1) },
+                // StringValue
+                { false, new DirectedPairValue("ident1", "ident2"), new StringValue("string") },
+                // PointValue
+                { false, new DirectedPairValue("ident1", "ident2"), new PointValue(1, 1) },
+                // PairValue
+                { false, new DirectedPairValue("ident1", "ident2"), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { true, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident1", "ident2") },
+                { false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident2", "ident1") },
+                { false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident3", "ident2") },
+                { false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident1", "ident4") },
+                { false, new DirectedPairValue("ident1", "ident2"), new DirectedPairValue("ident3", "ident4") },
+                // DurationValue
+                { false, new DirectedPairValue("ident1", "ident2"), new DurationValue(1) },
+                // FileValue
+                { false, new DirectedPairValue("ident1", "ident2"), new FileValue("file") },
+                // UriValue
+                { false, new DirectedPairValue("ident1", "ident2"), new UriValue("uri") },
+                // MultipleValue
+                { false, new DirectedPairValue("ident1", "ident2"), new MultipleValue() },
+                { false, new DirectedPairValue("ident1", "ident2"), new MultipleValue(new DirectedPairValue("ident1", "ident2")) },
+                // OrderedValue
+                { false, new DirectedPairValue("ident1", "ident2"), new OrderedValue() },
+                { false, new DirectedPairValue("ident1", "ident2"), new OrderedValue(new DirectedPairValue("ident1", "ident2")) },
+                // RecordValue
+                { false, new DirectedPairValue("ident1", "ident2"), new RecordValue() },
+                { false, new DirectedPairValue("ident1", "ident2"), new RecordValue("identifier", new DirectedPairValue("ident1", "ident2")) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

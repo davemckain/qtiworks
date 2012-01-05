@@ -47,123 +47,137 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Lte</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Lte
  */
 @RunWith(Parameterized.class)
 public class LteRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<lte>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTICardinalityException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</lte>", QTICardinalityException.class},
-            // ordered {"<lte>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTICardinalityException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</lte>", QTICardinalityException.class},
-            // record {"<lte>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTICardinalityException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</lte>", QTICardinalityException.class},
-            // identifier {"<lte>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // boolean {"<lte>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // string {"<lte>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // point {"<lte>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // pair {"<lte>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // directedPair {"<lte>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // duration {"<lte>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // file {"<lte>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
-            // uri {"<lte>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", QTIBaseTypeException.class}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</lte>", QTIBaseTypeException.class},
+                // multiple
+                { "<lte>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTICardinalityException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</lte>", QTICardinalityException.class },
+                // ordered
+                { "<lte>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTICardinalityException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</lte>", QTICardinalityException.class },
+                // record
+                { "<lte>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTICardinalityException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</lte>", QTICardinalityException.class },
+                // identifier
+                { "<lte>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // boolean
+                { "<lte>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // string
+                { "<lte>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // point
+                { "<lte>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // pair
+                { "<lte>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // directedPair
+                { "<lte>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // duration
+                { "<lte>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // file
+                { "<lte>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
+                // uri
+                { "<lte>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</lte>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Lte</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public LteRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

@@ -48,36 +48,41 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>CustomOperator</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.And
  */
 @RunWith(Parameterized.class)
-public class CustomOperatorAcceptTest extends ExpressionAcceptTest {        
+public class CustomOperatorAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<customOperator class='org.qtitools.qti.node.expression.general.Null'>" +
-            "</customOperator>", NullValue.INSTANCE},
-            //sum {"<customOperator class='org.qtitools.qti.node.expression.operator.Sum'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</customOperator>", new IntegerValue(6)},
-            //HelloWorld {"<customOperator class='org.qtitools.qti.node.expression.operator.HelloWorldOperator'>" +
-            "</customOperator>", new StringValue("hello world")},
-            //HelloWorld 2 {"<customOperator class='org.qtitools.qti.node.expression.operator.HelloWorldOperator' string='goodbye world'>" +
-            "</customOperator>", new StringValue("goodbye world")}
+                // null
+                { "<customOperator class='org.qtitools.qti.node.expression.general.Null'>" +
+                        "</customOperator>", NullValue.INSTANCE },
+                // sum
+                { "<customOperator class='org.qtitools.qti.node.expression.operator.Sum'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</customOperator>", new IntegerValue(6) },
+                // HelloWorld
+                { "<customOperator class='org.qtitools.qti.node.expression.operator.HelloWorldOperator'>" +
+                        "</customOperator>", new StringValue("hello world") },
+                // HelloWorld 2
+                { "<customOperator class='org.qtitools.qti.node.expression.operator.HelloWorldOperator' string='goodbye world'>" +
+                        "</customOperator>", new StringValue("goodbye world") }
         });
     }
 
     /**
      * Constructs <code>And</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

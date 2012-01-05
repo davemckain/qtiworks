@@ -53,8 +53,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class OutcomeTest {
+
     private static final MultipleValue multipleValue;
+
     private static final OrderedValue orderedValue;
+
     private static final RecordValue recordValue;
 
     static {
@@ -75,8 +78,10 @@ public class OutcomeTest {
     }
 
     private static class Outcome {
-        private String name;
-        private Value expectedValue;
+
+        private final String name;
+
+        private final Value expectedValue;
 
         public Outcome(String name, Value expectedValue) {
             this.name = name;
@@ -94,28 +99,28 @@ public class OutcomeTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"Outcome-default-01.xml", new Outcome[] {
+        return Arrays.asList(new Object[][] { { "Outcome-default-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", multipleValue),
                 new Outcome("Outcome04", orderedValue),
                 new Outcome("Outcome05", recordValue),
-            }}, {"Outcome-default-02.xml", new Outcome[] {
+        } }, { "Outcome-default-02.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", multipleValue),
                 new Outcome("Outcome04", orderedValue),
                 new Outcome("Outcome05", recordValue),
-            }}, {"Outcome-set-01.xml", new Outcome[] {
+        } }, { "Outcome-set-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE")),
-            }}, {"Outcome-lookup-match-01.xml", new Outcome[] {
+        } }, { "Outcome-lookup-match-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE 1")),
@@ -123,7 +128,7 @@ public class OutcomeTest {
                 new Outcome("Outcome05", new StringValue("VALUE 3")),
                 new Outcome("Outcome06", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome07", new StringValue("VALUE DEFAULT")),
-            }}, {"Outcome-lookup-interpolation-01.xml", new Outcome[] {
+        } }, { "Outcome-lookup-interpolation-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE 3")),
@@ -137,7 +142,7 @@ public class OutcomeTest {
                 new Outcome("Outcome11", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome12", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome13", new StringValue("VALUE DEFAULT")),
-            }}, {"Outcome-condition-01.xml", new Outcome[] {
+        } }, { "Outcome-condition-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", NullValue.INSTANCE),
@@ -152,12 +157,13 @@ public class OutcomeTest {
                 new Outcome("Outcome12", new StringValue("ELSE IF 2")),
                 new Outcome("Outcome13", new StringValue("ELSE IF 1")),
                 new Outcome("Outcome14", new StringValue("IF")),
-            }},
+        } },
         });
     }
 
-    private String fileName;
-    private Outcome[] outcomes;
+    private final String fileName;
+
+    private final Outcome[] outcomes;
 
     public OutcomeTest(String fileName, Outcome[] outcomes) {
         this.fileName = fileName;
@@ -166,13 +172,13 @@ public class OutcomeTest {
 
     @Test
     public void test() {
-        AssessmentTest test = new AssessmentTest();
+        final AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource(fileName), jqtiController);
 
         test.processOutcome();
 
-        for (Outcome outcome : outcomes) {
-            Value value = test.getOutcomeValue(outcome.getName());
+        for (final Outcome outcome : outcomes) {
+            final Value value = test.getOutcomeValue(outcome.getName());
             assertEquals(outcome.getExpectedValue(), value);
         }
     }

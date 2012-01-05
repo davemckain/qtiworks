@@ -47,69 +47,83 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Sum</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Sum
  */
 @RunWith(Parameterized.class)
 public class SumRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // record {"<sum>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</sum>", QTICardinalityException.class},
-            // identifier {"<sum>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // boolean {"<sum>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // integer + boolean {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // float + boolean {"<sum>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // string {"<sum>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // point {"<sum>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // pair {"<sum>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // directedPair {"<sum>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // duration {"<sum>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // file {"<sum>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
-            // uri {"<sum>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</sum>", QTIBaseTypeException.class},
+                // record
+                { "<sum>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</sum>", QTICardinalityException.class },
+                // identifier
+                { "<sum>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // boolean
+                { "<sum>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // integer + boolean
+                { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // float + boolean
+                { "<sum>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // string
+                { "<sum>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // point
+                { "<sum>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // pair
+                { "<sum>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // directedPair
+                { "<sum>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // duration
+                { "<sum>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // file
+                { "<sum>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
+                // uri
+                { "<sum>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</sum>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Sum</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public SumRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

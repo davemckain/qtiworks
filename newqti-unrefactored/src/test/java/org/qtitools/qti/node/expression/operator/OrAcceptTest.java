@@ -46,63 +46,67 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Or</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Or
  */
 @RunWith(Parameterized.class)
 public class OrAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<or>" +
-                "<null/>" +
-            "</or>", null}, {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</or>", null},
-            // false {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</or>", false}, {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</or>", false},
-            // true {"<or>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</or>", true}, {"<or>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</or>", true}, {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</or>", true}, {"<or>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</or>", true}, {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</or>", true},
+                // null
+                { "<or>" +
+                        "<null/>" +
+                        "</or>", null }, { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</or>", null },
+                // false
+                { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</or>", false }, { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</or>", false },
+                // true
+                { "<or>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</or>", true }, { "<or>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</or>", true }, { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</or>", true }, { "<or>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</or>", true }, { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</or>", true },
         });
     }
 
     /**
      * Constructs <code>Or</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public OrAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

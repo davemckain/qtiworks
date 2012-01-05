@@ -47,77 +47,93 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Or</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Or
  */
 @RunWith(Parameterized.class)
 public class OrRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<or>" +
-                "<multiple>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</multiple>" +
-            "</or>", QTICardinalityException.class},
-            // ordered {"<or>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</or>", QTICardinalityException.class},
-            // record {"<or>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</recordEx>" +
-            "</or>", QTICardinalityException.class},
-            // identifier {"<or>" +
-                "<baseValue baseType='identifier'>true</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // boolean + integer {"<or>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // integer {"<or>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // float {"<or>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // string {"<or>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // point {"<or>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // pair {"<or>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // directedPair {"<or>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // duration {"<or>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // file {"<or>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
-            // uri {"<or>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</or>", QTIBaseTypeException.class},
+                // multiple
+                { "<or>" +
+                        "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>" +
+                        "</or>", QTICardinalityException.class },
+                // ordered
+                { "<or>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</or>", QTICardinalityException.class },
+                // record
+                { "<or>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</recordEx>" +
+                        "</or>", QTICardinalityException.class },
+                // identifier
+                { "<or>" +
+                        "<baseValue baseType='identifier'>true</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // boolean + integer
+                { "<or>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // integer
+                { "<or>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // float
+                { "<or>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // string
+                { "<or>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // point
+                { "<or>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // pair
+                { "<or>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // directedPair
+                { "<or>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // duration
+                { "<or>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // file
+                { "<or>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
+                // uri
+                { "<or>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</or>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Or</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public OrRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

@@ -47,72 +47,87 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>IntegerToFloat</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerToFloat
  */
 @RunWith(Parameterized.class)
 public class IntegerToFloatRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<integerToFloat>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</integerToFloat>", QTICardinalityException.class},
-            // ordered {"<integerToFloat>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</integerToFloat>", QTICardinalityException.class},
-            // record {"<integerToFloat>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</integerToFloat>", QTICardinalityException.class},
-            // identifier {"<integerToFloat>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // boolean {"<integerToFloat>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // float {"<integerToFloat>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // string {"<integerToFloat>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // point {"<integerToFloat>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // pair {"<integerToFloat>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // directedPair {"<integerToFloat>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // duration {"<integerToFloat>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // file {"<integerToFloat>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
-            // uri {"<integerToFloat>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</integerToFloat>", QTIBaseTypeException.class},
+                // multiple
+                { "<integerToFloat>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</integerToFloat>", QTICardinalityException.class },
+                // ordered
+                { "<integerToFloat>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</integerToFloat>", QTICardinalityException.class },
+                // record
+                { "<integerToFloat>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</integerToFloat>", QTICardinalityException.class },
+                // identifier
+                { "<integerToFloat>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // boolean
+                { "<integerToFloat>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // float
+                { "<integerToFloat>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // string
+                { "<integerToFloat>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // point
+                { "<integerToFloat>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // pair
+                { "<integerToFloat>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // directedPair
+                { "<integerToFloat>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // duration
+                { "<integerToFloat>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // file
+                { "<integerToFloat>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
+                // uri
+                { "<integerToFloat>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</integerToFloat>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>IntegerToFloat</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public IntegerToFloatRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

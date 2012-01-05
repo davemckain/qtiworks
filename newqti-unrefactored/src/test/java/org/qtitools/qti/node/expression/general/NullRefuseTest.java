@@ -43,26 +43,27 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Null</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.Null
  */
 @RunWith(Parameterized.class)
 public class NullRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // It is not possible to create wrong null expression.
-        });
+                // It is not possible to create wrong null expression.
+                });
     }
 
     /**
      * Constructs <code>Null</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public NullRefuseTest(String xml) {

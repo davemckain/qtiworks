@@ -46,183 +46,188 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Lte</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Lte
  */
 @RunWith(Parameterized.class)
 public class LteAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<lte>" +
-                "<null/>" +
-                "<null/>" +
-            "</lte>", null}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</lte>", null}, {"<lte>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", null},
-            // integer {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>-7</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</lte>", true},
-            // float {"<lte>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>1.4</baseValue>" +
-                "<baseValue baseType='float'>1.4</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>2.8</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>-7.4</baseValue>" +
-                "<baseValue baseType='float'>-5.6</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-3.3</baseValue>" +
-                "<baseValue baseType='float'>-3.3</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-4.1</baseValue>" +
-                "<baseValue baseType='float'>-5.9</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>-4.6</baseValue>" +
-                "<baseValue baseType='float'>2.7</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>2.6</baseValue>" +
-                "<baseValue baseType='float'>-4.3</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</lte>", true},
-            // integer + float {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>2.8</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>-7</baseValue>" +
-                "<baseValue baseType='float'>-5.6</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-7.4</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='float'>-3.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='float'>-5.9</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>-4.1</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='float'>2.7</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-4.6</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>-4.3</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='float'>2.6</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</lte>", false}, {"<lte>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</lte>", true}, {"<lte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</lte>", true},
+                // null
+                { "<lte>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</lte>", null }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</lte>", null }, { "<lte>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", null },
+                // integer
+                { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>-7</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</lte>", true },
+                // float
+                { "<lte>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>1.4</baseValue>" +
+                        "<baseValue baseType='float'>1.4</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>2.8</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>-7.4</baseValue>" +
+                        "<baseValue baseType='float'>-5.6</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-3.3</baseValue>" +
+                        "<baseValue baseType='float'>-3.3</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-4.1</baseValue>" +
+                        "<baseValue baseType='float'>-5.9</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>-4.6</baseValue>" +
+                        "<baseValue baseType='float'>2.7</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>2.6</baseValue>" +
+                        "<baseValue baseType='float'>-4.3</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</lte>", true },
+                // integer + float
+                { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>2.8</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>-7</baseValue>" +
+                        "<baseValue baseType='float'>-5.6</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-7.4</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='float'>-3.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='float'>-5.9</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>-4.1</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='float'>2.7</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-4.6</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>-4.3</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='float'>2.6</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</lte>", false }, { "<lte>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</lte>", true }, { "<lte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</lte>", true },
         });
     }
 
     /**
      * Constructs <code>Lte</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public LteAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

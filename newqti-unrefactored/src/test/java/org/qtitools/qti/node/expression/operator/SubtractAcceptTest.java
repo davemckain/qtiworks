@@ -48,61 +48,65 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Subtract</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Subtract
  */
 @RunWith(Parameterized.class)
 public class SubtractAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<subtract>" +
-                "<null/>" +
-                "<null/>" +
-            "</subtract>", NullValue.INSTANCE}, {"<subtract>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</subtract>", NullValue.INSTANCE}, {"<subtract>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</subtract>", NullValue.INSTANCE},
-            // integer {"<subtract>" +
-                "<baseValue baseType='integer'>-8</baseValue>" +
-                "<baseValue baseType='integer'>7</baseValue>" +
-            "</subtract>", new IntegerValue(-15)}, {"<subtract>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</subtract>", new IntegerValue(0)}, {"<subtract>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</subtract>", new IntegerValue(1)}, {"<subtract>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</subtract>", new IntegerValue(7)},
-            // float {"<subtract>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</subtract>", new FloatValue(0)}, {"<subtract>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</subtract>", new FloatValue(0)}, {"<subtract>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</subtract>", new FloatValue(0)}, {"<subtract>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='float'>5.67</baseValue>" +
-            "</subtract>", new FloatValue(6.67)},
+                // null
+                { "<subtract>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</subtract>", NullValue.INSTANCE }, { "<subtract>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</subtract>", NullValue.INSTANCE }, { "<subtract>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</subtract>", NullValue.INSTANCE },
+                // integer
+                { "<subtract>" +
+                        "<baseValue baseType='integer'>-8</baseValue>" +
+                        "<baseValue baseType='integer'>7</baseValue>" +
+                        "</subtract>", new IntegerValue(-15) }, { "<subtract>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</subtract>", new IntegerValue(0) }, { "<subtract>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</subtract>", new IntegerValue(1) }, { "<subtract>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</subtract>", new IntegerValue(7) },
+                // float
+                { "<subtract>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</subtract>", new FloatValue(0) }, { "<subtract>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</subtract>", new FloatValue(0) }, { "<subtract>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</subtract>", new FloatValue(0) }, { "<subtract>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='float'>5.67</baseValue>" +
+                        "</subtract>", new FloatValue(6.67) },
         });
     }
 
     /**
      * Constructs <code>Subtract</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

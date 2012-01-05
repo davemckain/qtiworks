@@ -47,47 +47,53 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Index</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Index
  */
 @RunWith(Parameterized.class)
 public class IndexRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // index < 1 {"<index n='-3'>" +
-                "<null/>" +
-            "</index>", QTIAttributeException.class}, {"<index n='-1'>" +
-                "<null/>" +
-            "</index>", QTIAttributeException.class}, {"<index n='0'>" +
-                "<null/>" +
-            "</index>", QTIAttributeException.class},
-            // single {"<index n='1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</index>", QTICardinalityException.class},
-            // multiple {"<index n='1'>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</index>", QTICardinalityException.class},
-            // record {"<index n='1'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</index>", QTICardinalityException.class},
+                // index < 1
+                { "<index n='-3'>" +
+                        "<null/>" +
+                        "</index>", QTIAttributeException.class }, { "<index n='-1'>" +
+                        "<null/>" +
+                        "</index>", QTIAttributeException.class }, { "<index n='0'>" +
+                        "<null/>" +
+                        "</index>", QTIAttributeException.class },
+                // single
+                { "<index n='1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</index>", QTICardinalityException.class },
+                // multiple
+                { "<index n='1'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</index>", QTICardinalityException.class },
+                // record
+                { "<index n='1'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</index>", QTICardinalityException.class },
         });
     }
 
     /**
      * Constructs <code>Index</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public IndexRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

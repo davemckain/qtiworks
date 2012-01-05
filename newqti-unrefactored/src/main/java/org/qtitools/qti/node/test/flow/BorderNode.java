@@ -36,7 +36,8 @@ package org.qtitools.qti.node.test.flow;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 
 /**
- * Border node is node on border. It is either start or end node, and it is not middle node.
+ * Border node is node on border. It is either start or end node, and it is not
+ * middle node.
  * 
  * @author Jiri Kajaba
  */
@@ -46,9 +47,10 @@ public abstract class BorderNode extends Node {
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
-     * @param object assessment object (test, test part, section or item reference)
+     * @param object assessment object (test, test part, section or item
+     *            reference)
      */
     protected BorderNode(Node prev, ControlObject<?> object) {
         super(prev, object);

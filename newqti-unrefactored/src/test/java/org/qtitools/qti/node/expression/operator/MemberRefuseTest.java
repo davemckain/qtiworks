@@ -47,75 +47,81 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Member</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Member
  */
 @RunWith(Parameterized.class)
 public class MemberRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // first operand is not single {"<member>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</member>", QTICardinalityException.class}, {"<member>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</member>", QTICardinalityException.class}, {"<member>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</member>", QTICardinalityException.class},
-            // second operand is not multiple or ordered {"<member>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</member>", QTICardinalityException.class}, {"<member>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</member>", QTICardinalityException.class},
-            // different baseTypes {"<member>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</multiple>" +
-            "</member>", QTIBaseTypeException.class},
-            // duration {"<member>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</multiple>" +
-            "</member>", QTIBaseTypeException.class}, {"<member>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</ordered>" +
-            "</member>", QTIBaseTypeException.class},
+                // first operand is not single
+                { "<member>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</member>", QTICardinalityException.class },
+                // second operand is not multiple or ordered
+                { "<member>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</member>", QTICardinalityException.class },
+                // different baseTypes
+                { "<member>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>" +
+                        "</member>", QTIBaseTypeException.class },
+                // duration
+                { "<member>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</multiple>" +
+                        "</member>", QTIBaseTypeException.class }, { "<member>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</ordered>" +
+                        "</member>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Member</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public MemberRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

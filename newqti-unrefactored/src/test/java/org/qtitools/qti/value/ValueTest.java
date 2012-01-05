@@ -42,17 +42,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * Superclass for all tests of implementation of <code>equals</code> and <code>hashCode</code> methods.
+ * Superclass for all tests of implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
  */
 @RunWith(Parameterized.class)
 public abstract class ValueTest {
-    private boolean equals;
-    private Value value1;
-    private Value value2;
+
+    private final boolean equals;
+
+    private final Value value1;
+
+    private final Value value2;
 
     /**
      * Constructs test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
@@ -76,7 +80,8 @@ public abstract class ValueTest {
      */
     @Test
     public void testHashCode() {
-        if (equals)
+        if (equals) {
             assertEquals(value1.hashCode(), value2.hashCode());
+        }
     }
 }

@@ -46,31 +46,34 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>StringValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>StringValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.StringValue
  */
 @RunWith(Parameterized.class)
 public class StringValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"string", "string"}, {"String", "String"}, {"StrIng", "StrIng"}, {"STRING", "STRING"},
+        return Arrays.asList(new Object[][] { { "string", "string" }, { "String", "String" }, { "StrIng", "StrIng" }, { "STRING", "STRING" },
         });
     }
 
-    private String string;
-    private StringValue expectedString;
+    private final String string;
+
+    private final StringValue expectedString;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedString expected parsed value
      */

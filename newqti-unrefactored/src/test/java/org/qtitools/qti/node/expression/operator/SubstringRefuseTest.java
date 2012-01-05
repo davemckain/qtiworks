@@ -48,140 +48,156 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Substring</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Substring
  */
 @RunWith(Parameterized.class)
 public class SubstringRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // attributes {"<substring caseSensitive='True'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTIAttributeException.class}, {"<substring caseSensitive='TRUE'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTIAttributeException.class}, {"<substring caseSensitive='1.0'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTIAttributeException.class},
-            // multiple {"<substring caseSensitive='true'>" +
-                "<multiple>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTICardinalityException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</multiple>" +
-            "</substring>", QTICardinalityException.class},
-            // ordered {"<substring caseSensitive='true'>" +
-                "<ordered>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTICardinalityException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</ordered>" +
-            "</substring>", QTICardinalityException.class},
-            // record {"<substring caseSensitive='true'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</recordEx>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", QTICardinalityException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</recordEx>" +
-            "</substring>", QTICardinalityException.class},
-            // identifier {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='string'>identifier</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>identifier</baseValue>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // boolean {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // integer {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // float {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // point {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='string'>1 1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>1 1</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // pair {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // directedPair {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // duration {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // file {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-                "<baseValue baseType='string'>file</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>file</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
-            // uri {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-                "<baseValue baseType='string'>uri</baseValue>" +
-            "</substring>", QTIBaseTypeException.class}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>uri</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</substring>", QTIBaseTypeException.class},
+                // attributes
+                { "<substring caseSensitive='True'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTIAttributeException.class }, { "<substring caseSensitive='TRUE'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTIAttributeException.class }, { "<substring caseSensitive='1.0'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTIAttributeException.class },
+                // multiple
+                { "<substring caseSensitive='true'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</multiple>" +
+                        "</substring>", QTICardinalityException.class },
+                // ordered
+                { "<substring caseSensitive='true'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</ordered>" +
+                        "</substring>", QTICardinalityException.class },
+                // record
+                { "<substring caseSensitive='true'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</recordEx>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</recordEx>" +
+                        "</substring>", QTICardinalityException.class },
+                // identifier
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='string'>identifier</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>identifier</baseValue>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // boolean
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // integer
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // float
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // point
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='string'>1 1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>1 1</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // pair
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // directedPair
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // duration
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // file
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "<baseValue baseType='string'>file</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>file</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
+                // uri
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "<baseValue baseType='string'>uri</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>uri</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</substring>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Substring</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public SubstringRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

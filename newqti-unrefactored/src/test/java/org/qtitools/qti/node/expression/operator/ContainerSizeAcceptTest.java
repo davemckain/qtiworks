@@ -46,84 +46,88 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>ContainerSize</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.ContainerSize
  */
 @RunWith(Parameterized.class)
 public class ContainerSizeAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<containerSize>" +
-                "<null/>" +
-            "</containerSize>", 0},
-            // multiple {"<containerSize>" +
-                "<multiple/>" +
-            "</containerSize>", 0}, {"<containerSize>" +
-                "<multiple>" +
-                    "<null/>" +
-                "</multiple>" +
-            "</containerSize>", 0}, {"<containerSize>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</containerSize>", 1}, {"<containerSize>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</containerSize>", 3}, {"<containerSize>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<multiple>" +
+                // null
+                { "<containerSize>" +
+                        "<null/>" +
+                        "</containerSize>", 0 },
+                // multiple
+                { "<containerSize>" +
+                        "<multiple/>" +
+                        "</containerSize>", 0 }, { "<containerSize>" +
+                        "<multiple>" +
+                        "<null/>" +
+                        "</multiple>" +
+                        "</containerSize>", 0 }, { "<containerSize>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</containerSize>", 1 }, { "<containerSize>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
-                    "</multiple>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</multiple>" +
-            "</containerSize>", 4},
-            // ordered {"<containerSize>" +
-                "<ordered/>" +
-            "</containerSize>", 0}, {"<containerSize>" +
-                "<ordered>" +
-                    "<null/>" +
-                "</ordered>" +
-            "</containerSize>", 0}, {"<containerSize>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</containerSize>", 1}, {"<containerSize>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</containerSize>", 3}, {"<containerSize>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<ordered>" +
+                        "</multiple>" +
+                        "</containerSize>", 3 }, { "<containerSize>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
-                    "</ordered>" +
-                    "<baseValue baseType='integer'>4</baseValue>" +
-                "</ordered>" +
-            "</containerSize>", 4},
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</multiple>" +
+                        "</containerSize>", 4 },
+                // ordered
+                { "<containerSize>" +
+                        "<ordered/>" +
+                        "</containerSize>", 0 }, { "<containerSize>" +
+                        "<ordered>" +
+                        "<null/>" +
+                        "</ordered>" +
+                        "</containerSize>", 0 }, { "<containerSize>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</containerSize>", 1 }, { "<containerSize>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</containerSize>", 3 }, { "<containerSize>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</ordered>" +
+                        "</containerSize>", 4 },
         });
     }
 
     /**
      * Constructs <code>ContainerSize</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public ContainerSizeAcceptTest(String xml, Integer expectedValue) {
-        super(xml, (expectedValue != null) ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
     }
 }

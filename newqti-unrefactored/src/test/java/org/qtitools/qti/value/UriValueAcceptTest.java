@@ -48,37 +48,41 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>UriValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>UriValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  * @see java.net.URI
  */
 @RunWith(Parameterized.class)
 public class UriValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         try {
-            return Arrays.asList(new Object[][] { {"http://www.example.com/", new URI("http://www.example.com/")}, {"images/icon.gif", new URI("images/icon.gif")}, {"mailto:user@example.com", new URI("mailto:user@example.com")},
+            return Arrays.asList(new Object[][] { { "http://www.example.com/", new URI("http://www.example.com/") },
+                    { "images/icon.gif", new URI("images/icon.gif") }, { "mailto:user@example.com", new URI("mailto:user@example.com") },
             });
         }
-        catch (URISyntaxException ex) {
+        catch (final URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private String string;
-    private URI expectedUri;
+    private final String string;
+
+    private final URI expectedUri;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedUri expected parsed value
      */

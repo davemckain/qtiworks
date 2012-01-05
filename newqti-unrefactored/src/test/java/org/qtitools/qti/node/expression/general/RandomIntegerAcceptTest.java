@@ -45,36 +45,58 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>RandomInteger</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.RandomInteger
  */
 @RunWith(Parameterized.class)
 public class RandomIntegerAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // min = max, step = 1 {"<randomIntegerEx min='-3' max='-3' seed='0'/>", -3}, {"<randomIntegerEx min='-1' max='-1' seed='0'/>", -1}, {"<randomIntegerEx min='0' max='0' seed='0'/>", 0}, {"<randomIntegerEx min='1' max='1' seed='0'/>", 1}, {"<randomIntegerEx min='4' max='4' seed='0'/>", 4},
-            // min = 0, max = 10, step = 1 {"<randomIntegerEx min='0' max='10' seed='10'/>", 5},
-            // min = -10, max = 0, step = 1 {"<randomIntegerEx min='-10' max='0' seed='10'/>", -5},
-            // min = -3, max = 4, step = 1 {"<randomIntegerEx min='-3' max='4' step='1' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='1' seed='4480'/>", -2}, {"<randomIntegerEx min='-3' max='4' step='1' seed='6144'/>", -1}, {"<randomIntegerEx min='-3' max='4' step='1' seed='12416'/>", 0}, {"<randomIntegerEx min='-3' max='4' step='1' seed='1536'/>", 1}, {"<randomIntegerEx min='-3' max='4' step='1' seed='0'/>", 2}, {"<randomIntegerEx min='-3' max='4' step='1' seed='256'/>", 3}, {"<randomIntegerEx min='-3' max='4' step='1' seed='2048'/>", 4},
-            // min = -3, max = 4, step = 2 {"<randomIntegerEx min='-3' max='4' step='2' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='2' seed='6144'/>", -1}, {"<randomIntegerEx min='-3' max='4' step='2' seed='0'/>", 1}, {"<randomIntegerEx min='-3' max='4' step='2' seed='256'/>", 3},
-            // min = -3, max = 4, step = 3 {"<randomIntegerEx min='-3' max='4' step='3' seed='0'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='3' seed='2'/>", 0}, {"<randomIntegerEx min='-3' max='4' step='3' seed='3'/>", 3},
-            // min = -3, max = 4, step = 4 {"<randomIntegerEx min='-3' max='4' step='4' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='4' seed='0'/>", 1},
-            // min = -3, max = 4, step = 5 {"<randomIntegerEx min='-3' max='4' step='5' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='5' seed='0'/>", 2},
-            // min = -3, max = 4, step = 6 {"<randomIntegerEx min='-3' max='4' step='6' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='6' seed='0'/>", 3},
-            // min = -3, max = 4, step = 7 {"<randomIntegerEx min='-3' max='4' step='7' seed='4096'/>", -3}, {"<randomIntegerEx min='-3' max='4' step='7' seed='0'/>", 4},
-            // min = -3, max = 4, step = 8 {"<randomIntegerEx min='-3' max='4' step='8' seed='0'/>", -3},
+                // min = max, step = 1
+                { "<randomIntegerEx min='-3' max='-3' seed='0'/>", -3 },
+                { "<randomIntegerEx min='-1' max='-1' seed='0'/>", -1 },
+                { "<randomIntegerEx min='0' max='0' seed='0'/>", 0 },
+                { "<randomIntegerEx min='1' max='1' seed='0'/>", 1 },
+                { "<randomIntegerEx min='4' max='4' seed='0'/>", 4 },
+                // min = 0, max = 10, step = 1
+                { "<randomIntegerEx min='0' max='10' seed='10'/>", 5 },
+                // min = -10, max = 0, step = 1
+                { "<randomIntegerEx min='-10' max='0' seed='10'/>", -5 },
+                // min = -3, max = 4, step = 1
+                { "<randomIntegerEx min='-3' max='4' step='1' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='1' seed='4480'/>", -2 },
+                { "<randomIntegerEx min='-3' max='4' step='1' seed='6144'/>", -1 }, { "<randomIntegerEx min='-3' max='4' step='1' seed='12416'/>", 0 },
+                { "<randomIntegerEx min='-3' max='4' step='1' seed='1536'/>", 1 }, { "<randomIntegerEx min='-3' max='4' step='1' seed='0'/>", 2 },
+                { "<randomIntegerEx min='-3' max='4' step='1' seed='256'/>", 3 },
+                { "<randomIntegerEx min='-3' max='4' step='1' seed='2048'/>", 4 },
+                // min = -3, max = 4, step = 2
+                { "<randomIntegerEx min='-3' max='4' step='2' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='2' seed='6144'/>", -1 },
+                { "<randomIntegerEx min='-3' max='4' step='2' seed='0'/>", 1 }, { "<randomIntegerEx min='-3' max='4' step='2' seed='256'/>", 3 },
+                // min = -3, max = 4, step = 3
+                { "<randomIntegerEx min='-3' max='4' step='3' seed='0'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='3' seed='2'/>", 0 },
+                { "<randomIntegerEx min='-3' max='4' step='3' seed='3'/>", 3 },
+                // min = -3, max = 4, step = 4
+                { "<randomIntegerEx min='-3' max='4' step='4' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='4' seed='0'/>", 1 },
+                // min = -3, max = 4, step = 5
+                { "<randomIntegerEx min='-3' max='4' step='5' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='5' seed='0'/>", 2 },
+                // min = -3, max = 4, step = 6
+                { "<randomIntegerEx min='-3' max='4' step='6' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='6' seed='0'/>", 3 },
+                // min = -3, max = 4, step = 7
+                { "<randomIntegerEx min='-3' max='4' step='7' seed='4096'/>", -3 }, { "<randomIntegerEx min='-3' max='4' step='7' seed='0'/>", 4 },
+                // min = -3, max = 4, step = 8
+                { "<randomIntegerEx min='-3' max='4' step='8' seed='0'/>", -3 },
         });
     }
 
     /**
      * Constructs <code>RandomInteger</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

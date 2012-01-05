@@ -46,31 +46,34 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>PointValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>PointValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.PointValue
  */
 @RunWith(Parameterized.class)
 public class PointValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"10 20", new PointValue(10, 20)}, {"+10 -20", new PointValue(10, -20)},
+        return Arrays.asList(new Object[][] { { "10 20", new PointValue(10, 20) }, { "+10 -20", new PointValue(10, -20) },
         });
     }
 
-    private String string;
-    private PointValue expectedPoint;
+    private final String string;
+
+    private final PointValue expectedPoint;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedPoint expected parsed value
      */

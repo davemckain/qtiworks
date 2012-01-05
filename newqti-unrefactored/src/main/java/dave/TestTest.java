@@ -41,13 +41,13 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentTestManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 
 import java.net.URI;
 
@@ -55,36 +55,36 @@ import java.net.URI;
  * @author David McKain
  */
 public class TestTest {
-    
-    public static void main(String[] args) {
-        URI inputUri = StandaloneXMLResourceLocator.getMAFileUri("web-app/WEB-INF/content/tests/test_package_minfilesG/example/rtest.xml");
-        
-        JQTIController jqtiController = new JQTIController();
-        
-        System.out.println("Reading and validating");
-        SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
-        QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new StandaloneXMLResourceLocator(), new SimpleQTIObjectCache());
 
-        QTIReadResult<AssessmentTest> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentTest.class);
-        XMLParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
+    public static void main(String[] args) {
+        final URI inputUri = StandaloneXMLResourceLocator.getMAFileUri("web-app/WEB-INF/content/tests/test_package_minfilesG/example/rtest.xml");
+
+        final JQTIController jqtiController = new JQTIController();
+
+        System.out.println("Reading and validating");
+        final SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
+        final QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new StandaloneXMLResourceLocator(), new SimpleQTIObjectCache());
+
+        final QTIReadResult<AssessmentTest> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentTest.class);
+        final XMLParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
         if (!xmlParseResult.isSchemaValid()) {
             System.out.println("Schema validation failed: " + xmlParseResult);
             return;
         }
-        
-        AssessmentTest test = qtiReadResult.getJQTIObject();
-        AssessmentTestManager testManager = new AssessmentTestManager(objectManager, test);
-        ValidationResult validationResult = testManager.validateTest();
+
+        final AssessmentTest test = qtiReadResult.getJQTIObject();
+        final AssessmentTestManager testManager = new AssessmentTestManager(objectManager, test);
+        final ValidationResult validationResult = testManager.validateTest();
         if (!validationResult.getAllItems().isEmpty()) {
             System.out.println("JQTI validation failed: " + validationResult);
-            return;          
+            return;
         }
-        
+
         System.out.println("Initializing test");
-        AssessmentTestState testState = new AssessmentTestState(test);
-        AssessmentTestController testController = new AssessmentTestController(testManager, testState, new Timer());
+        final AssessmentTestState testState = new AssessmentTestState(test);
+        final AssessmentTestController testController = new AssessmentTestController(testManager, testState, new Timer());
         testController.initialize();
-        
+
         System.out.println("Test state: " + ObjectDumper.dumpObject(testState, DumpMode.DEEP));
         System.out.println("Test structure: " + testState.debugStructure());
     }

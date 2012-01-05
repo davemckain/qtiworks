@@ -48,126 +48,145 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Inside</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Inside
  */
 @RunWith(Parameterized.class)
 public class InsideRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // attributes {"<inside>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape=''>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='unknown'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1 2 3 A'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // attributes - default {"<inside shape='default' coords='1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // attributes - rect {"<inside shape='rect' coords=''>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1,2,3'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1,2,3,4,5'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1,2,1,4'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='3,2,1,4'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1,2,3,2'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='rect' coords='1,4,3,2'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // attributes - circle {"<inside shape='circle' coords=''>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='circle' coords='1,2'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='circle' coords='1,2,3,4'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='circle' coords='1,1,-1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='circle' coords='1,1,0'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // poly {"<inside shape='poly' coords=''>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='poly' coords='1,2,3,4'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='poly' coords='1,2,3,4,1,2'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='poly' coords='1,2,3,4,5,6,7'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // ellipse {"<inside shape='ellipse' coords=''>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,2,3'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,2,3,4,5'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,1,-1,1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,1,0,1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,1,1,-1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class}, {"<inside shape='ellipse' coords='1,1,1,0'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</inside>", QTIAttributeException.class},
-            // record {"<inside shape='default'>" +
-                "<recordEx/>" +
-            "</inside>", QTICardinalityException.class}, {"<inside shape='default'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='point'>1 1</baseValue>" +
-                "</recordEx>" +
-            "</inside>", QTICardinalityException.class},
-            // identifier {"<inside shape='default'>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // boolean {"<inside shape='default'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // integer {"<inside shape='default'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // float {"<inside shape='default'>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // string {"<inside shape='default'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // pair {"<inside shape='default'>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // directedPair {"<inside shape='default'>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // duration {"<inside shape='default'>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // file {"<inside shape='default'>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
-            // uri {"<inside shape='default'>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</inside>", QTIBaseTypeException.class},
+                // attributes
+                { "<inside>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape=''>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='unknown'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1 2 3 A'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // attributes - default
+                { "<inside shape='default' coords='1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // attributes - rect
+                { "<inside shape='rect' coords=''>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1,2,3'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1,2,3,4,5'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1,2,1,4'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='3,2,1,4'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1,2,3,2'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='rect' coords='1,4,3,2'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // attributes - circle
+                { "<inside shape='circle' coords=''>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='circle' coords='1,2'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='circle' coords='1,2,3,4'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='circle' coords='1,1,-1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='circle' coords='1,1,0'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // poly
+                { "<inside shape='poly' coords=''>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4,1,2'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4,5,6,7'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // ellipse
+                { "<inside shape='ellipse' coords=''>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,2,3'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,2,3,4,5'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,1,-1,1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,1,0,1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,1,1,-1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class }, { "<inside shape='ellipse' coords='1,1,1,0'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</inside>", QTIAttributeException.class },
+                // record
+                { "<inside shape='default'>" +
+                        "<recordEx/>" +
+                        "</inside>", QTICardinalityException.class }, { "<inside shape='default'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</recordEx>" +
+                        "</inside>", QTICardinalityException.class },
+                // identifier
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // boolean
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // integer
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // float
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // string
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // pair
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // directedPair
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // duration
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // file
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
+                // uri
+                { "<inside shape='default'>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</inside>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Inside</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public InsideRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

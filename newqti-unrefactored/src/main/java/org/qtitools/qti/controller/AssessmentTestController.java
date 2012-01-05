@@ -47,9 +47,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import org.qtitools.qti.node.test.flow.DefaultItemFlow;
-import org.qtitools.qti.node.test.flow.ItemFlow;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.qtitools.qti.node.test.flow.DefaultItemFlow;
+import org.qtitools.qti.node.test.flow.ItemFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,7 @@ public class AssessmentTestController implements Serializable {
     private static final long serialVersionUID = -4931525113712266165L;
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentTestController.class);
-    
+
     private ItemFlow flow;
 
     /**
@@ -81,12 +80,14 @@ public class AssessmentTestController implements Serializable {
     public AssessmentTestController() {
         logger.info("Creating new AssessmentTestController");
     }
-    
+
     /**
      * Create an AssessmentTestController and load the given file using the
      * default flow model.
-     * This method is functionally equivalent to creating an AssessmentTestController
-     * with an empty constructor, and then calling the load with method with the file.
+     * This method is functionally equivalent to creating an
+     * AssessmentTestController
+     * with an empty constructor, and then calling the load with method with the
+     * file.
      * 
      * @param file File to load.
      */
@@ -96,7 +97,8 @@ public class AssessmentTestController implements Serializable {
     }
 
     /**
-     * Create an AssessmentTestController with an ItemFlow. The ItemFlow is assumed
+     * Create an AssessmentTestController with an ItemFlow. The ItemFlow is
+     * assumed
      * to have been initialized with a assessmentTest already.
      * 
      * @param flow Flow to use.
@@ -105,37 +107,40 @@ public class AssessmentTestController implements Serializable {
         this();
         this.flow = flow;
     }
-    
+
     /**
      * Load and initialize an assessmentTest using the default flow model.
+     * 
      * @param testFile File containing assessmentTest
      */
     public void load(File testFile) {
-        logger.info("Creating new AssessmentTest from "+testFile);
-        AssessmentTest test = new AssessmentTest();
-        
+        logger.info("Creating new AssessmentTest from " + testFile);
+        final AssessmentTest test = new AssessmentTest();
+
         test.load(testFile);
         test.initialize();
 
         flow = new DefaultItemFlow(test);
     }
-    
+
     /**
      * Get the ItemFlow associated with the controller
+     * 
      * @return the ItemFlow
      */
     public ItemFlow getItemFlow() {
         return flow;
     }
-    
+
     /**
      * Get the assessmentTest associated with the controller
-     * @return the assessmentTest 
+     * 
+     * @return the assessmentTest
      */
     public AssessmentTest getTest() {
         return flow.getTest();
     }
-    
+
     public TestPart getCurrentTestPart() {
         return flow.getCurrentTestPart();
     }
@@ -145,11 +150,12 @@ public class AssessmentTestController implements Serializable {
     }
 
     public AssessmentItem getCurrentItem() {
-        if (flow.getCurrentItemRef() != null)
+        if (flow.getCurrentItemRef() != null) {
             return flow.getCurrentItemRef().getItem();
+        }
         return null;
     }
-    
+
     private AssessmentItemRef getPreviousItem(boolean includeFinished) {
         return flow.getPrevItemRef(includeFinished);
     }
@@ -159,52 +165,60 @@ public class AssessmentTestController implements Serializable {
     }
 
 
-
     public boolean isTestComplete() {
         return getTest().isFinished();
     }
 
     public String getCurrentItemIdentifier() {
-        AssessmentItemRef air = getCurrentItemRef();
-        if (air == null) return null;
+        final AssessmentItemRef air = getCurrentItemRef();
+        if (air == null) {
+            return null;
+        }
         return air.getIdentifier();
     }
 
     public String getCurrentItemHREF() throws QTIException {
-        AssessmentItemRef air = getCurrentItemRef();
-        if (air == null) return null;
+        final AssessmentItemRef air = getCurrentItemRef();
+        if (air == null) {
+            return null;
+        }
         return air.getHref().toString();
     }
 
     public String getNextItemHREF(boolean includeFinished) throws QTIException {
-        AssessmentItemRef air = getNextItem(includeFinished);
-        if (air == null) return null;
+        final AssessmentItemRef air = getNextItem(includeFinished);
+        if (air == null) {
+            return null;
+        }
         return air.getHref().toString();
     }
 
     public String getPrevItemHREF(boolean includeFinished) throws QTIException {
-        AssessmentItemRef air = getPreviousItem(includeFinished);
-        if (air == null) return null;
+        final AssessmentItemRef air = getPreviousItem(includeFinished);
+        if (air == null) {
+            return null;
+        }
         return air.getHref().toString();
     }
 
     public ItemSessionControl getCurrentItemSessionControl() {
-        if (getCurrentItemRef() != null)
+        if (getCurrentItemRef() != null) {
             return getCurrentItemRef().getItemSessionControl();
+        }
         return null;
     }
 
     public void setCurrentItemResponses(Map<String, List<String>> responses) throws QTIException {
-        //set and process responses at the item level
+        // set and process responses at the item level
         getCurrentItemRef().getItem().setResponses(responses);
         getCurrentItemRef().getItem().processResponses();
     }
-    
+
     public Map<String, Value> getCurrentItemResponses() {
-        List<ResponseDeclaration> responseDeclarations = getCurrentItemRef().getItem().getResponseDeclarations();
-        Map<String, Value> responseMap = new HashMap<String, Value>();
-        
-        for (ResponseDeclaration declaration : responseDeclarations) {
+        final List<ResponseDeclaration> responseDeclarations = getCurrentItemRef().getItem().getResponseDeclarations();
+        final Map<String, Value> responseMap = new HashMap<String, Value>();
+
+        for (final ResponseDeclaration declaration : responseDeclarations) {
             responseMap.put(declaration.getIdentifier(), declaration.getValue());
         }
         return responseMap;
@@ -214,7 +228,7 @@ public class AssessmentTestController implements Serializable {
         getCurrentItemRef().setOutcomes(responses);
         getTest().processOutcome();
     }
-    
+
     public void skipCurrentItem() {
         getCurrentItemRef().skip();
 
@@ -227,10 +241,13 @@ public class AssessmentTestController implements Serializable {
 
     /**
      * Get a list of section titles for the current item in top-down order
+     * 
      * @return List of section titles
      */
     public List<String> getCurrentSectionTitles() {
-        if (getCurrentItemRef() == null) return null;
+        if (getCurrentItemRef() == null) {
+            return null;
+        }
         return getParentTitles();
     }
 
@@ -243,17 +260,19 @@ public class AssessmentTestController implements Serializable {
     }
 
     public boolean nextEnabled() {
-        TestPart testPart = getCurrentTestPart();
-        if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished())
+        final TestPart testPart = getCurrentTestPart();
+        if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished()) {
             return false;
+        }
 
         return true;
     }
 
     public boolean forwardEnabled() {
-        TestPart testPart = getCurrentTestPart();
-        if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished())
+        final TestPart testPart = getCurrentTestPart();
+        if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished()) {
             return false;
+        }
 
         return flow.hasNextItemRef(true);
     }
@@ -261,8 +280,8 @@ public class AssessmentTestController implements Serializable {
     public boolean submitEnabled() {
         logger.debug("checking submitEnabled");
         if (getCurrentItemRef() != null) {
-            boolean se = !getCurrentItemRef().isFinished() && getCurrentItemRef().passMaximumTimeLimit();
-            logger.debug("submitEnabled is "+se+" ("+getCurrentItemRef().getIdentifier()+")");
+            final boolean se = !getCurrentItemRef().isFinished() && getCurrentItemRef().passMaximumTimeLimit();
+            logger.debug("submitEnabled is " + se + " (" + getCurrentItemRef().getIdentifier() + ")");
             return se;
         }
         logger.debug("no item in submitEnabled");
@@ -270,12 +289,15 @@ public class AssessmentTestController implements Serializable {
     }
 
     public boolean skipEnabled() {
-        //in simultaneous mode, skipping makes no sense
-        if (getCurrentTestPart().getSubmissionMode() == SubmissionMode.SIMULTANEOUS) return false;
+        // in simultaneous mode, skipping makes no sense
+        if (getCurrentTestPart().getSubmissionMode() == SubmissionMode.SIMULTANEOUS) {
+            return false;
+        }
 
         if (getCurrentItemRef() != null) {
-            if (!getCurrentItemRef().isFinished())
+            if (!getCurrentItemRef().isFinished()) {
                 return getCurrentItemRef().getItemSessionControl().getAllowSkipping();
+            }
         }
         return false;
     }
@@ -283,73 +305,87 @@ public class AssessmentTestController implements Serializable {
     public List<TestFeedback> getAssessmentFeedback() {
         logger.debug("Getting AssessmentFeedback");
 
-        //handle assessment-level feedback:
+        // handle assessment-level feedback:
         List<TestFeedback> assessmentFeedback = null;
         if (getTest().isFinished()) {
             logger.debug("Getting AT_END feedback for the AssessmentTest");
             assessmentFeedback = getTest().getTestFeedbacks(TestFeedbackAccess.AT_END);
-        } else {
+        }
+        else {
             logger.debug("Getting DURING feedback for the AssessmentTest");
             assessmentFeedback = getTest().getTestFeedbacks(TestFeedbackAccess.DURING);
         }
-        
+
         return assessmentFeedback;
     }
 
     public List<TestFeedback> getTestPartFeedback() {
         logger.debug("Getting TestPartFeedback");
 
-        //handle testpart-level feedback:
-        TestPart tp = getCurrentTestPart();
+        // handle testpart-level feedback:
+        final TestPart tp = getCurrentTestPart();
         List<TestFeedback> partFeedback = null;
         if (tp != null) {
-            AssessmentItemRef air = getCurrentItemRef();
+            final AssessmentItemRef air = getCurrentItemRef();
             if (air != null && air.isFinished()) {
                 if (!flow.hasNextItemRef(false)) {
                     logger.debug("Getting AT_END feedback for the current TestPart");
                     partFeedback = tp.getTestFeedbacks(TestFeedbackAccess.AT_END);
-                } else {
+                }
+                else {
                     logger.debug("Getting DURING feedback for the current TestPart");
                     partFeedback = tp.getTestFeedbacks(TestFeedbackAccess.DURING);
                 }
             }
         }
-        
+
         return partFeedback;
     }
 
 
     public long getTimeSelected() {
-        if (getCurrentItemRef() == null) return -1;
+        if (getCurrentItemRef() == null) {
+            return -1;
+        }
 
-        TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
-        if (tr != null)
+        final TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
+        if (tr != null) {
             return tr.getMaximumTimeLimit();
+        }
         return -1;
     }
 
 
     public long getTimeRemaining() {
-        if (getCurrentItemRef() == null) return -1;
-        TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
-        if (tr != null)
+        if (getCurrentItemRef() == null) {
+            return -1;
+        }
+        final TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
+        if (tr != null) {
             return tr.getRemainingMaximumTime();
+        }
         return -1;
     }
 
     public int getNumberSelected() {
-        if (getCurrentItemRef() == null) return -1;
-        TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
-        if (tr != null)
+        if (getCurrentItemRef() == null) {
+            return -1;
+        }
+        final TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
+        if (tr != null) {
             return tr.getSelectedItemsCount();
+        }
         return -1;
     }
 
     public int getNumberRemaining() {
-        if (getCurrentItemRef() == null) return -1;
-        TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
-        if (tr != null)
+        if (getCurrentItemRef() == null) {
+            return -1;
+        }
+        final TimeReport tr = TimeReport.getLowestRemainingTimeReport(getCurrentItemRef());
+        if (tr != null) {
             return tr.getRemainingItemsCount();
+        }
         return -1;
     }
 
@@ -358,25 +394,24 @@ public class AssessmentTestController implements Serializable {
         return getTest().getAssessmentResult().toXmlString();
     }
 
-    /*
-     * Gets an array of titles of all the visible containing sections of this item 
-     * (in reverse order, so that the top-most section is first)
-     */
+    /* Gets an array of titles of all the visible containing sections of this
+     * item
+     * (in reverse order, so that the top-most section is first) */
     protected List<String> getParentTitles() {
         return getParentTitles(getCurrentItemRef().getParentSection());
     }
 
-    /*
-     * Gets an array of all the visible titles of sections above and including this (in reverse order)
-     */
+    /* Gets an array of all the visible titles of sections above and including
+     * this (in reverse order) */
     private List<String> getParentTitles(AssessmentSection thiz) {
-        List<String> titles = new ArrayList<String>();
+        final List<String> titles = new ArrayList<String>();
 
         AssessmentSection section = thiz;
         while (section != null) {
-            if (section.getVisible())
+            if (section.getVisible()) {
                 titles.add(0, section.getTitle());
-        
+            }
+
             section = section.getParentSection();
         }
 
@@ -389,7 +424,7 @@ public class AssessmentTestController implements Serializable {
      * @return assessment rubric for the current item
      */
     public List<List<RubricBlock>> getRubricBlocks() {
-        List<List<RubricBlock>> blocks = new ArrayList<List<RubricBlock>>();
+        final List<List<RubricBlock>> blocks = new ArrayList<List<RubricBlock>>();
 
         AssessmentSection section = getCurrentItemRef().getParentSection();
         while (section != null) {

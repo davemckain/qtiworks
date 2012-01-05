@@ -42,9 +42,12 @@ import java.util.Map;
 
 
 class Command {
-    private Action action;
-    private Object param;
-    private Object result;
+
+    private final Action action;
+
+    private final Object param;
+
+    private final Object result;
 
     public Command(Action action) {
         this(action, null, null);
@@ -60,7 +63,7 @@ class Command {
         this.result = result;
     }
 
-    @SuppressWarnings ("unchecked")
+    @SuppressWarnings("unchecked")
     public void exec(ItemFlow flow) {
         switch (action) {
             case NONE: {
@@ -69,19 +72,19 @@ class Command {
             }
 
             case NEXT: {
-                AssessmentItemRef itemRef = flow.getNextItemRef((param != null) ? (Boolean) param : false);
-                assertEquals(result, (itemRef != null) ? itemRef.getIdentifier() : null);
+                final AssessmentItemRef itemRef = flow.getNextItemRef(param != null ? (Boolean) param : false);
+                assertEquals(result, itemRef != null ? itemRef.getIdentifier() : null);
                 break;
             }
 
             case SUBMIT: {
-                AssessmentItemRef itemRef = flow.getCurrentItemRef();
+                final AssessmentItemRef itemRef = flow.getCurrentItemRef();
                 itemRef.setOutcomes((Map<String, Value>) param);
                 break;
             }
 
             case SKIP: {
-                AssessmentItemRef itemRef = flow.getCurrentItemRef();
+                final AssessmentItemRef itemRef = flow.getCurrentItemRef();
                 itemRef.skip();
                 break;
             }

@@ -47,45 +47,51 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>FieldValue</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.FieldValue
  */
 @RunWith(Parameterized.class)
 public class FieldValueRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // attributes {"<fieldValue fieldIdentifier='1_key'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</fieldValue>", QTIAttributeException.class},
-            // single {"<fieldValue fieldIdentifier='identifier'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</fieldValue>", QTICardinalityException.class},
-            // multiple {"<fieldValue fieldIdentifier='identifier'>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</fieldValue>", QTICardinalityException.class},
-            // ordered {"<fieldValue fieldIdentifier='identifier'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</fieldValue>", QTICardinalityException.class},
+                // attributes
+                { "<fieldValue fieldIdentifier='1_key'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</fieldValue>", QTIAttributeException.class },
+                // single
+                { "<fieldValue fieldIdentifier='identifier'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</fieldValue>", QTICardinalityException.class },
+                // multiple
+                { "<fieldValue fieldIdentifier='identifier'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</fieldValue>", QTICardinalityException.class },
+                // ordered
+                { "<fieldValue fieldIdentifier='identifier'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</fieldValue>", QTICardinalityException.class },
         });
     }
 
     /**
      * Constructs <code>FieldValue</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public FieldValueRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

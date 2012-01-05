@@ -47,254 +47,269 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Match</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Match
  */
 @RunWith(Parameterized.class)
 public class MatchRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // single {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</match>", QTICardinalityException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</match>", QTICardinalityException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</match>", QTICardinalityException.class},
-            // multiple {"<match>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</match>", QTICardinalityException.class}, {"<match>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</match>", QTICardinalityException.class},
-            // ordered {"<match>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</match>", QTICardinalityException.class},
-            // identifier {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // boolean {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // integer {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // float {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // string {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // point {"<match>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // pair {"<match>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // directedPair {"<match>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
-            // duration {"<match>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class}, {"<match>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</recordEx>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</recordEx>" +
-            "</match>", QTIBaseTypeException.class},
-            // file {"<match>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</match>", QTIBaseTypeException.class},
+                // single
+                { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</match>", QTICardinalityException.class },
+                // multiple
+                { "<match>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</match>", QTICardinalityException.class },
+                // ordered
+                { "<match>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</match>", QTICardinalityException.class },
+                // identifier
+                { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // boolean
+                { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // integer
+                { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // float
+                { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // string
+                { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // point
+                { "<match>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // pair
+                { "<match>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // directedPair
+                { "<match>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
+                // duration
+                { "<match>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class }, { "<match>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</recordEx>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</match>", QTIBaseTypeException.class },
+                // file
+                { "<match>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</match>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Match</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public MatchRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

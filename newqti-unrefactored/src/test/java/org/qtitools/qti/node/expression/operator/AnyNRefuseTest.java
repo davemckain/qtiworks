@@ -48,89 +48,106 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>AnyN</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.AnyN
  */
 @RunWith(Parameterized.class)
 public class AnyNRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // attributes {"<anyN min='1' max='A'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", QTIAttributeException.class}, {"<anyN min='1.0' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", QTIAttributeException.class},
-            // condition: 0 <= min <= max
-            /* {"<anyN min='-1' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", QTIAttributeException.class}, {"<anyN min='2' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", QTIAttributeException.class},
-            */
-            // multiple {"<anyN min='1' max='1'>" +
-                "<multiple>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</multiple>" +
-            "</anyN>", QTICardinalityException.class},
-            // ordered {"<anyN min='1' max='1'>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</anyN>", QTICardinalityException.class},
-            // record {"<anyN min='1' max='1'>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</recordEx>" +
-            "</anyN>", QTICardinalityException.class},
-            // identifier {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='identifier'>true</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // boolean + integer {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // integer {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // float {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // string {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // point {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // pair {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='pair'>idntifier_1 identifier_2</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // directedPair {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // duration {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // file {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
-            // uri {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</anyN>", QTIBaseTypeException.class},
+                // attributes
+                { "<anyN min='1' max='A'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</anyN>", QTIAttributeException.class }, { "<anyN min='1.0' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</anyN>", QTIAttributeException.class },
+                // condition: 0 <= min <= max
+                /* {"<anyN min='-1' max='1'>" +
+                 * "<baseValue baseType='boolean'>true</baseValue>" +
+                 * "</anyN>", QTIAttributeException.class},
+                 * {"<anyN min='2' max='1'>" +
+                 * "<baseValue baseType='boolean'>true</baseValue>" +
+                 * "</anyN>", QTIAttributeException.class}, */
+                // multiple
+                { "<anyN min='1' max='1'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>" +
+                        "</anyN>", QTICardinalityException.class },
+                // ordered
+                { "<anyN min='1' max='1'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</anyN>", QTICardinalityException.class },
+                // record
+                { "<anyN min='1' max='1'>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</recordEx>" +
+                        "</anyN>", QTICardinalityException.class },
+                // identifier
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='identifier'>true</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // boolean + integer
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // integer
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // float
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // string
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // point
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // pair
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='pair'>idntifier_1 identifier_2</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // directedPair
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // duration
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // file
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
+                // uri
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</anyN>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>AnyN</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public AnyNRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

@@ -45,27 +45,31 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>RandomInteger</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.RandomInteger
  */
 @RunWith(Parameterized.class)
 public class RandomIntegerRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // max < min {"<randomInteger min='-3' max='-6'/>"}, {"<randomInteger min='4' max='-1'/>"}, {"<randomInteger min='2' max='1'/>"},
-            // step < 1 {"<randomInteger min='1' max='2' step='-3'/>"}, {"<randomInteger min='1' max='2' step='-1'/>"}, {"<randomInteger min='1' max='2' step='0'/>"},
+                // max < min
+                { "<randomInteger min='-3' max='-6'/>" }, { "<randomInteger min='4' max='-1'/>" }, { "<randomInteger min='2' max='1'/>" },
+                // step < 1
+                { "<randomInteger min='1' max='2' step='-3'/>" }, { "<randomInteger min='1' max='2' step='-1'/>" },
+                { "<randomInteger min='1' max='2' step='0'/>" },
         });
     }
 
     /**
      * Constructs <code>RandomInteger</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public RandomIntegerRefuseTest(String xml) {

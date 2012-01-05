@@ -47,79 +47,95 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Product</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Product
  */
 @RunWith(Parameterized.class)
 public class ProductRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<product>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</product>", QTICardinalityException.class},
-            // ordered {"<product>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</product>", QTICardinalityException.class},
-            // record {"<product>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</product>", QTICardinalityException.class},
-            // identifier {"<product>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // boolean {"<product>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // integer {"<product>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // float {"<product>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // string {"<product>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // point {"<product>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // pair {"<product>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // directedPair {"<product>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // duration {"<product>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // file {"<product>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
-            // uri {"<product>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</product>", QTIBaseTypeException.class},
+                // multiple
+                { "<product>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</product>", QTICardinalityException.class },
+                // ordered
+                { "<product>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</product>", QTICardinalityException.class },
+                // record
+                { "<product>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</product>", QTICardinalityException.class },
+                // identifier
+                { "<product>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // boolean
+                { "<product>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // integer
+                { "<product>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // float
+                { "<product>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // string
+                { "<product>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // point
+                { "<product>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // pair
+                { "<product>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // directedPair
+                { "<product>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // duration
+                { "<product>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // file
+                { "<product>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
+                // uri
+                { "<product>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</product>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Product</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public ProductRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

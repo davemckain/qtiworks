@@ -46,86 +46,90 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Equal</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Equal
  */
 @RunWith(Parameterized.class)
 public class EqualAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // exact {"<equal toleranceMode='exact'>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</equal>", null}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</equal>", null}, {"<equal toleranceMode='exact'>" +
-                "<null/>" +
-                "<null/>" +
-            "</equal>", null}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</equal>", true}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", true}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</equal>", true}, {"<equal toleranceMode='exact'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", false},
-            // absolute {"<equal toleranceMode='absolute' tolerance='0.1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='absolute' tolerance='0.2'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", true}, {"<equal toleranceMode='absolute' tolerance='0.2' includeUpperBound='false'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='absolute' tolerance='0.2' includeLowerBound='0'>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='absolute' tolerance='0.3'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", true},
-            // relative {"<equal toleranceMode='relative' tolerance='10'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='relative' tolerance='20'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", true}, {"<equal toleranceMode='relative' tolerance='20' includeUpperBound='false'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", false}, {"<equal toleranceMode='relative' tolerance='30'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</equal>", true},
+                // exact
+                { "<equal toleranceMode='exact'>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</equal>", null }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</equal>", null }, { "<equal toleranceMode='exact'>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</equal>", null }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</equal>", true }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", true }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</equal>", true }, { "<equal toleranceMode='exact'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", false },
+                // absolute
+                { "<equal toleranceMode='absolute' tolerance='0.1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='absolute' tolerance='0.2'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", true }, { "<equal toleranceMode='absolute' tolerance='0.2' includeUpperBound='false'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='absolute' tolerance='0.2' includeLowerBound='0'>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='absolute' tolerance='0.3'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", true },
+                // relative
+                { "<equal toleranceMode='relative' tolerance='10'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='relative' tolerance='20'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", true }, { "<equal toleranceMode='relative' tolerance='20' includeUpperBound='false'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", false }, { "<equal toleranceMode='relative' tolerance='30'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</equal>", true },
         });
     }
 
     /**
      * Constructs <code>Equal</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public EqualAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

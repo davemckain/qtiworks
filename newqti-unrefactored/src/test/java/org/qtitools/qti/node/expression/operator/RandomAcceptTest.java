@@ -57,165 +57,180 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Random</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Random
  */
 @RunWith(Parameterized.class)
 public class RandomAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<random>" +
-                "<null/>" +
-            "</random>", NullValue.INSTANCE},
-            // identifier {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "</multiple>" +
-            "</random>", new IdentifierValue("identifier")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='identifier'>identifier</baseValue>" +
-                "</ordered>" +
-            "</random>", new IdentifierValue("identifier")},
-            // boolean {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</multiple>" +
-            "</random>", BooleanValue.TRUE}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</random>", BooleanValue.TRUE},
-            // integer {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</random>", new IntegerValue(1)}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</random>", new IntegerValue(1)},
-            // integer - multiple {"<randomEx seed='0'>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</randomEx>", new IntegerValue(1)}, {"<randomEx seed='2'>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</randomEx>", new IntegerValue(2)}, {"<randomEx seed='3'>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</multiple>" +
-            "</randomEx>", new IntegerValue(3)},
-            // integer - ordered {"<randomEx seed='0'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</randomEx>", new IntegerValue(1)}, {"<randomEx seed='2'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</randomEx>", new IntegerValue(2)}, {"<randomEx seed='3'>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                    "<baseValue baseType='integer'>3</baseValue>" +
-                "</ordered>" +
-            "</randomEx>", new IntegerValue(3)},
-            // float {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</multiple>" +
-            "</random>", new FloatValue(1)}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</ordered>" +
-            "</random>", new FloatValue(1)},
-            // string {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</multiple>" +
-            "</random>", new StringValue("string")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='string'>string</baseValue>" +
-                "</ordered>" +
-            "</random>", new StringValue("string")},
-            // point {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='point'>1 1</baseValue>" +
-                "</multiple>" +
-            "</random>", new PointValue(1, 1)}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='point'>1 1</baseValue>" +
-                "</ordered>" +
-            "</random>", new PointValue(1, 1)},
-            // pair {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "</multiple>" +
-            "</random>", new PairValue("identifier_1", "identifier_2")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                "</ordered>" +
-            "</random>", new PairValue("identifier_1", "identifier_2")},
-            // directedPair {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "</multiple>" +
-            "</random>", new DirectedPairValue("identifier_1", "identifier_2")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                "</ordered>" +
-            "</random>", new DirectedPairValue("identifier_1", "identifier_2")},
-            // duration {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</multiple>" +
-            "</random>", new DurationValue(1)}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</ordered>" +
-            "</random>", new DurationValue(1)},
-            // file {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='file'>file</baseValue>" +
-                "</multiple>" +
-            "</random>", new FileValue("file")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='file'>file</baseValue>" +
-                "</ordered>" +
-            "</random>", new FileValue("file")},
-            // uri {"<random>" +
-                "<multiple>" +
-                    "<baseValue baseType='uri'>uri</baseValue>" +
-                "</multiple>" +
-            "</random>", new UriValue("uri")}, {"<random>" +
-                "<ordered>" +
-                    "<baseValue baseType='uri'>uri</baseValue>" +
-                "</ordered>" +
-            "</random>", new UriValue("uri")},
+                // null
+                { "<random>" +
+                        "<null/>" +
+                        "</random>", NullValue.INSTANCE },
+                // identifier
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new IdentifierValue("identifier") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new IdentifierValue("identifier") },
+                // boolean
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>" +
+                        "</random>", BooleanValue.TRUE }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</random>", BooleanValue.TRUE },
+                // integer
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new IntegerValue(1) }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new IntegerValue(1) },
+                // integer - multiple
+                { "<randomEx seed='0'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</randomEx>", new IntegerValue(1) }, { "<randomEx seed='2'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</randomEx>", new IntegerValue(2) }, { "<randomEx seed='3'>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</multiple>" +
+                        "</randomEx>", new IntegerValue(3) },
+                // integer - ordered
+                { "<randomEx seed='0'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</randomEx>", new IntegerValue(1) }, { "<randomEx seed='2'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</randomEx>", new IntegerValue(2) }, { "<randomEx seed='3'>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>" +
+                        "</randomEx>", new IntegerValue(3) },
+                // float
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new FloatValue(1) }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new FloatValue(1) },
+                // string
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new StringValue("string") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new StringValue("string") },
+                // point
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new PointValue(1, 1) }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new PointValue(1, 1) },
+                // pair
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new PairValue("identifier_1", "identifier_2") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new PairValue("identifier_1", "identifier_2") },
+                // directedPair
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new DirectedPairValue("identifier_1", "identifier_2") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new DirectedPairValue("identifier_1", "identifier_2") },
+                // duration
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new DurationValue(1) }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new DurationValue(1) },
+                // file
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new FileValue("file") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new FileValue("file") },
+                // uri
+                { "<random>" +
+                        "<multiple>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</multiple>" +
+                        "</random>", new UriValue("uri") }, { "<random>" +
+                        "<ordered>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</ordered>" +
+                        "</random>", new UriValue("uri") },
         });
     }
 
     /**
      * Constructs <code>Random</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

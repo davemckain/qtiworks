@@ -48,51 +48,55 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Product</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Product
  */
 @RunWith(Parameterized.class)
 public class ProductAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<product>" +
-                "<null/>" +
-            "</product>", NullValue.INSTANCE}, {"<product>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</product>", NullValue.INSTANCE},
-            // integer {"<product>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</product>", new IntegerValue(1)}, {"<product>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</product>", new IntegerValue(6)},
-            // float {"<product>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</product>", new FloatValue(1.2)}, {"<product>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='float'>2</baseValue>" +
-                "<baseValue baseType='float'>3</baseValue>" +
-            "</product>", new FloatValue(6)}, {"<product>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>3.4</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</product>", new FloatValue(34)},
+                // null
+                { "<product>" +
+                        "<null/>" +
+                        "</product>", NullValue.INSTANCE }, { "<product>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</product>", NullValue.INSTANCE },
+                // integer
+                { "<product>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</product>", new IntegerValue(1) }, { "<product>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</product>", new IntegerValue(6) },
+                // float
+                { "<product>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</product>", new FloatValue(1.2) }, { "<product>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='float'>2</baseValue>" +
+                        "<baseValue baseType='float'>3</baseValue>" +
+                        "</product>", new FloatValue(6) }, { "<product>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>3.4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</product>", new FloatValue(34) },
         });
     }
 
     /**
      * Constructs <code>Product</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

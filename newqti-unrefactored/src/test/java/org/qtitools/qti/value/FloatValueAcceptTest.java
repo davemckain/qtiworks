@@ -46,34 +46,51 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>FloatValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>FloatValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
  */
 @RunWith(Parameterized.class)
 public class FloatValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // standard format {"123.45", 123.45}, {"+123.45", 123.45}, {"59", 59.0}, {"+59", 59.0}, {"3.9999", 3.9999}, {"+3.9999", 3.9999}, {"1.0", 1.0}, {"+1.0", 1.0}, {"1", 1.0}, {"+1", 1.0}, {"0.0", 0.0}, {"+0.0", 0.0}, {"-0.0", 0.0}, {"0", 0.0}, {"+0", 0.0}, {"-0", -0.0}, {"-1.0", -1.0}, {"-1", -1.0}, {"-3.9999", -3.9999}, {"-59", -59.0}, {"-123.45", -123.45},
-            // "E" format {"12.34E+5", 12.34E+5}, {"+12.34E+5", 12.34E+5}, {"-12.34E+5", -12.34E+5}, {"12.34e+5", 12.34E+5}, {"+12.34e+5", 12.34E+5}, {"-12.34e+5", -12.34E+5}, {"12.34E+05", 12.34E+5}, {"+12.34E+05", 12.34E+5}, {"-12.34E+05", -12.34E+5}, {"12.34e+05", 12.34E+5}, {"+12.34e+05", 12.34E+5}, {"-12.34e+05", -12.34E+5}, {"12.34E-5", 12.34E-5}, {"+12.34E-5", 12.34E-5}, {"-12.34E-5", -12.34E-5}, {"12.34e-5", 12.34E-5}, {"+12.34e-5", 12.34E-5}, {"-12.34e-5", -12.34E-5}, {"12.34E-05", 12.34E-5}, {"+12.34E-05", 12.34E-5}, {"-12.34E-05", -12.34E-5}, {"12.34e-05", 12.34E-5}, {"+12.34e-05", 12.34E-5}, {"-12.34e-05", -12.34E-5}, {"INF", Double.POSITIVE_INFINITY}, {"-INF", Double.NEGATIVE_INFINITY},
-            // (No test for NaN, as NaN != NaN so this style of test doesn't work)
+                // standard format
+                { "123.45", 123.45 }, { "+123.45", 123.45 }, { "59", 59.0 }, { "+59", 59.0 }, { "3.9999", 3.9999 }, { "+3.9999", 3.9999 }, { "1.0", 1.0 },
+                { "+1.0", 1.0 }, { "1", 1.0 }, { "+1", 1.0 }, { "0.0", 0.0 }, { "+0.0", 0.0 }, { "-0.0", 0.0 }, { "0", 0.0 }, { "+0", 0.0 }, { "-0", -0.0 },
+                { "-1.0", -1.0 },
+                { "-1", -1.0 },
+                { "-3.9999", -3.9999 },
+                { "-59", -59.0 },
+                { "-123.45", -123.45 },
+                // "E" format
+                { "12.34E+5", 12.34E+5 }, { "+12.34E+5", 12.34E+5 }, { "-12.34E+5", -12.34E+5 }, { "12.34e+5", 12.34E+5 }, { "+12.34e+5", 12.34E+5 },
+                { "-12.34e+5", -12.34E+5 }, { "12.34E+05", 12.34E+5 }, { "+12.34E+05", 12.34E+5 }, { "-12.34E+05", -12.34E+5 }, { "12.34e+05", 12.34E+5 },
+                { "+12.34e+05", 12.34E+5 }, { "-12.34e+05", -12.34E+5 }, { "12.34E-5", 12.34E-5 }, { "+12.34E-5", 12.34E-5 }, { "-12.34E-5", -12.34E-5 },
+                { "12.34e-5", 12.34E-5 }, { "+12.34e-5", 12.34E-5 }, { "-12.34e-5", -12.34E-5 }, { "12.34E-05", 12.34E-5 }, { "+12.34E-05", 12.34E-5 },
+                { "-12.34E-05", -12.34E-5 }, { "12.34e-05", 12.34E-5 }, { "+12.34e-05", 12.34E-5 }, { "-12.34e-05", -12.34E-5 },
+                { "INF", Double.POSITIVE_INFINITY }, { "-INF", Double.NEGATIVE_INFINITY },
+                // (No test for NaN, as NaN != NaN so this style of test doesn't
+                // work)
         });
     }
 
-    private String string;
-    private double expectedFloat;
+    private final String string;
+
+    private final double expectedFloat;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedFloat expected parsed value
      */
@@ -87,7 +104,7 @@ public class FloatValueAcceptTest {
      */
     @Test
     public void testParseFloat() {
-        double result = FloatValue.parseFloat(string);
-        Assert.assertTrue("Failed on " + string + ": got " + result, expectedFloat==result);
+        final double result = FloatValue.parseFloat(string);
+        Assert.assertTrue("Failed on " + string + ": got " + result, expectedFloat == result);
     }
 }

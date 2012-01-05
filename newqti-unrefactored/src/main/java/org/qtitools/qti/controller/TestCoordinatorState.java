@@ -42,8 +42,9 @@ import java.util.Map;
 
 /**
  * This encapsulates the current test state that was previously mixed within the
- * {@link TestCoordinator} itself. Unlike {@link TestCoordinator}, this Object is
- * {@link Serializable} so can be stored, for example, within an HTTP session, which
+ * {@link TestCoordinator} itself. Unlike {@link TestCoordinator}, this Object
+ * is {@link Serializable} so can be stored, for example, within an HTTP
+ * session, which
  * is how MathAssessEngine currently works.
  * 
  * @author David McKain
@@ -53,26 +54,29 @@ public final class TestCoordinatorState implements Serializable {
     private static final long serialVersionUID = 2984470592691047799L;
 
     private final AssessmentTestController testController;
+
     private final Map<AssessmentItemRef, Map<String, Value>> testPartItems;
-    private String cachedRenderedContent; 
+
+    private String cachedRenderedContent;
+
     private String flash;
 
     public TestCoordinatorState(AssessmentTestController testController) {
         this.testController = testController;
         this.testPartItems = new HashMap<AssessmentItemRef, Map<String, Value>>();
     }
-    
-    
+
+
     public AssessmentTestController getTestController() {
         return testController;
     }
-    
-    
+
+
     public Map<AssessmentItemRef, Map<String, Value>> getTestPartItems() {
         return testPartItems;
     }
 
-    
+
     public String getCachedRenderedContent() {
         return cachedRenderedContent;
     }

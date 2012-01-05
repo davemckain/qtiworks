@@ -48,25 +48,33 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class ItemSessionControlTest {
-    private static class Control {
-        private String itemIdentifier;
-        private int maxAttempts;
-        private boolean showFeedback;
-        private boolean allowReview;
-        private boolean showSolution;
-        private boolean allowComment;
-        private boolean allowSkipping;
-        private boolean validateResponses;
 
-        public Control
-            ( String itemIdentifier
-            , int maxAttempts
-            , boolean showFeedback
-            , boolean allowReview
-            , boolean showSolution
-            , boolean allowComment
-            , boolean allowSkipping
-            , boolean validateResponses ) {
+    private static class Control {
+
+        private final String itemIdentifier;
+
+        private final int maxAttempts;
+
+        private final boolean showFeedback;
+
+        private final boolean allowReview;
+
+        private final boolean showSolution;
+
+        private final boolean allowComment;
+
+        private final boolean allowSkipping;
+
+        private final boolean validateResponses;
+
+        public Control(String itemIdentifier
+                , int maxAttempts
+                , boolean showFeedback
+                , boolean allowReview
+                , boolean showSolution
+                , boolean allowComment
+                , boolean allowSkipping
+                , boolean validateResponses) {
             this.itemIdentifier = itemIdentifier;
             this.maxAttempts = maxAttempts;
             this.showFeedback = showFeedback;
@@ -94,35 +102,36 @@ public class ItemSessionControlTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"ItemSessionControl-01.xml", new Control[] {
+        return Arrays.asList(new Object[][] { { "ItemSessionControl-01.xml", new Control[] {
                 new Control("I01", 1, false, true, false, false, true, false),
                 new Control("I02", 1, false, true, false, false, true, false),
                 new Control("I03", 1, false, true, false, false, true, false),
                 new Control("I04", 1, false, true, false, false, true, false),
                 new Control("I05", 1, false, true, false, false, true, false),
-            }}, {"ItemSessionControl-02.xml", new Control[] {
+        } }, { "ItemSessionControl-02.xml", new Control[] {
                 new Control("I01", 1, false, true, false, false, true, false),
                 new Control("I02", 1, false, true, false, false, true, false),
                 new Control("I03", 1, false, true, false, false, true, false),
                 new Control("I04", 1, false, true, false, false, true, false),
                 new Control("I05", 1, false, true, false, false, true, false),
-            }}, {"ItemSessionControl-03.xml", new Control[] {
+        } }, { "ItemSessionControl-03.xml", new Control[] {
                 new Control("I01", 1, true, true, false, false, true, false),
                 new Control("I02", 3, true, true, false, false, true, false),
                 new Control("I03", 1, true, true, false, false, true, false),
                 new Control("I04", 3, true, true, false, false, true, false),
                 new Control("I05", 2, true, true, false, false, true, false),
-            }},
+        } },
         });
     }
 
-    private String fileName;
-    private Control[] expectedControl;
+    private final String fileName;
+
+    private final Control[] expectedControl;
 
     public ItemSessionControlTest(String fileName, Control[] expectedControl) {
         this.fileName = fileName;
@@ -131,23 +140,23 @@ public class ItemSessionControlTest {
 
     @Test
     public void test() {
-        AssessmentTest firstTest = new AssessmentTest();
+        final AssessmentTest firstTest = new AssessmentTest();
         firstTest.load(getClass().getResource(fileName), jqtiController);
 
-//        System.out.println("---> FIRST TEST <---");
-//        System.out.println(firstTest.toXmlString());
-//        System.out.println();
+        // System.out.println("---> FIRST TEST <---");
+        // System.out.println(firstTest.toXmlString());
+        // System.out.println();
 
-        AssessmentTest secondTest = new AssessmentTest();
+        final AssessmentTest secondTest = new AssessmentTest();
         secondTest.load(firstTest.toXmlString(), jqtiController);
 
-//        System.out.println("---> SECOND TEST <---");
-//        System.out.println(secondTest.toXmlString());
-//        System.out.println();
+        // System.out.println("---> SECOND TEST <---");
+        // System.out.println(secondTest.toXmlString());
+        // System.out.println();
 
         for (int i = 0; i < expectedControl.length; i++) {
-            AssessmentItemRef firstTestsItem = firstTest.lookupItemRef(expectedControl[i].getItemIdentifier());
-            AssessmentItemRef secondTestsItem = secondTest.lookupItemRef(expectedControl[i].getItemIdentifier());
+            final AssessmentItemRef firstTestsItem = firstTest.lookupItemRef(expectedControl[i].getItemIdentifier());
+            final AssessmentItemRef secondTestsItem = secondTest.lookupItemRef(expectedControl[i].getItemIdentifier());
 
             expectedControl[i].assertEquals(firstTestsItem.getItemSessionControl());
             expectedControl[i].assertEquals(secondTestsItem.getItemSessionControl());

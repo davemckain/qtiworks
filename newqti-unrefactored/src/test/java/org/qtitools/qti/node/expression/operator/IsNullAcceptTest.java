@@ -45,84 +45,100 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>IsNull</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.IsNull
  */
 @RunWith(Parameterized.class)
 public class IsNullAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<isNull>" +
-                "<null/>" +
-            "</isNull>", true},
-            // identifier {"<isNull>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</isNull>", false},
-            // boolean {"<isNull>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</isNull>", false}, {"<isNull>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</isNull>", false},
-            // integer {"<isNull>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</isNull>", false},
-            // float {"<isNull>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</isNull>", false},
-            // string {"<isNull>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</isNull>", false},
-            // point {"<isNull>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</isNull>", false},
-            // pair {"<isNull>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</isNull>", false},
-            // directedPair {"<isNull>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</isNull>", false},
-            // duration {"<isNull>" +
-                "<baseValue baseType='duration'>1.2</baseValue>" +
-            "</isNull>", false},
-            // file {"<isNull>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</isNull>", false},
-            // uri {"<isNull>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</isNull>", false},
-            // multiple {"<isNull>" +
-                "<multiple/>" +
-            "</isNull>", true}, {"<isNull>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</isNull>", false},
-            // ordered {"<isNull>" +
-                "<ordered/>" +
-            "</isNull>", true}, {"<isNull>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-            "</isNull>", false},
-            // record {"<isNull>" +
-                "<recordEx/>" +
-            "</isNull>", true}, {"<isNull>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</isNull>", false},
+                // null
+                { "<isNull>" +
+                        "<null/>" +
+                        "</isNull>", true },
+                // identifier
+                { "<isNull>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</isNull>", false },
+                // boolean
+                { "<isNull>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</isNull>", false }, { "<isNull>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</isNull>", false },
+                // integer
+                { "<isNull>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</isNull>", false },
+                // float
+                { "<isNull>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</isNull>", false },
+                // string
+                { "<isNull>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</isNull>", false },
+                // point
+                { "<isNull>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</isNull>", false },
+                // pair
+                { "<isNull>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</isNull>", false },
+                // directedPair
+                { "<isNull>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</isNull>", false },
+                // duration
+                { "<isNull>" +
+                        "<baseValue baseType='duration'>1.2</baseValue>" +
+                        "</isNull>", false },
+                // file
+                { "<isNull>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</isNull>", false },
+                // uri
+                { "<isNull>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</isNull>", false },
+                // multiple
+                { "<isNull>" +
+                        "<multiple/>" +
+                        "</isNull>", true }, { "<isNull>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</isNull>", false },
+                // ordered
+                { "<isNull>" +
+                        "<ordered/>" +
+                        "</isNull>", true }, { "<isNull>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "</isNull>", false },
+                // record
+                { "<isNull>" +
+                        "<recordEx/>" +
+                        "</isNull>", true }, { "<isNull>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</isNull>", false },
         });
     }
 
     /**
      * Constructs <code>IsNull</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

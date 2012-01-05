@@ -45,33 +45,36 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>ContainerSize</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.ContainerSize
  */
 @RunWith(Parameterized.class)
 public class ContainerSizeRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // single {"<containerSize>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</containerSize>"},
-            // record {"<containerSize>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</containerSize>"},
+                // single
+                { "<containerSize>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</containerSize>" },
+                // record
+                { "<containerSize>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</containerSize>" },
         });
     }
 
     /**
      * Constructs <code>ContainerSize</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public ContainerSizeRefuseTest(String xml) {

@@ -46,59 +46,63 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Divide</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Divide
  */
 @RunWith(Parameterized.class)
 public class DivideAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<divide>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</divide>", null}, {"<divide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</divide>", null}, {"<divide>" +
-                "<null/>" +
-                "<null/>" +
-            "</divide>", null},
-            // divide by zero {"<divide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</divide>", null}, {"<divide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>0</baseValue>" +
-            "</divide>", null},
-            // divide by non zero number {"<divide>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</divide>", 1.0}, {"<divide>" +
-                "<baseValue baseType='integer'>9</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</divide>", 3.0}, {"<divide>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</divide>", 2.468}, {"<divide>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='float'>5.67</baseValue>" +
-            "</divide>", 2.17636684303351},
+                // null
+                { "<divide>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</divide>", null }, { "<divide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</divide>", null }, { "<divide>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</divide>", null },
+                // divide by zero
+                { "<divide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</divide>", null }, { "<divide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>0</baseValue>" +
+                        "</divide>", null },
+                // divide by non zero number
+                { "<divide>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</divide>", 1.0 }, { "<divide>" +
+                        "<baseValue baseType='integer'>9</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</divide>", 3.0 }, { "<divide>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</divide>", 2.468 }, { "<divide>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='float'>5.67</baseValue>" +
+                        "</divide>", 2.17636684303351 },
         });
     }
 
     /**
      * Constructs <code>Divide</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public DivideAcceptTest(String xml, Double expectedValue) {
-        super(xml, (expectedValue != null) ? new FloatValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new FloatValue(expectedValue) : NullValue.INSTANCE);
     }
 }

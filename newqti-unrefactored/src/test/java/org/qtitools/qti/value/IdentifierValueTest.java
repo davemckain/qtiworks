@@ -58,42 +58,67 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>IdentifierValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>IdentifierValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  */
 @RunWith(Parameterized.class)
 public class IdentifierValueTest extends ValueTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new IdentifierValue("identifier"), null},
-            // NullValue {false, new IdentifierValue("identifier"), NullValue.INSTANCE},
-            // IdentifierValue {true, new IdentifierValue("identifier"), new IdentifierValue("identifier")}, {false, new IdentifierValue("identifier"), new IdentifierValue("Identifier")}, {false, new IdentifierValue("identifier"), new IdentifierValue("IDENTIFIER")}, {false, new IdentifierValue("identifier_1"), new IdentifierValue("identifier_2")},
-            // BooleanValue {false, new IdentifierValue("identifier"), BooleanValue.TRUE}, {false, new IdentifierValue("identifier"), BooleanValue.FALSE},
-            // IntegerValue {false, new IdentifierValue("identifier"), new IntegerValue(1)},
-            // FloatValue {false, new IdentifierValue("identifier"), new FloatValue(1)},
-            // StringValue {false, new IdentifierValue("identifier"), new StringValue("string")},
-            // PointValue {false, new IdentifierValue("identifier"), new PointValue(1, 1)},
-            // PairValue {false, new IdentifierValue("identifier"), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new IdentifierValue("identifier"), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {false, new IdentifierValue("identifier"), new DurationValue(1)},
-            // FileValue {false, new IdentifierValue("identifier"), new FileValue("file")},
-            // UriValue {false, new IdentifierValue("identifier"), new UriValue("uri")},
-            // MultipleValue {false, new IdentifierValue("identifier"), new MultipleValue()}, {false, new IdentifierValue("identifier"), new MultipleValue(new IdentifierValue("identifier"))},
-            // OrderedValue {false, new IdentifierValue("identifier"), new OrderedValue()}, {false, new IdentifierValue("identifier"), new OrderedValue(new IdentifierValue("identifier"))},
-            // RecordValue {false, new IdentifierValue("identifier"), new RecordValue()}, {false, new IdentifierValue("identifier"), new RecordValue("identifier", new IdentifierValue("identifier"))},
+                // null
+                { false, new IdentifierValue("identifier"), null },
+                // NullValue
+                { false, new IdentifierValue("identifier"), NullValue.INSTANCE },
+                // IdentifierValue
+                { true, new IdentifierValue("identifier"), new IdentifierValue("identifier") },
+                { false, new IdentifierValue("identifier"), new IdentifierValue("Identifier") },
+                { false, new IdentifierValue("identifier"), new IdentifierValue("IDENTIFIER") },
+                { false, new IdentifierValue("identifier_1"), new IdentifierValue("identifier_2") },
+                // BooleanValue
+                { false, new IdentifierValue("identifier"), BooleanValue.TRUE },
+                { false, new IdentifierValue("identifier"), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new IdentifierValue("identifier"), new IntegerValue(1) },
+                // FloatValue
+                { false, new IdentifierValue("identifier"), new FloatValue(1) },
+                // StringValue
+                { false, new IdentifierValue("identifier"), new StringValue("string") },
+                // PointValue
+                { false, new IdentifierValue("identifier"), new PointValue(1, 1) },
+                // PairValue
+                { false, new IdentifierValue("identifier"), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new IdentifierValue("identifier"), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { false, new IdentifierValue("identifier"), new DurationValue(1) },
+                // FileValue
+                { false, new IdentifierValue("identifier"), new FileValue("file") },
+                // UriValue
+                { false, new IdentifierValue("identifier"), new UriValue("uri") },
+                // MultipleValue
+                { false, new IdentifierValue("identifier"), new MultipleValue() },
+                { false, new IdentifierValue("identifier"), new MultipleValue(new IdentifierValue("identifier")) },
+                // OrderedValue
+                { false, new IdentifierValue("identifier"), new OrderedValue() },
+                { false, new IdentifierValue("identifier"), new OrderedValue(new IdentifierValue("identifier")) },
+                // RecordValue
+                { false, new IdentifierValue("identifier"), new RecordValue() },
+                { false, new IdentifierValue("identifier"), new RecordValue("identifier", new IdentifierValue("identifier")) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

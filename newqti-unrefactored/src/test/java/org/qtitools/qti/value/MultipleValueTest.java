@@ -58,15 +58,20 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>MultipleValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>MultipleValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.MultipleValue
  */
 @RunWith(Parameterized.class)
 public class MultipleValueTest extends ValueTest {
+
     private static final MultipleValue MULTIPLE_1__1_2_3;
+
     private static final MultipleValue MULTIPLE_2__1_2_3;
+
     private static final MultipleValue MULTIPLE_3__3_2_1;
+
     private static final MultipleValue MULTIPLE_4__1_2_3_4;
 
     static {
@@ -95,34 +100,76 @@ public class MultipleValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new MultipleValue(), null}, {false, new MultipleValue(new IntegerValue(1)), null},
-            // NullValue {true, new MultipleValue(), NullValue.INSTANCE}, {false, new MultipleValue(new IntegerValue(1)), NullValue.INSTANCE},
-            // IdentifierValue {false, new MultipleValue(), new IdentifierValue("identifier")}, {false, new MultipleValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
-            // BooleanValue {false, new MultipleValue(), BooleanValue.TRUE}, {false, new MultipleValue(BooleanValue.TRUE), BooleanValue.TRUE}, {false, new MultipleValue(), BooleanValue.FALSE}, {false, new MultipleValue(BooleanValue.FALSE), BooleanValue.FALSE},
-            // IntegerValue {false, new MultipleValue(), new IntegerValue(1)}, {false, new MultipleValue(new IntegerValue(1)), new IntegerValue(1)},
-            // FloatValue {false, new MultipleValue(), new FloatValue(1)}, {false, new MultipleValue(new FloatValue(1)), new FloatValue(1)},
-            // StringValue {false, new MultipleValue(), new StringValue("string")}, {false, new MultipleValue(new StringValue("string")), new StringValue("string")},
-            // PointValue {false, new MultipleValue(), new PointValue(1, 1)}, {false, new MultipleValue(new PointValue(1, 1)), new PointValue(1, 1)},
-            // PairValue {false, new MultipleValue(), new PairValue("ident1", "ident2")}, {false, new MultipleValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new MultipleValue(), new DirectedPairValue("ident1", "ident2")}, {false, new MultipleValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {false, new MultipleValue(), new DurationValue(1)}, {false, new MultipleValue(new DurationValue(1)), new DurationValue(1)},
-            // FileValue {false, new MultipleValue(), new FileValue("file")}, {false, new MultipleValue(new FileValue("file")), new FileValue("file")},
-            // UriValue {false, new MultipleValue(), new UriValue("uri")}, {false, new MultipleValue(new UriValue("uri")), new UriValue("uri")},
-            // MultipleValue {true, new MultipleValue(), new MultipleValue()}, {false, new MultipleValue(), new MultipleValue(new IntegerValue(1))}, {false, new MultipleValue(new IntegerValue(1)), new MultipleValue()}, {true, new MultipleValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1))}, {true, MULTIPLE_1__1_2_3, MULTIPLE_2__1_2_3}, {true, MULTIPLE_1__1_2_3, MULTIPLE_3__3_2_1}, {false, MULTIPLE_1__1_2_3, MULTIPLE_4__1_2_3_4},
-            // OrderedValue {true, new MultipleValue(), new OrderedValue()}, {false, new MultipleValue(), new OrderedValue(new IntegerValue(1))}, {false, new MultipleValue(new IntegerValue(1)), new OrderedValue()}, {false, new MultipleValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1))},
-            // RecordValue {true, new MultipleValue(), new RecordValue()}, {false, new MultipleValue(), new RecordValue("identifier", new IntegerValue(1))}, {false, new MultipleValue(new IntegerValue(1)), new RecordValue()}, {false, new MultipleValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1))},
+                // null
+                { false, new MultipleValue(), null },
+                { false, new MultipleValue(new IntegerValue(1)), null },
+                // NullValue
+                { true, new MultipleValue(), NullValue.INSTANCE },
+                { false, new MultipleValue(new IntegerValue(1)), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new MultipleValue(), new IdentifierValue("identifier") },
+                { false, new MultipleValue(new IdentifierValue("identifier")), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new MultipleValue(), BooleanValue.TRUE },
+                { false, new MultipleValue(BooleanValue.TRUE), BooleanValue.TRUE },
+                { false, new MultipleValue(), BooleanValue.FALSE },
+                { false, new MultipleValue(BooleanValue.FALSE), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new MultipleValue(), new IntegerValue(1) },
+                { false, new MultipleValue(new IntegerValue(1)), new IntegerValue(1) },
+                // FloatValue
+                { false, new MultipleValue(), new FloatValue(1) },
+                { false, new MultipleValue(new FloatValue(1)), new FloatValue(1) },
+                // StringValue
+                { false, new MultipleValue(), new StringValue("string") },
+                { false, new MultipleValue(new StringValue("string")), new StringValue("string") },
+                // PointValue
+                { false, new MultipleValue(), new PointValue(1, 1) },
+                { false, new MultipleValue(new PointValue(1, 1)), new PointValue(1, 1) },
+                // PairValue
+                { false, new MultipleValue(), new PairValue("ident1", "ident2") },
+                { false, new MultipleValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new MultipleValue(), new DirectedPairValue("ident1", "ident2") },
+                { false, new MultipleValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { false, new MultipleValue(), new DurationValue(1) },
+                { false, new MultipleValue(new DurationValue(1)), new DurationValue(1) },
+                // FileValue
+                { false, new MultipleValue(), new FileValue("file") },
+                { false, new MultipleValue(new FileValue("file")), new FileValue("file") },
+                // UriValue
+                { false, new MultipleValue(), new UriValue("uri") },
+                { false, new MultipleValue(new UriValue("uri")), new UriValue("uri") },
+                // MultipleValue
+                { true, new MultipleValue(), new MultipleValue() },
+                { false, new MultipleValue(), new MultipleValue(new IntegerValue(1)) },
+                { false, new MultipleValue(new IntegerValue(1)), new MultipleValue() },
+                { true, new MultipleValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1)) },
+                { true, MULTIPLE_1__1_2_3, MULTIPLE_2__1_2_3 },
+                { true, MULTIPLE_1__1_2_3, MULTIPLE_3__3_2_1 },
+                { false, MULTIPLE_1__1_2_3, MULTIPLE_4__1_2_3_4 },
+                // OrderedValue
+                { true, new MultipleValue(), new OrderedValue() },
+                { false, new MultipleValue(), new OrderedValue(new IntegerValue(1)) },
+                { false, new MultipleValue(new IntegerValue(1)), new OrderedValue() },
+                { false, new MultipleValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1)) },
+                // RecordValue
+                { true, new MultipleValue(), new RecordValue() }, { false, new MultipleValue(), new RecordValue("identifier", new IntegerValue(1)) },
+                { false, new MultipleValue(new IntegerValue(1)), new RecordValue() },
+                { false, new MultipleValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1)) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

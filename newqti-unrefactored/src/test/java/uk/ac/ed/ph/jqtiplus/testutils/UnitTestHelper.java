@@ -41,15 +41,13 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.AssessmentTestManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.QTIReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SupportedXMLReader;
-
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 
 import java.net.URI;
 
@@ -57,37 +55,37 @@ import java.net.URI;
  * @author David McKain
  */
 public final class UnitTestHelper {
-    
+
     public static AssessmentItemController loadItemForControl(String fileName, Class<?> baseClass) {
-        QTIObjectManager qtiObjectManager = createUnitTestObjectManager(baseClass);
-        AssessmentItem item = loadUnitTestFile(fileName, qtiObjectManager, AssessmentItem.class);
-        AssessmentItemState itemState = new AssessmentItemState();
-        AssessmentItemManager itemManager = new AssessmentItemManager(qtiObjectManager, item);
+        final QTIObjectManager qtiObjectManager = createUnitTestObjectManager(baseClass);
+        final AssessmentItem item = loadUnitTestFile(fileName, qtiObjectManager, AssessmentItem.class);
+        final AssessmentItemState itemState = new AssessmentItemState();
+        final AssessmentItemManager itemManager = new AssessmentItemManager(qtiObjectManager, item);
         return new AssessmentItemController(itemManager, itemState);
     }
-    
+
     public static AssessmentTestController loadTestForControl(String fileName, Class<?> baseClass) {
-        QTIObjectManager qtiObjectManager = createUnitTestObjectManager(baseClass);
-        AssessmentTest test = loadUnitTestFile(fileName, qtiObjectManager, AssessmentTest.class);
-        AssessmentTestState testState = new AssessmentTestState();
-        AssessmentTestManager testManager = new AssessmentTestManager(qtiObjectManager, test);
+        final QTIObjectManager qtiObjectManager = createUnitTestObjectManager(baseClass);
+        final AssessmentTest test = loadUnitTestFile(fileName, qtiObjectManager, AssessmentTest.class);
+        final AssessmentTestState testState = new AssessmentTestState();
+        final AssessmentTestManager testManager = new AssessmentTestManager(qtiObjectManager, test);
         return new AssessmentTestController(testManager, testState);
     }
-    
+
     public static QTIObjectManager createUnitTestObjectManager(Class<?> baseClass) {
-        JQTIController jqtiController = new JQTIController();
-        SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
+        final JQTIController jqtiController = new JQTIController();
+        final SupportedXMLReader xmlReader = new SupportedXMLReader(new ClassPathHTTPResourceLocator(), true);
         return new QTIObjectManager(jqtiController, xmlReader, new ClassResourceLocator(baseClass), new SimpleQTIObjectCache());
     }
-    
+
     public static <E extends RootNode> E loadUnitTestFile(String fileName, Class<?> baseClass, Class<E> resultClass) {
-        QTIObjectManager objectManager = createUnitTestObjectManager(baseClass);
+        final QTIObjectManager objectManager = createUnitTestObjectManager(baseClass);
         return loadUnitTestFile(fileName, objectManager, resultClass);
     }
-    
+
     public static <E extends RootNode> E loadUnitTestFile(String fileName, QTIObjectManager qtiObjectManager, Class<E> resultClass) {
-        URI fileUri = URI.create("class:" + fileName);
-        QTIReadResult<E> result = qtiObjectManager.getQTIObject(fileUri, resultClass);
+        final URI fileUri = URI.create("class:" + fileName);
+        final QTIReadResult<E> result = qtiObjectManager.getQTIObject(fileUri, resultClass);
         return result.getJQTIObject();
     }
 }

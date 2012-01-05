@@ -46,49 +46,50 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>IntegerToFloat</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerToFloat
  */
 @RunWith(Parameterized.class)
 public class IntegerToFloatAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"<integerToFloat>" +
+        return Arrays.asList(new Object[][] { { "<integerToFloat>" +
                 "<null/>" +
-            "</integerToFloat>", null}, {"<integerToFloat>" +
+                "</integerToFloat>", null }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>-3</baseValue>" +
-            "</integerToFloat>", -3.0}, {"<integerToFloat>" +
+                "</integerToFloat>", -3.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>-1</baseValue>" +
-            "</integerToFloat>", -1.0}, {"<integerToFloat>" +
+                "</integerToFloat>", -1.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>0</baseValue>" +
-            "</integerToFloat>", 0.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 0.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>+0</baseValue>" +
-            "</integerToFloat>", 0.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 0.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>-0</baseValue>" +
-            "</integerToFloat>", 0.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 0.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>1</baseValue>" +
-            "</integerToFloat>", 1.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 1.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>+1</baseValue>" +
-            "</integerToFloat>", 1.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 1.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerToFloat>", 3.0}, {"<integerToFloat>" +
+                "</integerToFloat>", 3.0 }, { "<integerToFloat>" +
                 "<baseValue baseType='integer'>+3</baseValue>" +
-            "</integerToFloat>", 3.0},
+                "</integerToFloat>", 3.0 },
         });
     }
 
     /**
      * Constructs <code>IntegerToFloat</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public IntegerToFloatAcceptTest(String xml, Double expectedValue) {
-        super(xml, (expectedValue != null) ? new FloatValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new FloatValue(expectedValue) : NullValue.INSTANCE);
     }
 }

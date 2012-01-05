@@ -46,68 +46,72 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>DurationLt</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.DurationLt
  */
 @RunWith(Parameterized.class)
 public class DurationLtAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<durationLT>" +
-                "<null/>" +
-                "<null/>" +
-            "</durationLT>", null}, {"<durationLT>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<null/>" +
-            "</durationLT>", null}, {"<durationLT>" +
-                "<null/>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationLT>", null},
-            // true {"<durationLT>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-                "<baseValue baseType='duration'>0.1</baseValue>" +
-            "</durationLT>", true}, {"<durationLT>" +
-                "<baseValue baseType='duration'>1.2</baseValue>" +
-                "<baseValue baseType='duration'>1.3</baseValue>" +
-            "</durationLT>", true}, {"<durationLT>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>2</baseValue>" +
-            "</durationLT>", true},
-            // false {"<durationLT>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-            "</durationLT>", false}, {"<durationLT>" +
-                "<baseValue baseType='duration'>-0</baseValue>" +
-                "<baseValue baseType='duration'>+0</baseValue>" +
-            "</durationLT>", false}, {"<durationLT>" +
-                "<baseValue baseType='duration'>0.1</baseValue>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-            "</durationLT>", false}, {"<durationLT>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationLT>", false}, {"<durationLT>" +
-                "<baseValue baseType='duration'>1.1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationLT>", false}, {"<durationLT>" +
-                "<baseValue baseType='duration'>2</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationLT>", false},
+                // null
+                { "<durationLT>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</durationLT>", null }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<null/>" +
+                        "</durationLT>", null }, { "<durationLT>" +
+                        "<null/>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationLT>", null },
+                // true
+                { "<durationLT>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "<baseValue baseType='duration'>0.1</baseValue>" +
+                        "</durationLT>", true }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>1.2</baseValue>" +
+                        "<baseValue baseType='duration'>1.3</baseValue>" +
+                        "</durationLT>", true }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>2</baseValue>" +
+                        "</durationLT>", true },
+                // false
+                { "<durationLT>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "</durationLT>", false }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>-0</baseValue>" +
+                        "<baseValue baseType='duration'>+0</baseValue>" +
+                        "</durationLT>", false }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>0.1</baseValue>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "</durationLT>", false }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationLT>", false }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>1.1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationLT>", false }, { "<durationLT>" +
+                        "<baseValue baseType='duration'>2</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationLT>", false },
         });
     }
 
     /**
      * Constructs <code>DurationLt</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public DurationLtAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

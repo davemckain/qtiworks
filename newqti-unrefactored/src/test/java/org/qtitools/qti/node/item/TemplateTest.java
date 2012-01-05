@@ -44,53 +44,65 @@ import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import org.junit.Test;
 
 public class TemplateTest {
+
     static String fileName = "Template.xml";
-    
+
     @Test
     public void test() {
-        AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TemplateTest.class);
-        AssessmentItemState itemState = itemController.getItemState();
-        AssessmentItem item = itemController.getItem();
-        
+        final AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TemplateTest.class);
+        final AssessmentItemState itemState = itemController.getItemState();
+        final AssessmentItem item = itemController.getItem();
+
         assertNull(itemState.getResponseValue("response"));
         assertNull(itemState.getOverriddenDefaultValue("response"));
         assertNull(itemState.getOverriddenCorrectResponseValue("response"));
-        
+
         assertNull(itemState.getTemplateValue("template1"));
         assertEquals("initial", item.getTemplateDeclaration("template1").getDefaultValue().evaluate().toString());
         assertEquals("initial", itemController.computeDefaultValue("template1").toString());
-            
-//        assertEquals(null, item.getTemplateDeclaration("template1").getValue());
-//        assertEquals("initial", item.getTemplateDeclaration("template1").getDefaultValue().getValue().toString());
-        
+
+        // assertEquals(null,
+        // item.getTemplateDeclaration("template1").getValue());
+        // assertEquals("initial",
+        // item.getTemplateDeclaration("template1").getDefaultValue().getValue().toString());
+
         assertNull(itemState.getTemplateValue("template2"));
         assertEquals("initial", item.getTemplateDeclaration("template2").getDefaultValue().evaluate().toString());
         assertEquals("initial", itemController.computeDefaultValue("template2").toString());
-        
-//        assertEquals(null, item.getTemplateDeclaration("template2").getValue());
-//        assertEquals("initial", item.getTemplateDeclaration("template2").getDefaultValue().getValue().toString());
-        
+
+        // assertEquals(null,
+        // item.getTemplateDeclaration("template2").getValue());
+        // assertEquals("initial",
+        // item.getTemplateDeclaration("template2").getDefaultValue().getValue().toString());
+
         itemController.initialize(null);
-        
+
         assertEquals("incorrect", itemState.getResponseValue("response").toString());
         assertEquals("incorrect", itemController.computeDefaultValue("response").toString());
         assertEquals("correct", itemController.computeCorrectResponse("response").toString());
-        
-//        assertEquals("incorrect", item.getResponseDeclaration("response").getValue().toString());
-//        assertEquals("incorrect", item.getResponseDeclaration("response").getDefaultValue().getValue().toString());
-//        assertEquals("correct", item.getResponseDeclaration("response").getCorrectResponse().getValue().toString());
-        
+
+        // assertEquals("incorrect",
+        // item.getResponseDeclaration("response").getValue().toString());
+        // assertEquals("incorrect",
+        // item.getResponseDeclaration("response").getDefaultValue().getValue().toString());
+        // assertEquals("correct",
+        // item.getResponseDeclaration("response").getCorrectResponse().getValue().toString());
+
         assertEquals("final", itemState.getTemplateValue("template1").toString());
         assertEquals("initial", itemController.computeDefaultValue("template1").toString());
-//        
-//        assertEquals("final", item.getTemplateDeclaration("template1").getValue().toString());
-//        assertEquals("initial", item.getTemplateDeclaration("template1").getDefaultValue().getValue().toString());
-        
+        //
+        // assertEquals("final",
+        // item.getTemplateDeclaration("template1").getValue().toString());
+        // assertEquals("initial",
+        // item.getTemplateDeclaration("template1").getDefaultValue().getValue().toString());
+
         assertEquals("initial", itemState.getTemplateValue("template2").toString());
         assertEquals("initial", itemController.computeDefaultValue("template2").toString());
-        
-//        assertEquals("initial", item.getTemplateDeclaration("template2").getValue().toString());
-//        assertEquals("initial", item.getTemplateDeclaration("template2").getDefaultValue().getValue().toString());
+
+        // assertEquals("initial",
+        // item.getTemplateDeclaration("template2").getValue().toString());
+        // assertEquals("initial",
+        // item.getTemplateDeclaration("template2").getDefaultValue().getValue().toString());
     }
 
 }

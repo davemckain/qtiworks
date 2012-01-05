@@ -58,42 +58,61 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>DurationValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>DurationValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.DurationValue
  */
 @RunWith(Parameterized.class)
 public class DurationValueTest extends ValueTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new DurationValue(1), null},
-            // NullValue {false, new DurationValue(1), NullValue.INSTANCE},
-            // IdentifierValue {false, new DurationValue(1), new IdentifierValue("identifier")},
-            // BooleanValue {false, new DurationValue(1), BooleanValue.TRUE}, {false, new DurationValue(1), BooleanValue.FALSE},
-            // IntegerValue {false, new DurationValue(1), new IntegerValue(1)},
-            // FloatValue {false, new DurationValue(1), new FloatValue(1)},
-            // StringValue {false, new DurationValue(1), new StringValue("string")},
-            // PointValue {false, new DurationValue(1), new PointValue(1, 1)},
-            // PairValue {false, new DurationValue(1), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new DurationValue(1), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {true, new DurationValue(1), new DurationValue(1)}, {false, new DurationValue(1), new DurationValue(2)}, {false, new DurationValue(1), new DurationValue(1.1)},
-            // FileValue {false, new DurationValue(1), new FileValue("file")},
-            // UriValue {false, new DurationValue(1), new UriValue("uri")},
-            // MultipleValue {false, new DurationValue(1), new MultipleValue()}, {false, new DurationValue(1), new MultipleValue(new DurationValue(1))},
-            // OrderedValue {false, new DurationValue(1), new OrderedValue()}, {false, new DurationValue(1), new OrderedValue(new DurationValue(1))},
-            // RecordValue {false, new DurationValue(1), new RecordValue()}, {false, new DurationValue(1), new RecordValue("identifier", new DurationValue(1))},
+                // null
+                { false, new DurationValue(1), null },
+                // NullValue
+                { false, new DurationValue(1), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new DurationValue(1), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new DurationValue(1), BooleanValue.TRUE }, { false, new DurationValue(1), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new DurationValue(1), new IntegerValue(1) },
+                // FloatValue
+                { false, new DurationValue(1), new FloatValue(1) },
+                // StringValue
+                { false, new DurationValue(1), new StringValue("string") },
+                // PointValue
+                { false, new DurationValue(1), new PointValue(1, 1) },
+                // PairValue
+                { false, new DurationValue(1), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new DurationValue(1), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { true, new DurationValue(1), new DurationValue(1) }, { false, new DurationValue(1), new DurationValue(2) },
+                { false, new DurationValue(1), new DurationValue(1.1) },
+                // FileValue
+                { false, new DurationValue(1), new FileValue("file") },
+                // UriValue
+                { false, new DurationValue(1), new UriValue("uri") },
+                // MultipleValue
+                { false, new DurationValue(1), new MultipleValue() }, { false, new DurationValue(1), new MultipleValue(new DurationValue(1)) },
+                // OrderedValue
+                { false, new DurationValue(1), new OrderedValue() }, { false, new DurationValue(1), new OrderedValue(new DurationValue(1)) },
+                // RecordValue
+                { false, new DurationValue(1), new RecordValue() }, { false, new DurationValue(1), new RecordValue("identifier", new DurationValue(1)) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

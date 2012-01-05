@@ -45,30 +45,41 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>RandomFloat</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.RandomFloat
  */
 @RunWith(Parameterized.class)
 public class RandomFloatAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // min = max {"<randomFloatEx min='-3' max='-3' seed='0'/>", -3.0}, {"<randomFloatEx min='-1' max='-1' seed='0'/>", -1.0}, {"<randomFloatEx min='0' max='0' seed='0'/>", 0.0}, {"<randomFloatEx min='1' max='1' seed='0'/>", 1.0}, {"<randomFloatEx min='4' max='4' seed='0'/>", 4.0},
-            // min = 0, max = 1 {"<randomFloatEx min='0' max='1' seed='4096'/>", 0.09789293818887912}, {"<randomFloatEx min='0' max='1' seed='12416'/>", 0.37550904380202654}, {"<randomFloatEx min='0' max='1' seed='0'/>", 0.730967787376657}, {"<randomFloatEx min='0' max='1' seed='2048'/>", 0.9144303627827681},
-            // min < 0, max < 0 {"<randomFloatEx min='-3' max='-2' seed='0'/>", -2.269032212623343},
-            // min > 0, max > 0 {"<randomFloatEx min='1' max='5' seed='0'/>", 3.923871149506628},
-            // min < 0, max > 0 {"<randomFloatEx min='-2' max='3' seed='4096'/>", -1.5105353090556044}, {"<randomFloatEx min='-2' max='3' seed='0'/>", 1.654838936883285},
+                // min = max
+                { "<randomFloatEx min='-3' max='-3' seed='0'/>", -3.0 }, { "<randomFloatEx min='-1' max='-1' seed='0'/>", -1.0 },
+                { "<randomFloatEx min='0' max='0' seed='0'/>", 0.0 },
+                { "<randomFloatEx min='1' max='1' seed='0'/>", 1.0 },
+                { "<randomFloatEx min='4' max='4' seed='0'/>", 4.0 },
+                // min = 0, max = 1
+                { "<randomFloatEx min='0' max='1' seed='4096'/>", 0.09789293818887912 },
+                { "<randomFloatEx min='0' max='1' seed='12416'/>", 0.37550904380202654 }, { "<randomFloatEx min='0' max='1' seed='0'/>", 0.730967787376657 },
+                { "<randomFloatEx min='0' max='1' seed='2048'/>", 0.9144303627827681 },
+                // min < 0, max < 0
+                { "<randomFloatEx min='-3' max='-2' seed='0'/>", -2.269032212623343 },
+                // min > 0, max > 0
+                { "<randomFloatEx min='1' max='5' seed='0'/>", 3.923871149506628 },
+                // min < 0, max > 0
+                { "<randomFloatEx min='-2' max='3' seed='4096'/>", -1.5105353090556044 }, { "<randomFloatEx min='-2' max='3' seed='0'/>", 1.654838936883285 },
         });
     }
 
     /**
      * Constructs <code>RandomFloat</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

@@ -47,72 +47,87 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Truncate</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Truncate
  */
 @RunWith(Parameterized.class)
 public class TruncateRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<truncate>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</multiple>" +
-            "</truncate>", QTICardinalityException.class},
-            // ordered {"<truncate>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</ordered>" +
-            "</truncate>", QTICardinalityException.class},
-            // record {"<truncate>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</recordEx>" +
-            "</truncate>", QTICardinalityException.class},
-            // identifier {"<truncate>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // boolean {"<truncate>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // integer {"<truncate>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // string {"<truncate>" +
-                "<baseValue baseType='string'>1</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // point {"<truncate>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // pair {"<truncate>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // directedPair {"<truncate>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // duration {"<truncate>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // file {"<truncate>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
-            // uri {"<truncate>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</truncate>", QTIBaseTypeException.class},
+                // multiple
+                { "<truncate>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>" +
+                        "</truncate>", QTICardinalityException.class },
+                // ordered
+                { "<truncate>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</ordered>" +
+                        "</truncate>", QTICardinalityException.class },
+                // record
+                { "<truncate>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</truncate>", QTICardinalityException.class },
+                // identifier
+                { "<truncate>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // boolean
+                { "<truncate>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // integer
+                { "<truncate>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // string
+                { "<truncate>" +
+                        "<baseValue baseType='string'>1</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // point
+                { "<truncate>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // pair
+                { "<truncate>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // directedPair
+                { "<truncate>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // duration
+                { "<truncate>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // file
+                { "<truncate>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
+                // uri
+                { "<truncate>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</truncate>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Truncate</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public TruncateRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

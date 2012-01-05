@@ -33,34 +33,39 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.io.Serializable;
 
 /**
  * Basic abstract node of linked list.
  * <p>
- * Contains index (position in linked list; first position = 0), references to previous and next node in linked list
- * and assessment object (test, test part, section, item reference, precondition or branch rule).
+ * Contains index (position in linked list; first position = 0), references to
+ * previous and next node in linked list and assessment object (test, test part,
+ * section, item reference, precondition or branch rule).
  * 
  * @author Jiri Kajaba
  */
 public abstract class Node implements Serializable {
-    
+
     private static final long serialVersionUID = 5652335587772504040L;
 
     private int index;
+
     private Node prev;
+
     private Node next;
-    private XmlObject object;
+
+    private final XmlNode object;
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
-     * @param object assessment object (test, test part, section, item reference, precondition or branch rule)
+     * @param object assessment object (test, test part, section, item
+     *            reference, precondition or branch rule)
      */
-    protected Node(Node prev, XmlObject object) {
+    protected Node(Node prev, XmlNode object) {
         if (prev != null) {
             index = prev.index + 1;
             this.prev = prev;
@@ -72,8 +77,9 @@ public abstract class Node implements Serializable {
     /**
      * Returns true if this node is border node; false otherwise.
      * <p>
-     * Border node is node on border. It is either start or end node, and it is not middle node.
-     *
+     * Border node is node on border. It is either start or end node, and it is
+     * not middle node.
+     * 
      * @return true if this node is border node; false otherwise
      */
     public boolean isBorder() {
@@ -83,8 +89,9 @@ public abstract class Node implements Serializable {
     /**
      * Returns true if this node is start node; false otherwise.
      * <p>
-     * Start node is node on beginning of test, test part, section or item reference.
-     *
+     * Start node is node on beginning of test, test part, section or item
+     * reference.
+     * 
      * @return true if this node is start node; false otherwise
      */
     public boolean isStart() {
@@ -95,7 +102,7 @@ public abstract class Node implements Serializable {
      * Returns true if this node is end node; false otherwise.
      * <p>
      * End node is node on end of test, test part, section or item reference.
-     *
+     * 
      * @return true is this node is end node; false otherwise
      */
     public boolean isEnd() {
@@ -105,9 +112,9 @@ public abstract class Node implements Serializable {
     /**
      * Returns true if this node is middle node; false otherwise.
      * <p>
-     * Middle node is node which is between start and end node.
-     * There can be more middle nodes between one start and end node.
-     *
+     * Middle node is node which is between start and end node. There can be
+     * more middle nodes between one start and end node.
+     * 
      * @return true is this node is middle node; false otherwise
      */
     public boolean isMiddle() {
@@ -118,7 +125,7 @@ public abstract class Node implements Serializable {
      * Returns true if this node is item reference node; false otherwise.
      * <p>
      * Item reference node is middle node with item reference object.
-     *
+     * 
      * @return true if this node is item reference node; false otherwise
      */
     public boolean isItemRef() {
@@ -129,7 +136,7 @@ public abstract class Node implements Serializable {
      * Returns true if this node is jump node; false otherwise.
      * <p>
      * Jump node is middle node with precondition or branch rule object.
-     *
+     * 
      * @return true if this node is jump node; false otherwise
      */
     public boolean isJump() {
@@ -140,7 +147,7 @@ public abstract class Node implements Serializable {
      * Returns true if this node is precondition node; false otherwise.
      * <p>
      * Precondition node is jump node with precondition object.
-     *
+     * 
      * @return true is this node is precondition node; false otherwise
      */
     public boolean isPreCondition() {
@@ -151,7 +158,7 @@ public abstract class Node implements Serializable {
      * Returns true if this node is branch rule node; false otherwise.
      * <p>
      * Branch rule node is jump node with branch rule object.
-     *
+     * 
      * @return true is this node is branch rule node; false otherwise
      */
     public boolean isBranchRule() {
@@ -162,7 +169,7 @@ public abstract class Node implements Serializable {
      * Gets index (position in linked list) of this node.
      * <p>
      * Index of first node in linked list is 0.
-     *
+     * 
      * @return index (position in linked list) of this node
      */
     public int getIndex() {
@@ -171,7 +178,7 @@ public abstract class Node implements Serializable {
 
     /**
      * Gets previous node in linked list (can be null).
-     *
+     * 
      * @return previous node in linked list (can be null)
      */
     public Node getPrev() {
@@ -180,7 +187,7 @@ public abstract class Node implements Serializable {
 
     /**
      * Gets next node in linked list (can be null).
-     *
+     * 
      * @return next node in linked list (can be null)
      */
     public Node getNext() {
@@ -188,17 +195,19 @@ public abstract class Node implements Serializable {
     }
 
     /**
-     * Gets assessment object (test, test part, section, item reference, precondition or branch rule) of this node.
-     *
-     * @return assessment object (test, test part, section, item reference, precondition or branch rule) of this node
+     * Gets assessment object (test, test part, section, item reference,
+     * precondition or branch rule) of this node.
+     * 
+     * @return assessment object (test, test part, section, item reference,
+     *         precondition or branch rule) of this node
      */
-    public XmlObject getObject() {
+    public XmlNode getObject() {
         return object;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
         builder.append(index);
 
@@ -226,9 +235,9 @@ public abstract class Node implements Serializable {
         builder.append(object.computeXPathComponent());
 
         builder.append(") - PREV = ");
-        builder.append((prev != null) ? prev.index : "NONE");
+        builder.append(prev != null ? prev.index : "NONE");
         builder.append(", NEXT = ");
-        builder.append((next != null) ? next.index : "NONE");
+        builder.append(next != null ? next.index : "NONE");
 
         return builder.toString();
     }

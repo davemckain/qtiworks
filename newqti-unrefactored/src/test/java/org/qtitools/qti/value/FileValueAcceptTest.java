@@ -46,31 +46,35 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>FileValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>FileValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.FileValue
  */
 @RunWith(Parameterized.class)
 public class FileValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {" ", new FileValue(" ")}, {"file", new FileValue("file")}, {"File", new FileValue("File")}, {"FILE", new FileValue("FILE")},
+        return Arrays.asList(new Object[][] { { " ", new FileValue(" ") }, { "file", new FileValue("file") }, { "File", new FileValue("File") },
+                { "FILE", new FileValue("FILE") },
         });
     }
 
-    private String string;
-    private FileValue expectedFile;
+    private final String string;
+
+    private final FileValue expectedFile;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedFile expected parsed value
      */

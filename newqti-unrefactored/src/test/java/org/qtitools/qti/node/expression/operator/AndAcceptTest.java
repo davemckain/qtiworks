@@ -46,63 +46,67 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>And</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.And
  */
 @RunWith(Parameterized.class)
 public class AndAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<and>" +
-                "<null/>" +
-            "</and>", null}, {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", null},
-            // false {"<and>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</and>", false}, {"<and>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</and>", false}, {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", false}, {"<and>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</and>", false}, {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", false},
-            // true {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", true}, {"<and>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</and>", true},
+                // null
+                { "<and>" +
+                        "<null/>" +
+                        "</and>", null }, { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", null },
+                // false
+                { "<and>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</and>", false }, { "<and>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</and>", false }, { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", false }, { "<and>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</and>", false }, { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", false },
+                // true
+                { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", true }, { "<and>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</and>", true },
         });
     }
 
     /**
      * Constructs <code>And</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public AndAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

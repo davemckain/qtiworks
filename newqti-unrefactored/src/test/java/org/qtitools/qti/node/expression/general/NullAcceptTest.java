@@ -45,26 +45,27 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Null</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.Null
  */
 @RunWith(Parameterized.class)
 public class NullAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"<null/>"}, {"<null>" +
-            "</null>"},
+        return Arrays.asList(new Object[][] { { "<null/>" }, { "<null>" +
+                "</null>" },
         });
     }
 
     /**
      * Constructs <code>Null</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public NullAcceptTest(String xml) {

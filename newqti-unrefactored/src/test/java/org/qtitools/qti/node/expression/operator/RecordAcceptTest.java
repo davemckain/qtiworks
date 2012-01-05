@@ -58,11 +58,12 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Record</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.RecordEx
  */
 @RunWith(Parameterized.class)
 public class RecordAcceptTest extends ExpressionAcceptTest {
+
     private static final RecordValue RECORD_1__1_2_3;
 
     static {
@@ -75,67 +76,79 @@ public class RecordAcceptTest extends ExpressionAcceptTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<recordEx>" +
-            "</recordEx>", NullValue.INSTANCE}, {"<recordEx identifiers='key_1'>" +
-                "<null/>" +
-            "</recordEx>", NullValue.INSTANCE},
-            // identifier {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='identifier'>identifier</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new IdentifierValue("identifier"))},
-            // boolean {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", BooleanValue.TRUE)}, {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", BooleanValue.FALSE)},
-            // integer {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new IntegerValue(1))}, {"<recordEx identifiers='key_1 key_2 key_3'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</recordEx>", RECORD_1__1_2_3}, {"<recordEx identifiers='key_1 key_a key_2 key_b key_3'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</recordEx>", RECORD_1__1_2_3},
-            // float {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new FloatValue(1))},
-            // string {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new StringValue("string"))},
-            // point {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new PointValue(1, 1))},
-            // pair {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new PairValue("identifier_1", "identifier_2"))},
-            // directedPair {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new DirectedPairValue("identifier_1", "identifier_2"))},
-            // duration {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new DurationValue(1))},
-            // file {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new FileValue("file"))},
-            // uri {"<recordEx identifiers='key_1'>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</recordEx>", new RecordValue("key_1", new UriValue("uri"))},
+                // null
+                { "<recordEx>" +
+                        "</recordEx>", NullValue.INSTANCE }, { "<recordEx identifiers='key_1'>" +
+                        "<null/>" +
+                        "</recordEx>", NullValue.INSTANCE },
+                // identifier
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='identifier'>identifier</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new IdentifierValue("identifier")) },
+                // boolean
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", BooleanValue.TRUE) }, { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", BooleanValue.FALSE) },
+                // integer
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new IntegerValue(1)) }, { "<recordEx identifiers='key_1 key_2 key_3'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</recordEx>", RECORD_1__1_2_3 }, { "<recordEx identifiers='key_1 key_a key_2 key_b key_3'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</recordEx>", RECORD_1__1_2_3 },
+                // float
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new FloatValue(1)) },
+                // string
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new StringValue("string")) },
+                // point
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new PointValue(1, 1)) },
+                // pair
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new PairValue("identifier_1", "identifier_2")) },
+                // directedPair
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new DirectedPairValue("identifier_1", "identifier_2")) },
+                // duration
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new DurationValue(1)) },
+                // file
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new FileValue("file")) },
+                // uri
+                { "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</recordEx>", new RecordValue("key_1", new UriValue("uri")) },
         });
     }
 
     /**
      * Constructs <code>Record</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

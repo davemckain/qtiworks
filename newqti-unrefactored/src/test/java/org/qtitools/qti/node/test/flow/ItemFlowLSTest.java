@@ -42,17 +42,32 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class ItemFlowLSTest extends ItemFlowTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // preCondition {"ItemFlow-pre-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-pre-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-pre-03.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}}, {"ItemFlow-pre-04.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}},
-            // branchRule {"ItemFlow-jump-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-03.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-04.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-05.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-06.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-jump-special-07.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}},
-            // preCondition + branchRule {"ItemFlow-full-01.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05"}}}, {"ItemFlow-full-02.xml", new String[][] {{"I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09"}}},
+                // preCondition
+                { "ItemFlow-pre-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-pre-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-pre-03.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                { "ItemFlow-pre-04.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                // branchRule
+                { "ItemFlow-jump-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-03.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-04.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-05.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-06.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-jump-special-07.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
+                // preCondition + branchRule
+                { "ItemFlow-full-01.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05" } } },
+                { "ItemFlow-full-02.xml", new String[][] { { "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I09" } } },
         });
     }
 

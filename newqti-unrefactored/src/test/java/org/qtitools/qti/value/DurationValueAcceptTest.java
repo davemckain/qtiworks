@@ -46,31 +46,37 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>DurationValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>DurationValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.DurationValue
  */
 @RunWith(Parameterized.class)
 public class DurationValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"1", new DurationValue(1)}, {"+1", new DurationValue(1)}, {"1.2", new DurationValue(1.2)}, {"+1.2", new DurationValue(1.2)}, {"0", new DurationValue(0)}, {"+0", new DurationValue(0)}, {"-0", new DurationValue(0)}, {"0.0", new DurationValue(0)}, {"+0.0", new DurationValue(0)}, {"-0.0", new DurationValue(0)}, {"12.34E+5", new DurationValue(12.34E+5)},
+        return Arrays.asList(new Object[][] { { "1", new DurationValue(1) }, { "+1", new DurationValue(1) }, { "1.2", new DurationValue(1.2) },
+                { "+1.2", new DurationValue(1.2) }, { "0", new DurationValue(0) }, { "+0", new DurationValue(0) }, { "-0", new DurationValue(0) },
+                { "0.0", new DurationValue(0) }, { "+0.0", new DurationValue(0) }, { "-0.0", new DurationValue(0) },
+                { "12.34E+5", new DurationValue(12.34E+5) },
         });
     }
 
-    private String string;
-    private DurationValue expectedDuration;
+    private final String string;
+
+    private final DurationValue expectedDuration;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedDuration expected parsed value
      */

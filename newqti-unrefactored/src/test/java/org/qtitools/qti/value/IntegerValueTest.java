@@ -58,42 +58,60 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>IntegerValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>IntegerValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
  */
 @RunWith(Parameterized.class)
 public class IntegerValueTest extends ValueTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new IntegerValue(1), null},
-            // NullValue {false, new IntegerValue(1), NullValue.INSTANCE},
-            // IdentifierValue {false, new IntegerValue(1), new IdentifierValue("identifier")},
-            // BooleanValue {false, new IntegerValue(1), BooleanValue.TRUE}, {false, new IntegerValue(1), BooleanValue.FALSE},
-            // IntegerValue {true, new IntegerValue(1), new IntegerValue(1)}, {false, new IntegerValue(1), new IntegerValue(2)},
-            // FloatValue {false, new IntegerValue(1), new FloatValue(1)},
-            // StringValue {false, new IntegerValue(1), new StringValue("string")},
-            // PointValue {false, new IntegerValue(1), new PointValue(1, 1)},
-            // PairValue {false, new IntegerValue(1), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new IntegerValue(1), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {false, new IntegerValue(1), new DurationValue(1)},
-            // FileValue {false, new IntegerValue(1), new FileValue("file")},
-            // UriValue {false, new IntegerValue(1), new UriValue("uri")},
-            // MultipleValue {false, new IntegerValue(1), new MultipleValue()}, {false, new IntegerValue(1), new MultipleValue(new IntegerValue(1))},
-            // OrderedValue {false, new IntegerValue(1), new OrderedValue()}, {false, new IntegerValue(1), new OrderedValue(new IntegerValue(1))},
-            // RecordValue {false, new IntegerValue(1), new RecordValue()}, {false, new IntegerValue(1), new RecordValue("identifier", new IntegerValue(1))},
+                // null
+                { false, new IntegerValue(1), null },
+                // NullValue
+                { false, new IntegerValue(1), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new IntegerValue(1), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new IntegerValue(1), BooleanValue.TRUE }, { false, new IntegerValue(1), BooleanValue.FALSE },
+                // IntegerValue
+                { true, new IntegerValue(1), new IntegerValue(1) }, { false, new IntegerValue(1), new IntegerValue(2) },
+                // FloatValue
+                { false, new IntegerValue(1), new FloatValue(1) },
+                // StringValue
+                { false, new IntegerValue(1), new StringValue("string") },
+                // PointValue
+                { false, new IntegerValue(1), new PointValue(1, 1) },
+                // PairValue
+                { false, new IntegerValue(1), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new IntegerValue(1), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { false, new IntegerValue(1), new DurationValue(1) },
+                // FileValue
+                { false, new IntegerValue(1), new FileValue("file") },
+                // UriValue
+                { false, new IntegerValue(1), new UriValue("uri") },
+                // MultipleValue
+                { false, new IntegerValue(1), new MultipleValue() }, { false, new IntegerValue(1), new MultipleValue(new IntegerValue(1)) },
+                // OrderedValue
+                { false, new IntegerValue(1), new OrderedValue() }, { false, new IntegerValue(1), new OrderedValue(new IntegerValue(1)) },
+                // RecordValue
+                { false, new IntegerValue(1), new RecordValue() }, { false, new IntegerValue(1), new RecordValue("identifier", new IntegerValue(1)) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

@@ -45,26 +45,28 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>RandomFloat</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.RandomFloat
  */
 @RunWith(Parameterized.class)
 public class RandomFloatRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // max < min {"<randomFloat min='-4' max='-8'/>"}, {"<randomFloat min='1' max='-2'/>"}, {"<randomFloat min='7' max='3'/>"},
+                // max < min
+                { "<randomFloat min='-4' max='-8'/>" }, { "<randomFloat min='1' max='-2'/>" }, { "<randomFloat min='7' max='3'/>" },
         });
     }
 
     /**
      * Constructs <code>RandomFloat</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public RandomFloatRefuseTest(String xml) {

@@ -48,27 +48,31 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests parsing <code>BaseType</code> from <code>String</code> representation.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  */
 @RunWith(Parameterized.class)
 public class BaseTypeRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"Identifier"}, {"IDENTIFIER"}, {"Boolean"}, {"BOOLEAN"}, {"Integer"}, {"INTEGER"}, {"Float"}, {"FLOAT"}, {"String"}, {"STRING"}, {"Point"}, {"POINT"}, {"Pair"}, {"PAIR"}, {"directedpair"}, {"directed_pair"}, {"Directedpair"}, {"Directed_pair"}, {"DirectedPair"}, {"Directed_Pair"}, {"DIRECTEDPAIR"}, {"DIRECTED_PAIR"}, {"Duration"}, {"DURATION"}, {"File"}, {"FILE"}, {"Uri"}, {"URI"},
+        return Arrays.asList(new Object[][] { { "Identifier" }, { "IDENTIFIER" }, { "Boolean" }, { "BOOLEAN" }, { "Integer" }, { "INTEGER" }, { "Float" },
+                { "FLOAT" }, { "String" }, { "STRING" }, { "Point" }, { "POINT" }, { "Pair" }, { "PAIR" }, { "directedpair" }, { "directed_pair" },
+                { "Directedpair" }, { "Directed_pair" }, { "DirectedPair" }, { "Directed_Pair" }, { "DIRECTEDPAIR" }, { "DIRECTED_PAIR" }, { "Duration" },
+                { "DURATION" }, { "File" }, { "FILE" }, { "Uri" }, { "URI" },
         });
     }
 
-    private String string;
+    private final String string;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string <code>String</code> representation of <code>BaseType</code>
      */
     public BaseTypeRefuseTest(String string) {
@@ -76,8 +80,9 @@ public class BaseTypeRefuseTest {
     }
 
     /**
-     * Tests parsing <code>BaseType</code> from <code>String</code> representation.
-     *
+     * Tests parsing <code>BaseType</code> from <code>String</code>
+     * representation.
+     * 
      * @throws QTIParseException if test was successful
      */
     @Test(expected = QTIParseException.class)

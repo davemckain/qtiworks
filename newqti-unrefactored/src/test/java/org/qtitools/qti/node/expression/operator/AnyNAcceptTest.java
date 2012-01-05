@@ -46,78 +46,83 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>AnyN</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.AnyN
  */
 @RunWith(Parameterized.class)
 public class AnyNAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<anyN min='1' max='1'>" +
-                "<null/>" +
-            "</anyN>", null}, {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-            "</anyN>", null}, {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-            "</anyN>", null}, {"<anyN min='3' max='4'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-            "</anyN>", null},
-            // false {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</anyN>", false}, {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<null/>" +
-            "</anyN>", false}, {"<anyN min='3' max='4'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-            "</anyN>", false},
-            // true {"<anyN min='1' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-            "</anyN>", true}, {"<anyN min='3' max='4'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<null/>" +
-            "</anyN>", true},
-            // condition: 0 <= min <= max
-            // If you activate this condition, you must remove these tests. {"<anyN min='2' max='1'>" +
-                "<baseValue baseType='boolean'>true</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-                "<null/>" +
-            "</anyN>", false}, {"<anyN min='-1' max='1'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</anyN>", true}, {"<anyN min='0' max='0'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</anyN>", true}, {"<anyN min='-1' max='-1'>" +
-                "<baseValue baseType='boolean'>false</baseValue>" +
-            "</anyN>", true},
+                // null
+                { "<anyN min='1' max='1'>" +
+                        "<null/>" +
+                        "</anyN>", null }, { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", null }, { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", null }, { "<anyN min='3' max='4'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", null },
+                // false
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</anyN>", false }, { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", false }, { "<anyN min='3' max='4'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", false },
+                // true
+                { "<anyN min='1' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</anyN>", true }, { "<anyN min='3' max='4'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", true },
+                // condition: 0 <= min <= max
+                // If you activate this condition, you must remove these tests.
+                { "<anyN min='2' max='1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "<null/>" +
+                        "</anyN>", false }, { "<anyN min='-1' max='1'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</anyN>", true }, { "<anyN min='0' max='0'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</anyN>", true }, { "<anyN min='-1' max='-1'>" +
+                        "<baseValue baseType='boolean'>false</baseValue>" +
+                        "</anyN>", true },
         });
     }
 
     /**
      * Constructs <code>AnyN</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public AnyNAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

@@ -42,20 +42,22 @@ import org.junit.Test;
 /**
  * Superclass for expression refuse tests.
  * <p>
- * Evaluates expression and compares thrown exception (test is successful only if exception is thrown)
- * with expected exception.
+ * Evaluates expression and compares thrown exception (test is successful only
+ * if exception is thrown) with expected exception.
  * <p>
- * Number of required subexpressions and presence of required attributes are not tested, because it
- * should be tested by validator of xml.
+ * Number of required subexpressions and presence of required attributes are not
+ * tested, because it should be tested by validator of xml.
  */
 public abstract class ExpressionRefuseTest extends ExpressionTest {
-    private Class<? extends QTIRuntimeException> expectedException;
+
+    private final Class<? extends QTIRuntimeException> expectedException;
 
     /**
      * Constructs expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public ExpressionRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml);
@@ -71,12 +73,14 @@ public abstract class ExpressionRefuseTest extends ExpressionTest {
         try {
             getExpression().evaluate();
         }
-        catch (Throwable ex) {
-            if (!expectedException.equals(ex.getClass()))
+        catch (final Throwable ex) {
+            if (!expectedException.equals(ex.getClass())) {
                 fail("Unexpected exception, expected<" + expectedException.getName() +
                         "> but was<" + ex.getClass().getName() + "> with message: " + ex.getMessage());
-            else
+            }
+            else {
                 return; // This exception was expected. Test was successful.
+            }
         }
         fail("Expected exception: " + expectedException.getName());
     }

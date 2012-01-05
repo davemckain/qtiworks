@@ -46,97 +46,100 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>EqualRounded</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.EqualRounded
  */
 @RunWith(Parameterized.class)
 public class EqualRoundedAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // significantFigures {"<equalRounded roundingMode='significantFigures' figures='1'>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='significantFigures' figures='1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='significantFigures' figures='1'>" +
-                "<null/>" +
-                "<null/>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='significantFigures' figures='1'>" +
-                "<baseValue baseType='float'>1234</baseValue>" +
-                "<baseValue baseType='float'>1200</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='2'>" +
-                "<baseValue baseType='float'>1234</baseValue>" +
-                "<baseValue baseType='float'>1200</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='3'>" +
-                "<baseValue baseType='float'>1234</baseValue>" +
-                "<baseValue baseType='float'>1200</baseValue>" +
-            "</equalRounded>", false}, {"<equalRounded roundingMode='significantFigures' figures='4'>" +
-                "<baseValue baseType='float'>1234</baseValue>" +
-                "<baseValue baseType='float'>1200</baseValue>" +
-            "</equalRounded>", false}, {"<equalRounded roundingMode='significantFigures' figures='1'>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='2'>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='3'>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='4'>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-            "</equalRounded>", false}, {"<equalRounded roundingMode='significantFigures' figures='3'>" +
-                "<baseValue baseType='float'>-0.12345</baseValue>" +
-                "<baseValue baseType='float'>-0.1234</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='significantFigures' figures='4'>" +
-                "<baseValue baseType='float'>-0.12345</baseValue>" +
-                "<baseValue baseType='float'>-0.1234</baseValue>" +
-            "</equalRounded>", false},
-            // decimalPlaces {"<equalRounded roundingMode='decimalPlaces' figures='1'>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='decimalPlaces' figures='1'>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='decimalPlaces' figures='1'>" +
-                "<null/>" +
-                "<null/>" +
-            "</equalRounded>", null}, {"<equalRounded roundingMode='decimalPlaces' figures='0'>" +
-                "<baseValue baseType='integer'>12</baseValue>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='decimalPlaces' figures='0'>" +
-                "<baseValue baseType='integer'>12</baseValue>" +
-                "<baseValue baseType='float'>12.56</baseValue>" +
-            "</equalRounded>", false}, {"<equalRounded roundingMode='decimalPlaces' figures='1'>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='decimalPlaces' figures='2'>" +
-                "<baseValue baseType='float'>12.34</baseValue>" +
-                "<baseValue baseType='float'>12.345</baseValue>" +
-            "</equalRounded>", false}, {"<equalRounded roundingMode='decimalPlaces' figures='1'>" +
-                "<baseValue baseType='float'>-12.34</baseValue>" +
-                "<baseValue baseType='float'>-12.345</baseValue>" +
-            "</equalRounded>", true}, {"<equalRounded roundingMode='decimalPlaces' figures='2'>" +
-                "<baseValue baseType='float'>-12.34</baseValue>" +
-                "<baseValue baseType='float'>-12.345</baseValue>" +
-            "</equalRounded>", false},
+                // significantFigures
+                { "<equalRounded roundingMode='significantFigures' figures='1'>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='significantFigures' figures='1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='significantFigures' figures='1'>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='significantFigures' figures='1'>" +
+                        "<baseValue baseType='float'>1234</baseValue>" +
+                        "<baseValue baseType='float'>1200</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='2'>" +
+                        "<baseValue baseType='float'>1234</baseValue>" +
+                        "<baseValue baseType='float'>1200</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='3'>" +
+                        "<baseValue baseType='float'>1234</baseValue>" +
+                        "<baseValue baseType='float'>1200</baseValue>" +
+                        "</equalRounded>", false }, { "<equalRounded roundingMode='significantFigures' figures='4'>" +
+                        "<baseValue baseType='float'>1234</baseValue>" +
+                        "<baseValue baseType='float'>1200</baseValue>" +
+                        "</equalRounded>", false }, { "<equalRounded roundingMode='significantFigures' figures='1'>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='2'>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='3'>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='4'>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "</equalRounded>", false }, { "<equalRounded roundingMode='significantFigures' figures='3'>" +
+                        "<baseValue baseType='float'>-0.12345</baseValue>" +
+                        "<baseValue baseType='float'>-0.1234</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='significantFigures' figures='4'>" +
+                        "<baseValue baseType='float'>-0.12345</baseValue>" +
+                        "<baseValue baseType='float'>-0.1234</baseValue>" +
+                        "</equalRounded>", false },
+                // decimalPlaces
+                { "<equalRounded roundingMode='decimalPlaces' figures='1'>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='decimalPlaces' figures='1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='decimalPlaces' figures='1'>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</equalRounded>", null }, { "<equalRounded roundingMode='decimalPlaces' figures='0'>" +
+                        "<baseValue baseType='integer'>12</baseValue>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='decimalPlaces' figures='0'>" +
+                        "<baseValue baseType='integer'>12</baseValue>" +
+                        "<baseValue baseType='float'>12.56</baseValue>" +
+                        "</equalRounded>", false }, { "<equalRounded roundingMode='decimalPlaces' figures='1'>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='decimalPlaces' figures='2'>" +
+                        "<baseValue baseType='float'>12.34</baseValue>" +
+                        "<baseValue baseType='float'>12.345</baseValue>" +
+                        "</equalRounded>", false }, { "<equalRounded roundingMode='decimalPlaces' figures='1'>" +
+                        "<baseValue baseType='float'>-12.34</baseValue>" +
+                        "<baseValue baseType='float'>-12.345</baseValue>" +
+                        "</equalRounded>", true }, { "<equalRounded roundingMode='decimalPlaces' figures='2'>" +
+                        "<baseValue baseType='float'>-12.34</baseValue>" +
+                        "<baseValue baseType='float'>-12.345</baseValue>" +
+                        "</equalRounded>", false },
         });
     }
 
     /**
      * Constructs <code>EqualRounded</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public EqualRoundedAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

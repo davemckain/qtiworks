@@ -47,55 +47,60 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Ordered</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Ordered
  */
 @RunWith(Parameterized.class)
 public class OrderedRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<ordered>" +
-                "<multiple/>" +
-            "</ordered>", QTICardinalityException.class}, {"<ordered>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</ordered>", QTICardinalityException.class},
-            // record {"<ordered>" +
-                "<recordEx/>" +
-            "</ordered>", QTICardinalityException.class}, {"<ordered>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>2</baseValue>" +
-                "</recordEx>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</ordered>", QTICardinalityException.class},
-            // mixing different baseTypes {"<ordered>" +
-                "<baseValue baseType='boolean'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</ordered>", QTIBaseTypeException.class}, {"<ordered>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>2</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</ordered>", QTIBaseTypeException.class},
+                // multiple
+                { "<ordered>" +
+                        "<multiple/>" +
+                        "</ordered>", QTICardinalityException.class }, { "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>", QTICardinalityException.class },
+                // record
+                { "<ordered>" +
+                        "<recordEx/>" +
+                        "</ordered>", QTICardinalityException.class }, { "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</recordEx>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>", QTICardinalityException.class },
+                // mixing different baseTypes
+                { "<ordered>" +
+                        "<baseValue baseType='boolean'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>", QTIBaseTypeException.class }, { "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>2</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</ordered>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Ordered</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public OrderedRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

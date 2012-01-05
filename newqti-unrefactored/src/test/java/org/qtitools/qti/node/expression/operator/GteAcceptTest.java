@@ -46,183 +46,188 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Gte</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Gte
  */
 @RunWith(Parameterized.class)
 public class GteAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<gte>" +
-                "<null/>" +
-                "<null/>" +
-            "</gte>", null}, {"<gte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</gte>", null}, {"<gte>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</gte>", null},
-            // integer {"<gte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-7</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</gte>", true},
-            // float {"<gte>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>1.4</baseValue>" +
-                "<baseValue baseType='float'>1.4</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>2.8</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-7.4</baseValue>" +
-                "<baseValue baseType='float'>-5.6</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>-3.3</baseValue>" +
-                "<baseValue baseType='float'>-3.3</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-4.1</baseValue>" +
-                "<baseValue baseType='float'>-5.9</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-4.6</baseValue>" +
-                "<baseValue baseType='float'>2.7</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>2.6</baseValue>" +
-                "<baseValue baseType='float'>-4.3</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</gte>", true},
-            // integer + float {"<gte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>2.8</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-7</baseValue>" +
-                "<baseValue baseType='float'>-5.6</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>-7.4</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-                "<baseValue baseType='float'>-3.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='float'>-5.9</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-4.1</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-                "<baseValue baseType='float'>2.7</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='float'>-4.6</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</gte>", false}, {"<gte>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>-4.3</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>2.6</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-                "<baseValue baseType='integer'>+0</baseValue>" +
-            "</gte>", true}, {"<gte>" +
-                "<baseValue baseType='integer'>-0</baseValue>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</gte>", true},
+                // null
+                { "<gte>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</gte>", null }, { "<gte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</gte>", null }, { "<gte>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</gte>", null },
+                // integer
+                { "<gte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-7</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</gte>", true },
+                // float
+                { "<gte>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>1.4</baseValue>" +
+                        "<baseValue baseType='float'>1.4</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>2.8</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-7.4</baseValue>" +
+                        "<baseValue baseType='float'>-5.6</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>-3.3</baseValue>" +
+                        "<baseValue baseType='float'>-3.3</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-4.1</baseValue>" +
+                        "<baseValue baseType='float'>-5.9</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-4.6</baseValue>" +
+                        "<baseValue baseType='float'>2.7</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>2.6</baseValue>" +
+                        "<baseValue baseType='float'>-4.3</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</gte>", true },
+                // integer + float
+                { "<gte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>2.8</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-7</baseValue>" +
+                        "<baseValue baseType='float'>-5.6</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>-7.4</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "<baseValue baseType='float'>-3.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='float'>-5.9</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-4.1</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "<baseValue baseType='float'>2.7</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='float'>-4.6</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</gte>", false }, { "<gte>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>-4.3</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>2.6</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "<baseValue baseType='integer'>+0</baseValue>" +
+                        "</gte>", true }, { "<gte>" +
+                        "<baseValue baseType='integer'>-0</baseValue>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</gte>", true },
         });
     }
 
     /**
      * Constructs <code>Gte</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public GteAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

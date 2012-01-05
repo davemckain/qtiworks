@@ -45,33 +45,36 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Random</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Random
  */
 @RunWith(Parameterized.class)
 public class RandomRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // single {"<random>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</random>"},
-            // record {"<random>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</random>"},
+                // single
+                { "<random>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</random>" },
+                // record
+                { "<random>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</random>" },
         });
     }
 
     /**
      * Constructs <code>Random</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public RandomRefuseTest(String xml) {

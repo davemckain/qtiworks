@@ -46,31 +46,35 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>PairValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>PairValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.PairValue
  */
 @RunWith(Parameterized.class)
 public class PairValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"identifier identifier", new PairValue("identifier", "identifier")}, {"identifier_1 identifier_2", new PairValue("identifier_1", "identifier_2")},
+        return Arrays.asList(new Object[][] { { "identifier identifier", new PairValue("identifier", "identifier") },
+                { "identifier_1 identifier_2", new PairValue("identifier_1", "identifier_2") },
         });
     }
 
-    private String string;
-    private PairValue expectedPair;
+    private final String string;
+
+    private final PairValue expectedPair;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedPair expected parsed value
      */

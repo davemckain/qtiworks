@@ -35,7 +35,6 @@ package org.qtitools.qti.node.item;
 
 import static org.junit.Assert.assertEquals;
 
-
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
@@ -53,46 +52,61 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class MapResponsePointTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null identifier, null or empty include and exclude categories (all items) { "MapResponsePoint-Single.xml", new String[] {"1 1"},  1.0}, { "MapResponsePoint-Single.xml", new String[] {"1 3"},  2.0}, { "MapResponsePoint-Single.xml", new String[] {"3 1"},  3.0}, { "MapResponsePoint-Single.xml", new String[] {"3 3"},  4.0}, { "MapResponsePoint-Single.xml", new String[] {"10 10"},  -1.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1"},  1.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1", "1 1"},  1.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1", "1 3"},  3.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1", "1 3", "3 1"},  6.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1", "1 3", "3 1", "3 3"},  10.0}, { "MapResponsePoint-Multiple.xml", new String[] {"1 1", "1 3", "3 1", "3 3", "3 3", "3 1"},  10.0},
+                // null identifier, null or empty include and exclude categories
+                // (all items)
+                { "MapResponsePoint-Single.xml", new String[] { "1 1" }, 1.0 }, { "MapResponsePoint-Single.xml", new String[] { "1 3" }, 2.0 },
+                { "MapResponsePoint-Single.xml", new String[] { "3 1" }, 3.0 }, { "MapResponsePoint-Single.xml", new String[] { "3 3" }, 4.0 },
+                { "MapResponsePoint-Single.xml", new String[] { "10 10" }, -1.0 },
+                { "MapResponsePoint-Multiple.xml", new String[] { "1 1" }, 1.0 }, { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 1" }, 1.0 },
+                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3" }, 3.0 },
+                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1" }, 6.0 },
+                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1", "3 3" }, 10.0 },
+                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1", "3 3", "3 3", "3 1" }, 10.0 },
         });
     }
-    
-    private String fileName;
+
+    private final String fileName;
+
     private Value response;
+
     double expectedOutcome;
-    
-    public MapResponsePointTest(String fileName, String [] responses, double expectedOutcome) {
+
+    public MapResponsePointTest(String fileName, String[] responses, double expectedOutcome) {
         this.fileName = fileName;
         this.expectedOutcome = expectedOutcome;
-        
+
         if (responses.length == 1) {
             response = new PointValue(responses[0]);
-        } else {
+        }
+        else {
             response = new MultipleValue();
-            for (String s : responses)
-                ((MultipleValue)response).add(new PointValue(s));
+            for (final String s : responses) {
+                ((MultipleValue) response).add(new PointValue(s));
+            }
         }
     }
-    
+
     @Test
     public void test() {
-        AssessmentItem item = new AssessmentItem();
+        final AssessmentItem item = new AssessmentItem();
         item.load(getClass().getResource(fileName), jqtiController);
-    
-        if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle())
-            response = new MultipleValue((SingleValue)response);
-        
+
+        if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
+            response = new MultipleValue((SingleValue) response);
+        }
+
         item.getResponseDeclaration("RESPONSE").setValue(response);
         item.processResponses();
-        
-        assertEquals(expectedOutcome, ((FloatValue)item.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
+
+        assertEquals(expectedOutcome, ((FloatValue) item.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
     }
 }

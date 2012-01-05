@@ -45,30 +45,32 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>DirectedPairValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>DirectedPairValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.DirectedPairValue
  */
 @RunWith(Parameterized.class)
 public class DirectedPairValueRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {null}, {""}, {" "}, {"1_identifier 2_identifier"},
+        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "1_identifier 2_identifier" },
         });
     }
 
-    private String string;
+    private final String string;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      */
     public DirectedPairValueRefuseTest(String string) {
@@ -77,10 +79,10 @@ public class DirectedPairValueRefuseTest {
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     *
+     * 
      * @throws QTIParseException if test was successful
      */
-    @Test (expected = QTIParseException.class)
+    @Test(expected = QTIParseException.class)
     public void testParseDirectedPair() throws QTIParseException {
         new DirectedPairValue(string);
     }

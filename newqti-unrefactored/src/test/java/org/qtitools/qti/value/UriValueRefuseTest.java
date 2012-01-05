@@ -45,31 +45,35 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>UriValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>UriValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  * @see java.net.URI
  */
 @RunWith(Parameterized.class)
 public class UriValueRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {null}, {""}, {" "}, {" http://www.example.com/"}, {"http://www.example.com/ "}, {" http://www.example.com/ "},
+        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { " http://www.example.com/" },
+                { "http://www.example.com/ " },
+                { " http://www.example.com/ " },
         });
     }
 
-    private String string;
+    private final String string;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      */
     public UriValueRefuseTest(String string) {
@@ -78,10 +82,10 @@ public class UriValueRefuseTest {
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     *
+     * 
      * @throws QTIParseException if test was successful
      */
-    @Test (expected = QTIParseException.class)
+    @Test(expected = QTIParseException.class)
     public void testParseUri() throws QTIParseException {
         UriValue.parseUri(string);
     }

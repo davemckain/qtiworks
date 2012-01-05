@@ -46,37 +46,40 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>PatternMatch</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.PatternMatch
  */
 @RunWith(Parameterized.class)
 public class PatternMatchAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<patternMatch pattern='A'>" +
-                "<null/>" +
-            "</patternMatch>", null},
-            // string {"<patternMatch pattern='string'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</patternMatch>", true}, {"<patternMatch pattern='STRING'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</patternMatch>", false},
+                // null
+                { "<patternMatch pattern='A'>" +
+                        "<null/>" +
+                        "</patternMatch>", null },
+                // string
+                { "<patternMatch pattern='string'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</patternMatch>", true }, { "<patternMatch pattern='STRING'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</patternMatch>", false },
         });
     }
 
     /**
      * Constructs <code>PatternMatch</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public PatternMatchAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

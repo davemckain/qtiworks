@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Middle node is node which is between start and end node.
@@ -43,16 +43,17 @@ import uk.ac.ed.ph.jqtiplus.node.XmlObject;
  * @author Jiri Kajaba
  */
 public abstract class MiddleNode extends Node {
-    
+
     private static final long serialVersionUID = -3989933240363339083L;
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
-     * @param object assessment object (item reference, precondition or branch rule)
+     * @param object assessment object (item reference, precondition or branch
+     *            rule)
      */
-    protected MiddleNode(Node prev, XmlObject object) {
+    protected MiddleNode(Node prev, XmlNode object) {
         super(prev, object);
     }
 

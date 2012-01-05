@@ -39,13 +39,16 @@ import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import java.io.Serializable;
 
 public class TimeReport implements Serializable {
-    
+
     private static final long serialVersionUID = -8724038215908206912L;
-    
-    private int selectedItemsCount;
-    private int remainingItemsCount;
-    private long maximumTimeLimit;
-    private long remainingMaximumTime;
+
+    private final int selectedItemsCount;
+
+    private final int remainingItemsCount;
+
+    private final long maximumTimeLimit;
+
+    private final long remainingMaximumTime;
 
     private TimeReport(int selectedItemsCount, int remainingItemsCount, long maximumTimeLimit, long remainingMaximumTime) {
         this.selectedItemsCount = selectedItemsCount;
@@ -72,7 +75,7 @@ public class TimeReport implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
         builder.append("TimeReport(");
         builder.append("Items = ");
@@ -89,33 +92,36 @@ public class TimeReport implements Serializable {
     }
 
     public static TimeReport getInstance(ControlObject control) {
-        if (control == null || control.getTimeLimit() == null || control.getTimeLimit().getMaximumMillis() == null)
+        if (control == null || control.getTimeLimit() == null || control.getTimeLimit().getMaximumMillis() == null) {
             return null;
+        }
 
-        long maximumTimeLimit = control.getTimeLimit().getMaximumMillis();
+        final long maximumTimeLimit = control.getTimeLimit().getMaximumMillis();
 
         long remainingMaximumTime = maximumTimeLimit - control.getDuration();
-        if (remainingMaximumTime < 0)
+        if (remainingMaximumTime < 0) {
             remainingMaximumTime = 0;
+        }
 
-        int total = control.getTotalCount();
-        int notFinished = total - control.getFinishedCount();
+        final int total = control.getTotalCount();
+        final int notFinished = total - control.getFinishedCount();
 
-        TimeReport timeReport = new TimeReport
-            ( total
-            , notFinished
-            , maximumTimeLimit
-            , remainingMaximumTime );
+        final TimeReport timeReport = new TimeReport
+                (total
+                        , notFinished
+                        , maximumTimeLimit
+                        , remainingMaximumTime);
 
         return timeReport;
     }
 
     static Long getRemainingTime(ControlObject co) {
         Long maximum = null;
-        if (co.getTimeLimit() != null && co.getTimeLimit().getMaximumMillis() != null)
+        if (co.getTimeLimit() != null && co.getTimeLimit().getMaximumMillis() != null) {
             maximum = co.getTimeLimit().getMaximumMillis();
+        }
 
-        return (maximum != null) ? new Long(maximum - co.getDuration()) : null;
+        return maximum != null ? new Long(maximum - co.getDuration()) : null;
     }
 
     public static ControlObject getLowestRemainingTimeControlObject(AssessmentItemRef air) {
@@ -123,10 +129,12 @@ public class TimeReport implements Serializable {
         ControlObject current = air;
 
         while (current != null) {
-            Long remaining = getRemainingTime(current);
-            if (remaining != null)
-                if (lowest == null || getRemainingTime(lowest) > remaining)
+            final Long remaining = getRemainingTime(current);
+            if (remaining != null) {
+                if (lowest == null || getRemainingTime(lowest) > remaining) {
                     lowest = current;
+                }
+            }
 
             current = current.getParent();
         }

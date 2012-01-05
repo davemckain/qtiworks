@@ -58,42 +58,61 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>FileValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>FileValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.FileValue
  */
 @RunWith(Parameterized.class)
 public class FileValueTest extends ValueTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new FileValue("file"), null},
-            // NullValue {false, new FileValue("file"), NullValue.INSTANCE},
-            // IdentifierValue {false, new FileValue("file"), new IdentifierValue("identifier")},
-            // BooleanValue {false, new FileValue("file"), BooleanValue.TRUE}, {false, new FileValue("file"), BooleanValue.FALSE},
-            // IntegerValue {false, new FileValue("file"), new IntegerValue(1)},
-            // FloatValue {false, new FileValue("file"), new FloatValue(1)},
-            // StringValue {false, new FileValue("file"), new StringValue("string")},
-            // PointValue {false, new FileValue("file"), new PointValue(1, 1)},
-            // PairValue {false, new FileValue("file"), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new FileValue("file"), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {false, new FileValue("file"), new DurationValue(1)},
-            // FileValue {true, new FileValue("file"), new FileValue("file")}, {false, new FileValue("file"), new FileValue("File")}, {false, new FileValue("file"), new FileValue("FILE")},
-            // UriValue {false, new FileValue("file"), new UriValue("uri")},
-            // MultipleValue {false, new FileValue("file"), new MultipleValue()}, {false, new FileValue("file"), new MultipleValue(new FileValue("file"))},
-            // OrderedValue {false, new FileValue("file"), new OrderedValue()}, {false, new FileValue("file"), new OrderedValue(new FileValue("file"))},
-            // RecordValue {false, new FileValue("file"), new RecordValue()}, {false, new FileValue("file"), new RecordValue("identifier", new FileValue("file"))},
+                // null
+                { false, new FileValue("file"), null },
+                // NullValue
+                { false, new FileValue("file"), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new FileValue("file"), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new FileValue("file"), BooleanValue.TRUE }, { false, new FileValue("file"), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new FileValue("file"), new IntegerValue(1) },
+                // FloatValue
+                { false, new FileValue("file"), new FloatValue(1) },
+                // StringValue
+                { false, new FileValue("file"), new StringValue("string") },
+                // PointValue
+                { false, new FileValue("file"), new PointValue(1, 1) },
+                // PairValue
+                { false, new FileValue("file"), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new FileValue("file"), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { false, new FileValue("file"), new DurationValue(1) },
+                // FileValue
+                { true, new FileValue("file"), new FileValue("file") }, { false, new FileValue("file"), new FileValue("File") },
+                { false, new FileValue("file"), new FileValue("FILE") },
+                // UriValue
+                { false, new FileValue("file"), new UriValue("uri") },
+                // MultipleValue
+                { false, new FileValue("file"), new MultipleValue() }, { false, new FileValue("file"), new MultipleValue(new FileValue("file")) },
+                // OrderedValue
+                { false, new FileValue("file"), new OrderedValue() }, { false, new FileValue("file"), new OrderedValue(new FileValue("file")) },
+                // RecordValue
+                { false, new FileValue("file"), new RecordValue() }, { false, new FileValue("file"), new RecordValue("identifier", new FileValue("file")) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

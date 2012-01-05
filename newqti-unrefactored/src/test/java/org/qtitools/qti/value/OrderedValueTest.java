@@ -58,15 +58,20 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>OrderedValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- *
+ * Tests <code>OrderedValue</code> implementation of <code>equals</code> and
+ * <code>hashCode</code> methods.
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.OrderedValue
  */
 @RunWith(Parameterized.class)
 public class OrderedValueTest extends ValueTest {
+
     private static final OrderedValue ORDERED_1__1_2_3;
+
     private static final OrderedValue ORDERED_2__1_2_3;
+
     private static final OrderedValue ORDERED_3__3_2_1;
+
     private static final OrderedValue ORDERED_4__1_2_3_4;
 
     static {
@@ -95,34 +100,74 @@ public class OrderedValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {false, new OrderedValue(), null}, {false, new OrderedValue(new IntegerValue(1)), null},
-            // NullValue {true, new OrderedValue(), NullValue.INSTANCE}, {false, new OrderedValue(new IntegerValue(1)), NullValue.INSTANCE},
-            // IdentifierValue {false, new OrderedValue(), new IdentifierValue("identifier")}, {false, new OrderedValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
-            // BooleanValue {false, new OrderedValue(), BooleanValue.TRUE}, {false, new OrderedValue(BooleanValue.TRUE), BooleanValue.TRUE}, {false, new OrderedValue(), BooleanValue.FALSE}, {false, new OrderedValue(BooleanValue.FALSE), BooleanValue.FALSE},
-            // IntegerValue {false, new OrderedValue(), new IntegerValue(1)}, {false, new OrderedValue(new IntegerValue(1)), new IntegerValue(1)},
-            // FloatValue {false, new OrderedValue(), new FloatValue(1)}, {false, new OrderedValue(new FloatValue(1)), new FloatValue(1)},
-            // StringValue {false, new OrderedValue(), new StringValue("string")}, {false, new OrderedValue(new StringValue("string")), new StringValue("string")},
-            // PointValue {false, new OrderedValue(), new PointValue(1, 1)}, {false, new OrderedValue(new PointValue(1, 1)), new PointValue(1, 1)},
-            // PairValue {false, new OrderedValue(), new PairValue("ident1", "ident2")}, {false, new OrderedValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
-            // DirectedPairValue {false, new OrderedValue(), new DirectedPairValue("ident1", "ident2")}, {false, new OrderedValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
-            // DurationValue {false, new OrderedValue(), new DurationValue(1)}, {false, new OrderedValue(new DurationValue(1)), new DurationValue(1)},
-            // FileValue {false, new OrderedValue(), new FileValue("file")}, {false, new OrderedValue(new FileValue("file")), new FileValue("file")},
-            // UriValue {false, new OrderedValue(), new UriValue("uri")}, {false, new OrderedValue(new UriValue("uri")), new UriValue("uri")},
-            // MultipleValue {true, new OrderedValue(), new MultipleValue()}, {false, new OrderedValue(), new MultipleValue(new IntegerValue(1))}, {false, new OrderedValue(new IntegerValue(1)), new MultipleValue()}, {false, new OrderedValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1))},
-            // OrderedValue {true, new OrderedValue(), new OrderedValue()}, {false, new OrderedValue(), new OrderedValue(new IntegerValue(1))}, {false, new OrderedValue(new IntegerValue(1)), new OrderedValue()}, {true, new OrderedValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1))}, {true, ORDERED_1__1_2_3, ORDERED_2__1_2_3}, {false, ORDERED_1__1_2_3, ORDERED_3__3_2_1}, {false, ORDERED_1__1_2_3, ORDERED_4__1_2_3_4},
-            // RecordValue {true, new OrderedValue(), new RecordValue()}, {false, new OrderedValue(), new RecordValue("identifier", new IntegerValue(1))}, {false, new OrderedValue(new IntegerValue(1)), new RecordValue()}, {false, new OrderedValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1))},
+                // null
+                { false, new OrderedValue(), null },
+                { false, new OrderedValue(new IntegerValue(1)), null },
+                // NullValue
+                { true, new OrderedValue(), NullValue.INSTANCE },
+                { false, new OrderedValue(new IntegerValue(1)), NullValue.INSTANCE },
+                // IdentifierValue
+                { false, new OrderedValue(), new IdentifierValue("identifier") },
+                { false, new OrderedValue(new IdentifierValue("identifier")), new IdentifierValue("identifier") },
+                // BooleanValue
+                { false, new OrderedValue(), BooleanValue.TRUE },
+                { false, new OrderedValue(BooleanValue.TRUE), BooleanValue.TRUE },
+                { false, new OrderedValue(), BooleanValue.FALSE },
+                { false, new OrderedValue(BooleanValue.FALSE), BooleanValue.FALSE },
+                // IntegerValue
+                { false, new OrderedValue(), new IntegerValue(1) },
+                { false, new OrderedValue(new IntegerValue(1)), new IntegerValue(1) },
+                // FloatValue
+                { false, new OrderedValue(), new FloatValue(1) },
+                { false, new OrderedValue(new FloatValue(1)), new FloatValue(1) },
+                // StringValue
+                { false, new OrderedValue(), new StringValue("string") },
+                { false, new OrderedValue(new StringValue("string")), new StringValue("string") },
+                // PointValue
+                { false, new OrderedValue(), new PointValue(1, 1) },
+                { false, new OrderedValue(new PointValue(1, 1)), new PointValue(1, 1) },
+                // PairValue
+                { false, new OrderedValue(), new PairValue("ident1", "ident2") },
+                { false, new OrderedValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2") },
+                // DirectedPairValue
+                { false, new OrderedValue(), new DirectedPairValue("ident1", "ident2") },
+                { false, new OrderedValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2") },
+                // DurationValue
+                { false, new OrderedValue(), new DurationValue(1) },
+                { false, new OrderedValue(new DurationValue(1)), new DurationValue(1) },
+                // FileValue
+                { false, new OrderedValue(), new FileValue("file") },
+                { false, new OrderedValue(new FileValue("file")), new FileValue("file") },
+                // UriValue
+                { false, new OrderedValue(), new UriValue("uri") },
+                { false, new OrderedValue(new UriValue("uri")), new UriValue("uri") },
+                // MultipleValue
+                { true, new OrderedValue(), new MultipleValue() },
+                { false, new OrderedValue(), new MultipleValue(new IntegerValue(1)) },
+                { false, new OrderedValue(new IntegerValue(1)), new MultipleValue() },
+                { false, new OrderedValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1)) },
+                // OrderedValue
+                { true, new OrderedValue(), new OrderedValue() }, { false, new OrderedValue(), new OrderedValue(new IntegerValue(1)) },
+                { false, new OrderedValue(new IntegerValue(1)), new OrderedValue() },
+                { true, new OrderedValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1)) }, { true, ORDERED_1__1_2_3, ORDERED_2__1_2_3 },
+                { false, ORDERED_1__1_2_3, ORDERED_3__3_2_1 },
+                { false, ORDERED_1__1_2_3, ORDERED_4__1_2_3_4 },
+                // RecordValue
+                { true, new OrderedValue(), new RecordValue() }, { false, new OrderedValue(), new RecordValue("identifier", new IntegerValue(1)) },
+                { false, new OrderedValue(new IntegerValue(1)), new RecordValue() },
+                { false, new OrderedValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1)) },
         });
     }
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value

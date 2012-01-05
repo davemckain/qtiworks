@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 public class BranchRuleNode extends JumpNode {
 
     private static final long serialVersionUID = 7467994989744491365L;
+
     private static final Logger logger = LoggerFactory.getLogger(BranchRuleNode.class);
 
     /**
@@ -78,10 +79,12 @@ public class BranchRuleNode extends JumpNode {
                 condition);
 
         Node target = null;
-        if (condition)
+        if (condition) {
             target = getTarget();
-        else
+        }
+        else {
             target = getNext();
+        }
 
         logger.debug("Evaludation of branch rule {} finished. Next target is {}.", getIndex(),
                 target.getIndex());

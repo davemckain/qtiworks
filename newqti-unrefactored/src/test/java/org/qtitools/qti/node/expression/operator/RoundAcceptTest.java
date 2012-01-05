@@ -46,57 +46,62 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Round</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Round
  */
 @RunWith(Parameterized.class)
 public class RoundAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<round>" +
-                "<null/>" +
-            "</round>", null},
-            // zero {"<round>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</round>", 0}, {"<round>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</round>", 0}, {"<round>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</round>", 0},
-            // positive {"<round>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</round>", 1}, {"<round>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</round>", 1}, {"<round>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-            "</round>", 2}, {"<round>" +
-                "<baseValue baseType='float'>1.9</baseValue>" +
-            "</round>", 2},
-            // negative {"<round>" +
-                "<baseValue baseType='float'>-1.0</baseValue>" +
-            "</round>", -1}, {"<round>" +
-                "<baseValue baseType='float'>-1.2</baseValue>" +
-            "</round>", -1}, {"<round>" +
-                "<baseValue baseType='float'>-1.5</baseValue>" +
-            "</round>", -1}, {"<round>" +
-                "<baseValue baseType='float'>-1.9</baseValue>" +
-            "</round>", -2},
+                // null
+                { "<round>" +
+                        "<null/>" +
+                        "</round>", null },
+                // zero
+                { "<round>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</round>", 0 }, { "<round>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</round>", 0 }, { "<round>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</round>", 0 },
+                // positive
+                { "<round>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</round>", 1 }, { "<round>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</round>", 1 }, { "<round>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "</round>", 2 }, { "<round>" +
+                        "<baseValue baseType='float'>1.9</baseValue>" +
+                        "</round>", 2 },
+                // negative
+                { "<round>" +
+                        "<baseValue baseType='float'>-1.0</baseValue>" +
+                        "</round>", -1 }, { "<round>" +
+                        "<baseValue baseType='float'>-1.2</baseValue>" +
+                        "</round>", -1 }, { "<round>" +
+                        "<baseValue baseType='float'>-1.5</baseValue>" +
+                        "</round>", -1 }, { "<round>" +
+                        "<baseValue baseType='float'>-1.9</baseValue>" +
+                        "</round>", -2 },
         });
     }
 
     /**
      * Constructs <code>Round</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public RoundAcceptTest(String xml, Integer expectedValue) {
-        super(xml, (expectedValue != null) ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
     }
 }

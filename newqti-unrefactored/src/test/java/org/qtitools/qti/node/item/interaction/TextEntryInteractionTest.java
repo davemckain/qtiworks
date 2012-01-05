@@ -35,7 +35,6 @@ package org.qtitools.qti.node.item.interaction;
 
 import static org.junit.Assert.assertEquals;
 
-
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.StringInteraction;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
@@ -62,7 +61,7 @@ public class TextEntryInteractionTest {
 
     public static RecordValue createRecordResult(String stringValue, double floatValue, Integer integerValue, int leftDigits, int rightDigits, int ndp,
             int nsf, Integer exponent) {
-        RecordValue rv = new RecordValue();
+        final RecordValue rv = new RecordValue();
 
         rv.add(StringInteraction.KEY_STRING_VALUE_NAME, new StringValue(stringValue));
         rv.add(StringInteraction.KEY_FLOAT_VALUE_NAME, new FloatValue(floatValue));
@@ -83,24 +82,35 @@ public class TextEntryInteractionTest {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "TextEntryInteraction-basic.xml", "foo", new StringValue("foo"), null, true }, { "TextEntryInteraction-patternMask.xml", "foobarbob", new StringValue("foobarbob"), null, true }, { "TextEntryInteraction-patternMask.xml", "foobob", new StringValue("foobob"), null, false }, { "TextEntryInteraction-patternMask.xml", "foobobz", new StringValue("foobobz"), null, false }, { "TextEntryInteraction-basic-float.xml", "1", new FloatValue("1"), new StringValue("1"), true }, { "TextEntryInteraction-basic-float.xml", "1.0", new FloatValue("1.0"), new StringValue("1.0"), true }, { "TextEntryInteraction-basic-float.xml", "1.0e2", new FloatValue("1.0e2"), new StringValue("1.0e2"), true }, { "TextEntryInteraction-basic-integer.xml", "1", new IntegerValue("1"), new StringValue("1"), true }, { "TextEntryInteraction-basic-record.xml", "1", createRecordResult("1", 1.0, 1, 1, 0, 0, 1, null), new StringValue("1"), true }, { "TextEntryInteraction-basic-record.xml", "1.23e2", createRecordResult("1.23e2", 123.0, null, 1, 2, 0, 3, 2),
-                                new StringValue("1.23e2"), true }, { "TextEntryInteraction-basic-record.xml", "1.23e-2", createRecordResult("1.23e-2", 0.0123, null, 1, 2, 4, 3, -2),
-                                new StringValue("1.23e-2"), true }, { "TextEntryInteraction-basic-integer-radix.xml", "465", new IntegerValue(243), new StringValue("465"), true } });
+        return Arrays.asList(new Object[][] { { "TextEntryInteraction-basic.xml", "foo", new StringValue("foo"), null, true },
+                { "TextEntryInteraction-patternMask.xml", "foobarbob", new StringValue("foobarbob"), null, true },
+                { "TextEntryInteraction-patternMask.xml", "foobob", new StringValue("foobob"), null, false },
+                { "TextEntryInteraction-patternMask.xml", "foobobz", new StringValue("foobobz"), null, false },
+                { "TextEntryInteraction-basic-float.xml", "1", new FloatValue("1"), new StringValue("1"), true },
+                { "TextEntryInteraction-basic-float.xml", "1.0", new FloatValue("1.0"), new StringValue("1.0"), true },
+                { "TextEntryInteraction-basic-float.xml", "1.0e2", new FloatValue("1.0e2"), new StringValue("1.0e2"), true },
+                { "TextEntryInteraction-basic-integer.xml", "1", new IntegerValue("1"), new StringValue("1"), true },
+                { "TextEntryInteraction-basic-record.xml", "1", createRecordResult("1", 1.0, 1, 1, 0, 0, 1, null), new StringValue("1"), true },
+                { "TextEntryInteraction-basic-record.xml", "1.23e2", createRecordResult("1.23e2", 123.0, null, 1, 2, 0, 3, 2),
+                        new StringValue("1.23e2"), true },
+                { "TextEntryInteraction-basic-record.xml", "1.23e-2", createRecordResult("1.23e-2", 0.0123, null, 1, 2, 4, 3, -2),
+                        new StringValue("1.23e-2"), true },
+                { "TextEntryInteraction-basic-integer-radix.xml", "465", new IntegerValue(243), new StringValue("465"), true } });
     }
 
     private static String RESPONSE_NAME = "response";
 
     private static String STRING_RESPONSE_NAME = "stringResponse";
 
-    private String fileName;
+    private final String fileName;
 
-    private String stringResponse;
+    private final String stringResponse;
 
-    private Value expectedResponse;
+    private final Value expectedResponse;
 
-    private Value expectedStringResponse;
+    private final Value expectedStringResponse;
 
-    private boolean expectedValidates;
+    private final boolean expectedValidates;
 
     public TextEntryInteractionTest(String fileName, String stringResponse, Value expectedResponse, Value expectedStringResponse, boolean expectedValidates) {
         this.fileName = fileName;
@@ -112,10 +122,10 @@ public class TextEntryInteractionTest {
 
     @Test
     public void test() {
-        AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TextEntryInteractionTest.class);
-        AssessmentItemState itemState = itemController.getItemState();
+        final AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TextEntryInteractionTest.class);
+        final AssessmentItemState itemState = itemController.getItemState();
 
-        Map<String, List<String>> responses = new HashMap<String, List<String>>();
+        final Map<String, List<String>> responses = new HashMap<String, List<String>>();
         responses.put(RESPONSE_NAME, Arrays.asList(new String[] { stringResponse }));
 
         itemController.setResponses(responses);

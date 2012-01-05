@@ -47,75 +47,81 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>And</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.And
  */
 @RunWith(Parameterized.class)
 public class DeleteRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // first operand is not single {"<delete>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", QTICardinalityException.class}, {"<delete>" +
-                "<ordered>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</ordered>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", QTICardinalityException.class}, {"<delete>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-                "<multiple>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", QTICardinalityException.class},
-            // second operand is not multiple or ordered {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</delete>", QTICardinalityException.class}, {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='integer'>1</baseValue>" +
-                "</recordEx>" +
-            "</delete>", QTICardinalityException.class},
-            // different baseTypes {"<delete>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", QTIBaseTypeException.class},
-            // duration {"<delete>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</multiple>" +
-            "</delete>", QTIBaseTypeException.class}, {"<delete>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='duration'>1</baseValue>" +
-                "</ordered>" +
-            "</delete>", QTIBaseTypeException.class},
+                // first operand is not single
+                { "<delete>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "<ordered>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</ordered>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "<multiple>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", QTICardinalityException.class },
+                // second operand is not multiple or ordered
+                { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</recordEx>" +
+                        "</delete>", QTICardinalityException.class },
+                // different baseTypes
+                { "<delete>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", QTIBaseTypeException.class },
+                // duration
+                { "<delete>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</multiple>" +
+                        "</delete>", QTIBaseTypeException.class }, { "<delete>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</ordered>" +
+                        "</delete>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Delete</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public DeleteRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

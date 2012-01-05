@@ -38,13 +38,16 @@ import java.util.Random;
 /**
  * Utility class for <code>RandomInteger</code> class tests.
  * Returns seeds for given requested random numbers.
- *
+ * 
  * @see org.qtitools.qti.expression.general.RandomIntegerAcceptTest
  */
 public class Seed {
-    private int minimum;
-    private int maximum;
-    private int step;
+
+    private final int minimum;
+
+    private final int maximum;
+
+    private final int step;
 
     public Seed(int minimum, int maximum, int step) {
         this.minimum = minimum;
@@ -53,12 +56,12 @@ public class Seed {
     }
 
     public Integer[] run() {
-        Integer[] seeds = new Integer[(maximum - minimum) / step + 1];
+        final Integer[] seeds = new Integer[(maximum - minimum) / step + 1];
         int empty = seeds.length;
         int seed = 0;
         while (empty > 0) {
-            Random randomGenerator = new Random(seed);
-            int randomNumber = randomGenerator.nextInt((maximum - minimum) / step + 1);
+            final Random randomGenerator = new Random(seed);
+            final int randomNumber = randomGenerator.nextInt((maximum - minimum) / step + 1);
             if (seeds[randomNumber] == null) {
                 seeds[randomNumber] = seed;
                 empty--;
@@ -70,19 +73,20 @@ public class Seed {
     }
 
     public static void main(String[] args) {
-//        int minimum = Integer.parseInt(args[0]);
-//        int maximum = Integer.parseInt(args[1]);
-//        int step = Integer.parseInt(args[2]);
+        // int minimum = Integer.parseInt(args[0]);
+        // int maximum = Integer.parseInt(args[1]);
+        // int step = Integer.parseInt(args[2]);
 
-        int minimum = -3;
-        int maximum = 4;
-        int step = 1;
+        final int minimum = -3;
+        final int maximum = 4;
+        final int step = 1;
 
-        Seed seed = new Seed(minimum, maximum, step);
-        Integer[] seeds = seed.run();
+        final Seed seed = new Seed(minimum, maximum, step);
+        final Integer[] seeds = seed.run();
 
         System.out.println("Minimum = " + minimum + ", Maximum = " + maximum + ", Step = " + step + ", Count = " + seeds.length);
-        for (int i = 0; i < seeds.length; i++)
-              System.out.println("Random number = " + i + ", Seed = " + seeds[i]);
+        for (int i = 0; i < seeds.length; i++) {
+            System.out.println("Random number = " + i + ", Seed = " + seeds[i]);
+        }
     }
 }

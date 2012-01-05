@@ -40,17 +40,18 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
 import org.junit.Test;
 
 public class AttributeTest {
-    @Test (expected = QTIAttributeException.class)
+
+    @Test(expected = QTIAttributeException.class)
     public void add() {
-        AttributeList list = new AttributeList(null);
+        final AttributeList list = new AttributeList(null);
 
         list.add(new IntegerAttribute(null, "ATTR_1"));
         list.add(new IntegerAttribute(null, "ATTR_1"));
     }
 
-    @Test (expected = QTIAttributeException.class)
+    @Test(expected = QTIAttributeException.class)
     public void get() {
-        AttributeList list = new AttributeList(null);
+        final AttributeList list = new AttributeList(null);
 
         list.add(new IntegerAttribute(null, "ATTR_1"));
         list.add(new IntegerAttribute(null, "ATTR_2"));

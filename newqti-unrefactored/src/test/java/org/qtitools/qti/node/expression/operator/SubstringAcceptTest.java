@@ -46,147 +46,155 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Substring</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Substring
  */
 @RunWith(Parameterized.class)
 public class SubstringAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<substring caseSensitive='true'>" +
-                "<null/>" +
-                "<null/>" +
-            "</substring>", null}, {"<substring caseSensitive='true'>" +
-                "<null/>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", null}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<null/>" +
-            "</substring>", null},
-            // caseSensitive = true {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false},
-            // caseSensitive = true {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", false},
-            // caseSensitive = true {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='true'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false},
-            // caseSensitive = false {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", true},
-            // caseSensitive = false {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", true}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</substring>", true},
-            // caseSensitive = false {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false}, {"<substring caseSensitive='false'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</substring>", false},
+                // null
+                { "<substring caseSensitive='true'>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</substring>", null }, { "<substring caseSensitive='true'>" +
+                        "<null/>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", null }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<null/>" +
+                        "</substring>", null },
+                // caseSensitive = true
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false },
+                // caseSensitive = true
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", false },
+                // caseSensitive = true
+                { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='true'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false },
+                // caseSensitive = false
+                { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", true },
+                // caseSensitive = false
+                { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", true }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</substring>", true },
+                // caseSensitive = false
+                { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false }, { "<substring caseSensitive='false'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</substring>", false },
         });
     }
 
     /**
      * Constructs <code>Substring</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public SubstringAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

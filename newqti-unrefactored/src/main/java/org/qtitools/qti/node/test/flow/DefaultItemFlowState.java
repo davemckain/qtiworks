@@ -45,9 +45,9 @@ import java.io.Serializable;
 public final class DefaultItemFlowState implements Serializable {
 
     private static final long serialVersionUID = -783088015437077064L;
-    
+
     private SectionPartStateKey currentItemRefKey;
-    
+
     public DefaultItemFlowState() {
     }
 
@@ -58,10 +58,10 @@ public final class DefaultItemFlowState implements Serializable {
     public void setCurrentItemRefKey(SectionPartStateKey currentItemRefKey) {
         this.currentItemRefKey = currentItemRefKey;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-            + "(currentItemRefKey=" + currentItemRefKey + ")";
+                + "(currentItemRefKey=" + currentItemRefKey + ")";
     }
 }

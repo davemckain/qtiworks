@@ -47,72 +47,87 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Not</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Not
  */
 @RunWith(Parameterized.class)
 public class NotRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // multiple {"<not>" +
-                "<multiple>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</multiple>" +
-            "</not>", QTICardinalityException.class},
-            // ordered {"<not>" +
-                "<ordered>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</ordered>" +
-            "</not>", QTICardinalityException.class},
-            // record {"<not>" +
-                "<recordEx identifiers='key_1'>" +
-                    "<baseValue baseType='boolean'>true</baseValue>" +
-                "</recordEx>" +
-            "</not>", QTICardinalityException.class},
-            // identifier {"<not>" +
-                "<baseValue baseType='identifier'>true</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // integer {"<not>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // float {"<not>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // string {"<not>" +
-                "<baseValue baseType='string'>true</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // point {"<not>" +
-                "<baseValue baseType='point'>1 1</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // pair {"<not>" +
-                "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // directedPair {"<not>" +
-                "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // duration {"<not>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // file {"<not>" +
-                "<baseValue baseType='file'>file</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
-            // uri {"<not>" +
-                "<baseValue baseType='uri'>uri</baseValue>" +
-            "</not>", QTIBaseTypeException.class},
+                // multiple
+                { "<not>" +
+                        "<multiple>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</multiple>" +
+                        "</not>", QTICardinalityException.class },
+                // ordered
+                { "<not>" +
+                        "<ordered>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</ordered>" +
+                        "</not>", QTICardinalityException.class },
+                // record
+                { "<not>" +
+                        "<recordEx identifiers='key_1'>" +
+                        "<baseValue baseType='boolean'>true</baseValue>" +
+                        "</recordEx>" +
+                        "</not>", QTICardinalityException.class },
+                // identifier
+                { "<not>" +
+                        "<baseValue baseType='identifier'>true</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // integer
+                { "<not>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // float
+                { "<not>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // string
+                { "<not>" +
+                        "<baseValue baseType='string'>true</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // point
+                { "<not>" +
+                        "<baseValue baseType='point'>1 1</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // pair
+                { "<not>" +
+                        "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // directedPair
+                { "<not>" +
+                        "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // duration
+                { "<not>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // file
+                { "<not>" +
+                        "<baseValue baseType='file'>file</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
+                // uri
+                { "<not>" +
+                        "<baseValue baseType='uri'>uri</baseValue>" +
+                        "</not>", QTIBaseTypeException.class },
         });
     }
 
     /**
      * Constructs <code>Not</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
-     * @param expectedException expected exception during evaluation of tested expression
+     * @param expectedException expected exception during evaluation of tested
+     *            expression
      */
     public NotRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
         super(xml, expectedException);

@@ -46,57 +46,62 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Truncate</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Truncate
  */
 @RunWith(Parameterized.class)
 public class TruncateAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<truncate>" +
-                "<null/>" +
-            "</truncate>", null},
-            // zero {"<truncate>" +
-                "<baseValue baseType='float'>0.0</baseValue>" +
-            "</truncate>", 0}, {"<truncate>" +
-                "<baseValue baseType='float'>+0.0</baseValue>" +
-            "</truncate>", 0}, {"<truncate>" +
-                "<baseValue baseType='float'>-0.0</baseValue>" +
-            "</truncate>", 0},
-            // positive {"<truncate>" +
-                "<baseValue baseType='float'>1.0</baseValue>" +
-            "</truncate>", 1}, {"<truncate>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</truncate>", 1}, {"<truncate>" +
-                "<baseValue baseType='float'>1.5</baseValue>" +
-            "</truncate>", 1}, {"<truncate>" +
-                "<baseValue baseType='float'>1.9</baseValue>" +
-            "</truncate>", 1},
-            // negative {"<truncate>" +
-                "<baseValue baseType='float'>-1.0</baseValue>" +
-            "</truncate>", -1}, {"<truncate>" +
-                "<baseValue baseType='float'>-1.2</baseValue>" +
-            "</truncate>", -1}, {"<truncate>" +
-                "<baseValue baseType='float'>-1.5</baseValue>" +
-            "</truncate>", -1}, {"<truncate>" +
-                "<baseValue baseType='float'>-1.9</baseValue>" +
-            "</truncate>", -1},
+                // null
+                { "<truncate>" +
+                        "<null/>" +
+                        "</truncate>", null },
+                // zero
+                { "<truncate>" +
+                        "<baseValue baseType='float'>0.0</baseValue>" +
+                        "</truncate>", 0 }, { "<truncate>" +
+                        "<baseValue baseType='float'>+0.0</baseValue>" +
+                        "</truncate>", 0 }, { "<truncate>" +
+                        "<baseValue baseType='float'>-0.0</baseValue>" +
+                        "</truncate>", 0 },
+                // positive
+                { "<truncate>" +
+                        "<baseValue baseType='float'>1.0</baseValue>" +
+                        "</truncate>", 1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</truncate>", 1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>1.5</baseValue>" +
+                        "</truncate>", 1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>1.9</baseValue>" +
+                        "</truncate>", 1 },
+                // negative
+                { "<truncate>" +
+                        "<baseValue baseType='float'>-1.0</baseValue>" +
+                        "</truncate>", -1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>-1.2</baseValue>" +
+                        "</truncate>", -1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>-1.5</baseValue>" +
+                        "</truncate>", -1 }, { "<truncate>" +
+                        "<baseValue baseType='float'>-1.9</baseValue>" +
+                        "</truncate>", -1 },
         });
     }
 
     /**
      * Constructs <code>Truncate</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public TruncateAcceptTest(String xml, Integer expectedValue) {
-        super(xml, (expectedValue != null) ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
     }
 }

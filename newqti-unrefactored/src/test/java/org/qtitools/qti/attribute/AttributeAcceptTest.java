@@ -33,6 +33,9 @@
  */
 package org.qtitools.qti.attribute;
 
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -41,23 +44,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
-
 @RunWith(Parameterized.class)
 public class AttributeAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"AttributeAccept-01.xml"},
+        return Arrays.asList(new Object[][] { { "AttributeAccept-01.xml" },
         });
     }
 
-    private String fileName;
+    private final String fileName;
 
     public AttributeAcceptTest(String fileName) {
         this.fileName = fileName;

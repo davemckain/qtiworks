@@ -48,15 +48,16 @@ import org.slf4j.LoggerFactory;
  * @author Jiri Kajaba
  */
 public abstract class JumpNode extends MiddleNode {
-    
+
     private static final long serialVersionUID = 1871403478916277985L;
+
     private static final Logger logger = LoggerFactory.getLogger(JumpNode.class);
-    
+
     private Node target;
 
     /**
      * Constructs node.
-     *
+     * 
      * @param prev previous node in linked list
      * @param object assessment object (precondition or branch rule)
      */
@@ -71,7 +72,7 @@ public abstract class JumpNode extends MiddleNode {
 
     /**
      * Gets assessment object (precondition or branch rule) of this node.
-     *
+     * 
      * @return assessment object (precondition or branch rule) of this node
      */
     public AbstractJump getJump() {
@@ -82,7 +83,7 @@ public abstract class JumpNode extends MiddleNode {
      * Gets alternative (not default) target of this jump node.
      * <p>
      * Default target can be obtained with {@code getNext} method.
-     *
+     * 
      * @return alternative (not default) target of this jump node
      * @see #setTarget
      */
@@ -94,7 +95,7 @@ public abstract class JumpNode extends MiddleNode {
      * Sets new alternative (not default) target of this jump node.
      * <p>
      * Default target can be obtained with {@code getNext} method.
-     *
+     * 
      * @param target new alternative (not default) target of this jump node
      * @see #getTarget
      */
@@ -103,8 +104,9 @@ public abstract class JumpNode extends MiddleNode {
     }
 
     /**
-     * Evaluates target of this jump node (which node will be next in item flow after this jump).
-     *
+     * Evaluates target of this jump node (which node will be next in item flow
+     * after this jump).
+     * 
      * @return next node in item flow after this jump
      */
     public Node evaluate(TestProcessingContext context) {
@@ -112,11 +114,11 @@ public abstract class JumpNode extends MiddleNode {
 
         Node target = null;
 
-        TestPart parentTestPart = getJump().getParent().getParentTestPart();
+        final TestPart parentTestPart = getJump().getParent().getParentTestPart();
         if (getJump().getParent() instanceof TestPart ||
-            (parentTestPart.getNavigationMode() == NavigationMode.LINEAR &&
-            parentTestPart.getSubmissionMode() == SubmissionMode.INDIVIDUAL)) {
-            boolean condition = getJump().evaluate(context);
+                parentTestPart.getNavigationMode() == NavigationMode.LINEAR &&
+                parentTestPart.getSubmissionMode() == SubmissionMode.INDIVIDUAL) {
+            final boolean condition = getJump().evaluate(context);
             target = evaluate(condition);
         }
         else {
@@ -131,8 +133,9 @@ public abstract class JumpNode extends MiddleNode {
     }
 
     /**
-     * Evaluates target of this jump node (which node will be next in item flow after this jump).
-     *
+     * Evaluates target of this jump node (which node will be next in item flow
+     * after this jump).
+     * 
      * @param condition result of evaluation of jump's expression
      * @return next node in item flow after this jump
      */
@@ -140,10 +143,10 @@ public abstract class JumpNode extends MiddleNode {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(super.toString());
+        final StringBuilder builder = new StringBuilder(super.toString());
 
         builder.append(", TARGET = ");
-        builder.append((target != null) ? target.getIndex() : "NONE");
+        builder.append(target != null ? target.getIndex() : "NONE");
 
         return builder.toString();
     }

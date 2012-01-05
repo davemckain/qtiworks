@@ -48,79 +48,86 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>Sum</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Sum
  */
 @RunWith(Parameterized.class)
 public class SumAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<sum>" +
-                "<null/>" +
-            "</sum>", NullValue.INSTANCE}, {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-            "</sum>", NullValue.INSTANCE},
-            // integer {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</sum>", new IntegerValue(1)}, {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</sum>", new IntegerValue(6)},
-            // float {"<sum>" +
-                "<baseValue baseType='float'>1.2</baseValue>" +
-            "</sum>", new FloatValue(1.2)}, {"<sum>" +
-                "<baseValue baseType='float'>1</baseValue>" +
-                "<baseValue baseType='float'>2.3</baseValue>" +
-                "<baseValue baseType='float'>4</baseValue>" +
-            "</sum>", new FloatValue(7.3)}, {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>2</baseValue>" +
-                "<baseValue baseType='float'>3.4</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</sum>", new FloatValue(11.4)},
-            // single + multiple {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>2.3</baseValue>" +
-                    "<baseValue baseType='float'>4.5</baseValue>" +
-                "</multiple>" +
-                "<baseValue baseType='integer'>6</baseValue>" +
-            "</sum>", new FloatValue(13.8)},
-            // single + ordered {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>2.3</baseValue>" +
-                    "<baseValue baseType='float'>4.5</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>6</baseValue>" +
-            "</sum>", new FloatValue(13.8)},
-            // single + multiple + ordered {"<sum>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<multiple>" +
-                    "<baseValue baseType='float'>2.3</baseValue>" +
-                    "<baseValue baseType='float'>4.5</baseValue>" +
-                "</multiple>" +
-                "<ordered>" +
-                    "<baseValue baseType='float'>6.7</baseValue>" +
-                    "<baseValue baseType='float'>8.9</baseValue>" +
-                "</ordered>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</sum>", new FloatValue(23.4)},
+                // null
+                { "<sum>" +
+                        "<null/>" +
+                        "</sum>", NullValue.INSTANCE }, { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "</sum>", NullValue.INSTANCE },
+                // integer
+                { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</sum>", new IntegerValue(1) }, { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</sum>", new IntegerValue(6) },
+                // float
+                { "<sum>" +
+                        "<baseValue baseType='float'>1.2</baseValue>" +
+                        "</sum>", new FloatValue(1.2) }, { "<sum>" +
+                        "<baseValue baseType='float'>1</baseValue>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "<baseValue baseType='float'>4</baseValue>" +
+                        "</sum>", new FloatValue(7.3) }, { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>2</baseValue>" +
+                        "<baseValue baseType='float'>3.4</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</sum>", new FloatValue(11.4) },
+                // single + multiple
+                { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "<baseValue baseType='float'>4.5</baseValue>" +
+                        "</multiple>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</sum>", new FloatValue(13.8) },
+                // single + ordered
+                { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "<baseValue baseType='float'>4.5</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>6</baseValue>" +
+                        "</sum>", new FloatValue(13.8) },
+                // single + multiple + ordered
+                { "<sum>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<multiple>" +
+                        "<baseValue baseType='float'>2.3</baseValue>" +
+                        "<baseValue baseType='float'>4.5</baseValue>" +
+                        "</multiple>" +
+                        "<ordered>" +
+                        "<baseValue baseType='float'>6.7</baseValue>" +
+                        "<baseValue baseType='float'>8.9</baseValue>" +
+                        "</ordered>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</sum>", new FloatValue(23.4) },
         });
     }
 
     /**
      * Constructs <code>Sum</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

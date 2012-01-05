@@ -41,10 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import org.qtitools.qti.node.test.flow.ItemFlow;
-
-import uk.ac.ed.ph.snuggletex.SerializationMethod;
-
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,6 +48,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Renderer;
+
+import org.qtitools.qti.node.test.flow.ItemFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,25 +69,19 @@ public class TestCoordinator {
     private final String resourceBasePath;
 
     private final SerializationMethod serializationMethod;
-    
+
     private final Map<String, Object> testParameters;
 
     private final Map<String, Object> renderingParameters;
 
-    /*
-     * rendering debug mode
-     */
+    /* rendering debug mode */
     private boolean debug = false;
 
-    /*
-     * rendering validation mode (if set to true, validation errors/warnings
-     * will be shown)
-     */
+    /* rendering validation mode (if set to true, validation errors/warnings
+     * will be shown) */
     private boolean validate = false;
 
-    /*
-     * Maximum amount of time allowed for network delay
-     */
+    /* Maximum amount of time allowed for network delay */
     private static long magic_time = 15000;
 
     public TestCoordinator(TestCoordinatorState testCoordinatorState, String testHref, String view, Renderer renderer,
@@ -175,7 +168,7 @@ public class TestCoordinator {
     public String flashMessage(String message) throws QTIException {
         testCoordinatorState.setFlash(message);
         testCoordinatorState.setCachedRenderedContent(null);
-        String content = getRenderableContent();
+        final String content = getRenderableContent();
         testCoordinatorState.setFlash(null);
         testCoordinatorState.setCachedRenderedContent(null);
         return content;
@@ -196,13 +189,14 @@ public class TestCoordinator {
     }
 
     public void getCurrentQuestion() throws QTIException {
-        AssessmentTestController testController = testCoordinatorState.getTestController();
+        final AssessmentTestController testController = testCoordinatorState.getTestController();
 
         logger.info("getCurrentQuestion() - " + testController.getCurrentItem());
 
         // if the renderedContent is still active, just return
-        if (testCoordinatorState.getCachedRenderedContent() != null)
+        if (testCoordinatorState.getCachedRenderedContent() != null) {
             return;
+        }
 
         if (testController.isTestComplete()) {
             // ItemData id = new ItemData();
@@ -215,12 +209,12 @@ public class TestCoordinator {
             // cachedRenderedContent = RenderingEngine.renderItem(renderer,
             // view, id);
 
-            Map<String, Object> params = new HashMap<String, Object>();
+            final Map<String, Object> params = new HashMap<String, Object>();
 
             // set the test title from the cached version (to avoid lookups)
             params.put("title", testController.getTestTitle());
 
-            XSLTParamBuilder xsltParameterBuilder = new XSLTParamBuilder();
+            final XSLTParamBuilder xsltParameterBuilder = new XSLTParamBuilder();
             params.put("assessmentFeedback", xsltParameterBuilder.convertFeedback(testController.getAssessmentFeedback()));
             params.put("testPartFeedback", xsltParameterBuilder.convertFeedback(testController.getTestPartFeedback()));
             // params.put("testOutcomeValues",
@@ -228,10 +222,11 @@ public class TestCoordinator {
             // params.put("testOutcomeDeclarations",
             // xsltParameterBuilder.convertOutcomeDeclarations(testController.getTest().getOutcomeDeclarations()));
 
-            if (view != null)
+            if (view != null) {
                 params.put("view", view);
+            }
 
-            AssessmentItem blank = new AssessmentItem();
+            final AssessmentItem blank = new AssessmentItem();
             renderContent(blank, "", params, null);
         }
         else {
@@ -264,9 +259,9 @@ public class TestCoordinator {
     }
 
     private Map<String, Object> makeItemParameters() {
-        AssessmentTestController testController = testCoordinatorState.getTestController();
-        Map<String, Object> params = new HashMap<String, Object>();
-        
+        final AssessmentTestController testController = testCoordinatorState.getTestController();
+        final Map<String, Object> params = new HashMap<String, Object>();
+
         // set the question id
         params.put("questionId", getCurrentQuestionId());
 
@@ -277,7 +272,7 @@ public class TestCoordinator {
         params.put("sectionTitles", testController.getCurrentSectionTitles());
 
         // set the rubric
-        XSLTParamBuilder xsltParameterBuilder = new XSLTParamBuilder();
+        final XSLTParamBuilder xsltParameterBuilder = new XSLTParamBuilder();
         params.put("rubric", xsltParameterBuilder.convertRubric(testController.getRubricBlocks()));
         params.put("assessmentFeedback", xsltParameterBuilder.convertFeedback(testController.getAssessmentFeedback()));
         params.put("testPartFeedback", xsltParameterBuilder.convertFeedback(testController.getTestPartFeedback()));
@@ -295,12 +290,15 @@ public class TestCoordinator {
         params.put("timeSelected", testController.getTimeSelected());
         params.put("timeRemaining", testController.getTimeRemaining());
 
-        if (debug)
+        if (debug) {
             params.put("debug", true);
-        if (testCoordinatorState.getFlash() != null)
+        }
+        if (testCoordinatorState.getFlash() != null) {
             params.put("flash", testCoordinatorState.getFlash());
-        if (view != null)
+        }
+        if (view != null) {
             params.put("view", view);
+        }
 
         if (testController.getCurrentItemRef().getItemSessionControl().getAllowComment()) {
             params.put("allowCandidateComment", true);
@@ -314,9 +312,10 @@ public class TestCoordinator {
     }
 
     public String getCurrentQuestionId() {
-        AssessmentTestController testController = testCoordinatorState.getTestController();
-        if (testController.getCurrentItemRef() == null || isCompleted())
+        final AssessmentTestController testController = testCoordinatorState.getTestController();
+        if (testController.getCurrentItemRef() == null || isCompleted()) {
             return null;
+        }
         return testController.getCurrentItemRef().getIdentifier();
     }
 
@@ -327,20 +326,21 @@ public class TestCoordinator {
 
     public void setCurrentResponse(Map<String, List<String>> responses) throws FileNotFoundException, URISyntaxException,
             QTIException {
-        AssessmentTestController testController = testCoordinatorState.getTestController();
-        Map<AssessmentItemRef, Map<String, Value>> testPartItems = testCoordinatorState.getTestPartItems();
+        final AssessmentTestController testController = testCoordinatorState.getTestController();
+        final Map<AssessmentItemRef, Map<String, Value>> testPartItems = testCoordinatorState.getTestPartItems();
 
         testController.setCurrentItemResponses(responses);
 
-        if (responses.containsKey("candidateComment"))
+        if (responses.containsKey("candidateComment")) {
             testController.getCurrentItemRef().setCandidateComment(responses.get("candidateComment").get(0));
+        }
 
-        Map<String, Value> itemOutcomes = testController.getCurrentItemRef().getItem().getOutcomeValues();
+        final Map<String, Value> itemOutcomes = testController.getCurrentItemRef().getItem().getOutcomeValues();
 
         boolean se = !testController.getCurrentItemRef().isFinished();
-        ControlObject co = TimeReport.getLowestRemainingTimeControlObject(testController.getCurrentItemRef());
+        final ControlObject co = TimeReport.getLowestRemainingTimeControlObject(testController.getCurrentItemRef());
         if (co != null) {
-            if (TimeReport.getRemainingTime(co) < (-1 * magic_time)) {
+            if (TimeReport.getRemainingTime(co) < -1 * magic_time) {
                 se = false;
             }
         }
@@ -350,8 +350,9 @@ public class TestCoordinator {
                 testController.setCurrentItemOutcomes(itemOutcomes);
             }
             else {
-                if (!testController.getCurrentItemRef().isTimedOut())
+                if (!testController.getCurrentItemRef().isTimedOut()) {
                     testController.getCurrentItemRef().timeOut();
+                }
             }
         }
         else {
@@ -359,14 +360,15 @@ public class TestCoordinator {
                 testPartItems.put(testController.getCurrentItemRef(), itemOutcomes);
             }
             else {
-                if (!testController.getCurrentItemRef().isTimedOut())
+                if (!testController.getCurrentItemRef().isTimedOut()) {
                     testController.getCurrentItemRef().timeOut();
+                }
             }
 
             if (!testController.getItemFlow().hasNextItemRef(true)) {
                 // write all vars
 
-                for (AssessmentItemRef key : testPartItems.keySet()) {
+                for (final AssessmentItemRef key : testPartItems.keySet()) {
                     key.setOutcomes(testPartItems.get(key));
                 }
                 testController.getTest().processOutcome();
@@ -405,17 +407,15 @@ public class TestCoordinator {
 
     private void renderContent(AssessmentItem assessmentItem, String itemToTestHref, Map<String, Object> itemParameters,
             Map<String, Value> responses) {
-        AssessmentTestController testController = testCoordinatorState.getTestController();
+        final AssessmentTestController testController = testCoordinatorState.getTestController();
 
-        /*
-         * Resolve itemHref so that it's relative to the "package" rather than
-         * test
-         */
+        /* Resolve itemHref so that it's relative to the "package" rather than
+         * test */
         String itemHref;
         try {
             itemHref = new URI(testHref).resolve(itemToTestHref).toString();
         }
-        catch (URISyntaxException e) {
+        catch (final URISyntaxException e) {
             throw new QTIRenderingException("Could not resolve item href " + itemToTestHref + " against test href " + testHref, e);
         }
 

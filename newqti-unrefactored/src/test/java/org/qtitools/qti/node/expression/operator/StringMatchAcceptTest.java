@@ -46,257 +46,271 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>StringMatch</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.StringMatch
  */
 @RunWith(Parameterized.class)
 public class StringMatchAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<stringMatch caseSensitive='true'>" +
-                "<null/>" +
-                "<null/>" +
-            "</stringMatch>", null}, {"<stringMatch caseSensitive='true'>" +
-                "<null/>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", null}, {"<stringMatch caseSensitive='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<null/>" +
-            "</stringMatch>", null},
-            // -------------------------------------------------------------------------------------
-            // substring = false, caseSensitive = true {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false},
-            // substring = false, caseSensitive = true {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false},
-            // substring = false, caseSensitive = true {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='false'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false},
-            // substring = false, caseSensitive = false {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true},
-            // substring = false, caseSensitive = false {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false},
-            // substring = false, caseSensitive = false {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='false'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false},
-            // -------------------------------------------------------------------------------------
-            // substring = true, caseSensitive = true {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", false},
-            // substring = true, caseSensitive = true {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false},
-            // substring = true, caseSensitive = true {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='true' substring='true'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true},
-            // substring = true, caseSensitive = false {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true},
-            // substring = true, caseSensitive = false {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>String</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>STRING</baseValue>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-            "</stringMatch>", false},
-            // substring = true, caseSensitive = false {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>stringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>abcstring</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true}, {"<stringMatch caseSensitive='false' substring='true'>" +
-                "<baseValue baseType='string'>abcstringabc</baseValue>" +
-                "<baseValue baseType='string'>string</baseValue>" +
-            "</stringMatch>", true},
+                // null
+                { "<stringMatch caseSensitive='true'>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</stringMatch>", null }, { "<stringMatch caseSensitive='true'>" +
+                        "<null/>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", null }, { "<stringMatch caseSensitive='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<null/>" +
+                        "</stringMatch>", null },
+                // -------------------------------------------------------------------------------------
+                // substring = false, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = false, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = false, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='false'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = false, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true },
+                // substring = false, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = false, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='false'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false },
+                // -------------------------------------------------------------------------------------
+                // substring = true, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = true, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = true, caseSensitive = true
+                { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='true' substring='true'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true },
+                // substring = true, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true },
+                // substring = true, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>String</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>STRING</baseValue>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "</stringMatch>", false },
+                // substring = true, caseSensitive = false
+                { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>stringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>abcstring</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true }, { "<stringMatch caseSensitive='false' substring='true'>" +
+                        "<baseValue baseType='string'>abcstringabc</baseValue>" +
+                        "<baseValue baseType='string'>string</baseValue>" +
+                        "</stringMatch>", true },
         });
     }
 
     /**
      * Constructs <code>StringMatch</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public StringMatchAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

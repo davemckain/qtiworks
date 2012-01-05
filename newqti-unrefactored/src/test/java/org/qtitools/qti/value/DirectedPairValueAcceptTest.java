@@ -46,31 +46,35 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>DirectedPairValue</code> implementation of parsing value from <code>String</code>.
+ * Tests <code>DirectedPairValue</code> implementation of parsing value from
+ * <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.DirectedPairValue
  */
 @RunWith(Parameterized.class)
 public class DirectedPairValueAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"identifier identifier", new DirectedPairValue("identifier", "identifier")}, {"identifier_1 identifier_2", new DirectedPairValue("identifier_1", "identifier_2")},
+        return Arrays.asList(new Object[][] { { "identifier identifier", new DirectedPairValue("identifier", "identifier") },
+                { "identifier_1 identifier_2", new DirectedPairValue("identifier_1", "identifier_2") },
         });
     }
 
-    private String string;
-    private DirectedPairValue expectedDirectedPair;
+    private final String string;
+
+    private final DirectedPairValue expectedDirectedPair;
 
     /**
      * Constructs this test.
-     *
+     * 
      * @param string parsed <code>String</code>
      * @param expectedDirectedPair expected parsed value
      */

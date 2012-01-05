@@ -46,68 +46,72 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>DurationGte</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.DurationGte
  */
 @RunWith(Parameterized.class)
 public class DurationGteAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<durationGTE>" +
-                "<null/>" +
-                "<null/>" +
-            "</durationGTE>", null}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<null/>" +
-            "</durationGTE>", null}, {"<durationGTE>" +
-                "<null/>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationGTE>", null},
-            // true {"<durationGTE>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-            "</durationGTE>", true}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>-0</baseValue>" +
-                "<baseValue baseType='duration'>+0</baseValue>" +
-            "</durationGTE>", true}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>0.1</baseValue>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-            "</durationGTE>", true}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationGTE>", true}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>1.2</baseValue>" +
-                "<baseValue baseType='duration'>1.1</baseValue>" +
-            "</durationGTE>", true}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>2</baseValue>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-            "</durationGTE>", true},
-            // false {"<durationGTE>" +
-                "<baseValue baseType='duration'>0</baseValue>" +
-                "<baseValue baseType='duration'>0.1</baseValue>" +
-            "</durationGTE>", false}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>1.1</baseValue>" +
-            "</durationGTE>", false}, {"<durationGTE>" +
-                "<baseValue baseType='duration'>1</baseValue>" +
-                "<baseValue baseType='duration'>2</baseValue>" +
-            "</durationGTE>", false},
+                // null
+                { "<durationGTE>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</durationGTE>", null }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<null/>" +
+                        "</durationGTE>", null }, { "<durationGTE>" +
+                        "<null/>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationGTE>", null },
+                // true
+                { "<durationGTE>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "</durationGTE>", true }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>-0</baseValue>" +
+                        "<baseValue baseType='duration'>+0</baseValue>" +
+                        "</durationGTE>", true }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>0.1</baseValue>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "</durationGTE>", true }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationGTE>", true }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>1.2</baseValue>" +
+                        "<baseValue baseType='duration'>1.1</baseValue>" +
+                        "</durationGTE>", true }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>2</baseValue>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "</durationGTE>", true },
+                // false
+                { "<durationGTE>" +
+                        "<baseValue baseType='duration'>0</baseValue>" +
+                        "<baseValue baseType='duration'>0.1</baseValue>" +
+                        "</durationGTE>", false }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>1.1</baseValue>" +
+                        "</durationGTE>", false }, { "<durationGTE>" +
+                        "<baseValue baseType='duration'>1</baseValue>" +
+                        "<baseValue baseType='duration'>2</baseValue>" +
+                        "</durationGTE>", false },
         });
     }
 
     /**
      * Constructs <code>DurationGte</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public DurationGteAcceptTest(String xml, Boolean expectedValue) {
-        super(xml, (expectedValue != null) ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? BooleanValue.valueOf(expectedValue) : NullValue.INSTANCE);
     }
 }

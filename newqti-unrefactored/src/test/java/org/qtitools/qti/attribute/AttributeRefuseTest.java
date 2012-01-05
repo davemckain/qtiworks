@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationType;
 
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -50,40 +49,44 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class AttributeRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { {"AttributeRefuse-01.xml", ValidationType.ERROR}, {"AttributeRefuse-02.xml", ValidationType.WARNING},
+        return Arrays.asList(new Object[][] { { "AttributeRefuse-01.xml", ValidationType.ERROR }, { "AttributeRefuse-02.xml", ValidationType.WARNING },
         });
     }
 
-    private String fileName;
-    private ValidationType validationType;
+    private final String fileName;
+
+    private final ValidationType validationType;
 
     public AttributeRefuseTest(String fileName, ValidationType validationType) {
         this.fileName = fileName;
         this.validationType = validationType;
     }
 
-    @Test (expected = QTIAttributeException.class)
+    @Test(expected = QTIAttributeException.class)
     public void test() {
-        AssessmentTestController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
-        ValidationResult result = testController.validate();
+        final AssessmentTestController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
+        final ValidationResult result = testController.validate();
 
         switch (validationType) {
             case ERROR:
-                if (result.getErrors().size() == 1)
+                if (result.getErrors().size() == 1) {
                     throw new QTIAttributeException("Validation failed: " + validationType);
+                }
 
             case WARNING:
-//                assertTrue(result.toString(), 0, result.getErrors().size());
+                // assertTrue(result.toString(), 0, result.getErrors().size());
 
-                if (result.getWarnings().size() > 1)
+                if (result.getWarnings().size() > 1) {
                     throw new QTIAttributeException("Validation failed: " + validationType);
+                }
         }
     }
 }

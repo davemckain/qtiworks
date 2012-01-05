@@ -34,8 +34,10 @@
 package org.qtitools.qti.node.test.flow;
 
 class Step {
-    private Command command;
-    private State state;
+
+    private final Command command;
+
+    private final State state;
 
     public Step(Command command) {
         this(command, null);
@@ -51,10 +53,12 @@ class Step {
     }
 
     public void process(ItemFlow flow) {
-        if (command != null)
+        if (command != null) {
             command.exec(flow);
+        }
 
-        if (state != null)
+        if (state != null) {
             state.check(flow);
+        }
     }
 }

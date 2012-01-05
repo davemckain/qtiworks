@@ -46,92 +46,96 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>IntegerModulus</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerModulus
  */
 @RunWith(Parameterized.class)
 public class IntegerModulusAcceptTest extends ExpressionAcceptTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // null {"<integerModulus>" +
-                "<null/>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-            "</integerModulus>", null}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<null/>" +
-            "</integerModulus>", null}, {"<integerModulus>" +
-                "<null/>" +
-                "<null/>" +
-            "</integerModulus>", null}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>0</baseValue>" +
-            "</integerModulus>", null},
-            // positive {"<integerModulus>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerModulus>", 1}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-            "</integerModulus>", 2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</integerModulus>", 0}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>9</baseValue>" +
-            "</integerModulus>", 1},
-            // negative {"<integerModulus>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-                "<baseValue baseType='integer'>3</baseValue>" +
-            "</integerModulus>", 2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>1</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</integerModulus>", -2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-1</baseValue>" +
-                "<baseValue baseType='integer'>-3</baseValue>" +
-            "</integerModulus>", -1}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>4</baseValue>" +
-            "</integerModulus>", 2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</integerModulus>",-2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>-4</baseValue>" +
-            "</integerModulus>", -2}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>5</baseValue>" +
-            "</integerModulus>", 0}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</integerModulus>", 0}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>-5</baseValue>" +
-            "</integerModulus>", 0}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>9</baseValue>" +
-            "</integerModulus>", 8}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>10</baseValue>" +
-                "<baseValue baseType='integer'>-9</baseValue>" +
-            "</integerModulus>", -8}, {"<integerModulus>" +
-                "<baseValue baseType='integer'>-10</baseValue>" +
-                "<baseValue baseType='integer'>-9</baseValue>" +
-            "</integerModulus>", -1},
+                // null
+                { "<integerModulus>" +
+                        "<null/>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "</integerModulus>", null }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<null/>" +
+                        "</integerModulus>", null }, { "<integerModulus>" +
+                        "<null/>" +
+                        "<null/>" +
+                        "</integerModulus>", null }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>0</baseValue>" +
+                        "</integerModulus>", null },
+                // positive
+                { "<integerModulus>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerModulus>", 1 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</integerModulus>", 2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</integerModulus>", 0 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>9</baseValue>" +
+                        "</integerModulus>", 1 },
+                // negative
+                { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "<baseValue baseType='integer'>3</baseValue>" +
+                        "</integerModulus>", 2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>1</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</integerModulus>", -2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-1</baseValue>" +
+                        "<baseValue baseType='integer'>-3</baseValue>" +
+                        "</integerModulus>", -1 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>4</baseValue>" +
+                        "</integerModulus>", 2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</integerModulus>", -2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>-4</baseValue>" +
+                        "</integerModulus>", -2 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>5</baseValue>" +
+                        "</integerModulus>", 0 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</integerModulus>", 0 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>-5</baseValue>" +
+                        "</integerModulus>", 0 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>9</baseValue>" +
+                        "</integerModulus>", 8 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>10</baseValue>" +
+                        "<baseValue baseType='integer'>-9</baseValue>" +
+                        "</integerModulus>", -8 }, { "<integerModulus>" +
+                        "<baseValue baseType='integer'>-10</baseValue>" +
+                        "<baseValue baseType='integer'>-9</baseValue>" +
+                        "</integerModulus>", -1 },
         });
     }
 
     /**
      * Constructs <code>IntegerModulus</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
     public IntegerModulusAcceptTest(String xml, Integer expectedValue) {
-        super(xml, (expectedValue != null) ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
+        super(xml, expectedValue != null ? new IntegerValue(expectedValue) : NullValue.INSTANCE);
     }
 }

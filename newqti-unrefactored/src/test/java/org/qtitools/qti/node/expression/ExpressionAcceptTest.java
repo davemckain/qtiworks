@@ -45,11 +45,12 @@ import org.junit.Test;
  * Compares expected <code>Value</code> with evaluated <code>Value</code>.
  */
 public abstract class ExpressionAcceptTest extends ExpressionTest {
-    private Value expectedValue;
+
+    private final Value expectedValue;
 
     /**
      * Constructs expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */

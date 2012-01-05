@@ -43,27 +43,29 @@ import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>BaseValue</code> expression.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue
  * @see org.qtitools.qti.value.BaseTypeValueRefuseTest
  */
 @RunWith(Parameterized.class)
 public class BaseValueRefuseTest extends ExpressionRefuseTest {
+
     /**
      * Creates test data for this test.
-     *
+     * 
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            // Every wrong possibilities are handled in org.qtitools.qti.BaseTypeValueRefuseTest test.
-        });
+                // Every wrong possibilities are handled in
+                // org.qtitools.qti.BaseTypeValueRefuseTest test.
+                });
     }
 
     /**
      * Constructs <code>BaseValue</code> expression test.
-     *
+     * 
      * @param xml xml data used for creation tested expression
      */
     public BaseValueRefuseTest(String xml) {
