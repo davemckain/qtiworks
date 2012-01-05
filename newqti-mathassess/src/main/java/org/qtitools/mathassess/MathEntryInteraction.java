@@ -1,35 +1,35 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
- * Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package org.qtitools.mathassess;
 
@@ -73,22 +73,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the <tt>org.qtitools.mathassess.MathEntryInteraction</tt> customInteraction
+ * Defines the <tt>org.qtitools.mathassess.MathEntryInteraction</tt>
+ * customInteraction
  * 
- * @author  Jonathon Hare
- * @version $Revision: 2633 $
+ * @author Jonathon Hare
  */
 public final class MathEntryInteraction extends CustomInteraction {
 
     private static final long serialVersionUID = -7450990903827581043L;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
     public MathEntryInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
         // add a namespace prefix to this if none there, and no global prefix
-        if (getNamespacePrefix().length()==0) {
+        if (getNamespacePrefix().length() == 0) {
             getAttributes().add(
                     new StringAttribute(this, "xmlns:ma", MATHASSESS_NAMESPACE_URI,
                             MATHASSESS_NAMESPACE_URI, true));
@@ -99,18 +99,17 @@ public final class MathEntryInteraction extends CustomInteraction {
         getAttributes().add(new IdentifierAttribute(this, getNamespacePrefix() + ATTR_PRINT_IDENTIFIER_NAME, null, null, false));
     }
 
-    /*
-     * Iterate through parent nodes looking for a mathassess namespace decl If
-     * one is found return the prefix, otherwise return empty string
-     */
+    /* Iterate through parent nodes looking for a mathassess namespace decl If
+     * one is found return the prefix, otherwise return empty string */
     protected String getNamespacePrefix() {
         AbstractNode parent = this;
         while (parent != null) {
-            for (Attribute attr : parent.getAttributes()) {
+            for (final Attribute attr : parent.getAttributes()) {
                 if (attr.getName() != null && attr.getName().startsWith("xmlns:")
                         && attr.valueToString() != null
-                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI))
+                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI)) {
                     return attr.getName().substring(6) + ":";
+                }
             }
             parent = (AbstractNode) parent.getParent();
         }
@@ -167,23 +166,23 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
         return getRootNode(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
     }
-    
+
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
 
         if (getResponseIdentifier() != null) {
-            ResponseDeclaration declaration = getResponseDeclaration();
+            final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isRecord())) {
+                    && !declaration.getCardinality().isRecord()) {
                 result.add(new ValidationError(this, "Response variable must have record cardinality"));
             }
         }
 
         if (getPrintIdentifier() != null) {
-            ResponseDeclaration declaration = getPrintIdentifierResponseDeclaration();
+            final ResponseDeclaration declaration = getPrintIdentifierResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle())) {
+                    && !declaration.getCardinality().isSingle()) {
                 result.add(new ValidationError(this, "printIdentifier response variable must have record cardinality"));
             }
 
@@ -193,7 +192,7 @@ public final class MathEntryInteraction extends CustomInteraction {
             }
         }
     }
-    
+
     @Override
     public void bindResponse(AssessmentItemController itemController, List<String> responseList) {
         if (responseList.size() != 1) {
@@ -201,17 +200,18 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
 
         /* Parse the raw ASCIIMath input */
-        String asciiMathInput = responseList.get(0).trim();
+        final String asciiMathInput = responseList.get(0).trim();
         Value responseValue;
         Value printResponseValue;
         logger.info("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);
-        if (asciiMathInput.length()!=0) {
-            /* Convert the ASCIIMath input to the appropriate Math Context variable */
-            MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
-            ASCIIMathMLHelper helper = new ASCIIMathMLHelper(mathAssessExtensionPackage.getStylesheetCache());
-            MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
-            List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
-            if (upConversionFailures!=null && !upConversionFailures.isEmpty()) {
+        if (asciiMathInput.length() != 0) {
+            /* Convert the ASCIIMath input to the appropriate Math Context
+             * variable */
+            final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+            final ASCIIMathMLHelper helper = new ASCIIMathMLHelper(mathAssessExtensionPackage.getStylesheetCache());
+            final MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
+            final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
+            if (upConversionFailures != null && !upConversionFailures.isEmpty()) {
                 logger.warn("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
                 throw new QTIParseException("Error: Math content is too complex for current implementation");
             }
@@ -226,17 +226,18 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
 
         /* Now bind the variables */
-        AssessmentItemState itemState = itemController.getItemState();
+        final AssessmentItemState itemState = itemController.getItemState();
         itemState.setResponseValue(getResponseDeclaration(), responseValue);
         if (getPrintIdentifier() != null) {
             /* handle stringIdentifier binding if required */
             itemState.setResponseValue(getPrintIdentifier(), printResponseValue);
         }
     }
-    
+
     @Override
     public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
-        /* Currently, a successful binding is considered the same as a response being valid */
+        /* Currently, a successful binding is considered the same as a response
+         * being valid */
         return true;
     }
 }

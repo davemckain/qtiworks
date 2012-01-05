@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
@@ -39,30 +38,26 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Enumeration for equal expression.
- *
- * @see Equal
  * 
+ * @see Equal
  * @author Jiri Kajaba
  */
-public enum ToleranceMode
-{
+public enum ToleranceMode {
     /**
      * Exact comparing. No tolerances are needed.
      */
-    EXACT("exact")
-    {
+    EXACT("exact") {
+
         @Override
         public boolean isEqual
-            ( double firstNumber
-            , double secondNumber
-            , double tolerance1
-            , double tolerance2
-            , boolean includeLowerBound
-            , boolean includeUpperBound )
-        {
+                (double firstNumber
+                        , double secondNumber
+                        , double tolerance1
+                        , double tolerance2
+                        , boolean includeLowerBound
+                        , boolean includeUpperBound) {
             return firstNumber == secondNumber;
         }
     },
@@ -73,28 +68,29 @@ public enum ToleranceMode
      * <p>
      * x - t0, x + t1
      */
-    ABSOLUTE("absolute")
-    {
+    ABSOLUTE("absolute") {
+
         @Override
         public boolean isEqual
-            ( double firstNumber
-            , double secondNumber
-            , double tolerance1
-            , double tolerance2
-            , boolean includeLowerBound
-            , boolean includeUpperBound )
-        {
-            double lower = firstNumber - tolerance1;
+                (double firstNumber
+                        , double secondNumber
+                        , double tolerance1
+                        , double tolerance2
+                        , boolean includeLowerBound
+                        , boolean includeUpperBound) {
+            final double lower = firstNumber - tolerance1;
 
             if (includeLowerBound && secondNumber < lower ||
-                !includeLowerBound && secondNumber <= lower)
+                    !includeLowerBound && secondNumber <= lower) {
                 return false;
+            }
 
-            double upper = firstNumber + tolerance2;
+            final double upper = firstNumber + tolerance2;
 
             if (includeUpperBound && secondNumber > upper ||
-                !includeUpperBound && secondNumber >= upper)
+                    !includeUpperBound && secondNumber >= upper) {
                 return false;
+            }
 
             return true;
         }
@@ -105,28 +101,29 @@ public enum ToleranceMode
      * <p>
      * x * (1 - t0 / 100), x * (1 + t1 / 100)
      */
-    RELATIVE("relative")
-    {
+    RELATIVE("relative") {
+
         @Override
         public boolean isEqual
-            ( double firstNumber
-            , double secondNumber
-            , double tolerance1
-            , double tolerance2
-            , boolean includeLowerBound
-            , boolean includeUpperBound )
-        {
-            double lower = firstNumber * (1 - tolerance1 / 100);
+                (double firstNumber
+                        , double secondNumber
+                        , double tolerance1
+                        , double tolerance2
+                        , boolean includeLowerBound
+                        , boolean includeUpperBound) {
+            final double lower = firstNumber * (1 - tolerance1 / 100);
 
             if (includeLowerBound && secondNumber < lower ||
-                !includeLowerBound && secondNumber <= lower)
+                    !includeLowerBound && secondNumber <= lower) {
                 return false;
+            }
 
-            double upper = firstNumber * (1 + tolerance2 / 100);
+            final double upper = firstNumber * (1 + tolerance2 / 100);
 
             if (includeUpperBound && secondNumber > upper ||
-                !includeUpperBound && secondNumber >= upper)
+                    !includeUpperBound && secondNumber >= upper) {
                 return false;
+            }
 
             return true;
         }
@@ -137,24 +134,23 @@ public enum ToleranceMode
 
     private static Map<String, ToleranceMode> toleranceModes;
 
-    static
-    {
+    static {
         toleranceModes = new HashMap<String, ToleranceMode>();
 
-        for (ToleranceMode toleranceMode : ToleranceMode.values())
+        for (final ToleranceMode toleranceMode : ToleranceMode.values()) {
             toleranceModes.put(toleranceMode.toleranceMode, toleranceMode);
+        }
     }
 
     private String toleranceMode;
 
-    private ToleranceMode(String toleranceMode)
-    {
+    private ToleranceMode(String toleranceMode) {
         this.toleranceMode = toleranceMode;
     };
 
     /**
      * Returns true if given numbers are equal; false otherwise.
-     *
+     * 
      * @param firstNumber first number to compare
      * @param secondNumber second number to compare
      * @param tolerance1 tolerance for lower boundary
@@ -164,31 +160,30 @@ public enum ToleranceMode
      * @return true if given numbers are equal; false otherwise
      */
     public abstract boolean isEqual
-        ( double firstNumber
-        , double secondNumber
-        , double tolerance1
-        , double tolerance2
-        , boolean includeLowerBound
-        , boolean includeUpperBound );
+            (double firstNumber
+                    , double secondNumber
+                    , double tolerance1
+                    , double tolerance2
+                    , boolean includeLowerBound
+                    , boolean includeUpperBound);
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toleranceMode;
     }
 
     /**
      * Parses string representation of <code>ToleranceMode</code>.
-     *
+     * 
      * @param toleranceMode string representation of <code>ToleranceMode</code>
      * @return parsed <code>ToleranceMode</code>
      */
-    public static ToleranceMode parseToleranceMode(String toleranceMode)
-    {
-        ToleranceMode result = toleranceModes.get(toleranceMode);
+    public static ToleranceMode parseToleranceMode(String toleranceMode) {
+        final ToleranceMode result = toleranceModes.get(toleranceMode);
 
-        if (result == null)
+        if (result == null) {
             throw new QTIParseException("Invalid " + CLASS_TAG + " '" + toleranceMode + "'.");
+        }
 
         return result;
     }

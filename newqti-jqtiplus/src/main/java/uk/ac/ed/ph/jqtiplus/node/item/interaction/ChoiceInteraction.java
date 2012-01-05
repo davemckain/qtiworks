@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -57,59 +56,57 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 
- * The choice interaction presents A set of choices to the candidate. The 
- * candidate's task is to select one or more of the choices, up to A maximum of 
- * maxChoices. There is no corresponding minimum number of choices. The interaction 
+ * The choice interaction presents A set of choices to the candidate. The
+ * candidate's task is to select one or more of the choices, up to A maximum of
+ * maxChoices. There is no corresponding minimum number of choices. The interaction
  * is always initialized with no choices selected.
- * 
- * The choiceInteraction must be bound to A response variable with A baseType of 
+ * The choiceInteraction must be bound to A response variable with A baseType of
  * identifier and single or multiple cardinality.
- * 
  * Attribute : shuffle [1]: boolean = false
- * If the shuffle attribute is true then the delivery engine must randomize the 
+ * If the shuffle attribute is true then the delivery engine must randomize the
  * order in which the choices are presented subject to the fixed attribute.
- * 
  * Attribute : maxChoices [1]: integer = 1
- * The maximum number of choices that the candidate is allowed to select. If 
+ * The maximum number of choices that the candidate is allowed to select. If
  * maxChoices is 0 then there is no restriction. If maxChoices is greater than 1 (or 0)
  * then the interaction must be bound to A response with multiple cardinality.
- * 
  * Attribute : minChoices [0..1]: integer = 0
  * The minimum number of choices that the candidate is required to select to form A valid
- * response. If minChoices is 0 then the candidate is not required to select any choices. 
+ * response. If minChoices is 0 then the candidate is not required to select any choices.
  * minChoices must be less than or equal to the limit imposed by maxChoices.
- * 
  * Contains : simpleChoice [1..*]
- * An ordered list of the choices that are displayed to the user. The order is the order 
+ * An ordered list of the choices that are displayed to the user. The order is the order
  * of the choices presented to the user, unless shuffle is true.
  * 
  * @author Jonathon Hare
  */
 public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 7280640816320200269L;
 
     /** Name of this class in xml schema. */
     public static String CLASS_TAG = "choiceInteraction";
-    
+
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
+
     /** Default value of shuffle attribute. */
     public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
-    
+
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+
     /** Default value of maxChoices attribute . */
     public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
-    
+
     /** Name of minChoices attribute in xml schema. */
     public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+
     /** Default value of minChoices attribute . */
     public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
-    
+
     /**
      * Construct new interaction.
-     *  
+     * 
      * @param parent Parent node
      */
     public ChoiceInteraction(XmlNode parent) {
@@ -118,7 +115,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE));
-        
+
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
     }
 
@@ -133,125 +130,123 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      */
     @Override
     public List<? extends XmlNode> getChildren() {
-        List<XmlNode> children = new ArrayList<XmlNode>();
+        final List<XmlNode> children = new ArrayList<XmlNode>();
         children.addAll(super.getChildren());
         children.addAll(getNodeGroups().getSimpleChoiceGroup().getSimpleChoices());
-        
+
         return Collections.unmodifiableList(children);
     }
 
     /**
      * Sets new value of shuffle attribute.
-     *
+     * 
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
-    public void setShuffle(Boolean shuffle)
-    {
+    @Override
+    public void setShuffle(Boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(shuffle);
     }
 
     /**
      * Gets value of shuffle attribute.
-     *
+     * 
      * @return value of shuffle attribute
      * @see #setShuffle
      */
-    public Boolean getShuffle()
-    {
+    @Override
+    public Boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getValue();
     }
 
     /**
      * Sets new value of maxChoices attribute.
-     *
+     * 
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices)
-    {
+    public void setMaxChoices(Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
     /**
      * Gets value of maxChoices attribute.
-     *
+     * 
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices()
-    {
+    public Integer getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getValue();
     }
 
     /**
      * Sets new value of minChoices attribute.
-     *
+     * 
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices)
-    {
+    public void setMinChoices(Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
     /**
      * Gets value of minChoices attribute.
-     *
+     * 
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
-    public Integer getMinChoices()
-    {
+    public Integer getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getValue();
     }
-    
+
     /**
      * Gets simpleChoice children.
-     *
+     * 
      * @return simpleChoice children
      */
-    public List<SimpleChoice> getSimpleChoices()
-    {
+    public List<SimpleChoice> getSimpleChoices() {
         return getNodeGroups().getSimpleChoiceGroup().getSimpleChoices();
     }
 
     /**
      * Gets simpleChoice child with given identifier or null.
-     *
+     * 
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public SimpleChoice getSimpleChoice(String identifier)
-    {
-        for (SimpleChoice choice : getSimpleChoices())
-            if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier))
+    public SimpleChoice getSimpleChoice(String identifier) {
+        for (final SimpleChoice choice : getSimpleChoices()) {
+            if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
+            }
+        }
 
         return null;
     }
-    
+
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
-        
-        if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) 
+
+        if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) {
             result.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
-        
-        if (getResponseIdentifier() != null)
-        {
-            ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier())
+        }
+
+        if (getResponseIdentifier() != null) {
+            final ResponseDeclaration declaration = getResponseDeclaration();
+            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
                 result.add(new ValidationError(this, "Response variable must have identifier base type"));
-            
-            if (declaration != null && getMaxChoices() == 1 && 
-                    declaration.getCardinality() != null && (
-                    !declaration.getCardinality().isSingle() &&
-                    !declaration.getCardinality().isMultiple()))
+            }
+
+            if (declaration != null && getMaxChoices() == 1 &&
+                    declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
+                    !declaration.getCardinality().isMultiple()) {
                 result.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
-            
-            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple())
+            }
+
+            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
                 result.add(new ValidationError(this, "Response variable must have multiple cardinality"));
+            }
         }
     }
 
@@ -264,13 +259,13 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     @Override
     public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
         /* Extract response values */
-        Set<String> responseChoiceIdentifiers = new HashSet<String>();
+        final Set<String> responseChoiceIdentifiers = new HashSet<String>();
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
         else if (responseValue.getCardinality().isList()) {
             /* (Container response) */
-            for (SingleValue value : ((ListValue) responseValue)) {
+            for (final SingleValue value : (ListValue) responseValue) {
                 responseChoiceIdentifiers.add(value.toString());
             }
         }
@@ -280,26 +275,26 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
         }
 
         /* Check the number of responses */
-        int minChoices = getMinChoices();
-        int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
+        final int maxChoices = getMaxChoices();
         if (responseChoiceIdentifiers.size() < minChoices) {
             return false;
         }
         if (maxChoices != 0 && responseChoiceIdentifiers.size() > maxChoices) {
             return false;
         }
-        
+
         /* Make sure each choice is a valid identifier */
-        Set<Identifier> simpleChoiceIdentifiers = new HashSet<Identifier>();
-        for (SimpleChoice simpleChoice : getSimpleChoices()) {
+        final Set<Identifier> simpleChoiceIdentifiers = new HashSet<Identifier>();
+        for (final SimpleChoice simpleChoice : getSimpleChoices()) {
             simpleChoiceIdentifiers.add(simpleChoice.getIdentifier());
         }
-        for (String responseChoiceIdentifier : responseChoiceIdentifiers) {
+        for (final String responseChoiceIdentifier : responseChoiceIdentifiers) {
             if (!simpleChoiceIdentifiers.contains(responseChoiceIdentifier)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 }

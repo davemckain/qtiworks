@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package org.qtitools.qti.controller;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIException;
@@ -72,16 +71,14 @@ public class AssessmentTestController implements Serializable {
 
     private static final long serialVersionUID = -4931525113712266165L;
 
-    /** Logger. */
-    protected static Logger logger = LoggerFactory.getLogger(AssessmentTestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestController.class);
     
     private ItemFlow flow;
 
     /**
      * Create an AssessmentTestController
      */
-    public AssessmentTestController()
-    {
+    public AssessmentTestController() {
         logger.info("Creating new AssessmentTestController");
     }
     
@@ -93,8 +90,7 @@ public class AssessmentTestController implements Serializable {
      * 
      * @param file File to load.
      */
-    public AssessmentTestController(File file)
-    {
+    public AssessmentTestController(File file) {
         this();
         load(file);
     }
@@ -105,8 +101,7 @@ public class AssessmentTestController implements Serializable {
      * 
      * @param flow Flow to use.
      */
-    public AssessmentTestController(ItemFlow flow)
-    {
+    public AssessmentTestController(ItemFlow flow) {
         this();
         this.flow = flow;
     }
@@ -115,8 +110,7 @@ public class AssessmentTestController implements Serializable {
      * Load and initialize an assessmentTest using the default flow model.
      * @param testFile File containing assessmentTest
      */
-    public void load(File testFile)
-    {
+    public void load(File testFile) {
         logger.info("Creating new AssessmentTest from "+testFile);
         AssessmentTest test = new AssessmentTest();
         
@@ -138,35 +132,29 @@ public class AssessmentTestController implements Serializable {
      * Get the assessmentTest associated with the controller
      * @return the assessmentTest 
      */
-    public AssessmentTest getTest()
-    {
+    public AssessmentTest getTest() {
         return flow.getTest();
     }
     
-    public TestPart getCurrentTestPart()
-    {
+    public TestPart getCurrentTestPart() {
         return flow.getCurrentTestPart();
     }
 
-    public AssessmentItemRef getCurrentItemRef()
-    {
+    public AssessmentItemRef getCurrentItemRef() {
         return flow.getCurrentItemRef();
     }
 
-    public AssessmentItem getCurrentItem()
-    {
+    public AssessmentItem getCurrentItem() {
         if (flow.getCurrentItemRef() != null)
             return flow.getCurrentItemRef().getItem();
         return null;
     }
     
-    private AssessmentItemRef getPreviousItem(boolean includeFinished)
-    {
+    private AssessmentItemRef getPreviousItem(boolean includeFinished) {
         return flow.getPrevItemRef(includeFinished);
     }
 
-    private AssessmentItemRef getNextItem(boolean includeFinished)
-    {
+    private AssessmentItemRef getNextItem(boolean includeFinished) {
         return flow.getNextItemRef(includeFinished);
     }
 
@@ -216,8 +204,7 @@ public class AssessmentTestController implements Serializable {
         List<ResponseDeclaration> responseDeclarations = getCurrentItemRef().getItem().getResponseDeclarations();
         Map<String, Value> responseMap = new HashMap<String, Value>();
         
-        for (ResponseDeclaration declaration : responseDeclarations)
-        {
+        for (ResponseDeclaration declaration : responseDeclarations) {
             responseMap.put(declaration.getIdentifier(), declaration.getValue());
         }
         return responseMap;
@@ -247,18 +234,15 @@ public class AssessmentTestController implements Serializable {
         return getParentTitles();
     }
 
-    public boolean previousEnabled()
-    {
+    public boolean previousEnabled() {
         return flow.hasPrevItemRef(false);
     }
 
-    public boolean backwardEnabled()
-    {
+    public boolean backwardEnabled() {
         return flow.hasPrevItemRef(true);
     }
 
-    public boolean nextEnabled()
-    {
+    public boolean nextEnabled() {
         TestPart testPart = getCurrentTestPart();
         if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished())
             return false;
@@ -266,8 +250,7 @@ public class AssessmentTestController implements Serializable {
         return true;
     }
 
-    public boolean forwardEnabled()
-    {
+    public boolean forwardEnabled() {
         TestPart testPart = getCurrentTestPart();
         if (testPart != null && testPart.areJumpsEnabled() && !getCurrentItemRef().isFinished())
             return false;
@@ -379,21 +362,18 @@ public class AssessmentTestController implements Serializable {
      * Gets an array of titles of all the visible containing sections of this item 
      * (in reverse order, so that the top-most section is first)
      */
-    protected List<String> getParentTitles()
-    {
+    protected List<String> getParentTitles() {
         return getParentTitles(getCurrentItemRef().getParentSection());
     }
 
     /*
      * Gets an array of all the visible titles of sections above and including this (in reverse order)
      */
-    private List<String> getParentTitles(AssessmentSection thiz)
-    {
+    private List<String> getParentTitles(AssessmentSection thiz) {
         List<String> titles = new ArrayList<String>();
 
         AssessmentSection section = thiz;
-        while (section != null)
-        {
+        while (section != null) {
             if (section.getVisible())
                 titles.add(0, section.getTitle());
         
@@ -408,13 +388,11 @@ public class AssessmentTestController implements Serializable {
      * 
      * @return assessment rubric for the current item
      */
-    public List<List<RubricBlock>> getRubricBlocks()
-    {
+    public List<List<RubricBlock>> getRubricBlocks() {
         List<List<RubricBlock>> blocks = new ArrayList<List<RubricBlock>>();
 
         AssessmentSection section = getCurrentItemRef().getParentSection();
-        while (section != null)
-        {
+        while (section != null) {
             blocks.add(0, section.getRubricBlocks());
 
             section = section.getParentSection();

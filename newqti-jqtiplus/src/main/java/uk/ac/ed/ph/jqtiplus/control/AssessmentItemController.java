@@ -1,7 +1,35 @@
-/* $Id:SAXErrorHandler.java 2824 2008-08-01 15:46:17Z davemckain $
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
  *
- * Copyright (c) 2011, The University of Edinburgh.
- * All Rights Reserved
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.control;
 
@@ -59,21 +87,22 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Usage: one-shot, not thread safe.
- * 
  * FIXME: Document this!
  * FIXME: This now includes runtime context information, so is no longer stateless. Need to fix that!
  */
 public final class AssessmentItemController {
-    
-    protected static Logger logger = LoggerFactory.getLogger(AssessmentItemController.class);
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemController.class);
+
     /** FIXME: Make this settable! */
     public static int MAX_TEMPLATE_PROCESSING_TRIES = 100;
-    
+
     private final AssessmentItemManager itemManager;
+
     private final AssessmentItem item;
+
     private final AssessmentItemState itemState;
-    
+
     public AssessmentItemController(AssessmentItemManager itemManager, AssessmentItemState assessmentItemState) {
         ConstraintUtilities.ensureNotNull(itemManager, "assessmentItemManager");
         ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
@@ -81,7 +110,7 @@ public final class AssessmentItemController {
         this.item = itemManager.getItem();
         this.itemState = assessmentItemState;
     }
-    
+
     public AssessmentItemManager getItemManager() {
         return itemManager;
     }
@@ -89,51 +118,51 @@ public final class AssessmentItemController {
     public AssessmentItem getItem() {
         return item;
     }
-    
+
     public AssessmentItemState getItemState() {
         return itemState;
     }
 
     //-------------------------------------------------------------------
-    
+
     public ValidationResult validate() {
         return itemManager.validateItem();
     }
-    
+
     public ResponseProcessing getResolvedResponseProcessing() {
         return itemManager.getResolvedResponseProcessing();
     }
-    
+
     //-------------------------------------------------------------------
     // Shuffle helpers
-    
+
     public <C extends Choice> void shuffleInteractionChoiceOrder(final Interaction interaction, final List<C> choiceList) {
-        List<List<C>> choiceLists = new ArrayList<List<C>>();
+        final List<List<C>> choiceLists = new ArrayList<List<C>>();
         choiceLists.add(choiceList);
         shuffleInteractionChoiceOrders(interaction, choiceLists);
     }
-    
+
     public <C extends Choice> void shuffleInteractionChoiceOrders(final Interaction interaction, final List<List<C>> choiceLists) {
         if (interaction instanceof Shuffleable) {
             if (((Shuffleable) interaction).getShuffle().booleanValue()) {
-                List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
-                for (List<C> choiceList : choiceLists) {
-                    List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
+                final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
+                for (final List<C> choiceList : choiceLists) {
+                    final List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
 
                     /* Build up sortable identifiers */
-                    for (int i=0; i<choiceList.size(); i++) {
-                        C choice = choiceList.get(i);
+                    for (int i = 0; i < choiceList.size(); i++) {
+                        final C choice = choiceList.get(i);
                         if (!choice.getFixed()) {
                             shuffleableChoiceIdentifiers.add(choice.getIdentifier());
                         }
                     }
-                    
+
                     /* Perform shuffle */
                     Collections.shuffle(shuffleableChoiceIdentifiers);
-                    
+
                     /* Then merge fixed identifiers back in */
-                    for (int i=0, sortedIndex=0; i<choiceList.size(); i++) {
-                        C choice = choiceList.get(i);
+                    for (int i = 0, sortedIndex = 0; i < choiceList.size(); i++) {
+                        final C choice = choiceList.get(i);
                         if (choice.getFixed()) {
                             choiceIdentifiers.add(choice.getIdentifier());
                         }
@@ -149,36 +178,36 @@ public final class AssessmentItemController {
             }
         }
     }
-    
+
     //-------------------------------------------------------------------
-    
+
     public Value lookupVariable(VariableDeclaration variableDeclaration) {
         ConstraintUtilities.ensureNotNull(variableDeclaration);
         return lookupVariable(variableDeclaration.getIdentifier());
     }
-    
+
     public Value lookupVariable(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return itemState.getValue(identifier);
     }
-    
+
     public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value value = null;
-        for (VariableType type : permittedTypes) {
+        for (final VariableType type : permittedTypes) {
             switch (type) {
                 case TEMPLATE:
                     value = itemState.getTemplateValue(identifier);
                     break;
-                    
+
                 case RESPONSE:
                     value = itemState.getResponseValue(identifier);
                     break;
-                    
+
                 case OUTCOME:
                     value = itemState.getOutcomeValue(identifier);
                     break;
-                    
+
                 default:
                     throw new QTILogicException("Unexpected switch case");
             }
@@ -188,38 +217,39 @@ public final class AssessmentItemController {
 
     /**
      * Set the completionStatus to the given value.
+     * 
      * @param completionStatus value to set
      */
     public void setCompletionStatus(String completionStatus) {
         itemState.setOutcomeValue(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, new IdentifierValue(completionStatus));
     }
-    
+
     private void initValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         itemState.setValue(declaration, computeInitialValue(declaration));
     }
-    
+
     private Value computeInitialValue(Identifier identifier) {
         return computeDefaultValue(identifier);
     }
-    
+
     private Value computeInitialValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
     }
-    
+
     /* DM: This copes with defaults and overridden values */
     public Value computeDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
-    
+
     public Value computeDefaultValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         Value result = itemState.getOverriddenDefaultValue(declaration);
-        if (result==null) {
-            DefaultValue defaultValue = declaration.getDefaultValue();
-            if (defaultValue!=null) {
+        if (result == null) {
+            final DefaultValue defaultValue = declaration.getDefaultValue();
+            if (defaultValue != null) {
                 result = defaultValue.evaluate();
             }
             else {
@@ -228,36 +258,36 @@ public final class AssessmentItemController {
         }
         return result;
     }
-    
+
     private VariableDeclaration ensureVariableDeclaration(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
-        VariableDeclaration result = item.getVariableDeclaration(identifier);
-        if (result==null) {
+        final VariableDeclaration result = item.getVariableDeclaration(identifier);
+        if (result == null) {
             throw new QTIEvaluationException("Item variable with identifier " + identifier + " is not defined");
         }
         return result;
     }
-    
+
     private ResponseDeclaration ensureResponseDeclaration(Identifier responseIdentifier) {
         ConstraintUtilities.ensureNotNull(responseIdentifier);
-        ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
-        if (result==null) {
+        final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
+        if (result == null) {
             throw new QTIEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
         }
         return result;
     }
-    
+
     public Value computeCorrectResponse(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
-    
+
     public Value computeCorrectResponse(ResponseDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         Value result = itemState.getOverriddenCorrectResponseValue(declaration);
-        if (result==null) {
-            CorrectResponse correctResponse = declaration.getCorrectResponse();
-            if (correctResponse!=null) {
+        if (result == null) {
+            final CorrectResponse correctResponse = declaration.getCorrectResponse();
+            if (correctResponse != null) {
                 result = correctResponse.evaluate();
             }
             else {
@@ -270,13 +300,12 @@ public final class AssessmentItemController {
     /**
      * Returns true if this declarations value matches its correctValue.
      * Returns null if there is no correct value
-     * 
      * NOTE: This only tests for "the" "correct" response, not "a" correct response.
      * 
      * @return true if the associated correctResponse matches the value; false or null otherwise.
      */
     public Boolean isCorrectResponse(ResponseDeclaration responseDeclaration) {
-        Value correctResponseValue = computeCorrectResponse(responseDeclaration);
+        final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
         if (correctResponseValue.isNull()) {
             return null;
         }
@@ -285,23 +314,21 @@ public final class AssessmentItemController {
 
     //-------------------------------------------------------------------
     // Workflow methods
-    
+
     private void fireLifecycleEvent(LifecycleEventType eventType) {
-        for (JQTIExtensionPackage extensionPackage : itemManager.getQTIObjectManager().getJQTIController().getExtensionPackages()) {
+        for (final JQTIExtensionPackage extensionPackage : itemManager.getQTIObjectManager().getJQTIExtensionManager().getExtensionPackages()) {
             extensionPackage.lifecycleEvent(this, eventType);
         }
     }
-    
+
     /**
      * Initialise the item by setting the template defaults, resetting variables,
      * and performing templateProcessing.
-     * 
      * An item should only be initialised if it is going to be rendered/presented
      * 
      * @param templateDefaults given templateDefaults values
-     *  
      * @throws RuntimeValidationException if a runtime validation error is detected during template
-     *   processing. 
+     *             processing.
      */
     public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
         // DM: Changed behaviour here in order to suit MathAssess project better. We now only
@@ -314,69 +341,69 @@ public final class AssessmentItemController {
         if (itemState.isInitialized()) {
             return;
         }
-        
-        ItemProcessingContext context = new ItemProcessingContextImpl();
-        
+
+        final ItemProcessingContext context = new ItemProcessingContextImpl();
+
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
             /* Reset state */
             itemState.reset();
-            
+
             /* Set up built-in variables */
             setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
             itemState.setResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, new IntegerValue(0));
-            
+
             /* Perform template processing as many times as required. */
             int templateProcessingAttemptNumber = 0;
             boolean templateProcessingCompleted = false;
             while (!templateProcessingCompleted) {
                 templateProcessingCompleted = doTemplateProcessing(context, templateDefaults, ++templateProcessingAttemptNumber);
             }
-            
+
             /* Initialises outcomeDeclaration's values. */
-            for (OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+            for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
                 initValue(outcomeDeclaration);
             }
-        
+
             /* Initialises responseDeclaration's values. */
-            for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+            for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
                 initValue(responseDeclaration);
             }
-        
+
             /* Set the completion status to unknown */
             setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
-            
+
             /* Initialize all interactions in the itemBody */
-            for (Interaction interaction : item.getItemBody().getInteractions()) {
+            for (final Interaction interaction : item.getItemBody().getInteractions()) {
                 interaction.initialize(this);
             }
-            
+
             itemState.setInitialized(true);
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
         }
     }
-    
-    
+
+
     private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
             throws RuntimeValidationException {
         logger.info("Template Processing attempt #{} starting", attemptNumber);
-        
+
         /* Initialise template defaults with any externally provided defaults */
-        if (templateDefaults!=null) {
+        if (templateDefaults != null) {
             logger.debug("Setting template default values");
-            for (TemplateDefault templateDefault : templateDefaults) {
-                TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
+            for (final TemplateDefault templateDefault : templateDefaults) {
+                final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
                 if (declaration != null) {
-                    Value defaultValue = templateDefault.evaluate(context);
+                    final Value defaultValue = templateDefault.evaluate(context);
                     itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
                 }
             }
         }
 
         /* Initialise template values. */
-        for (TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
             initValue(templateDeclaration);
         }
 
@@ -386,15 +413,15 @@ public final class AssessmentItemController {
         }
 
         /* Perform templateProcessing. */
-        TemplateProcessing templateProcessing = item.getTemplateProcessing();
+        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         if (templateProcessing != null) {
             logger.debug("Evaluating template processing rules");
             try {
-                for (TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
+                for (final TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
                     templateProcessingRule.evaluate(context);
                 }
             }
-            catch (TemplateProcessingInterrupt e) {
+            catch (final TemplateProcessingInterrupt e) {
                 switch (e.getInterruptType()) {
                     case EXIT_TEMPLATE:
                         /* Exit template processing */
@@ -413,17 +440,15 @@ public final class AssessmentItemController {
         }
         return true;
     }
-    
+
     /**
      * Set the responses for this assessmentItem.
      * The provided responses must be in the form responseIdentifier -> List of responses.
      * If A given response is A singleValue, then the list will only have one element.
-     * 
      * Record cardinality responses are not supported!
      * 
      * @return a List of identifiers corresponding to responses which could not be successfully
-     *   parsed. (E.g. expected a float but got a String)
-     * 
+     *         parsed. (E.g. expected a float but got a String)
      * @param responses Responses to set.
      */
     public List<String> setResponses(Map<String, List<String>> responses) {
@@ -433,18 +458,18 @@ public final class AssessmentItemController {
          * (The spec seems to indicate that ALL responses bound to these interactions
          * should be set, which is why we have this special code here.)
          */
-        ItemBody itemBody = item.getItemBody();
-        for (EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
+        final ItemBody itemBody = item.getItemBody();
+        for (final EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
             itemState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
         }
-        
+
         /* Now bind response values for each incoming response. (Note that this may be a subset
          * of all responses, since adaptive items will only present certain interactions at certain
          * times.) */
-        List<String> badResponses = new ArrayList<String>();
-        for (String responseIdentifier : responses.keySet()) {
+        final List<String> badResponses = new ArrayList<String>();
+        for (final String responseIdentifier : responses.keySet()) {
             try {
-                Interaction interaction = itemBody.getInteraction(new Identifier(responseIdentifier));
+                final Interaction interaction = itemBody.getInteraction(new Identifier(responseIdentifier));
                 if (interaction != null) {
                     interaction.bindResponse(this, responses.get(responseIdentifier));
                 }
@@ -452,47 +477,48 @@ public final class AssessmentItemController {
                     logger.warn("setResponses couldn't find interaction for identifier " + responseIdentifier);
                 }
             }
-            catch (ResponseBindingException e) {
+            catch (final ResponseBindingException e) {
                 badResponses.add(responseIdentifier);
             }
         }
         return badResponses;
     }
-    
+
     /**
      * Process the responses
-     * @throws RuntimeValidationException 
+     * 
+     * @throws RuntimeValidationException
      */
     public void processResponses() throws RuntimeValidationException {
-        ItemProcessingContext processingContext = new ItemProcessingContextImpl();
+        final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* We always count the attempt, unless the response was to an endAttemptInteraction
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
-            for (Interaction interaction : item.getItemBody().getInteractions()) {
+            for (final Interaction interaction : item.getItemBody().getInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
-                    EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
-                    BooleanValue value = (BooleanValue) itemState.getResponseValue(interaction);
-                    if (value!=null && value.booleanValue()==true) {
+                    final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
+                    final BooleanValue value = (BooleanValue) itemState.getResponseValue(interaction);
+                    if (value != null && value.booleanValue() == true) {
                         countAttempt = !Boolean.FALSE.equals(endAttemptInteraction.getCountAttempt());
                         break;
                     }
                 }
             }
             if (countAttempt) {
-                int oldAttempts = ((IntegerValue) itemState.getResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)).intValue();
+                final int oldAttempts = ((IntegerValue) itemState.getResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)).intValue();
                 itemState.setResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, new IntegerValue(oldAttempts + 1));
             }
-            
+
             if (!item.getAdaptive()) {
-                for (OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
-                    initValue(outcomeDeclaration);            
+                for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+                    initValue(outcomeDeclaration);
                 }
             }
-            
-            ResponseProcessing responseProcessing = getResolvedResponseProcessing();
+
+            final ResponseProcessing responseProcessing = getResolvedResponseProcessing();
             if (responseProcessing != null) {
                 responseProcessing.evaluate(processingContext);
             }
@@ -506,79 +532,78 @@ public final class AssessmentItemController {
      * Validate the responses set for each of the interactions
      * 
      * @return a List of identifiers corresponding to invalid responses. The List will be
-     *   empty if all responses were valid.
+     *         empty if all responses were valid.
      */
     public List<Identifier> validateResponses() {
-        List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
-        for (Interaction interaction : item.getItemBody().getInteractions()) {
-            Value responseValue = itemState.getResponseValue(interaction);
+        final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
+        for (final Interaction interaction : item.getItemBody().getInteractions()) {
+            final Value responseValue = itemState.getResponseValue(interaction);
             if (!interaction.validateResponse(this, responseValue)) {
                 invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
             }
         }
         return invalidResponseIdentifiers;
     }
-    
+
     //-------------------------------------------------------------------
     // Computes standalone ItemResult for this item. This wasn't available in the original JQTI
-    
+
     public ItemResult computeItemResult() {
-        ItemResult result = new ItemResult(null);
+        final ItemResult result = new ItemResult(null);
         result.setIdentifier(item.getIdentifier());
         result.setDateStamp(new Date());
-        result.setSessionStatus(itemState.getNumAttempts()>0 ? SessionStatus.FINAL : SessionStatus.INITIAL); // TODO: Not really sure what's best here, but probably not important!
+        result.setSessionStatus(itemState.getNumAttempts() > 0 ? SessionStatus.FINAL : SessionStatus.INITIAL); // TODO: Not really sure what's best here, but probably not important!
         recordItemVariables(result);
         return result;
     }
-    
+
     void recordItemVariables(ItemResult result) {
         result.getItemVariables().clear();
-        for (Entry<Identifier, Value> mapEntry : itemState.getOutcomeValues().entrySet()) {
-            OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
-            Value value = mapEntry.getValue();
-            OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
+        for (final Entry<Identifier, Value> mapEntry : itemState.getOutcomeValues().entrySet()) {
+            final OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
+            final Value value = mapEntry.getValue();
+            final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
             result.getItemVariables().add(variable);
         }
-        for (Entry<Identifier, Value> mapEntry : itemState.getResponseValues().entrySet()) {
-            ResponseDeclaration declaration = item.getResponseDeclaration(mapEntry.getKey());
-            Value value = mapEntry.getValue();
+        for (final Entry<Identifier, Value> mapEntry : itemState.getResponseValues().entrySet()) {
+            final ResponseDeclaration declaration = item.getResponseDeclaration(mapEntry.getKey());
+            final Value value = mapEntry.getValue();
             List<Identifier> interactionChoiceOrder = null;
-            Interaction interaction = item.getItemBody().getInteraction(declaration.getIdentifier());
+            final Interaction interaction = item.getItemBody().getInteraction(declaration.getIdentifier());
             if (interaction != null && interaction instanceof Shuffleable) {
                 interactionChoiceOrder = itemState.getShuffledInteractionChoiceOrder(interaction);
             }
-            ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
+            final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
             result.getItemVariables().add(variable);
         }
-        for (Entry<Identifier, Value> mapEntry : itemState.getTemplateValues().entrySet()) {
-            TemplateDeclaration declaration = item.getTemplateDeclaration(mapEntry.getKey());
-            Value value = mapEntry.getValue();
-            TemplateVariable variable = new TemplateVariable(result, declaration, value);
+        for (final Entry<Identifier, Value> mapEntry : itemState.getTemplateValues().entrySet()) {
+            final TemplateDeclaration declaration = item.getTemplateDeclaration(mapEntry.getKey());
+            final Value value = mapEntry.getValue();
+            final TemplateVariable variable = new TemplateVariable(result, declaration, value);
             result.getItemVariables().add(variable);
         }
     }
-    
+
     //-------------------------------------------------------------------
-    
+
     /**
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
-     * 
-     * Returns true if this item reference was correctly responded; 
+     * Returns true if this item reference was correctly responded;
      * Correctly responded means ALL defined responseVars match their associated correctResponse.
-     * Returns null if any of the responseDeclarations don't have  correctResponses.
-     *
-     * @return true if this item reference was correctly responded; null if not all 
-     * responseDeclarations contain correctResponses; false otherwise
+     * Returns null if any of the responseDeclarations don't have correctResponses.
+     * 
+     * @return true if this item reference was correctly responded; null if not all
+     *         responseDeclarations contain correctResponses; false otherwise
      * @see #isIncorrect
      */
     public Boolean isCorrect() {
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (responseDeclaration.getCorrectResponse()==null) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+            if (responseDeclaration.getCorrectResponse() == null) {
                 return null;
             }
         }
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
                 return Boolean.FALSE;
             }
@@ -589,43 +614,40 @@ public final class AssessmentItemController {
     /**
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
+     * Returns the number of correct responses
      * 
-     * Returns the number of correct responses 
-     *
-     * @return the number of correct responses 
+     * @return the number of correct responses
      * @see #countIncorrect
      */
     public int countCorrect() {
         int count = 0;
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
                 count++;
             }
         }
         return count;
     }
-    
+
     /**
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
-     * 
-     * Returns true if this item reference was incorrectly responded; 
-     * Incorrectly responded means ANY defined responseVars didn't match their 
+     * Returns true if this item reference was incorrectly responded;
+     * Incorrectly responded means ANY defined responseVars didn't match their
      * associated correctResponse.
-     * 
      * Returns null if any of the responseDeclarations don't have correctResponses.
-     *
-     * @return true if this item reference was incorrectly responded; null if not all 
-     * responseDeclarations contain correctResponses; false otherwise
+     * 
+     * @return true if this item reference was incorrectly responded; null if not all
+     *         responseDeclarations contain correctResponses; false otherwise
      * @see #isCorrect
      */
     public Boolean isIncorrect() {
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (responseDeclaration.getCorrectResponse()==null) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+            if (responseDeclaration.getCorrectResponse() == null) {
                 return null;
             }
         }
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
                 return Boolean.TRUE;
             }
@@ -636,30 +658,29 @@ public final class AssessmentItemController {
     /**
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
+     * Returns the number of incorrect responses
      * 
-     * Returns the number of incorrect responses 
-     *
-     * @return the number of incorrect responses 
+     * @return the number of incorrect responses
      * @see #countIncorrect
      */
-    public int countIncorrect()    {
+    public int countIncorrect() {
         int count = 0;
-        for (ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
                 count++;
             }
         }
         return count;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-            + "(itemManager=" + itemManager
-            + ",itemState=" + itemState
-            + ")";
+                + "(itemManager=" + itemManager
+                + ",itemState=" + itemState
+                + ")";
     }
-    
+
     //---------------------------------------------------
 
     /**
@@ -668,115 +689,134 @@ public final class AssessmentItemController {
     protected class ItemProcessingContextImpl implements ItemProcessingContext {
 
         private static final long serialVersionUID = -6778262823346257573L;
-        
+
         private final Map<String, Value> expressionValues;
-        
+
         public ItemProcessingContextImpl() {
             this.expressionValues = new TreeMap<String, Value>();
         }
-        
+
+        @Override
         public AssessmentItem getItem() {
             return item;
         }
-        
+
+        @Override
         public AssessmentObject getOwner() {
             return item;
         }
-        
+
+        @Override
         public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
             return itemManager.resolveVariableReference(variableReferenceIdentifier);
         }
 
+        @Override
         public ResponseProcessing getResolvedResponseProcessing() {
             return itemManager.getResolvedResponseProcessing();
         }
-        
+
+        @Override
         public Value getExpressionValue(Expression expression) {
             return expressionValues.get(expression.computeXPath());
         }
-        
+
+        @Override
         public Map<String, Value> exportExpressionValues() {
             return Collections.unmodifiableMap(expressionValues);
         }
 
+        @Override
         public void setExpressionValue(Expression expression, Value value) {
             expressionValues.put(expression.computeXPath(), value);
         }
-        
+
+        @Override
         public void setTemplateValue(TemplateDeclaration variableDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(variableDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setTemplateValue(variableDeclaration, value);
         }
-        
+
+        @Override
         public void setOutcomeValue(OutcomeDeclaration variableDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(variableDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setOutcomeValue(variableDeclaration, value);
         }
-        
+
+        @Override
         public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
             ConstraintUtilities.ensureNotNull(outcomeDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setOutcomeValueFromLookupTable(outcomeDeclaration, value);
         }
-        
+
+        @Override
         public void setVariableValue(VariableDeclaration variableDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(variableDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setValue(variableDeclaration, value);
         }
-        
+
+        @Override
         public void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(responseDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setOverriddenResponseDefaultValue(responseDeclaration, value);
         }
-        
+
+        @Override
         public void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(responseDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setOverriddenCorrectResponseValue(responseDeclaration, value);
         }
-        
+
+        @Override
         public void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value) {
             ConstraintUtilities.ensureNotNull(outcomeDeclaration);
             ConstraintUtilities.ensureNotNull(value);
             itemState.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
         }
 
+        @Override
         public Value lookupVariable(VariableDeclaration variableDeclaration) {
             return AssessmentItemController.this.lookupVariable(variableDeclaration);
         }
-        
+
+        @Override
         public Value lookupVariable(Identifier identifier) {
             return AssessmentItemController.this.lookupVariable(identifier);
         }
-        
+
+        @Override
         public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
             return AssessmentItemController.this.lookupVariable(identifier, permittedTypes);
         }
-        
+
         /* DM: This copes with defaults and overridden values */
+        @Override
         public Value computeDefaultValue(Identifier identifier) {
             return AssessmentItemController.this.computeDefaultValue(identifier);
         }
-        
+
         public Value computeDefaultValue(VariableDeclaration declaration) {
             return AssessmentItemController.this.computeDefaultValue(declaration);
         }
 
+        @Override
         public Value computeCorrectReponse(Identifier responseIdentifier) {
             ConstraintUtilities.ensureNotNull(responseIdentifier);
             return AssessmentItemController.this.computeCorrectResponse(ensureResponseDeclaration(responseIdentifier));
         }
-        
+
         @Override
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()
-                + "(controller=" + AssessmentItemController.this
-                + ",expressionValues=" + expressionValues
-                + ")";
+                    + "(controller=" + AssessmentItemController.this
+                    + ",expressionValues=" + expressionValues
+                    + ")";
         }
     }
 }

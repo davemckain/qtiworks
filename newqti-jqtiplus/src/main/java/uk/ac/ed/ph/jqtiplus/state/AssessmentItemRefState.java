@@ -1,7 +1,35 @@
-/* $Id:SAXErrorHandler.java 2824 2008-08-01 15:46:17Z davemckain $
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
  *
- * Copyright (c) 2011, The University of Edinburgh.
- * All Rights Reserved
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
@@ -10,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
 
 import java.util.Collections;
 
@@ -22,103 +49,107 @@ import java.util.Collections;
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class AssessmentItemRefState extends SectionPartState {
 
-	private static final long serialVersionUID = -1407010070268750764L;
-	
-	private final AssessmentItemState itemState;
-	
-	private boolean presented;
-	private boolean responded;
-	private boolean skipped;
-	private boolean timedOut;
+    private static final long serialVersionUID = -1407010070268750764L;
 
-	private SessionStatus sessionStatus;
-	private String candidateComment;
+    private final AssessmentItemState itemState;
 
-	private final TimeRecord timeRecord;
+    private boolean presented;
 
-	public AssessmentItemRefState(AssessmentTestState testState, Identifier identifier, int siblingIndex, AssessmentItemState itemState) {
-		super(testState, identifier, siblingIndex, Collections.<SectionPartState>emptyList());
-		this.itemState = itemState;
-		this.sessionStatus = SessionStatus.INITIAL;
-		this.timeRecord = new TimeRecord(this);
-	}
-	
-	public AssessmentItemState getItemState() {
-		return itemState;
-	}
+    private boolean responded;
 
-	public TimeRecord getTimeRecord() {
-		return timeRecord;
-	}
-	   
-	//---------------------------------------------------------------
+    private boolean skipped;
 
-	public boolean isPresented() {
-		return presented;
-	}
+    private boolean timedOut;
 
-	public void setPresented(boolean presented) {
-		this.presented = presented;
-	}
+    private SessionStatus sessionStatus;
 
+    private String candidateComment;
 
-	public boolean isResponded() {
-		return responded;
-	}
+    private final TimeRecord timeRecord;
 
-	public void setResponded(boolean responded) {
-		this.responded = responded;
-	}
+    public AssessmentItemRefState(AssessmentTestState testState, Identifier identifier, int siblingIndex, AssessmentItemState itemState) {
+        super(testState, identifier, siblingIndex, Collections.<SectionPartState> emptyList());
+        this.itemState = itemState;
+        this.sessionStatus = SessionStatus.INITIAL;
+        this.timeRecord = new TimeRecord(this);
+    }
+
+    public AssessmentItemState getItemState() {
+        return itemState;
+    }
+
+    public TimeRecord getTimeRecord() {
+        return timeRecord;
+    }
+
+    //---------------------------------------------------------------
+
+    public boolean isPresented() {
+        return presented;
+    }
+
+    public void setPresented(boolean presented) {
+        this.presented = presented;
+    }
 
 
-	public boolean isSkipped() {
-		return skipped;
-	}
+    public boolean isResponded() {
+        return responded;
+    }
 
-	public void setSkipped(boolean skipped) {
-		this.skipped = skipped;
-	}
-
-
-	public boolean isTimedOut() {
-		return timedOut;
-	}
-
-	public void setTimedOut(boolean timedOut) {
-		this.timedOut = timedOut;
-	}
+    public void setResponded(boolean responded) {
+        this.responded = responded;
+    }
 
 
-	public SessionStatus getSessionStatus() {
-		return sessionStatus;
-	}
+    public boolean isSkipped() {
+        return skipped;
+    }
 
-	public void setSessionStatus(SessionStatus sessionStatus) {
-		this.sessionStatus = sessionStatus;
-	}
+    public void setSkipped(boolean skipped) {
+        this.skipped = skipped;
+    }
 
-	
-	public String getCandidateComment() {
-		return candidateComment;
-	}
 
-	public void setCandidateComment(String candidateComment) {
-		this.candidateComment = candidateComment;
-	}
-	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "@" + hashCode()
-            + "(testIdentifier=" + testIdentifier
-            + ",siblingIndex=" + siblingIndex
-			+ ",presented=" + presented
-			+ ",responded=" + responded
-			+ ",finished=" + finished
-			+ ",skipped=" + skipped
-			+ ",timedOut=" + timedOut
-			+ ",sessionStatus=" + sessionStatus
-			+ ",candidateComment=" + candidateComment
-			+ ",timeRecord=" + timeRecord
-			+ ")";
-	}
+    public boolean isTimedOut() {
+        return timedOut;
+    }
+
+    public void setTimedOut(boolean timedOut) {
+        this.timedOut = timedOut;
+    }
+
+
+    public SessionStatus getSessionStatus() {
+        return sessionStatus;
+    }
+
+    public void setSessionStatus(SessionStatus sessionStatus) {
+        this.sessionStatus = sessionStatus;
+    }
+
+
+    public String getCandidateComment() {
+        return candidateComment;
+    }
+
+    public void setCandidateComment(String candidateComment) {
+        this.candidateComment = candidateComment;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(testIdentifier=" + testIdentifier
+                + ",siblingIndex=" + siblingIndex
+                + ",presented=" + presented
+                + ",responded=" + responded
+                + ",finished=" + finished
+                + ",skipped=" + skipped
+                + ",timedOut=" + timedOut
+                + ",sessionStatus=" + sessionStatus
+                + ",candidateComment=" + candidateComment
+                + ",timeRecord=" + timeRecord
+                + ")";
+    }
 }

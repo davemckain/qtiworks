@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
@@ -65,49 +64,54 @@ import java.util.List;
  * @author Jiri Kajaba
  */
 public class OutcomeDeclaration extends VariableDeclaration {
-    
-    private static final long serialVersionUID = 1L;
-    
+
+    private static final long serialVersionUID = -5519664280437668195L;
+
     /** Name of this class in xml schema. */
     public static final String CLASS_TAG = "outcomeDeclaration";
 
     /** Name of view attribute in xml schema. */
     public static final String ATTR_VIEWS_NAME = View.CLASS_TAG;
+
     /** Default value of view attribute. */
     public static final List<View> ATTR_VIEWS_DEFAULT_VALUE = null;
 
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
+
     /** Default value of interpretation attribute. */
     public static final String ATTR_INTERPRETATION_DEFAULT_VALUE = null;
 
     /** Name of longInterpretation attribute in xml schema. */
     public static final String ATTR_LONG_INTERPRETATION = "longInterpretation";
+
     /** Default value of longInterpretation attribute. */
     public static final URI ATTR_LONG_INTERPRETATION_DEFAULT_VALUE = null;
 
     /** Name of normalMaximum attribute in xml schema. */
     public static final String ATTR_NORMAL_MAXIMUM_NAME = "normalMaximum";
+
     /** Default value of normalMaximum attribute. */
     public static final Double ATTR_NORMAL_MAXIMUM_DEFAULT_VALUE = null;
 
     /** Name of normalMinimum attribute in xml schema. */
     public static final String ATTR_NORMAL_MINIMUM_NAME = "normalMinimum";
+
     /** Default value of normalMinimum attribute. */
     public static final Double ATTR_NORMAL_MINIMUM_DEFAULT_VALUE = null;
 
     /** Name of masteryValue attribute in xml schema. */
     public static final String ATTR_MASTERY_VALUE_NAME = "masteryValue";
+
     /** Default value of masteryValue attribute. */
     public static final Double ATTR_MASTERY_VALUE_DEFAULT_VALUE = null;
 
     /**
      * Creates object.
-     *
+     * 
      * @param parent parent of this object
      */
-    public OutcomeDeclaration(AssessmentObject parent)
-    {
+    public OutcomeDeclaration(AssessmentObject parent) {
         super(parent);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, ATTR_VIEWS_DEFAULT_VALUE));
@@ -119,246 +123,245 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
         getNodeGroups().add(new LookupTableGroup(this));
     }
-    
+
     @Override
     public VariableType getVariableType() {
         return VariableType.OUTCOME;
     }
 
     @Override
-    public String getClassTag()
-    {
+    public String getClassTag() {
         return CLASS_TAG;
     }
 
     /**
      * Gets value of view attribute.
-     *
+     * 
      * @return value of view attribute
      */
-    public List<View> getViews()
-    {
+    public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValues();
     }
 
     /**
      * Gets value of interpretation attribute.
-     *
+     * 
      * @return value of interpretation attribute
      * @see #setInterpretation
      */
-    public String getInterpretation()
-    {
+    public String getInterpretation() {
         return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getValue();
     }
 
     /**
      * Sets new value of interpretation attribute.
-     *
+     * 
      * @param interpretation new value of interpretation attribute
      * @see #getInterpretation
      */
-    public void setInterpretation(String interpretation)
-    {
+    public void setInterpretation(String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
     /**
      * Gets value of longInterpretation attribute.
-     *
+     * 
      * @return value of longInterpretation attribute
      * @see #setLongInterpretation
      */
-    public URI getLongInterpretation()
-    {
+    public URI getLongInterpretation() {
         return getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).getValue();
     }
 
     /**
      * Sets new value of longInterpretation attribute.
-     *
+     * 
      * @param longInterpretation new value of longInterpretation attribute
      * @see #getLongInterpretation
      */
-    public void setLongInterpretation(URI longInterpretation)
-    {
+    public void setLongInterpretation(URI longInterpretation) {
         getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).setValue(longInterpretation);
     }
 
     /**
      * Gets value of normalMaximum attribute.
-     *
+     * 
      * @return value of normalMaximum attribute
      * @see #setNormalMaximum
      */
-    public Double getNormalMaximum()
-    {
+    public Double getNormalMaximum() {
         return getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).getValue();
     }
 
     /**
      * Sets new value of normalMaximum attribute.
-     *
+     * 
      * @param normalMaximum new value of normalMaximum attribute
      * @see #getNormalMaximum
      */
-    public void setNormalMaximum(Double normalMaximum)
-    {
+    public void setNormalMaximum(Double normalMaximum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).setValue(normalMaximum);
     }
 
     /**
      * Gets value of normalMinimum attribute.
-     *
+     * 
      * @return value of normalMinimum attribute
      * @see #setNormalMinimum
      */
-    public Double getNormalMinimum()
-    {
+    public Double getNormalMinimum() {
         return getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).getValue();
     }
 
     /**
      * Sets new value of normalMinimum attribute.
-     *
+     * 
      * @param normalMinimum new value of normalMinimum attribute
      * @see #getNormalMinimum()
      */
-    public void setNormalMinimum(Double normalMinimum)
-    {
+    public void setNormalMinimum(Double normalMinimum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).setValue(normalMinimum);
     }
 
     /**
      * Gets value of masteryValue attribute.
-     *
+     * 
      * @return value of masteryValue attribute
      * @see #setMasteryValue
      */
-    public Double getMasteryValue()
-    {
+    public Double getMasteryValue() {
         return getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).getValue();
     }
 
     /**
      * Sets new value of masteryValue attribute.
-     *
+     * 
      * @param masteryValue new value of masteryValue attribute
      * @see #getMasteryValue
      */
-    public void setMasteryValue(Double masteryValue)
-    {
+    public void setMasteryValue(Double masteryValue) {
         getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).setValue(masteryValue);
     }
 
     /**
      * Gets lookupTable child.
-     *
+     * 
      * @return lookupTable child
      * @see #setLookupTable
      */
-    public LookupTable getLookupTable()
-    {
+    public LookupTable getLookupTable() {
         return getNodeGroups().getLookupTableGroup().getLookupTable();
     }
 
     /**
      * Sets new lookupTable child.
-     *
+     * 
      * @param lookupTable new lookupTable child
      * @see #getLookupTable
      */
-    public void setLookupTable(LookupTable lookupTable)
-    {
+    public void setLookupTable(LookupTable lookupTable) {
         getNodeGroups().getLookupTableGroup().setLookupTable(lookupTable);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result)
-    {
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
         super.validateAttributes(context, result);
 
-        if (getNormalMaximum() != null)
-        {
-            if (getCardinality() != null && !getCardinality().isSingle())
-                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME + " will be ignored for cardinality: " + getCardinality()));
-            else if (getBaseType() != null && !getBaseType().isNumeric())
-                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME + " will be ignored for baseType: " + getBaseType()));
-            else if (getNormalMaximum() <= 0)
-                result.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME + " must be positive."));
+        if (getNormalMaximum() != null) {
+            if (getCardinality() != null && !getCardinality().isSingle()) {
+                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                        + " will be ignored for cardinality: "
+                        + getCardinality()));
+            }
+            else if (getBaseType() != null && !getBaseType().isNumeric()) {
+                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                        + " will be ignored for baseType: "
+                        + getBaseType()));
+            }
+            else if (getNormalMaximum() <= 0) {
+                result.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                        + " must be positive."));
+            }
         }
 
-        if (getNormalMinimum() != null)
-        {
-            if (getCardinality() != null && !getCardinality().isSingle())
-                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME + " will be ignored for cardinality: " + getCardinality()));
-            else if (getBaseType() != null && !getBaseType().isNumeric())
-                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME + " will be ignored for baseType: " + getBaseType()));
+        if (getNormalMinimum() != null) {
+            if (getCardinality() != null && !getCardinality().isSingle()) {
+                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                        + " will be ignored for cardinality: "
+                        + getCardinality()));
+            }
+            else if (getBaseType() != null && !getBaseType().isNumeric()) {
+                result.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                        + " will be ignored for baseType: "
+                        + getBaseType()));
+            }
         }
 
         if (getCardinality() != null && getCardinality().isSingle() &&
-            getBaseType() != null && getBaseType().isNumeric() &&
-            getNormalMaximum() != null && getNormalMinimum() != null && getNormalMaximum() < getNormalMinimum())
-        {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME + " cannot be lower than attribute " + ATTR_NORMAL_MINIMUM_NAME + "."));
+                getBaseType() != null && getBaseType().isNumeric() &&
+                getNormalMaximum() != null && getNormalMinimum() != null && getNormalMaximum() < getNormalMinimum()) {
+            result.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                    + " cannot be lower than attribute "
+                    + ATTR_NORMAL_MINIMUM_NAME
+                    + "."));
         }
     }
 
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
-        
-// DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
-// which would be comment in summative assessment scenarios
-//        if (context instanceof TestValidationContext && !isRead(context, getParentRoot())) {
-//            result.add(new ValidationWarning(this, "Outcome declaration is never read."));
-//        }
+
+        // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
+        // which would be comment in summative assessment scenarios
+        //        if (context instanceof TestValidationContext && !isRead(context, getParentRoot())) {
+        //            result.add(new ValidationWarning(this, "Outcome declaration is never read."));
+        //        }
     }
 
     /**
      * Returns true if this outcomeDeclaration is read by given node or its children; false otherwise.
-     *
+     * 
      * @param xmlNode node
      * @return true if this outcomeDeclaration is read by given node or its children; false otherwise
      */
     private boolean isRead(ValidationContext context, XmlNode xmlNode) {
         if (xmlNode instanceof PrintedVariable) {
-            PrintedVariable printedVariable = (PrintedVariable) xmlNode;
+            final PrintedVariable printedVariable = (PrintedVariable) xmlNode;
             if (printedVariable.getIdentifier() != null && printedVariable.getIdentifier().equals(getIdentifier())) {
                 return true;
             }
         }
         else if (xmlNode instanceof LookupExpression) {
-            LookupExpression expression = (LookupExpression) xmlNode;
+            final LookupExpression expression = (LookupExpression) xmlNode;
             VariableDeclaration targetVariableDeclaration;
             try {
                 targetVariableDeclaration = expression.lookupTargetVariableDeclaration(context);
-                if (targetVariableDeclaration!=null && targetVariableDeclaration.equals(this)) {
+                if (targetVariableDeclaration != null && targetVariableDeclaration.equals(this)) {
                     return true;
                 }
             }
-            catch (ReferencingException e) {
+            catch (final ReferencingException e) {
             }
         }
         else if (xmlNode instanceof TestFeedback) {
-            TestFeedback feedback = (TestFeedback) xmlNode;
+            final TestFeedback feedback = (TestFeedback) xmlNode;
             if (feedback.getOutcomeIdentifier() != null && feedback.getOutcomeIdentifier().equals(getIdentifier())) {
                 return true;
             }
         }
         if (xmlNode instanceof ContainerBlock) {
-            ContainerBlock container = (ContainerBlock) xmlNode;
-            for (XmlNode block : container.getChildren()) {
+            final ContainerBlock container = (ContainerBlock) xmlNode;
+            for (final XmlNode block : container.getChildren()) {
                 if (isRead(context, block)) {
                     return true;
                 }
             }
         }
 
-        NodeGroupList groups = xmlNode.getNodeGroups();
+        final NodeGroupList groups = xmlNode.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
-            NodeGroup group = groups.get(i);
-            for (XmlNode child : group.getChildren()) {
+            final NodeGroup group = groups.get(i);
+            for (final XmlNode child : group.getChildren()) {
                 if (isRead(context, child)) {
                     return true;
                 }

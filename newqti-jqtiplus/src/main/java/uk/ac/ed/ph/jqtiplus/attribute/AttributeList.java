@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
@@ -86,11 +85,14 @@ import org.w3c.dom.Element;
  * 
  * @author Jiri Kajaba
  */
-public class AttributeList implements Validatable, Iterable<Attribute>
-{
-    private static final long serialVersionUID = 1L;
-    
-    /** Separator between two attributes (valid only if attributes are printed on one line). */
+public class AttributeList implements Validatable, Iterable<Attribute> {
+
+    private static final long serialVersionUID = 4537124098886951888L;
+
+    /**
+     * Separator between two attributes (valid only if attributes are printed on
+     * one line).
+     */
     public static final String ATTRIBUTES_SEPARATOR = " ";
 
     /** Line wrap limit while printing attributes. */
@@ -107,7 +109,7 @@ public class AttributeList implements Validatable, Iterable<Attribute>
 
     /**
      * Constructs container.
-     *
+     * 
      * @param parent parent of constructed container
      */
     public AttributeList(XmlNode parent) {
@@ -118,38 +120,34 @@ public class AttributeList implements Validatable, Iterable<Attribute>
 
     /**
      * Gets parent of this container.
-     *
+     * 
      * @return parent of this container
      */
-    public XmlNode getParent()
-    {
+    public XmlNode getParent() {
         return parent;
     }
 
     /**
      * Gets number of attributes in this container.
-     *
+     * 
      * @return number of attributes in this container
      */
-    public int size()
-    {
+    public int size() {
         return attributes.size();
     }
 
     /**
      * Adds given attribute into this container.
      * Checks duplicities in attribute's names.
-     *
+     * 
      * @param attribute given attribute
-     * @throws QTIAttributeException if container already contains attribute with same name
+     * @throws QTIAttributeException if container already contains attribute
+     *             with same name
      */
-    public void add(Attribute attribute) throws QTIAttributeException
-    {
-        for (Attribute child : attributes)
-        {
-            if (child.getName().equals(attribute.getName()))
-            {
-                QTIAttributeException ex = new QTIAttributeException("Duplicate attribute name: " + attribute.computeXPath());
+    public void add(Attribute attribute) throws QTIAttributeException {
+        for (final Attribute child : attributes) {
+            if (child.getName().equals(attribute.getName())) {
+                final QTIAttributeException ex = new QTIAttributeException("Duplicate attribute name: " + attribute.computeXPath());
                 logger.error(ex.getMessage());
                 throw ex;
             }
@@ -160,43 +158,41 @@ public class AttributeList implements Validatable, Iterable<Attribute>
 
     /**
      * Removes given attribute from this container.
-     *
+     * 
      * @param attribute given attribute
      */
-    public void remove(Attribute attribute)
-    {
-        for (Attribute child : attributes)
-        {
-            if (child.getName().equals(attribute.getName()))
-            {
+    public void remove(Attribute attribute) {
+        for (final Attribute child : attributes) {
+            if (child.getName().equals(attribute.getName())) {
                 attributes.remove(child);
                 break;
             }
         }
-    }    
-    
+    }
+
     /**
      * Adds given attribute into this container at given position.
      * Checks duplicities in attribute's names.
-     *
+     * 
      * @param index position
      * @param attribute attribute
-     * @throws QTIAttributeException if container already contains attribute with same name
+     * @throws QTIAttributeException if container already contains attribute
+     *             with same name
      */
-    public void add(int index, Attribute attribute) throws QTIAttributeException
-    {
+    public void add(int index, Attribute attribute) throws QTIAttributeException {
         attributes.add(index, attribute);
     }
 
     /**
      * Loads attribute's values from given source node.
-     * If there is unsupported (unknown) attribute, it creates new optional StringAttribute with set unsupported flag.
-     *
+     * If there is unsupported (unknown) attribute, it creates new optional
+     * StringAttribute with set unsupported flag.
+     * 
      * @param element source node
      */
     public void load(Element element, LoadingContext context) {
         for (int i = 0; i < attributes.size(); i++) {
-            Attribute attribute = attributes.get(i);
+            final Attribute attribute = attributes.get(i);
             if (attribute.isSupported()) {
                 attribute.load(element, (String) null, context);
             }
@@ -219,108 +215,109 @@ public class AttributeList implements Validatable, Iterable<Attribute>
     /**
      * Removed all attributes (children) from this container.
      */
-    public void clear()
-    {
+    public void clear() {
         attributes.clear();
     }
 
     /**
-     * Returns true if this container contains specified attribute; false otherwise.
-     *
+     * Returns true if this container contains specified attribute; false
+     * otherwise.
+     * 
      * @param name attribute's name
-     * @return true if this container contains specified attribute; false otherwise
+     * @return true if this container contains specified attribute; false
+     *         otherwise
      */
-    public boolean contains(String name)
-    {
-        for (Attribute attribute : attributes)
-            if (attribute.getName().equals(name))
+    public boolean contains(String name) {
+        for (final Attribute attribute : attributes) {
+            if (attribute.getName().equals(name)) {
                 return true;
+            }
+        }
 
         return false;
     }
 
     /**
      * Gets attribute at given index.
-     *
+     * 
      * @param index index of requested attribute
      * @return attribute at given index
      */
-    public Attribute get(int index)
-    {
+    public Attribute get(int index) {
         return attributes.get(index);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public Attribute get(String name) throws QTIAttributeException
-    {
+    public Attribute get(String name) throws QTIAttributeException {
         return get(name, false);
     }
 
     /**
      * Gets attribute with given name or null (if attribute is not found).
      * Silent parameter is useful for support of unknown attributes.
+     * 
      * @param name name of requested attribute
-     * @param silent if exception should be thrown in case attribute is not found
-     *
+     * @param silent if exception should be thrown in case attribute is not
+     *            found
      * @return attribute with given name
-     * @throws QTIAttributeException if silent is false and if attribute is not found
+     * @throws QTIAttributeException if silent is false and if attribute is not
+     *             found
      */
-    private Attribute get(String name, boolean silent) throws QTIAttributeException
-    {
-        for (Attribute attribute : attributes) {
+    private Attribute get(String name, boolean silent) throws QTIAttributeException {
+        for (final Attribute attribute : attributes) {
             if (attribute.getName().equals(name)) {
                 return attribute;
             }
         }
-    
+
         if (silent) {
             return null;
         }
-        String xPath = parent.computeXPath() + "/@" + name;
+        final String xPath = parent.computeXPath() + "/@" + name;
         throw new QTIAttributeException("Cannot find attribute: " + xPath);
     }
 
+    @Override
     public Iterator<Attribute> iterator() {
         return attributes.iterator();
     }
-    
+
     /**
      * Prints attributes into string.
-     *
+     * 
      * @param depth left indent (used only if printed line is too long)
-     * @param printDefaultValues if true, prints all attributes; if false, prints only attributes with not default values
+     * @param printDefaultValues if true, prints all attributes; if false,
+     *            prints only attributes with not default values
      * @return printed attributes
      */
-    public String toXmlString(int depth, boolean printDefaultValues)
-    {
+    public String toXmlString(int depth, boolean printDefaultValues) {
         int length = 0;
 
-        List<String> strings = new ArrayList<String>();
+        final List<String> strings = new ArrayList<String>();
 
-        for (Attribute attribute : attributes)
-        {
-            String string = attribute.toXmlString(printDefaultValues);
-            if (string.length() > 0)
-            {
+        for (final Attribute attribute : attributes) {
+            final String string = attribute.toXmlString(printDefaultValues);
+            if (string.length() > 0) {
                 length += string.length();
                 strings.add(string);
             }
         }
 
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
-        for (String string : strings)
-        {
-            if (length < LINE_WRAP_LIMIT)
+        for (final String string : strings) {
+            if (length < LINE_WRAP_LIMIT) {
                 builder.append(ATTRIBUTES_SEPARATOR);
-            else
+            }
+            else {
                 builder.append(XmlNode.NEW_LINE + AbstractNode.getIndent(depth) + XmlNode.INDENT);
+            }
 
             builder.append(string);
         }
@@ -328,369 +325,340 @@ public class AttributeList implements Validatable, Iterable<Attribute>
         return builder.toString();
     }
 
+    @Override
     public void validate(ValidationContext context, ValidationResult result) {
-        for (Attribute attribute : attributes) {
+        for (final Attribute attribute : attributes) {
             attribute.validate(context, result);
         }
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public BaseTypeAttribute getBaseTypeAttribute(String name) throws QTIAttributeException
-    {
+    public BaseTypeAttribute getBaseTypeAttribute(String name) throws QTIAttributeException {
         return (BaseTypeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public BooleanAttribute getBooleanAttribute(String name) throws QTIAttributeException
-    {
+    public BooleanAttribute getBooleanAttribute(String name) throws QTIAttributeException {
         return (BooleanAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public CardinalityAttribute getCardinalityAttribute(String name) throws QTIAttributeException
-    {
+    public CardinalityAttribute getCardinalityAttribute(String name) throws QTIAttributeException {
         return (CardinalityAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public DateAttribute getDateAttribute(String name) throws QTIAttributeException
-    {
+    public DateAttribute getDateAttribute(String name) throws QTIAttributeException {
         return (DateAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public DurationAttribute getDurationAttribute(String name) throws QTIAttributeException
-    {
+    public DurationAttribute getDurationAttribute(String name) throws QTIAttributeException {
         return (DurationAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public FloatAttribute getFloatAttribute(String name) throws QTIAttributeException
-    {
+    public FloatAttribute getFloatAttribute(String name) throws QTIAttributeException {
         return (FloatAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public FloatMultipleAttribute getFloatMultipleAttribute(String name) throws QTIAttributeException
-    {
+    public FloatMultipleAttribute getFloatMultipleAttribute(String name) throws QTIAttributeException {
         return (FloatMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public IdentifierAttribute getIdentifierAttribute(String name) throws QTIAttributeException
-    {
+    public IdentifierAttribute getIdentifierAttribute(String name) throws QTIAttributeException {
         return (IdentifierAttribute) get(name);
     }
-    
+
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public IdentifierMultipleAttribute getIdentifierMultipleAttribute(String name) throws QTIAttributeException
-    {
+    public IdentifierMultipleAttribute getIdentifierMultipleAttribute(String name) throws QTIAttributeException {
         return (IdentifierMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public IntegerAttribute getIntegerAttribute(String name) throws QTIAttributeException
-    {
+    public IntegerAttribute getIntegerAttribute(String name) throws QTIAttributeException {
         return (IntegerAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public CoordsAttribute getCoordsAttribute(String name) throws QTIAttributeException
-    {
+    public CoordsAttribute getCoordsAttribute(String name) throws QTIAttributeException {
         return (CoordsAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public LongAttribute getLongAttribute(String name) throws QTIAttributeException
-    {
+    public LongAttribute getLongAttribute(String name) throws QTIAttributeException {
         return (LongAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public NavigationModeAttribute getNavigationModeAttribute(String name) throws QTIAttributeException
-    {
+    public NavigationModeAttribute getNavigationModeAttribute(String name) throws QTIAttributeException {
         return (NavigationModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public RoundingModeAttribute getRoundingModeAttribute(String name) throws QTIAttributeException
-    {
+    public RoundingModeAttribute getRoundingModeAttribute(String name) throws QTIAttributeException {
         return (RoundingModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public SessionStatusAttribute getSessionStatusAttribute(String name) throws QTIAttributeException
-    {
+    public SessionStatusAttribute getSessionStatusAttribute(String name) throws QTIAttributeException {
         return (SessionStatusAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public ShapeAttribute getShapeAttribute(String name) throws QTIAttributeException
-    {
+    public ShapeAttribute getShapeAttribute(String name) throws QTIAttributeException {
         return (ShapeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public SingleValueAttribute getSingleValueAttribute(String name) throws QTIAttributeException
-    {
+    public SingleValueAttribute getSingleValueAttribute(String name) throws QTIAttributeException {
         return (SingleValueAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public StringAttribute getStringAttribute(String name) throws QTIAttributeException
-    {
+    public StringAttribute getStringAttribute(String name) throws QTIAttributeException {
         return (StringAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public StringMultipleAttribute getStringMultipleAttribute(String name) throws QTIAttributeException
-    {
+    public StringMultipleAttribute getStringMultipleAttribute(String name) throws QTIAttributeException {
         return (StringMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public SubmissionModeAttribute getSubmissionModeAttribuye(String name) throws QTIAttributeException
-    {
+    public SubmissionModeAttribute getSubmissionModeAttribuye(String name) throws QTIAttributeException {
         return (SubmissionModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public TestFeedbackAccessAttribute getTestFeedbackAttribute(String name) throws QTIAttributeException
-    {
+    public TestFeedbackAccessAttribute getTestFeedbackAttribute(String name) throws QTIAttributeException {
         return (TestFeedbackAccessAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public ToleranceModeAttribute getToleranceModeAttribute(String name) throws QTIAttributeException
-    {
+    public ToleranceModeAttribute getToleranceModeAttribute(String name) throws QTIAttributeException {
         return (ToleranceModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public UriAttribute getUriAttribute(String name) throws QTIAttributeException
-    {
+    public UriAttribute getUriAttribute(String name) throws QTIAttributeException {
         return (UriAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public ViewMultipleAttribute getViewMultipleAttribute(String name) throws QTIAttributeException
-    {
+    public ViewMultipleAttribute getViewMultipleAttribute(String name) throws QTIAttributeException {
         return (ViewMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public VisibilityModeAttribute getVisibilityModeAttribute(String name) throws QTIAttributeException
-    {
+    public VisibilityModeAttribute getVisibilityModeAttribute(String name) throws QTIAttributeException {
         return (VisibilityModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public OrientationAttribute getOrientationAttribute(String name) throws QTIAttributeException 
-    {
+    public OrientationAttribute getOrientationAttribute(String name) throws QTIAttributeException {
         return (OrientationAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public ParamTypeAttribute getParamTypeAttribute(String name) throws QTIAttributeException 
-    {
+    public ParamTypeAttribute getParamTypeAttribute(String name) throws QTIAttributeException {
         return (ParamTypeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public TableCellScopeAttribute getTableCellScopeAttribute(String name) throws QTIAttributeException 
-    {
+    public TableCellScopeAttribute getTableCellScopeAttribute(String name) throws QTIAttributeException {
         return (TableCellScopeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public TextFormatAttribute getTextFormatAttribute(String name) throws QTIAttributeException 
-    {
+    public TextFormatAttribute getTextFormatAttribute(String name) throws QTIAttributeException {
         return (TextFormatAttribute) get(name);
     }
-    
+
     /**
      * Gets attribute with given name.
-     *
+     * 
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QTIAttributeException if attribute is not found
      */
-    public VariableReferenceIdentifierAttribute getVariableReferenceIdentifierAttribute(String name) throws QTIAttributeException
-    {
+    public VariableReferenceIdentifierAttribute getVariableReferenceIdentifierAttribute(String name) throws QTIAttributeException {
         return (VariableReferenceIdentifierAttribute) get(name);
     }
 }

@@ -1,48 +1,45 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
- *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
- *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
-
 /**
  * Superclass for pair and directedPair values.
  * <p>
- * Classes <code>PairValue</code> and <code>DirectedPairValue</code> have
- * different only isDirected and equals methods.
+ * Classes <code>PairValue</code> and <code>DirectedPairValue</code> have different only isDirected and equals methods.
  * <p>
  * This class is not mutable and cannot contain NULL value.
  * <p>
@@ -71,7 +68,7 @@ public abstract class AbstractPairValue extends SingleValue {
         this.sourceValue = sourceValue;
         this.destValue = destValue;
     }
-    
+
     /**
      * @throws QTIParseException if either value is not a valid identifier
      */
@@ -81,33 +78,34 @@ public abstract class AbstractPairValue extends SingleValue {
     }
 
     /**
-     * Constructs <code>AbstractPairValue</code> from given <code>String</code>
-     * representation.
+     * Constructs <code>AbstractPairValue</code> from given <code>String</code> representation.
      * 
-     * @param value <code>String</code> representation of
-     *            <code>AbstractPairValue</code>
-     * @throws QTIParseException if <code>String</code> representation of
-     *             <code>AbstractPairValue</code> is not valid
+     * @param value <code>String</code> representation of <code>AbstractPairValue</code>
+     * @throws QTIParseException if <code>String</code> representation of <code>AbstractPairValue</code> is not valid
      */
     public AbstractPairValue(String value) {
-        if (value != null)
+        if (value != null) {
             value = value.trim();
+        }
 
-        if (value == null || value.length() == 0)
+        if (value == null || value.length() == 0) {
             throw new QTIParseException("Invalid pair '" + value + "'. Length is not valid.");
+        }
 
-        if (!value.equals(value.trim()))
+        if (!value.equals(value.trim())) {
             throw new QTIParseException("Invalid pair '" + value + "'.");
+        }
 
-        String[] parts = value.split(" ");
-        if (parts.length != 2)
+        final String[] parts = value.split(" ");
+        if (parts.length != 2) {
             throw new QTIParseException("Invalid pair '" + value + "'. Number of parts is not valid.");
+        }
 
         try {
             this.sourceValue = new Identifier(parts[0]);
             this.destValue = new Identifier(parts[1]);
         }
-        catch (QTIParseException ex) {
+        catch (final QTIParseException ex) {
             throw new QTIParseException("Invalid pair '" + value + "'.", ex);
         }
     }

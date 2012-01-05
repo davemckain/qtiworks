@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
@@ -40,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemFlowValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-
 
 /**
  * A branchRule is A simple expression attached to TestPart or assessmentSection or assessmentItemRef.
@@ -51,16 +49,15 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
  * BranchRules are evaluated after part or section or item is finished (not presented).
  * <p>
  * BranchRule is not real expression (doesn't implement Expression interface).
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * 
  * @author Jiri Kajaba
  */
-public class BranchRule extends AbstractJump
-{
-    private static final long serialVersionUID = 1L;
-    
+public class BranchRule extends AbstractJump {
+
+    private static final long serialVersionUID = -6025143798114714329L;
+
     /** Name of this class in xml schema. */
     public static final String CLASS_TAG = "branchRule";
 
@@ -78,26 +75,24 @@ public class BranchRule extends AbstractJump
 
     /**
      * Constructs object.
-     *
+     * 
      * @param parent parent of created object
      */
-    public BranchRule(AbstractPart parent)
-    {
+    public BranchRule(AbstractPart parent) {
         super(parent);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_NAME));
     }
 
     @Override
-    public String getClassTag()
-    {
+    public String getClassTag() {
         return CLASS_TAG;
     }
-    
+
     @Override
     public final String computeXPathComponent() {
-        Identifier target = getTarget();
-        if (target!=null) {
+        final Identifier target = getTarget();
+        if (target != null) {
             return getClassTag() + "[@target=\"" + target + "\"]";
         }
         return super.computeXPathComponent();
@@ -105,12 +100,11 @@ public class BranchRule extends AbstractJump
 
     /**
      * Gets value of target attribute.
-     *
+     * 
      * @return value of target attribute
      * @see #setTarget
      */
-    public Identifier getTarget()
-    {
+    public Identifier getTarget() {
         return getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).getValue();
     }
 
@@ -122,141 +116,130 @@ public class BranchRule extends AbstractJump
      * <li>if target is EXIT_SECTION, returns assessmentSection which should be exited</li>
      * <li>otherwise returns target ControlObject</li>
      * </ol>
-     *
+     * 
      * @return target ControlObject of this branchRule or null it target doesn't exist
      */
-    public ControlObject<?> getTargetControlObject()
-    {
-        if (isExitTest())
+    public ControlObject<?> getTargetControlObject() {
+        if (isExitTest()) {
             return getRootNode(AssessmentTest.class);
-        else if (isExitTestPart())
-        {
-            if (getParent() instanceof TestPart)
+        }
+        else if (isExitTestPart()) {
+            if (getParent() instanceof TestPart) {
                 return null;
-            else
+            }
+            else {
                 return getParent().getParentTestPart();
+            }
         }
-        else if (isExitSection())
-        {
-            if (getParent() instanceof SectionPart)
+        else if (isExitSection()) {
+            if (getParent() instanceof SectionPart) {
                 return ((SectionPart) getParent()).getParentSection();
-            else
+            }
+            else {
                 return null;
+            }
         }
-        else
+        else {
             return getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+        }
     }
 
     /**
      * Sets new value of target attribute.
-     *
+     * 
      * @param target new value of target attribute
      * @see #getTarget
      */
-    public void setTarget(Identifier target)
-    {
+    public void setTarget(Identifier target) {
         getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).setValue(target);
     }
 
     /**
      * Returns true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise.
-     *
+     * 
      * @return true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise
      */
-    public boolean isSpecial()
-    {
+    public boolean isSpecial() {
         return isExitTest() || isExitTestPart() || isExitSection();
     }
 
     /**
      * Returns true is target is EXIT_TEST; false otherwise.
-     *
+     * 
      * @return true is target is EXIT_TEST; false otherwise
      */
-    public boolean isExitTest()
-    {
+    public boolean isExitTest() {
         return getTarget().equals(EXIT_TEST);
     }
 
     /**
      * Returns true is target is EXIT_TEST_PART; false otherwise.
-     *
+     * 
      * @return true is target is EXIT_TEST_PART; false otherwise
      */
-    public boolean isExitTestPart()
-    {
+    public boolean isExitTestPart() {
         return getTarget().equals(EXIT_TEST_PART);
     }
 
     /**
      * Returns true is target is EXIT_SECTION; false otherwise.
-     *
+     * 
      * @return true is target is EXIT_SECTION; false otherwise
      */
-    public boolean isExitSection()
-    {
+    public boolean isExitSection() {
         return getTarget().equals(EXIT_SECTION);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result)
-    {
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
         super.validateAttributes(context, result);
 
-        TestPart parentTestPart = getParent().getParentTestPart();
-        if (getTarget() != null && parentTestPart.areJumpsEnabled())
-        {
-            if (isSpecial())
-            {
-                if (isExitTestPart())
-                {
-                    if (getParent() instanceof TestPart)
+        final TestPart parentTestPart = getParent().getParentTestPart();
+        if (getTarget() != null && parentTestPart.areJumpsEnabled()) {
+            if (isSpecial()) {
+                if (isExitTestPart()) {
+                    if (getParent() instanceof TestPart) {
                         result.add(new ItemFlowValidationError(this, "Invalid special target: " + getTarget()));
+                    }
                 }
-                else if (isExitSection())
-                {
-                    if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart)
+                else if (isExitSection()) {
+                    if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart) {
                         result.add(new ItemFlowValidationError(this, "Invalid special target: " + getTarget()));
+                    }
                 }
             }
-            else
-            {
-                ControlObject<?> targetControlObject = getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+            else {
+                final ControlObject<?> targetControlObject = getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
 
-                if (targetControlObject == null)
-                {
+                if (targetControlObject == null) {
                     result.add(new ItemFlowValidationError(this, "Cannot find target: " + getTarget()));
                 }
-                else if (targetControlObject instanceof AssessmentTest)
-                {
+                else if (targetControlObject instanceof AssessmentTest) {
                     result.add(new ItemFlowValidationError(this, "Cannot jump to assessmentTest: " + getTarget()));
                 }
-                else
-                {
-                    AbstractPart targetAbstractPart = (AbstractPart) targetControlObject;
+                else {
+                    final AbstractPart targetAbstractPart = (AbstractPart) targetControlObject;
 
-                    int parentIdex = getParent().getGlobalIndex();
-                    int targetIndex = targetControlObject.getGlobalIndex();
+                    final int parentIdex = getParent().getGlobalIndex();
+                    final int targetIndex = targetControlObject.getGlobalIndex();
 
-                    if (getParent() instanceof TestPart && (targetControlObject instanceof AssessmentSection || targetControlObject instanceof AssessmentItemRef))
-                    {
+                    if (getParent() instanceof TestPart && (targetControlObject instanceof AssessmentSection || targetControlObject instanceof AssessmentItemRef)) {
                         result.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetControlObject.getClassTag() + ": " + getTarget()));
                     }
-                    else if (targetIndex <= parentIdex)
-                    {
+                    else if (targetIndex <= parentIdex) {
                         result.add(new ItemFlowValidationError(this, "Cannot jump back to: " + getTarget()));
                     }
-                    else if (targetAbstractPart.isChildOf(getParent()))
-                    {
+                    else if (targetAbstractPart.isChildOf(getParent())) {
                         result.add(new ItemFlowValidationError(this, "Cannot jump to own child: " + getTarget()));
                     }
-                    else
-                    {
-                        if (!getParent().isJumpSafeSource())
+                    else {
+                        if (!getParent().isJumpSafeSource()) {
                             result.add(new ValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings."));
+                        }
 
-                        if (!targetAbstractPart.isJumpSafeTarget())
+                        if (!targetAbstractPart.isJumpSafeTarget()) {
                             result.add(new ValidationWarning(this, "Target is not safe for jump: " + getTarget() + " Check selection and ordering settings."));
+                        }
                     }
                 }
             }
@@ -265,12 +248,11 @@ public class BranchRule extends AbstractJump
 
     /**
      * Returns true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise.
-     *
+     * 
      * @param target given target
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
-    public static boolean isSpecial(String target)
-    {
+    public static boolean isSpecial(String target) {
         return target != null && (target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION));
     }
 }

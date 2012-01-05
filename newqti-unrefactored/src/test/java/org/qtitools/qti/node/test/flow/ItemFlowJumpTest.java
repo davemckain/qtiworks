@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package org.qtitools.qti.node.test.flow;
 
 import static org.junit.Assert.fail;
@@ -68,23 +67,19 @@ import org.junit.runners.Parameterized.Parameters;
  * </ol>
  */
 @RunWith(Parameterized.class)
-public class ItemFlowJumpTest
-{
+public class ItemFlowJumpTest {
     /**
      * Creates test data for this test.
      *
      * @return test data for this test
      */
     @Parameters
-    public static Collection<Object[]> data()
-    {
+    public static Collection<Object[]> data() {
         // One row is definition of all valid targets for one source.
         // In one row: First column is source (jump from). Next columns are targets (jump to).
         // It is possible that source has no valid targets (it is not possible to jump anywhere from this source).
         // (-> there is only one column in row)
-        return Arrays.asList(new Object[][]
-        {
-            {"ItemFlow-jump-01.xml", new String[][] {
+        return Arrays.asList(new Object[][] { {"ItemFlow-jump-01.xml", new String[][] {
                 new String[] {"P01"}, // It is not possible to jump anywhere from testPart P01.
                 new String[] {"S01", "S02", "S03", "I02", "I03", "I04", "I05"},
                 new String[] {"S02", "S03", "I05"}, // From section S02 you can jump to section S03 or item I05.
@@ -94,8 +89,7 @@ public class ItemFlowJumpTest
                 new String[] {"I03", "S03", "I04", "I05"},
                 new String[] {"I04", "S03", "I05"},
                 new String[] {"I05"},
-            }},
-            {"ItemFlow-jump-02.xml", new String[][] {
+            }}, {"ItemFlow-jump-02.xml", new String[][] {
                 new String[] {"P01", "P02", "P03", "P04", "P05"},
                 new String[] {"P02", "P03", "P04", "P05"},
                 new String[] {"P03", "P04", "P05"},
@@ -111,8 +105,7 @@ public class ItemFlowJumpTest
                 //new String[] {"I03"},
                 //new String[] {"I04"},
                 new String[] {"I05"},
-            }},
-            {"ItemFlow-jump-03.xml", new String[][] {
+            }}, {"ItemFlow-jump-03.xml", new String[][] {
                 new String[] {"P01", "P02", "P03"},
                 new String[] {"P02", "P03"},
                 new String[] {"P03"},
@@ -160,22 +153,19 @@ public class ItemFlowJumpTest
      * @param fileName file name of loaded test
      * @param testMoves definition of valid jumps for loaded test
      */
-    public ItemFlowJumpTest(String fileName, String[][] testMoves)
-    {
+    public ItemFlowJumpTest(String fileName, String[][] testMoves) {
         this.fileName = fileName;
         this.testMoves = testMoves;
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource("jump/" + fileName), jqtiController);
 
         List<String> allTargets = getAllTargets(test);
 
-        for (String[] nodeMoves : testMoves)
-        {
+        for (String[] nodeMoves : testMoves) {
             String source = nodeMoves[0];
 
             // Tests valid moves.
@@ -204,8 +194,7 @@ public class ItemFlowJumpTest
      * @param parent given parent
      * @return list of all identifiers for given parent (including parent)
      */
-    private List<String> getAllTargets(ControlObject parent)
-    {
+    private List<String> getAllTargets(ControlObject parent) {
         List<String> targets = new ArrayList<String>();
 
         targets.add(parent.getIdentifier());
@@ -232,8 +221,7 @@ public class ItemFlowJumpTest
      * @param expectedErrorsCount number of expected errors during validation
      * @param expectedWarningsCount number of expected warnings during validation
      */
-    private void testJump(AssessmentTest test, String source, String target, int expectedErrorsCount, int expectedWarningsCount)
-    {
+    private void testJump(AssessmentTest test, String source, String target, int expectedErrorsCount, int expectedWarningsCount) {
         addBranchRule(test, source, target);
 
         ValidationResult result = test.validate(context, this);
@@ -242,8 +230,7 @@ public class ItemFlowJumpTest
         if (result.getErrors().size() != expectedErrorsCount)
             fail(createMessage(source, target, expectedErrorsCount, result.getErrors().size(), expectedWarningsCount, result.getWarnings().size()));
 
-        if (expectedErrorsCount == 1)
-        {
+        if (expectedErrorsCount == 1) {
             QTIRuntimeException exception = result.getErrors().get(0).createException();
             if (!exception.getClass().equals(QTIItemFlowException.class))
                 fail("Unexpected exception, expected<" + QTIItemFlowException.class.getName() +
@@ -260,8 +247,7 @@ public class ItemFlowJumpTest
      * @param source source of jump
      * @param target target of jump
      */
-    private void addBranchRule(AssessmentTest test, String source, String target)
-    {
+    private void addBranchRule(AssessmentTest test, String source, String target) {
         AbstractPart node = (AbstractPart) test.lookupDescendentOrSelf(source);
 
         BranchRule rule = new BranchRule(node);
@@ -280,8 +266,7 @@ public class ItemFlowJumpTest
      * @param test given test
      * @param source source of jump
      */
-    private void removeBranchRule(AssessmentTest test, String source)
-    {
+    private void removeBranchRule(AssessmentTest test, String source) {
         AbstractPart node = (AbstractPart) test.lookupDescendentOrSelf(source);
         node.getBranchRules().clear();
     }
@@ -303,8 +288,7 @@ public class ItemFlowJumpTest
         , int expectedErrorsCount
         , int errorsCount
         , int expectedWarningsCount
-        , int warningsCount )
-    {
+        , int warningsCount ) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("Testing jump from ");

@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
@@ -48,23 +47,21 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 /**
  * The index operator takes A sub-expression with an ordered container value and any base-type.
  * The result is the nth value of the container. The result has the same base-type as the sub-expression
  * but single cardinality. The first value of A container has index 1, the second 2 and so on.
  * N must be A positive integer. If n exceeds the number of values in the container or the sub-expression
  * is NULL then the result of the index operator is NULL.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * 
  * @author Jiri Kajaba
  */
-public class Index extends AbstractExpression
-{
-    private static final long serialVersionUID = 1L;
-    
+public class Index extends AbstractExpression {
+
+    private static final long serialVersionUID = 909169733159523992L;
+
     /** Name of this class in xml schema. */
     public static final String CLASS_TAG = "index";
 
@@ -73,90 +70,87 @@ public class Index extends AbstractExpression
 
     /**
      * Constructs expression.
-     *
+     * 
      * @param parent parent of this expression
      */
-    public Index(ExpressionParent parent)
-    {
+    public Index(ExpressionParent parent) {
         super(parent);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_INDEX_NAME));
     }
 
     @Override
-    public String getClassTag()
-    {
+    public String getClassTag() {
         return CLASS_TAG;
     }
 
     /**
      * Gets value of n attribute.
-     *
+     * 
      * @return value of n attribute
      * @see #setIndex
      */
-    public Integer getIndex()
-    {
+    public Integer getIndex() {
         return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getValue();
     }
 
     /**
      * Sets new value of n attribute.
-     *
+     * 
      * @param index new value of n attribute
      * @see #getIndex
      */
-    public void setIndex(Integer index)
-    {
+    public void setIndex(Integer index) {
         getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).setValue(index);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index)
-    {
+    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context)
-    {
-        if (getChildren().size() == 1)
+    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+        if (getChildren().size() == 1) {
             return getChildren().get(0).getProducedBaseTypes(context);
+        }
 
         return super.getProducedBaseTypes(context);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result)
-    {
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
         super.validateAttributes(context, result);
 
-        if (getIndex() != null && getIndex() < 1)
+        if (getIndex() != null && getIndex() < 1) {
             result.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
                     " (" + getIndex() + ") must be positive."));
+        }
 
-        if (getIndex() != null && getChildren().size() != 0 && getChildren().get(0) instanceof Ordered)
-        {
-            Ordered ordered = (Ordered) getChildren().get(0);
-            if (ordered.getChildren().size() > 0 && getIndex() > ordered.getChildren().size())
+        if (getIndex() != null && getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
+            final Ordered ordered = (Ordered) getChildren().get(0);
+            if (ordered.getChildren().size() > 0 && getIndex() > ordered.getChildren().size()) {
                 result.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
                         ordered.getChildren().size() + ", but found: " + getIndex()));
+            }
         }
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth)
-    {
-        if (isAnyChildNull(context))
+    protected Value evaluateSelf(ProcessingContext context, int depth) {
+        if (isAnyChildNull(context)) {
             return NullValue.INSTANCE;
+        }
 
-        if (getIndex() > ((OrderedValue) getFirstChild().getValue(context)).size())
+        if (getIndex() > ((OrderedValue) getFirstChild().getValue(context)).size()) {
             return NullValue.INSTANCE;
+        }
 
-        Value value = ((ListValue) getFirstChild().getValue(context)).get(getIndex() - 1);
+        final Value value = ((ListValue) getFirstChild().getValue(context)).get(getIndex() - 1);
 
-        if (value == null || value.isNull())
+        if (value == null || value.isNull()) {
             return NullValue.INSTANCE;
+        }
 
         return value;
     }

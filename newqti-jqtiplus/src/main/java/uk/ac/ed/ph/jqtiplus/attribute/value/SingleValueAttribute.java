@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 
@@ -48,41 +47,39 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  * 
  * @author Jiri Kajaba
  */
-public class SingleValueAttribute extends SingleAttribute
-{
-    private static final long serialVersionUID = 1L;
-    
+public class SingleValueAttribute extends SingleAttribute {
+
+    private static final long serialVersionUID = 3061500904873811836L;
+
     /** BaseType of attribute. */
     private BaseType baseType;
 
     /**
      * Constructs attribute.
-     *
+     * 
      * @param parent attribute's parent
      * @param name attribute's name
      * @param baseType attribute's baseType
      */
-    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType)
-    {
+    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType) {
         this(parent, name, baseType, null, null, true);
     }
 
     /**
      * Constructs attribute.
-     *
+     * 
      * @param parent attribute's parent
      * @param name attribute's name
      * @param baseType attribute's baseType
      * @param defaultValue attribute's default value
      */
-    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType, SingleValue defaultValue)
-    {
+    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType, SingleValue defaultValue) {
         this(parent, name, baseType, null, defaultValue, false);
     }
 
     /**
      * Constructs attribute.
-     *
+     * 
      * @param parent attribute's parent
      * @param name attribute's name
      * @param baseType attribute's baseType
@@ -91,8 +88,7 @@ public class SingleValueAttribute extends SingleAttribute
      * @param required is this attribute required
      */
     public SingleValueAttribute(
-        XmlNode parent, String name, BaseType baseType, SingleValue value, SingleValue defaultValue, boolean required)
-    {
+            XmlNode parent, String name, BaseType baseType, SingleValue value, SingleValue defaultValue, boolean required) {
         super(parent, name, value, defaultValue, required);
 
         this.baseType = baseType;
@@ -100,72 +96,69 @@ public class SingleValueAttribute extends SingleAttribute
 
     /**
      * Gets baseType of attribute.
-     *
+     * 
      * @return baseType of attribute
      * @see #setBaseType
      */
-    public BaseType getBaseType()
-    {
+    public BaseType getBaseType() {
         return baseType;
     }
 
     /**
      * Sets new baseType of attribute.
-     *
+     * 
      * @param baseType new baseType of attribute
      * @see #getBaseType
      */
-    public void setBaseType(BaseType baseType)
-    {
+    public void setBaseType(BaseType baseType) {
         this.baseType = baseType;
     }
 
     @Override
-    public SingleValue getValue()
-    {
+    public SingleValue getValue() {
         return (SingleValue) super.getValue();
     }
 
     /**
      * Sets new value of attribute.
-     *
+     * 
      * @param value new value of attribute
      * @see #getValue
      */
-    public void setValue(SingleValue value)
-    {
+    public void setValue(SingleValue value) {
         super.setValue(value);
     }
 
     @Override
-    public SingleValue getDefaultValue()
-    {
+    public SingleValue getDefaultValue() {
         return (SingleValue) super.getDefaultValue();
     }
 
     /**
      * Sets new default value of attribute.
-     *
+     * 
      * @param defaultValue new default value of attribute
      * @see #getDefaultValue
      */
-    public void setDefaultValue(SingleValue defaultValue)
-    {
+    public void setDefaultValue(SingleValue defaultValue) {
         super.setDefaultValue(defaultValue);
     }
 
     @Override
-    protected SingleValue parseValue(String value)
-    {
+    protected SingleValue parseValue(String value) {
         return baseType.parseSingleValue(value);
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result)
-    {
+    public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
 
-        if (getValue() != null && getValue().getBaseType() != baseType)
-            result.add(new AttributeValidationError(this, "BaseType of " + getName() + " attribute does not match. Expected:  " + baseType + ", but found: " + getValue().getBaseType()));
+        if (getValue() != null && getValue().getBaseType() != baseType) {
+            result.add(new AttributeValidationError(this, "BaseType of " + getName()
+                    + " attribute does not match. Expected:  "
+                    + baseType
+                    + ", but found: "
+                    + getValue().getBaseType()));
+        }
     }
 }

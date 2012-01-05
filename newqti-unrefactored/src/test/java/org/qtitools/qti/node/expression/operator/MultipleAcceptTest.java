@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -63,13 +62,11 @@ import org.qtitools.qti.node.expression.ExpressionAcceptTest;
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Multiple
  */
 @RunWith(Parameterized.class)
-public class MultipleAcceptTest extends ExpressionAcceptTest
-{
+public class MultipleAcceptTest extends ExpressionAcceptTest {
     private static final MultipleValue MULTIPLE_1__1_2_3;
     private static final MultipleValue MULTIPLE_2__1_2_3_4_5_6_7;
 
-    static
-    {
+    static {
         // MULTIPLE_1__1_2_3
         MULTIPLE_1__1_2_3 = new MultipleValue();
         MULTIPLE_1__1_2_3.add(new IntegerValue(1));
@@ -92,49 +89,36 @@ public class MultipleAcceptTest extends ExpressionAcceptTest
      * @return test data for this test
      */
     @Parameters
-    public static Collection<Object[]> data()
-    {
-        return Arrays.asList(new Object[][]
-        {
-            // null
-            {"<multiple>" +
-            "</multiple>", NullValue.INSTANCE},
-            {"<multiple>" +
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+            // null {"<multiple>" +
+            "</multiple>", NullValue.INSTANCE}, {"<multiple>" +
                 "<null/>" +
-            "</multiple>", NullValue.INSTANCE},
-            {"<multiple>" +
-                "</multiple>", new MultipleValue()},
-                {"<multiple>" +
+            "</multiple>", NullValue.INSTANCE}, {"<multiple>" +
+                "</multiple>", new MultipleValue()}, {"<multiple>" +
                     "<null/>" +
                 "</multiple>", new MultipleValue()},
-            // identifier
-            {"<multiple>" +
+            // identifier {"<multiple>" +
                 "<baseValue baseType='identifier'>identifier</baseValue>" +
             "</multiple>", new MultipleValue(new IdentifierValue("identifier"))},
-            // boolean
-            {"<multiple>" +
+            // boolean {"<multiple>" +
                 "<baseValue baseType='boolean'>true</baseValue>" +
-            "</multiple>", new MultipleValue(BooleanValue.TRUE)},
-            {"<multiple>" +
+            "</multiple>", new MultipleValue(BooleanValue.TRUE)}, {"<multiple>" +
                 "<baseValue baseType='boolean'>false</baseValue>" +
             "</multiple>", new MultipleValue(BooleanValue.FALSE)},
-            // integer
-            {"<multiple>" +
+            // integer {"<multiple>" +
                 "<baseValue baseType='integer'>1</baseValue>" +
-            "</multiple>", new MultipleValue(new IntegerValue(1))},
-            {"<multiple>" +
+            "</multiple>", new MultipleValue(new IntegerValue(1))}, {"<multiple>" +
                 "<baseValue baseType='integer'>1</baseValue>" +
                 "<baseValue baseType='integer'>2</baseValue>" +
                 "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", MULTIPLE_1__1_2_3},
-            {"<multiple>" +
+            "</multiple>", MULTIPLE_1__1_2_3}, {"<multiple>" +
                 "<baseValue baseType='integer'>1</baseValue>" +
                 "<null/>" +
                 "<baseValue baseType='integer'>2</baseValue>" +
                 "<null/>" +
                 "<baseValue baseType='integer'>3</baseValue>" +
-            "</multiple>", MULTIPLE_1__1_2_3},
-            {"<multiple>" +
+            "</multiple>", MULTIPLE_1__1_2_3}, {"<multiple>" +
                 "<baseValue baseType='integer'>1</baseValue>" +
                 "<baseValue baseType='integer'>2</baseValue>" +
                 "<multiple>" +
@@ -145,40 +129,31 @@ public class MultipleAcceptTest extends ExpressionAcceptTest
                 "<baseValue baseType='integer'>6</baseValue>" +
                 "<baseValue baseType='integer'>7</baseValue>" +
             "</multiple>", MULTIPLE_2__1_2_3_4_5_6_7},
-            // float
-            {"<multiple>" +
+            // float {"<multiple>" +
                 "<baseValue baseType='float'>1</baseValue>" +
             "</multiple>", new MultipleValue(new FloatValue(1))},
-            // string
-            {"<multiple>" +
+            // string {"<multiple>" +
                 "<baseValue baseType='string'>string</baseValue>" +
             "</multiple>", new MultipleValue(new StringValue("string"))},
-            // point
-            {"<multiple>" +
+            // point {"<multiple>" +
                 "<baseValue baseType='point'>1 1</baseValue>" +
             "</multiple>", new MultipleValue(new PointValue(1, 1))},
-            // pair
-            {"<multiple>" +
+            // pair {"<multiple>" +
                 "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
             "</multiple>", new MultipleValue(new PairValue("identifier_1", "identifier_2"))},
-            // directedPair
-            {"<multiple>" +
+            // directedPair {"<multiple>" +
                 "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
             "</multiple>", new MultipleValue(new DirectedPairValue("identifier_1", "identifier_2"))},
-            // duration
-            {"<multiple>" +
+            // duration {"<multiple>" +
                 "<baseValue baseType='duration'>1</baseValue>" +
             "</multiple>", new MultipleValue(new DurationValue(1))},
-            // file
-            {"<multiple>" +
+            // file {"<multiple>" +
                 "<baseValue baseType='file'>file</baseValue>" +
             "</multiple>", new MultipleValue(new FileValue("file"))},
-            // uri
-            {"<multiple>" +
+            // uri {"<multiple>" +
                 "<baseValue baseType='uri'>uri</baseValue>" +
             "</multiple>", new MultipleValue(new UriValue("uri"))},
-            // multiple
-            {"<multiple>" +
+            // multiple {"<multiple>" +
                 "<multiple>" +
                     "<baseValue baseType='integer'>1</baseValue>" +
                 "</multiple>" +
@@ -192,8 +167,7 @@ public class MultipleAcceptTest extends ExpressionAcceptTest
      * @param xml xml data used for creation tested expression
      * @param expectedValue expected evaluated value
      */
-    public MultipleAcceptTest(String xml, Value expectedValue)
-    {
+    public MultipleAcceptTest(String xml, Value expectedValue) {
         super(xml, expectedValue);
     }
 }

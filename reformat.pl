@@ -36,26 +36,39 @@ my $copyright = <<HERE;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 HERE
 
-# Normalize whitespace
+# Normalize line endings
 $text =~ s!\r!!sg;
-
-# Fix Javadoc
-$text =~ s!^\s*/\*.+?\*/\s*!$copyright!s;
 
 # Tabs to spaces (just in case)
 $text =~ s!\t!    !sg;
+
+# Replace header Javadoc
+$text =~ s!^\s*/\*.+?\*/\s*!$copyright!s;
+
+# Remove double blank line after import statements
+$text =~ s!^(import.+?)\n\n\n(/\*\*)!$1\n\n$2!sm;
 
 # Remove stupid serial versions
 $text =~ s!\n *private static final long serialVersionUID = 1L; *\n!!sg;
 
 # Convert braces opened on new lines
 $text =~ s!\n\s*\{! \{!sg;
+
+# Remove @version SVN tags
+$text =~ s!\n\s*\*\s*\@version.+?\n!\n!s;
+
+# Fix spacing in @author SVN tags
+$text =~ s!(\@author)\s*!$1 !s;
+
+# Fix logger
+$text =~ s!\n */\*\* *Logger\.? *\*/ ?!!sg;
+$text =~ s!protected static Logger!private static final Logger!sg;
 
 #print $text;
 #die;

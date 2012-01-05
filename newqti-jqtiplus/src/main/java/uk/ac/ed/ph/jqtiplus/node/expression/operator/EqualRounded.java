@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.RoundingModeAttribute;
@@ -46,22 +45,20 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 /**
  * The equalRounded operator takes two sub-expressions which must both have single cardinality and
  * have A numerical base-type. The result is A single boolean with A value of true if the two
  * expressions are numerically equal after rounding and false if they are not.
  * If either sub-expression is NULL then the operator results in NULL.
- *
+ * 
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * 
  * @author Jiri Kajaba
  */
-public class EqualRounded extends AbstractExpression
-{
-    private static final long serialVersionUID = 1L;
-    
+public class EqualRounded extends AbstractExpression {
+
+    private static final long serialVersionUID = 8925002756918753453L;
+
     /** Name of this class in xml schema. */
     public static final String CLASS_TAG = "equalRounded";
 
@@ -73,11 +70,10 @@ public class EqualRounded extends AbstractExpression
 
     /**
      * Constructs expression.
-     *
+     * 
      * @param parent parent of this expression
      */
-    public EqualRounded(ExpressionParent parent)
-    {
+    public EqualRounded(ExpressionParent parent) {
         super(parent);
 
         getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME));
@@ -85,75 +81,70 @@ public class EqualRounded extends AbstractExpression
     }
 
     @Override
-    public String getClassTag()
-    {
+    public String getClassTag() {
         return CLASS_TAG;
     }
 
     /**
      * Gets value of roundingMode attribute.
-     *
+     * 
      * @return value of roundingMode attribute
      * @see #setRoundingMode
      */
-    public RoundingMode getRoundingMode()
-    {
+    public RoundingMode getRoundingMode() {
         return getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).getValue();
     }
 
     /**
      * Sets new value of roundingMode attribute.
-     *
+     * 
      * @param roundingMode new value of roundingMode attribute
      * @see #getRoundingMode
      */
-    public void setRoundingMode(RoundingMode roundingMode)
-    {
+    public void setRoundingMode(RoundingMode roundingMode) {
         getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).setValue(roundingMode);
     }
 
     /**
      * Gets value of figures attribute.
-     *
+     * 
      * @return value of figures attribute
      * @see #setFigures
      */
-    public Integer getFigures()
-    {
+    public Integer getFigures() {
         return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getValue();
     }
 
     /**
      * Sets new value of figures attribute.
-     *
+     * 
      * @param figures new value of figures attribute
      * @see #getFigures
      */
-    public void setFigures(Integer figures)
-    {
+    public void setFigures(Integer figures) {
         getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).setValue(figures);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result)
-    {
+    protected void validateAttributes(ValidationContext context, ValidationResult result) {
         super.validateAttributes(context, result);
 
-        if (getRoundingMode() != null && getFigures() != null)
+        if (getRoundingMode() != null && getFigures() != null) {
             getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), result, getFigures());
+        }
 
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth)
-    {
-        if (isAnyChildNull(context))
+    protected Value evaluateSelf(ProcessingContext context, int depth) {
+        if (isAnyChildNull(context)) {
             return NullValue.INSTANCE;
+        }
 
-        double firstNumber = ((NumberValue) getFirstChild().getValue(context)).doubleValue();
-        double secondNumber = ((NumberValue) getSecondChild().getValue(context)).doubleValue();
+        final double firstNumber = ((NumberValue) getFirstChild().getValue(context)).doubleValue();
+        final double secondNumber = ((NumberValue) getSecondChild().getValue(context)).doubleValue();
 
-        boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, getFigures());
+        final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, getFigures());
 
         return BooleanValue.valueOf(result);
     }

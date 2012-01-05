@@ -1,7 +1,35 @@
-/* $Id$
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
  *
- * Copyright 2011 University of Edinburgh.
- * All Rights Reserved
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.io.reading;
 
@@ -24,23 +52,22 @@ import java.net.URI;
 import org.junit.Test;
 
 /**
- * @author  David McKain
- * @version $Revision$
+ * @author David McKain
  */
 @SuppressWarnings("static-method")
 public class QTIXMLReaderTest {
-    
-    @Test(expected=XMLResourceNotFoundException.class)
+
+    @Test(expected = XMLResourceNotFoundException.class)
     public void testReadNotFound() throws Exception {
         readTestFile("notfound.xml", false);
     }
-    
+
     @Test
     public void testGoodReadNoValidate() throws Exception {
-        String fileName = "choice.xml";
-        XMLReadResult result = readTestFile(fileName, false);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "choice.xml";
+        final XMLReadResult result = readTestFile(fileName, false);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
@@ -52,13 +79,13 @@ public class QTIXMLReaderTest {
         assertEquals(0, parseResult.getSupportedSchemaNamespaces().size());
         assertEquals(0, parseResult.getUnsupportedSchemaNamespaces().size());
     }
-    
+
     @Test
     public void testGoodReadAndValidate() throws Exception {
-        String fileName = "choice.xml";
-        XMLReadResult result = readTestFile(fileName, true);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "choice.xml";
+        final XMLReadResult result = readTestFile(fileName, true);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId("choice.xml"), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
@@ -70,13 +97,13 @@ public class QTIXMLReaderTest {
         assertEquals(1, parseResult.getSupportedSchemaNamespaces().size()); /* (QTI 2.1) */
         assertEquals(0, parseResult.getUnsupportedSchemaNamespaces().size());
     }
-    
+
     @Test
     public void testReadIllFormed() throws Exception {
-        String fileName = "illformed.xml";
-        XMLReadResult result = readTestFile(fileName, false);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "illformed.xml";
+        final XMLReadResult result = readTestFile(fileName, false);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertFalse(parseResult.isParsed());
@@ -86,13 +113,13 @@ public class QTIXMLReaderTest {
         assertEquals(0, parseResult.getErrors().size());
         assertEquals(0, parseResult.getWarnings().size());
     }
-    
+
     @Test
     public void testReadNotValid() throws Exception {
-        String fileName = "invalid.xml";
-        XMLReadResult result = readTestFile(fileName, true);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "invalid.xml";
+        final XMLReadResult result = readTestFile(fileName, true);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
@@ -104,13 +131,13 @@ public class QTIXMLReaderTest {
         assertEquals(1, parseResult.getSupportedSchemaNamespaces().size()); /* (QTI 2.1) */
         assertEquals(0, parseResult.getUnsupportedSchemaNamespaces().size());
     }
-    
+
     @Test
     public void testReadNotQTI() throws Exception {
-        String fileName = "imsmanifest.xml"; /* (It's a Content Package manifest!) */
-        XMLReadResult result = readTestFile(fileName, true);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "imsmanifest.xml"; /* (It's a Content Package manifest!) */
+        final XMLReadResult result = readTestFile(fileName, true);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
@@ -122,13 +149,13 @@ public class QTIXMLReaderTest {
         assertEquals(0, parseResult.getSupportedSchemaNamespaces().size());
         assertEquals(2, parseResult.getUnsupportedSchemaNamespaces().size()); /* (CP + MD schemas) */
     }
-    
+
     @Test
     public void testReadUnsupportedSchema() throws Exception {
-        String fileName = "unsupported.xml";
-        XMLReadResult result = readTestFile(fileName, true);
-        XMLParseResult parseResult = result.getXMLParseResult();
-        
+        final String fileName = "unsupported.xml";
+        final XMLReadResult result = readTestFile(fileName, true);
+        final XMLParseResult parseResult = result.getXMLParseResult();
+
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
@@ -140,17 +167,18 @@ public class QTIXMLReaderTest {
         assertEquals(1, parseResult.getSupportedSchemaNamespaces().size()); /* (QTI 2.1) */
         assertEquals(1, parseResult.getUnsupportedSchemaNamespaces().size()); /* (Unsupported) */
     }
-    
-    @Test(expected=XMLReaderException.class)
+
+    @Test(expected = XMLReaderException.class)
     public void testBadSchemaClassPath() throws Exception {
-        QTIXMLReader reader = new QTIXMLReader(new NoResourceLocator());
-        ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
+        final QTIXMLReader reader = new QTIXMLReader(new NoResourceLocator());
+        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         reader.read(makeSystemId("choice.xml"), inputResourceLocator, true);
     }
-    
+
     //-------------------------------
-    
+
     static class NoResourceLocator implements ResourceLocator {
+
         private static final long serialVersionUID = -3305449197115182185L;
 
         @Override
@@ -158,13 +186,13 @@ public class QTIXMLReaderTest {
             return null;
         }
     }
-    
+
     private XMLReadResult readTestFile(String testFileName, boolean schemaValiadating) throws XMLResourceNotFoundException {
-        QTIXMLReader reader = new QTIXMLReader();
-        ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
+        final QTIXMLReader reader = new QTIXMLReader();
+        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         return reader.read(makeSystemId(testFileName), inputResourceLocator, schemaValiadating);
     }
-    
+
     private URI makeSystemId(String testFileName) {
         return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/io/reading/" + testFileName);
     }

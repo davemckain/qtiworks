@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.TextFormatAttribute;
@@ -63,86 +62,81 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
 /**
- * 
- * An extended text interaction is a blockInteraction that allows the 
+ * An extended text interaction is a blockInteraction that allows the
  * candidate to enter an extended amount of text.
- * 
- * The extendedTextInteraction must be bound to a response variable with 
- * baseType of string, integer, or float. When bound to response variable 
- * with single cardinality a single string of text is required from the 
- * candidate. When bound to a response variable with multiple or ordered 
- * cardinality several separate text strings may be required, see maxStrings 
+ * The extendedTextInteraction must be bound to a response variable with
+ * baseType of string, integer, or float. When bound to response variable
+ * with single cardinality a single string of text is required from the
+ * candidate. When bound to a response variable with multiple or ordered
+ * cardinality several separate text strings may be required, see maxStrings
  * below.
- * 
  * Attribute : maxStrings [0..1]: integer
- * The maxStrings attribute is required when the interaction is bound to 
- * a response variable that is a container. A Delivery Engine must use the 
+ * The maxStrings attribute is required when the interaction is bound to
+ * a response variable that is a container. A Delivery Engine must use the
  * value of this attribute to control the maximum number of separate strings
- * accepted from the candidate. When multiple strings are accepted, 
+ * accepted from the candidate. When multiple strings are accepted,
  * expectedLength applies to each string.
- * 
  * Attribute : minStrings [0..1]: integer = 0
- * The minStrings attribute specifies the minimum number separate (non-empty) 
- * strings required from the candidate to form a valid response. If minStrings 
- * is 0 then the candidate is not required to enter any strings at all. 
- * minStrings must be less than or equal to the limit imposed by maxStrings. 
- * If the interaction is not bound to a container then there is a special case 
- * in which minStrings may be 1. In this case the candidate must enter a non-empty 
- * string to form a valid response. More complex constraints on the form of the 
+ * The minStrings attribute specifies the minimum number separate (non-empty)
+ * strings required from the candidate to form a valid response. If minStrings
+ * is 0 then the candidate is not required to enter any strings at all.
+ * minStrings must be less than or equal to the limit imposed by maxStrings.
+ * If the interaction is not bound to a container then there is a special case
+ * in which minStrings may be 1. In this case the candidate must enter a non-empty
+ * string to form a valid response. More complex constraints on the form of the
  * string can be controlled with the patternMask attribute.
- * 
  * Attribute : expectedLines [0..1]: integer
- * The expectedLines attribute provides a hint to the candidate as to the expected 
- * number of lines of input required. A Delivery Engine should use the value of 
- * this attribute to set the size of the response box, where applicable. This is 
+ * The expectedLines attribute provides a hint to the candidate as to the expected
+ * number of lines of input required. A Delivery Engine should use the value of
+ * this attribute to set the size of the response box, where applicable. This is
  * not a validity constraint.
- * 
  * Attribute : format [0..1]: textFormat = plain
- * Used to control the format of the text entered by the candidate. See textFormat 
- * below. This attribute affects the way the value of the associated response 
- * variable should be interpreted by response processing engines and also controls 
+ * Used to control the format of the text entered by the candidate. See textFormat
+ * below. This attribute affects the way the value of the associated response
+ * variable should be interpreted by response processing engines and also controls
  * the way it should be captured in the delivery engine.
  * 
  * @author Jonathon Hare
- *
  */
 public class ExtendedTextInteraction extends BlockInteraction implements StringInteraction {
-    private static final long serialVersionUID = 1L;
-    
+
+    private static final long serialVersionUID = 8382652026744422992L;
+
     /** Name of this class in xml schema. */
     public static String CLASS_TAG = "extendedTextInteraction";
-    
+
     /** Name of maxStrings attribute in xml schema. */
     public static String ATTR_MAX_STRINGS_NAME = "maxStrings";
-    
+
     /** Name of minStrings attribute in xml schema. */
     public static String ATTR_MIN_STRINGS_NAME = "minStrings";
+
     /** Name of minStrings attribute in xml schema. */
     public static Integer ATTR_MIN_STRINGS_DEFAULT_VALUE = 0;
-    
+
     /** Name of expectedLines attribute in xml schema. */
     public static String ATTR_EXPECTED_LINES_NAME = "expectedLines";
-    
+
     /** Name of format attribute in xml schema. */
     public static String ATTR_FORMAT_NAME = "format";
+
     /** Default value of format attribute. */
     public static TextFormat ATTR_FORMAT_DEFAULT_VALUE = TextFormat.PLAIN;
-    
+
     /**
      * Construct new interaction.
-     *  
+     * 
      * @param parent Parent node
      */
     public ExtendedTextInteraction(XmlNode parent) {
         super(parent);
-        
+
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_STRINGS_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_STRINGS_NAME, ATTR_MIN_STRINGS_DEFAULT_VALUE, ATTR_MIN_STRINGS_DEFAULT_VALUE, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LINES_NAME, null, null, false));
         getAttributes().add(new TextFormatAttribute(this, ATTR_FORMAT_NAME, ATTR_FORMAT_DEFAULT_VALUE, ATTR_FORMAT_DEFAULT_VALUE, false));
-        
+
         //for StringInteraction...
         getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, ATTR_BASE_DEFAULT_VALUE, false));
         getAttributes().add(new IdentifierAttribute(this, ATTR_STRING_IDENTIFIER_NAME, null, null, false));
@@ -158,177 +152,188 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
     /**
      * Sets new value of maxStrings attribute.
-     *
+     * 
      * @param maxStrings new value of maxStrings attribute
      * @see #getMaxStrings
      */
-    public void setMaxStrings(Integer maxStrings)
-    {
+    public void setMaxStrings(Integer maxStrings) {
         getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).setValue(maxStrings);
     }
 
     /**
      * Gets value of maxStrings attribute.
-     *
+     * 
      * @return value of maxStrings attribute
      * @see #setMaxStrings
      */
-    public Integer getMaxStrings()
-    {
+    public Integer getMaxStrings() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).getValue();
     }
 
     /**
      * Sets new value of minStrings attribute.
-     *
+     * 
      * @param minStrings new value of minStrings attribute
      * @see #getMinStrings
      */
-    public void setMinStrings(Integer minStrings)
-    {
+    public void setMinStrings(Integer minStrings) {
         getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).setValue(minStrings);
     }
 
     /**
      * Gets value of minStrings attribute.
-     *
+     * 
      * @return value of minStrings attribute
      * @see #setMinStrings
      */
-    public Integer getMinStrings()
-    {
+    public Integer getMinStrings() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getValue();
     }
-    
+
     /**
      * Sets new value of expectedLines attribute.
-     *
+     * 
      * @param expectedLines new value of expectedLines attribute
      * @see #getExpectedLines
      */
-    public void setExpectedLines(Integer expectedLines)
-    {
+    public void setExpectedLines(Integer expectedLines) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).setValue(expectedLines);
     }
 
     /**
      * Gets value of expectedLines attribute.
-     *
+     * 
      * @return value of expectedLines attribute
      * @see #setExpectedLines
      */
-    public Integer getExpectedLines()
-    {
+    public Integer getExpectedLines() {
         return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).getValue();
     }
-    
+
     /**
      * Sets new value of format attribute.
-     *
+     * 
      * @param format new value of format attribute
      * @see #getFormat
      */
-    public void setFormat(TextFormat format)
-    {
+    public void setFormat(TextFormat format) {
         getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).setValue(format);
     }
 
     /**
      * Gets value of format attribute.
-     *
+     * 
      * @return value of format attribute
      * @see #setFormat
      */
-    public TextFormat getFormat()
-    {
+    public TextFormat getFormat() {
         return getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).getValue();
     }
-    
+
+    @Override
     public Integer getBase() {
         return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getValue();
     }
 
+    @Override
     public Integer getExpectedLength() {
         return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getValue();
     }
 
+    @Override
     public String getPatternMask() {
         return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getValue();
     }
 
+    @Override
     public String getPlaceholderText() {
         return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getValue();
     }
 
+    @Override
     public Identifier getStringIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getValue();
     }
 
+    @Override
     public void setBase(Integer base) {
-        getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);    
+        getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
     }
 
+    @Override
     public void setExpectedLength(Integer expectedLength) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).setValue(expectedLength);
     }
 
+    @Override
     public void setPatternMask(String patternMask) {
-        getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).setValue(patternMask);        
+        getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).setValue(patternMask);
     }
 
+    @Override
     public void setPlaceholderText(String placeholderText) {
         getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).setValue(placeholderText);
     }
 
+    @Override
     public void setStringIdentifier(Identifier stringIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).setValue(stringIdentifier);
     }
-    
-    public ResponseDeclaration getStringIdentifierResponseDeclaration()
-    {
-        if (getStringIdentifier() == null) return null;
+
+    @Override
+    public ResponseDeclaration getStringIdentifierResponseDeclaration() {
+        if (getStringIdentifier() == null) {
+            return null;
+        }
         return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
     }
-    
+
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
-        
-        if (getMaxStrings() != null) {
-            if (getMaxStrings() < getMinStrings())
-                result.add(new ValidationError(this, "maxStrings cannot be smaller than minStrings"));
-        }
-        
-        if (getResponseIdentifier() != null)
-        {
-            ResponseDeclaration declaration = getResponseDeclaration();
 
-            if (getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1)) {
-                if (declaration != null && declaration.getCardinality() != null && !(declaration.getCardinality().isList()))
-                    if (declaration.getCardinality().isRecord())
-                        result.add(new ValidationError(this, "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)"));
-                    else
-                        result.add(new ValidationError(this, "Response variable must have multiple or ordered cardinality"));                
+        if (getMaxStrings() != null) {
+            if (getMaxStrings() < getMinStrings()) {
+                result.add(new ValidationError(this, "maxStrings cannot be smaller than minStrings"));
             }
-            
-            if (declaration != null && declaration.getCardinality() != null && !(declaration.getCardinality().isRecord())) {
-                if (declaration.getBaseType() != null && !(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric()))
-                    result.add(new ValidationError(this, "Response variable must have string or numeric base type"));                
-            }
-            
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10)
-                result.add(new ValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored."));
         }
-        
-        if (getStringIdentifier() != null)
-        {
-            ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
-            if (declaration != null && getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1) 
-                    && declaration.getCardinality() != null && !declaration.getCardinality().isList())
+
+        if (getResponseIdentifier() != null) {
+            final ResponseDeclaration declaration = getResponseDeclaration();
+
+            if (getMinStrings() > 1 || getMaxStrings() != null && getMaxStrings() > 1) {
+                if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
+                    if (declaration.getCardinality().isRecord()) {
+                        result.add(new ValidationError(this,
+                                "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)"));
+                    }
+                    else {
+                        result.add(new ValidationError(this, "Response variable must have multiple or ordered cardinality"));
+                    }
+                }
+            }
+
+            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
+                if (declaration.getBaseType() != null && !(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
+                    result.add(new ValidationError(this, "Response variable must have string or numeric base type"));
+                }
+            }
+
+            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
+                result.add(new ValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored."));
+            }
+        }
+
+        if (getStringIdentifier() != null) {
+            final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
+            if (declaration != null && getMinStrings() > 1 || getMaxStrings() != null && getMaxStrings() > 1
+                    && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
                 result.add(new ValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality"));
-            
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString())
+            }
+
+            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
                 result.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
+            }
         }
     }
 
@@ -336,14 +341,14 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     @Override
     public void bindResponse(AssessmentItemController itemController, List<String> responseList) throws ResponseBindingException {
         super.bindResponse(itemController, responseList);
-        
+
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
-            Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseList);
+            final Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseList);
             itemController.getItemState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
         }
     }
-    
+
     @Override
     protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) throws ResponseBindingException {
         //handle record special case
@@ -361,9 +366,9 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         }
         else if (responseDeclaration.getBaseType().isInteger()) {
             if (responseDeclaration.getCardinality().isList()) {
-                IntegerValue [] values = new IntegerValue[responseList.size()];
+                final IntegerValue[] values = new IntegerValue[responseList.size()];
 
-                for (int i=0; i<responseList.size(); i++) {
+                for (int i = 0; i < responseList.size(); i++) {
                     values[i] = new IntegerValue(responseList.get(i), getBase());
                 }
 
@@ -377,51 +382,60 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
             else {
                 result = new IntegerValue(responseList.get(0), getBase());
             }
-        } 
+        }
         else {
             result = super.bindResponse(responseDeclaration, responseList);
         }
         return result;
     }
-    
+
     protected RecordValue bindRecordValueResponse(String responseString) {
-        RecordValue value = new RecordValue();
-        
+        final RecordValue value = new RecordValue();
+
         value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
         value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
-        
-        String exponentIndicator = null;
-        if (responseString.contains("e")) exponentIndicator = "e";
-        if (responseString.contains("E")) exponentIndicator = "E";
-        
-        String exponentPart = (exponentIndicator==null) ? null : responseString.substring(responseString.indexOf(exponentIndicator)+1);
-        responseString = (exponentIndicator==null) ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
-        String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".")+1) : null;
-        String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
 
-        if (exponentIndicator != null || responseString.contains("."))
+        String exponentIndicator = null;
+        if (responseString.contains("e")) {
+            exponentIndicator = "e";
+        }
+        if (responseString.contains("E")) {
+            exponentIndicator = "E";
+        }
+
+        final String exponentPart = exponentIndicator == null ? null : responseString.substring(responseString.indexOf(exponentIndicator) + 1);
+        responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
+        final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
+        final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
+
+        if (exponentIndicator != null || responseString.contains(".")) {
             value.add(KEY_INTEGER_VALUE_NAME, null);
-        else 
+        }
+        else {
             value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, getBase()));
-        
-        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue((leftPart == null) ? 0 : leftPart.length()));
-        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue((rightPart == null) ? 0 : rightPart.length()));
-        
+        }
+
+        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
+        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
+
         if (exponentIndicator == null) {
-            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length()==0 ? "0" : rightPart));
-        } else {
-            int frac = (rightPart==null || rightPart.length()==0) ? 0 : rightPart.length();
-            if (exponentPart != null && exponentPart.length()>0) frac -= Integer.parseInt(exponentPart);
-            
+            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
+        }
+        else {
+            int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
+            if (exponentPart != null && exponentPart.length() > 0) {
+                frac -= Integer.parseInt(exponentPart);
+            }
+
             value.add(KEY_NDP_NAME, new IntegerValue(frac));
         }
-        
-        int nsf = (leftPart==null || leftPart.length()==0) ? 0 : (new Integer(leftPart)).toString().length();
-        nsf += (rightPart==null || rightPart.length()==0) ? 0 : rightPart.length();
+
+        int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
+        nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
         value.add(KEY_NSF_NAME, new IntegerValue(nsf));
-        
+
         if (exponentIndicator != null) {
-            value.add(KEY_EXPONENT_NAME, new IntegerValue((exponentPart.length()==0) ? "0" : exponentPart));
+            value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart.length() == 0 ? "0" : exponentPart));
         }
         else {
             value.add(KEY_EXPONENT_NAME, null);
@@ -432,14 +446,14 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     @Override
     public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
         /* Gather up the values */
-        List<SingleValue> responseEntries = new ArrayList<SingleValue>();
+        final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
         else if (responseValue.getCardinality().isList()) {
             /* (Container response) */
-            ListValue listValue = (ListValue) responseValue;
-            for (SingleValue v : listValue) {
+            final ListValue listValue = (ListValue) responseValue;
+            for (final SingleValue v : listValue) {
                 responseEntries.add(v);
             }
         }
@@ -447,26 +461,26 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
             /* (Single response) */
             responseEntries.add((SingleValue) responseValue);
         }
-        
+
         /* Now do the validation */
-        Integer maxStrings = getMaxStrings();
-        Integer minStrings = getMinStrings();
-        String patternMask = getPatternMask();
+        final Integer maxStrings = getMaxStrings();
+        final Integer minStrings = getMinStrings();
+        final String patternMask = getPatternMask();
         if (responseEntries.size() >= 0 && responseEntries.size() < minStrings.intValue()) {
             return false;
         }
-        if (maxStrings!=null && responseEntries.size() > maxStrings.intValue()) {
+        if (maxStrings != null && responseEntries.size() > maxStrings.intValue()) {
             return false;
         }
-        if (patternMask!=null) {
-            Pattern pattern = Pattern.compile(patternMask);
-            for (SingleValue responseEntry : responseEntries) {
+        if (patternMask != null) {
+            final Pattern pattern = Pattern.compile(patternMask);
+            for (final SingleValue responseEntry : responseEntries) {
                 if (!pattern.matcher(responseEntry.toString()).matches()) {
                     return false;
                 }
             }
         }
-        
+
         return true;
     }
 

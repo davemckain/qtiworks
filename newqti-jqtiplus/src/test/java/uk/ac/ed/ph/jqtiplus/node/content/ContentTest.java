@@ -1,44 +1,41 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.content;
 
 import static org.junit.Assert.assertEquals;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
-import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackInline;
@@ -128,116 +125,51 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoice;
 
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
 public class ContentTest {
-    public List<Object[]> contentClasses = Arrays.asList(new Object [][] {
-            {"a", new A(null)},
-            {"abbr", new Abbr(null)},
-            {"acronym", new Acronym(null)},
-            {"address", new Address(null)},
-            {"associableHotspot", new AssociableHotspot(null)},
-            {"associateInteraction", new AssociateInteraction(null)},
-            {"b", new B(null)},
-            {"big", new Big(null)},
-            {"blockquote", new Blockquote(null)},
-            {"br", new Br(null)},
-            {"caption", new Caption(null)},
-            {"choiceInteraction", new ChoiceInteraction(null)},
-            {"cite", new Cite(null)},
-            {"code", new Code(null)},
-            {"col", new Col(null)},
-            {"colgroup", new Colgroup(null)},
-            {"dd", new Dd(null)},
-            {"dfn", new Dfn(null)},
-            {"div", new Div(null)},
-            {"dl", new Dl(null)},
-            {"drawingInteraction", new DrawingInteraction(null)},
-            {"dt", new Dt(null)},
-            {"em", new Em(null)},
-            {"endAttemptInteraction", new EndAttemptInteraction(null)},
-            {"extendedTextInteraction", new ExtendedTextInteraction(null)},
-            {"feedbackBlock", new FeedbackBlock(null)},
-            {"feedbackInline", new FeedbackInline(null)},
-            {"gap", new Gap(null)},
-            {"gapImg", new GapImg(null)},
-            {"gapMatchInteraction", new GapMatchInteraction(null)},
-            {"gapText", new GapText(null)},
-            {"graphicAssociateInteraction", new GraphicAssociateInteraction(null)},
-            {"graphicGapMatchInteraction", new GraphicGapMatchInteraction(null)},
-            {"graphicOrderInteraction", new GraphicOrderInteraction(null)},
-            {"h1", new H1(null)},
-            {"h2", new H2(null)},
-            {"h3", new H3(null)},
-            {"h4", new H4(null)},
-            {"h5", new H5(null)},
-            {"h6", new H6(null)},
-            {"hotspotChoice", new HotspotChoice(null)},
-            {"hotspotInteraction", new HotspotInteraction(null)},
-            {"hottext", new Hottext(null)},
-            {"hottextInteraction", new HottextInteraction(null)},
-            {"hr", new Hr(null)},
-            {"i", new I(null)},
-            {"img", new Img(null)},
-            {"inlineChoice", new InlineChoice(null)},
-            {"inlineChoiceInteraction", new InlineChoiceInteraction(null)},
-            {"itemBody", new ItemBody(null)},
-            {"kbd", new Kbd(null)},
-            {"li", new Li(null)},
-            {"matchInteraction", new MatchInteraction(null)},
-            {"math", new uk.ac.ed.ph.jqtiplus.node.content.mathml.Math(null)},
-            {"mediaInteraction", new MediaInteraction(null)},
-            {"object", new uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object(null)},
-            {"ol", new Ol(null)},
-            {"orderInteraction", new OrderInteraction(null)},
-            {"p", new P(null)},
-            {"param", new Param(null)},
-            {"positionObjectInteraction", new PositionObjectInteraction(null)},
-            {"positionObjectStage", new PositionObjectStage(null)},
-            {"pre", new Pre(null)},
-            {"printedVariable", new PrintedVariable(null)},
-            {"prompt", new Prompt(null)},
-            {"q", new Q(null)},
-            {"rubricBlock", new RubricBlock(null)},
-            {"samp", new Samp(null)},
-            {"selectPointInteraction", new SelectPointInteraction(null)},
-            {"simpleAssociableChoice", new SimpleAssociableChoice(null)},
-            {"simpleChoice", new SimpleChoice(null)},
-            {"simpleMatchSet", new SimpleMatchSet(null)},
-            {"sliderInteraction", new SliderInteraction(null)},
-            {"small", new Small(null)},
-            {"span", new Span(null)},
-            {"strong", new Strong(null)},
-            {"sub", new Sub(null)},
-            {"sup", new Sup(null)},
-            {"table", new Table(null)},
-            {"tbody", new Tbody(null)},
-            {"td", new Td(null)},
-            {"textEntryInteraction", new TextEntryInteraction(null)},
-            {"textRun", new TextRun(null, "")},
-            {"tfoot", new Tfoot(null)},
-            {"th", new Th(null)},
-            {"thead", new Thead(null)},
-            {"tr", new Tr(null)},
-            {"tt", new Tt(null)},
-            {"ul", new Ul(null)},
-            {"uploadInteraction", new UploadInteraction(null)},
-            {"var", new Var(null)}
+
+    public List<Object[]> contentClasses = Arrays.asList(new Object[][] { { "a", new A(null) }, { "abbr", new Abbr(null) }, { "acronym", new Acronym(null) },
+            { "address", new Address(null) }, { "associableHotspot", new AssociableHotspot(null) }, { "associateInteraction", new AssociateInteraction(null) },
+            { "b", new B(null) }, { "big", new Big(null) }, { "blockquote", new Blockquote(null) }, { "br", new Br(null) }, { "caption", new Caption(null) },
+            { "choiceInteraction", new ChoiceInteraction(null) }, { "cite", new Cite(null) }, { "code", new Code(null) }, { "col", new Col(null) },
+            { "colgroup", new Colgroup(null) }, { "dd", new Dd(null) }, { "dfn", new Dfn(null) }, { "div", new Div(null) }, { "dl", new Dl(null) },
+            { "drawingInteraction", new DrawingInteraction(null) }, { "dt", new Dt(null) }, { "em", new Em(null) },
+            { "endAttemptInteraction", new EndAttemptInteraction(null) }, { "extendedTextInteraction", new ExtendedTextInteraction(null) },
+            { "feedbackBlock", new FeedbackBlock(null) }, { "feedbackInline", new FeedbackInline(null) }, { "gap", new Gap(null) },
+            { "gapImg", new GapImg(null) }, { "gapMatchInteraction", new GapMatchInteraction(null) }, { "gapText", new GapText(null) },
+            { "graphicAssociateInteraction", new GraphicAssociateInteraction(null) }, { "graphicGapMatchInteraction", new GraphicGapMatchInteraction(null) },
+            { "graphicOrderInteraction", new GraphicOrderInteraction(null) }, { "h1", new H1(null) }, { "h2", new H2(null) }, { "h3", new H3(null) },
+            { "h4", new H4(null) }, { "h5", new H5(null) }, { "h6", new H6(null) }, { "hotspotChoice", new HotspotChoice(null) },
+            { "hotspotInteraction", new HotspotInteraction(null) }, { "hottext", new Hottext(null) }, { "hottextInteraction", new HottextInteraction(null) },
+            { "hr", new Hr(null) }, { "i", new I(null) }, { "img", new Img(null) }, { "inlineChoice", new InlineChoice(null) },
+            { "inlineChoiceInteraction", new InlineChoiceInteraction(null) }, { "itemBody", new ItemBody(null) }, { "kbd", new Kbd(null) },
+            { "li", new Li(null) }, { "matchInteraction", new MatchInteraction(null) }, { "math", new uk.ac.ed.ph.jqtiplus.node.content.mathml.Math(null) },
+            { "mediaInteraction", new MediaInteraction(null) }, { "object", new uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object(null) },
+            { "ol", new Ol(null) }, { "orderInteraction", new OrderInteraction(null) }, { "p", new P(null) }, { "param", new Param(null) },
+            { "positionObjectInteraction", new PositionObjectInteraction(null) }, { "positionObjectStage", new PositionObjectStage(null) },
+            { "pre", new Pre(null) }, { "printedVariable", new PrintedVariable(null) }, { "prompt", new Prompt(null) }, { "q", new Q(null) },
+            { "rubricBlock", new RubricBlock(null) }, { "samp", new Samp(null) }, { "selectPointInteraction", new SelectPointInteraction(null) },
+            { "simpleAssociableChoice", new SimpleAssociableChoice(null) }, { "simpleChoice", new SimpleChoice(null) },
+            { "simpleMatchSet", new SimpleMatchSet(null) }, { "sliderInteraction", new SliderInteraction(null) }, { "small", new Small(null) },
+            { "span", new Span(null) }, { "strong", new Strong(null) }, { "sub", new Sub(null) }, { "sup", new Sup(null) }, { "table", new Table(null) },
+            { "tbody", new Tbody(null) }, { "td", new Td(null) }, { "textEntryInteraction", new TextEntryInteraction(null) },
+            { "textRun", new TextRun(null, "") }, { "tfoot", new Tfoot(null) }, { "th", new Th(null) }, { "thead", new Thead(null) }, { "tr", new Tr(null) },
+            { "tt", new Tt(null) }, { "ul", new Ul(null) }, { "uploadInteraction", new UploadInteraction(null) }, { "var", new Var(null) }
     });
 
     @Test
     public void test() {
-        for (Object [] clz : contentClasses) {
-            String name = (String) clz[0];
-            XmlNode node = (XmlNode) clz[1];
+        for (final Object[] clz : contentClasses) {
+            final String name = (String) clz[0];
+            final XmlNode node = (XmlNode) clz[1];
 
             assertEquals(name, node.getClassTag());
 
-            ContentType c = ContentType.getType(name);
+            final ContentType c = ContentType.getType(name);
             assertEquals(c.getClazz(), node.getClass());
         }
     }

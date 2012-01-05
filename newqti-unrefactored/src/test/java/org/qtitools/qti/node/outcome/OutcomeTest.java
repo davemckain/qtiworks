@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package org.qtitools.qti.node.outcome;
 
 import static org.junit.Assert.assertEquals;
@@ -53,14 +52,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class OutcomeTest
-{
+public class OutcomeTest {
     private static final MultipleValue multipleValue;
     private static final OrderedValue orderedValue;
     private static final RecordValue recordValue;
 
-    static
-    {
+    static {
         multipleValue = new MultipleValue();
         multipleValue.add(new StringValue("DEFAULT 1"));
         multipleValue.add(new StringValue("DEFAULT 2"));
@@ -77,24 +74,20 @@ public class OutcomeTest
         recordValue.add("IDENTIFIER_3", new StringValue("DEFAULT 3"));
     }
 
-    private static class Outcome
-    {
+    private static class Outcome {
         private String name;
         private Value expectedValue;
 
-        public Outcome(String name, Value expectedValue)
-        {
+        public Outcome(String name, Value expectedValue) {
             this.name = name;
             this.expectedValue = expectedValue;
         }
 
-        public String getName()
-        {
+        public String getName() {
             return name;
         }
 
-        public Value getExpectedValue()
-        {
+        public Value getExpectedValue() {
             return expectedValue;
         }
     }
@@ -105,30 +98,24 @@ public class OutcomeTest
      * @return test data for this test
      */
     @Parameters
-    public static Collection<Object[]> data()
-    {
-        return Arrays.asList(new Object[][]
-        {
-            {"Outcome-default-01.xml", new Outcome[] {
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] { {"Outcome-default-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", multipleValue),
                 new Outcome("Outcome04", orderedValue),
                 new Outcome("Outcome05", recordValue),
-            }},
-            {"Outcome-default-02.xml", new Outcome[] {
+            }}, {"Outcome-default-02.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", multipleValue),
                 new Outcome("Outcome04", orderedValue),
                 new Outcome("Outcome05", recordValue),
-            }},
-            {"Outcome-set-01.xml", new Outcome[] {
+            }}, {"Outcome-set-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE")),
-            }},
-            {"Outcome-lookup-match-01.xml", new Outcome[] {
+            }}, {"Outcome-lookup-match-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE 1")),
@@ -136,8 +123,7 @@ public class OutcomeTest
                 new Outcome("Outcome05", new StringValue("VALUE 3")),
                 new Outcome("Outcome06", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome07", new StringValue("VALUE DEFAULT")),
-            }},
-            {"Outcome-lookup-interpolation-01.xml", new Outcome[] {
+            }}, {"Outcome-lookup-interpolation-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", new StringValue("VALUE 3")),
@@ -151,8 +137,7 @@ public class OutcomeTest
                 new Outcome("Outcome11", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome12", new StringValue("VALUE DEFAULT")),
                 new Outcome("Outcome13", new StringValue("VALUE DEFAULT")),
-            }},
-            {"Outcome-condition-01.xml", new Outcome[] {
+            }}, {"Outcome-condition-01.xml", new Outcome[] {
                 new Outcome("Outcome01", NullValue.INSTANCE),
                 new Outcome("Outcome02", new StringValue("DEFAULT")),
                 new Outcome("Outcome03", NullValue.INSTANCE),
@@ -174,22 +159,19 @@ public class OutcomeTest
     private String fileName;
     private Outcome[] outcomes;
 
-    public OutcomeTest(String fileName, Outcome[] outcomes)
-    {
+    public OutcomeTest(String fileName, Outcome[] outcomes) {
         this.fileName = fileName;
         this.outcomes = outcomes;
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         AssessmentTest test = new AssessmentTest();
         test.load(getClass().getResource(fileName), jqtiController);
 
         test.processOutcome();
 
-        for (Outcome outcome : outcomes)
-        {
+        for (Outcome outcome : outcomes) {
             Value value = test.getOutcomeValue(outcome.getName());
             assertEquals(outcome.getExpectedValue(), value);
         }

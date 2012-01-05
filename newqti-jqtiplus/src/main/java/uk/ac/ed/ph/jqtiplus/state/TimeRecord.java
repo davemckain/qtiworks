@@ -1,8 +1,35 @@
-
-/* $Id:SAXErrorHandler.java 2824 2008-08-01 15:46:17Z davemckain $
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
  *
- * Copyright (c) 2011, The University of Edinburgh.
- * All Rights Reserved
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
@@ -13,7 +40,6 @@ import java.util.List;
 
 /**
  * Record of an amount of time in an assessmentItemRef
- * 
  * FIXME: Work out what the hell this does!
  * 
  * @author Jiri Kajaba
@@ -24,11 +50,11 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
 
     private final AssessmentItemRefState owner;
 
-    private List<Long> entered;
+    private final List<Long> entered;
 
-    private List<Long> exited;
+    private final List<Long> exited;
 
-    private List<Long> submitted;
+    private final List<Long> submitted;
 
     private Long skipped;
 
@@ -50,9 +76,9 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
     public AssessmentItemRefState getOwner() {
         return owner;
     }
-    
+
     //---------------------------------------------------------
-    
+
     public void reset() {
         this.entered.clear();
         this.exited.clear();
@@ -63,7 +89,7 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
         this.duration = 0L;
         this.increaseDuration = false;
     }
-    
+
     //---------------------------------------------------------
 
     /**
@@ -77,7 +103,7 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
      * @return last start time
      */
     public Long getLastEntered() {
-        return (entered.size() > 0) ? entered.get(entered.size() - 1) : null;
+        return entered.size() > 0 ? entered.get(entered.size() - 1) : null;
     }
 
     /**
@@ -116,7 +142,7 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
      */
     public long getActualTotal() {
         long last = 0;
-        if (entered.size() == (exited.size() + 1)) {
+        if (entered.size() == exited.size() + 1) {
             last = owner.getTestState().getTimer().getCurrentTime() - getLastEntered();
         }
 
@@ -157,11 +183,12 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
     public void setTotal(long total) {
         this.total = total;
     }
-    
+
     public void addToTotal(long addition) {
         this.total += addition;
     }
 
+    @Override
     public long getDuration() {
         return duration;
     }
@@ -169,7 +196,7 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
     public void setDuration(long duration) {
         this.duration = duration;
     }
-    
+
     public void addToDuration(long addition) {
         this.duration += addition;
     }
@@ -182,113 +209,113 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
         this.timedOut = timedOut;
     }
 
-//    // -------------------------------------------------------------
-//    // (Followed moved from TimeRecord to AssessmentItemRefController)
-//
-//     /**
-//     * Enter new start time.
-//     * @param time start time
-//     */
-//     public void enter(long time)
-//     {
-//     assert entered.size() == exited.size() :
-//     "Cannot enter item reference twice: " + owner.getIdentifier();
-//    
-//     entered.add(time);
-//     if (!owner.isFinished() && owner.passMaximumTimeLimit())
-//     increaseDuration = true;
-//     }
-//    
-//     /**
-//     * Enter new exit time.
-//     * @param time exit time
-//     */
-//     public void exit(long time)
-//     {
-//     assert entered.size() == (exited.size() + 1) :
-//     "Cannot exit item reference prior to enter: " + owner.getIdentifier();
-//    
-//     exited.add(time);
-//     long lastEntered = getLastEntered();
-//     total += time - lastEntered;
-//     if (increaseDuration)
-//     {
-//     duration += time - lastEntered;
-//     increaseDuration = false;
-//     }
-//     }
-//    
-//     /**
-//     * Enter new submit time.
-//     * @param time submit time
-//     */
-//     public void submit(long time)
-//     {
-//     assert skipped == null : "Cannot submit skipped item reference: " +
-//     owner.getIdentifier();
-//    
-//     assert timedOut == null : "Cannot submit timed out item reference: " +
-//     owner.getIdentifier();
-//    
-//     assert entered.size() == (exited.size() + 1) :
-//     "Cannot submit item reference prior to enter: " + owner.getIdentifier();
-//    
-//     submitted.add(time);
-//     duration += time - getLastEntered();
-//     increaseDuration = false;
-//     }
-//    
-//     /**
-//     * Enter new skip time
-//     * @param time skip time
-//     */
-//     public void skip(long time)
-//     {
-//     assert skipped == null : "Cannot skip item reference twice: " +
-//     owner.getIdentifier();
-//    
-//     assert timedOut == null : "Cannot skip timed out item reference: " +
-//     owner.getIdentifier();
-//    
-//     assert entered.size() == (exited.size() + 1) :
-//     "Cannot skip item reference prior to enter: " + owner.getIdentifier();
-//    
-//     skipped = time;
-//     duration += time - getLastEntered();
-//     increaseDuration = false;
-//     }
-//    
-//     /**
-//     * Enter new timeout time
-//     * @param time timeout time
-//     */
-//     public void timeOut(long time)
-//     {
-//     assert skipped == null : "Cannot timeout skipped item reference: " +
-//     owner.getIdentifier();
-//    
-//     assert timedOut == null : "Cannot time out item reference twice: " +
-//     owner.getIdentifier();
-//    
-//     assert entered.size() == (exited.size() + 1) :
-//     "Cannot timeout item reference prior to enter: " + owner.getIdentifier();
-//    
-//     timedOut = time;
-//     duration += time - getLastEntered();
-//     increaseDuration = false;
-//     }
-     
+    //    // -------------------------------------------------------------
+    //    // (Followed moved from TimeRecord to AssessmentItemRefController)
+    //
+    //     /**
+    //     * Enter new start time.
+    //     * @param time start time
+    //     */
+    //     public void enter(long time)
+    //     {
+    //     assert entered.size() == exited.size() :
+    //     "Cannot enter item reference twice: " + owner.getIdentifier();
+    //    
+    //     entered.add(time);
+    //     if (!owner.isFinished() && owner.passMaximumTimeLimit())
+    //     increaseDuration = true;
+    //     }
+    //    
+    //     /**
+    //     * Enter new exit time.
+    //     * @param time exit time
+    //     */
+    //     public void exit(long time)
+    //     {
+    //     assert entered.size() == (exited.size() + 1) :
+    //     "Cannot exit item reference prior to enter: " + owner.getIdentifier();
+    //    
+    //     exited.add(time);
+    //     long lastEntered = getLastEntered();
+    //     total += time - lastEntered;
+    //     if (increaseDuration)
+    //     {
+    //     duration += time - lastEntered;
+    //     increaseDuration = false;
+    //     }
+    //     }
+    //    
+    //     /**
+    //     * Enter new submit time.
+    //     * @param time submit time
+    //     */
+    //     public void submit(long time)
+    //     {
+    //     assert skipped == null : "Cannot submit skipped item reference: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert timedOut == null : "Cannot submit timed out item reference: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert entered.size() == (exited.size() + 1) :
+    //     "Cannot submit item reference prior to enter: " + owner.getIdentifier();
+    //    
+    //     submitted.add(time);
+    //     duration += time - getLastEntered();
+    //     increaseDuration = false;
+    //     }
+    //    
+    //     /**
+    //     * Enter new skip time
+    //     * @param time skip time
+    //     */
+    //     public void skip(long time)
+    //     {
+    //     assert skipped == null : "Cannot skip item reference twice: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert timedOut == null : "Cannot skip timed out item reference: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert entered.size() == (exited.size() + 1) :
+    //     "Cannot skip item reference prior to enter: " + owner.getIdentifier();
+    //    
+    //     skipped = time;
+    //     duration += time - getLastEntered();
+    //     increaseDuration = false;
+    //     }
+    //    
+    //     /**
+    //     * Enter new timeout time
+    //     * @param time timeout time
+    //     */
+    //     public void timeOut(long time)
+    //     {
+    //     assert skipped == null : "Cannot timeout skipped item reference: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert timedOut == null : "Cannot time out item reference twice: " +
+    //     owner.getIdentifier();
+    //    
+    //     assert entered.size() == (exited.size() + 1) :
+    //     "Cannot timeout item reference prior to enter: " + owner.getIdentifier();
+    //    
+    //     timedOut = time;
+    //     duration += time - getLastEntered();
+    //     increaseDuration = false;
+    //     }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-            + "(entered=" + entered
-            + ",exited=" + exited
-            + ",submitted=" + submitted
-            + ",skipped=" + skipped
-            + ",timedOut=" + timedOut
-            + ",total=" + total
-            + ",duration=" + duration
-            + ",increaseDuration=" + increaseDuration
-            + ")";
+                + "(entered=" + entered
+                + ",exited=" + exited
+                + ",submitted=" + submitted
+                + ",skipped=" + skipped
+                + ",timedOut=" + timedOut
+                + ",total=" + total
+                + ",duration=" + duration
+                + ",increaseDuration=" + increaseDuration
+                + ")";
     }
 }

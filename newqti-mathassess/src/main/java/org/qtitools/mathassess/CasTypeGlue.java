@@ -1,35 +1,35 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
- * Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package org.qtitools.mathassess;
 
@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
 
 import org.qtitools.mathassess.tools.qticasbridge.types.BooleanMultipleValueWrapper;
 import org.qtitools.mathassess.tools.qticasbridge.types.BooleanOrderedValueWrapper;
@@ -67,15 +66,15 @@ import org.qtitools.mathassess.tools.qticasbridge.types.ValueWrapper;
 import java.util.List;
 
 /**
- * Provides the required static methods for mapping between JQTI {@link Value}s and the
+ * Provides the required static methods for mapping between JQTI {@link Value}s
+ * and the
  * corresponding {@link ValueWrapper}s in MathAssessTools.
  * 
- * @author  Jonathon Hare
- * @author  David McKain
- * @version $Revision: 2608 $
+ * @author Jonathon Hare
+ * @author David McKain
  */
 public final class CasTypeGlue {
-    
+
     public static BooleanValue convertToJQTI(BooleanValueWrapper value) {
         return BooleanValue.valueOf(value.getValue().booleanValue());
     }
@@ -89,16 +88,17 @@ public final class CasTypeGlue {
     }
 
     public static RecordValue convertToJQTI(MathsContentValueWrapper value) {
-        RecordValue rv = new RecordValue();
-        
-        /* First add pseudo "class" entry that allows us to determine (to a point) that this
+        final RecordValue rv = new RecordValue();
+
+        /* First add pseudo "class" entry that allows us to determine (to a
+         * point) that this
          * record corresponds to a MathsContent value.
-         * 
-         * It would be nice if QTI supported this natively, so we'll kind of hack something
-         * together in the interim using a URL identifier that nobody else is likely to use.
-         */
+         * It would be nice if QTI supported this natively, so we'll kind of
+         * hack something
+         * together in the interim using a URL identifier that nobody else is
+         * likely to use. */
         rv.add(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER, new StringValue(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE));
-        
+
         /* Fill in other fields */
         if (value.getMaximaInput() != null && value.getMaximaInput().length() > 0) {
             rv.add(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER, new StringValue(value.getMaximaInput()));
@@ -114,11 +114,12 @@ public final class CasTypeGlue {
                     .getAsciiMathInput()));
         }
         if (value instanceof MathsContentInputValueWrapper) {
-            /* (This goes outside the MathAssess spec, but if this is something that came from
-             * ASCIIMath input then we shall also include the bracketed PMathML so that it can
-             * be used in rendering.
-             */
-            MathsContentInputValueWrapper inputValue = (MathsContentInputValueWrapper) value;
+            /* (This goes outside the MathAssess spec, but if this is something
+             * that came from
+             * ASCIIMath input then we shall also include the bracketed PMathML
+             * so that it can
+             * be used in rendering. */
+            final MathsContentInputValueWrapper inputValue = (MathsContentInputValueWrapper) value;
             if (inputValue.getPMathMLBracketed() != null && inputValue.getPMathMLBracketed().length() > 0) {
                 rv.add(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
             }
@@ -127,22 +128,23 @@ public final class CasTypeGlue {
     }
 
     public static Value convertToJQTI(ValueWrapper value) {
-        if (value == null || value.isNull())
+        if (value == null || value.isNull()) {
             return NullValue.INSTANCE;
+        }
 
         switch (value.getCardinality()) {
             case SINGLE:
                 return convertToJQTI((SingleValueWrapper<?>) value);
-                
+
             case MULTIPLE:
                 return convertToJQTI((MultipleValueWrapper<?, ?>) value);
-                
+
             case ORDERED:
-                return convertToJQTI((OrderedValueWrapper<? ,?>) value);
-                
+                return convertToJQTI((OrderedValueWrapper<?, ?>) value);
+
             case MATHS_CONTENT:
                 return convertToJQTI((MathsContentValueWrapper) value);
-                
+
             default:
                 throw new QTIEvaluationException("Converting type " + value.getCardinality()
                         + " is not supported.");
@@ -153,68 +155,68 @@ public final class CasTypeGlue {
         switch (value.getBaseType()) {
             case BOOLEAN:
                 return convertToJQTI((BooleanValueWrapper) value);
-                
+
             case INTEGER:
                 return convertToJQTI((IntegerValueWrapper) value);
-                
+
             case FLOAT:
                 return convertToJQTI((FloatValueWrapper) value);
-                
+
             default:
                 throw new QTIEvaluationException("Converting type " + value.getBaseType()
                         + " is not supported.");
         }
     }
 
-    public static OrderedValue convertToJQTI(OrderedValueWrapper<?,?> wrapper) {
-        OrderedValue value = new OrderedValue();
+    public static OrderedValue convertToJQTI(OrderedValueWrapper<?, ?> wrapper) {
+        final OrderedValue value = new OrderedValue();
 
-        for (SingleValueWrapper<?> v : wrapper) {
+        for (final SingleValueWrapper<?> v : wrapper) {
             value.add(convertToJQTI(v));
         }
         return value;
     }
 
-    public static MultipleValue convertToJQTI(MultipleValueWrapper<?,?> wrapper) {
-        MultipleValue value = new MultipleValue();
+    public static MultipleValue convertToJQTI(MultipleValueWrapper<?, ?> wrapper) {
+        final MultipleValue value = new MultipleValue();
 
-        for (SingleValueWrapper<?> v : wrapper) {
+        for (final SingleValueWrapper<?> v : wrapper) {
             value.add(convertToJQTI(v));
         }
         return value;
     }
 
-    //----------------------------------------------------------------------
-    
+    // ----------------------------------------------------------------------
+
     public static boolean isMathsContentRecord(Value value) {
         if (!(value instanceof RecordValue)) {
             return false;
         }
-        SingleValue testValue = ((RecordValue) value).get(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER);
-        return testValue!=null &&  testValue.toString().equals(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE);
+        final SingleValue testValue = ((RecordValue) value).get(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER);
+        return testValue != null && testValue.toString().equals(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE);
     }
 
     public static ValueWrapper convertFromJQTI(Value value) {
         switch (value.getCardinality()) {
             case SINGLE:
                 return convertFromJQTI((SingleValue) value);
-                
+
             case MULTIPLE:
                 return convertFromJQTI((MultipleValue) value);
-                
+
             case ORDERED:
                 return convertFromJQTI((OrderedValue) value);
-                
+
             case RECORD:
-                RecordValue recordValue = (RecordValue) value;
+                final RecordValue recordValue = (RecordValue) value;
                 if (!isMathsContentRecord(recordValue)) {
                     throw new QTIEvaluationException("RecordValue " + recordValue + " does not appear to hold MathsContent");
                 }
                 return convertFromJQTI(recordValue);
-                
+
             default:
                 throw new QTIEvaluationException("Unexpected switch case");
-                
+
         }
     }
 
@@ -233,7 +235,7 @@ public final class CasTypeGlue {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static OrderedValueWrapper<?,?> convertFromJQTI(OrderedValue value) {
+    public static OrderedValueWrapper<?, ?> convertFromJQTI(OrderedValue value) {
         OrderedValueWrapper wrapper;
 
         if (value.getBaseType().isBoolean()) {
@@ -250,14 +252,14 @@ public final class CasTypeGlue {
                     + " is not supported.");
         }
 
-        for (SingleValue v : value) {
+        for (final SingleValue v : value) {
             wrapper.add(convertFromJQTI(v));
         }
         return wrapper;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static MultipleValueWrapper<?,?> convertFromJQTI(MultipleValue value) {
+    public static MultipleValueWrapper<?, ?> convertFromJQTI(MultipleValue value) {
         MultipleValueWrapper wrapper;
 
         if (value.getBaseType().isBoolean()) {
@@ -274,12 +276,12 @@ public final class CasTypeGlue {
                     + " is not supported.");
         }
 
-        for (SingleValue v : value) {
+        for (final SingleValue v : value) {
             wrapper.add(convertFromJQTI(v));
         }
         return wrapper;
     }
-    
+
     public static BooleanValueWrapper convertFromJQTI(BooleanValue value) {
         return new BooleanValueWrapper(value.booleanValue());
     }
@@ -293,7 +295,7 @@ public final class CasTypeGlue {
     }
 
     public static MathsContentValueWrapper convertFromJQTI(RecordValue value) {
-        MathsContentInputValueWrapper wrapper = new MathsContentInputValueWrapper();
+        final MathsContentInputValueWrapper wrapper = new MathsContentInputValueWrapper();
         if (value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) != null) {
             wrapper.setMaximaInput(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).toString());
         }
@@ -313,15 +315,15 @@ public final class CasTypeGlue {
     }
 
     public static ValueWrapper[] convertFromJQTI(List<Value> values) {
-        ValueWrapper[] output = new ValueWrapper[values.size()];
+        final ValueWrapper[] output = new ValueWrapper[values.size()];
 
         for (int i = 0; i < values.size(); i++) {
             output[i] = convertFromJQTI(values.get(i));
         }
         return output;
     }
-    
-    //----------------------------------------------------------------------
+
+    // ----------------------------------------------------------------------
 
     public static Class<? extends ValueWrapper> getCasClass(BaseType baseType, Cardinality cardinality) {
         switch (cardinality) {
@@ -336,7 +338,7 @@ public final class CasTypeGlue {
                     default:
                         return null;
                 }
-                
+
             case MULTIPLE:
                 switch (baseType) {
                     case BOOLEAN:
@@ -348,7 +350,7 @@ public final class CasTypeGlue {
                     default:
                         return null;
                 }
-                
+
             case ORDERED:
                 switch (baseType) {
                     case BOOLEAN:
@@ -360,7 +362,7 @@ public final class CasTypeGlue {
                     default:
                         return null;
                 }
-                
+
             case RECORD:
                 return MathsContentValueWrapper.class;
         }

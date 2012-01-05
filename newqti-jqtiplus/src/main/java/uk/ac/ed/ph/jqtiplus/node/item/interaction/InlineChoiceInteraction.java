@@ -1,37 +1,36 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-  * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
-  *    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
-  *    Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
-*/
-
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
+ */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -52,50 +51,47 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
- * An inline choice is an inlineInteraction that presents the user with A set of 
- * choices, each of which is A simple piece of text. The candidate's task is to 
- * select one of the choices. Unlike the choiceInteraction, the delivery engine 
- * must allow the candidate to review their choice within the context of the 
+ * An inline choice is an inlineInteraction that presents the user with A set of
+ * choices, each of which is A simple piece of text. The candidate's task is to
+ * select one of the choices. Unlike the choiceInteraction, the delivery engine
+ * must allow the candidate to review their choice within the context of the
  * surrounding text.
- * 
- * The inlineChoiceInteraction must be bound to A response variable with A 
+ * The inlineChoiceInteraction must be bound to A response variable with A
  * baseType of identifier and single cardinality only.
- * 
  * Contains : inlineChoice [1..*]
- * An ordered list of the choices that are displayed to the user. The order is 
+ * An ordered list of the choices that are displayed to the user. The order is
  * the order of the choices presented to the user unless shuffle is true.
- * 
  * Attribute : shuffle [1]: boolean = false
- * If the shuffle attribute is true then the delivery engine must randomize the 
+ * If the shuffle attribute is true then the delivery engine must randomize the
  * order in which the choices are presented subject to the fixed attribute.
- * 
  * Attribute : required [0..1]: boolean = false
- * If true then A choice must be selected by the candidate in order to form A 
+ * If true then A choice must be selected by the candidate in order to form A
  * valid response to the interaction.
  * 
  * @author Jonathon Hare
  */
 public class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
-    
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1331855266262194665L;
 
     /** Name of this class in xml schema. */
     public static String CLASS_TAG = "inlineChoiceInteraction";
-    
+
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
+
     /** Default value of shuffle attribute. */
     public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
 
     /** Name of required attribute in xml schema. */
     public static String ATTR_REQUIRED_NAME = "required";
+
     /** Default value of required attribute. */
     public static boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
-    
+
     /**
      * Construct new interaction.
-     *  
+     * 
      * @param parent Parent node
      */
     public InlineChoiceInteraction(XmlNode parent) {
@@ -103,7 +99,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, ATTR_REQUIRED_DEFAULT_VALUE, false));
-        
+
         getNodeGroups().add(new InlineChoiceGroup(this, 1));
     }
 
@@ -119,88 +115,87 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Sets new value of shuffle attribute.
-     *
+     * 
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
-    public void setShuffle(Boolean shuffle)
-    {
+    @Override
+    public void setShuffle(Boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(shuffle);
     }
 
     /**
      * Gets value of shuffle attribute.
-     *
+     * 
      * @return value of shuffle attribute
      * @see #setShuffle
      */
-    public Boolean getShuffle()
-    {
+    @Override
+    public Boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getValue();
     }
 
     /**
      * Sets new value of required attribute.
-     *
+     * 
      * @param required new value of required attribute
      * @see #getRequired
      */
-    public void setRequired(Boolean required)
-    {
+    public void setRequired(Boolean required) {
         getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
     }
 
     /**
      * Gets value of required attribute.
-     *
+     * 
      * @return value of required attribute
      * @see #setRequired
      */
-    public Boolean getRequired()
-    {
+    public Boolean getRequired() {
         return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getValue();
     }
 
     /**
      * Gets simpleChoice children.
-     *
+     * 
      * @return simpleChoice children
      */
-    public List<InlineChoice> getInlineChoices()
-    {
+    public List<InlineChoice> getInlineChoices() {
         return getNodeGroups().getInlineChoiceGroup().getInlineChoices();
     }
 
     /**
      * Gets simpleChoice child with given identifier or null.
-     *
+     * 
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public InlineChoice getInlineChoice(String identifier)
-    {
-        for (InlineChoice choice : getInlineChoices())
-            if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier))
+    public InlineChoice getInlineChoice(String identifier) {
+        for (final InlineChoice choice : getInlineChoices()) {
+            if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
+            }
+        }
 
         return null;
     }
-    
+
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
         super.validate(context, result);
-        
-        if (getResponseIdentifier() != null)
-        {
-            ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier())
+
+        if (getResponseIdentifier() != null) {
+            final ResponseDeclaration declaration = getResponseDeclaration();
+            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
                 result.add(new ValidationError(this, "Response variable must have identifier base type"));
-            
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
+            }
+
+            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
+            }
         }
     }
-    
+
     @Override
     public void initialize(AssessmentItemController itemController) {
         super.initialize(itemController);
@@ -216,15 +211,15 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
         }
         else {
             /* Make sure the identifier corresponds to that of one of the choices */
-            Set<Identifier> inlineChoiceIdentifiers = new HashSet<Identifier>();
-            for (InlineChoice choice : getInlineChoices()) {
+            final Set<Identifier> inlineChoiceIdentifiers = new HashSet<Identifier>();
+            for (final InlineChoice choice : getInlineChoices()) {
                 inlineChoiceIdentifiers.add(choice.getIdentifier());
             }
             if (!inlineChoiceIdentifiers.contains(((IdentifierValue) responseValue).identifierValue())) {
                 return false;
             }
         }
-        
+
         return true;
     }
 }

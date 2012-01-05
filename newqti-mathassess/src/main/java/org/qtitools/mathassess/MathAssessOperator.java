@@ -1,35 +1,35 @@
-/*
-<LICENCE>
-
-Copyright (c) 2008, University of Southampton
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-
- * Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-
- * Neither the name of the University of Southampton nor the names of its
-    contributors may be used to endorse or promote products derived from this
-    software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</LICENCE>
+/* Copyright (c) 2012, University of Edinburgh.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package org.qtitools.mathassess;
 
@@ -67,14 +67,13 @@ import java.util.List;
 /**
  * Abstract superclass for all MathAssess customOperators
  * 
- * @author  Jonathon Hare
- * @author  David McKain
- * @version $Revision: 2205 $
+ * @author Jonathon Hare
+ * @author David McKain
  */
 public abstract class MathAssessOperator extends CustomOperator {
 
     private static final long serialVersionUID = 1275749269462837686L;
-    
+
     private static String IDENTIFIER_REGEX_VALUE = "[a-zA-Z][a-zA-Z0-9]*";
 
     public MathAssessOperator(JQTIExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
@@ -90,18 +89,17 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
 
-    /*
-     * Iterate through parent nodes looking for a mathassess namespace decl If
-     * one is found return the prefix, otherwise return empty string
-     */
+    /* Iterate through parent nodes looking for a mathassess namespace decl If
+     * one is found return the prefix, otherwise return empty string */
     protected String getNamespacePrefix() {
         AbstractNode parent = this;
         while (parent != null) {
-            for (Attribute attr : parent.getAttributes()) {
+            for (final Attribute attr : parent.getAttributes()) {
                 if (attr.getName() != null && attr.getName().startsWith("xmlns:")
                         && attr.valueToString() != null
-                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI))
+                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI)) {
                     return attr.getName().substring(6) + ":";
+                }
             }
             parent = (AbstractNode) parent.getParent();
         }
@@ -127,35 +125,36 @@ public abstract class MathAssessOperator extends CustomOperator {
         ((SyntaxTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_SYNTAX_NAME))
                 .setValue(syntax);
     }
-    
+
     @Override
     public final Value evaluateSelf(ProcessingContext context, int depth) {
         switch (getSyntax()) {
             case MAXIMA:
                 try {
-                    /* FIXME: These operators are legal in test contexts too. We need to support this eventually. */
+                    /* FIXME: These operators are legal in test contexts too. We
+                     * need to support this eventually. */
                     return maximaEvaluate((ItemProcessingContext) context);
                 }
-                catch (MaximaProcessTerminatedException e) {
+                catch (final MaximaProcessTerminatedException e) {
                     throw new QTIEvaluationException("Maxima process was terminated earlier while processing this item", e);
                 }
-                catch (MaximaTimeoutException e) {
+                catch (final MaximaTimeoutException e) {
                     throw new QTIEvaluationException("Maxima call timed out", e);
                 }
-                catch (MathsContentTooComplexException e) {
+                catch (final MathsContentTooComplexException e) {
                     throw new QTIEvaluationException("Math content is too complex for current implementation", e);
                 }
-                catch (RuntimeException e) {
+                catch (final RuntimeException e) {
                     throw new QTIEvaluationException("Unexpected Exception communicating with Maxima", e);
                 }
-                
+
             default:
                 throw new QTIEvaluationException("Unsupported syntax type: " + getSyntax());
         }
     }
-    
+
     protected abstract Value maximaEvaluate(ItemProcessingContext context)
-        throws MaximaTimeoutException, MathsContentTooComplexException;
+            throws MaximaTimeoutException, MathsContentTooComplexException;
 
     /**
      * Gets a list of all the variables that can be read by a cas
@@ -164,9 +163,9 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @return readable variables
      */
     public List<VariableDeclaration> getAllCASReadableVariableDeclarations() {
-        List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
+        final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        for (VariableDeclaration decl : getAllReadableVariableDeclarations()) {
+        for (final VariableDeclaration decl : getAllReadableVariableDeclarations()) {
             if (decl.getIdentifier().toString().matches(IDENTIFIER_REGEX_VALUE)) {
                 declarations.add(decl);
             }
@@ -175,16 +174,16 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     private List<VariableDeclaration> getAllReadableVariableDeclarations() {
-        List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
-        
-        AssessmentItem item = getRootNode(AssessmentItem.class);
-        AssessmentTest test = getRootNode(AssessmentTest.class);
-        if (item!=null) {
+        final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
+
+        final AssessmentItem item = getRootNode(AssessmentItem.class);
+        final AssessmentTest test = getRootNode(AssessmentTest.class);
+        if (item != null) {
             declarations.addAll(item.getResponseDeclarations());
             declarations.addAll(item.getTemplateDeclarations());
             declarations.addAll(item.getOutcomeDeclarations());
         }
-        else if (test!=null) {
+        else if (test != null) {
             declarations.addAll(test.getOutcomeDeclarations());
         }
 
@@ -197,9 +196,9 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @return writable variables
      */
     public List<VariableDeclaration> getAllCASWriteableVariableDeclarations() {
-        List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
+        final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        for (VariableDeclaration decl : getAllWriteableVariableDeclarations()) {
+        for (final VariableDeclaration decl : getAllWriteableVariableDeclarations()) {
             if (decl.getIdentifier().toString().matches(IDENTIFIER_REGEX_VALUE)) {
                 declarations.add(decl);
             }
@@ -208,15 +207,15 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     private List<VariableDeclaration> getAllWriteableVariableDeclarations() {
-        List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
-        
-        AssessmentItem item = getRootNode(AssessmentItem.class);
-        AssessmentTest test = getRootNode(AssessmentTest.class);
-        if (item!=null) {
+        final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
+
+        final AssessmentItem item = getRootNode(AssessmentItem.class);
+        final AssessmentTest test = getRootNode(AssessmentTest.class);
+        if (item != null) {
             declarations.addAll(item.getTemplateDeclarations());
             declarations.addAll(item.getOutcomeDeclarations());
         }
-        else if (test!=null) {
+        else if (test != null) {
             declarations.addAll(test.getOutcomeDeclarations());
         }
 
@@ -228,26 +227,28 @@ public abstract class MathAssessOperator extends CustomOperator {
         super.validate(context, result);
 
         /* First make sure that variable names are all acceptable */
-        for (VariableDeclaration decl : getAllReadableVariableDeclarations()) {
-            String ident = decl.getIdentifier().toString();
-            if (!ident.matches(IDENTIFIER_REGEX_VALUE))
-                result.add(new ValidationWarning(this, "Variable " + ident + " does not follow the naming convention stated in the MathAssess extensions specification"));
+        for (final VariableDeclaration decl : getAllReadableVariableDeclarations()) {
+            final String ident = decl.getIdentifier().toString();
+            if (!ident.matches(IDENTIFIER_REGEX_VALUE)) {
+                result.add(new ValidationWarning(this, "Variable " + ident
+                        + " does not follow the naming convention stated in the MathAssess extensions specification"));
+            }
         }
-        
+
         /* Validate syntax attribute */
         if (getSyntax() != null) {
             switch (getSyntax()) {
                 case MAXIMA:
                     break;
-                    
+
                 default:
                     result.add(new ValidationError(this, "Unsupported syntax type: " + getSyntax()));
             }
         }
-        
+
         /* Get subclass to validate remaining attrs and/or children */
         doAdditionalValidation(context, result);
     }
-    
+
     protected abstract void doAdditionalValidation(ValidationContext context, ValidationResult result);
 }
