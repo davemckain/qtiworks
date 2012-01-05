@@ -25,6 +25,8 @@ All Rights Reserved
     <junit.version>4.10</junit.version>
     <slf4j.version>1.5.11</slf4j.version>
     <log4j.version>1.2.16</log4j.version>
+    <spring.version>3.1.0.RELEASE</spring.version>
+    <cglib.version>2.2.2</cglib.version>
     <maven.site.url>http://snuggletex.sourceforge.net/maven/</maven.site.url>
   </properties>
   <repositories>
