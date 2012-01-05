@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.control.TestValidationContext;
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
@@ -49,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 import java.net.URISyntaxException;

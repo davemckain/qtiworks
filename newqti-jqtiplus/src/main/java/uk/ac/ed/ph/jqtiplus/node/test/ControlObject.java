@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.List;

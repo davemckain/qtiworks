@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 

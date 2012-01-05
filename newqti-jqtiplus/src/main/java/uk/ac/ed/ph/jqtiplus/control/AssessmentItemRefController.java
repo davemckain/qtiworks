@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.TimeRecord;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Date;
 

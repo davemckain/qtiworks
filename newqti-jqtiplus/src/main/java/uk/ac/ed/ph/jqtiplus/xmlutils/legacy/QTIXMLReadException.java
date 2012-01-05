@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * FIXME: Document this

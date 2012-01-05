@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.QTIConstants;
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
@@ -42,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDOMBuilderHandler;
 import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXMLResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.InputStream;
 import java.io.Serializable;

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.group.item.CorrectResponseGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.CandidateResponseGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
@@ -42,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 

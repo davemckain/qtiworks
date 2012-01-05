@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
@@ -45,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 import java.util.ArrayList;

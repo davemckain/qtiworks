@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 
 
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.control.ToRemove;
 import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue;
@@ -105,6 +104,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.outcome.OutcomeMinimum;
 import uk.ac.ed.ph.jqtiplus.node.expression.outcome.TestVariables;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.HashMap;
 import java.util.Map;
