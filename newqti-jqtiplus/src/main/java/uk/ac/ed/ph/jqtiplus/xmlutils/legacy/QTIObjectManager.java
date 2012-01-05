@@ -5,17 +5,18 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
+import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -32,25 +33,25 @@ import org.w3c.dom.Element;
  * @author  David McKain
  * @version $Revision: 2801 $
  */
-@Deprecated
+@ToRefactor
 public final class QTIObjectManager {
     
     private static final Logger logger = LoggerFactory.getLogger(QTIObjectManager.class);
     
-    private final JQTIController jqtiController;
+    private final JQTIExtensionManager jqtiExtensionManager;
     private final SupportedXMLReader supportedXMLReader;
     private final ResourceLocator inputResourceLocator;
     private final QTIObjectCache qtiObjectCache;
     
-    public QTIObjectManager(JQTIController jqtiController, SupportedXMLReader supportedXMLReader, ResourceLocator inputResourceLocator, QTIObjectCache qtiObjectCache) {
-        this.jqtiController = jqtiController;
+    public QTIObjectManager(JQTIExtensionManager jqtiExtensionManager, SupportedXMLReader supportedXMLReader, ResourceLocator inputResourceLocator, QTIObjectCache qtiObjectCache) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.supportedXMLReader = supportedXMLReader;
         this.inputResourceLocator = inputResourceLocator;
         this.qtiObjectCache = qtiObjectCache;
     }
     
-    public JQTIController getJQTIController() {
-        return jqtiController;
+    public JQTIExtensionManager getJQTIExtensionManager() {
+        return jqtiExtensionManager;
     }
     
     public SupportedXMLReader getSupportedXMLReader() {
@@ -108,11 +109,11 @@ public final class QTIObjectManager {
         LoadingContext loadingContext = new LoadingContext() {
             @Override
             public JQTIExtensionManager getJQTIExtensionManager() {
-                return jqtiController;
+                return jqtiExtensionManager;
             }
             
             @Override
-            public void parseError(QTIParseException exception, Element owner) {
+            public void modelBuildingError(QTIModelException exception, Element owner) {
                 QTIModelBuildingError error = new QTIModelBuildingError(exception, owner, SupportedXMLReader.extractLocationInformation(owner));
                 qtiParseErrors.add(error);
             }
@@ -142,7 +143,7 @@ public final class QTIObjectManager {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-            + "(jqtiController=" + jqtiController
+            + "(jqtiController=" + jqtiExtensionManager
             + ",supportedXMLReader=" + supportedXMLReader
             + ",inputResourceLocator=" + inputResourceLocator
             + ",qtiObjectCache=" + qtiObjectCache

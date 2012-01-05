@@ -6,7 +6,7 @@
 package dave;
 
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
+import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
@@ -24,9 +24,9 @@ import java.net.URI;
 public class TemplateConstraintTest {
     
     public static void main(String[] args) throws RuntimeValidationException {
-        JQTIController jqtiController = new JQTIController();
+        JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
         SupportedXMLReader xmlReader = new SupportedXMLReader(true);
-        QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
+        QTIObjectManager objectManager = new QTIObjectManager(jqtiExtensionManager, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
 
         URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
         

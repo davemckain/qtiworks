@@ -63,7 +63,9 @@ public final class AssessmentItemManager implements ItemValidationContext {
     
     public ValidationResult validateItem() {
         logger.info("Performing JQTI validation on " + this);
-        return item.validate(this);
+        ValidationResult result = new ValidationResult(item);
+        item.validate(this, result);
+        return result;
     }
     
     //-------------------------------------------------------------------

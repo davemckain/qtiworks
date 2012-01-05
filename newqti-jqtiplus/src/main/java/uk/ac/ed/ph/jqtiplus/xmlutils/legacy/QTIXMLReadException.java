@@ -5,6 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
+import uk.ac.ed.ph.jqtiplus.control.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
 /**
@@ -13,7 +14,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
  * @author  David McKain
  * @version $Revision: 2766 $
  */
-@Deprecated
+@ToRefactor
 public class QTIXMLReadException extends QTIRuntimeException {
 
     private static final long serialVersionUID = -6558013135849907488L;
