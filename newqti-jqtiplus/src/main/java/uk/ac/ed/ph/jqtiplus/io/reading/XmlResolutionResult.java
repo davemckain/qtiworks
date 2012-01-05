@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 /**
@@ -41,37 +42,36 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
  * 
  * @author David McKain
  */
-public final class XMLResolutionResult<E extends RootNode> implements ResolutionResult<E> {
+public final class XmlResolutionResult<E extends RootNode> implements ResolutionResult<E> {
 
     private static final long serialVersionUID = -5230096529031452028L;
 
-    private final QTIReadResult<E> qtiReadResult;
+    private final QtiReadResult<E> qtiReadResult;
+    private final XMLResourceNotFoundException xmlResourceNotFoundException;
 
-    private final Throwable loadException;
-
-    public XMLResolutionResult(QTIReadResult<E> qtiReadResult, Throwable loadException) {
+    public XmlResolutionResult(QtiReadResult<E> qtiReadResult, XMLResourceNotFoundException xmlResourceNotFoundException) {
         this.qtiReadResult = qtiReadResult;
-        this.loadException = loadException;
+        this.xmlResourceNotFoundException = xmlResourceNotFoundException;
     }
 
-    public QTIReadResult<E> getQTIReadResult() {
+    public QtiReadResult<E> getQtiReadResult() {
         return qtiReadResult;
     }
-
-    public Throwable getLoadException() {
-        return loadException;
+    
+    public XMLResourceNotFoundException getXmlResourceNotFoundException() {
+        return xmlResourceNotFoundException;
     }
 
     @Override
-    public E getJQTIObject() {
-        return qtiReadResult != null ? qtiReadResult.getJQTIObject() : null;
+    public E getQtiObject() {
+        return qtiReadResult != null ? qtiReadResult.getRequestedQtiObject() : null;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(qtiReadResult=" + qtiReadResult
-                + ",loadException=" + loadException
+                + ",xmlResourceNotFoundException=" + xmlResourceNotFoundException
                 + ")";
     }
 }

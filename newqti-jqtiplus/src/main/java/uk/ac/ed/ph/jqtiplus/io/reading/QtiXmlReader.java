@@ -51,7 +51,7 @@ import java.util.Map;
  * 
  * @author David McKain
  */
-public final class QTIXMLReader implements Serializable {
+public final class QtiXmlReader implements Serializable {
 
     private static final long serialVersionUID = 1318545084577401859L;
 
@@ -61,19 +61,19 @@ public final class QTIXMLReader implements Serializable {
     /** Registered extension schemas, which may be null or empty */
     private final Map<String, String> extensionSchemaMap;
 
-    public QTIXMLReader() {
+    public QtiXmlReader() {
         this(null, null);
     }
 
-    public QTIXMLReader(ResourceLocator parserResourceLocator) {
+    public QtiXmlReader(ResourceLocator parserResourceLocator) {
         this(parserResourceLocator, null);
     }
 
-    public QTIXMLReader(Map<String, String> extensionSchemaMapTemplate) {
+    public QtiXmlReader(Map<String, String> extensionSchemaMapTemplate) {
         this(null, extensionSchemaMapTemplate);
     }
 
-    public QTIXMLReader(ResourceLocator parserResourceLocator, Map<String, String> extensionSchemaMapTemplate) {
+    public QtiXmlReader(ResourceLocator parserResourceLocator, Map<String, String> extensionSchemaMapTemplate) {
         /* Merge extension schema with QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
         if (extensionSchemaMapTemplate != null) {

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.io.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -169,7 +169,7 @@ public final class AssessmentItemManager implements ItemValidationContext {
         if (xmlParseResult.isValidated() && !xmlParseResult.isSchemaValid()) {
             throw new QTIXMLReferencingException("Schema validation failed on resolved responseProcessing template", xmlParseResult);
         }
-        final List<QTIModelBuildingError> qtiParseErrors = qtiReadResult.getQTIParseErrors();
+        final List<QtiModelBuildingError> qtiParseErrors = qtiReadResult.getQTIParseErrors();
         if (!qtiParseErrors.isEmpty()) {
             throw new QTIXMLReferencingException("JQTI Object construction failed on responseProcessing template", xmlParseResult, qtiParseErrors);
         }

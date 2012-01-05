@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemHolder;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
@@ -46,7 +46,7 @@ public interface TestValidationContext extends ValidationContext {
     /** Returns owning AssessmentTest */
     AssessmentTest getTest();
 
-    AssessmentItemValidator resolveItem(AssessmentItemRef assessmentItemRef)
+    AssessmentItemHolder resolveItem(AssessmentItemRef assessmentItemRef)
             throws ReferencingException;
 
 }

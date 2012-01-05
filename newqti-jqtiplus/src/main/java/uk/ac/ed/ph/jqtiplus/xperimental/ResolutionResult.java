@@ -49,6 +49,6 @@ public interface ResolutionResult<E extends RootNode> extends Serializable {
      * <p>
      * Implementations of this interface should find a way to report failures in an appropriate way.
      */
-    E getJQTIObject();
+    E getQtiObject();
 
 }

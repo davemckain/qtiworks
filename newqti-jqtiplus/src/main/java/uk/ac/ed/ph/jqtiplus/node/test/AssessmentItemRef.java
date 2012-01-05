@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemHolder;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -314,7 +314,7 @@ public class AssessmentItemRef extends SectionPart {
         super.validate(context, result);
 
         final TestValidationContext testContext = (TestValidationContext) context;
-        AssessmentItemValidator assessmentItemValidator;
+        AssessmentItemHolder assessmentItemValidator;
         try {
             assessmentItemValidator = testContext.resolveItem(this);
             final ValidationResult itemResult = assessmentItemValidator.validate();

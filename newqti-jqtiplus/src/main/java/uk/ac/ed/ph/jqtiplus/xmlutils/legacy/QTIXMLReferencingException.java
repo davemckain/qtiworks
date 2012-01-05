@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
-import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.io.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class QTIXMLReferencingException extends QTIRuntimeException {
     private final XMLParseResult xmlReadResult;
 
     /** QTI Parse errors, if we got that far */
-    private final List<QTIModelBuildingError> qtiParseErrors;
+    private final List<QtiModelBuildingError> qtiParseErrors;
 
     public QTIXMLReferencingException(String message, Throwable cause) {
         this(message, null, null, cause);
@@ -62,11 +62,11 @@ public class QTIXMLReferencingException extends QTIRuntimeException {
         this(message, xmlParseResult, null, null);
     }
 
-    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QTIModelBuildingError> qtiParseErrors) {
+    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors) {
         this(message, xmlParseResult, qtiParseErrors, null);
     }
 
-    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QTIModelBuildingError> qtiParseErrors, Throwable cause) {
+    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors, Throwable cause) {
         super(message, cause);
         this.xmlReadResult = xmlParseResult;
         this.qtiParseErrors = qtiParseErrors;
@@ -76,7 +76,7 @@ public class QTIXMLReferencingException extends QTIRuntimeException {
         return xmlReadResult;
     }
 
-    public List<QTIModelBuildingError> getQtiParseErrors() {
+    public List<QtiModelBuildingError> getQtiParseErrors() {
         return qtiParseErrors;
     }
 }

@@ -52,19 +52,24 @@ import org.slf4j.LoggerFactory;
 /**
  * FIXME: Document this
  * 
+ * TODO: This should keep track of resolution results and make them available. Validation should
+ * now run AFTER resolution, as it's cleaner and simpler that way!
+ * 
  * @author David McKain
  */
-public final class AssessmentItemValidator implements ItemValidationContext {
+public final class AssessmentItemHolder implements ItemValidationContext {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemHolder.class);
 
     private final AssessmentItem item;
+    private final ReferenceResolver referenceResolver;
 
-    private final ReferenceResolver resolver;
+    private ResponseProcessing resolvedResponseProcessing;
 
-    public AssessmentItemValidator(final AssessmentItem item, final ReferenceResolver resolver) {
+    public AssessmentItemHolder(final AssessmentItem item, final ReferenceResolver resolver) {
         this.item = item;
-        this.resolver = resolver;
+        this.referenceResolver = resolver;
+        this.resolvedResponseProcessing = null;
     }
 
     public ValidationResult validate() {
@@ -84,15 +89,14 @@ public final class AssessmentItemValidator implements ItemValidationContext {
         return item;
     }
 
-    @Override
-    public ResponseProcessing getResolvedResponseProcessing() throws ReferencingException {
+    private ResponseProcessing resolveResponseProcessing() throws ReferencingException {
         final ResponseProcessing responseProcessing = item.getResponseProcessing();
-        if (responseProcessing == null) {
+        if (responseProcessing==null) {
             /* No responseProcessing */
             return null;
         }
         if (!responseProcessing.getResponseRules().isEmpty()) {
-            /* Processing already resolved */
+            /* ResponseProcessing contains rules */
             return responseProcessing;
         }
         ResolutionResult<ResponseProcessing> resolutionResult = null;
@@ -100,20 +104,20 @@ public final class AssessmentItemValidator implements ItemValidationContext {
         URI templateUri = responseProcessing.getTemplate();
         if (templateUri != null) {
             attemptedUris.add(templateUri);
-            resolutionResult = resolver.resolve(item, templateUri, ResponseProcessing.class);
+            resolutionResult = referenceResolver.resolve(item, templateUri, ResponseProcessing.class);
         }
-        if (resolutionResult == null || resolutionResult.getJQTIObject() == null) {
+        if (resolutionResult == null || resolutionResult.getQtiObject() == null) {
             templateUri = responseProcessing.getTemplateLocation();
             if (templateUri != null) {
                 attemptedUris.add(templateUri);
-                resolutionResult = resolver.resolve(item, templateUri, ResponseProcessing.class);
+                resolutionResult = referenceResolver.resolve(item, templateUri, ResponseProcessing.class);
             }
         }
-        if (resolutionResult == null || resolutionResult.getJQTIObject() == null) {
+        if (resolutionResult == null || resolutionResult.getQtiObject() == null) {
             throw new ReferencingException("Could not obtain responseProcessing template from URI(s) " + attemptedUris);
         }
         logger.info("Resolved responseProcessing template using href {} to {}", templateUri, resolutionResult);
-        return resolutionResult.getJQTIObject();
+        return resolutionResult.getQtiObject();
     }
 
     @Override
@@ -134,7 +138,7 @@ public final class AssessmentItemValidator implements ItemValidationContext {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(item=" + item
-                + ",resolver=" + resolver
+                + ",referenceResolver=" + referenceResolver
                 + ")";
     }
 }

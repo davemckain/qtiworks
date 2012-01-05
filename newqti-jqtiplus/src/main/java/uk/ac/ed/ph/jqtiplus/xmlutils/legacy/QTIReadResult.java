@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.io.reading.QTIModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.io.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.io.Serializable;
@@ -52,9 +52,9 @@ public final class QTIReadResult<E extends RootNode> implements Serializable {
 
     private final XMLParseResult xmlParseResult;
 
-    private final List<QTIModelBuildingError> qtiParseErrors;
+    private final List<QtiModelBuildingError> qtiParseErrors;
 
-    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QTIModelBuildingError> qtiParseErrors) {
+    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors) {
         this.jqtiObject = jqtiObject;
         this.xmlParseResult = xmlParseResult;
         this.qtiParseErrors = qtiParseErrors;
@@ -68,7 +68,7 @@ public final class QTIReadResult<E extends RootNode> implements Serializable {
         return xmlParseResult;
     }
 
-    public List<QTIModelBuildingError> getQTIParseErrors() {
+    public List<QtiModelBuildingError> getQTIParseErrors() {
         return qtiParseErrors;
     }
 

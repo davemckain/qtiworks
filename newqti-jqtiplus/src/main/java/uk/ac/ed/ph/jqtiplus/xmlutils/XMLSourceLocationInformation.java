@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import java.io.Serializable;
+
 import org.xml.sax.Locator;
 
 /**
@@ -41,14 +43,13 @@ import org.xml.sax.Locator;
  * 
  * @author David McKain
  */
-public class XMLSourceLocationInformation {
+public final class XMLSourceLocationInformation implements Serializable {
+
+    private static final long serialVersionUID = 8023872428601855955L;
 
     private String publicId;
-
     private String systemId;
-
     private int columnNumber;
-
     private int lineNumber;
 
     public XMLSourceLocationInformation(String publicId, String systemId, int columnNumber, int lineNumber) {

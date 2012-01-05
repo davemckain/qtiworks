@@ -82,13 +82,13 @@ public final class AssessmentTestValidator implements TestValidationContext {
     }
 
     @Override
-    public AssessmentItemValidator resolveItem(AssessmentItemRef assessmentItemRef) throws ReferencingException {
+    public AssessmentItemHolder resolveItem(AssessmentItemRef assessmentItemRef) throws ReferencingException {
         final ResolutionResult<AssessmentItem> resolved = resolver.resolve(test, assessmentItemRef.getHref(), AssessmentItem.class);
-        if (resolved.getJQTIObject() == null) {
+        if (resolved.getQtiObject() == null) {
             throw new ReferencingException("Could not resolve referenced item with href " + assessmentItemRef);
         }
-        final AssessmentItem item = resolved.getJQTIObject();
-        return new AssessmentItemValidator(item, resolver);
+        final AssessmentItem item = resolved.getQtiObject();
+        return new AssessmentItemHolder(item, resolver);
     }
 
     @Override

@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;
 import java.util.List;
@@ -45,39 +44,47 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public final class QTIReadResult<E extends RootNode> implements ResolutionResult<E>, Serializable {
+public final class QtiReadResult<E extends RootNode> implements Serializable {
 
     private static final long serialVersionUID = -6470500039269477402L;
 
-    private final E jqtiObject;
-
+    private final Class<E> requestedObjectClass;
+    private final RootNode resultingQtiObject;
     private final XMLParseResult xmlParseResult;
+    private final List<QtiModelBuildingError> qtiModelBuildingErrors;
 
-    private final List<QTIModelBuildingError> qtiModelBuildingErrors;
-
-    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QTIModelBuildingError> qtiModelBuildingErrors) {
-        this.jqtiObject = jqtiObject;
+    public QtiReadResult(Class<E> requestedObjectClass, RootNode resultingQtiObject, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+        this.resultingQtiObject = resultingQtiObject;
         this.xmlParseResult = xmlParseResult;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
+        this.requestedObjectClass = requestedObjectClass;
+    }
+    
+    public boolean isSuccessful() {
+        return resultingQtiObject!=null && qtiModelBuildingErrors.isEmpty();
     }
 
-    @Override
-    public E getJQTIObject() {
-        return jqtiObject;
+    public RootNode getResultingQtiObject() {
+        return resultingQtiObject;
+    }
+    
+    public E getRequestedQtiObject() {
+        return requestedObjectClass.isInstance(resultingQtiObject) ? requestedObjectClass.cast(resultingQtiObject) : null;
     }
 
     public XMLParseResult getXMLParseResult() {
         return xmlParseResult;
     }
 
-    public List<QTIModelBuildingError> getQTIModelBuildingErrors() {
+    public List<QtiModelBuildingError> getQTIModelBuildingErrors() {
         return qtiModelBuildingErrors;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(jqtiObject=" + jqtiObject
+                + "(requestedObjectClass=" + requestedObjectClass
+                + ",resultingQtiObject=" + resultingQtiObject
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
                 + ")";

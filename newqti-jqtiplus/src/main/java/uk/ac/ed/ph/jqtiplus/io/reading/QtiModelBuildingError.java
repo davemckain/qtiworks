@@ -36,45 +36,52 @@ package uk.ac.ed.ph.jqtiplus.io.reading;
 import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 
-import org.w3c.dom.Element;
+import java.io.Serializable;
 
 /**
  * FIXME: Document this!
  * 
  * @author David McKain
  */
-public final class QTIModelBuildingError {
+public final class QtiModelBuildingError implements Serializable {
+
+    private static final long serialVersionUID = -8035195041369346775L;
 
     private final QTIModelException exception;
+    private final String elementLocalName;
+    private final String elementNamespace;
+    private final XMLSourceLocationInformation elementLocation;
 
-    private final Element element;
-
-    private final XMLSourceLocationInformation location;
-
-    public QTIModelBuildingError(QTIModelException exception, Element element, XMLSourceLocationInformation location) {
+    public QtiModelBuildingError(QTIModelException exception, String elementLocalName, String elementNamespace, XMLSourceLocationInformation location) {
         this.exception = exception;
-        this.element = element;
-        this.location = location;
+        this.elementLocalName = elementLocalName;
+        this.elementNamespace = elementNamespace;
+        this.elementLocation = location;
     }
 
     public QTIModelException getException() {
         return exception;
     }
-
-    public Element getElement() {
-        return element;
+    
+    public String getElementLocalName() {
+        return elementLocalName;
+    }
+    
+    public String getElementNamespace() {
+        return elementNamespace;
     }
 
     public XMLSourceLocationInformation getLocation() {
-        return location;
+        return elementLocation;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(exception=" + exception
-                + ",element=" + element
-                + ",location=" + location
+                + ",elementLocalName=" + elementLocalName
+                + ",elementNamespace=" + elementNamespace
+                + ",elementLocation=" + elementLocation
                 + ")";
     }
 }
