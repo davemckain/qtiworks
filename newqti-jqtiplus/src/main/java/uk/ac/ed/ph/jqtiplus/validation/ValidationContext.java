@@ -31,22 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.control;
+package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
+import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
+ * FIXME: We need to merge this slightly with {@link ItemProcessingContext}
+ * 
  * @author David McKain
  */
-public interface TestValidationContext extends ValidationContext {
+public interface ValidationContext {
 
-    /** Returns owning AssessmentTest */
-    AssessmentTest getTest();
+    AssessmentObject getOwner();
 
-    AssessmentItemValidator resolveItem(AssessmentItemRef assessmentItemRef)
+    /**
+     * Resolves a reference to a variable specified using a {@link VariableReferenceIdentifier}.
+     * <p>
+     * This encapsulates the special forms for referring to items within tests.
+     * 
+     * @throws ReferencingException
+     */
+    VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
             throws ReferencingException;
 
 }

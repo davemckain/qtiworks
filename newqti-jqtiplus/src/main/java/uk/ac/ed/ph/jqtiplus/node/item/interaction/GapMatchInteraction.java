@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.GapChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -45,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Gap;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.CaptionGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.ColGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.ColgroupGroup;
@@ -45,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 

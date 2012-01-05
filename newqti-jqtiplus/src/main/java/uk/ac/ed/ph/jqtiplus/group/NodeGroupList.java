@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
@@ -209,6 +208,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 import uk.ac.ed.ph.jqtiplus.node.test.VariableMapping;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
 import java.util.ArrayList;

@@ -31,25 +31,22 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.control;
+package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
  * @author David McKain
  */
-public interface ItemValidationContext extends ValidationContext {
+public interface TestValidationContext extends ValidationContext {
 
-    AssessmentItem getItem();
+    /** Returns owning AssessmentTest */
+    AssessmentTest getTest();
 
-    /**
-     * Returns the resolved {@link ResponseProcessing} fragment.
-     * 
-     * @throws ReferencingException
-     */
-    ResponseProcessing getResolvedResponseProcessing()
+    AssessmentItemValidator resolveItem(AssessmentItemRef assessmentItemRef)
             throws ReferencingException;
 
 }

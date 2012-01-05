@@ -35,11 +35,11 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTINotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;

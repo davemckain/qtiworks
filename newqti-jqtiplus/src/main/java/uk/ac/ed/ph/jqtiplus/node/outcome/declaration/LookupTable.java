@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;

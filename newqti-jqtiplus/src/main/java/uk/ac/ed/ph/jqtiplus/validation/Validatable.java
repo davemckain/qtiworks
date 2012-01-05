@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 
 import java.io.Serializable;
 

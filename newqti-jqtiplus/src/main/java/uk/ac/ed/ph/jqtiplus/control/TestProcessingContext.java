@@ -39,6 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
 import java.util.Map;

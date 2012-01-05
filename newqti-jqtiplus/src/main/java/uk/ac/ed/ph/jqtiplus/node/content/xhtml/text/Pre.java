@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 
-import uk.ac.ed.ph.jqtiplus.control.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
@@ -44,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Big;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Small;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sub;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sup;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
