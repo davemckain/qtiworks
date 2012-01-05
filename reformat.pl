@@ -57,14 +57,15 @@ $text =~ s!^(import.+?)\n\n\n(/\*\*)!$1\n\n$2!sm;
 # Remove stupid serial versions
 $text =~ s!\n *private static final long serialVersionUID = 1L; *\n!!sg;
 
-# Convert braces opened on new lines
-$text =~ s!\n\s*\{! \{!sg;
+# Convert braces opened on new lines unless current is //...
+$text =~ s!(//[^\n]*)\n( *\{)!$1\n\n$2!sg; # Add extra space after // ... \n { before next removes it
+$text =~ s!\n *\{! \{!sg;
 
 # Remove @version SVN tags
-$text =~ s!\n\s*\*\s*\@version.+?\n!\n!s;
+$text =~ s!\n *\* *\@version.+?\n!\n!s;
 
 # Fix spacing in @author SVN tags
-$text =~ s!(\@author)\s*!$1 !s;
+$text =~ s!(\@author) *!$1 !s;
 
 # Fix logger
 $text =~ s!\n */\*\* *Logger\.? *\*/ ?!!sg;
