@@ -42,14 +42,9 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentObjectResolver;
-import uk.ac.ed.ph.jqtiplus.xperimental.BadResultException;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResourceNotFoundException;
 
 import java.net.URI;
 import java.util.List;
@@ -147,29 +142,11 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
             super.validateChildren(context, result);
         }
         else {
-            /* No ResponseRules, so we assume that there must be a RP template, which we'll resolve */
-            AssessmentObjectResolver assessmentObjectResolver = context.getAssessmentObjectResolver();
-            ResolutionResult<ResponseProcessing> resolutionResult;
-            try {
-                resolutionResult = assessmentObjectResolver.resolveResponseProcessingTemplate((AssessmentItem) context.getOwner());
-                if (resolutionResult!=null) {
-                    /* Successful resolution - first record it */
-                    result.addResolutionResult(resolutionResult);
-                    
-                    /* Now validate template */
-                    ResponseProcessing responseProcessingTarget = resolutionResult.getResolvedQtiObject();
-                    responseProcessingTarget.validate(context, result);
-                }
-                else {
-                    /* No template supplied */
-                    result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should either contain some rules, or declare a template or templateLocation"));
-                }
-            }
-            catch (ResourceNotFoundException e) {
-                result.add(new ValidationError(this, "Could not find responseProcessing template", e));
-            }
-            catch (BadResultException e) {
-                result.add(new ValidationError(this, "Target of responseProcessing template was not a responseProcessing class", e));
+            /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
+            ItemValidationContext itemContext = (ItemValidationContext) context;
+            ResponseProcessing resolvedResponseProcessingTemplate = itemContext.getResolvedResponseProcessingTemplate();
+            if (resolvedResponseProcessingTemplate!=null) {
+                resolvedResponseProcessingTemplate.validate(context, result);
             }
         }
     }

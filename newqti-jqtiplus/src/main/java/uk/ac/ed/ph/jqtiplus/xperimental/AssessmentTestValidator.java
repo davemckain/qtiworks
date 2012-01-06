@@ -140,11 +140,6 @@ public final class AssessmentTestValidator implements TestValidationContext {
     }
     
     @Override
-    public AssessmentObjectResolver getAssessmentObjectResolver() {
-        return objectResolver;
-    }
-    
-    @Override
     public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
         VariableDeclaration declaration = null;
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();

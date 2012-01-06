@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
 /**
  * @author David McKain
@@ -41,5 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 public interface ItemValidationContext extends ValidationContext {
 
     AssessmentItem getItem();
+    
+    ResponseProcessing getResolvedResponseProcessingTemplate();
 
 }

@@ -40,7 +40,9 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +59,7 @@ public final class AssessmentItemValidator implements ItemValidationContext {
 
     private final AssessmentItem item;
     private final AssessmentObjectResolver objectResolver;
+    private ResponseProcessing resolvedResponseProcessingTemplate;
 
     public AssessmentItemValidator(final AssessmentItem item, final ReferenceResolver referenceResolver) {
         this.item = item;
@@ -66,8 +69,39 @@ public final class AssessmentItemValidator implements ItemValidationContext {
     public ValidationResult validate() {
         logger.info("Validating item {}", item);
         final ValidationResult result = new ValidationResult(item);
+        
+        /* First resolve response processing template if no rules have been specified */
+        ResponseProcessing responseProcessing = item.getResponseProcessing();
+        if (responseProcessing.getResponseRules().isEmpty()) {
+            /* No ResponseRules, so we assume that there must be a RP template, which we'll resolve */
+            resolveResponseProcessingTemplate(result);
+        }
+        
+        /* Now validate item */
         item.validate(this, result);
         return result;
+    }
+    
+    private void resolveResponseProcessingTemplate(ValidationResult result) {
+        ResolutionResult<ResponseProcessing> resolutionResult;
+        try {
+            resolutionResult = objectResolver.resolveResponseProcessingTemplate(item);
+            if (resolutionResult!=null) {
+                /* Successful resolution - first record it */
+                result.addResolutionResult(resolutionResult);
+                resolvedResponseProcessingTemplate = resolutionResult.getResolvedQtiObject();
+            }
+            else {
+                /* No template supplied */
+                result.add(new ValidationWarning(item, "responseProcessing should either contain some rules, or declare a template or templateLocation"));
+            }
+        }
+        catch (ResourceNotFoundException e) {
+            result.add(new ValidationError(item, "Could not find responseProcessing template", e));
+        }
+        catch (BadResultException e) {
+            result.add(new ValidationError(item, "Target of responseProcessing template was not a responseProcessing class", e));
+        }
     }
 
     @Override
@@ -81,8 +115,8 @@ public final class AssessmentItemValidator implements ItemValidationContext {
     }
     
     @Override
-    public AssessmentObjectResolver getAssessmentObjectResolver() {
-        return objectResolver;
+    public ResponseProcessing getResolvedResponseProcessingTemplate() {
+        return resolvedResponseProcessingTemplate;
     }
     
     @Override
