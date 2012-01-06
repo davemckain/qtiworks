@@ -83,7 +83,7 @@ public class MathAssessTest {
                 return;
             }
 
-            final AssessmentItem item = qtiReadResult.getJQTIObject();
+            final AssessmentItem item = qtiReadResult.getResolvedQtiObject();
 
             final AssessmentItemManager itemManager = new AssessmentItemManager(objectManager, item);
             final ValidationResult validationResult = itemManager.validateItem();
