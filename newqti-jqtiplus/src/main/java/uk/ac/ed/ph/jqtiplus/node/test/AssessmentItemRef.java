@@ -41,13 +41,9 @@ import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
@@ -311,36 +307,12 @@ public class AssessmentItemRef extends SectionPart {
 
     @Override
     public void validate(ValidationContext context, ValidationResult result) {
+        /* Validation of individual items is done by the calling validator, so there's not
+         * much to do here!
+         */
         super.validate(context, result);
-
-        final TestValidationContext testContext = (TestValidationContext) context;
-        AssessmentItemValidator assessmentItemValidator;
-        try {
-            assessmentItemValidator = testContext.resolveItem(this);
-            final ValidationResult itemResult = assessmentItemValidator.validate();
-            result.addChildResult(itemResult);
-            if (itemResult.getErrors().size() > 0) {
-                result.add(new ValidationError(this, "Referenced item with identifier " + getIdentifier()
-                        + " and href "
-                        + getHref()
-                        + " contains "
-                        + itemResult.getErrors().size()
-                        + " validation error(s)"));
-            }
-            if (itemResult.getWarnings().size() > 0) {
-                result.add(new ValidationWarning(this, "Referenced item with identifier " + getIdentifier()
-                        + " and href "
-                        + getHref()
-                        + " contains "
-                        + itemResult.getWarnings().size()
-                        + " validation warning(s)"));
-            }
-        }
-        catch (final ReferencingException e) {
-            result.add(new ValidationError(this, "Could not resolve referenced item with href " + getHref()));
-        }
     }
-
+    
     @Override
     protected void validateChildren(ValidationContext context, ValidationResult result) {
         super.validateChildren(context, result);

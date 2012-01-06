@@ -40,6 +40,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -264,8 +266,14 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         searchItemRefs(this, resultBuilder);
         return resultBuilder;
     }
+    
+    public LinkedHashSet<AssessmentItemRef> searchUniqueItemRefs() {
+        final LinkedHashSet<AssessmentItemRef> resultBuilder = new LinkedHashSet<AssessmentItemRef>();
+        searchItemRefs(this, resultBuilder);
+        return resultBuilder;
+    }
 
-    private static void searchItemRefs(ControlObject<?> start, List<AssessmentItemRef> resultBuilder) {
+    private static void searchItemRefs(ControlObject<?> start, Collection<AssessmentItemRef> resultBuilder) {
         if (start instanceof AssessmentItemRef) {
             resultBuilder.add((AssessmentItemRef) start);
         }

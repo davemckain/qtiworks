@@ -101,8 +101,13 @@ public class ValidationResult implements Serializable {
         return resolutionResults;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<ValidationResult> getChildResults() {
         return childResults;
+    }
+    
+    public boolean hasErrors() {
+        return !errors.isEmpty();
     }
 
     /**
@@ -128,6 +133,10 @@ public class ValidationResult implements Serializable {
      */
     public List<ValidationError> getErrors(XmlNode source) {
         return get(errors, source);
+    }
+    
+    public boolean hasWarnings() {
+        return !warnings.isEmpty();
     }
 
     /**

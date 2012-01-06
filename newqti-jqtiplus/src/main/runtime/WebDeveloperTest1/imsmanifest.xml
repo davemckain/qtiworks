@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cp:manifest xmlns:cp="http://www.imsglobal.org/xsd/imscp_v1p1" identifier="SCENARIO">
+  <cp:resources>
+
+    <cp:resource identifier="assessment" type="imsqti_assessment_xmlv2p1" href="template_test1.xml">
+      <cp:file href="template_test1.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question1" type="imsqti_item_xmlv2p1" href="question1.xml">
+      <cp:file href="question1.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question2" type="imsqti_item_xmlv2p1" href="question2.xml">
+      <cp:file href="question2.xml"/>
+    </cp:resource>
+
+
+
+    <cp:resource identifier="question3" type="imsqti_item_xmlv2p1" href="question3.xml">
+      <cp:file href="question3.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question4" type="imsqti_item_xmlv2p1" href="question4.xml">
+      <cp:file href="question4.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question5" type="imsqti_item_xmlv2p1" href="question5.xml">
+      <cp:file href="question5.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question6" type="imsqti_item_xmlv2p1" href="question6.xml">
+      <cp:file href="question6.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question7" type="imsqti_item_xmlv2p1" href="question7.xml">
+      <cp:file href="question7.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question8" type="imsqti_item_xmlv2p1" href="question8.xml">
+      <cp:file href="question8.xml"/>
+    </cp:resource>
+
+    <cp:resource identifier="question9" type="imsqti_item_xmlv2p1" href="question9.xml">
+      <cp:file href="question9.xml"/>
+    </cp:resource>
+
+  </cp:resources>
+</cp:manifest>

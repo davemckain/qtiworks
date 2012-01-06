@@ -58,7 +58,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
 
 import java.util.Map;
 
@@ -165,9 +164,8 @@ public abstract class LookupExpression extends AbstractExpression {
                 }
                 else {
                     final AssessmentItemRef itemRef = (AssessmentItemRef) controlObject;
-                    try {
-                        final AssessmentItemValidator assessmentItemValidator = testContext.resolveItem(itemRef);
-                        final AssessmentItem item = assessmentItemValidator.getItem();
+                    if (itemRef.getHref()!=null) {
+                        final AssessmentItem item = testContext.getResolvedItem(itemRef);
                         final VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
                         if (declaration == null) {
                             result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
@@ -176,9 +174,11 @@ public abstract class LookupExpression extends AbstractExpression {
                         validateTargetVariableDeclaration(result, declaration);
                         validateAdditionalAttributes(result, itemRef);
                     }
-                    catch (final ReferencingException e) {
+                    else {
                         result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                "Could not resolve referenced item with identifier " + itemRefIdentifier + " and href " + itemRef.getHref()));
+                                "assessmentItemRef with identifier " + itemRefIdentifier
+                                + " was not successfully resolved so cannot derefence the variable "
+                                + itemVarIdentifier));
                     }
                 }
             }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="choice" title="Getting Started" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+    <p><b>Question 2</b></p>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+            <prompt>What is the notation required to create a link to another page?<br /><br /></prompt>
+            <simpleChoice identifier="ChoiceA">&lt;a href = "myimage.html"&gt;Link to my page&lt;/a&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceB">&lt;a = "myimage.html"&gt;Link to my page&lt;/a&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceC">&lt;a href = "myimage.html"&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceD">&lt;a href = Link to my page&lt;/a&gt;</simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+</assessmentItem>

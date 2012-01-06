@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="choiceMultiple" title="Getting Started" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceB</value>
+            <value>ChoiceE</value>
+        </correctResponse>
+        <mapping lowerBound="0" upperBound="2" defaultValue="-2">
+            <mapEntry mapKey="ChoiceB" mappedValue="1"/>
+            <mapEntry mapKey="ChoiceE" mappedValue="1"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+        <p><b>Question 5</b></p>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="2">
+            <prompt>What are the two main methods for connecting to a web server?</prompt>
+            <simpleChoice identifier="ChoiceA" fixed="false">Using an ethernet cable to provide a physical connection</simpleChoice>
+            <simpleChoice identifier="ChoiceB" fixed="false">Using a Virtual Private Network connection to the server</simpleChoice>
+            <simpleChoice identifier="ChoiceC" fixed="false">Using a Local Area Network connection to the server</simpleChoice>
+            <simpleChoice identifier="ChoiceD" fixed="false">Using a Bluetooth connection to server</simpleChoice>
+            <simpleChoice identifier="ChoiceE" fixed="false">Using the File Transfer Protocol (FTP)</simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>
+</assessmentItem>
+
