@@ -40,38 +40,36 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * FIXME: Document this type!
+ * Encapsulates the result of attempting to read an arbitrary QTI {@link RootNode} from XML.
  * 
  * @author David McKain
  */
-public final class QtiReadResult<E extends RootNode> implements Serializable {
+public final class QtiReadResult implements Serializable {
 
-    private static final long serialVersionUID = -6470500039269477402L;
-
-    private final Class<E> requestedObjectClass;
-    private final RootNode resultingQtiObject;
+    private static final long serialVersionUID = -7443481710269376503L;
+    
     private final XMLParseResult xmlParseResult;
+    private final RootNode qtiObject;
     private final List<QtiModelBuildingError> qtiModelBuildingErrors;
+    
+    public QtiReadResult(XMLParseResult xmlParseResult) {
+        this(xmlParseResult, null, null);
+    }
 
-    public QtiReadResult(Class<E> requestedObjectClass, RootNode resultingQtiObject, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiModelBuildingErrors) {
-        this.resultingQtiObject = resultingQtiObject;
+    public QtiReadResult(XMLParseResult xmlParseResult, RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+        this.qtiObject = qtiObject;
         this.xmlParseResult = xmlParseResult;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
-        this.requestedObjectClass = requestedObjectClass;
     }
     
     public boolean isSuccessful() {
-        return resultingQtiObject!=null && qtiModelBuildingErrors.isEmpty();
-    }
-
-    public RootNode getResultingQtiObject() {
-        return resultingQtiObject;
+        return qtiObject!=null && qtiModelBuildingErrors.isEmpty();
     }
     
-    public E getRequestedQtiObject() {
-        return requestedObjectClass.isInstance(resultingQtiObject) ? requestedObjectClass.cast(resultingQtiObject) : null;
+    public RootNode getQtiObject() {
+        return qtiObject;
     }
-
+    
     public XMLParseResult getXMLParseResult() {
         return xmlParseResult;
     }
@@ -83,8 +81,7 @@ public final class QtiReadResult<E extends RootNode> implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(requestedObjectClass=" + requestedObjectClass
-                + ",resultingQtiObject=" + resultingQtiObject
+                + ",qtiObject=" + qtiObject
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
                 + ")";

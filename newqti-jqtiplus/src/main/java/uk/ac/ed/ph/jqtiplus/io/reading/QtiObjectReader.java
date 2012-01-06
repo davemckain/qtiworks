@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceReader;
@@ -66,11 +67,8 @@ public final class QtiObjectReader implements ReferenceResolver {
     private static final Logger logger = LoggerFactory.getLogger(QtiObjectReader.class);
 
     private final JQTIExtensionManager jqtiExtensionManager;
-
     private final ResourceLocator inputResourceLocator;
-
     private final boolean schemaValidating;
-
     private final QtiXmlReader qtiXmlReader;
 
     public QtiObjectReader(JQTIExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator, ResourceLocator inputResourceLocator,
@@ -98,15 +96,10 @@ public final class QtiObjectReader implements ReferenceResolver {
     }
 
     //--------------------------------------------------------------------------
-
-    /**
-     * @throws XMLResourceNotFoundException the XML resource with the given System ID could not be
-     *             located by the {@link #getInputResourceLocator()}
-     * @throws WrongQTIXMLRootNodeException
-     */
-    public <E extends RootNode> QtiReadResult<E> readQTI(URI systemId, Class<E> resultClass)
-            throws XMLResourceNotFoundException {
-        logger.info("Attempting to read QTI Object at system ID {}, expecting result class {}", systemId, resultClass);
+    
+    public QtiReadResult readQti(URI systemId)
+            throws XMLResourceNotFoundException, BadQtiResourceException {
+        logger.info("Attempting to read QTI RootNode from system ID {}", systemId);
 
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
          * allows us to resolve things like response processing templates and anything else that might be pre-loaded
@@ -116,46 +109,82 @@ public final class QtiObjectReader implements ReferenceResolver {
 
         /* Parse XML */
         final XMLReadResult xmlReadResult = qtiXmlReader.read(systemId, resourceLocator, schemaValidating);
+        final XMLParseResult xmlParseResult = xmlReadResult.getXMLParseResult();
         final Document document = xmlReadResult.getDocument();
+        if (document==null) {
+            /* Parsing failed */
+            throw new BadQtiResourceException("XML parsing failed", new QtiReadResult(xmlParseResult));
+        }
 
+        /* Build QTI Object Model */
         final List<QtiModelBuildingError> qtiModelBuildingErrors = new ArrayList<QtiModelBuildingError>();
-        final LoadingContext loadingContext = new LoadingContext() {
+        final LoadingContext loadingContext = new LoadingContextImpl(qtiModelBuildingErrors);
+        logger.debug("Instantiating JQTI Object hierarchy from root Element {}");
+        final Element rootElement = document.getDocumentElement();
+        try {
+            final RootNode resultingQtiObject = RootNodeTypes.load(rootElement, systemId, loadingContext);
+            final QtiReadResult result = new QtiReadResult(xmlParseResult, resultingQtiObject, qtiModelBuildingErrors);
+            logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
+            return result;
+        }
+        catch (final IllegalArgumentException e) {
+            logger.warn("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
+            final QtiReadResult failureResult = new QtiReadResult(xmlParseResult, null, qtiModelBuildingErrors);
+            throw new BadQtiResourceException("XML parse succeeded but had an unsupported root Node {"
+                    + rootElement.getNamespaceURI()
+                    + "}:" + rootElement.getLocalName(), failureResult);
+        }
+        catch (final QTIParseException e) {
+            throw new QTILogicException("All QTIParseExceptions should have been caught before this point!", e);
+        }
+    }
+    
+    final class LoadingContextImpl implements LoadingContext {
+        
+        private final List<QtiModelBuildingError> qtiModelBuildingErrors;
+        
+        public LoadingContextImpl(final List<QtiModelBuildingError> qtiModelBuildingErrors) {
+            this.qtiModelBuildingErrors = qtiModelBuildingErrors;
+        }
+        
+        @Override
+        public JQTIExtensionManager getJQTIExtensionManager() {
+            return jqtiExtensionManager;
+        }
 
-            @Override
-            public JQTIExtensionManager getJQTIExtensionManager() {
-                return jqtiExtensionManager;
-            }
+        @Override
+        public void modelBuildingError(QTIModelException exception, Element owner) {
+            qtiModelBuildingErrors.add(new QtiModelBuildingError(exception, owner.getLocalName(),
+                    owner.getNamespaceURI(), XMLResourceReader.extractLocationInformation(owner)));
+        }
+    }
 
-            @Override
-            public void modelBuildingError(QTIModelException exception, Element owner) {
-                final QtiModelBuildingError error = new QtiModelBuildingError(exception, owner.getLocalName(), owner.getNamespaceURI(), XMLResourceReader.extractLocationInformation(owner));
-                qtiModelBuildingErrors.add(error);
+    public <E extends RootNode> QtiRequireResult<E> readQti(URI systemId, Class<E> requiredClass)
+            throws XMLResourceNotFoundException, BadQtiResourceException {
+        logger.info("Attempting to read QTI Object at system ID {}, expecting result class {}", systemId, requiredClass);
+        
+        QtiReadResult qtiReadResult = readQti(systemId);
+        QtiRequireResult<E> result = null;
+        RootNode rootNode = qtiReadResult.getQtiObject();
+        if (rootNode!=null) {
+            if (requiredClass.isInstance(rootNode)) {
+                result = new QtiRequireResult<E>(requiredClass, requiredClass.cast(rootNode), qtiReadResult);
             }
-        };
-
-        /* if XML parse succeeded, instantiate JQTI Object */
-        RootNode resultingQtiObject = null;
-        if (document != null) {
-            logger.debug("Instantiating JQTI Object hierarchy from root Element {}; expecting to create {}", document.getDocumentElement().getLocalName(),
-                    resultClass.getSimpleName());
-            final Element rootElement = document.getDocumentElement();
-            try {
-                resultingQtiObject = RootNodeTypes.load(rootElement, systemId, loadingContext);
-            }
-            catch (final IllegalArgumentException e) {
-                logger.warn("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
-            }
-            catch (final QTIParseException e) {
-                throw new QTILogicException("All QTIParseExceptions should have been caught before this point!", e);
+            else {
+                logger.warn("QTI Object {} is not of the required type {}", qtiReadResult, requiredClass);
+                result = new QtiRequireResult<E>(requiredClass, null, qtiReadResult);
             }
         }
-        final QtiReadResult<E> result = new QtiReadResult<E>(resultClass, resultingQtiObject, xmlReadResult.getXMLParseResult(), qtiModelBuildingErrors);
-        logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
+        else {
+            result = new QtiRequireResult<E>(requiredClass, null, qtiReadResult);
+        }
+        
         return result;
     }
 
     @Override
-    public <E extends RootNode> XmlResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass) {
+    public <E extends RootNode> QtiRequireResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass)
+            throws XMLResourceNotFoundException, BadQtiResourceException {
         logger.info("Resolving href {} against base RootNode having System ID {}", href, baseObject.getSystemId());
         final URI baseUri = baseObject.getSystemId();
         if (baseUri == null) {
@@ -163,15 +192,8 @@ public final class QtiObjectReader implements ReferenceResolver {
             return null;
         }
         final URI resolved = baseUri.resolve(href.toString());
-        QtiReadResult<E> readResult = null;
-        XMLResourceNotFoundException notFoundException = null;
-        try {
-            readResult = readQTI(resolved, resultClass);
-        }
-        catch (final XMLResourceNotFoundException e) {
-            notFoundException = e;
-        }
-        final XmlResolutionResult<E> result = new XmlResolutionResult<E>(readResult, notFoundException);
+        QtiRequireResult<E> result = readQti(resolved, resultClass);
+        
         logger.info("Resolution of href {} against base RootNode with System ID {} yielded {}",
                 new Object[] { href, baseObject.getSystemId(), result });
         return result;

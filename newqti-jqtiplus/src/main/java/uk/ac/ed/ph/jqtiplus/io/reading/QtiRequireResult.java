@@ -31,19 +31,55 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.jqtiplus.io.reading;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;
 
 /**
- * FIXME: Document this
+ * FIXME: Document this type!
  * 
  * @author David McKain
  */
-public interface ResolutionResult<E extends RootNode> extends Serializable {
+public final class QtiRequireResult<E extends RootNode> implements ResolutionResult<E>, Serializable {
 
-    E getQtiObject();
+    private static final long serialVersionUID = -6470500039269477402L;
 
+    private final Class<E> requiredClass;
+    private final E qtiObject;
+    private final QtiReadResult qtiReadResult;
+
+    public QtiRequireResult(Class<E> requiredClass, E qtiObject, QtiReadResult qtiReadResult) {
+        this.requiredClass = requiredClass;
+        this.qtiObject = qtiObject;
+        this.qtiReadResult = qtiReadResult;
+    }
+
+    public boolean isSuccessful() {
+        return qtiObject!=null && qtiReadResult.isSuccessful();
+    }
+    
+    public Class<E> getRequiredClass() {
+        return requiredClass;
+    }
+    
+    @Override
+    public E getQtiObject() {
+        return qtiObject;
+    }
+
+    public QtiReadResult getQtiLoadResult() {
+        return qtiReadResult;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(requiredClass=" + requiredClass
+                + ",qtiObject=" + qtiObject
+                + ",qtiReadResult=" + qtiReadResult
+                + ")";
+    }
 }

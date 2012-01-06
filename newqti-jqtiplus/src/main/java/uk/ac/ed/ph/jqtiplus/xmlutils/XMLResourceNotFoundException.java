@@ -33,12 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.xperimental.ResourceNotFoundException;
+
 /**
  * Exception thrown by {@link XMLResourceReader} when a required XML resource cannot be found.
  * 
  * @author David McKain
  */
-public final class XMLResourceNotFoundException extends Exception {
+public final class XMLResourceNotFoundException extends ResourceNotFoundException {
 
     private static final long serialVersionUID = 4325972690545164979L;
 

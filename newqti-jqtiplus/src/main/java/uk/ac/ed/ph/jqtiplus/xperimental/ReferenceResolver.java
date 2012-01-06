@@ -44,17 +44,7 @@ import java.net.URI;
  */
 public interface ReferenceResolver {
 
-    /**
-     * E.G. Would be used to resolved response processing, referenced items etc.
-     * NOTE: This method may get called with the same parameters more than once during processing. An
-     * implementation of this may want to consider caching results as appropriate.
-     * At this level of abstraction, either the resolution succeeds or it does not, so we either return
-     * a result Object (which may contain further diagnostic/validation information), or we return null.
-     * 
-     * @param baseObject
-     * @param href
-     * @return
-     */
-    <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass);
+    <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass)
+        throws ResourceNotFoundException, BadResultException;
 
 }

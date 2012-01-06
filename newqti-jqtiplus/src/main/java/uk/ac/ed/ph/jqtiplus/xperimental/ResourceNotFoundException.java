@@ -31,47 +31,33 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.io.reading;
+package uk.ac.ed.ph.jqtiplus.xperimental;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
+import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 
 /**
  * FIXME: Document this!
  * 
  * @author David McKain
  */
-public final class XmlResolutionResult<E extends RootNode> implements ResolutionResult<E> {
+public class ResourceNotFoundException extends QTIException {
 
-    private static final long serialVersionUID = -5230096529031452028L;
+    private static final long serialVersionUID = 5015807009543618270L;
 
-    private final QtiReadResult<E> qtiReadResult;
-    private final XMLResourceNotFoundException xmlResourceNotFoundException;
-
-    public XmlResolutionResult(QtiReadResult<E> qtiReadResult, XMLResourceNotFoundException xmlResourceNotFoundException) {
-        this.qtiReadResult = qtiReadResult;
-        this.xmlResourceNotFoundException = xmlResourceNotFoundException;
+    public ResourceNotFoundException() {
+        super();
     }
 
-    public QtiReadResult<E> getQtiReadResult() {
-        return qtiReadResult;
-    }
-    
-    public XMLResourceNotFoundException getXmlResourceNotFoundException() {
-        return xmlResourceNotFoundException;
+    public ResourceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    public E getQtiObject() {
-        return qtiReadResult != null ? qtiReadResult.getRequestedQtiObject() : null;
+    public ResourceNotFoundException(String message) {
+        super(message);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
-                + "(qtiReadResult=" + qtiReadResult
-                + ",xmlResourceNotFoundException=" + xmlResourceNotFoundException
-                + ")";
+    public ResourceNotFoundException(Throwable cause) {
+        super(cause);
     }
+
 }
