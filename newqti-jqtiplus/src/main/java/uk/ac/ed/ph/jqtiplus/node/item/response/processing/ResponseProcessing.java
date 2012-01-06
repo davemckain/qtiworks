@@ -42,12 +42,14 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentObjectResolver;
+import uk.ac.ed.ph.jqtiplus.xperimental.BadResultException;
+import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ResourceNotFoundException;
 
 import java.net.URI;
 import java.util.List;
@@ -139,27 +141,36 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
 
     @Override
     protected void validateChildren(ValidationContext context, ValidationResult result) {
-        if (getResponseRules().isEmpty()) {
-            /* No responseRules */
-            if (getTemplate() == null && getTemplateLocation() == null) {
-                /* No external template specified */
-                result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should either contain some rules, or declare a template or templateLocation"));
-            }
-            else {
-                /* External template specified, so pull it out and validate down into it */
-                ResponseProcessing resolvedResponseProcessing;
-                try {
-                    resolvedResponseProcessing = ((ItemValidationContext) context).getResolvedResponseProcessing();
-                    resolvedResponseProcessing.validate(context, result);
-                }
-                catch (final ReferencingException e) {
-                    result.add(new ValidationError(this, "Could not resolve responseProcessing template", e));
-                }
-            }
+        List<ResponseRule> responseRules = getResponseRules();
+        if (!responseRules.isEmpty()) {
+            /* ResponseRules exist, so we'll validate these */
+            super.validateChildren(context, result);
         }
         else {
-            /* responseRules present, so descend into them */
-            super.validateChildren(context, result);
+            /* No ResponseRules, so we assume that there must be a RP template, which we'll resolve */
+            AssessmentObjectResolver assessmentObjectResolver = context.getAssessmentObjectResolver();
+            ResolutionResult<ResponseProcessing> resolutionResult;
+            try {
+                resolutionResult = assessmentObjectResolver.resolveResponseProcessingTemplate((AssessmentItem) context.getOwner());
+                if (resolutionResult!=null) {
+                    /* Successful resolution - first record it */
+                    result.addResolutionResult(resolutionResult);
+                    
+                    /* Now validate template */
+                    ResponseProcessing responseProcessingTarget = resolutionResult.getResolvedQtiObject();
+                    responseProcessingTarget.validate(context, result);
+                }
+                else {
+                    /* No template supplied */
+                    result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should either contain some rules, or declare a template or templateLocation"));
+                }
+            }
+            catch (ResourceNotFoundException e) {
+                result.add(new ValidationError(this, "Could not find responseProcessing template", e));
+            }
+            catch (BadResultException e) {
+                result.add(new ValidationError(this, "Target of responseProcessing template was not a responseProcessing class", e));
+            }
         }
     }
 
@@ -177,5 +188,10 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
         catch (final QTIProcessingInterrupt interrupt) {
             //do nothing
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "(systemId=" + systemId + ")";
     }
 }

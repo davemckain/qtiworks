@@ -31,81 +31,64 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.io.reading;
+package uk.ac.ed.ph.jqtiplus.xperimental;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
 import java.io.Serializable;
-import java.net.URI;
-import java.util.List;
 
 /**
- * FIXME: Document this type!
+ * Encapsulates a fully-resolved {@link AssessmentItem}, linking to the resolved
+ * {@link ResponseProcessing} template (if used).
  * 
  * @author David McKain
  */
-public final class QtiRequireResult<E extends RootNode> implements Serializable {
+public final class AssessmentItemResolution implements Serializable {
 
-    private static final long serialVersionUID = -6470500039269477402L;
+    private static final long serialVersionUID = -8302050952592265206L;
 
-    final URI systemId;
-    final XMLParseResult xmlParseResult;
-    final RootNode qtiObject;
-    final List<QtiModelBuildingError> qtiModelBuildingErrors;
-    final Class<E> requiredClass;
+    private final AssessmentItem item;
+    
+    private boolean responseProcessingTemplateResolved;
+    private ResponseProcessing resolvedResponseProcessingTemplate;
 
-    QtiRequireResult(Class<E> requiredClass, QtiReadResult qtiReadResult) {
-        this.systemId = qtiReadResult.systemId;
-        this.xmlParseResult = qtiReadResult.xmlParseResult;
-        this.qtiObject = qtiReadResult.qtiObject;
-        this.qtiModelBuildingErrors = qtiReadResult.qtiModelBuildingErrors;
-        this.requiredClass = requiredClass;
+    public AssessmentItemResolution(final AssessmentItem item) {
+        this.item = item;
+        this.responseProcessingTemplateResolved = false;
+        this.resolvedResponseProcessingTemplate = null;
     }
     
-    public boolean isRequiredResultClass() {
-        return qtiObject!=null && requiredClass.isInstance(qtiObject);
+    public AssessmentItem getItem() {
+        return item;
     }
+    
 
-    public boolean isSuccessful() {
-        return isRequiredResultClass() && qtiModelBuildingErrors.isEmpty();
+    public boolean isResponseProcessingTemplateResolved() {
+        return responseProcessingTemplateResolved;
     }
     
-    public URI getSystemId() {
-        return systemId;
-    }
-    
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public XMLParseResult getXmlParseResult() {
-        return xmlParseResult;
-    }
-    
-    public RootNode getQtiObject() {
-        return qtiObject;
-    }
-    
-    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
-        return qtiModelBuildingErrors;
+    public void setResponseProcessingTemplateResolved(boolean responseProcessingTemplateResolved) {
+        this.responseProcessingTemplateResolved = responseProcessingTemplateResolved;
     }
 
-    public Class<E> getRequiredClass() {
-        return requiredClass;
+
+    public ResponseProcessing getResolvedResponseProcessingTemplate() {
+        return resolvedResponseProcessingTemplate;
     }
     
-    public E getRequiredQtiObject() {
-        return requiredClass.cast(qtiObject);
+    public void setResolvedResponseProcessingTemplate(ResponseProcessing responseProcessingTemplate) {
+        this.resolvedResponseProcessingTemplate = responseProcessingTemplate;
     }
+
+    //-------------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(systemId=" + systemId
-                + ",requiredClass=" + requiredClass
-                + ",qtiObject=" + qtiObject
-                + ",xmlParseResult=" + xmlParseResult
-                + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
+                + "(item=" + item
+                + ",responseProcessingTemplateResolved=" + responseProcessingTemplateResolved
+                + ",resolvedResponseProcessingTemplate=" + resolvedResponseProcessingTemplate
                 + ")";
     }
 }

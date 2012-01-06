@@ -57,8 +57,8 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemHolder;
-import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentItemValidator;
 
 import java.util.Map;
 
@@ -166,7 +166,7 @@ public abstract class LookupExpression extends AbstractExpression {
                 else {
                     final AssessmentItemRef itemRef = (AssessmentItemRef) controlObject;
                     try {
-                        final AssessmentItemHolder assessmentItemValidator = testContext.resolveItem(itemRef);
+                        final AssessmentItemValidator assessmentItemValidator = testContext.resolveItem(itemRef);
                         final AssessmentItem item = assessmentItemValidator.getItem();
                         final VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
                         if (declaration == null) {

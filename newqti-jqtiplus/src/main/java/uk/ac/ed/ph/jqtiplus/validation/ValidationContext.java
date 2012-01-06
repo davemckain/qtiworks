@@ -37,7 +37,8 @@ import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentObjectResolver;
 
 /**
  * FIXME: We need to merge this slightly with {@link ItemProcessingContext}
@@ -47,6 +48,8 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 public interface ValidationContext {
 
     AssessmentObject getOwner();
+    
+    AssessmentObjectResolver getAssessmentObjectResolver();
 
     /**
      * Resolves a reference to a variable specified using a {@link VariableReferenceIdentifier}.

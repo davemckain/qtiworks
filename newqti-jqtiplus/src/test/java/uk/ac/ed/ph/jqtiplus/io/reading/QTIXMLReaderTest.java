@@ -170,7 +170,7 @@ public class QTIXMLReaderTest {
 
     @Test(expected = XMLReaderException.class)
     public void testBadSchemaClassPath() throws Exception {
-        final QTIXMLReader reader = new QTIXMLReader(new NoResourceLocator());
+        final QtiXmlReader reader = new QtiXmlReader(new NoResourceLocator());
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         reader.read(makeSystemId("choice.xml"), inputResourceLocator, true);
     }
@@ -188,7 +188,7 @@ public class QTIXMLReaderTest {
     }
 
     private XMLReadResult readTestFile(String testFileName, boolean schemaValiadating) throws XMLResourceNotFoundException {
-        final QTIXMLReader reader = new QTIXMLReader();
+        final QtiXmlReader reader = new QtiXmlReader();
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         return reader.read(makeSystemId(testFileName), inputResourceLocator, schemaValiadating);
     }

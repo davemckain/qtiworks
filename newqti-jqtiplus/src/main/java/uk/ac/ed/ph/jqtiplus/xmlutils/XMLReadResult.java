@@ -64,8 +64,7 @@ public class XMLReadResult implements Serializable {
     }
 
     public boolean isSchemaValid() {
-        return document != null
-                && xmlParseResult.isSchemaValid();
+        return document != null && xmlParseResult.isSchemaValid();
     }
 
     @Override

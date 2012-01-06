@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
 import java.net.URI;
 import java.util.List;

@@ -595,6 +595,11 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "(systemId=" + systemId + ")";
+    }
+
     //---------------------------------------------------------------
 
     //    /**

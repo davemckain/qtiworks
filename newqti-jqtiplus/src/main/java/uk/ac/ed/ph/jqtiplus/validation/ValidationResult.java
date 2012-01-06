@@ -34,8 +34,12 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,6 +55,8 @@ public class ValidationResult implements Serializable {
     private static final long serialVersionUID = 7987550924957601153L;
 
     private final AssessmentObject owner;
+    
+    private final List<ResolutionResult<? extends RootNode>> resolutionResults;
 
     /** Container of all errors. */
     private final List<ValidationError> errors;
@@ -78,6 +84,7 @@ public class ValidationResult implements Serializable {
      */
     public ValidationResult(AssessmentObject owner) {
         this.owner = owner;
+        this.resolutionResults = new ArrayList<ResolutionResult<? extends RootNode>>();
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
         this.infos = new ArrayList<ValidationInfo>();
@@ -87,6 +94,11 @@ public class ValidationResult implements Serializable {
 
     public AssessmentObject getOwner() {
         return owner;
+    }
+    
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public List<ResolutionResult<? extends RootNode>> getResolutionResults() {
+        return resolutionResults;
     }
 
     public List<ValidationResult> getChildResults() {
@@ -139,6 +151,7 @@ public class ValidationResult implements Serializable {
      * @return all warnings of this container for given source node
      * @see #getWarnings()
      */
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<ValidationWarning> getWarnings(XmlNode source) {
         return get(warnings, source);
     }
@@ -151,6 +164,7 @@ public class ValidationResult implements Serializable {
      * @return all infos of this container
      * @see #getInfos(XmlNode)
      */
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<ValidationInfo> getInfos() {
         return infos;
     }
@@ -164,6 +178,7 @@ public class ValidationResult implements Serializable {
      * @return all infos of this container for given source node
      * @see #getInfos()
      */
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<ValidationInfo> getInfos(XmlNode source) {
         return get(infos, source);
     }
@@ -176,6 +191,7 @@ public class ValidationResult implements Serializable {
      * @return all validation items (error, warning, info) of this container
      * @see #getAllItems(XmlNode)
      */
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public List<ValidationItem> getAllItems() {
         return allItems;
     }
@@ -246,11 +262,16 @@ public class ValidationResult implements Serializable {
     public void addChildResult(ValidationResult result) {
         childResults.add(result);
     }
+    
+    public void addResolutionResult(ResolutionResult<? extends RootNode> resolutionResult) {
+        resolutionResults.add(resolutionResult);
+    }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(owner=" + owner
+                + ",resolutionResults=" + resolutionResults
                 + ",errors=" + errors
                 + ",warnings=" + warnings
                 + ",infos=" + infos

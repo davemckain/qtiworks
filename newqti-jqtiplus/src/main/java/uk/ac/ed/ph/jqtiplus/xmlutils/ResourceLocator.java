@@ -52,7 +52,6 @@ public interface ResourceLocator extends Serializable {
      * can't locate the required resource or won't handle the given URI.
      * 
      * @param systemIdUri
-     * @return
      */
     InputStream findResource(final URI systemIdUri);
 

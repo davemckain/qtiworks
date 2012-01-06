@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
@@ -88,7 +87,6 @@ public abstract class TemplateConditionChild extends AbstractNode {
      * 
      * @return true
      * @throws RuntimeValidationException
-     * @throws QTIProcessingInterrupt
      */
     public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
         for (final TemplateRule templateRule : getTemplateRules()) {

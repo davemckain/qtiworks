@@ -365,6 +365,11 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "(systemId=" + systemId + ")";
+    }
+
     // (These have all moved to AssessmentTestController)
     //    /**
     //     * Returns current result of this test (only test itself, no items).

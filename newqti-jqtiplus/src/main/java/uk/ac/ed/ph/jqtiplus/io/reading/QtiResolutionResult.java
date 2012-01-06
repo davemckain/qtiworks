@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -47,24 +48,27 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public final class QtiRequireResult<E extends RootNode> implements Serializable {
+public final class QtiResolutionResult<E extends RootNode> implements ResolutionResult<E>, Serializable {
 
-    private static final long serialVersionUID = -6470500039269477402L;
-
-    final URI systemId;
+    private static final long serialVersionUID = 7365489015417148891L;
+    
+    final URI baseUri;
+    final URI href;
+    final URI resolvedSystemId;
     final XMLParseResult xmlParseResult;
     final RootNode qtiObject;
     final List<QtiModelBuildingError> qtiModelBuildingErrors;
     final Class<E> requiredClass;
 
-    QtiRequireResult(Class<E> requiredClass, QtiReadResult qtiReadResult) {
-        this.systemId = qtiReadResult.systemId;
-        this.xmlParseResult = qtiReadResult.xmlParseResult;
-        this.qtiObject = qtiReadResult.qtiObject;
-        this.qtiModelBuildingErrors = qtiReadResult.qtiModelBuildingErrors;
-        this.requiredClass = requiredClass;
+    QtiResolutionResult(URI baseUri, URI href, QtiRequireResult<E> qtiRequireResult) {
+        this.baseUri = baseUri;
+        this.href = href;
+        this.resolvedSystemId = qtiRequireResult.systemId;
+        this.xmlParseResult = qtiRequireResult.xmlParseResult;
+        this.qtiObject = qtiRequireResult.qtiObject;
+        this.qtiModelBuildingErrors = qtiRequireResult.qtiModelBuildingErrors;
+        this.requiredClass = qtiRequireResult.requiredClass;
     }
-    
     public boolean isRequiredResultClass() {
         return qtiObject!=null && requiredClass.isInstance(qtiObject);
     }
@@ -73,8 +77,15 @@ public final class QtiRequireResult<E extends RootNode> implements Serializable 
         return isRequiredResultClass() && qtiModelBuildingErrors.isEmpty();
     }
     
-    public URI getSystemId() {
-        return systemId;
+    public URI getBaseUri() {
+        return baseUri;
+    }
+    
+    public URI getHref() {
+        return href;
+    }
+    public URI getResolvedSystemId() {
+        return resolvedSystemId;
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -86,6 +97,7 @@ public final class QtiRequireResult<E extends RootNode> implements Serializable 
         return qtiObject;
     }
     
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
         return qtiModelBuildingErrors;
     }
@@ -94,18 +106,22 @@ public final class QtiRequireResult<E extends RootNode> implements Serializable 
         return requiredClass;
     }
     
-    public E getRequiredQtiObject() {
+    @Override
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public E getResolvedQtiObject() {
         return requiredClass.cast(qtiObject);
     }
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(systemId=" + systemId
-                + ",requiredClass=" + requiredClass
-                + ",qtiObject=" + qtiObject
+                + "(baseUri=" + baseUri
+                + ",href=" + href
+                + ",resolvedSystemId=" + resolvedSystemId
                 + ",xmlParseResult=" + xmlParseResult
+                + ",qtiObject=" + qtiObject
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
+                + ",requiredClass=" + requiredClass
                 + ")";
     }
 }

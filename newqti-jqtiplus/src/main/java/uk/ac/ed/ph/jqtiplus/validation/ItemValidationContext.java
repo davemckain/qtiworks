@@ -34,8 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 
 /**
  * @author David McKain
@@ -43,13 +41,5 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ReferencingException;
 public interface ItemValidationContext extends ValidationContext {
 
     AssessmentItem getItem();
-
-    /**
-     * Returns the resolved {@link ResponseProcessing} fragment.
-     * 
-     * @throws ReferencingException
-     */
-    ResponseProcessing getResolvedResponseProcessing()
-            throws ReferencingException;
 
 }

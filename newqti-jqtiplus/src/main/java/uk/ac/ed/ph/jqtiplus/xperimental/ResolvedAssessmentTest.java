@@ -33,32 +33,47 @@
  */
 package uk.ac.ed.ph.jqtiplus.xperimental;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * FIXME: Do we really need this?
+ * Encapsulates a fully-resolved {@link AssessmentTest}, linking to the each resolved
+ * {@link AssessmentItem} that is referenced within it.
  * 
  * @author David McKain
  */
-public class ReferencingException extends QTIException {
+public final class ResolvedAssessmentTest implements Serializable {
 
-    private static final long serialVersionUID = 4867086498720425469L;
-
-    public ReferencingException() {
-        super();
+    private static final long serialVersionUID = 6362456083276748378L;
+    
+    private final AssessmentTest test;
+    private final Map<URI, AssessmentItemResolution> resolvedAssessmentItemMap;
+    
+    public ResolvedAssessmentTest(final AssessmentTest item) {
+        this.test = item;
+        this.resolvedAssessmentItemMap = new HashMap<URI, AssessmentItemResolution>();
+    }
+    
+    public AssessmentTest getTest() {
+        return test;
+    }
+    
+    public Map<URI, AssessmentItemResolution> getResolvedAssessmentItemMap() {
+        return resolvedAssessmentItemMap;
     }
 
-    public ReferencingException(String message, Throwable cause) {
-        super(message, cause);
+    //-------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(test=" + test
+                + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemMap
+                + ")";
     }
-
-    public ReferencingException(String message) {
-        super(message);
-    }
-
-    public ReferencingException(Throwable cause) {
-        super(cause);
-    }
-
-
 }

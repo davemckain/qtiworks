@@ -33,10 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.io.reading;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -48,15 +51,17 @@ public final class QtiReadResult implements Serializable {
 
     private static final long serialVersionUID = -7443481710269376503L;
     
-    private final XMLParseResult xmlParseResult;
-    private final RootNode qtiObject;
-    private final List<QtiModelBuildingError> qtiModelBuildingErrors;
+    final URI systemId;
+    final XMLParseResult xmlParseResult;
+    final RootNode qtiObject;
+    final List<QtiModelBuildingError> qtiModelBuildingErrors;
     
-    public QtiReadResult(XMLParseResult xmlParseResult) {
-        this(xmlParseResult, null, null);
+    QtiReadResult(URI systemId, XMLParseResult xmlParseResult) {
+        this(systemId, xmlParseResult, null, null);
     }
 
-    public QtiReadResult(XMLParseResult xmlParseResult, RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+    QtiReadResult(URI systemId, XMLParseResult xmlParseResult, RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+        this.systemId = systemId;
         this.qtiObject = qtiObject;
         this.xmlParseResult = xmlParseResult;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
@@ -66,21 +71,27 @@ public final class QtiReadResult implements Serializable {
         return qtiObject!=null && qtiModelBuildingErrors.isEmpty();
     }
     
-    public RootNode getQtiObject() {
+    public URI getSystemId() {
+        return systemId;
+    }
+    
+    public RootNode getResolvedQtiObject() {
         return qtiObject;
     }
     
+    @ObjectDumperOptions(DumpMode.DEEP)
     public XMLParseResult getXMLParseResult() {
         return xmlParseResult;
     }
 
-    public List<QtiModelBuildingError> getQTIModelBuildingErrors() {
+    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
         return qtiModelBuildingErrors;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
+                + ",systemId=" + systemId
                 + ",qtiObject=" + qtiObject
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors

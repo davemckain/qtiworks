@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-
 import java.io.Serializable;
 
 /**
@@ -45,8 +44,6 @@ public interface Validatable extends Serializable {
 
     /**
      * Validates this object, appending to the given {@link ValidationResult}
-     * 
-     * @return validation result
      */
     public void validate(ValidationContext context, ValidationResult result);
 }

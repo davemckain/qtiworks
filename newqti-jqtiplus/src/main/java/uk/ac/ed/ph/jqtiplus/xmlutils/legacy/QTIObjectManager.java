@@ -146,7 +146,8 @@ public final class QTIObjectManager {
 
             @Override
             public void modelBuildingError(QTIModelException exception, Element owner) {
-                final QtiModelBuildingError error = new QtiModelBuildingError(exception, owner, SupportedXMLReader.extractLocationInformation(owner));
+                final QtiModelBuildingError error = new QtiModelBuildingError(exception,
+                        owner.getLocalName(), owner.getNamespaceURI(), SupportedXMLReader.extractLocationInformation(owner));
                 qtiParseErrors.add(error);
             }
         };

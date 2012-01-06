@@ -44,6 +44,6 @@ import java.io.Serializable;
  */
 public interface ResolutionResult<E extends RootNode> extends Serializable {
 
-    E getQtiObject();
+    E getResolvedQtiObject();
 
 }

@@ -42,34 +42,25 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this
- * 
- * TODO: This should keep track of resolution results and make them available. Validation should
- * now run AFTER resolution, as it's cleaner and simpler that way!
+ * Validates an {@link AssessmentItem}, pulling in the appropriate {@link ResponseProcessing} template
+ * if required.
  * 
  * @author David McKain
  */
-public final class AssessmentItemHolder implements ItemValidationContext {
+public final class AssessmentItemValidator implements ItemValidationContext {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemHolder.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemValidator.class);
 
     private final AssessmentItem item;
-    private final ReferenceResolver referenceResolver;
+    private final AssessmentObjectResolver objectResolver;
 
-    private ResponseProcessing resolvedResponseProcessing;
-
-    public AssessmentItemHolder(final AssessmentItem item, final ReferenceResolver resolver) {
+    public AssessmentItemValidator(final AssessmentItem item, final ReferenceResolver referenceResolver) {
         this.item = item;
-        this.referenceResolver = resolver;
-        this.resolvedResponseProcessing = null;
+        this.objectResolver = new AssessmentObjectResolver(referenceResolver);
     }
 
     public ValidationResult validate() {
@@ -88,38 +79,12 @@ public final class AssessmentItemHolder implements ItemValidationContext {
     public AssessmentObject getOwner() {
         return item;
     }
-
-    private ResponseProcessing resolveResponseProcessing() throws ReferencingException {
-        final ResponseProcessing responseProcessing = item.getResponseProcessing();
-        if (responseProcessing==null) {
-            /* No responseProcessing */
-            return null;
-        }
-        if (!responseProcessing.getResponseRules().isEmpty()) {
-            /* ResponseProcessing contains rules */
-            return responseProcessing;
-        }
-        ResolutionResult<ResponseProcessing> resolutionResult = null;
-        final List<URI> attemptedUris = new ArrayList<URI>();
-        URI templateUri = responseProcessing.getTemplate();
-        if (templateUri != null) {
-            attemptedUris.add(templateUri);
-            resolutionResult = referenceResolver.resolve(item, templateUri, ResponseProcessing.class);
-        }
-        if (resolutionResult == null || resolutionResult.getQtiObject() == null) {
-            templateUri = responseProcessing.getTemplateLocation();
-            if (templateUri != null) {
-                attemptedUris.add(templateUri);
-                resolutionResult = referenceResolver.resolve(item, templateUri, ResponseProcessing.class);
-            }
-        }
-        if (resolutionResult == null || resolutionResult.getQtiObject() == null) {
-            throw new ReferencingException("Could not obtain responseProcessing template from URI(s) " + attemptedUris);
-        }
-        logger.info("Resolved responseProcessing template using href {} to {}", templateUri, resolutionResult);
-        return resolutionResult.getQtiObject();
+    
+    @Override
+    public AssessmentObjectResolver getAssessmentObjectResolver() {
+        return objectResolver;
     }
-
+    
     @Override
     public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
         VariableDeclaration declaration = null;
@@ -138,7 +103,7 @@ public final class AssessmentItemHolder implements ItemValidationContext {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(item=" + item
-                + ",referenceResolver=" + referenceResolver
+                + ",objectResolver=" + objectResolver
                 + ")";
     }
 }

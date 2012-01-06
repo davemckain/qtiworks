@@ -60,7 +60,6 @@ public interface JQTIExtensionPackage extends LifecycleListener {
      * 
      * @param expressionParent
      * @param operatorClassName
-     * @return
      */
     CustomOperator createCustomOperator(ExpressionParent expressionParent, String operatorClassName);
 

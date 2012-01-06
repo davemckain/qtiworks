@@ -161,6 +161,11 @@ public class AssessmentResult extends AbstractNode implements RootNode {
         return builder.toString();
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + "(systemId=" + systemId + ")";
+    }
+
     //    /**
     //     * Shows how to use assessmentResult outside of library.
     //     *

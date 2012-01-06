@@ -31,37 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-
-import java.net.URI;
+import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 
 /**
- * FIXME: Document this
+ * FIXME: Do we really need this?
  * 
  * @author David McKain
  */
-public interface ReferenceResolver {
+public class ReferencingException extends QTIException {
 
-    /**
-     * Implementations should resolve the given href "against" the given baseObject to a QTI
-     * {@link RootNode} of the required type.
-     * <p>
-     * If resolution is successful, the resulting QTI {@link RootNode} should be returned
-     * wrapped within a suitable implementation of {@link ResolutionResult}.
-     * <p>
-     * Failures should result in either {@link ResourceNotFoundException} or {@link BadResultException}
-     * (e.g. if the resolver did resolve a resource but it's not of the appropriate form.)
-     * 
-     * @param baseObject
-     * @param href
-     * @param resultClass
-     * 
-     * @throws ResourceNotFoundException
-     * @throws BadResultException
-     */
-    <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass)
-        throws ResourceNotFoundException, BadResultException;
+    private static final long serialVersionUID = 4867086498720425469L;
+
+    public ReferencingException() {
+        super();
+    }
+
+    public ReferencingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ReferencingException(String message) {
+        super(message);
+    }
+
+    public ReferencingException(Throwable cause) {
+        super(cause);
+    }
+
 
 }

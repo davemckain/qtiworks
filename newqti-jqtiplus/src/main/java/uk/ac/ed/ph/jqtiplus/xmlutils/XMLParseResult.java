@@ -42,28 +42,21 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 /**
- * Encapsulates the diagnostic results of parsing (and optionally validating) QTI XML
+ * Encapsulates the diagnostic results of parsing (and optionally schema-validating) XML
  * 
  * @author David McKain
  */
-public class XMLParseResult implements Serializable, ErrorHandler {
+public final class XMLParseResult implements Serializable, ErrorHandler {
 
     private static final long serialVersionUID = -6558013135849907488L;
 
     private final URI systemId;
-
     private boolean parsed;
-
     private boolean validated;
-
     private final List<SAXParseException> warnings;
-
     private final List<SAXParseException> errors;
-
     private final List<SAXParseException> fatalErrors;
-
     private final List<String> supportedSchemaNamespaces;
-
     private final List<String> unsupportedSchemaNamespaces;
 
     public XMLParseResult(URI systemId) {
@@ -98,7 +91,6 @@ public class XMLParseResult implements Serializable, ErrorHandler {
     public void setValidated(boolean validated) {
         this.validated = validated;
     }
-
 
     public List<SAXParseException> getWarnings() {
         return warnings;
