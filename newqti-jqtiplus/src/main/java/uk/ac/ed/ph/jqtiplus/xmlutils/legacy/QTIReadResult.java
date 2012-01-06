@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.io.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 
 import java.io.Serializable;
 import java.util.List;

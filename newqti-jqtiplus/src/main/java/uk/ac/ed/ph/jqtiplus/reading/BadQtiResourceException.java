@@ -32,7 +32,7 @@
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 
-package uk.ac.ed.ph.jqtiplus.io.reading;
+package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.xperimental.BadResultException;
 

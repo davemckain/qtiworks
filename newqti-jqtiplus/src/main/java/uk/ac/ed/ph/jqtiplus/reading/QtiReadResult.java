@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.io.reading;
+package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
@@ -43,66 +43,55 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * FIXME: Document this type!
+ * Encapsulates the result of attempting to read an arbitrary QTI {@link RootNode} from XML.
  * 
  * @author David McKain
  */
-public final class QtiRequireResult<E extends RootNode> implements Serializable {
+public final class QtiReadResult implements Serializable {
 
-    private static final long serialVersionUID = -6470500039269477402L;
-
+    private static final long serialVersionUID = -7443481710269376503L;
+    
     final URI systemId;
     final XMLParseResult xmlParseResult;
     final RootNode qtiObject;
     final List<QtiModelBuildingError> qtiModelBuildingErrors;
-    final Class<E> requiredClass;
+    
+    QtiReadResult(URI systemId, XMLParseResult xmlParseResult) {
+        this(systemId, xmlParseResult, null, null);
+    }
 
-    QtiRequireResult(Class<E> requiredClass, QtiReadResult qtiReadResult) {
-        this.systemId = qtiReadResult.systemId;
-        this.xmlParseResult = qtiReadResult.xmlParseResult;
-        this.qtiObject = qtiReadResult.qtiObject;
-        this.qtiModelBuildingErrors = qtiReadResult.qtiModelBuildingErrors;
-        this.requiredClass = requiredClass;
+    QtiReadResult(URI systemId, XMLParseResult xmlParseResult, RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+        this.systemId = systemId;
+        this.qtiObject = qtiObject;
+        this.xmlParseResult = xmlParseResult;
+        this.qtiModelBuildingErrors = qtiModelBuildingErrors;
     }
     
-    public boolean isRequiredResultClass() {
-        return qtiObject!=null && requiredClass.isInstance(qtiObject);
-    }
-
     public boolean isSuccessful() {
-        return isRequiredResultClass() && qtiModelBuildingErrors.isEmpty();
+        return qtiObject!=null && qtiModelBuildingErrors.isEmpty();
     }
     
     public URI getSystemId() {
         return systemId;
     }
     
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public XMLParseResult getXmlParseResult() {
-        return xmlParseResult;
-    }
-    
-    public RootNode getQtiObject() {
+    public RootNode getResolvedQtiObject() {
         return qtiObject;
     }
     
-    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
-        return qtiModelBuildingErrors;
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public XMLParseResult getXMLParseResult() {
+        return xmlParseResult;
     }
 
-    public Class<E> getRequiredClass() {
-        return requiredClass;
-    }
-    
-    public E getRequiredQtiObject() {
-        return requiredClass.cast(qtiObject);
+    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
+        return qtiModelBuildingErrors;
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(systemId=" + systemId
-                + ",requiredClass=" + requiredClass
+                + ",systemId=" + systemId
                 + ",qtiObject=" + qtiObject
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors

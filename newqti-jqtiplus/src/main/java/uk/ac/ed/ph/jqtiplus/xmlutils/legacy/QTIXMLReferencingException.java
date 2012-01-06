@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
-import uk.ac.ed.ph.jqtiplus.io.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 
 import java.util.List;
 
