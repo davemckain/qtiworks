@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolutionResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;

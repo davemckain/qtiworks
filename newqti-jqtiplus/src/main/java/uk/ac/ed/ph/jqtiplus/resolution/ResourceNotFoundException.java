@@ -31,19 +31,33 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.jqtiplus.resolution;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-
-import java.io.Serializable;
+import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 
 /**
- * FIXME: Document this
+ * FIXME: Document this!
  * 
  * @author David McKain
  */
-public interface ResolutionResult<E extends RootNode> extends Serializable {
+public class ResourceNotFoundException extends QTIException {
 
-    E getResolvedQtiObject();
+    private static final long serialVersionUID = 5015807009543618270L;
+
+    public ResourceNotFoundException() {
+        super();
+    }
+
+    public ResourceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+
+    public ResourceNotFoundException(Throwable cause) {
+        super(cause);
+    }
 
 }

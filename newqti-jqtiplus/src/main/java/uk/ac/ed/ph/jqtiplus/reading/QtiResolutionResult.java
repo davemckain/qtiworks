@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolutionResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ResolutionResult;
 
 import java.io.Serializable;
 import java.net.URI;

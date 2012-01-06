@@ -33,14 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
 /**
- * FIXME: We need to merge this slightly with {@link ItemProcessingContext}
+ * FIXME: Document this!
  * 
  * @author David McKain
  */

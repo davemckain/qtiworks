@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -48,7 +47,7 @@ import java.util.Map;
 /**
  * FIXME: This needs refactored!
  */
-public interface ProcessingContext extends ValidationContext, Serializable {
+public interface ProcessingContext extends Serializable {
 
     Value lookupVariable(VariableDeclaration variableDeclaration);
 
