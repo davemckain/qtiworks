@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.io.Serializable;
+import java.net.URI;
 
 /**
  * FIXME: Document this
@@ -43,6 +44,8 @@ import java.io.Serializable;
  * @author David McKain
  */
 public interface ResolutionResult<E extends RootNode> extends Serializable {
+    
+    URI getResolvedSystemId();
 
     E getResolvedQtiObject();
 

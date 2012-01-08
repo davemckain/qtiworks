@@ -84,6 +84,8 @@ public final class QtiResolutionResult<E extends RootNode> implements Resolution
     public URI getHref() {
         return href;
     }
+    
+    @Override
     public URI getResolvedSystemId() {
         return resolvedSystemId;
     }

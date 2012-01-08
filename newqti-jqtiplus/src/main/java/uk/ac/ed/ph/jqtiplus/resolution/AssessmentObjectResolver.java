@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this
+ * Helper class that resolves items within tests and response processing templates.
  * 
  * @author David McKain
  */
