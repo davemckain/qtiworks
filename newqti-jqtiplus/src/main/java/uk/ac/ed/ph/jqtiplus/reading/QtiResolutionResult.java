@@ -48,6 +48,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
+@Deprecated
 public final class QtiResolutionResult<E extends RootNode> implements ResolutionResult<E>, Serializable {
 
     private static final long serialVersionUID = 7365489015417148891L;

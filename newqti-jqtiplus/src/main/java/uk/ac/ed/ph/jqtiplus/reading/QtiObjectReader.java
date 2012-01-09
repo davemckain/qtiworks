@@ -171,6 +171,7 @@ public final class QtiObjectReader implements ReferenceResolver {
     }
 
     @Override
+    @Deprecated
     public <E extends RootNode> QtiResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> requiredResultClass)
             throws XMLResourceNotFoundException, BadQtiResourceException {
         logger.info("Resolving href {} against base RootNode having System ID {}", href, baseObject.getSystemId());

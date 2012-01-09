@@ -31,64 +31,69 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental;
+package uk.ac.ed.ph.jqtiplus.xperimental2;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
-import java.io.Serializable;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Encapsulates a fully-resolved {@link AssessmentItem}, linking to the resolved
- * {@link ResponseProcessing} template (if used).
+ * FIXME: Document this
  * 
  * @author David McKain
  */
-public final class AssessmentItemResolution implements Serializable {
+public final class AssessmentTestStaticState extends AssessmentObjectStaticState<AssessmentTest> {
 
     private static final long serialVersionUID = -8302050952592265206L;
-
-    private final AssessmentItem item;
     
-    private boolean responseProcessingTemplateResolved;
-    private ResponseProcessing resolvedResponseProcessingTemplate;
-
-    public AssessmentItemResolution(final AssessmentItem item) {
-        this.item = item;
-        this.responseProcessingTemplateResolved = false;
-        this.resolvedResponseProcessingTemplate = null;
-    }
+    /** Resolved System ID for each {@link AssessmentItemRef} */
+    private final Map<AssessmentItemRef, URI> systemIdByItemRefMap;
     
-    public AssessmentItem getItem() {
-        return item;
-    }
+    /** List of {@link AssessmentItemRef}s corresponding to each unique resolved item System ID */
+    private final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap;
     
+    /** {@link AssessmentItemStaticState} for each unique System ID. null values denote problem with item (e.g. not found, not an item) */
+    private final Map<URI, AssessmentItemStaticState> assessmentItemStaticStateMap;
 
-    public boolean isResponseProcessingTemplateResolved() {
-        return responseProcessingTemplateResolved;
+    public AssessmentTestStaticState(final AssessmentTest test) {
+        super(test);
+        this.systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
+        this.itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
+        this.assessmentItemStaticStateMap = new HashMap<URI, AssessmentItemStaticState>();
     }
     
-    public void setResponseProcessingTemplateResolved(boolean responseProcessingTemplateResolved) {
-        this.responseProcessingTemplateResolved = responseProcessingTemplateResolved;
+    public AssessmentTest getTest() {
+        return assessmentObject;
     }
 
-
-    public ResponseProcessing getResolvedResponseProcessingTemplate() {
-        return resolvedResponseProcessingTemplate;
+    public Map<AssessmentItemRef, URI> getSystemIdByItemRefMap() {
+        return systemIdByItemRefMap;
     }
     
-    public void setResolvedResponseProcessingTemplate(ResponseProcessing responseProcessingTemplate) {
-        this.resolvedResponseProcessingTemplate = responseProcessingTemplate;
+    public Map<URI, List<AssessmentItemRef>> getItemRefsBySystemIdMap() {
+        return itemRefsBySystemIdMap;
     }
-
+    
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public Map<URI, AssessmentItemStaticState> getAssessmentItemStaticStateMap() {
+        return assessmentItemStaticStateMap;
+    }
+    
     //-------------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(item=" + item
-                + ",responseProcessingTemplateResolved=" + responseProcessingTemplateResolved
-                + ",resolvedResponseProcessingTemplate=" + resolvedResponseProcessingTemplate
+                + "(test=" + assessmentObject
+                + ",systemIdByItemRefMap=" + systemIdByItemRefMap
+                + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
+                + ",assessmentItemStaticStateMap=" + assessmentItemStaticStateMap
                 + ")";
     }
 }

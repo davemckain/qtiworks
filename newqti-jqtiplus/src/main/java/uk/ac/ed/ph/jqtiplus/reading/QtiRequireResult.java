@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceRequireResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 
 import java.io.Serializable;
@@ -47,7 +48,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public final class QtiRequireResult<E extends RootNode> implements Serializable {
+public final class QtiRequireResult<E extends RootNode> implements ResourceRequireResult<E>, Serializable {
 
     private static final long serialVersionUID = -6470500039269477402L;
 
@@ -73,6 +74,7 @@ public final class QtiRequireResult<E extends RootNode> implements Serializable 
         return isRequiredResultClass() && qtiModelBuildingErrors.isEmpty();
     }
     
+    @Override
     public URI getSystemId() {
         return systemId;
     }
@@ -94,6 +96,7 @@ public final class QtiRequireResult<E extends RootNode> implements Serializable 
         return requiredClass;
     }
     
+    @Override
     public E getRequiredQtiObject() {
         return requiredClass.cast(qtiObject);
     }

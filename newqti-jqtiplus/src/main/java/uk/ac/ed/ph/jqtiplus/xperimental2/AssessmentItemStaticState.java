@@ -31,38 +31,59 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.resolution;
+package uk.ac.ed.ph.jqtiplus.xperimental2;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-
-import java.net.URI;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
 /**
  * FIXME: Document this
  * 
  * @author David McKain
  */
-@Deprecated
-public interface ReferenceResolver {
+public final class AssessmentItemStaticState extends AssessmentObjectStaticState<AssessmentItem> {
 
-    /**
-     * Implementations should resolve the given href "against" the given baseObject to a QTI
-     * {@link RootNode} of the required type.
-     * <p>
-     * If resolution is successful, the resulting QTI {@link RootNode} should be returned
-     * wrapped within a suitable implementation of {@link ResolutionResult}.
-     * <p>
-     * Failures should result in either {@link ResourceNotFoundException} or {@link BadResultException}
-     * (e.g. if the resolver did resolve a resource but it's not of the appropriate form.)
-     * 
-     * @param baseObject
-     * @param href
-     * @param resultClass
-     * 
-     * @throws ResourceNotFoundException
-     * @throws BadResultException
-     */
-    <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass)
-        throws ResourceNotFoundException, BadResultException;
+    private static final long serialVersionUID = -8302050952592265206L;
 
+    private boolean responseProcessingTemplateResolved;
+    private ResponseProcessing resolvedResponseProcessingTemplate;
+
+    public AssessmentItemStaticState(final AssessmentItem item) {
+        super(item);
+        this.responseProcessingTemplateResolved = false;
+        this.resolvedResponseProcessingTemplate = null;
+    }
+    
+    public AssessmentItem getItem() {
+        return assessmentObject;
+    }
+    
+
+    public boolean isResponseProcessingTemplateResolved() {
+        return responseProcessingTemplateResolved;
+    }
+    
+    public void setResponseProcessingTemplateResolved(boolean responseProcessingTemplateResolved) {
+        this.responseProcessingTemplateResolved = responseProcessingTemplateResolved;
+    }
+
+
+    public ResponseProcessing getResolvedResponseProcessingTemplate() {
+        return resolvedResponseProcessingTemplate;
+    }
+    
+    public void setResolvedResponseProcessingTemplate(ResponseProcessing responseProcessingTemplate) {
+        this.resolvedResponseProcessingTemplate = responseProcessingTemplate;
+    }
+
+    //-------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(item=" + assessmentObject
+                + ",responseProcessingTemplateResolved=" + responseProcessingTemplateResolved
+                + ",resolvedResponseProcessingTemplate=" + resolvedResponseProcessingTemplate
+                + ")";
+    }
 }

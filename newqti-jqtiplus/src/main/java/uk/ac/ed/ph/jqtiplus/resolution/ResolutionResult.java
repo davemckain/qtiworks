@@ -43,6 +43,7 @@ import java.net.URI;
  * 
  * @author David McKain
  */
+@Deprecated
 public interface ResolutionResult<E extends RootNode> extends Serializable {
     
     URI getResolvedSystemId();

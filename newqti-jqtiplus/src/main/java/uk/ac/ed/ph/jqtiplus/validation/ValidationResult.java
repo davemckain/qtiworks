@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolutionResult;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceRequireResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class ValidationResult implements Serializable {
 
     private final AssessmentObject owner;
     
-    private final List<ResolutionResult<? extends RootNode>> resolutionResults;
+    private final List<ResourceRequireResult<? extends RootNode>> resolutionResults;
 
     /** Container of all errors. */
     private final List<ValidationError> errors;
@@ -84,7 +84,7 @@ public class ValidationResult implements Serializable {
      */
     public ValidationResult(AssessmentObject owner) {
         this.owner = owner;
-        this.resolutionResults = new ArrayList<ResolutionResult<? extends RootNode>>();
+        this.resolutionResults = new ArrayList<ResourceRequireResult<? extends RootNode>>();
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
         this.infos = new ArrayList<ValidationInfo>();
@@ -97,7 +97,7 @@ public class ValidationResult implements Serializable {
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ResolutionResult<? extends RootNode>> getResolutionResults() {
+    public List<ResourceRequireResult<? extends RootNode>> getResolutionResults() {
         return resolutionResults;
     }
 
@@ -272,7 +272,7 @@ public class ValidationResult implements Serializable {
         childResults.add(result);
     }
     
-    public void addResolutionResult(ResolutionResult<? extends RootNode> resolutionResult) {
+    public void addResolutionResult(ResourceRequireResult<? extends RootNode> resolutionResult) {
         resolutionResults.add(resolutionResult);
     }
 

@@ -31,38 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.resolution;
+package uk.ac.ed.ph.jqtiplus.xperimental2;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 
-import java.net.URI;
+import java.io.Serializable;
 
 /**
  * FIXME: Document this
  * 
  * @author David McKain
  */
-@Deprecated
-public interface ReferenceResolver {
+public abstract class AssessmentObjectStaticState<E extends AssessmentObject> implements Serializable {
 
-    /**
-     * Implementations should resolve the given href "against" the given baseObject to a QTI
-     * {@link RootNode} of the required type.
-     * <p>
-     * If resolution is successful, the resulting QTI {@link RootNode} should be returned
-     * wrapped within a suitable implementation of {@link ResolutionResult}.
-     * <p>
-     * Failures should result in either {@link ResourceNotFoundException} or {@link BadResultException}
-     * (e.g. if the resolver did resolve a resource but it's not of the appropriate form.)
-     * 
-     * @param baseObject
-     * @param href
-     * @param resultClass
-     * 
-     * @throws ResourceNotFoundException
-     * @throws BadResultException
-     */
-    <E extends RootNode> ResolutionResult<E> resolve(RootNode baseObject, URI href, Class<E> resultClass)
-        throws ResourceNotFoundException, BadResultException;
-
+    private static final long serialVersionUID = 9167959468554103608L;
+    
+    protected final E assessmentObject;
+    
+    public AssessmentObjectStaticState(final E assessmentObject) {
+        this.assessmentObject = assessmentObject;
+    }
+    
 }
