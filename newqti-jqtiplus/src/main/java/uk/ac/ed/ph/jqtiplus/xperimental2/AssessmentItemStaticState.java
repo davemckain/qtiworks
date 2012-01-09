@@ -45,12 +45,10 @@ public final class AssessmentItemStaticState extends AssessmentObjectStaticState
 
     private static final long serialVersionUID = -8302050952592265206L;
 
-    private boolean responseProcessingTemplateResolved;
-    private ResponseProcessing resolvedResponseProcessingTemplate;
+    private FrozenResourceLookup<ResponseProcessing> resolvedResponseProcessingTemplate;
 
     public AssessmentItemStaticState(final AssessmentItem item) {
         super(item);
-        this.responseProcessingTemplateResolved = false;
         this.resolvedResponseProcessingTemplate = null;
     }
     
@@ -59,20 +57,11 @@ public final class AssessmentItemStaticState extends AssessmentObjectStaticState
     }
     
 
-    public boolean isResponseProcessingTemplateResolved() {
-        return responseProcessingTemplateResolved;
-    }
-    
-    public void setResponseProcessingTemplateResolved(boolean responseProcessingTemplateResolved) {
-        this.responseProcessingTemplateResolved = responseProcessingTemplateResolved;
-    }
-
-
-    public ResponseProcessing getResolvedResponseProcessingTemplate() {
+    public FrozenResourceLookup<ResponseProcessing> getResolvedResponseProcessingTemplate() {
         return resolvedResponseProcessingTemplate;
     }
     
-    public void setResolvedResponseProcessingTemplate(ResponseProcessing responseProcessingTemplate) {
+    public void setResolvedResponseProcessingTemplate(FrozenResourceLookup<ResponseProcessing> responseProcessingTemplate) {
         this.resolvedResponseProcessingTemplate = responseProcessingTemplate;
     }
 
@@ -82,7 +71,6 @@ public final class AssessmentItemStaticState extends AssessmentObjectStaticState
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(item=" + assessmentObject
-                + ",responseProcessingTemplateResolved=" + responseProcessingTemplateResolved
                 + ",resolvedResponseProcessingTemplate=" + resolvedResponseProcessingTemplate
                 + ")";
     }

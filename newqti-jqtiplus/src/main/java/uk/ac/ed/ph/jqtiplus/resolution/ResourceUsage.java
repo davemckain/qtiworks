@@ -31,35 +31,28 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.resolution;
-
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
 
 /**
  * FIXME: Document this type
  *
  * @author David McKain
  */
-public class BadResultException extends QTIException {
-
-    private static final long serialVersionUID = 2958233535819021682L;
-
-    public BadResultException() {
-        super();
-    }
-
-    public BadResultException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public BadResultException(String message) {
-        super(message);
-    }
-
-    public BadResultException(Throwable cause) {
-        super(cause);
-    }
-
+public enum ResourceUsage {
+    
+    /**
+     * Indicates that the resource is known to be valid, so implementors can bypass checks
+     * such as schema validation.
+     */
+    ASSUMED_VALID,
+    
+    /**
+     * Indicates that the resource is going to be fully validated. Implementors of
+     * {@link ResourceProvider} should do anything else that supports this, such as
+     * schema validation of XML resources. Failure of this lower-level validation should
+     * be encapsulated within a {@link BadResourceException}.
+     */
+    FOR_VALIDATION,
+    ;
 
 }

@@ -43,9 +43,11 @@ import java.net.URI;
  * 
  * @author David McKain
  */
-public interface ResourceRequireResult<E extends RootNode> extends Serializable {
+public interface ResourceHolder<E extends RootNode> extends Serializable {
     
     URI getSystemId();
+    
+    ResourceUsage getResourceUsage();
 
     E getRequiredQtiObject();
 

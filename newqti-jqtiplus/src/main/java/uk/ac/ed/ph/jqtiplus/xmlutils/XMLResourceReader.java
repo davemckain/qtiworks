@@ -66,16 +66,22 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
- * Helper class that makes it easy to parse XML and optionally schema validate it against
+ * Helper class that makes it easy to parse XML and optionally schema validate
+ * it against
  * a set of prescribed schemas.
  * <p>
- * Schemas are *always* loaded via the prescribed {@link #getParserResourceLocator()}, so the use of this class must ensure they are made available for loading
- * in this way. Suggested usage is to make a local cache of the schemas and use a {@link ClassPathHTTPResourceLocator} or similar to load them. A default
- * implementation called {@link #DEFAULT_PARSER_RESOURCE_LOCATOR} is provided that uses {@link ClassPathHTTPResourceLocator} to search under the path
+ * Schemas are *always* loaded via the prescribed
+ * {@link #getParserResourceLocator()}, so the use of this class must ensure
+ * they are made available for loading in this way. Suggested usage is to make a
+ * local cache of the schemas and use a {@link ClassPathHTTPResourceLocator} or
+ * similar to load them. A default implementation called
+ * {@link #DEFAULT_PARSER_RESOURCE_LOCATOR} is provided that uses
+ * {@link ClassPathHTTPResourceLocator} to search under the path
  * <code>uk/ac/ed/ph/jqtiplus</code>.
  * <p>
- * The XML parsing process performs a SAX parse followed by a DOM tree build, filling the resulting tree with SAX {@link Locator} information, which makes later
- * error reporting richer.
+ * The XML parsing process performs a SAX parse followed by a DOM tree build,
+ * filling the resulting tree with SAX {@link Locator} information, which makes
+ * later error reporting richer.
  * 
  * @see XMLReadResult
  * @author David McKain

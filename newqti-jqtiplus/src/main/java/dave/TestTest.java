@@ -10,7 +10,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiRequireResult;
+import uk.ac.ed.ph.jqtiplus.reading.QtiReadResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
@@ -27,7 +27,7 @@ public class TestTest {
         JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
         QtiObjectReader objectReader = new QtiObjectReader(jqtiExtensionManager, new ClassPathResourceLocator(), true);
 
-        QtiRequireResult<AssessmentTest> qtiReadResult = objectReader.readQti(inputUri, AssessmentTest.class);
+        QtiReadResult<AssessmentTest> qtiReadResult = objectReader.readQti(inputUri, AssessmentTest.class);
         System.out.println("Read in " + ObjectDumper.dumpObject(qtiReadResult, DumpMode.DEEP));
         
         XMLParseResult xmlParseResult = qtiReadResult.getXmlParseResult();

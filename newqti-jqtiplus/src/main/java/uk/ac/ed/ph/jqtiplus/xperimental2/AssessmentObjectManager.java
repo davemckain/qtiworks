@@ -33,18 +33,21 @@
  */
 package uk.ac.ed.ph.jqtiplus.xperimental2;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.BadResultException;
+import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceProvider;
-import uk.ac.ed.ph.jqtiplus.resolution.ResourceRequireResult;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceUsage;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -61,9 +64,17 @@ import org.slf4j.LoggerFactory;
 /**
  * FIXME: Document this type
  * 
- * Item validation: use cache RP template if available, otherwise look up new one and record the lookup within the validation result.
+ * Item validation: read item, full validation. use cache RP template if available, otherwise look up new one (schema validating)
+ * and record the lookup within the validation result. Will then return a ValidationResult
+ * that contains full details of the item + RP template reads within.
  * 
- * Test validation: use cache to locate items, recording lookups as they are done. Only validate each unique item (identified by URI).
+ * Item evaluation: read item, no validation, resolve RP template. Return state ready to go.
+ * 
+ * Test validation: read test, full validation, use cache to locate items, recording validated lookups on each unique resolved System ID.
+ * Will need to resolve (and validate) each RP template as well, which should hit cache as it's
+ * likely that the same template will be used frequently within a test. ValidationResult should
+ * contain full details.
+ * Only validate each unique item (identified by URI).
  * Validation of items would use caching on RP templates as above.
  *
  * @author David McKain
@@ -73,26 +84,26 @@ public final class AssessmentObjectManager {
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectManager.class);
 
     private final ResourceProvider resourceProvider;
-    private final ResourceProviderResultCache resourceProviderResultCache;
+    private final ResourceLookupCache resourceProviderResultCache;
     
-    public AssessmentObjectManager(final ResourceProvider resourceProvider, final ResourceProviderResultCache resourceProviderResultCache) {
+    public AssessmentObjectManager(final ResourceProvider resourceProvider, final ResourceLookupCache resourceProviderResultCache) {
         this.resourceProvider = resourceProvider;
         this.resourceProviderResultCache = resourceProviderResultCache;
     }
 
     //-------------------------------------------------------------------
+    // AssessmentItem stuff
     
-    /** FIXME: Hit cache or not? */
-    public AssessmentItemStaticState provideAssessmentItem(URI systemId)
-            throws ResourceNotFoundException, BadResultException {
-        ResourceRequireResult<AssessmentItem> resourceResult = resourceProviderResultCache.provideQtiResource(resourceProvider, systemId, AssessmentItem.class);
-        AssessmentItemStaticState result = new AssessmentItemStaticState(resourceResult.getRequiredQtiObject());
+    public AssessmentItemStaticState provideAssessmentItem(URI systemId, ResourceUsage resourceUsage)
+            throws ResourceNotFoundException, BadResourceException {
+        AssessmentItem item = resourceProviderResultCache.getResource(resourceProvider, systemId, resourceUsage, AssessmentItem.class);
+        AssessmentItemStaticState result = new AssessmentItemStaticState(item);
         return result;
     }
     
-    public ValidationResult validateItem(URI systemId) throws ResourceNotFoundException, BadResultException {
+    public ValidationResult validateItem(URI systemId) throws ResourceNotFoundException, BadResourceException {
         /* (This doesn't hit cache for item) */
-        return validateItem(provideAssessmentItem(systemId));
+        return validateItem(provideAssessmentItem(systemId, ResourceUsage.FOR_VALIDATION));
     }
     
     public ValidationResult validateItem(AssessmentItem item) {
@@ -100,59 +111,82 @@ public final class AssessmentObjectManager {
         return validateItem(itemStaticState);
     }
     
+    public FrozenResourceLookup<ResponseProcessing> resolveResponseProcessingTemplate(AssessmentItemStaticState itemStaticState, ResourceUsage resourceUsage) {
+        AssessmentItem item = itemStaticState.getItem();
+        ResponseProcessing responseProcessing = item.getResponseProcessing();
+        FrozenResourceLookup<ResponseProcessing> result = null;
+        if (responseProcessing!=null) {
+            if (responseProcessing.getResponseRules().isEmpty()) {
+                /* ResponseProcessing present but no rules, so should be a template. First make sure there's a URI specified */
+                URI templateSystemId = null;
+                if (responseProcessing.getTemplate() != null) {
+                    /* We try template attribute first... */
+                    templateSystemId = resolveUri(item, responseProcessing.getTemplate());
+                }
+                else if (responseProcessing.getTemplateLocation() != null) {
+                    /* ... then templateLocation */
+                    templateSystemId = resolveUri(item, responseProcessing.getTemplateLocation());
+                }
+                if (templateSystemId!=null) {
+                    /* If here, then a template should exist */
+                    logger.info("Resolving RP template at system ID {} " + templateSystemId);
+                    result = itemStaticState.getResolvedResponseProcessingTemplate();
+                    if (result==null) {
+                        /* Template not seen yet, so look up */
+                        result = resourceProviderResultCache.getFrozenResource(resourceProvider, templateSystemId, resourceUsage, ResponseProcessing.class);
+                        itemStaticState.setResolvedResponseProcessingTemplate(result);
+                    }
+                }
+                else {
+                    /* No template supplied */
+                    logger.warn("responseProcessing contains no rules and does not declare a template or templateLocation, so returning null template");
+                }
+            }
+            else {
+                logger.warn("AssessmentItem contains ResponseRules, so no template will be resolved");
+            }
+        }
+        else {
+            logger.warn("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
+        }
+        return result;
+    }
+    
     private ValidationResult validateItem(AssessmentItemStaticState itemStaticState) {
         AssessmentItem item = itemStaticState.getItem();
         final ValidationResult result = new ValidationResult(item);
         
-        /* First resolve response processing template if no rules have been specified */
+        /* Resolve ResponseProcessing template, if required */
         ResponseProcessing responseProcessing = item.getResponseProcessing();
-        if (responseProcessing!=null && responseProcessing.getResponseRules().isEmpty()) {
-            /* ResponseProcessing present but no rules, so should be a template. First make sure there's a URI specified */
-            URI templateUri = null;
-            if (responseProcessing.getTemplate() != null) {
-                /* We try template attribute first... */
-                templateUri = resolveUri(item, responseProcessing.getTemplate());
-            }
-            else if (responseProcessing.getTemplateLocation() != null) {
-                /* ... then templateLocation */
-                templateUri = resolveUri(item, responseProcessing.getTemplateLocation());
-            }
-            
-            if (templateUri!=null) {
-                /* Resolve the template */
-                ResponseProcessing template = null;
-                if (itemStaticState.isResponseProcessingTemplateResolved()) {
-                    /* We've already resolved the RP template */
-                    template = itemStaticState.getResolvedResponseProcessingTemplate();
-                    if (template==null) {
-                        result.add(new ValidationWarning(item, "responseProcessing contains no rules and does not declare a template or templateLocation"));
+        if (responseProcessing!=null) {
+            if (responseProcessing.getResponseRules().isEmpty()) {
+                FrozenResourceLookup<ResponseProcessing> resolvedTemplate = resolveResponseProcessingTemplate(itemStaticState, ResourceUsage.FOR_VALIDATION);
+                if (resolvedTemplate!=null) {
+                    try {
+                        result.addResolutionResult(resolvedTemplate.thaw());
+                    }
+                    catch (ResourceNotFoundException e) {
+                        result.add(new ValidationError(item, "Could not find responseProcessing template at systemId " + resolvedTemplate.getSystemId(), e));
+                    }
+                    catch (BadResourceException e) {
+                        result.add(new ValidationError(item, "Target of responseProcessing template at systemId " + resolvedTemplate.getSystemId() + "  was not a responseProcessing Object", e));
                     }
                 }
                 else {
-                    try {
-                        ResourceRequireResult<ResponseProcessing> templateHolder = resourceProviderResultCache.provideQtiResource(resourceProvider, templateUri, ResponseProcessing.class);
-                        itemStaticState.setResolvedResponseProcessingTemplate(templateHolder.getRequiredQtiObject());
-                    }
-                    catch (ResourceNotFoundException e) {
-                        result.add(new ValidationError(item, "Could not find responseProcessing template at systemId " + templateUri, e));
-                    }
-                    catch (BadResultException e) {
-                        result.add(new ValidationError(item, "Target of responseProcessing template at systemId " + templateUri + "  was not a responseProcessing Object", e));
-                    }
-                    itemStaticState.setResponseProcessingTemplateResolved(true);
+                    /* No template supplied */
+                    result.add(new ValidationWarning(item, "responseProcessing contains no rules and does not declare a template or templateLocation"));
                 }
             }
             else {
-                /* No template supplied */
-                result.add(new ValidationWarning(item, "responseProcessing contains no rules and does not declare a template or templateLocation"));
+                /* Contains ResponseRules, so no template resolution required */
             }
         }
         else {
             result.add(new ValidationWarning(item, "No responseProcessing present"));
         }
-        
+            
         /* Now validate item */
-        item.validate(this, result);
+        item.validate(new ItemValidationContextImpl(itemStaticState), result);
         return result;
     }
     
@@ -167,16 +201,54 @@ public final class AssessmentObjectManager {
         return declaration;
     }
     
+    class ItemValidationContextImpl implements ItemValidationContext {
+        
+        private final AssessmentItemStaticState itemStaticState;
+        
+        public ItemValidationContextImpl(final AssessmentItemStaticState itemStaticState) {
+            this.itemStaticState = itemStaticState;
+        }
+        
+        @Override
+        public AssessmentItem getItem() {
+            return itemStaticState.getItem();
+        }
+        
+        @Override
+        public AssessmentObject getOwner() {
+            return getItem();
+        }
+        
+        @Override
+        public ResponseProcessing getResolvedResponseProcessingTemplate() {
+            try {
+                return itemStaticState.getResolvedResponseProcessingTemplate().thaw().getRequiredQtiObject();
+            }
+            catch (ResourceNotFoundException e) {
+                return null;
+            }
+            catch (BadResourceException e) {
+                return null;
+            }
+        }
+        
+        @Override
+        public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
+            return AssessmentObjectManager.this.resolveVariableReference(itemStaticState, variableReferenceIdentifier);
+        }
+    }
+    
     //-------------------------------------------------------------------
+    // AssessmentTest stuff
     
     public AssessmentTestStaticState provideAssessmentTest(URI systemId)
-            throws ResourceNotFoundException, BadResultException {
-        ResourceRequireResult<AssessmentTest> resourceResult = resourceProviderResultCache.provideQtiResource(resourceProvider, systemId, AssessmentTest.class);
+            throws ResourceNotFoundException, BadResourceException {
+        ResourceHolder<AssessmentTest> resourceResult = resourceProviderResultCache.getResource(resourceProvider, systemId, AssessmentTest.class);
         AssessmentTestStaticState result = initTestStaticState(resourceResult.getRequiredQtiObject());
         return result;
     }
     
-    public ValidationResult validateTest(URI systemId) throws ResourceNotFoundException, BadResultException {
+    public ValidationResult validateTest(URI systemId) throws ResourceNotFoundException, BadResourceException {
         /* (This doesn't hit cache) */
         return validateTest(provideAssessmentTest(systemId));
     }
@@ -239,7 +311,7 @@ public final class AssessmentObjectManager {
                 result.add(new ValidationError(test, messageStart
                         + " could not be found", e));
             }
-            catch (BadResultException e) {
+            catch (BadResourceException e) {
                 result.add(new ValidationError(test, messageStart
                         + " was read in successfully but is not an assessmentItem", e));
             }
@@ -263,7 +335,7 @@ public final class AssessmentObjectManager {
                 catch (ResourceNotFoundException e) {
                     logger.warn("Item with systemId {} not found", itemSystemId.toString(), e);
                 }
-                catch (BadResultException e) {
+                catch (BadResourceException e) {
                     logger.warn("Item with systemId {} not found", itemSystemId.toString(), e);
                 }
             }
@@ -275,11 +347,11 @@ public final class AssessmentObjectManager {
     }
     
     private AssessmentItemStaticState initItemState(AssessmentTestStaticState testStaticState, URI itemSystemId)
-            throws ResourceNotFoundException, BadResultException {
+            throws ResourceNotFoundException, BadResourceException {
         Map<URI, AssessmentItemStaticState> itemStaticStateMap = testStaticState.getAssessmentItemStaticStateMap();
         AssessmentItemStaticState result = null;
         try {
-            ResourceRequireResult<AssessmentItem> itemResult = resourceProviderResultCache.provideQtiResource(resourceProvider, itemSystemId, AssessmentItem.class);
+            ResourceHolder<AssessmentItem> itemResult = resourceProviderResultCache.getResource(resourceProvider, itemSystemId, AssessmentItem.class);
             AssessmentItem resolvedItem = itemResult.getRequiredQtiObject();
             result = new AssessmentItemStaticState(resolvedItem);
         }

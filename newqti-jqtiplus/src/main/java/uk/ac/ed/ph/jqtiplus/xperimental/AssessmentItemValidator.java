@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectResolver;
-import uk.ac.ed.ph.jqtiplus.resolution.BadResultException;
+import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.resolution.ReferenceResolver;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolutionResult;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceNotFoundException;
@@ -104,7 +104,7 @@ public final class AssessmentItemValidator implements ItemValidationContext {
         catch (ResourceNotFoundException e) {
             result.add(new ValidationError(item, "Could not find responseProcessing template", e));
         }
-        catch (BadResultException e) {
+        catch (BadResourceException e) {
             result.add(new ValidationError(item, "Target of responseProcessing template was not a responseProcessing class", e));
         }
     }

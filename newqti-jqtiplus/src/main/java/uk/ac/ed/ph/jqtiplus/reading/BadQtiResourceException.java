@@ -31,29 +31,27 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.reading;
 
-import uk.ac.ed.ph.jqtiplus.resolution.BadResultException;
-
+import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
 
 /**
  * FIXME: Document this type
  *
  * @author David McKain
  */
-public class BadQtiResourceException extends BadResultException {
+public class BadQtiResourceException extends BadResourceException {
     
     private static final long serialVersionUID = 5190957743384561923L;
     
-    private final QtiReadResult qtiReadResult;
+    private final QtiReadResult<?> qtiReadResult;
     
-    public BadQtiResourceException(String message, QtiReadResult qtiReadResult) {
+    public BadQtiResourceException(String message, QtiReadResult<?> qtiReadResult) {
         super(message);
         this.qtiReadResult = qtiReadResult;
     }
     
-    public QtiReadResult getQtiReadResult() {
+    public QtiReadResult<?> getQtiReadResult() {
         return qtiReadResult;
     }
 }

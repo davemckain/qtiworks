@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectResolver;
-import uk.ac.ed.ph.jqtiplus.resolution.BadResultException;
+import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.resolution.ReferenceResolver;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolutionResult;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceNotFoundException;
@@ -114,7 +114,7 @@ public final class AssessmentTestValidator implements TestValidationContext {
                     result.add(new ValidationError(test, "Could not find item with identifier " + itemRef.getIdentifier()
                             + " and href " + itemRef.getHref(), e));
                 }
-                catch (BadResultException e) {
+                catch (BadResourceException e) {
                     result.add(new ValidationError(test, "Resource with identifier " + itemRef.getIdentifier()
                             + " and href " + itemRef.getHref() + " was reead in successfully but is not an assessmentItem", e));
                 }

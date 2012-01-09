@@ -36,6 +36,8 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
+import uk.ac.ed.ph.jqtiplus.resolution.ResourceUsage;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 
 import java.io.Serializable;
@@ -43,58 +45,85 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Encapsulates the result of attempting to read an arbitrary QTI {@link RootNode} from XML.
+ * FIXME: Document this type!
  * 
  * @author David McKain
  */
-public final class QtiReadResult implements Serializable {
+public final class QtiReadResult<E extends RootNode> implements ResourceHolder<E>, Serializable {
 
-    private static final long serialVersionUID = -7443481710269376503L;
+    private static final long serialVersionUID = -6470500039269477402L;
+
+    private final URI systemId;
+    private final ResourceUsage resourceUsage;
+    private final XMLParseResult xmlParseResult;
+    private final RootNode qtiObject;
+    private final List<QtiModelBuildingError> qtiModelBuildingErrors;
+    private final Class<E> requiredResultClass;
     
-    final URI systemId;
-    final XMLParseResult xmlParseResult;
-    final RootNode qtiObject;
-    final List<QtiModelBuildingError> qtiModelBuildingErrors;
-    
-    QtiReadResult(URI systemId, XMLParseResult xmlParseResult) {
-        this(systemId, xmlParseResult, null, null);
+    QtiReadResult(URI systemId, ResourceUsage resourceUsage, Class<E> requiredClass, XMLParseResult xmlParseResult) {
+        this(systemId, resourceUsage, requiredClass, xmlParseResult, null, null);
     }
-
-    QtiReadResult(URI systemId, XMLParseResult xmlParseResult, RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+    
+    QtiReadResult(URI systemId, ResourceUsage resourceUsage, Class<E> requiredClass, XMLParseResult xmlParseResult,
+            RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+        this.requiredResultClass = requiredClass;
+        this.resourceUsage = resourceUsage;
         this.systemId = systemId;
         this.qtiObject = qtiObject;
         this.xmlParseResult = xmlParseResult;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
     }
-    
+
+    public boolean isRequiredResultClass() {
+        return qtiObject!=null && requiredResultClass.isInstance(qtiObject);
+    }
+
     public boolean isSuccessful() {
-        return qtiObject!=null && qtiModelBuildingErrors.isEmpty();
+        return isRequiredResultClass() && qtiModelBuildingErrors.isEmpty();
+    }
+
+    @Override
+    public ResourceUsage getResourceUsage() {
+        return resourceUsage;
     }
     
+    @Override
     public URI getSystemId() {
         return systemId;
     }
     
-    public RootNode getResolvedQtiObject() {
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public XMLParseResult getXmlParseResult() {
+        return xmlParseResult;
+    }
+    
+    public RootNode getQtiObject() {
         return qtiObject;
     }
     
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public XMLParseResult getXMLParseResult() {
-        return xmlParseResult;
-    }
-
     public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
         return qtiModelBuildingErrors;
+    }
+
+    public Class<E> getRequiredClass() {
+        return requiredResultClass;
+    }
+    
+    @Override
+    public E getRequiredQtiObject() {
+        return requiredResultClass.cast(qtiObject);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + ",systemId=" + systemId
+                + "(systemId=" + systemId
+                + ",resourceUsage=" + resourceUsage
+                + ",requiredResultClass=" + requiredResultClass
                 + ",qtiObject=" + qtiObject
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
                 + ")";
     }
+
 }
