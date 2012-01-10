@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
@@ -46,7 +47,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * FIXME: Document this
+ * Wraps up the lookup of an {@link AssessmentTest} and all of the unique
+ * {@link AssessmentItem}s it refers to, as well as some other useful information.
  * 
  * @author David McKain
  */
