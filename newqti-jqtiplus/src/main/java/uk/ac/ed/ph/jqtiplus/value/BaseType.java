@@ -63,7 +63,7 @@ public enum BaseType {
     /**
      * Identifier baseType.
      * 
-     * @see org.qtitools.qti.value.IdentifierValue
+     * @see IdentifierValue
      */
     IDENTIFIER("identifier") {
 
@@ -76,7 +76,7 @@ public enum BaseType {
     /**
      * Boolean baseType.
      * 
-     * @see org.qtitools.qti.value.BooleanValue
+     * @see BooleanValue
      */
     BOOLEAN("boolean") {
 
@@ -89,7 +89,7 @@ public enum BaseType {
     /**
      * Integer baseType.
      * 
-     * @see org.qtitools.qti.value.IntegerValue
+     * @see IntegerValue
      */
     INTEGER("integer") {
 
@@ -102,7 +102,7 @@ public enum BaseType {
     /**
      * Float baseType.
      * 
-     * @see org.qtitools.qti.value.FloatValue
+     * @see FloatValue
      */
     FLOAT("float") {
 
@@ -115,7 +115,7 @@ public enum BaseType {
     /**
      * String baseType.
      * 
-     * @see org.qtitools.qti.value.StringValue
+     * @see StringValue
      */
     STRING("string") {
 
@@ -131,7 +131,7 @@ public enum BaseType {
     /**
      * Point baseType.
      * 
-     * @see org.qtitools.qti.value.PointValue
+     * @see PointValue
      */
     POINT("point") {
 
@@ -144,7 +144,7 @@ public enum BaseType {
     /**
      * Pair baseType.
      * 
-     * @see org.qtitools.qti.value.PairValue
+     * @see PairValue
      */
     PAIR("pair") {
 
@@ -157,7 +157,7 @@ public enum BaseType {
     /**
      * DirectedPair baseType.
      * 
-     * @see org.qtitools.qti.value.DirectedPairValue
+     * @see DirectedPairValue
      */
     DIRECTED_PAIR("directedPair") {
 
@@ -170,7 +170,7 @@ public enum BaseType {
     /**
      * Duration baseType.
      * 
-     * @see org.qtitools.qti.value.DurationValue
+     * @see DurationValue
      */
     DURATION("duration") {
 
@@ -183,7 +183,7 @@ public enum BaseType {
     /**
      * File baseType.
      * 
-     * @see org.qtitools.qti.value.FileValue
+     * @see FileValue
      */
     FILE("file") {
 
@@ -196,7 +196,7 @@ public enum BaseType {
     /**
      * URI baseType.
      * 
-     * @see org.qtitools.qti.value.UriValue
+     * @see UriValue
      */
     URI("uri") {
 

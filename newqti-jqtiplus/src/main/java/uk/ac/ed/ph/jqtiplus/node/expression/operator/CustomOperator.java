@@ -103,8 +103,6 @@ public abstract class CustomOperator extends AbstractExpression {
 
     /**
      * Sets value of class attribute.
-     * 
-     * @return value of class attribute
      */
     public void setClassAttr(String name) {
         getAttributes().getStringAttribute(ATTR_CLASS_NAME).setValue(name);
@@ -121,8 +119,6 @@ public abstract class CustomOperator extends AbstractExpression {
 
     /**
      * Sets value of definition attribute.
-     * 
-     * @return value of definition attribute
      */
     public void setDefinition(URI name) {
         getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).setValue(name);

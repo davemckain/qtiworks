@@ -18,7 +18,7 @@ import java.net.URI;
 public class RPTemplateTest {
     
     public static void main(String[] args) throws Exception {
-        URI inputUri = URI.create("classpath:/rpTest.xml");
+        URI inputUri = URI.create("classpath:/exercice1.xml");
         
         System.out.println("Reading and validating");
         JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();

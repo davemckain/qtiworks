@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 /**
- * Attribute with {@link VariableReferenceVariableReferenceIdentifier} value.
+ * Attribute with {@link VariableReferenceIdentifier} value.
  * 
  * @author Jiri Kajaba
  */
