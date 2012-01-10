@@ -33,17 +33,17 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.JQTIController;
 
 import org.qtitools.mathassess.MathAssessConstants;
 import org.qtitools.mathassess.MathAssessExtensionPackage;
@@ -77,7 +77,7 @@ public class MathAssessTest {
 
             final QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
             final QTIReadResult<AssessmentItem> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentItem.class);
-            final XMLParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
+            final XmlParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
             if (!xmlParseResult.isSchemaValid()) {
                 System.out.println("Schema validation failed:" + xmlParseResult);
                 return;

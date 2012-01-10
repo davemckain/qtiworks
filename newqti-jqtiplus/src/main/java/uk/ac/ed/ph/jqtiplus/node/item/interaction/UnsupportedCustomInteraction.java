@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 /**
  * Placeholder implementation of {@link CustomInteraction} used when the required extension

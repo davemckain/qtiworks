@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -47,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -384,7 +384,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     @Override
     public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
-        final AbstractValidationResult runtimeValidationResult = new AbstractValidationResult(getRootNode(AssessmentObject.class));
+        final AbstractValidationResult runtimeValidationResult = new AbstractValidationResult(getRootObject(AssessmentObject.class));
         final Value result = evaluate(context, runtimeValidationResult, 0);
         if (!runtimeValidationResult.getAllItems().isEmpty()) {
             throw new RuntimeValidationException(runtimeValidationResult);

@@ -5,7 +5,7 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
@@ -20,7 +20,7 @@ import java.net.URI;
 public class SchemaTest {
     
     public static void main(String[] args) throws Exception {
-        JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
+        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         SupportedXMLReader xmlReader = new SupportedXMLReader(true);
         QTIObjectManager objectManager = new QTIObjectManager(jqtiExtensionManager, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
         

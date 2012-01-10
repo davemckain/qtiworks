@@ -38,7 +38,7 @@ package uk.ac.ed.ph.jqtiplus;
  * 
  * @author David McKain
  */
-public final class QTIConstants {
+public final class QtiConstants {
 
     public static final String QTI_20_NAMESPACE = "http://www.imsglobal.org/xsd/imsqti_v2p0";
 

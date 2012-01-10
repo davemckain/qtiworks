@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -153,7 +153,7 @@ public interface NodeGroup extends Validatable, Serializable {
      * 
      * @param classTag QTI class name
      * @return created child
-     * @throws QTIIllegalChildException if the given classTag is not appropriate
+     * @throws QtiIllegalChildException if the given classTag is not appropriate
      */
     XmlNode create(String classTag);
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 
 import java.io.Serializable;
@@ -103,7 +103,7 @@ public abstract class ControlObjectState<E> implements Serializable {
             resultBuilder.add((AssessmentItemRefState) start);
         }
         else {
-            throw new QTILogicException("Unexpected logic branch: start=" + start);
+            throw new QtiLogicException("Unexpected logic branch: start=" + start);
         }
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 
 /**
@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
  * 
  * @author Jiri Kajaba
  */
-public final class QTINodeGroupException extends QTIModelException {
+public final class QTINodeGroupException extends QtiModelException {
 
     private static final long serialVersionUID = -1425955381105959375L;
 

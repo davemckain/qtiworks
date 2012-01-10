@@ -34,8 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 
-import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -49,6 +47,8 @@ import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * @author Jonathon Hare
@@ -77,7 +77,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
+            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -89,7 +89,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
+            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -102,7 +102,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
-        final AssessmentItem item = getRootNode(AssessmentItem.class);
+        final AssessmentItem item = getRootObject(AssessmentItem.class);
 
         final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
@@ -125,7 +125,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
 
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            final AssessmentItem item = getRootNode(AssessmentItem.class);
+            final AssessmentItem item = getRootObject(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
                 result.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
             }

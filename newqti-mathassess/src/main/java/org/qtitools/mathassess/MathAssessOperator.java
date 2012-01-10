@@ -36,11 +36,9 @@ package org.qtitools.mathassess;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -53,6 +51,8 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
@@ -76,7 +76,7 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     private static String IDENTIFIER_REGEX_VALUE = "[a-zA-Z][a-zA-Z0-9]*";
 
-    public MathAssessOperator(JQTIExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
+    public MathAssessOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
         // add a namespace prefix to this if none there, and no global prefix
@@ -176,8 +176,8 @@ public abstract class MathAssessOperator extends CustomOperator {
     private List<VariableDeclaration> getAllReadableVariableDeclarations() {
         final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        final AssessmentItem item = getRootNode(AssessmentItem.class);
-        final AssessmentTest test = getRootNode(AssessmentTest.class);
+        final AssessmentItem item = getRootObject(AssessmentItem.class);
+        final AssessmentTest test = getRootObject(AssessmentTest.class);
         if (item != null) {
             declarations.addAll(item.getResponseDeclarations());
             declarations.addAll(item.getTemplateDeclarations());
@@ -209,8 +209,8 @@ public abstract class MathAssessOperator extends CustomOperator {
     private List<VariableDeclaration> getAllWriteableVariableDeclarations() {
         final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        final AssessmentItem item = getRootNode(AssessmentItem.class);
-        final AssessmentTest test = getRootNode(AssessmentTest.class);
+        final AssessmentItem item = getRootObject(AssessmentItem.class);
+        final AssessmentTest test = getRootObject(AssessmentTest.class);
         if (item != null) {
             declarations.addAll(item.getTemplateDeclarations());
             declarations.addAll(item.getOutcomeDeclarations());

@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.OrientationAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -48,6 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 /**
  * The slider interaction presents the candidate with A control for selecting A numerical
@@ -256,7 +256,7 @@ public class SliderInteraction extends BlockInteraction {
         super.validate(context, result);
 
         if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
+            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
                 result.add(new ValidationError(this, "Response variable must have single cardinality"));
             }

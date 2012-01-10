@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -96,7 +96,7 @@ public class SectionPartGroup extends AbstractNodeGroup {
             return new AssessmentItemRef((AssessmentSection) getParent());
         }
         else {
-            throw new QTIIllegalChildException(getParent(), classTag);
+            throw new QtiIllegalChildException(getParent(), classTag);
         }
     }
 }

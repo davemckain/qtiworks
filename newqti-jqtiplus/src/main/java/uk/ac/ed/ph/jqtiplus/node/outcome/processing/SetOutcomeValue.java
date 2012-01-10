@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -46,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * The setOutcomeValue rule sets the value of an outcome variable to the value obtained from the associated expression.
@@ -81,7 +81,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -93,7 +93,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -107,7 +107,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
         super.validate(context, result);
 
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 result.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "

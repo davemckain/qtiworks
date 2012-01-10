@@ -33,30 +33,28 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLResourceReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Wraps around {@link XMLResourceReader} to provide specific support for QTI 2.1 and optional extensions.
+ * Wraps around {@link XmlResourceReader} to provide specific support for QTI 2.1
+ * and optional extensions.
  * 
  * @author David McKain
  */
-public final class QtiXmlReader implements Serializable {
+public final class QtiXmlReader {
 
-    private static final long serialVersionUID = 1318545084577401859L;
-
-    /** Delegating {@link XMLResourceReader} */
-    private final XMLResourceReader xmlResourceReader;
+    /** Delegating {@link XmlResourceReader} */
+    private final XmlResourceReader xmlResourceReader;
 
     /** Registered extension schemas, which may be null or empty */
     private final Map<String, String> extensionSchemaMap;
@@ -79,10 +77,10 @@ public final class QtiXmlReader implements Serializable {
         if (extensionSchemaMapTemplate != null) {
             resultingSchemaMapTemplate.putAll(extensionSchemaMapTemplate);
         }
-        resultingSchemaMapTemplate.put(QTIConstants.QTI_21_NAMESPACE, QTIConstants.QTI_21_SCHEMA_LOCATION);
+        resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
         this.extensionSchemaMap = extensionSchemaMapTemplate != null ? Collections.unmodifiableMap(extensionSchemaMapTemplate) : null;
-        this.xmlResourceReader = new XMLResourceReader(parserResourceLocator, resultingSchemaMapTemplate);
+        this.xmlResourceReader = new XmlResourceReader(parserResourceLocator, resultingSchemaMapTemplate);
     }
 
     public ResourceLocator getParserResourceLocator() {
@@ -96,24 +94,13 @@ public final class QtiXmlReader implements Serializable {
     //--------------------------------------------------
 
     /**
-     * @throws XMLResourceNotFoundException if the XML resource with the given System ID cannot be
+     * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
+     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XMLReadResult read(String systemId, ResourceLocator inputResourceLocator, boolean schemaValidating)
-            throws XMLResourceNotFoundException {
-        return xmlResourceReader.read(systemId, inputResourceLocator, schemaValidating);
-    }
-
-    /**
-     * @throws XMLResourceNotFoundException if the XML resource with the given System ID cannot be
-     *             located using the given {@link ResourceLocator}
-     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
-     *             if any of the required schemas could not be located.
-     */
-    public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator, boolean schemaValidating)
-            throws XMLResourceNotFoundException {
+    public XmlReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator, boolean schemaValidating)
+            throws XmlResourceNotFoundException {
         return xmlResourceReader.read(systemIdUri, inputResourceLocator, schemaValidating);
     }
 

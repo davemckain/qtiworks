@@ -33,13 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
 import java.io.Serializable;
 
 /**
- * FIXME: Document this!
+ * Records a {@link QtiModelException} (thrown when building a JQTI Object model) within the
+ * result of {@link QtiXmlReader}.
  * 
  * @author David McKain
  */
@@ -47,19 +48,19 @@ public final class QtiModelBuildingError implements Serializable {
 
     private static final long serialVersionUID = -8035195041369346775L;
 
-    private final QTIModelException exception;
+    private final QtiModelException exception;
     private final String elementLocalName;
     private final String elementNamespace;
-    private final XMLSourceLocationInformation elementLocation;
+    private final XmlSourceLocationInformation elementLocation;
 
-    public QtiModelBuildingError(QTIModelException exception, String elementLocalName, String elementNamespace, XMLSourceLocationInformation location) {
+    public QtiModelBuildingError(QtiModelException exception, String elementLocalName, String elementNamespace, XmlSourceLocationInformation location) {
         this.exception = exception;
         this.elementLocalName = elementLocalName;
         this.elementNamespace = elementNamespace;
         this.elementLocation = location;
     }
 
-    public QTIModelException getException() {
+    public QtiModelException getException() {
         return exception;
     }
     
@@ -71,7 +72,7 @@ public final class QtiModelBuildingError implements Serializable {
         return elementNamespace;
     }
 
-    public XMLSourceLocationInformation getLocation() {
+    public XmlSourceLocationInformation getLocation() {
         return elementLocation;
     }
 

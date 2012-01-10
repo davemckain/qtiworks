@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -519,7 +519,7 @@ public enum ContentType {
 
         @Override
         public XmlNode create(XmlNode parent) {
-            throw new QTILogicException("customInteractions should have been intercepted before this method got called");
+            throw new QtiLogicException("customInteractions should have been intercepted before this method got called");
         }
     },
     /**
@@ -1354,7 +1354,7 @@ public enum ContentType {
         final ContentType contentType = contentTypes.get(classTag);
 
         if (contentType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return contentType.create(parent);
@@ -1371,7 +1371,7 @@ public enum ContentType {
         final ContentType blockType = blockTypes.get(classTag);
 
         if (blockType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (Block) blockType.create(parent);
@@ -1388,7 +1388,7 @@ public enum ContentType {
         final ContentType inlineType = inlineTypes.get(classTag);
 
         if (inlineType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (Inline) inlineType.create(parent);
@@ -1405,7 +1405,7 @@ public enum ContentType {
         final ContentType flowType = flowTypes.get(classTag);
 
         if (flowType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (Flow) flowType.create(parent);
@@ -1422,7 +1422,7 @@ public enum ContentType {
         final ContentType flowType = objectFlowTypes.get(classTag);
 
         if (flowType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (ObjectFlow) flowType.create(parent);
@@ -1439,7 +1439,7 @@ public enum ContentType {
         final ContentType inlineType = inlineStaticTypes.get(classTag);
 
         if (inlineType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (InlineStatic) inlineType.create(parent);
@@ -1456,7 +1456,7 @@ public enum ContentType {
         final ContentType flowStaticType = flowStaticTypes.get(classTag);
 
         if (flowStaticType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (FlowStatic) flowStaticType.create(parent);
@@ -1473,7 +1473,7 @@ public enum ContentType {
         final ContentType textOrVariable = textOrVariableTypes.get(classTag);
 
         if (textOrVariable == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (TextOrVariable) textOrVariable.create(parent);
@@ -1490,7 +1490,7 @@ public enum ContentType {
         final ContentType blockStatic = blockStaticTypes.get(classTag);
 
         if (blockStatic == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (BlockStatic) blockStatic.create(parent);
@@ -1507,7 +1507,7 @@ public enum ContentType {
         final ContentType gapChoice = gapChoiceTypes.get(classTag);
 
         if (gapChoice == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (GapChoice) gapChoice.create(parent);
@@ -1524,7 +1524,7 @@ public enum ContentType {
         final ContentType interaction = interactionTypes.get(classTag);
 
         if (interaction == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return (Interaction) interaction.create(parent);

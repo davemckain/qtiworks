@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
-
 /**
  * Interface for nodes that have an <tt>identifier</tt> attribute. Note that in some cases,
  * this is a proper XML identifier, whereas in other cases it is an arbitrary string, so care
@@ -44,7 +43,7 @@ package uk.ac.ed.ph.jqtiplus.node;
  * @param <E> the type of identifier used
  * @author David McKain
  */
-public interface IdentifiableObject<E> extends XmlNode {
+public interface IdentifiableNode<E> extends XmlNode {
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";

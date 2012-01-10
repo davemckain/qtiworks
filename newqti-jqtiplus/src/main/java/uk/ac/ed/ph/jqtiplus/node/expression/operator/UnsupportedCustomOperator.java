@@ -34,20 +34,20 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents an unsupported customOperator. This belongs to no {@link JQTIExtensionPackage}
+ * Represents an unsupported customOperator. This belongs to no {@link JqtiExtensionPackage}
  * 
  * @author David McKain
  */

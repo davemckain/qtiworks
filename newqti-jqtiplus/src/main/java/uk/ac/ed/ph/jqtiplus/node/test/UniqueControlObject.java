@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -60,7 +60,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
     public UniqueControlObject(ControlObject<?> parent) {
         super(parent);
 
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
      */
     @Override
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
     }
 
     /**
@@ -82,13 +82,13 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
      */
     @Override
     public void setIdentifier(Identifier identifier) {
-        getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).setValue(identifier);
+        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
-        validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME), getIdentifier());
+        validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
     }
 }

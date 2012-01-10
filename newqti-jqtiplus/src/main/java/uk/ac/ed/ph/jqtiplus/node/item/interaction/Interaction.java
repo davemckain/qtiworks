@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
@@ -50,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.List;
 
@@ -111,7 +111,7 @@ public abstract class Interaction extends BodyElement {
      * @return the responseDeclaration for this interactions responseIdentifier
      */
     public ResponseDeclaration getResponseDeclaration() {
-        return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
+        return getRootObject(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
 
     @Override

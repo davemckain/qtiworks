@@ -37,7 +37,8 @@ import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.TestResultGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.RootObject;
 
 import java.net.URI;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class AssessmentResult extends AbstractNode implements RootNode {
+public class AssessmentResult extends AbstractNode implements RootObject {
 
     private static final long serialVersionUID = 7910600704491621036L;
 
@@ -58,6 +59,7 @@ public class AssessmentResult extends AbstractNode implements RootNode {
     public static final String CLASS_TAG = "assessmentResult";
 
     private URI systemId;
+    private ModelRichness modelRichness;
 
     /**
      * Constructs assessmentResult.
@@ -83,6 +85,17 @@ public class AssessmentResult extends AbstractNode implements RootNode {
     @Override
     public void setSystemId(URI systemId) {
         this.systemId = systemId;
+    }
+    
+    
+    @Override
+    public ModelRichness getModelRichness() {
+        return modelRichness;
+    }
+    
+    @Override
+    public void setModelRichness(ModelRichness modelRichness) {
+        this.modelRichness = modelRichness;
     }
 
     /**
@@ -154,7 +167,7 @@ public class AssessmentResult extends AbstractNode implements RootNode {
     public String toXmlString(int depth, boolean printDefaultAttributes) {
         final StringBuilder builder = new StringBuilder();
 
-        builder.append(RootNode.XML);
+        builder.append(RootObject.XML);
         builder.append(NEW_LINE);
         builder.append(super.toXmlString(depth, printDefaultAttributes));
 
@@ -163,7 +176,10 @@ public class AssessmentResult extends AbstractNode implements RootNode {
 
     @Override
     public String toString() {
-        return super.toString() + "(systemId=" + systemId + ")";
+        return super.toString()
+                + "(systemId=" + systemId
+                + ",modelRichness=" + modelRichness
+                + ")";
     }
 
     //    /**

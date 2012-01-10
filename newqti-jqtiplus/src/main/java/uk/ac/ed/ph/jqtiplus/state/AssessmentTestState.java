@@ -33,8 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.control.Timer;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
@@ -47,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.Timer;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,10 +111,10 @@ public final class AssessmentTestState extends ControlObjectState<String> {
     public <E extends SectionPartState> E getSectionPartState(SectionPartStateKey key, Class<E> resultClass) {
         final SectionPartState result = sectionPartStateMap.get(key);
         if (result == null) {
-            throw new QTILogicException("Expected to find SectionPart with key " + key);
+            throw new QtiLogicException("Expected to find SectionPart with key " + key);
         }
         if (!resultClass.isAssignableFrom(result.getClass())) {
-            throw new QTILogicException("Expected state for key " + key + " to be a " + resultClass.getSimpleName() + ", but got " + result.getClass());
+            throw new QtiLogicException("Expected state for key " + key + " to be a " + resultClass.getSimpleName() + ", but got " + result.getClass());
         }
         return resultClass.cast(result);
     }

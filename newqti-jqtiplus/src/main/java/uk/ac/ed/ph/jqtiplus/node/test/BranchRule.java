@@ -121,7 +121,7 @@ public class BranchRule extends AbstractJump {
      */
     public ControlObject<?> getTargetControlObject() {
         if (isExitTest()) {
-            return getRootNode(AssessmentTest.class);
+            return getRootObject(AssessmentTest.class);
         }
         else if (isExitTestPart()) {
             if (getParent() instanceof TestPart) {
@@ -140,7 +140,7 @@ public class BranchRule extends AbstractJump {
             }
         }
         else {
-            return getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+            return getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
         }
     }
 
@@ -209,7 +209,7 @@ public class BranchRule extends AbstractJump {
                 }
             }
             else {
-                final ControlObject<?> targetControlObject = getRootNode(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+                final ControlObject<?> targetControlObject = getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
 
                 if (targetControlObject == null) {
                     result.add(new ItemFlowValidationError(this, "Cannot find target: " + getTarget()));

@@ -36,10 +36,8 @@ package org.qtitools.mathassess;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_RETURN_TYPE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -49,6 +47,8 @@ import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 import org.qtitools.mathassess.attribute.ReturnTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
@@ -72,7 +72,7 @@ public class CasProcess extends MathAssessOperator {
 
     private static final Logger logger = LoggerFactory.getLogger(CasProcess.class);
 
-    public CasProcess(JQTIExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
+    public CasProcess(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
         getAttributes().add(new ReturnTypeAttribute(this, getNamespacePrefix() + ATTR_RETURN_TYPE_NAME, null, null, true));

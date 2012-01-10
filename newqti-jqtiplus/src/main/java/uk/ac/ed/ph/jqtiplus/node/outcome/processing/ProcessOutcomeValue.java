@@ -123,7 +123,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
-        if (getIdentifier() != null && getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier()) == null) {
+        if (getIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier()) == null) {
             result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
         }
     }

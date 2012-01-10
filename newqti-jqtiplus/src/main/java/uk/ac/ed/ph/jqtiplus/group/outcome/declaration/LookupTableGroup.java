@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
@@ -104,7 +104,7 @@ public class LookupTableGroup extends AbstractNodeGroup {
             return new InterpolationTable((OutcomeDeclaration) getParent());
         }
         else {
-            throw new QTIIllegalChildException(getParent(), classTag);
+            throw new QtiIllegalChildException(getParent(), classTag);
         }
     }
 }

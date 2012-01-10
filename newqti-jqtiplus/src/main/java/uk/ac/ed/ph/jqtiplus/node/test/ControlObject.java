@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author David McKain
  */
-public abstract class ControlObject<E> extends AbstractNode implements IdentifiableObject<E> {
+public abstract class ControlObject<E> extends AbstractNode implements IdentifiableNode<E> {
 
     private static final long serialVersionUID = 3477216040498945052L;
 

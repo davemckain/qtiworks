@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
@@ -153,7 +153,7 @@ public enum OutcomeRuleType {
         final OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(classTag);
 
         if (outcomeRuleType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return outcomeRuleType.create(parent);

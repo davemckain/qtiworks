@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt.InterruptType;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * exitTemplate - stop template processing immediately.

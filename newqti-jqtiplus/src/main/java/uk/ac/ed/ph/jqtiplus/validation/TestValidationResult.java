@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentTestHolder;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,18 +50,18 @@ public final class TestValidationResult extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final AssessmentTestHolder testHolder;
+    private final ResolvedAssessmentTest testHolder;
 
     /** Results of validating each item */
     private final List<ItemValidationResult> itemValidationResults;
     
-    public TestValidationResult(AssessmentTestHolder testHolder) {
+    public TestValidationResult(ResolvedAssessmentTest testHolder) {
         this.testHolder = testHolder;
         this.itemValidationResults = new ArrayList<ItemValidationResult>();
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentTestHolder getTestHolder() {
+    public ResolvedAssessmentTest getTestHolder() {
         return testHolder;
     }
     

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 
 import java.io.Serializable;
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public final class QTIReadResult<E extends RootNode> implements Serializable {
+public final class QTIReadResult<E extends RootObject> implements Serializable {
 
     private static final long serialVersionUID = -6470500039269477402L;
 

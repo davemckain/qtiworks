@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node;
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
 import org.w3c.dom.Element;
 
@@ -53,7 +53,7 @@ public interface XmlNode extends Validatable {
     /** Default indent. */
     static final String INDENT = "  ";
 
-    XMLSourceLocationInformation getXMLSourceLocationInformation();
+    XmlSourceLocationInformation getXMLSourceLocationInformation();
 
     /**
      * Gets parent of this node or null (if node is root; for example AssessmentTest).
@@ -73,9 +73,9 @@ public interface XmlNode extends Validatable {
      * 
      * @return root of this node or node itself (if node is root; for example AssessmentTest)
      */
-    RootNode getRootNode();
+    RootObject getRootObject();
 
-    <E extends RootNode> E getRootNode(Class<E> rootClass);
+    <E extends RootObject> E getRootObject(Class<E> rootClass);
 
     /**
      * Gets list (container) of all attributes.

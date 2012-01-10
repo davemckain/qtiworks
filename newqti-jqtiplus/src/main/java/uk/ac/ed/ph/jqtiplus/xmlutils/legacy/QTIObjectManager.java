@@ -33,17 +33,17 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
+import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootObjectTypes;
 import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
@@ -65,7 +65,7 @@ public final class QTIObjectManager {
 
     private static final Logger logger = LoggerFactory.getLogger(QTIObjectManager.class);
 
-    private final JQTIExtensionManager jqtiExtensionManager;
+    private final JqtiExtensionManager jqtiExtensionManager;
 
     private final SupportedXMLReader supportedXMLReader;
 
@@ -73,7 +73,7 @@ public final class QTIObjectManager {
 
     private final QTIObjectCache qtiObjectCache;
 
-    public QTIObjectManager(JQTIExtensionManager jqtiExtensionManager, SupportedXMLReader supportedXMLReader, ResourceLocator inputResourceLocator,
+    public QTIObjectManager(JqtiExtensionManager jqtiExtensionManager, SupportedXMLReader supportedXMLReader, ResourceLocator inputResourceLocator,
             QTIObjectCache qtiObjectCache) {
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.supportedXMLReader = supportedXMLReader;
@@ -81,7 +81,7 @@ public final class QTIObjectManager {
         this.qtiObjectCache = qtiObjectCache;
     }
 
-    public JQTIExtensionManager getJQTIExtensionManager() {
+    public JqtiExtensionManager getJQTIExtensionManager() {
         return jqtiExtensionManager;
     }
 
@@ -104,7 +104,7 @@ public final class QTIObjectManager {
      *             loaded by the {@link #inputResourceLocator}
      */
     @SuppressWarnings("unchecked")
-    public <E extends RootNode> QTIReadResult<E> getQTIObject(URI systemId, Class<E> resultClass) {
+    public <E extends RootObject> QTIReadResult<E> getQTIObject(URI systemId, Class<E> resultClass) {
         /* Try cache first */
         QTIReadResult<E> result = null;
         synchronized (qtiObjectCache) {
@@ -125,7 +125,7 @@ public final class QTIObjectManager {
      * @throws QTIXMLResourceNotFoundException the XML resource with the given System ID could not be
      *             loaded by the {@link #inputResourceLocator}
      */
-    private <E extends RootNode> QTIReadResult<E> readQTI(URI systemId, Class<E> resultClass) {
+    private <E extends RootObject> QTIReadResult<E> readQTI(URI systemId, Class<E> resultClass) {
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
          * allows us to resolve things like response processing templates and anything else that might be pre-loaded
          * this way.
@@ -140,12 +140,12 @@ public final class QTIObjectManager {
         final LoadingContext loadingContext = new LoadingContext() {
 
             @Override
-            public JQTIExtensionManager getJQTIExtensionManager() {
+            public JqtiExtensionManager getJqtiExtensionManager() {
                 return jqtiExtensionManager;
             }
 
             @Override
-            public void modelBuildingError(QTIModelException exception, Element owner) {
+            public void modelBuildingError(QtiModelException exception, Element owner) {
                 final QtiModelBuildingError error = new QtiModelBuildingError(exception,
                         owner.getLocalName(), owner.getNamespaceURI(), SupportedXMLReader.extractLocationInformation(owner));
                 qtiParseErrors.add(error);
@@ -158,9 +158,9 @@ public final class QTIObjectManager {
             logger.debug("Instantiating JQTI Object hierarchy from root Element {}; expecting to create {}", document.getDocumentElement().getLocalName(),
                     resultClass.getSimpleName());
             try {
-                final RootNode xmlObject = RootNodeTypes.load(document.getDocumentElement(), systemId, loadingContext);
+                final RootObject xmlObject = RootObjectTypes.load(document.getDocumentElement(), systemId, loadingContext);
                 if (!resultClass.isInstance(xmlObject)) {
-                    throw new XMLReaderException("QTI XML was instantiated into an instance of "
+                    throw new XmlReaderException("QTI XML was instantiated into an instance of "
                             + xmlObject.getClass().getSimpleName()
                             + ", not the requested "
                             + resultClass.getSimpleName());
@@ -168,7 +168,7 @@ public final class QTIObjectManager {
                 jqtiObject = resultClass.cast(xmlObject);
             }
             catch (final QTIParseException e) {
-                throw new QTILogicException("All QTIParseExceptions should now be caught before this point!", e);
+                throw new QtiLogicException("All QTIParseExceptions should now be caught before this point!", e);
             }
         }
         return new QTIReadResult<E>(jqtiObject, xmlReadResult.getXMLParseResult(), qtiParseErrors);

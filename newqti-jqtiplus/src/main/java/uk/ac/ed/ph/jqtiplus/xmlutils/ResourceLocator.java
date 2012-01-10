@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.net.URI;
 
 /**
- * This interface is used by {@link UnifiedXMLResourceResolver} to actually
+ * This interface is used by {@link UnifiedXmlResourceResolver} to actually
  * <strong>locate</strong> the resulting XML resources.
  * 
  * @author David McKain

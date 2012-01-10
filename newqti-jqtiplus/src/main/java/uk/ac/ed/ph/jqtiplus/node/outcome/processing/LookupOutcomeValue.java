@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
@@ -49,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.DurationValue;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * The lookupOutcomeValue rule sets the value of an outcome variable to the value obtained by looking up
@@ -85,7 +85,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 if (declaration.getLookupTable() instanceof MatchTable) {
                     return new BaseType[] { BaseType.INTEGER };
@@ -101,7 +101,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
         super.validate(context, result);
 
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {
                 result.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
@@ -122,7 +122,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
             }
             numberValue = (NumberValue) value;
         }
-        final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+        final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
         context.setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

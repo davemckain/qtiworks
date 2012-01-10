@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
@@ -287,7 +287,7 @@ public final class AssessmentItemState implements Serializable {
 
     public void setResponseValue(Identifier identifier, Value value) {
         if (identifier.equals(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER)) {
-            throw new QTILogicException("duration variable should not be explicitly set");
+            throw new QtiLogicException("duration variable should not be explicitly set");
         }
         responseValues.put(identifier, value);
     }
@@ -433,7 +433,7 @@ public final class AssessmentItemState implements Serializable {
             templateValues.put(identifier, value);
         }
         else {
-            throw new QTILogicException("Unexpected logic branch");
+            throw new QtiLogicException("Unexpected logic branch");
         }
     }
 

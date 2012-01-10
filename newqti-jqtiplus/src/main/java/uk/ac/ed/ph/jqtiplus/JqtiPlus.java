@@ -38,16 +38,16 @@ package uk.ac.ed.ph.jqtiplus;
  * 
  * @author Jonathon Hare
  */
-public class JQTI {
+public final class JqtiPlus {
 
     /**
      * The JQTI toolName string
      */
-    public static String TOOL_NAME = "JQTI";
+    public static final String TOOL_NAME = "JQTIPlus";
 
     /**
      * The JQTI toolVersion string
      */
-    public static String TOOL_VERSION = "2.0";
+    public static final String TOOL_VERSION = "1.0";
 
 }

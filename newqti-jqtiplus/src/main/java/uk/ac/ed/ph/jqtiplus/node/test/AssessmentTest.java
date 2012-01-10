@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.JQTI;
+import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
@@ -41,7 +41,8 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -87,6 +88,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME);
 
     private URI systemId;
+    private ModelRichness modelRichness;
 
     //    /**
     //     * Provides current time.
@@ -101,7 +103,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     public AssessmentTest() {
         super(null); // Test doesn't have any parent.
 
-        getAttributes().add(new StringAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, ATTR_TOOL_NAME_DEFAULT_VALUE));
@@ -128,8 +130,8 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
         setIdentifier(identifier);
         setTitle(title);
 
-        setToolName(JQTI.TOOL_NAME);
-        setToolVersion(JQTI.TOOL_VERSION);
+        setToolName(JqtiPlus.TOOL_NAME);
+        setToolVersion(JqtiPlus.TOOL_VERSION);
     }
 
     @Override
@@ -141,12 +143,24 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     public void setSystemId(URI systemId) {
         this.systemId = systemId;
     }
+    
+
+    @Override
+    public ModelRichness getModelRichness() {
+        return modelRichness;
+    }
+    
+    @Override
+    public void setModelRichness(ModelRichness modelRichness) {
+        this.modelRichness = modelRichness;
+    }
+    
 
     @Override
     public String getClassTag() {
         return CLASS_TAG;
     }
-
+    
     /**
      * Gets value of identifier attribute.
      * 
@@ -155,7 +169,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      */
     @Override
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
     }
 
     /**
@@ -166,7 +180,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      */
     @Override
     public void setIdentifier(String identifier) {
-        getAttributes().getStringAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).setValue(identifier);
+        getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
@@ -367,7 +381,10 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
 
     @Override
     public String toString() {
-        return super.toString() + "(systemId=" + systemId + ")";
+        return super.toString()
+                + "(systemId=" + systemId
+                + ",modelRichness=" + modelRichness
+                + ")";
     }
 
     // (These have all moved to AssessmentTestController)

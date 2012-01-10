@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -84,11 +84,11 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
             final Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                 try {
-                    final XmlNode child = createChild((Element) childNode, context.getJQTIExtensionManager());
+                    final XmlNode child = createChild((Element) childNode, context.getJqtiExtensionManager());
                     getChildren().add(child);
                     child.load((Element) childNode, context);
                 }
-                catch (final QTIModelException e) {
+                catch (final QtiModelException e) {
                     context.modelBuildingError(e, (Element) childNode);
                 }
             }
@@ -99,7 +99,7 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
                     child.load((Text) childNode);
                 }
                 catch (final Exception e) {
-                    throw new QTILogicException("Expected to be able to add a " + TextRun.class + " here");
+                    throw new QtiLogicException("Expected to be able to add a " + TextRun.class + " here");
                 }
             }
         }

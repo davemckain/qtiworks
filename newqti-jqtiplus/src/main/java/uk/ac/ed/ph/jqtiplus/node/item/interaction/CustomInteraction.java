@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
@@ -53,15 +53,15 @@ public abstract class CustomInteraction extends Interaction implements Block, Fl
     /** Name of this class in xml schema. */
     public static String CLASS_TAG = "customInteraction";
 
-    /** The {@link JQTIExtensionPackage} that defines this Interaction */
-    private JQTIExtensionPackage jqtiExtensionPackage;
+    /** The {@link JqtiExtensionPackage} that defines this Interaction */
+    private JqtiExtensionPackage jqtiExtensionPackage;
 
     /**
      * Constructs object.
      * 
      * @param parent parent of constructed object
      */
-    public CustomInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlNode parent) {
+    public CustomInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(parent);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
@@ -76,11 +76,11 @@ public abstract class CustomInteraction extends Interaction implements Block, Fl
         return CLASS_TAG;
     }
 
-    public JQTIExtensionPackage getJQTIExtensionPackage() {
+    public JqtiExtensionPackage getJQTIExtensionPackage() {
         return jqtiExtensionPackage;
     }
 
-    public void setJQTIExtensionPackage(JQTIExtensionPackage jqtiExtensionPackage) {
+    public void setJQTIExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
 }

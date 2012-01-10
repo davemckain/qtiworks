@@ -44,13 +44,15 @@ import java.util.List;
 /**
  * Base interface for assessmentItem and assessmentTest Objects.
  * <p>
- * These have an <tt>identifier</tt> attribute that can be an arbitrary string, rather than an identifier!
+ * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
+ * rather than an identifier!
  * 
  * @see AssessmentItem
  * @see AssessmentTest
+ * 
  * @author David McKain
  */
-public interface AssessmentObject extends RootNode, IdentifiableObject<String> {
+public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
 
     List<OutcomeDeclaration> getOutcomeDeclarations();
 

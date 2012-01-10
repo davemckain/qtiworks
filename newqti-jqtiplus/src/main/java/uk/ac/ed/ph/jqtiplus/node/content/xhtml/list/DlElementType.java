@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.HashMap;
@@ -125,7 +125,7 @@ public enum DlElementType {
         final DlElementType dlElementType = dlElementTypes.get(classTag);
 
         if (dlElementType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return dlElementType.create(parent);

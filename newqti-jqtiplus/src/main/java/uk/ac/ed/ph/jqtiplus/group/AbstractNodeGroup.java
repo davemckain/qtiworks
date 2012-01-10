@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIModelException;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -181,11 +181,11 @@ public abstract class AbstractNodeGroup implements NodeGroup {
             final Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                 try {
-                    final XmlNode child = createChild((Element) childNode, context.getJQTIExtensionManager());
+                    final XmlNode child = createChild((Element) childNode, context.getJqtiExtensionManager());
                     children.add(child);
                     child.load((Element) childNode, context);
                 }
-                catch (final QTIModelException e) {
+                catch (final QtiModelException e) {
                     context.modelBuildingError(e, (Element) childNode);
                 }
             }
@@ -193,9 +193,9 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     /**
-     * @throws QTIIllegalChildException
+     * @throws QtiIllegalChildException
      */
-    protected XmlNode createChild(Element childElement, JQTIExtensionManager jqtiExtensionManager) {
+    protected XmlNode createChild(Element childElement, JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
         XmlNode result;
         if ("customOperator".equals(localName)) {

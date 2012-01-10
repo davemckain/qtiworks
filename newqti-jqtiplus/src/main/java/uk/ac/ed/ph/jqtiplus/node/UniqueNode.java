@@ -40,7 +40,7 @@ package uk.ac.ed.ph.jqtiplus.node;
  * 
  * @author Jiri Kajaba
  */
-public interface UniqueNode<E> extends IdentifiableObject<E> {
+public interface UniqueNode<E> extends IdentifiableNode<E> {
 
     /* (Marker interface) */
 }

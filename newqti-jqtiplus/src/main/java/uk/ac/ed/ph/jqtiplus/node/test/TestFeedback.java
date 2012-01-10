@@ -211,7 +211,7 @@ public class TestFeedback extends AbstractNode {
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
-        if (getOutcomeIdentifier() != null && getRootNode(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
+        if (getOutcomeIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
             result.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
         }
     }

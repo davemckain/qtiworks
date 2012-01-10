@@ -33,13 +33,13 @@
  */
 package org.qtitools.mathassess;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.LifecycleEventType;
 
 import org.qtitools.mathassess.tools.glue.extras.pooling.PooledQTIMaximaSessionManager;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author David McKain
  */
-public final class MathAssessExtensionPackage implements JQTIExtensionPackage {
+public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
 
     private static final Logger logger = LoggerFactory.getLogger(MathAssessExtensionPackage.class);
 

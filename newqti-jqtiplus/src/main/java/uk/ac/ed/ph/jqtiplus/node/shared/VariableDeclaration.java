@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.DefaultValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -79,7 +79,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     public VariableDeclaration(AssessmentObject parent) {
         super(parent);
 
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
         getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
 
@@ -96,7 +96,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
      */
     @Override
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
     }
 
     /**
@@ -107,7 +107,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
      */
     @Override
     public void setIdentifier(Identifier identifier) {
-        getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).setValue(identifier);
+        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
@@ -174,7 +174,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
-        validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME), getIdentifier());
+        validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
 
         final Cardinality cardinality = getCardinality();
         if (cardinality != null) {

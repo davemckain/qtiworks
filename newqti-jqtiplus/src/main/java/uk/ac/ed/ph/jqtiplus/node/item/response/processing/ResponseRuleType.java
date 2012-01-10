@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
@@ -154,7 +154,7 @@ public enum ResponseRuleType {
         final ResponseRuleType responseRuleType = responseRuleTypes.get(classTag);
 
         if (responseRuleType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return responseRuleType.create(parent);

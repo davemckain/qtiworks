@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 
@@ -64,15 +64,15 @@ public abstract class CustomOperator extends AbstractExpression {
     /** Name of the definition attribute in xml schema. */
     public static final String ATTR_DEFINITION_NAME = "definition";
 
-    /** The {@link JQTIExtensionPackage} that defines this operator */
-    private JQTIExtensionPackage jqtiExtensionPackage;
+    /** The {@link JqtiExtensionPackage} that defines this operator */
+    private JqtiExtensionPackage jqtiExtensionPackage;
 
     /**
      * Constructs expression.
      * 
      * @param parent parent of this expression
      */
-    protected CustomOperator(JQTIExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
+    protected CustomOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(parent);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
         getAttributes().add(new StringAttribute(this, ATTR_CLASS_NAME, null, null, false)); //allow .'s, so use String
@@ -84,11 +84,11 @@ public abstract class CustomOperator extends AbstractExpression {
         return CLASS_TAG;
     }
 
-    public JQTIExtensionPackage getJQTIExtensionPackage() {
+    public JqtiExtensionPackage getJQTIExtensionPackage() {
         return jqtiExtensionPackage;
     }
 
-    public void setJQTIExtensionPackage(JQTIExtensionPackage jqtiExtensionPackage) {
+    public void setJQTIExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
 

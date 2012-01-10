@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * Force processing to stop and the text to exit

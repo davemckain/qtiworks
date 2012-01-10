@@ -35,16 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 import java.net.URI;
 import java.util.List;
@@ -59,7 +60,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class ResponseProcessing extends AbstractNode implements RootNode {
+public class ResponseProcessing extends AbstractNode implements RootObject {
 
     private static final long serialVersionUID = -4551768580135824154L;
 
@@ -73,6 +74,7 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
     public static final String ATTR_TEMPLATE_LOCATION_NAME = "templateLocation";
 
     private URI systemId;
+    private ModelRichness modelRichness;
 
     public ResponseProcessing() {
         this(null);
@@ -105,6 +107,17 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
     @Override
     public void setSystemId(URI systemId) {
         this.systemId = systemId;
+    }
+    
+
+    @Override
+    public ModelRichness getModelRichness() {
+        return modelRichness;
+    }
+    
+    @Override
+    public void setModelRichness(ModelRichness modelRichness) {
+        this.modelRichness = modelRichness;
     }
 
     /**
@@ -169,6 +182,9 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
 
     @Override
     public String toString() {
-        return super.toString() + "(systemId=" + systemId + ")";
+        return super.toString()
+                + "(systemId=" + systemId
+                + ",modelRichness=" + modelRichness
+                + ")";
     }
 }

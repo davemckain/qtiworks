@@ -5,13 +5,13 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentObjectManager;
 
 import java.net.URI;
 
@@ -21,8 +21,8 @@ public class RPTemplateTest {
         URI inputUri = URI.create("classpath:/rpTest.xml");
         
         System.out.println("Reading and validating");
-        JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
-        QtiObjectReader objectReader = new QtiObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
+        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
         
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
 

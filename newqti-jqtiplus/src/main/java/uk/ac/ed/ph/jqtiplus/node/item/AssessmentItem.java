@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item;
 
-import uk.ac.ed.ph.jqtiplus.JQTI;
+import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.ItemBodyGroup;
@@ -46,7 +46,8 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingGro
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableObject;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -136,6 +137,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public static final Identifier VARIABLE_DURATION_NAME_IDENTIFIER = new Identifier("duration");
 
     private URI systemId;
+    private ModelRichness modelRichness;
 
     private final OutcomeDeclaration completionStatusOutcomeDeclaration;
 
@@ -149,7 +151,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public AssessmentItem() {
         super(null); // Item doesn't have any parent.
 
-        getAttributes().add(new StringAttribute(this, IdentifiableObject.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, ATTR_LABEL_DEFAULT_VALUE));
@@ -205,8 +207,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         setAdaptive(adaptive);
         setTimeDependent(timeDependent);
 
-        setToolName(JQTI.TOOL_NAME);
-        setToolVersion(JQTI.TOOL_VERSION);
+        setToolName(JqtiPlus.TOOL_NAME);
+        setToolVersion(JqtiPlus.TOOL_VERSION);
     }
 
     @Override
@@ -223,7 +225,19 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public void setSystemId(URI systemId) {
         this.systemId = systemId;
     }
+    
 
+    @Override
+    public ModelRichness getModelRichness() {
+        return modelRichness;
+    }
+    
+    @Override
+    public void setModelRichness(ModelRichness modelRichness) {
+        this.modelRichness = modelRichness;
+    }
+
+    
     /**
      * Gets value of identifier attribute.
      * 
@@ -232,7 +246,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      */
     @Override
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
     }
 
     /**
@@ -243,7 +257,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      */
     @Override
     public void setIdentifier(String identifier) {
-        getAttributes().getStringAttribute(IdentifiableObject.ATTR_IDENTIFIER_NAME).setValue(identifier);
+        getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
@@ -597,7 +611,10 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     @Override
     public String toString() {
-        return super.toString() + "(systemId=" + systemId + ")";
+        return super.toString()
+                + "(systemId=" + systemId
+                + ",modelRichness=" + modelRichness
+                + ")";
     }
 
     //---------------------------------------------------------------

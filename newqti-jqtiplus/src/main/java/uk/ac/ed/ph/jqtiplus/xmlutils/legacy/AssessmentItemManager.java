@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public final class AssessmentItemManager implements ItemValidationContext {
 
     /**
      * @throws QTIXMLReferencingException
-     * @throws XMLReaderException
+     * @throws XmlReaderException
      */
     @Override
     public ResponseProcessing getResolvedResponseProcessing() {

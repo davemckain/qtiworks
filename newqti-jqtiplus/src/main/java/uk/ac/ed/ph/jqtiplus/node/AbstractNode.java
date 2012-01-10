@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 
 import org.w3c.dom.Element;
@@ -68,7 +68,7 @@ public abstract class AbstractNode implements XmlNode {
     private final NodeGroupList groups;
 
     /** Information about the location of this Node in the original source XML, if loaded that way */
-    private XMLSourceLocationInformation xmlSourceLocationInformation;
+    private XmlSourceLocationInformation xmlSourceLocationInformation;
 
     /**
      * Constructs node.
@@ -83,11 +83,11 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public XMLSourceLocationInformation getXMLSourceLocationInformation() {
+    public XmlSourceLocationInformation getXMLSourceLocationInformation() {
         return xmlSourceLocationInformation;
     }
 
-    public void setXmlSourceLocationInformation(XMLSourceLocationInformation xmlSourceLocationInformation) {
+    public void setXmlSourceLocationInformation(XmlSourceLocationInformation xmlSourceLocationInformation) {
         this.xmlSourceLocationInformation = xmlSourceLocationInformation;
     }
 
@@ -101,17 +101,17 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public RootNode getRootNode() {
+    public RootObject getRootObject() {
         XmlNode node = this;
         while (node.getParent() != null) {
             node = node.getParent();
         }
-        return (RootNode) node;
+        return (RootObject) node;
     }
 
     @Override
-    public <E extends RootNode> E getRootNode(Class<E> rootClass) {
-        final XmlNode root = getRootNode();
+    public <E extends RootObject> E getRootObject(Class<E> rootClass) {
+        final XmlNode root = getRootObject();
         E result = null;
         if (rootClass.isInstance(root)) {
             result = rootClass.cast(root);
@@ -246,7 +246,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public String computeXPath() {
+    public final String computeXPath() {
         final StringBuilder pathBuilder = new StringBuilder();
         buildXPath(pathBuilder, this);
         return pathBuilder.toString();
@@ -270,8 +270,6 @@ public abstract class AbstractNode implements XmlNode {
 
     /**
      * Validates attributes of this node.
-     * 
-     * @return result of validation
      */
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         attributes.validate(context, result);
@@ -292,10 +290,10 @@ public abstract class AbstractNode implements XmlNode {
     /** Helper method to validate a unique identifier (definition) attribute */
     protected void validateUniqueIdentifier(AbstractValidationResult result, IdentifierAttribute identifierAttribute, Identifier identifier) {
         if (identifier != null) {
-            if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier.toString())) {
+            if (getRootObject(AssessmentTest.class) != null && BranchRule.isSpecial(identifier.toString())) {
                 result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
             }
-            if (!validateUniqueIdentifier(getRootNode(), identifier)) {
+            if (!validateUniqueIdentifier(getRootObject(), identifier)) {
                 result.add(new AttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute));
             }
         }
@@ -338,7 +336,6 @@ public abstract class AbstractNode implements XmlNode {
      * Prints indent into xml string.
      * 
      * @param depth depth in xml tree (root = 0)
-     * @return xml string with printed indent
      */
     public static void appendIndent(StringBuilder builder, int depth) {
         for (int i = 0; i < depth; i++) {

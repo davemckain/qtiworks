@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.group.item.CorrectResponseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MappingGroup;
@@ -44,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 /**
  * Response variables are declared by response declarations and bound to interactions in the itemBody.

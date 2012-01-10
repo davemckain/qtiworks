@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.TextFormatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -57,6 +56,7 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -285,7 +285,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (getStringIdentifier() == null) {
             return null;
         }
-        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
+        return getRootObject(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
     }
 
     @Override

@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
 
-import uk.ac.ed.ph.jqtiplus.control.QTILogicException;
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Correct;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Default;
@@ -239,7 +239,7 @@ public enum ExpressionType {
 
         @Override
         public Expression create(ExpressionParent parent) {
-            throw new QTILogicException("customOperators should have been intercepted before this method got called");
+            throw new QtiLogicException("customOperators should have been intercepted before this method got called");
         }
     },
 
@@ -1436,7 +1436,7 @@ public enum ExpressionType {
         final ExpressionType expressionType = expressionTypes.get(classTag);
 
         if (expressionType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return expressionType.create(parent);

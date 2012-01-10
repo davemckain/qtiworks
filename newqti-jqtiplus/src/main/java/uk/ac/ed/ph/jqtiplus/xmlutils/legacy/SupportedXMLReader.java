@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.QTIConstants;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHTTPResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDOMBuilderHandler;
-import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXMLResourceResolver;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
+import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXmlResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.InputStream;
@@ -91,16 +91,16 @@ public final class SupportedXMLReader implements Serializable {
     public static final String LOCATION_INFORMATION_NAME = "locationInformation";
 
     /**
-     * Base path within ClassPath to search in when using the default {@link ClassPathHTTPResourceLocator} instance of {@link #parserResourceLocator}.
+     * Base path within ClassPath to search in when using the default {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
      */
     public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus";
 
-    public static final ResourceLocator DEFAULT_PARSER_RESOURCE_LOCATOR = new ClassPathHTTPResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
+    public static final ResourceLocator DEFAULT_PARSER_RESOURCE_LOCATOR = new ClassPathHttpResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
 
     public static final Map<String, String> DEFAULT_SCHEMA_MAP;
     static {
         DEFAULT_SCHEMA_MAP = new HashMap<String, String>();
-        DEFAULT_SCHEMA_MAP.put(QTIConstants.QTI_21_NAMESPACE, QTIConstants.QTI_21_SCHEMA_LOCATION);
+        DEFAULT_SCHEMA_MAP.put(QtiConstants.QTI_21_NAMESPACE, QtiConstants.QTI_21_SCHEMA_LOCATION);
     }
 
     /**
@@ -162,7 +162,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(String systemId, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemId, "systemId");
@@ -178,7 +178,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XMLReaderException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemIdUri, "systemIdUri");
@@ -194,7 +194,7 @@ public final class SupportedXMLReader implements Serializable {
         logger.info("Reading QTI XML Resource with System ID {}", systemId);
         try {
             logger.debug("XML parse of {} starting", systemId);
-            final UnifiedXMLResourceResolver resourceResolver = new UnifiedXMLResourceResolver();
+            final UnifiedXmlResourceResolver resourceResolver = new UnifiedXmlResourceResolver();
             resourceResolver.setResourceLocator(parserResourceLocator);
             resourceResolver.setFailOnMissedEntityResolution(false);
             resourceResolver.setFailOnMissedLRResourceResolution(true);
@@ -228,7 +228,7 @@ public final class SupportedXMLReader implements Serializable {
             inputSource.setByteStream(ensureLocateInput(systemIdUri, inputResourceLocator));
             inputSource.setSystemId(systemId);
 
-            final SimpleDOMBuilderHandler handler = new SimpleDOMBuilderHandler(document);
+            final SimpleDomBuilderHandler handler = new SimpleDomBuilderHandler(document);
             xmlReader.setContentHandler(handler);
             xmlReader.parse(inputSource); /* Fatal errors will cause SAXParseException */
             if (!xmlParseResult.getErrors().isEmpty()) {
@@ -302,7 +302,7 @@ public final class SupportedXMLReader implements Serializable {
             throw new QTIXMLReadException(xmlParseResult);
         }
         catch (final Exception e) {
-            throw new XMLReaderException("Unexpected Exception during parsing", e);
+            throw new XmlReaderException("Unexpected Exception during parsing", e);
         }
         logger.info("Result of read is {}", xmlParseResult);
         return new XMLReadResult(document, xmlParseResult);
@@ -317,11 +317,11 @@ public final class SupportedXMLReader implements Serializable {
         return inputStream;
     }
 
-    public static XMLSourceLocationInformation extractLocationInformation(Element element) {
-        XMLSourceLocationInformation result = null;
+    public static XmlSourceLocationInformation extractLocationInformation(Element element) {
+        XmlSourceLocationInformation result = null;
         final Object locationData = element.getUserData(LOCATION_INFORMATION_NAME);
-        if (locationData != null && locationData instanceof XMLSourceLocationInformation) {
-            result = (XMLSourceLocationInformation) locationData;
+        if (locationData != null && locationData instanceof XmlSourceLocationInformation) {
+            result = (XmlSourceLocationInformation) locationData;
         }
         return result;
     }

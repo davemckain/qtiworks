@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +124,7 @@ public enum TableCellType {
         final TableCellType tableCellType = tableCellTypes.get(classTag);
 
         if (tableCellType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return tableCellType.create(parent);

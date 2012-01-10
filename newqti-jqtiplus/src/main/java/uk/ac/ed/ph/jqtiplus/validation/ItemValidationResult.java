@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentItemHolder;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 
 /**
  * FIXME: Document this type
@@ -47,14 +47,14 @@ public final class ItemValidationResult extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final AssessmentItemHolder itemHolder;
+    private final ResolvedAssessmentItem itemHolder;
     
-    public ItemValidationResult(AssessmentItemHolder itemHolder) {
+    public ItemValidationResult(ResolvedAssessmentItem itemHolder) {
         this.itemHolder = itemHolder;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentItemHolder getItemHolder() {
+    public ResolvedAssessmentItem getItemHolder() {
         return itemHolder;
     }
     

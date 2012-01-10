@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QTIIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
@@ -152,7 +152,7 @@ public enum TemplateRuleType {
         final TemplateRuleType templateRuleType = templateRuleTypes.get(classTag);
 
         if (templateRuleType == null) {
-            throw new QTIIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, classTag);
         }
 
         return templateRuleType.create(parent);

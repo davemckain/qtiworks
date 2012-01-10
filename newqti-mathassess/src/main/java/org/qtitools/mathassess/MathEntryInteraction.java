@@ -38,12 +38,11 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_PRINT_IDENTIFIER_
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -59,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
@@ -84,7 +84,7 @@ public final class MathEntryInteraction extends CustomInteraction {
 
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
-    public MathEntryInteraction(JQTIExtensionPackage jqtiExtensionPackage, XmlNode parent) {
+    public MathEntryInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
         // add a namespace prefix to this if none there, and no global prefix
@@ -164,7 +164,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         if (getPrintIdentifier() == null) {
             return null;
         }
-        return getRootNode(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
+        return getRootObject(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
     }
 
     @Override

@@ -5,8 +5,7 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
@@ -18,13 +17,14 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.XMLParseResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.net.URI;
 
 public class TemplateConstraintTest {
     
     public static void main(String[] args) throws RuntimeValidationException {
-        JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
+        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         SupportedXMLReader xmlReader = new SupportedXMLReader(true);
         QTIObjectManager objectManager = new QTIObjectManager(jqtiExtensionManager, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
 
