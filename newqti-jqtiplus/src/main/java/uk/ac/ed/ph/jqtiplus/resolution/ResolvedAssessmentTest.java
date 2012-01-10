@@ -68,18 +68,18 @@ public final class ResolvedAssessmentTest implements Serializable {
     private final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap;
     
     /** {@link ResolvedAssessmentItem} for each unique item System ID. */
-    private final Map<URI, ResolvedAssessmentItem> assessmentItemHolderMap;
+    private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap;
 
     public ResolvedAssessmentTest(final ModelRichness modelRichness, 
             final RootObjectLookup<AssessmentTest> testLookup,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
             final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap, 
-            final Map<URI, ResolvedAssessmentItem> assessmentItemHolderMap) {
+            final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap) {
         this.modelRichness = modelRichness;
         this.testLookup = testLookup;
         this.systemIdByItemRefMap = Collections.unmodifiableMap(systemIdByItemRefMap);
         this.itemRefsBySystemIdMap = Collections.unmodifiableMap(itemRefsBySystemIdMap);
-        this.assessmentItemHolderMap = Collections.unmodifiableMap(assessmentItemHolderMap);
+        this.resolvedAssessmentItemMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
     }
     
     public RootObjectLookup<AssessmentTest> getTestLookup() {
@@ -95,13 +95,13 @@ public final class ResolvedAssessmentTest implements Serializable {
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
-    public Map<URI, ResolvedAssessmentItem> getAssessmentItemHolderMap() {
-        return assessmentItemHolderMap;
+    public Map<URI, ResolvedAssessmentItem> getResolvedAssessmentItemMap() {
+        return resolvedAssessmentItemMap;
     }
     
     public ResolvedAssessmentItem getAssessmentItemHolder(AssessmentItemRef itemRef) {
         URI systemId = systemIdByItemRefMap.get(itemRef);
-        return systemId!=null ? assessmentItemHolderMap.get(systemId) : null;
+        return systemId!=null ? resolvedAssessmentItemMap.get(systemId) : null;
     }
     
     //-------------------------------------------------------------------
@@ -113,7 +113,7 @@ public final class ResolvedAssessmentTest implements Serializable {
                 + ",testLookup=" + testLookup
                 + ",systemIdByItemRefMap=" + systemIdByItemRefMap
                 + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
-                + ",assessmentItemHolderMap=" + assessmentItemHolderMap
+                + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemMap
                 + ")";
     }
 }
