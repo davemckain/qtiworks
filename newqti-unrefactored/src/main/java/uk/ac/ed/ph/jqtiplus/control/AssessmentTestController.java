@@ -33,9 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.control;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.LookupExpression;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -66,7 +69,6 @@ import uk.ac.ed.ph.jqtiplus.state.SectionPartStateKey;
 import uk.ac.ed.ph.jqtiplus.state.TestPartState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -76,6 +78,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.control.Timer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -235,7 +241,7 @@ public final class AssessmentTestController {
     // Workflow methods
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
-        for (final JQTIExtensionPackage extensionPackage : testManager.getQTIObjectManager().getJQTIController().getExtensionPackages()) {
+        for (final JqtiExtensionPackage extensionPackage : testManager.getQTIObjectManager().getJQTIExtensionManager().getExtensionPackages()) {
             extensionPackage.lifecycleEvent(this, eventType);
         }
     }
@@ -694,7 +700,7 @@ public final class AssessmentTestController {
             return test;
         }
 
-        public AssessmentItemOrTest getOwner() {
+        public AssessmentObject getOwner() {
             return test;
         }
 
@@ -776,7 +782,7 @@ public final class AssessmentTestController {
                         break;
 
                     default:
-                        throw new QTILogicException("Unexpected switch case");
+                        throw new QtiLogicException("Unexpected switch case");
                 }
             }
             return value;
