@@ -209,7 +209,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.VariableMapping;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -370,7 +370,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         for (final NodeGroup child : groups) {
             child.validate(context, result);
         }

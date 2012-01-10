@@ -48,11 +48,11 @@ import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -117,7 +117,7 @@ public abstract class LookupExpression extends AbstractExpression {
     }
 
     @Override
-    protected final void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected final void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
@@ -166,19 +166,27 @@ public abstract class LookupExpression extends AbstractExpression {
                     final AssessmentItemRef itemRef = (AssessmentItemRef) controlObject;
                     if (itemRef.getHref()!=null) {
                         final AssessmentItem item = testContext.getResolvedItem(itemRef);
-                        final VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
-                        if (declaration == null) {
-                            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                    "Cannot find variable declaration " + itemVarIdentifier + " in item " + itemRefIdentifier));
+                        if (item!=null) {
+                            final VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
+                            if (declaration == null) {
+                                result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+                                        "Cannot find variable declaration " + itemVarIdentifier + " in item " + itemRefIdentifier));
+                            }
+                            validateTargetVariableDeclaration(result, declaration);
+                            validateAdditionalAttributes(result, itemRef);
                         }
-                        validateTargetVariableDeclaration(result, declaration);
-                        validateAdditionalAttributes(result, itemRef);
+                        else {
+                            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+                                    "assessmentItemRef with identifier " + itemRefIdentifier
+                                    + " was not successfully resolved so cannot dereference the variable "
+                                    + itemVarIdentifier + " within it"));
+                        }
                     }
                     else {
                         result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
                                 "assessmentItemRef with identifier " + itemRefIdentifier
-                                + " was not successfully resolved so cannot derefence the variable "
-                                + itemVarIdentifier));
+                                + " has no href so cannot be resolved in order to dereference the variable "
+                                + itemVarIdentifier + " within it"));
                     }
                 }
             }
@@ -186,12 +194,12 @@ public abstract class LookupExpression extends AbstractExpression {
     }
 
     @SuppressWarnings("unused")
-    protected void validateTargetVariableDeclaration(ValidationResult result, VariableDeclaration targetVariableDeclaration) {
+    protected void validateTargetVariableDeclaration(AbstractValidationResult result, VariableDeclaration targetVariableDeclaration) {
         /* (Subclasses should override as required to validate the "target" of the variable reference) */
     }
 
     @SuppressWarnings("unused")
-    protected void validateAdditionalAttributes(ValidationResult result, AssessmentItemRef resolvedItemReference) {
+    protected void validateAdditionalAttributes(AbstractValidationResult result, AssessmentItemRef resolvedItemReference) {
         /* (Subclasses should override as required to validate any attributes other than "identifier") */
     }
 

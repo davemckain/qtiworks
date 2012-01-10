@@ -31,28 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.resolution;
+
+package uk.ac.ed.ph.jqtiplus.validation;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentItemHolder;
 
 /**
  * FIXME: Document this type
  *
  * @author David McKain
  */
-public enum ResourceUsage {
-    
-    /**
-     * Indicates that the resource is known to be valid, so implementors can bypass checks
-     * such as schema validation.
-     */
-    ASSUMED_VALID,
-    
-    /**
-     * Indicates that the resource is going to be fully validated. Implementors of
-     * {@link ResourceProvider} should do anything else that supports this, such as
-     * schema validation of XML resources. Failure of this lower-level validation should
-     * be encapsulated within a {@link BadResourceException}.
-     */
-    FOR_VALIDATION,
-    ;
+public final class ItemValidationResult extends AbstractValidationResult {
 
+    private static final long serialVersionUID = -6570165277334622467L;
+    
+    private final AssessmentItemHolder itemHolder;
+    
+    public ItemValidationResult(AssessmentItemHolder itemHolder) {
+        this.itemHolder = itemHolder;
+    }
+
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AssessmentItemHolder getItemHolder() {
+        return itemHolder;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(itemHolder=" + itemHolder
+                + ",errors=" + getErrors()
+                + ",warnings=" + getWarnings()
+                + ",infos=" + getInfos()
+                + ")";
+    }
 }

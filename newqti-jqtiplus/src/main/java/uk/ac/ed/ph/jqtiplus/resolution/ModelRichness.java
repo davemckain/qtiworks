@@ -31,44 +31,37 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression.operator;
-
-
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package uk.ac.ed.ph.jqtiplus.resolution;
 
 /**
- * Represents an unsupported customOperator. This belongs to no {@link JQTIExtensionPackage}
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public final class UnsupportedCustomOperator extends CustomOperator {
+public enum ModelRichness {
+    
+    /**
+     * FIXME: Not yet implemented!
+     * 
+     * This might be useful during processing... it would omit presentational stuff from the
+     * model and focus only on logic. Resources would need to be reloaded for subsequent
+     * presentation though...
+     */
+    EXECUTION_ONLY,
+    
+    /**
+     * Indicates that the resource is known to be valid, so implementors can bypass checks
+     * such as schema validation.
+     */
+    FULL_ASSUMED_VALID,
+    
+    /**
+     * Indicates that the resource is going to be fully validated. Implementors of
+     * {@link ResourceProvider} should do anything else that supports this, such as
+     * schema validation of XML resources. Failure of this lower-level validation should
+     * be encapsulated within a {@link BadResourceException}.
+     */
+    FOR_VALIDATION,
+    ;
 
-    private static final long serialVersionUID = -8733871136419512506L;
-
-    private static Logger logger = LoggerFactory.getLogger(UnsupportedCustomOperator.class);
-
-    public UnsupportedCustomOperator(ExpressionParent parent) {
-        super(null, parent);
-    }
-
-    @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        result.add(new ValidationWarning(this, "customOperator with class attribute " + getClassAttr() + " is not supported"));
-    }
-
-    @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        logger.warn("customOperator with class attribute {} is not supported - returning NULL", getClassAttr());
-        return NullValue.INSTANCE;
-    }
 }

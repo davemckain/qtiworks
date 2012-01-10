@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * In the context of A specific assessmentTest an item, or group of items, may be subject to A time constraint.
@@ -155,7 +155,7 @@ public class TimeLimit extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
         if (getMinimum() != null && getMinimum() < 0) {

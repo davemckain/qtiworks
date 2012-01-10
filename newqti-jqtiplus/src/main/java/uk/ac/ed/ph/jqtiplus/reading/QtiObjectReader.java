@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.RootNodeTypes;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceProvider;
-import uk.ac.ed.ph.jqtiplus.resolution.ResourceUsage;
+import uk.ac.ed.ph.jqtiplus.resolution.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
@@ -97,7 +97,7 @@ public final class QtiObjectReader implements ResourceProvider {
     //--------------------------------------------------------------------------
     
     @Override
-    public <E extends RootNode> QtiReadResult<E> provideQtiResource(URI systemId, ResourceUsage resourceUsage, Class<E> requiredResultClass)
+    public <E extends RootNode> QtiReadResult<E> provideQtiResource(URI systemId, ModelRichness resourceUsage, Class<E> requiredResultClass)
             throws XMLResourceNotFoundException, BadQtiResourceException {
         logger.info("Attempting to read QTI Object at system ID {} for use {}, requiring result class {}", 
                 new Object[] { systemId, resourceUsage, requiredResultClass });
@@ -109,7 +109,7 @@ public final class QtiObjectReader implements ResourceProvider {
         final ChainedResourceLocator resourceLocator = new ChainedResourceLocator(qtiXmlReader.getParserResourceLocator(), inputResourceLocator);
         
         /* We will only schema validate the XML if we are going to be validating this resource */
-        boolean schemaValidating = resourceUsage==ResourceUsage.FOR_VALIDATION;
+        boolean schemaValidating = resourceUsage==ModelRichness.FOR_VALIDATION;
 
         /* Parse XML */
         final XMLReadResult xmlReadResult = qtiXmlReader.read(systemId, resourceLocator, schemaValidating);

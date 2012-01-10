@@ -42,7 +42,7 @@ import java.io.Serializable;
  * 
  * @author Jiri Kajaba
  */
-public abstract class AbstractValidationItem implements ValidationItem, Serializable {
+abstract class AbstractValidationItem implements ValidationItem, Serializable {
 
     private static final long serialVersionUID = -965289438371398086L;
 
@@ -105,10 +105,9 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
         if (cause != null) {
             builder.append(" [").append(cause.getMessage()).append("] ");
         }
-        builder.append(" (");
-        builder.append(getNode().computeXPath());
-        builder.append(")");
-
+        if (node!=null) {
+            builder.append(" (").append(node.computeXPath()).append(")");
+        }
         return builder.toString();
     }
 }

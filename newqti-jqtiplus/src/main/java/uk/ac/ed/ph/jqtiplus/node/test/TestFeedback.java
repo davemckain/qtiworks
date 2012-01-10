@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -208,7 +208,7 @@ public class TestFeedback extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
         if (getOutcomeIdentifier() != null && getRootNode(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
@@ -217,7 +217,7 @@ public class TestFeedback extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, ValidationResult result) {
+    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
         super.validateChildren(context, result);
 
         if (getChildren().size() == 0) {

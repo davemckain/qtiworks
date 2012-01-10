@@ -36,10 +36,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,13 +47,9 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class ValidationResult implements Serializable {
+public abstract class AbstractValidationResult implements Serializable {
 
     private static final long serialVersionUID = 7987550924957601153L;
-
-    private final AssessmentObject owner;
-    
-    private final List<ResourceHolder<? extends RootNode>> resolutionResults;
 
     /** Container of all errors. */
     private final List<ValidationError> errors;
@@ -66,9 +59,6 @@ public class ValidationResult implements Serializable {
 
     /** Container of all infos. */
     private final List<ValidationInfo> infos;
-
-    /** Child results (if applicable, e.g. results of items within tests) */
-    private final List<ValidationResult> childResults;
 
     /**
      * Container of all validation items.
@@ -82,30 +72,13 @@ public class ValidationResult implements Serializable {
     /**
      * Constructs validation result container.
      */
-    public ValidationResult(AssessmentObject owner) {
-        this.owner = owner;
-        this.resolutionResults = new ArrayList<ResourceHolder<? extends RootNode>>();
+    public AbstractValidationResult() {
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
         this.infos = new ArrayList<ValidationInfo>();
         this.allItems = new ArrayList<ValidationItem>();
-        this.childResults = new ArrayList<ValidationResult>();
     }
 
-    public AssessmentObject getOwner() {
-        return owner;
-    }
-    
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ResourceHolder<? extends RootNode>> getResolutionResults() {
-        return resolutionResults;
-    }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationResult> getChildResults() {
-        return childResults;
-    }
-    
     public boolean hasErrors() {
         return !errors.isEmpty();
     }
@@ -268,23 +241,4 @@ public class ValidationResult implements Serializable {
         }
     }
 
-    public void addChildResult(ValidationResult result) {
-        childResults.add(result);
-    }
-    
-    public void addResolutionResult(ResourceHolder<? extends RootNode> resolutionResult) {
-        resolutionResults.add(resolutionResult);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
-                + "(owner=" + owner
-                + ",resolutionResults=" + resolutionResults
-                + ",errors=" + errors
-                + ",warnings=" + warnings
-                + ",infos=" + infos
-                + ",childResults=" + childResults
-                + ")";
-    }
 }

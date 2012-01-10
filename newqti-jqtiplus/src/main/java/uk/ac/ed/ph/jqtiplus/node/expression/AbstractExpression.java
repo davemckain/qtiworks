@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -272,7 +272,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         validateThisOnly(context, result);
 
         // This is unusual order, because previous code logically belongs to parent validation.
@@ -280,7 +280,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /** Validates this Expression only, without descending into children */
-    private void validateThisOnly(ValidationContext context, ValidationResult result) {
+    private void validateThisOnly(ValidationContext context, AbstractValidationResult result) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
@@ -384,7 +384,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     @Override
     public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
-        final ValidationResult runtimeValidationResult = new ValidationResult(getRootNode(AssessmentObject.class));
+        final AbstractValidationResult runtimeValidationResult = new AbstractValidationResult(getRootNode(AssessmentObject.class));
         final Value result = evaluate(context, runtimeValidationResult, 0);
         if (!runtimeValidationResult.getAllItems().isEmpty()) {
             throw new RuntimeValidationException(runtimeValidationResult);
@@ -399,7 +399,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
      */
-    private Value evaluate(ProcessingContext context, ValidationResult runtimeValidationResult, int depth) {
+    private Value evaluate(ProcessingContext context, AbstractValidationResult runtimeValidationResult, int depth) {
         if (getChildren().size() > 0) {
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }

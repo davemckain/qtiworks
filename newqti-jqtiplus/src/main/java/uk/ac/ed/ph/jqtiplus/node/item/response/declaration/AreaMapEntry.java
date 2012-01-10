@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class AreaMapEntry extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         if (getShape() != null) {
             getShape().validateCoords(getAttributes().get(ATTR_COORDS_NAME), result, convertCoordinates(getCoordinates()));
         }

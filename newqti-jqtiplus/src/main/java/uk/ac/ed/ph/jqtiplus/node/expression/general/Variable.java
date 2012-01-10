@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -126,7 +126,7 @@ public class Variable extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateAdditionalAttributes(ValidationResult result, AssessmentItemRef resolvedItemReference) {
+    protected void validateAdditionalAttributes(AbstractValidationResult result, AssessmentItemRef resolvedItemReference) {
         if (resolvedItemReference == null) {
             if (getWeightIdentifier() != null) {
                 result.add(new AttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),

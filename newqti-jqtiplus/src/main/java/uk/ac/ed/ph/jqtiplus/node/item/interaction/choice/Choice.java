@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.List;
 
@@ -192,7 +192,7 @@ public abstract class Choice extends BodyElement {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
         final ItemValidationContext itemContext = (ItemValidationContext) context;
 

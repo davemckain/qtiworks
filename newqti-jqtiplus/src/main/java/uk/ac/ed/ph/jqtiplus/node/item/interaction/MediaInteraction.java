@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
@@ -245,7 +245,7 @@ public class MediaInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
 
         if (getResponseIdentifier() != null) {

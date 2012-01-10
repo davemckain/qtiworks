@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,9 +81,9 @@ public final class AssessmentTestValidator implements TestValidationContext {
         this.resolvedItemMap = new HashMap<AssessmentItemRef, AssessmentItem>();
     }
 
-    public ValidationResult validate() {
+    public AbstractValidationResult validate() {
         logger.info("Validating test {}", test);
-        final ValidationResult result = new ValidationResult(test);
+        final AbstractValidationResult result = new AbstractValidationResult(test);
         
         /* First of all, we shall resolve and validate each referenced item */
         for (AssessmentItemRef itemRef : test.searchUniqueItemRefs()) {
@@ -96,8 +96,8 @@ public final class AssessmentTestValidator implements TestValidationContext {
                     /* Validate item */
                     AssessmentItem resolvedItem = itemResolutionResult.getResolvedQtiObject();
                     resolvedItemMap.put(itemRef, resolvedItem);
-                    ValidationResult itemValidationResult = validateItem(resolvedItem);
-                    result.addChildResult(itemValidationResult);
+                    AbstractValidationResult itemValidationResult = validateItem(resolvedItem);
+                    result.addItemValidationResult(itemValidationResult);
                     
                     if (itemValidationResult.hasErrors()) {
                         result.add(new ValidationError(test, "Referenced item with identifier " + itemRef.getIdentifier()
@@ -126,7 +126,7 @@ public final class AssessmentTestValidator implements TestValidationContext {
         return result;
     }
     
-    private ValidationResult validateItem(AssessmentItem item) {
+    private AbstractValidationResult validateItem(AssessmentItem item) {
         logger.info("Validating referenced item {}", item);
         
         /* TODO! We should try to cache RP templates in what follows */

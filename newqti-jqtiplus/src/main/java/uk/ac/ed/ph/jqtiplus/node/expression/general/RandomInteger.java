@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 
 import java.util.Random;
@@ -155,7 +155,7 @@ public class RandomInteger extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
         if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum()) {

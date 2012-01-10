@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -118,7 +118,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         final ItemValidationContext itemContext = (ItemValidationContext) context;
         super.validateAttributes(context, result);
 

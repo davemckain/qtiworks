@@ -32,16 +32,17 @@
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 
-package uk.ac.ed.ph.jqtiplus.xperimental2;
+package uk.ac.ed.ph.jqtiplus.xperimental3;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
+import uk.ac.ed.ph.jqtiplus.resolution.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceProvider;
-import uk.ac.ed.ph.jqtiplus.resolution.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.xperimental2.FrozenResourceLookup;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -52,76 +53,52 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this type
+ * Helper class that caches the results of calls to {@link ResourceProvider} during
+ * resolution so that we only need to build once.
  *
  * @author David McKain
  */
-public final class ResourceLookupCache implements Serializable {
-    
-    static final class CacheKey implements Serializable {
-        
-        private static final long serialVersionUID = -8002345078776538313L;
-        final URI systemId;
-        final ModelRichness resourceUsage;
-        final String stringRepresentation;
-        
-        public CacheKey(URI systemId, ModelRichness resourceUsage) {
-            this.systemId = systemId;
-            this.resourceUsage = resourceUsage;
-            this.stringRepresentation = "[" + systemId + ", " + resourceUsage + "]";
-        }
-        
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof CacheKey)) {
-                return false;
-            }
-            CacheKey other = (CacheKey) obj;
-            return stringRepresentation.equals(other.stringRepresentation);
-        }
-        
-        @Override
-        public int hashCode() {
-            return toString().hashCode();
-        }
-        
-        @Override
-        public String toString() {
-            return stringRepresentation;
-        }
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(ResourceLookupCache.class);
+final class CachedResourceProvider implements Serializable {
+   
+    private static final Logger logger = LoggerFactory.getLogger(CachedResourceProvider.class);
     
     private static final long serialVersionUID = -8407905672200096970L;
-
-    private final Map<CacheKey, FrozenResourceLookup<?>> cacheData;
     
-    public ResourceLookupCache() {
-        this.cacheData = new HashMap<CacheKey, FrozenResourceLookup<?>>();
+    private final ResourceProvider resourceProvider;
+    private final ModelRichness modelRichness;
+
+    private final Map<URI, FrozenResourceLookup<?>> cacheData;
+    
+    public CachedResourceProvider(final ResourceProvider resourceProvider, ModelRichness modelRichness) {
+        this.resourceProvider = resourceProvider;
+        this.modelRichness = modelRichness;
+        this.cacheData = new HashMap<URI, FrozenResourceLookup<?>>();
     }
     
-    public void clear() {
-        cacheData.clear();
+    public ResourceProvider getResourceProvider() {
+        return resourceProvider;
+    }
+    
+    public ModelRichness getModelRichness() {
+        return modelRichness;
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
-    public Map<CacheKey, FrozenResourceLookup<?>> getCacheData() {
+    public Map<URI, FrozenResourceLookup<?>> getCacheData() {
         return cacheData;
     }
     
     @SuppressWarnings("unchecked")
-    public <E extends RootNode> FrozenResourceLookup<E> getFrozenResource(ResourceProvider resourceProvider, URI systemId, ModelRichness resourceUsage, Class<E> resultClass) {
-        CacheKey key = new CacheKey(systemId, resourceUsage);
-        FrozenResourceLookup<E> frozenResult = (FrozenResourceLookup<E>) cacheData.get(key);
+    public <E extends RootNode> FrozenResourceLookup<E> getFrozenResource(URI systemId, Class<E> resultClass) {
+        FrozenResourceLookup<E> frozenResult = (FrozenResourceLookup<E>) cacheData.get(systemId);
         if (frozenResult!=null) {
             /* Cache hit */
-            logger.info("Cache hit for key {} yielded {}", key, frozenResult);
+            logger.info("Cache hit for key {} yielded {}", systemId, frozenResult);
         }
         else {
             /* Cache miss */
             try {
-                ResourceHolder<E> result = resourceProvider.provideQtiResource(systemId, resourceUsage, resultClass);
+                ResourceHolder<E> result = resourceProvider.provideQtiResource(systemId, modelRichness, resultClass);
                 frozenResult = new FrozenResourceLookup<E>(systemId, result);
             }
             catch (BadResourceException e) {
@@ -130,21 +107,23 @@ public final class ResourceLookupCache implements Serializable {
             catch (ResourceNotFoundException e) {
                 frozenResult = new FrozenResourceLookup<E>(systemId, e);
             }
-            cacheData.put(key, frozenResult);
-            logger.info("Cache miss for key {} stored {}", key, frozenResult);
+            cacheData.put(systemId, frozenResult);
+            logger.info("Cache miss for key {} stored {}", systemId, frozenResult);
         }
         return frozenResult;
     }
     
-    public <E extends RootNode> E getResource(ResourceProvider resourceProvider, URI systemId, ModelRichness resourceUsage, Class<E> resultClass)
+    public <E extends RootNode> E getResource(URI systemId, Class<E> resultClass)
             throws ResourceNotFoundException, BadResourceException {
-        return getFrozenResource(resourceProvider, systemId, resourceUsage, resultClass).thaw().getRequiredQtiObject();
+        return getFrozenResource(systemId, resultClass).thaw().getRequiredQtiObject();
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(cacheData=" + cacheData
+                + "(resourceProvider=" + resourceProvider
+                + ",modelRichness=" + modelRichness
+                + ",cacheData=" + cacheData
                 + ")";
     }
 }

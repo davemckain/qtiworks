@@ -51,7 +51,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
@@ -264,7 +264,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
 
         if (getNormalMaximum() != null) {
@@ -308,7 +308,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
 
         // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;

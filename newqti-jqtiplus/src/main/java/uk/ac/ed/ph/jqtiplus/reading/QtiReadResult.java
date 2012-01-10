@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.resolution.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
-import uk.ac.ed.ph.jqtiplus.resolution.ResourceUsage;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 
 import java.io.Serializable;
@@ -54,20 +54,20 @@ public final class QtiReadResult<E extends RootNode> implements ResourceHolder<E
     private static final long serialVersionUID = -6470500039269477402L;
 
     private final URI systemId;
-    private final ResourceUsage resourceUsage;
+    private final ModelRichness modelRichness;
     private final XMLParseResult xmlParseResult;
     private final RootNode qtiObject;
     private final List<QtiModelBuildingError> qtiModelBuildingErrors;
     private final Class<E> requiredResultClass;
     
-    QtiReadResult(URI systemId, ResourceUsage resourceUsage, Class<E> requiredClass, XMLParseResult xmlParseResult) {
-        this(systemId, resourceUsage, requiredClass, xmlParseResult, null, null);
+    QtiReadResult(URI systemId, ModelRichness modelRichness, Class<E> requiredClass, XMLParseResult xmlParseResult) {
+        this(systemId, modelRichness, requiredClass, xmlParseResult, null, null);
     }
     
-    QtiReadResult(URI systemId, ResourceUsage resourceUsage, Class<E> requiredClass, XMLParseResult xmlParseResult,
+    QtiReadResult(URI systemId, ModelRichness modelRichness, Class<E> requiredClass, XMLParseResult xmlParseResult,
             RootNode qtiObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
         this.requiredResultClass = requiredClass;
-        this.resourceUsage = resourceUsage;
+        this.modelRichness = modelRichness;
         this.systemId = systemId;
         this.qtiObject = qtiObject;
         this.xmlParseResult = xmlParseResult;
@@ -83,8 +83,8 @@ public final class QtiReadResult<E extends RootNode> implements ResourceHolder<E
     }
 
     @Override
-    public ResourceUsage getResourceUsage() {
-        return resourceUsage;
+    public ModelRichness getModelRichness() {
+        return modelRichness;
     }
     
     @Override
@@ -118,7 +118,7 @@ public final class QtiReadResult<E extends RootNode> implements ResourceHolder<E
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(systemId=" + systemId
-                + ",resourceUsage=" + resourceUsage
+                + ",modelRichness=" + modelRichness
                 + ",requiredResultClass=" + requiredResultClass
                 + ",qtiObject=" + qtiObject
                 + ",xmlParseResult=" + xmlParseResult

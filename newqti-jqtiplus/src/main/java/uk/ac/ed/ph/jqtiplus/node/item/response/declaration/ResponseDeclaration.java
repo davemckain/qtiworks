@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * Response variables are declared by response declarations and bound to interactions in the itemBody.
@@ -141,7 +141,7 @@ public class ResponseDeclaration extends VariableDeclaration {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
 
         if (getAreaMapping() != null && getBaseType() != null && !getBaseType().isPoint()) {

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.exception2;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIException;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * Thrown if validation problems are detected at runtime (e.g. response processing)
@@ -45,14 +45,14 @@ public class RuntimeValidationException extends QTIException {
 
     private static final long serialVersionUID = 1114808435234903326L;
 
-    private final ValidationResult validationResult;
+    private final AbstractValidationResult validationResult;
 
-    public RuntimeValidationException(final ValidationResult result) {
+    public RuntimeValidationException(final AbstractValidationResult result) {
         super("Runtime validaiton errors determined");
         this.validationResult = result;
     }
 
-    public ValidationResult getValidationResult() {
+    public AbstractValidationResult getValidationResult() {
         return validationResult;
     }
 }

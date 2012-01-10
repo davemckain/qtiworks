@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLReaderException;
 
 import java.net.URI;
@@ -92,9 +92,9 @@ public final class AssessmentItemManager implements ItemValidationContext {
 
     //-------------------------------------------------------------------
 
-    public ValidationResult validateItem() {
+    public AbstractValidationResult validateItem() {
         logger.info("Performing JQTI validation on " + this);
-        final ValidationResult result = new ValidationResult(item);
+        final AbstractValidationResult result = new AbstractValidationResult(item);
         item.validate(this, result);
         return result;
     }

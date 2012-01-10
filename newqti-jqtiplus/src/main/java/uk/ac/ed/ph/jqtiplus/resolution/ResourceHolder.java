@@ -47,7 +47,7 @@ public interface ResourceHolder<E extends RootNode> extends Serializable {
     
     URI getSystemId();
     
-    ResourceUsage getResourceUsage();
+    ModelRichness getModelRichness();
 
     E getRequiredQtiObject();
 

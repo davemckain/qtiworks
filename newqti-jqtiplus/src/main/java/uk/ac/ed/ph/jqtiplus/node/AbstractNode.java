@@ -40,9 +40,9 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 
@@ -263,7 +263,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         validateAttributes(context, result);
         validateChildren(context, result);
     }
@@ -273,14 +273,14 @@ public abstract class AbstractNode implements XmlNode {
      * 
      * @return result of validation
      */
-    protected void validateAttributes(ValidationContext context, ValidationResult result) {
+    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         attributes.validate(context, result);
     }
 
     /**
      * Validates children (body) of this node.
      */
-    protected void validateChildren(ValidationContext context, ValidationResult result) {
+    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
         for (int i = 0; i < groups.size(); i++) {
             final NodeGroup node = groups.get(i);
             for (final XmlNode child : node.getChildren()) {
@@ -290,7 +290,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     /** Helper method to validate a unique identifier (definition) attribute */
-    protected void validateUniqueIdentifier(ValidationResult result, IdentifierAttribute identifierAttribute, Identifier identifier) {
+    protected void validateUniqueIdentifier(AbstractValidationResult result, IdentifierAttribute identifierAttribute, Identifier identifier) {
         if (identifier != null) {
             if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier.toString())) {
                 result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
@@ -393,7 +393,8 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public String toString() {
-        return "<" + getClassTag() + ">@" + hashCode();
+        return "<" + getClassTag() + ">@" + hashCode()
+                + "(xPath=" + computeXPath() + ")";
     }
 
 }

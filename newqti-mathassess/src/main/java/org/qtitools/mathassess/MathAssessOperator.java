@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -223,7 +223,7 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     @Override
-    public final void validate(ValidationContext context, ValidationResult result) {
+    public final void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
 
         /* First make sure that variable names are all acceptable */
@@ -250,5 +250,5 @@ public abstract class MathAssessOperator extends CustomOperator {
         doAdditionalValidation(context, result);
     }
 
-    protected abstract void doAdditionalValidation(ValidationContext context, ValidationResult result);
+    protected abstract void doAdditionalValidation(ValidationContext context, AbstractValidationResult result);
 }

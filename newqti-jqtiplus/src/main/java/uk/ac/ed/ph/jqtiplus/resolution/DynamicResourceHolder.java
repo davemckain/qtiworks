@@ -31,47 +31,49 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental2;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+package uk.ac.ed.ph.jqtiplus.resolution;
+
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
+
+import java.net.URI;
 
 /**
- * FIXME: Document this
- * 
+ * Implementation of {@link ResourceHolder} for a resource object model that has been build
+ * programmatically.
+ *
  * @author David McKain
  */
-public final class AssessmentItemStaticState extends AssessmentObjectStaticState<AssessmentItem> {
+public class DynamicResourceHolder<E extends RootNode> implements ResourceHolder<E> {
+    
+    private static final long serialVersionUID = 4290353525740628687L;
+    
+    private final E rootNode;
+    
+    public DynamicResourceHolder(E rootNode) {
+        this.rootNode = rootNode;
+    }
 
-    private static final long serialVersionUID = -8302050952592265206L;
+    @Override
+    public URI getSystemId() {
+        return rootNode.getSystemId();
+    }
 
-    private FrozenResourceLookup<ResponseProcessing> resolvedResponseProcessingTemplate;
-
-    public AssessmentItemStaticState(final AssessmentItem item) {
-        super(item);
-        this.resolvedResponseProcessingTemplate = null;
+    @Override
+    public ModelRichness getModelRichness() {
+        return null;
     }
     
-    public AssessmentItem getItem() {
-        return assessmentObject;
+    @Override
+    public E getRequiredQtiObject() {
+        return rootNode;
     }
     
-
-    public FrozenResourceLookup<ResponseProcessing> getResolvedResponseProcessingTemplate() {
-        return resolvedResponseProcessingTemplate;
-    }
-    
-    public void setResolvedResponseProcessingTemplate(FrozenResourceLookup<ResponseProcessing> responseProcessingTemplate) {
-        this.resolvedResponseProcessingTemplate = responseProcessingTemplate;
-    }
-
-    //-------------------------------------------------------------------
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(item=" + assessmentObject
-                + ",resolvedResponseProcessingTemplate=" + resolvedResponseProcessingTemplate
+                + "(rootNode=" + rootNode
                 + ")";
     }
+
 }

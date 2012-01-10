@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.resolution.BadResourceException;
+import uk.ac.ed.ph.jqtiplus.resolution.DynamicResourceHolder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceHolder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.resolution.ResourceProvider;
@@ -61,6 +62,10 @@ public final class FrozenResourceLookup<E extends RootNode> implements Serializa
     private final ResourceHolder<E> resourceProvideResult;
     private final ResourceNotFoundException notFoundException;
     private final BadResourceException badResultException;
+    
+    public FrozenResourceLookup(final E rootNode) {
+        this(rootNode.getSystemId(), new DynamicResourceHolder<E>(rootNode));
+    }
     
     public FrozenResourceLookup(URI systemId, ResourceHolder<E> resourceProvideResult) {
         this(systemId, resourceProvideResult, null, null);
@@ -85,7 +90,7 @@ public final class FrozenResourceLookup<E extends RootNode> implements Serializa
     public URI getSystemId() {
         return systemId;
     }
-
+    
     public ResourceHolder<E> thaw() throws ResourceNotFoundException, BadResourceException {
         if (resourceProvideResult!=null) {
             return resourceProvideResult;
@@ -99,6 +104,18 @@ public final class FrozenResourceLookup<E extends RootNode> implements Serializa
         else {
             throw new QTILogicException("Unexpected logic branch");
         }
+    }
+    
+    public boolean wasSuccessful() {
+        return resourceProvideResult!=null;
+    }
+    
+    public E extractIfSuccessful() {
+        E result = null;
+        if (resourceProvideResult!=null) {
+            result = resourceProvideResult.getRequiredQtiObject();
+        }
+        return result;
     }
     
     @Override

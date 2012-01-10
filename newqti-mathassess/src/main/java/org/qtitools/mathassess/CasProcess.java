@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -128,7 +128,7 @@ public class CasProcess extends MathAssessOperator {
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context, ValidationResult result) {
+    protected void doAdditionalValidation(ValidationContext context, AbstractValidationResult result) {
         /* Nothing to do here */
     }
 

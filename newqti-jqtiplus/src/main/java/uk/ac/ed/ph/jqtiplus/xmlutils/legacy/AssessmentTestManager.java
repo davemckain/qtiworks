@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -90,7 +90,7 @@ public final class AssessmentTestManager implements TestValidationContext {
 
     //-------------------------------------------------------------------
 
-    public ValidationResult validateTest() {
+    public AbstractValidationResult validateTest() {
         logger.info("Performing JQTI validation on " + this);
         return test.validate(this);
     }

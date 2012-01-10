@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -78,7 +78,7 @@ public class Correct extends LookupExpression {
      * Overridden to ensure that the referenced variable is a response variable.
      */
     @Override
-    protected void validateTargetVariableDeclaration(ValidationResult result, VariableDeclaration targetVariableDeclaration) {
+    protected void validateTargetVariableDeclaration(AbstractValidationResult result, VariableDeclaration targetVariableDeclaration) {
         if (targetVariableDeclaration.getVariableType() != VariableType.RESPONSE) {
             result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
                     "Target variable " + getIdentifier() + " must be a response variable"));

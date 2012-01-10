@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
@@ -86,7 +86,7 @@ public class MathAssessTest {
             final AssessmentItem item = qtiReadResult.getResolvedQtiObject();
 
             final AssessmentItemManager itemManager = new AssessmentItemManager(objectManager, item);
-            final ValidationResult validationResult = itemManager.validateItem();
+            final AbstractValidationResult validationResult = itemManager.validateItem();
             if (!validationResult.getAllItems().isEmpty()) {
                 System.out.println("JQTI validation failed: " + validationResult);
                 return;

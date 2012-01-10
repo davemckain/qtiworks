@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import org.slf4j.Logger;
@@ -71,9 +71,9 @@ public final class AssessmentItemValidator implements ItemValidationContext {
         this.objectResolver = new AssessmentObjectResolver(referenceResolver);
     }
 
-    public ValidationResult validate() {
+    public AbstractValidationResult validate() {
         logger.info("Validating item {}", item);
-        final ValidationResult result = new ValidationResult(item);
+        final AbstractValidationResult result = new AbstractValidationResult(item);
         
         /* First resolve response processing template if no rules have been specified */
         ResponseProcessing responseProcessing = item.getResponseProcessing();
@@ -87,7 +87,7 @@ public final class AssessmentItemValidator implements ItemValidationContext {
         return result;
     }
     
-    private void resolveResponseProcessingTemplate(ValidationResult result) {
+    private void resolveResponseProcessingTemplate(AbstractValidationResult result) {
         ResolutionResult<ResponseProcessing> resolutionResult;
         try {
             resolutionResult = objectResolver.resolveResponseProcessingTemplate(item);

@@ -31,44 +31,57 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.control.JQTIExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentTestHolder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Represents an unsupported customOperator. This belongs to no {@link JQTIExtensionPackage}
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public final class UnsupportedCustomOperator extends CustomOperator {
+public final class TestValidationResult extends AbstractValidationResult {
 
-    private static final long serialVersionUID = -8733871136419512506L;
+    private static final long serialVersionUID = -6570165277334622467L;
+    
+    private final AssessmentTestHolder testHolder;
 
-    private static Logger logger = LoggerFactory.getLogger(UnsupportedCustomOperator.class);
-
-    public UnsupportedCustomOperator(ExpressionParent parent) {
-        super(null, parent);
+    /** Results of validating each item */
+    private final List<ItemValidationResult> itemValidationResults;
+    
+    public TestValidationResult(AssessmentTestHolder testHolder) {
+        this.testHolder = testHolder;
+        this.itemValidationResults = new ArrayList<ItemValidationResult>();
     }
 
-    @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        result.add(new ValidationWarning(this, "customOperator with class attribute " + getClassAttr() + " is not supported"));
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AssessmentTestHolder getTestHolder() {
+        return testHolder;
+    }
+    
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public List<ItemValidationResult> getItemValidationResults() {
+        return itemValidationResults;
     }
 
+    public void addItemValidationResult(ItemValidationResult result) {
+        itemValidationResults.add(result);
+    }
+    
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        logger.warn("customOperator with class attribute {} is not supported - returning NULL", getClassAttr());
-        return NullValue.INSTANCE;
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(testHolder=" + testHolder
+                + ",errors=" + getErrors()
+                + ",warnings=" + getWarnings()
+                + ",infos=" + getInfos()
+                + ",itemValidationResults=" + itemValidationResults
+                + ")";
     }
 }

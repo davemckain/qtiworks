@@ -47,7 +47,7 @@ public class BadQtiResourceException extends BadResourceException {
     private final QtiReadResult<?> qtiReadResult;
     
     public BadQtiResourceException(String message, QtiReadResult<?> qtiReadResult) {
-        super(message);
+        super(message + ": " + qtiReadResult.toString());
         this.qtiReadResult = qtiReadResult;
     }
     

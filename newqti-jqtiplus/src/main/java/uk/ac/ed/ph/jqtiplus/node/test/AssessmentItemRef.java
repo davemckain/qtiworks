@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
@@ -306,7 +306,7 @@ public class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    public void validate(ValidationContext context, ValidationResult result) {
+    public void validate(ValidationContext context, AbstractValidationResult result) {
         /* Validation of individual items is done by the calling validator, so there's not
          * much to do here!
          */
@@ -314,7 +314,7 @@ public class AssessmentItemRef extends SectionPart {
     }
     
     @Override
-    protected void validateChildren(ValidationContext context, ValidationResult result) {
+    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
         super.validateChildren(context, result);
 
         for (int i = 0; i < getWeights().size(); i++) {

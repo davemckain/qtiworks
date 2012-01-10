@@ -43,7 +43,7 @@ import java.io.Serializable;
 public interface Validatable extends Serializable {
 
     /**
-     * Validates this object, appending to the given {@link ValidationResult}
+     * Validates this object, appending to the given {@link AbstractValidationResult}
      */
-    public void validate(ValidationContext context, ValidationResult result);
+    public void validate(ValidationContext context, AbstractValidationResult result);
 }

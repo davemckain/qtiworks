@@ -45,7 +45,7 @@ import java.net.URI;
 public interface ResourceProvider {
 
     <E extends RootNode> ResourceHolder<E> provideQtiResource(URI systemId,
-            ResourceUsage resourceUsage, Class<E> requiredResultClass)
+            ModelRichness requiredModelRicheness, Class<E> requiredResultClass)
         throws ResourceNotFoundException, BadResourceException;
 
 }

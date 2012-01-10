@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -150,7 +150,7 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, ValidationResult result) {
+    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
         super.validateChildren(context, result);
 
         final Cardinality cardinality = getParent().getCardinality();

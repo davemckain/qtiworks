@@ -31,59 +31,48 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental2;
+package uk.ac.ed.ph.jqtiplus.xperimental3;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentItemHolder;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.resolution.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.xperimental2.FrozenResourceLookup;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
 
 /**
  * FIXME: Document this
  * 
  * @author David McKain
  */
-public final class AssessmentTestStaticState extends AssessmentObjectStaticState<AssessmentTest> {
+public final class AssessmentItemHolder implements Serializable {
 
     private static final long serialVersionUID = -8302050952592265206L;
-    
-    /** Resolved System ID for each {@link AssessmentItemRef} */
-    private final Map<AssessmentItemRef, URI> systemIdByItemRefMap;
-    
-    /** List of {@link AssessmentItemRef}s corresponding to each unique resolved item System ID */
-    private final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap;
-    
-    /** {@link AssessmentItemHolder} for each unique System ID. null values denote problem with item (e.g. not found, not an item) */
-    private final Map<URI, AssessmentItemHolder> assessmentItemStaticStateMap;
 
-    public AssessmentTestStaticState(final AssessmentTest test) {
-        super(test);
-        this.systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
-        this.itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
-        this.assessmentItemStaticStateMap = new HashMap<URI, AssessmentItemHolder>();
-    }
+    /** {@link AssessmentItem} lookup */
+    private final FrozenResourceLookup<AssessmentItem> itemLookup;
     
-    public AssessmentTest getTest() {
-        return assessmentObject;
-    }
+    /** Resolved {@link ResponseProcessing}, if specified, otherwise null */
+    private final FrozenResourceLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
+    
+    private final ModelRichness modelRichness;
 
-    public Map<AssessmentItemRef, URI> getSystemIdByItemRefMap() {
-        return systemIdByItemRefMap;
+    public AssessmentItemHolder(final FrozenResourceLookup<AssessmentItem> itemLookup, final FrozenResourceLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup, final ModelRichness modelRichness) {
+        this.itemLookup = itemLookup;
+        this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
+        this.modelRichness = modelRichness;
     }
     
-    public Map<URI, List<AssessmentItemRef>> getItemRefsBySystemIdMap() {
-        return itemRefsBySystemIdMap;
+    public FrozenResourceLookup<AssessmentItem> getItemLookup() {
+        return itemLookup;
     }
     
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public Map<URI, AssessmentItemHolder> getAssessmentItemStaticStateMap() {
-        return assessmentItemStaticStateMap;
+    public FrozenResourceLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
+        return resolvedResponseProcessingTemplateLookup;
+    }
+    
+    public ModelRichness getModelRichness() {
+        return modelRichness;
     }
     
     //-------------------------------------------------------------------
@@ -91,10 +80,9 @@ public final class AssessmentTestStaticState extends AssessmentObjectStaticState
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(test=" + assessmentObject
-                + ",systemIdByItemRefMap=" + systemIdByItemRefMap
-                + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
-                + ",assessmentItemStaticStateMap=" + assessmentItemStaticStateMap
+                + "(itemLookup=" + itemLookup
+                + ",resolvedResponseProcessingTemplateLookup=" + resolvedResponseProcessingTemplateLookup
+                + ",modelRichness=" + modelRichness
                 + ")";
     }
 }

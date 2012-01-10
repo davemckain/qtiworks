@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.net.URI;
 import java.util.List;
@@ -135,7 +135,7 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, ValidationResult result) {
+    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
         List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */

@@ -8,13 +8,10 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.control2.JQTIExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiReadResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XMLParseResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.AssessmentTestValidator;
+import uk.ac.ed.ph.jqtiplus.xperimental3.AssessmentObjectManager;
 
 import java.net.URI;
 
@@ -25,25 +22,11 @@ public class TestTest {
         
         System.out.println("Reading and validating");
         JQTIExtensionManager jqtiExtensionManager = new JQTIExtensionManager();
-        QtiObjectReader objectReader = new QtiObjectReader(jqtiExtensionManager, new ClassPathResourceLocator(), true);
-
-        QtiReadResult<AssessmentTest> qtiReadResult = objectReader.readQti(inputUri, AssessmentTest.class);
-        System.out.println("Read in " + ObjectDumper.dumpObject(qtiReadResult, DumpMode.DEEP));
+        QtiObjectReader objectReader = new QtiObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
         
-        XMLParseResult xmlParseResult = qtiReadResult.getXmlParseResult();
-        if (!xmlParseResult.isSchemaValid()) {
-            System.out.println("Schema validation failed: " + xmlParseResult);
-            return;
-        }
-        
-        AssessmentTest test = qtiReadResult.getRequiredQtiObject();
-        AssessmentTestValidator testValidator = new AssessmentTestValidator(test, objectReader);
-        ValidationResult validationResult = testValidator.validate();
-        System.out.println("Validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));
-        if (!validationResult.getAllItems().isEmpty()) {
-            System.out.println("JQTI validation failed: " + validationResult);
-            return;          
-        }
+        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
 
+        TestValidationResult result = objectManager.validateTest(inputUri);
+        System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
     }
 }
