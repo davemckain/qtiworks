@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class CpResource implements Serializable {
+public final class ContentPackageResource implements Serializable {
 
     private static final long serialVersionUID = 8850693671764183109L;
     
@@ -50,7 +50,7 @@ public final class CpResource implements Serializable {
     private final String href;
     private final List<String> fileHrefs;
     
-    public CpResource(String type, String href, List<String> fileHrefs) {
+    public ContentPackageResource(String type, String href, List<String> fileHrefs) {
         this.type = type;
         this.href = href;
         this.fileHrefs = fileHrefs;

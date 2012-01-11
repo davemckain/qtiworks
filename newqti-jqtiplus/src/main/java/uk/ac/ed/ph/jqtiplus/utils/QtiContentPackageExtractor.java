@@ -34,8 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -46,6 +44,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +56,8 @@ import org.w3c.dom.NodeList;
 /**
  * FIXME: Document this type
  * 
+ * FIXME: Must check URIs to make sure they're valid, and also things that we're prepared to support
+ * 
  * TODO: This does NOT validate packages (at least for the time being...)
  * 
  * TODO: This is *overly lax* in resolving relative files within CC packages. (The CC spec
@@ -64,36 +65,63 @@ import org.w3c.dom.NodeList;
  *
  * @author David McKain
  */
-public final class ContentPackageExtractor {
+public final class QtiContentPackageExtractor {
     
-    private static final Logger logger = LoggerFactory.getLogger(ContentPackageExtractor.class);
+    private static final Logger logger = LoggerFactory.getLogger(QtiContentPackageExtractor.class);
     
     public static final String PACKAGE_URI_SCHEME = "this-content-package";
     
-    private static final String MANIFEST_FILE_NAME = "imsmanifest.xml";
+    /** Name of IMS manifest file */
+    public static final String IMS_MANIFEST_FILE_NAME = "imsmanifest.xml";
     
-    private final File packageSandboxDirectory;
+    /** <tt>cp:resource/@type</tt> for supported QTI items. */
+    public static final String[] ITEM_TYPES = {
+        "imsqti_item_xmlv2p1", /* (Correct for QTI 2.1) */
+        "imsqti_item_xml_v2p1" /* (Compatibility for old aqurate) */
+    };
+    
+    /** <tt>cp:resource/@type</tt> for supported QTI tests. */
+    public static final String[] TEST_TYPES = {
+        "imsqti_test_xmlv2p1", /* (Correct for QTI 2.1) */
+    };
+    
     private final XmlResourceReader xmlResourceReader;
     private final FileSandboxResourceLocator packageResourceLocator;
     
-    public ContentPackageExtractor(File packageSandboxDirectory) {
+    public QtiContentPackageExtractor(File packageSandboxDirectory) {
         ConstraintUtilities.ensureNotNull(packageSandboxDirectory);
-        this.packageSandboxDirectory = packageSandboxDirectory;
         this.xmlResourceReader = new XmlResourceReader(); /* (Not doing schema validation so no XSDs to register) */
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }
     
-    public void parse() throws XmlResourceNotFoundException {
+    public QtiContentPackageSummary parse() throws XmlResourceNotFoundException {
         /* First parse the "top" IMS manifest, which should always be present */
-        ImsManifestReadResult manifestDetails = readManifestFile(createPackageUri(MANIFEST_FILE_NAME));
-        
-        /* Check namespace */
-        
-        /* Extract items & tests */
-        
-        /* TEMP */
-        System.out.println(ObjectDumper.dumpObject(manifestDetails, DumpMode.DEEP));
-        
+        ImsManifestReadResult manifest = readManifestFile(createPackageUri(IMS_MANIFEST_FILE_NAME));
+        List<URI> testResources = null;
+        List<URI> itemResources = null;
+        if (manifest.isUnderstood()) {
+            /* Extract items & tests */
+            itemResources = getResolvedResourceUrisByTypes(manifest, ITEM_TYPES);
+            testResources = getResolvedResourceUrisByTypes(manifest, TEST_TYPES);
+        }
+        return new QtiContentPackageSummary(manifest, testResources, itemResources);
+    }
+    
+    private List<URI> getResolvedResourceUrisByTypes(ImsManifestReadResult manifest, String... types) {
+        ArrayList<URI> result = new ArrayList<URI>();
+        Map<String, List<ContentPackageResource>> resourcesByTypeMap = manifest.getResourcesByTypeMap();
+        for (String type : types) {
+            List<ContentPackageResource> resourcesByType = resourcesByTypeMap.get(type);
+            if (resourcesByType!=null) {
+                for (ContentPackageResource resource : resourcesByType) {
+                    URI resourceUri = URI.create(resource.getHref());
+                    URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(resourceUri);
+                    result.add(resolvedUri);
+                }
+            }
+
+        }
+        return result;
     }
     
     private URI createPackageUri(String path) {
@@ -134,7 +162,7 @@ public final class ContentPackageExtractor {
         
         /* Extract resources */
         String manifestNamespaceUri = docElement.getNamespaceURI();
-        List<CpResource> resources = null;
+        List<ContentPackageResource> resources = null;
         NodeList childNodes = docElement.getChildNodes();
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
             Node item = childNodes.item(i);
@@ -149,8 +177,8 @@ public final class ContentPackageExtractor {
         return result;
     }
     
-    private List<CpResource> extractResources(Element resourcesElement) {
-        List<CpResource> resources = new ArrayList<CpResource>();
+    private List<ContentPackageResource> extractResources(Element resourcesElement) {
+        List<ContentPackageResource> resources = new ArrayList<ContentPackageResource>();
         NodeList childNodes = resourcesElement.getChildNodes();
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
             Node childNode = childNodes.item(i);
@@ -159,7 +187,7 @@ public final class ContentPackageExtractor {
                 String type = resourceElement.getAttribute("type");
                 String href = resourceElement.getAttribute("href");
                 List<String> fileHrefs = extractFileHrefs(resourceElement);
-                resources.add(new CpResource(type, href, fileHrefs));
+                resources.add(new ContentPackageResource(type, href, fileHrefs));
             }
         }
         return resources;
@@ -177,5 +205,13 @@ public final class ContentPackageExtractor {
             }
         }
         return hrefs;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(xmlResourceReader=" + xmlResourceReader
+                + ",packageResourceLocator=" + packageResourceLocator
+                + ")";
     }
 }

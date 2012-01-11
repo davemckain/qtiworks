@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -44,18 +45,18 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public final class ContentPackageDetails implements Serializable {
+public final class QtiContentPackageSummary implements Serializable {
     
     private static final long serialVersionUID = 6791550769947268491L;
     
     private final ImsManifestReadResult packageManifestDetails;
-    private final List<String> testResourceHrefs;
-    private final List<String> itemResourceHrefs;
+    private final List<URI> testResourceUris;
+    private final List<URI> itemResourceUris;
     
-    public ContentPackageDetails(ImsManifestReadResult packageManifestDetails, List<String> testResourceHrefs, List<String> itemResourceHrefs) {
+    public QtiContentPackageSummary(ImsManifestReadResult packageManifestDetails, List<URI> testResourceUris, List<URI> itemResourceUris) {
         this.packageManifestDetails = packageManifestDetails;
-        this.testResourceHrefs = testResourceHrefs;
-        this.itemResourceHrefs = itemResourceHrefs;
+        this.testResourceUris = testResourceUris;
+        this.itemResourceUris = itemResourceUris;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -63,20 +64,20 @@ public final class ContentPackageDetails implements Serializable {
         return packageManifestDetails;
     }
     
-    public List<String> getTestResourceHrefs() {
-        return testResourceHrefs;
+    public List<URI> getTestResourceUris() {
+        return testResourceUris;
     }
     
-    public List<String> getItemResourceHrefs() {
-        return itemResourceHrefs;
+    public List<URI> getItemResourceUris() {
+        return itemResourceUris;
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(packageManifestDetails=" + packageManifestDetails
-                + ",testResourceHrefs=" + testResourceHrefs
-                + ",itemResourceHrefs=" + itemResourceHrefs
+                + ",testResourceUris=" + testResourceUris
+                + ",itemResourceUris=" + itemResourceUris
                 + ")";
     }
 }

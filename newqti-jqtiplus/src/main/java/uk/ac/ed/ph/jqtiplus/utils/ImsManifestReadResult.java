@@ -55,8 +55,26 @@ public final class ImsManifestReadResult implements Serializable {
     
     private final XmlParseResult xmlParseResult;
     private final String namespaceUri;
-    private final List<CpResource> resourceList;
-    private final Map<String, List<CpResource>> resourcesByTypeMap;
+    private final List<ContentPackageResource> resourceList;
+    private final Map<String, List<ContentPackageResource>> resourcesByTypeMap;
+    
+    public ImsManifestReadResult(final XmlParseResult xmlParseResult, final String namespaceUri,
+            final List<ContentPackageResource> resources) {
+        this.xmlParseResult = xmlParseResult;
+        this.namespaceUri = namespaceUri;
+        this.resourceList = Collections.unmodifiableList(resources);
+        
+        Map<String, List<ContentPackageResource>> builder = new HashMap<String, List<ContentPackageResource>>();
+        for (ContentPackageResource resource : resources) {
+            List<ContentPackageResource> resourcesByType = builder.get(resource.getType());
+            if (resourcesByType==null) {
+                resourcesByType = new ArrayList<ContentPackageResource>();
+                builder.put(resource.getType(), resourcesByType);
+            }
+            resourcesByType.add(resource);
+        }
+        this.resourcesByTypeMap = Collections.unmodifiableMap(builder);
+    }
     
     public ImsManifestReadResult(final XmlParseResult xmlParseResult) {
         this.xmlParseResult = xmlParseResult;
@@ -65,22 +83,8 @@ public final class ImsManifestReadResult implements Serializable {
         this.resourcesByTypeMap = null;
     }
     
-    public ImsManifestReadResult(final XmlParseResult xmlParseResult, final String namespaceUri,
-            final List<CpResource> resources) {
-        this.xmlParseResult = xmlParseResult;
-        this.namespaceUri = namespaceUri;
-        this.resourceList = Collections.unmodifiableList(resources);
-        
-        Map<String, List<CpResource>> builder = new HashMap<String, List<CpResource>>();
-        for (CpResource resource : resources) {
-            List<CpResource> resourcesByType = builder.get(resource.getType());
-            if (resourcesByType==null) {
-                resourcesByType = new ArrayList<CpResource>();
-                builder.put(resource.getType(), resourcesByType);
-            }
-            resourcesByType.add(resource);
-        }
-        this.resourcesByTypeMap = Collections.unmodifiableMap(builder);
+    public boolean isUnderstood() {
+        return namespaceUri!=null;
     }
     
     public XmlParseResult getXmlParseResult() {
@@ -91,11 +95,11 @@ public final class ImsManifestReadResult implements Serializable {
         return namespaceUri;
     }
     
-    public List<CpResource> getResourceList() {
+    public List<ContentPackageResource> getResourceList() {
         return resourceList;
     }
     
-    public Map<String, List<CpResource>> getResourcesByTypeMap() {
+    public Map<String, List<ContentPackageResource>> getResourcesByTypeMap() {
         return resourcesByTypeMap;
     }
     
@@ -103,6 +107,7 @@ public final class ImsManifestReadResult implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(xmlParseResult=" + xmlParseResult
+                + ",understood=" + isUnderstood()
                 + ",namespaceUri=" + namespaceUri
                 + ",resourceList=" + resourceList
                 + ",resourcesByTypeMap=" + resourcesByTypeMap

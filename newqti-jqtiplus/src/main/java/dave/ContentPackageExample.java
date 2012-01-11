@@ -5,7 +5,10 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.utils.ContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageSummary;
 
 import java.io.File;
 
@@ -18,7 +21,8 @@ public class ContentPackageExample {
     
     public static void main(String[] args) throws Exception {
         File packageBaseDirectory = new File("src/main/runtime/Aardvark-cannon");
-        ContentPackageExtractor extractor = new ContentPackageExtractor(packageBaseDirectory);
-        extractor.parse();
+        QtiContentPackageExtractor extractor = new QtiContentPackageExtractor(packageBaseDirectory);
+        QtiContentPackageSummary result = extractor.parse();
+        System.out.println(ObjectDumper.dumpObject(result, DumpMode.DEEP));
     }
 }
