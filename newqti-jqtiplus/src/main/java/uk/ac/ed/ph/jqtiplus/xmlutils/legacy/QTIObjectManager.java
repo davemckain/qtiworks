@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootObjectTypes;
 import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
@@ -160,7 +160,7 @@ public final class QTIObjectManager {
             try {
                 final RootObject xmlObject = RootObjectTypes.load(document.getDocumentElement(), systemId, loadingContext);
                 if (!resultClass.isInstance(xmlObject)) {
-                    throw new XmlReaderException("QTI XML was instantiated into an instance of "
+                    throw new XmlResourceReaderException("QTI XML was instantiated into an instance of "
                             + xmlObject.getClass().getSimpleName()
                             + ", not the requested "
                             + resultClass.getSimpleName());

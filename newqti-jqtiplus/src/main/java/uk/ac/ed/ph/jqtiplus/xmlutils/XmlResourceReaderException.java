@@ -34,29 +34,30 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 /**
- * Runtime exception thrown when unexpected XML errors occur.
+ * Runtime exception thrown when unexpected XML errors occur when
+ * {@link XmlResourceReader} is parsing input.
  * <p>
  * This should not be used for failures that arise as a result of client input.
  * 
  * @author David McKain
  */
-public class XmlReaderException extends RuntimeException {
+public class XmlResourceReaderException extends RuntimeException {
 
     private static final long serialVersionUID = -8067028187234814860L;
 
-    public XmlReaderException() {
+    public XmlResourceReaderException() {
         super();
     }
 
-    public XmlReaderException(String message, Throwable cause) {
+    public XmlResourceReaderException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public XmlReaderException(String message) {
+    public XmlResourceReaderException(String message) {
         super(message);
     }
 
-    public XmlReaderException(Throwable cause) {
+    public XmlResourceReaderException(Throwable cause) {
         super(cause);
     }
 }

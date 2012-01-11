@@ -56,7 +56,7 @@ import org.xml.sax.InputSource;
  * This uses your chosen implementation of {@link ResourceLocator} to actually locate the resolved resources.
  * <p>
  * By default, all of the resolve methods work as specified if the resolve resource cannot or will not be handled by your {@link ResourceLocator}. This
- * behaviour can be changed by setting the various <tt>setFailOnMissedXXX</tt> to true, which will instead result in a {@link XmlReaderException} (or
+ * behaviour can be changed by setting the various <tt>setFailOnMissedXXX</tt> to true, which will instead result in a {@link XmlResourceReaderException} (or
  * {@link TransformerException} in the case of {@link URIResolver}). This can be useful if all of the resources that you will be searching for are under
  * complete control of the system, as this can indicate a misconfiguration or missing resource.
  * 
@@ -305,7 +305,7 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
     private static void maybeFail(boolean shouldFail, String message) {
         logger.warn(message);
         if (shouldFail) {
-            throw new XmlReaderException(message);
+            throw new XmlResourceReaderException(message);
         }
     }
 }

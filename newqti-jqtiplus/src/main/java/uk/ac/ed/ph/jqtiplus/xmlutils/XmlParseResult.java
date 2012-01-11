@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
 import java.io.Serializable;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -48,28 +48,31 @@ import org.xml.sax.SAXParseException;
  * 
  * @author David McKain
  */
-public final class XmlParseResult implements Serializable, ErrorHandler {
+public final class XmlParseResult implements Serializable {
 
     private static final long serialVersionUID = -6558013135849907488L;
 
     private final URI systemId;
-    private boolean parsed;
-    private boolean validated;
+    private final boolean parsed;
+    private final boolean validated;
     private final List<SAXParseException> warnings;
     private final List<SAXParseException> errors;
     private final List<SAXParseException> fatalErrors;
     private final List<String> supportedSchemaNamespaces;
     private final List<String> unsupportedSchemaNamespaces;
 
-    public XmlParseResult(URI systemId) {
+    public XmlParseResult(URI systemId, boolean parsed, boolean validated,
+            List<SAXParseException> warnings, List<SAXParseException> errors,
+            List<SAXParseException> fatalErrors, 
+            List<String> supportedSchemaNamespaces, List<String> unsupportedSchemaNamespaces) {
         this.systemId = systemId;
-        this.parsed = false;
-        this.validated = false;
-        this.warnings = new ArrayList<SAXParseException>();
-        this.errors = new ArrayList<SAXParseException>();
-        this.fatalErrors = new ArrayList<SAXParseException>();
-        this.supportedSchemaNamespaces = new ArrayList<String>();
-        this.unsupportedSchemaNamespaces = new ArrayList<String>();
+        this.parsed = parsed;
+        this.validated = validated;
+        this.warnings = ObjectUtilities.unmodifiableList(warnings);
+        this.errors = ObjectUtilities.unmodifiableList(errors);
+        this.fatalErrors = ObjectUtilities.unmodifiableList(fatalErrors);
+        this.supportedSchemaNamespaces = ObjectUtilities.unmodifiableList(supportedSchemaNamespaces);
+        this.unsupportedSchemaNamespaces = ObjectUtilities.unmodifiableList(unsupportedSchemaNamespaces);
     }
 
     public URI getSystemId() {
@@ -81,17 +84,8 @@ public final class XmlParseResult implements Serializable, ErrorHandler {
         return parsed;
     }
 
-    public void setParsed(boolean parsed) {
-        this.parsed = parsed;
-    }
-
-
     public boolean isValidated() {
         return validated;
-    }
-
-    public void setValidated(boolean validated) {
-        this.validated = validated;
     }
 
     public List<SAXParseException> getWarnings() {
@@ -120,24 +114,6 @@ public final class XmlParseResult implements Serializable, ErrorHandler {
                 && errors.isEmpty()
                 && warnings.isEmpty()
                 && unsupportedSchemaNamespaces.isEmpty();
-    }
-
-    //---------------------------------------------------------
-
-    @Override
-    public void warning(SAXParseException exception) {
-        warnings.add(exception);
-    }
-
-    @Override
-    public void error(SAXParseException exception) {
-        errors.add(exception);
-    }
-
-    @Override
-    public void fatalError(SAXParseException exception) throws SAXParseException {
-        fatalErrors.add(exception);
-        throw exception;
     }
 
     //---------------------------------------------------------

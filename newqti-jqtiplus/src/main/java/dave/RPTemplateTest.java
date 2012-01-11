@@ -14,11 +14,12 @@ import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 
 import java.net.URI;
+import java.util.Collections;
 
 public class RPTemplateTest {
     
     public static void main(String[] args) throws Exception {
-        URI inputUri = URI.create("classpath:/exercice1.xml");
+        URI inputUri = URI.create("classpath:/rpTest.xml");
         
         System.out.println("Reading and validating");
         JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -28,5 +29,7 @@ public class RPTemplateTest {
 
         ItemValidationResult result = objectManager.validateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
+        
+        System.out.println(Collections.emptyList());
     }
 }

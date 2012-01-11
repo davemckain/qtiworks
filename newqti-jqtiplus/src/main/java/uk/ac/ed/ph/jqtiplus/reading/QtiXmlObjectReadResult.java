@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
@@ -64,7 +65,7 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
         this.requiredResultClass = requiredClass;
         this.rootObjectResult = rootObjectResult;
         this.xmlParseResult = xmlParseResult;
-        this.qtiModelBuildingErrors = qtiModelBuildingErrors;
+        this.qtiModelBuildingErrors = ObjectUtilities.unmodifiableList(qtiModelBuildingErrors);
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)

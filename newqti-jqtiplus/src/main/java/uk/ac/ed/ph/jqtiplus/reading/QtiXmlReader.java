@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 
@@ -96,7 +96,7 @@ public final class QtiXmlReader {
     /**
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
     public XmlReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator, boolean schemaValidating)

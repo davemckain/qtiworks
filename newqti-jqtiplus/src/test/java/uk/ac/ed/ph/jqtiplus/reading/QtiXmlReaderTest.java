@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.io.reading;
+package uk.ac.ed.ph.jqtiplus.reading;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 
 import java.io.InputStream;
@@ -169,7 +169,7 @@ public class QtiXmlReaderTest {
         assertEquals(1, parseResult.getUnsupportedSchemaNamespaces().size()); /* (Unsupported) */
     }
 
-    @Test(expected = XmlReaderException.class)
+    @Test(expected = XmlResourceReaderException.class)
     public void testBadSchemaClassPath() throws Exception {
         final QtiXmlReader reader = new QtiXmlReader(new NoResourceLocator());
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();

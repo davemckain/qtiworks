@@ -36,6 +36,8 @@ package uk.ac.ed.ph.jqtiplus.internal.util;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Some random "macros" for doing common Object-based tasks.
@@ -46,7 +48,18 @@ public final class ObjectUtilities {
 
     /** Shared instance of an empty array of Objects, which is sometimes useful! */
     public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-
+    
+    /**
+     * Trivial convenience extension around {@link Collections#unmodifiableList(List)}
+     */
+    public static <T> List<T> unmodifiableList(List<T> input) {
+        List<T> result = Collections.emptyList();
+        if (input!=null && !input.isEmpty()) {
+            result = Collections.unmodifiableList(input);
+        }
+        return result;
+    }
+ 
     /**
      * Convenience toString() method that can be applied safely to a null
      * Object, yielding null.

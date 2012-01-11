@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
 import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXmlResourceResolver;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -162,7 +162,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(String systemId, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemId, "systemId");
@@ -178,7 +178,7 @@ public final class SupportedXMLReader implements Serializable {
     /**
      * @throws QTIXMLResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML
      */
     public XMLReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator) {
         ConstraintUtilities.ensureNotNull(systemIdUri, "systemIdUri");
@@ -302,7 +302,7 @@ public final class SupportedXMLReader implements Serializable {
             throw new QTIXMLReadException(xmlParseResult);
         }
         catch (final Exception e) {
-            throw new XmlReaderException("Unexpected Exception during parsing", e);
+            throw new XmlResourceReaderException("Unexpected Exception during parsing", e);
         }
         logger.info("Result of read is {}", xmlParseResult);
         return new XMLReadResult(document, xmlParseResult);

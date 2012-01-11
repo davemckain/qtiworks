@@ -58,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -150,7 +151,7 @@ public final class XmlResourceReader {
     /**
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
-     * @throws XmlReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
     public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator, boolean schemaValidating)
@@ -170,16 +171,24 @@ public final class XmlResourceReader {
         }
         catch (final Exception e) {
             logger.info("read({}, {}, {}) => UNEXPECTED EXCEPTION {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
-            throw new XmlReaderException("Unexpected Exception parsing or validating XML at system ID " + systemId, e);
+            if (e instanceof XmlResourceReaderException) {
+                throw (XmlResourceReaderException) e;
+            }
+            throw new XmlResourceReaderException("Unexpected Exception parsing or validating XML at system ID " + systemId, e);
         }
     }
 
     private XmlReadResult doRead(URI systemId, ResourceLocator inputResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException, ParserConfigurationException, SAXException, IOException {
         final String systemIdString = systemId.toString();
-        final XmlParseResult xmlParseResult = new XmlParseResult(systemId);
+        boolean parsed = false;
+        boolean validated = false;
+        final List<String> supportedSchemaNamespaces = new ArrayList<String>();
+        final List<String> unsupportedSchemaNamespaces = new ArrayList<String>();
 
         logger.debug("XML parse of {} starting", systemIdString);
+        
+        final InputErrorHandler inputErrorHandler = new InputErrorHandler();
         final UnifiedXmlResourceResolver resourceResolver = new UnifiedXmlResourceResolver();
         resourceResolver.setResourceLocator(parserResourceLocator);
         resourceResolver.setFailOnMissedEntityResolution(false);
@@ -192,7 +201,7 @@ public final class XmlResourceReader {
         dbFactory.setExpandEntityReferences(true);
         final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
         documentBuilder.setEntityResolver(resourceResolver);
-        documentBuilder.setErrorHandler(xmlParseResult);
+        documentBuilder.setErrorHandler(inputErrorHandler);
         final Document document = documentBuilder.newDocument();
 
         /* Configure SAX parser */
@@ -206,7 +215,7 @@ public final class XmlResourceReader {
         spFactory.setFeature("http://xml.org/sax/features/lexical-handler/parameter-entities", false);
         final XMLReader xmlReader = spFactory.newSAXParser().getXMLReader();
         xmlReader.setEntityResolver(resourceResolver);
-        xmlReader.setErrorHandler(xmlParseResult);
+        xmlReader.setErrorHandler(inputErrorHandler);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
         final InputSource inputSource = new InputSource();
@@ -222,8 +231,7 @@ public final class XmlResourceReader {
             /* Fatal parsing error */
         }
         /* We'll consider successful parsing to be no errors or fatal errors */
-        final boolean parsed = xmlParseResult.getFatalErrors().isEmpty() && xmlParseResult.getErrors().isEmpty();
-        xmlParseResult.setParsed(parsed);
+        parsed = inputErrorHandler.fatalErrors.isEmpty() && inputErrorHandler.errors.isEmpty();
         logger.debug("XML parse of {} success? ", parsed);
 
         if (parsed && schemaValidating) {
@@ -239,12 +247,12 @@ public final class XmlResourceReader {
                     final String schemaNamespaceUri = schemaData[i];
                     final String schemaUri = getRegisteredSchemaLocation(schemaNamespaceUri);
                     if (schemaUri != null) {
-                        xmlParseResult.getSupportedSchemaNamespaces().add(schemaNamespaceUri);
+                        supportedSchemaNamespaces.add(schemaNamespaceUri);
                         schemaUris.add(schemaUri);
                     }
                     else {
                         logger.error("Schema with namespace " + schemaNamespaceUri + " declared in schemaLocation is not registered with this reader");
-                        xmlParseResult.getUnsupportedSchemaNamespaces().add(schemaNamespaceUri);
+                        unsupportedSchemaNamespaces.add(schemaNamespaceUri);
                     }
                 }
             }
@@ -253,32 +261,19 @@ public final class XmlResourceReader {
                 final String schemaNamespaceUri = rootElement.getNamespaceURI();
                 final String schemaUri = getRegisteredSchemaLocation(rootElement.getNamespaceURI());
                 if (schemaUri != null) {
-                    xmlParseResult.getSupportedSchemaNamespaces().add(schemaNamespaceUri);
+                    supportedSchemaNamespaces.add(schemaNamespaceUri);
                     schemaUris.add(schemaUri);
                 }
                 else {
                     logger.error("Schema with namespace " + schemaNamespaceUri + " inferred from that of document element is not registered with this reader");
-                    xmlParseResult.getUnsupportedSchemaNamespaces().add(schemaNamespaceUri);
+                    unsupportedSchemaNamespaces.add(schemaNamespaceUri);
                 }
             }
 
             /* Validate (if some supported schemas were declared) */
             if (!schemaUris.isEmpty()) {
                 logger.info("Will validate {} against schemas {}", systemIdString, schemaUris);
-                final Source[] schemaSources = new Source[schemaUris.size()];
-                for (int i = 0; i < schemaSources.length; i++) {
-                    final Source schemaSource = resourceResolver.loadResourceAsSource(schemaUris.get(i));
-                    if (schemaSource == null) {
-                        final String message = "parserResourceLocator failed to locate schema with URI " + schemaUris.get(i);
-                        logger.error(message);
-                        throw new XmlReaderException(message);
-                    }
-                    schemaSources[i] = schemaSource;
-                }
-                final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                sf.setResourceResolver(resourceResolver);
-                sf.setErrorHandler(xmlParseResult);
-                final Schema schema = sf.newSchema(schemaSources);
+                final Schema schema = compileSchema(resourceResolver, schemaUris);
 
                 /* Now validate. Note that we read in the input again, as this will let the parser provide source
                  * information to the schema validator. (I couldn't work out a way of passing source information
@@ -288,17 +283,113 @@ public final class XmlResourceReader {
                 final StreamSource input = new StreamSource(ensureLocateInput(systemId, inputResourceLocator), systemIdString);
                 final Validator validator = schema.newValidator();
                 validator.setResourceResolver(resourceResolver);
-                validator.setErrorHandler(xmlParseResult);
+                validator.setErrorHandler(inputErrorHandler);
                 validator.validate(input);
-                xmlParseResult.setValidated(true);
+                validated = true;
                 logger.debug("Schema validation of {} finished", systemIdString);
             }
             else {
                 logger.warn("No supported schemas declared, so no validation will be performed");
             }
         }
-
+        
+        /* Build up result */
+        XmlParseResult xmlParseResult = new XmlParseResult(systemId, parsed, validated,
+                inputErrorHandler.warnings, inputErrorHandler.errors, inputErrorHandler.fatalErrors,
+                supportedSchemaNamespaces, unsupportedSchemaNamespaces);
         return new XmlReadResult(parsed ? document : null, xmlParseResult);
+    }
+    
+    private Schema compileSchema(UnifiedXmlResourceResolver resourceResolver, List<String> schemaUris) {
+        final Source[] schemaSources = new Source[schemaUris.size()];
+        for (int i = 0; i < schemaSources.length; i++) {
+            final Source schemaSource = resourceResolver.loadResourceAsSource(schemaUris.get(i));
+            if (schemaSource == null) {
+                final String message = "parserResourceLocator failed to locate schema with URI " + schemaUris.get(i);
+                logger.error(message);
+                throw new XmlResourceReaderException(message);
+            }
+            schemaSources[i] = schemaSource;
+        }
+        final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        sf.setResourceResolver(resourceResolver);
+        sf.setErrorHandler(new SchemaParsingErrorHandler(schemaUris));
+        logger.debug("Compiling schema(s) with URI(s) {}", schemaUris);
+        try {
+            return sf.newSchema(schemaSources);
+        }
+        catch (SAXException e) {
+            throw new XmlResourceReaderException("Unexpected Exception compiling schema(s) with URI(s)" + schemaUris, e);
+        }
+    }
+    
+    /**
+     * {@link ErrorHandler} used when parsing user input, which simply records
+     * everything.
+     */
+    public final class InputErrorHandler implements ErrorHandler {
+
+        final List<SAXParseException> warnings;
+        final List<SAXParseException> errors;
+        final List<SAXParseException> fatalErrors;
+
+        public InputErrorHandler() {
+            this.warnings = new ArrayList<SAXParseException>();
+            this.errors = new ArrayList<SAXParseException>();
+            this.fatalErrors = new ArrayList<SAXParseException>();
+        }
+
+        @Override
+        public void warning(SAXParseException exception) {
+            warnings.add(exception);
+        }
+
+        @Override
+        public void error(SAXParseException exception) {
+            errors.add(exception);
+        }
+
+        @Override
+        public void fatalError(SAXParseException exception) throws SAXParseException {
+            fatalErrors.add(exception);
+            throw exception;
+        }
+    }
+    
+    /**
+     * {@link ErrorHandler} used when parsing internal schemas, which is basically as strict
+     * and quick to fail as possible as our internal schemas should be well behaved!
+     */
+    private static class SchemaParsingErrorHandler implements ErrorHandler {
+        
+        private final List<String> schemaUris;
+        
+        public SchemaParsingErrorHandler(List<String> schemaUris) {
+            this.schemaUris = schemaUris;
+        }
+        
+        @Override
+        public void error(SAXParseException e) {
+            fail("error", e);
+        }
+
+        @Override
+        public void fatalError(SAXParseException e) {
+            fail("fatalError", e);
+        }
+
+        @Override
+        public void warning(SAXParseException e) {
+            fail("warning", e);
+        }
+        
+        private void fail(String errorLevel, SAXParseException e) {
+            throw new XmlResourceReaderException("Unexpected SAXParseException at level "
+                    + errorLevel
+                    + " when parsing schema(s) with URI(s) "
+                    + schemaUris, e);
+        }
+        
     }
 
     private static InputStream ensureLocateInput(URI systemId, ResourceLocator inputResourceLocator)
