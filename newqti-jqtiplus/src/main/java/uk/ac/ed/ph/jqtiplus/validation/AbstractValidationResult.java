@@ -43,9 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Result of validation. Container of validation items.
+ * Partial base class for result of validation. Container of validation items.
  * 
  * @author Jiri Kajaba
+ * @authro David McKain
  */
 public abstract class AbstractValidationResult implements Serializable {
 

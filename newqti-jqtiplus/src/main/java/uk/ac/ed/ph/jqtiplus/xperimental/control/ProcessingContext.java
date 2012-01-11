@@ -33,16 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xperimental.control;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -50,12 +48,7 @@ import java.util.Map;
 /**
  * FIXME: This needs refactored!
  */
-public interface ProcessingContext extends Serializable {
-
-    AssessmentObject getOwner();
-    
-    @ToRefactor
-    VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier);
+public interface ProcessingContext extends Serializable, ValidationContext {
 
     Value lookupVariable(VariableDeclaration variableDeclaration);
 

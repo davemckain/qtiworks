@@ -32,57 +32,41 @@
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.xperimental.control;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
- * Encapsulates the result of validating an {@link AssessmentTest}
- *
+ * FIXME: This needs refactored and probably isn't needed as I think we can do validation better
+ * to remove the need for runtime checking.
+ * 
  * @author David McKain
  */
-public final class TestValidationResult extends AbstractValidationResult {
+public final class RuntimeValidationResult extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final ResolvedAssessmentTest resolvedAssessmentTest;
-
-    /** Results of validating each item */
-    private final List<ItemValidationResult> itemValidationResults;
+    private final AssessmentObject assessmentObject;
     
-    public TestValidationResult(ResolvedAssessmentTest resolvedAssessmentTest) {
-        this.resolvedAssessmentTest = resolvedAssessmentTest;
-        this.itemValidationResults = new ArrayList<ItemValidationResult>();
+    public RuntimeValidationResult(AssessmentObject assessmentObject) {
+        this.assessmentObject = assessmentObject;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public ResolvedAssessmentTest getResolvedAssessmentTest() {
-        return resolvedAssessmentTest;
-    }
-    
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ItemValidationResult> getItemValidationResults() {
-        return itemValidationResults;
-    }
-
-    public void addItemValidationResult(ItemValidationResult result) {
-        itemValidationResults.add(result);
+    public AssessmentObject getAssessmentObject() {
+        return assessmentObject;
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(resolvedAssessmentTest=" + resolvedAssessmentTest
+                + "(assessmentObject=" + assessmentObject
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()
                 + ",infos=" + getInfos()
-                + ",itemValidationResults=" + itemValidationResults
                 + ")";
     }
 }

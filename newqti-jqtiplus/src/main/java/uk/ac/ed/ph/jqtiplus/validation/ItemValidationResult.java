@@ -36,10 +36,11 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 
 /**
- * FIXME: Document this type
+ * Encapsulates the result of doing validation on an {@link AssessmentItem}
  *
  * @author David McKain
  */
@@ -47,21 +48,21 @@ public final class ItemValidationResult extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final ResolvedAssessmentItem itemHolder;
+    private final ResolvedAssessmentItem resolvedAssessmentItem;
     
-    public ItemValidationResult(ResolvedAssessmentItem itemHolder) {
-        this.itemHolder = itemHolder;
+    public ItemValidationResult(ResolvedAssessmentItem resolvedAssessmentItem) {
+        this.resolvedAssessmentItem = resolvedAssessmentItem;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public ResolvedAssessmentItem getItemHolder() {
-        return itemHolder;
+    public ResolvedAssessmentItem getResolvedAssessmentItem() {
+        return resolvedAssessmentItem;
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(itemHolder=" + itemHolder
+                + "(resolvedAssessmentItem=" + resolvedAssessmentItem
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()
                 + ",infos=" + getInfos()

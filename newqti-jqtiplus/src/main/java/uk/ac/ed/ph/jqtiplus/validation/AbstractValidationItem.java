@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import java.io.Serializable;
 
 /**
- * Abstract implementation of ValidationItem.
+ * Abstract partial implementation of ValidationItem.
  * 
  * @author Jiri Kajaba
  */

@@ -40,6 +40,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
 /**
  * FIXME: Document this!
+ * FIXME: I think this can probably be removed, with the validation() methods simply being given
+ * a copy of the resolved AssessmentObject, which could be enhanced with some helper methods for
+ * doing deep lookups, especially in the case of tests.
  * 
  * @author David McKain
  */
