@@ -31,26 +31,52 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.utils;
 
-import java.io.InputStream;
-import java.net.URI;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * This interface is used by {@link UnifiedXmlResourceResolver} to actually
- * <strong>locate</strong> the resulting XML resources.
+ * Encapsulates details of the contents of a Content Package that are of interest to QTI.
  * 
  * @author David McKain
  */
-public interface ResourceLocator {
+public final class ContentPackageDetails implements Serializable {
+    
+    private static final long serialVersionUID = 6791550769947268491L;
+    
+    private final ImsManifestReadResult packageManifestDetails;
+    private final List<String> testResourceHrefs;
+    private final List<String> itemResourceHrefs;
+    
+    public ContentPackageDetails(ImsManifestReadResult packageManifestDetails, List<String> testResourceHrefs, List<String> itemResourceHrefs) {
+        this.packageManifestDetails = packageManifestDetails;
+        this.testResourceHrefs = testResourceHrefs;
+        this.itemResourceHrefs = itemResourceHrefs;
+    }
 
-    /**
-     * Implementations should return an {@link InputStream} corresponding to the
-     * XML resource having the given System ID (passed as a URI), or null if they
-     * can't locate the required resource or won't handle the given URI.
-     * 
-     * @param systemId
-     */
-    InputStream findResource(final URI systemId);
-
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public ImsManifestReadResult getPackageManifestDetails() {
+        return packageManifestDetails;
+    }
+    
+    public List<String> getTestResourceHrefs() {
+        return testResourceHrefs;
+    }
+    
+    public List<String> getItemResourceHrefs() {
+        return itemResourceHrefs;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(packageManifestDetails=" + packageManifestDetails
+                + ",testResourceHrefs=" + testResourceHrefs
+                + ",itemResourceHrefs=" + itemResourceHrefs
+                + ")";
+    }
 }

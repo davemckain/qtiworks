@@ -31,7 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.utils;
+package uk.ac.ed.ph.jqtiplus.utils;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,7 +61,7 @@ import org.xml.sax.InputSource;
  * @author Jonathon Hare
  * @author David McKain
  */
-public class ContentPackageExtractor {
+public class ContentPackageExtractorOLD {
     
     private static final String MANIFEST_FILE_NAME = "imsmanifest.xml";
     
@@ -97,13 +99,13 @@ public class ContentPackageExtractor {
     private List<String> specialResourceHrefs;
     private boolean unpacked;
     
-    public ContentPackageExtractor(ZipInputStream zipInputStream, File destinationDirectory) {
+    public ContentPackageExtractorOLD(InputStream inputStream, File destinationDirectory) {
+        this(new ZipInputStream(inputStream), destinationDirectory);
+    }
+    
+    public ContentPackageExtractorOLD(ZipInputStream zipInputStream, File destinationDirectory) {
         this.zipInputStream = zipInputStream;
         this.destinationDirectory = destinationDirectory;
-    }
-
-    public ContentPackageExtractor(InputStream inputStream, File destinationDirectory) {
-        this(new ZipInputStream(inputStream), destinationDirectory);
     }
 
     public void unpack() {
@@ -145,7 +147,7 @@ public class ContentPackageExtractor {
          * actual QTI items/tests.
          */
         containerManifestFile = new File(destinationDirectory, MANIFEST_FILE_NAME);
-        IMSManifestHandler containerHandler = readManifestFile(containerManifestFile, MANIFEST_FILE_NAME);
+        ImsManifestHandler containerHandler = readManifestFile(containerManifestFile, MANIFEST_FILE_NAME);
         specialResourceHrefs = new ArrayList<String>();
         specialResourceHrefs.add(MANIFEST_FILE_NAME);
         if (containerHandler.getResourceTypes().contains(CC_ASSESSMENT_TYPE)) {
@@ -161,7 +163,7 @@ public class ContentPackageExtractor {
             qtiManifestFile = new File(destinationDirectory, qtiManifestHref);
             
             /* Now parse actual QTI manifest and resolve item/test locations against top of bundle */
-            IMSManifestHandler qtiManifestHandler = readManifestFile(qtiManifestFile, qtiManifestHref);
+            ImsManifestHandler qtiManifestHandler = readManifestFile(qtiManifestFile, qtiManifestHref);
             testResourceHrefs = resolveHrefs(qtiManifestHandler.getResourceHrefsForTypes(TEST_TYPES), qtiManifestHref);
             itemResourceHrefs = resolveHrefs(qtiManifestHandler.getResourceHrefsForTypes(ITEM_TYPES), qtiManifestHref);
         }
@@ -206,12 +208,12 @@ public class ContentPackageExtractor {
         }
     }
     
-    private IMSManifestHandler readManifestFile(File manifestFile, String manifestLocation) {
+    private ImsManifestHandler readManifestFile(File manifestFile, String manifestLocation) {
         if (!manifestFile.exists()) {
             throw new ContentPackageException("Could not find IMS Manifest file at " + manifestLocation);
         }
         InputSource manifestInput = new InputSource(manifestFile.getAbsolutePath());
-        IMSManifestHandler cpResourceFinder = new IMSManifestHandler();
+        ImsManifestHandler cpResourceFinder = new ImsManifestHandler();
         try {
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             saxParserFactory.setNamespaceAware(true);
@@ -285,7 +287,7 @@ public class ContentPackageExtractor {
 
         System.out.println("Source = '" + sourceFile + "'");
 
-        ContentPackageExtractor extractor = new ContentPackageExtractor(new FileInputStream(sourceFile), destDirectory);
+        ContentPackageExtractorOLD extractor = new ContentPackageExtractorOLD(new FileInputStream(sourceFile), destDirectory);
         extractor.unpack(true);
         
         System.out.println("Destination = '" + extractor.getDestinationDirectory() + "'");

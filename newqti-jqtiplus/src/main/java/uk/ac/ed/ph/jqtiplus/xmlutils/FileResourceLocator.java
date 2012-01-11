@@ -48,18 +48,16 @@ import org.slf4j.LoggerFactory;
  */
 public class FileResourceLocator implements ResourceLocator {
 
-    private static final long serialVersionUID = -6023672582874907755L;
-
     private static final Logger logger = LoggerFactory.getLogger(FileResourceLocator.class);
 
     @Override
-    public InputStream findResource(URI systemIdUri) {
-        if ("file".equals(systemIdUri.getScheme())) {
+    public InputStream findResource(URI systemId) {
+        if ("file".equals(systemId.getScheme())) {
             try {
-                return new FileInputStream(new File(systemIdUri));
+                return new FileInputStream(new File(systemId));
             }
             catch (final Exception e) {
-                logger.warn("File " + systemIdUri + " does not exist");
+                logger.warn("File " + systemId + " does not exist");
                 return null;
             }
         }

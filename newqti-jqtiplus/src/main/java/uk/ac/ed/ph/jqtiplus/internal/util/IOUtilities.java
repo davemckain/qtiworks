@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.utils;
+package uk.ac.ed.ph.jqtiplus.internal.util;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

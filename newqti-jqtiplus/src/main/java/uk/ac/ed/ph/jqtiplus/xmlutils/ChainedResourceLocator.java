@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
@@ -42,13 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Should this fail if we can't load the required resource?
+ * Chains one or more {@link ResourceLocator}s together.
  * 
  * @author David McKain
  */
 public final class ChainedResourceLocator implements ResourceLocator {
-
-    private static final long serialVersionUID = -8464840262292852214L;
 
     private static final Logger logger = LoggerFactory.getLogger(ChainedResourceLocator.class);
 
@@ -58,11 +55,14 @@ public final class ChainedResourceLocator implements ResourceLocator {
         this.resourceLocators = resourceLocators;
     }
 
+    /**
+     * Tries each {@link ResourceLocator} in order, the first to return non-null wins.
+     */
     @Override
-    public InputStream findResource(URI systemIdUri) {
+    public InputStream findResource(URI systemId) {
         for (final ResourceLocator resourceLocator : resourceLocators) {
-            logger.debug("Trying {} using ResourceLocator {}", systemIdUri, resourceLocator);
-            final InputStream result = resourceLocator.findResource(systemIdUri);
+            logger.debug("Trying {} using ResourceLocator {}", systemId, resourceLocator);
+            final InputStream result = resourceLocator.findResource(systemId);
             if (result != null) {
                 logger.debug("Success with ResourceLocator {}", resourceLocator);
                 return result;

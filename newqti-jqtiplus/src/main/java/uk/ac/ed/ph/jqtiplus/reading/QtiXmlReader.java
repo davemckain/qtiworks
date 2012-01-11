@@ -77,7 +77,7 @@ public final class QtiXmlReader {
         if (extensionSchemaMapTemplate != null) {
             resultingSchemaMapTemplate.putAll(extensionSchemaMapTemplate);
         }
-        resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE, QtiConstants.QTI_21_SCHEMA_LOCATION);
+        resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
         this.extensionSchemaMap = extensionSchemaMapTemplate != null ? Collections.unmodifiableMap(extensionSchemaMapTemplate) : null;
         this.xmlResourceReader = new XmlResourceReader(parserResourceLocator, resultingSchemaMapTemplate);

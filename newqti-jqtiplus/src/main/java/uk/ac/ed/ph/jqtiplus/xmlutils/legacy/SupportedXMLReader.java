@@ -100,7 +100,7 @@ public final class SupportedXMLReader implements Serializable {
     public static final Map<String, String> DEFAULT_SCHEMA_MAP;
     static {
         DEFAULT_SCHEMA_MAP = new HashMap<String, String>();
-        DEFAULT_SCHEMA_MAP.put(QtiConstants.QTI_21_NAMESPACE, QtiConstants.QTI_21_SCHEMA_LOCATION);
+        DEFAULT_SCHEMA_MAP.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
     }
 
     /**

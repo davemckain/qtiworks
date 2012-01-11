@@ -52,8 +52,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class ClassPathHttpResourceLocator implements ResourceLocator {
 
-    private static final long serialVersionUID = 6287482860619405237L;
-
     private static final Logger logger = LoggerFactory.getLogger(ClassPathHttpResourceLocator.class);
 
     /** basePath to search in. null is treated as blank */
@@ -78,23 +76,23 @@ public final class ClassPathHttpResourceLocator implements ResourceLocator {
     // -------------------------------------------
 
     @Override
-    public InputStream findResource(final URI systemIdUri) {
-        final String scheme = systemIdUri.getScheme();
+    public InputStream findResource(final URI systemId) {
+        final String scheme = systemId.getScheme();
         if ("http".equals(scheme)) {
-            final String relativeSystemId = systemIdUri.toString().substring("http://".length());
+            final String relativeSystemId = systemId.toString().substring("http://".length());
             final String resultingPath = basePath != null ? basePath + "/" + relativeSystemId : relativeSystemId;
-            return loadResource(systemIdUri, resultingPath);
+            return loadResource(systemId, resultingPath);
         }
         return null;
     }
 
-    private InputStream loadResource(final URI systemIdUri, final String resourcePath) {
+    private InputStream loadResource(final URI systemId, final String resourcePath) {
         final InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
         if (resourceStream != null) {
-            logger.debug("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemIdUri, resourcePath);
+            logger.debug("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemId, resourcePath);
         }
         else {
-            logger.warn("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemIdUri, resourcePath);
+            logger.warn("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
         }
         return resourceStream;
     }

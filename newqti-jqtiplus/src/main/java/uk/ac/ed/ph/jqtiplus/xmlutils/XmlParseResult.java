@@ -44,6 +44,8 @@ import org.xml.sax.SAXParseException;
 /**
  * Encapsulates the diagnostic results of parsing (and optionally schema-validating) XML
  * 
+ * FIXME: Make this immutable
+ * 
  * @author David McKain
  */
 public final class XmlParseResult implements Serializable, ErrorHandler {

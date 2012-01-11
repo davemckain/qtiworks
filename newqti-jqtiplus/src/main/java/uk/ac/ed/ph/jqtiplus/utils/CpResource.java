@@ -31,26 +31,49 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import java.io.InputStream;
-import java.net.URI;
+package uk.ac.ed.ph.jqtiplus.utils;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * This interface is used by {@link UnifiedXmlResourceResolver} to actually
- * <strong>locate</strong> the resulting XML resources.
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public interface ResourceLocator {
+public final class CpResource implements Serializable {
 
-    /**
-     * Implementations should return an {@link InputStream} corresponding to the
-     * XML resource having the given System ID (passed as a URI), or null if they
-     * can't locate the required resource or won't handle the given URI.
-     * 
-     * @param systemId
-     */
-    InputStream findResource(final URI systemId);
-
+    private static final long serialVersionUID = 8850693671764183109L;
+    
+    private final String type;
+    private final String href;
+    private final List<String> fileHrefs;
+    
+    public CpResource(String type, String href, List<String> fileHrefs) {
+        this.type = type;
+        this.href = href;
+        this.fileHrefs = fileHrefs;
+    }
+    
+    public String getType() {
+        return type;
+    }
+    
+    public String getHref() {
+        return href;
+    }
+    
+    public List<String> getFiles() {
+        return fileHrefs;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+               + "(type=" + type
+               + ",href=" + href
+               + ",fileHrefs=" + fileHrefs
+               + ")";
+    }
 }

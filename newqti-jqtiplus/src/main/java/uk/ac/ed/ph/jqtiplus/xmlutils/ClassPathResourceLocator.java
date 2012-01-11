@@ -52,8 +52,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class ClassPathResourceLocator implements ResourceLocator {
 
-    private static final long serialVersionUID = 6287482860619405237L;
-
     private static final Logger logger = LoggerFactory.getLogger(ClassPathResourceLocator.class);
 
     public static final String CLASSPATH_SCHEME_NAME = "classpath";
@@ -82,14 +80,14 @@ public final class ClassPathResourceLocator implements ResourceLocator {
     // -------------------------------------------
 
     @Override
-    public InputStream findResource(final URI systemIdUri) {
-        final String scheme = systemIdUri.getScheme();
+    public InputStream findResource(final URI systemId) {
+        final String scheme = systemId.getScheme();
         InputStream result = null;
         if (CLASSPATH_SCHEME_NAME.equals(scheme)) {
-            final String systemIdAfterScheme = systemIdUri.toString().substring(CLASSPATH_SCHEME_NAME.length());
+            final String systemIdAfterScheme = systemId.toString().substring(CLASSPATH_SCHEME_NAME.length());
             if (systemIdAfterScheme.startsWith(":/")) {
                 final String resultingPath = basePath != null ? basePath + systemIdAfterScheme.substring(1) : systemIdAfterScheme.substring(2);
-                result = loadResource(systemIdUri, resultingPath);
+                result = loadResource(systemId, resultingPath);
             }
             else {
                 logger.warn("ClassPath URI must be of the form " + CLASSPATH_SCHEME_NAME + ":/path");

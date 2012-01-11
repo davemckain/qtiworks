@@ -31,13 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.utils;
+package uk.ac.ed.ph.jqtiplus.utils;
+
+import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
 /**
+ * Exception thrown when something unexpected happens when handling a Content Package.
  * 
- * @author Jonathon Hare
+ * @author David McKain
  */
-public class ContentPackageException extends RuntimeException {
+public class ContentPackageException extends QTIRuntimeException {
 
     private static final long serialVersionUID = -8628944534184533327L;
     
