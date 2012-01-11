@@ -233,7 +233,7 @@ public final class AssessmentObjectManager {
     private ResolvedAssessmentTest initAssessmentTestHolder(RootObjectLookup<AssessmentTest> testLookup, ModelRichness modelRichness, CachedResourceProvider providerHelper) {
         Map<AssessmentItemRef, URI> systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
         Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
-        Map<URI, ResolvedAssessmentItem> assessmentItemHolderMap = new HashMap<URI, ResolvedAssessmentItem>();
+        Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new HashMap<URI, ResolvedAssessmentItem>();
         
         /* Look up test */
         if (testLookup.wasSuccessful()) {
@@ -255,10 +255,10 @@ public final class AssessmentObjectManager {
             
             /* Resolve each unique item */
             for (URI itemSystemId : itemRefsBySystemIdMap.keySet()) {
-                assessmentItemHolderMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, providerHelper));
+                resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, providerHelper));
             }
         }
-        return new ResolvedAssessmentTest(modelRichness, testLookup, systemIdByItemRefMap, itemRefsBySystemIdMap, assessmentItemHolderMap);
+        return new ResolvedAssessmentTest(modelRichness, testLookup, systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
     }
     
     public TestValidationResult validateTest(URI systemId) {
@@ -270,7 +270,7 @@ public final class AssessmentObjectManager {
         AssessmentTest test = testHolder.getTestLookup().extractIfSuccessful();
         if (test!=null) {
             /* Validate each unique item first */
-            for (Entry<URI, ResolvedAssessmentItem> entry : testHolder.getAssessmentItemHolderMap().entrySet()) {
+            for (Entry<URI, ResolvedAssessmentItem> entry : testHolder.getResolvedAssessmentItemMap().entrySet()) {
                 URI itemSystemId = entry.getKey();
                 ResolvedAssessmentItem itemHolder = entry.getValue();
                 StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
