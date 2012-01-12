@@ -36,7 +36,15 @@ package uk.ac.ed.ph.jqtiplus.xmlutils;
 import java.net.URI;
 
 /**
- * FIXME: Document this type
+ * Trivial helper to deal with our custom hierarchic URI schemes of the form
+ * 
+ * <code>scheme:/path/to/something.xml</code>
+ * 
+ * which represents a resource at location
+ * 
+ * <code>path/to/something.xml</code>
+ * 
+ * in a filesystem subtree, sandbox or something similar.
  *
  * @author David McKain
  */
