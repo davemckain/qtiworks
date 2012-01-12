@@ -34,6 +34,7 @@
 
 package uk.ac.ed.ph.jqtiplus.utils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
 import java.io.Serializable;
@@ -62,7 +63,7 @@ public final class ImsManifestReadResult implements Serializable {
             final List<ContentPackageResource> resources) {
         this.xmlParseResult = xmlParseResult;
         this.namespaceUri = namespaceUri;
-        this.resourceList = Collections.unmodifiableList(resources);
+        this.resourceList = ObjectUtilities.unmodifiableList(resources);
         
         Map<String, List<ContentPackageResource>> builder = new HashMap<String, List<ContentPackageResource>>();
         for (ContentPackageResource resource : resources) {
@@ -79,8 +80,8 @@ public final class ImsManifestReadResult implements Serializable {
     public ImsManifestReadResult(final XmlParseResult xmlParseResult) {
         this.xmlParseResult = xmlParseResult;
         this.namespaceUri = null;
-        this.resourceList = null;
-        this.resourcesByTypeMap = null;
+        this.resourceList = Collections.emptyList();
+        this.resourcesByTypeMap = Collections.emptyMap();
     }
     
     public boolean isUnderstood() {

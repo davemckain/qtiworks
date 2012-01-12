@@ -149,6 +149,10 @@ public final class XmlResourceReader {
     //--------------------------------------------------
 
     /**
+     * FIXME: This currently calls the {@link ResourceLocator} to read the input *twice*. I may
+     * want to save the initial input to a temp file if the stream is not something that can be
+     * quickly re-read (e.g. HTTP!)  
+     * 
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or

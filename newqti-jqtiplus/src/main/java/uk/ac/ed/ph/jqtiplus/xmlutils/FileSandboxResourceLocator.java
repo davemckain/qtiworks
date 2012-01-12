@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * <code>package:/a/b/c.xml</code> -> <code>File base/a/b/c.xml</code>
  * 
  * A check is included to ensure that the resulting path does not end up outside the
- * required base directgory.
+ * required base directory.
  *
  * @author David McKain
  */

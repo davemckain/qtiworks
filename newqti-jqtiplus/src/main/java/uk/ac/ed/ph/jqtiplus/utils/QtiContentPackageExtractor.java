@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,8 +56,6 @@ import org.w3c.dom.NodeList;
 
 /**
  * FIXME: Document this type
- * 
- * FIXME: Must check URIs to make sure they're valid, and also things that we're prepared to support
  * 
  * TODO: This does NOT validate packages (at least for the time being...)
  * 
@@ -94,9 +93,9 @@ public final class QtiContentPackageExtractor {
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }
     
-    public QtiContentPackageSummary parse() throws XmlResourceNotFoundException {
+    public QtiContentPackageSummary parse() throws XmlResourceNotFoundException, ImsManifestException {
         /* First parse the "top" IMS manifest, which should always be present */
-        ImsManifestReadResult manifest = readManifestFile(createPackageUri(IMS_MANIFEST_FILE_NAME));
+        ImsManifestReadResult manifest = readManifestFile(IMS_MANIFEST_FILE_NAME);
         List<URI> testResources = null;
         List<URI> itemResources = null;
         if (manifest.isUnderstood()) {
@@ -114,7 +113,7 @@ public final class QtiContentPackageExtractor {
             List<ContentPackageResource> resourcesByType = resourcesByTypeMap.get(type);
             if (resourcesByType!=null) {
                 for (ContentPackageResource resource : resourcesByType) {
-                    URI resourceUri = URI.create(resource.getHref());
+                    URI resourceUri = resource.getHref();
                     URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(resourceUri);
                     result.add(resolvedUri);
                 }
@@ -135,19 +134,23 @@ public final class QtiContentPackageExtractor {
      * This currently does NOT check namespaces, so probably permits any recent version of
      * Content Packaging to be considered as legal.
      * 
-     * @param manifestSystemId
+     * @param manifestPath path of the manifest within the package
+     * 
      * @throws XmlResourceNotFoundException if the manifest file could not be found
+     * @throws ImsManifestException if the manifest could not be understood 
      */
-    private ImsManifestReadResult readManifestFile(URI manifestSystemId) throws XmlResourceNotFoundException {
+    private ImsManifestReadResult readManifestFile(String manifestPath)
+            throws XmlResourceNotFoundException, ImsManifestException {
         /* Attempt to parse the manifest XML */
+        URI manifestSystemId = createPackageUri(manifestPath);
         logger.info("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
         XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, false);
         XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
         
         /* If successful, extract information from the DOM */
         if (!xmlParseResult.isParsed()) {
-            logger.warn("Manifest parse failed");
-            return new ImsManifestReadResult(xmlParseResult);
+            logger.warn("XML parse of IMS manifest at System ID {} failed: {}", manifestSystemId, xmlParseResult);
+            throw new ImsManifestException("XML parse of IMS manifest file at " + manifestPath + " failed", xmlParseResult);
         }
         
         /* Let's check that this looks like a proper manifest document.
@@ -156,20 +159,30 @@ public final class QtiContentPackageExtractor {
         Document document = xmlReadResult.getDocument();
         Element docElement = document.getDocumentElement();
         if (!"manifest".equals(docElement.getLocalName())) {
-            logger.warn("Parsed manifest at system ID {} has root elemlent <{}> instead of <manifest>", manifestSystemId, docElement.getLocalName());
-            return new ImsManifestReadResult(xmlParseResult);
+            logger.warn("Parsed manifest at System ID {} has root element <{}> instead of <manifest>", manifestSystemId, docElement.getLocalName());
+            throw new ImsManifestException("XML file at " + manifestPath
+                    + " does not appear to be an IMS manifest - its root element is "
+                    + docElement.getNodeName(), xmlParseResult);
         }
         
         /* Extract resources */
+        List<String> errorMessageBuilder = new ArrayList<String>();
         String manifestNamespaceUri = docElement.getNamespaceURI();
         List<ContentPackageResource> resources = null;
         NodeList childNodes = docElement.getChildNodes();
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
             Node item = childNodes.item(i);
             if (item.getNodeType()==Node.ELEMENT_NODE && "resources".equals(item.getLocalName())) {
-                resources = extractResources((Element) item);
+                resources = extractResources((Element) item, errorMessageBuilder);
                 break;
             }
+        }
+        
+        /* Fail if any errors were discovered */
+        if (!errorMessageBuilder.isEmpty()) {
+            logger.warn("Parsed manifest at System ID {} contained some bad href attributes: {}", manifestSystemId, errorMessageBuilder);
+            throw new ImsManifestException("Some href attributes within the manifest were not valid URIs",
+                    xmlParseResult, errorMessageBuilder);
         }
         
         ImsManifestReadResult result = new ImsManifestReadResult(xmlParseResult, manifestNamespaceUri, resources);
@@ -177,7 +190,7 @@ public final class QtiContentPackageExtractor {
         return result;
     }
     
-    private List<ContentPackageResource> extractResources(Element resourcesElement) {
+    private List<ContentPackageResource> extractResources(Element resourcesElement, List<String> errorMessageBuilder) {
         List<ContentPackageResource> resources = new ArrayList<ContentPackageResource>();
         NodeList childNodes = resourcesElement.getChildNodes();
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
@@ -185,23 +198,33 @@ public final class QtiContentPackageExtractor {
             if (childNode.getNodeType()==Node.ELEMENT_NODE && "resource".equals(childNode.getLocalName())) {
                 Element resourceElement = (Element) childNode;
                 String type = resourceElement.getAttribute("type");
-                String href = resourceElement.getAttribute("href");
-                List<String> fileHrefs = extractFileHrefs(resourceElement);
-                resources.add(new ContentPackageResource(type, href, fileHrefs));
+                String href = resourceElement.getAttribute("href"); /* (optional) */
+                List<URI> fileHrefs = extractFileHrefs(resourceElement, errorMessageBuilder);
+                try {
+                    resources.add(new ContentPackageResource(type, href!=null ? new URI(href) : null, fileHrefs));
+                }
+                catch (URISyntaxException e) {
+                    errorMessageBuilder.add("<resource> href attribute '" + href + "' is not a valid URI - ignoring");
+                }
             }
         }
         return resources;
     }
     
-    private List<String> extractFileHrefs(Element resourceElement) {
-        List<String> hrefs = new ArrayList<String>();
+    private List<URI> extractFileHrefs(Element resourceElement, List<String> errorMessageBuilder) {
+        List<URI> hrefs = new ArrayList<URI>();
         NodeList childNodes = resourceElement.getChildNodes();
         for (int i=0, size=childNodes.getLength(); i<size; i++) {
             Node childNode = childNodes.item(i);
             if (childNode.getNodeType()==Node.ELEMENT_NODE && "file".equals(childNode.getLocalName())) {
                 Element fileElement = (Element) childNode;
-                String href = fileElement.getAttribute("href");
-                hrefs.add(href);
+                String href = fileElement.getAttribute("href"); /* (mandatory) */
+                try {
+                    hrefs.add(new URI(href));
+                }
+                catch (URISyntaxException e) {
+                    errorMessageBuilder.add("<file> href attribute '" + href + "' is not a valid URI - ignoring");
+                }
             }
         }
         return hrefs;

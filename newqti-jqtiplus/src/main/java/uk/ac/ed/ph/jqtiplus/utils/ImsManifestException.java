@@ -31,10 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.reading;
+package uk.ac.ed.ph.jqtiplus.utils;
 
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
@@ -42,57 +41,36 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Thrown by {@link QtiXmlObjectReader} when the process of parsing XML, (validating the XML),
- * constructing a JQTI Object model {@link RootObject} and then checking the results does not
- * finish successfully.
+ * Thrown when an IMS manifest file cannot be understood
  *
  * @author David McKain
  */
-public final class QtiXmlInterpretationException extends BadResourceException {
+public final class ImsManifestException extends BadResourceException {
     
     private static final long serialVersionUID = 5190957743384561923L;
     
-    private final ModelRichness requiredModelRichness;
-    private final Class<? extends RootObject> requiredResultClass;
     private final XmlParseResult xmlParseResult;
-    private final RootObject rootObject;
-    private final List<QtiModelBuildingError> qtiModelBuildingErrors;
+    private final List<String> errorMessages;
     
-    QtiXmlInterpretationException(String message, ModelRichness modelRichness, Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult) {
-        this(message, modelRichness, requiredResultClass, xmlParseResult, null, null);
+    ImsManifestException(String message, XmlParseResult xmlParseResult) {
+        this(message, xmlParseResult, null);
     }
     
-    QtiXmlInterpretationException(String message, ModelRichness modelRichness, Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult,
-            RootObject rootObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+    ImsManifestException(String message, XmlParseResult xmlParseResult, List<String> errorMessages) {
         super(message);
-        this.requiredModelRichness = modelRichness;
-        this.requiredResultClass = requiredResultClass;
         this.xmlParseResult = xmlParseResult;
-        this.rootObject = rootObject;
-        this.qtiModelBuildingErrors = qtiModelBuildingErrors;
+        this.errorMessages = ObjectUtilities.unmodifiableList(errorMessages);
     }
     
     public URI getSystemId() {
         return xmlParseResult.getSystemId();
     }
 
-    public ModelRichness getRequiredModelRichness() {
-        return requiredModelRichness;
-    }
-    
-    public Class<? extends RootObject> getRequiredResultClass() {
-        return requiredResultClass;
-    }
-
     public XmlParseResult getXmlParseResult() {
         return xmlParseResult;
     }
     
-    public RootObject getRootObject() {
-        return rootObject;
-    }
-
-    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
-        return qtiModelBuildingErrors;
+    public List<String> getErrorMessages() {
+        return errorMessages;
     }
 }

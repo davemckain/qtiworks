@@ -35,10 +35,12 @@
 package uk.ac.ed.ph.jqtiplus.utils;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.List;
 
 /**
- * FIXME: Document this type
+ * Encapsulates the key data within a <code>resource</code> element and child
+ * <code>file</code> elements in a Content Package.
  *
  * @author David McKain
  */
@@ -47,10 +49,10 @@ public final class ContentPackageResource implements Serializable {
     private static final long serialVersionUID = 8850693671764183109L;
     
     private final String type;
-    private final String href;
-    private final List<String> fileHrefs;
+    private final URI href;
+    private final List<URI> fileHrefs;
     
-    public ContentPackageResource(String type, String href, List<String> fileHrefs) {
+    public ContentPackageResource(String type, URI href, List<URI> fileHrefs) {
         this.type = type;
         this.href = href;
         this.fileHrefs = fileHrefs;
@@ -60,11 +62,11 @@ public final class ContentPackageResource implements Serializable {
         return type;
     }
     
-    public String getHref() {
+    public URI getHref() {
         return href;
     }
     
-    public List<String> getFiles() {
+    public List<URI> getFiles() {
         return fileHrefs;
     }
     
