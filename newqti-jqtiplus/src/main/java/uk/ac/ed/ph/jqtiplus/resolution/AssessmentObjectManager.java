@@ -140,11 +140,11 @@ public final class AssessmentObjectManager {
                 }
             }
             else {
-                logger.warn("AssessmentItem contains ResponseRules, so no template will be resolved");
+                logger.info("AssessmentItem contains ResponseRules, so no template will be resolved");
             }
         }
         else {
-            logger.warn("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
+            logger.info("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
         }
         return result;
     }

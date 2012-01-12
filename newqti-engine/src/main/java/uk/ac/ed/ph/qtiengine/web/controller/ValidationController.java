@@ -33,22 +33,69 @@
  */
 package uk.ac.ed.ph.qtiengine.web.controller;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
+import uk.ac.ed.ph.jqtiplus.utils.ImsManifestException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+
+import uk.ac.ed.ph.qtiengine.web.services.ValidationService;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * MVC Controller for the global "Home" Action.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
 @Controller
-public class TestController {
+public class ValidationController {
     
-    @RequestMapping("/test")
+    private static final Logger logger = LoggerFactory.getLogger(ValidationController.class);
+    
+    @Resource
+    private ValidationService validationService;
+    
+    /** 
+     * Validates a raw payload sent via POST.
+     * 
+     * FIXME: It's probably more scalable to stream the incoming request body straight to a File
+     * rather than a byte array.
+     *  
+     * @param contentType
+     * @param data
+     * @return
+     * @throws IOException 
+     * @throws ImsManifestException 
+     * @throws XmlResourceNotFoundException 
+     */
+    @RequestMapping(value="/validate", method=RequestMethod.POST)
     @ResponseBody
-    public String test() {
-        return "This is a test!";
+    public String validate(@RequestHeader("Content-Type") String contentType, @RequestBody byte[] data)
+            throws IOException, XmlResourceNotFoundException, ImsManifestException {
+        File requestFile = File.createTempFile("qtiengine", "dat");
+        try {
+            IOUtilities.transfer(new ByteArrayInputStream(data), new FileOutputStream(requestFile));
+            String result = validationService.validate(contentType, requestFile);
+            logger.info("Result is {}", result);
+            return result;
+        }
+        finally {
+            if (requestFile.exists()) {
+                requestFile.delete();
+            }
+        }
     }
-    
 }
