@@ -63,19 +63,19 @@ final class CachedResourceProvider implements Serializable {
     
     private static final long serialVersionUID = -8407905672200096970L;
     
-    private final RootObjectProvider resourceProvider;
+    private final RootObjectProvider rootObjectProvider;
     private final ModelRichness modelRichness;
 
     private final Map<URI, RootObjectLookup<?>> cacheData;
     
-    public CachedResourceProvider(final RootObjectProvider resourceProvider, ModelRichness modelRichness) {
-        this.resourceProvider = resourceProvider;
+    public CachedResourceProvider(final RootObjectProvider rootObjectProvider, ModelRichness modelRichness) {
+        this.rootObjectProvider = rootObjectProvider;
         this.modelRichness = modelRichness;
         this.cacheData = new HashMap<URI, RootObjectLookup<?>>();
     }
     
-    public RootObjectProvider getResourceProvider() {
-        return resourceProvider;
+    public RootObjectProvider getRootObjectProvider() {
+        return rootObjectProvider;
     }
     
     public ModelRichness getModelRichness() {
@@ -97,7 +97,7 @@ final class CachedResourceProvider implements Serializable {
         else {
             /* Cache miss */
             try {
-                RootObjectHolder<E> result = resourceProvider.lookupRootObject(systemId, modelRichness, resultClass);
+                RootObjectHolder<E> result = rootObjectProvider.lookupRootObject(systemId, modelRichness, resultClass);
                 frozenResult = new RootObjectLookup<E>(systemId, result);
             }
             catch (BadResourceException e) {
@@ -115,7 +115,7 @@ final class CachedResourceProvider implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(resourceProvider=" + resourceProvider
+                + "(rootObjectProvider=" + rootObjectProvider
                 + ",modelRichness=" + modelRichness
                 + ",cacheData=" + cacheData
                 + ")";
