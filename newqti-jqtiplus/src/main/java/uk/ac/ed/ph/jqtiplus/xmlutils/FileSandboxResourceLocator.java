@@ -64,10 +64,10 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     
     private static final Logger logger = LoggerFactory.getLogger(FileSandboxResourceLocator.class);
     
-    private final String uriScheme;
+    private final CustomUriScheme uriScheme;
     private final File sandboxBaseDirectory;
     
-    public FileSandboxResourceLocator(String uriScheme, File sandboxBaseDirectory) {
+    public FileSandboxResourceLocator(CustomUriScheme uriScheme, File sandboxBaseDirectory) {
         ConstraintUtilities.ensureNotNull(uriScheme, "uriScheme");
         ConstraintUtilities.ensureNotNull(sandboxBaseDirectory, "sandboxBaseDirectory");
         this.uriScheme = uriScheme;
@@ -76,15 +76,14 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     
     @Override
     public InputStream findResource(URI systemIdUri) {
-        if (uriScheme.equals(systemIdUri.getScheme())) {
-            final String normalizedPath = systemIdUri.normalize().getSchemeSpecificPart();
-            if (normalizedPath.startsWith("/..")) {
+        final String normalizedPath = uriScheme.uriToPath(systemIdUri.normalize());
+        if (normalizedPath!=null) {
+            if (normalizedPath.startsWith("..")) {
                 /* This is trying to go outside the package, so we'll return null here */
                 logger.warn("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
                 return null;
             }
-            final String relativePath = normalizedPath.substring(1);
-            final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(relativePath));
+            final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
             FileInputStream result = null;
             try {
                 result = new FileInputStream(resultingFile);
@@ -98,7 +97,7 @@ public class FileSandboxResourceLocator implements ResourceLocator {
         return null;
     }
     
-    public String getUriScheme() {
+    public CustomUriScheme getUriScheme() {
         return uriScheme;
     }
     

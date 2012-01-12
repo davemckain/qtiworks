@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -68,7 +69,7 @@ public final class QtiContentPackageExtractor {
     
     private static final Logger logger = LoggerFactory.getLogger(QtiContentPackageExtractor.class);
     
-    public static final String PACKAGE_URI_SCHEME = "this-content-package";
+    public static final CustomUriScheme PACKAGE_URI_SCHEME = new CustomUriScheme("this-content-package");
     
     /** Name of IMS manifest file */
     public static final String IMS_MANIFEST_FILE_NAME = "imsmanifest.xml";
@@ -123,10 +124,6 @@ public final class QtiContentPackageExtractor {
         return result;
     }
     
-    private URI createPackageUri(String path) {
-        return URI.create(PACKAGE_URI_SCHEME + ":/" + path);
-    }
-
     /**
      * Attempts to read, parse and summarise the IMS Content Package manifest file at the given
      * URI.
@@ -142,7 +139,7 @@ public final class QtiContentPackageExtractor {
     private ImsManifestReadResult readManifestFile(String manifestPath)
             throws XmlResourceNotFoundException, ImsManifestException {
         /* Attempt to parse the manifest XML */
-        URI manifestSystemId = createPackageUri(manifestPath);
+        URI manifestSystemId = PACKAGE_URI_SCHEME.pathToUri(manifestPath);
         logger.info("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
         XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, false);
         XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
