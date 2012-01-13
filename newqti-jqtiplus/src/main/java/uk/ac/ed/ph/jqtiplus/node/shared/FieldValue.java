@@ -36,12 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.shared;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -297,7 +298,7 @@ public class FieldValue extends AbstractNode {
                 return value;
             }
             default:
-                throw new AssertionError("Unsupported " + Cardinality.CLASS_TAG + ": " + cardinality);
+                throw new QtiLogicException("Unsupported " + Cardinality.CLASS_TAG + ": " + cardinality);
         }
     }
 
@@ -354,7 +355,7 @@ public class FieldValue extends AbstractNode {
                 break;
             }
             default:
-                throw new AssertionError("Unsupported " + Cardinality.CLASS_TAG + ": " + value.getCardinality());
+                throw new QtiLogicException("Unsupported " + Cardinality.CLASS_TAG + ": " + value.getCardinality());
         }
 
         return values;

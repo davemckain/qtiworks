@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -119,7 +120,7 @@ public class Contains extends AbstractExpression {
                 break;
 
             default:
-                throw new AssertionError("Invalid cardinality: " + firstValue.getCardinality());
+                throw new QtiLogicException("Invalid cardinality: " + firstValue.getCardinality());
         }
 
         assert result != null;

@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+
 /**
  * This exception is used for marking not implemented parts of code.
  * It is much more easier to find usage of this exception than some text or general exception.
@@ -40,7 +42,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * 
  * @author Jiri Kajaba
  */
-public class QTINotImplementedException extends AssertionError {
+public class QTINotImplementedException extends QtiLogicException {
 
     private static final long serialVersionUID = 138099554893518574L;
 
