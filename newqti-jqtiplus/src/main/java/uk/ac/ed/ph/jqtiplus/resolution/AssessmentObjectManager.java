@@ -232,6 +232,7 @@ public final class AssessmentObjectManager {
     
     private ResolvedAssessmentTest initAssessmentTestHolder(RootObjectLookup<AssessmentTest> testLookup, ModelRichness modelRichness, CachedResourceProvider providerHelper) {
         Map<AssessmentItemRef, URI> systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
+        Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new HashMap<Identifier, List<AssessmentItemRef>>();
         Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
         Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new HashMap<URI, ResolvedAssessmentItem>();
         
@@ -240,6 +241,15 @@ public final class AssessmentObjectManager {
             /* Resolve the system ID of each assessmentItemRef */
             AssessmentTest test = testLookup.extractIfSuccessful();
             for (AssessmentItemRef itemRef : test.searchItemRefs()) {
+                Identifier identifier = itemRef.getIdentifier();
+                if (identifier!=null) {
+                    List<AssessmentItemRef> itemRefsByIdentifier = itemRefsByIdentifierMap.get(identifier);
+                    if (itemRefsByIdentifier==null) {
+                        itemRefsByIdentifier = new ArrayList<AssessmentItemRef>();
+                        itemRefsByIdentifierMap.put(identifier, itemRefsByIdentifier);
+                    }
+                    itemRefsByIdentifier.add(itemRef);
+                }
                 URI itemHref = itemRef.getHref();
                 if (itemHref!=null) {
                     URI itemSystemId = resolveUri(test, itemHref);
@@ -258,7 +268,8 @@ public final class AssessmentObjectManager {
                 resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, providerHelper));
             }
         }
-        return new ResolvedAssessmentTest(modelRichness, testLookup, systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
+        return new ResolvedAssessmentTest(modelRichness, testLookup, itemRefsByIdentifierMap,
+                systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
     }
     
     public TestValidationResult validateTest(URI systemId) {
@@ -329,7 +340,7 @@ public final class AssessmentObjectManager {
             final AssessmentItemRef itemRef = test.lookupItemRef(itemRefIdentifier);
             if (itemRef != null) {
                 Identifier mappedItemVarIdentifier = itemRef.resolveVariableMapping(itemVarIdentifier);
-                final ResolvedAssessmentItem itemHolder = testHolder.getAssessmentItemHolder(itemRef);
+                final ResolvedAssessmentItem itemHolder = testHolder.getResolvedAssessmentItem(itemRef);
                 RootObjectLookup<AssessmentItem> itemLookup = itemHolder.getItemLookup();
                 if (itemLookup.wasSuccessful()) {
                     declaration = itemLookup.extractIfSuccessful().getVariableDeclaration(mappedItemVarIdentifier);
@@ -362,7 +373,7 @@ public final class AssessmentObjectManager {
         
         @Override
         public AssessmentItem getResolvedItem(AssessmentItemRef itemRef) {
-            return testHolder.getAssessmentItemHolder(itemRef).getItemLookup().extractIfSuccessful();
+            return testHolder.getResolvedAssessmentItem(itemRef).getItemLookup().extractIfSuccessful();
         }
         
         @Override

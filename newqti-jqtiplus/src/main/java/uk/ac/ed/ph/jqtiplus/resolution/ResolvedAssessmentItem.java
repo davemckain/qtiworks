@@ -36,6 +36,9 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.io.Serializable;
 
@@ -67,12 +70,29 @@ public final class ResolvedAssessmentItem implements Serializable {
         return itemLookup;
     }
     
+    public ModelRichness getModelRichness() {
+        return modelRichness;
+    }
+    
     public RootObjectLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
         return resolvedResponseProcessingTemplateLookup;
     }
     
-    public ModelRichness getModelRichness() {
-        return modelRichness;
+    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
+        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+        if (localIdentifier != null) {
+            return resolveVariableReference(localIdentifier);
+        }
+        /* FIXME: Should probably blow up with localIdentifier is not right here! */
+        return null;
+    }
+    
+    public VariableDeclaration resolveVariableReference(Identifier variableDeclarationIdentifier) {
+        if (!itemLookup.wasSuccessful()) {
+            return null;
+        }
+        AssessmentItem item = itemLookup.extractIfSuccessful();
+        return item.getVariableDeclaration(variableDeclarationIdentifier);
     }
     
     //-------------------------------------------------------------------

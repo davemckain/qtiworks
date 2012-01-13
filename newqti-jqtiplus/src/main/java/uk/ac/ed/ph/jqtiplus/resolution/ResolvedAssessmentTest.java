@@ -37,8 +37,11 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -60,6 +63,12 @@ public final class ResolvedAssessmentTest implements Serializable {
 
     /** {@link AssessmentTest} lookup */
     private final RootObjectLookup<AssessmentTest> testLookup;
+
+    /** 
+     * Lookup map for {@link AssessmentItemRef} by identifier. Valid tests should have one
+     * entry in the value per key, but invalid tests might have multiple entries.
+     */
+    private final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap;
     
     /** Resolved System ID for each {@link AssessmentItemRef} */
     private final Map<AssessmentItemRef, URI> systemIdByItemRefMap;
@@ -72,11 +81,13 @@ public final class ResolvedAssessmentTest implements Serializable {
 
     public ResolvedAssessmentTest(final ModelRichness modelRichness, 
             final RootObjectLookup<AssessmentTest> testLookup,
+            final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
             final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap, 
             final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap) {
         this.modelRichness = modelRichness;
         this.testLookup = testLookup;
+        this.itemRefsByIdentifierMap = Collections.unmodifiableMap(itemRefsByIdentifierMap);
         this.systemIdByItemRefMap = Collections.unmodifiableMap(systemIdByItemRefMap);
         this.itemRefsBySystemIdMap = Collections.unmodifiableMap(itemRefsBySystemIdMap);
         this.resolvedAssessmentItemMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
@@ -99,10 +110,45 @@ public final class ResolvedAssessmentTest implements Serializable {
         return resolvedAssessmentItemMap;
     }
     
-    public ResolvedAssessmentItem getAssessmentItemHolder(AssessmentItemRef itemRef) {
+    public ResolvedAssessmentItem getResolvedAssessmentItem(AssessmentItemRef itemRef) {
         URI systemId = systemIdByItemRefMap.get(itemRef);
         return systemId!=null ? resolvedAssessmentItemMap.get(systemId) : null;
     }
+    
+    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
+        if (!testLookup.wasSuccessful()) {
+            return null;
+        }
+        final AssessmentTest test = testLookup.extractIfSuccessful();
+        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+
+        /* (In tests, we allow both local and item references) */
+        VariableDeclaration declaration = null;
+        if (localIdentifier != null) {
+            /* Referring to another test variable */
+            declaration = test.getVariableDeclaration(localIdentifier);
+        }
+        else {
+            /* It's a special ITEM.VAR reference */
+            final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
+            final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
+            final List<AssessmentItemRef> itemRefs = itemRefsByIdentifierMap.get(itemRefIdentifier);
+            if (itemRefs==null) {
+                /* FAIL Couldn't resolve item */
+            }
+            else if (itemRefs.size()>1) {
+                /* FAIL: Multiple item refs matching identifier */
+            }
+            else {
+                final AssessmentItemRef itemRef = itemRefs.get(0);
+                final ResolvedAssessmentItem itemHolder = getResolvedAssessmentItem(itemRef);
+                final Identifier mappedItemVarIdentifier = itemRef.resolveVariableMapping(itemVarIdentifier);
+                declaration = itemHolder.resolveVariableReference(mappedItemVarIdentifier);
+            }
+        }
+        return declaration;
+    }
+    
     
     //-------------------------------------------------------------------
 
@@ -111,6 +157,7 @@ public final class ResolvedAssessmentTest implements Serializable {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(modelRichness=" + modelRichness
                 + ",testLookup=" + testLookup
+                + ",itemRefsByIdentifierMap=" + itemRefsByIdentifierMap
                 + ",systemIdByItemRefMap=" + systemIdByItemRefMap
                 + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
                 + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemMap
