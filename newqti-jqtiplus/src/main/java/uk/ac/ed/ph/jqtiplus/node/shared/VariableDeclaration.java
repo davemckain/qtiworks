@@ -43,9 +43,9 @@ import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -87,6 +87,19 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     }
 
     public abstract VariableType getVariableType();
+    
+    public boolean isType(VariableType... allowedTypes) {
+        if (allowedTypes.length==0) {
+            /* Interpret as "no restriction" */
+            return true;
+        }
+        for (VariableType type : allowedTypes) {
+            if (type==getVariableType()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Gets value of identifier attribute.

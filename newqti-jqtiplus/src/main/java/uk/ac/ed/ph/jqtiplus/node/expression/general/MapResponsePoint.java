@@ -38,10 +38,9 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
@@ -103,10 +102,9 @@ public class MapResponsePoint extends AbstractExpression {
 
     @Override
     public void validate(ValidationContext context, AbstractValidationResult result) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         super.validate(context, result);
 
-        final ResponseDeclaration responseDeclaration = itemContext.getItem().getResponseDeclaration(getIdentifier());
+        final ResponseDeclaration responseDeclaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
             if (responseDeclaration.getCardinality().isRecord()) {
                 result.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of single or container cardinalities."));

@@ -81,7 +81,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -93,7 +93,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -107,11 +107,11 @@ public class SetOutcomeValue extends ProcessResponseValue {
         super.validate(context, result);
 
         if (getIdentifier() != null) {
-            if (context.getOwner().getOutcomeDeclaration(getIdentifier()) == null) {
+            if (context.getSubject().getOutcomeDeclaration(getIdentifier()) == null) {
                 result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
             }
 
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 result.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
@@ -126,7 +126,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
-        final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+        final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QTIEvaluationException("Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier());
         }

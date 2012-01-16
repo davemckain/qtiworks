@@ -41,17 +41,12 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -169,23 +164,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
         super.validateAttributes(context, result);
 
         if (getIdentifier() != null) {
-            VariableDeclaration declaration = null;
-            if (context instanceof ItemValidationContext) {
-                final ItemValidationContext itemContext = (ItemValidationContext) context;
-                final AssessmentItem item = itemContext.getItem();
-                declaration = item.getOutcomeDeclaration(getIdentifier());
-                if (declaration == null) {
-                    declaration = item.getTemplateDeclaration(getIdentifier());
-                }
-            }
-            else {
-                final TestValidationContext testContext = (TestValidationContext) context;
-                final AssessmentTest test = testContext.getTest();
-                declaration = test.getOutcomeDeclaration(getIdentifier());
-            }
-            if (declaration == null) {
-                result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
-            }
+            VariableDeclaration declaration = context.checkVariableReference(this, getIdentifier(), VariableType.TEMPLATE, VariableType.OUTCOME);
 
             // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
             // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to

@@ -34,30 +34,49 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
 /**
- * FIXME: Document this!
- * FIXME: I think this can probably be removed, with the validation() methods simply being given
- * a copy of the resolved AssessmentObject, which could be enhanced with some helper methods for
- * doing deep lookups, especially in the case of tests.
+ * TODO: document this
  * 
  * @author David McKain
  */
 public interface ValidationContext {
-
-    AssessmentObject getOwner();
     
-    /**
-     * Resolves a reference to a variable specified using a {@link VariableReferenceIdentifier}.
-     * <p>
-     * This encapsulates the special forms for referring to items within tests.
-     * 
-     * @throws ReferencingException
-     */
-    VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
-            throws ReferencingException;
+    AbstractValidationResult getValidationResult();
+    
+    boolean isValidatingItem();
+    
+    boolean isValidatingTest();
+    
+    ResolvedAssessmentObject<?> getResolvedAssessmentObject();
+    
+    ResolvedAssessmentItem getResolvedAssessmentItem();
+    
+    ResolvedAssessmentTest getResolvedAssessmentTest();
 
+    /**
+     * NB: This is guaranteed to return non-null
+     */
+    AssessmentObject getSubject();
+    
+    AssessmentItem getSubjectItem();
+    
+    AssessmentTest getSubjectTest();
+    
+    //------------------------------------------------------
+    
+    VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... requiredTypes);
+    
+    VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes);
+    
 }

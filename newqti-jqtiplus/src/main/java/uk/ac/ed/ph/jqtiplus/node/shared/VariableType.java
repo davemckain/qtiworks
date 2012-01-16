@@ -38,12 +38,21 @@ package uk.ac.ed.ph.jqtiplus.node.shared;
  */
 public enum VariableType {
 
-    RESPONSE,
+    RESPONSE("Response"),
 
-    TEMPLATE,
+    TEMPLATE("Template"),
 
-    OUTCOME,
+    OUTCOME("Outcome"),
 
     ;
-
+    
+    private final String name;
+    
+    private VariableType(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return name;
+    }
 }

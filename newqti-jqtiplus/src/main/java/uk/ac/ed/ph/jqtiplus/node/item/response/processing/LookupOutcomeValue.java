@@ -84,7 +84,7 @@ public class LookupOutcomeValue extends ProcessResponseValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 if (declaration.getLookupTable() instanceof MatchTable) {
                     return new BaseType[] { BaseType.INTEGER };
@@ -100,7 +100,7 @@ public class LookupOutcomeValue extends ProcessResponseValue {
         super.validate(context, result);
 
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration == null) {
                 result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
             }
@@ -125,7 +125,7 @@ public class LookupOutcomeValue extends ProcessResponseValue {
             numberValue = (NumberValue) value;
         }
 
-        final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+        final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         context.setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

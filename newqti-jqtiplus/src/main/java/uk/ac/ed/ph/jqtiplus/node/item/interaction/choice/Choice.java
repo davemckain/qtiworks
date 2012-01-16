@@ -41,10 +41,9 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.List;
 
@@ -194,11 +193,10 @@ public abstract class Choice extends BodyElement {
     @Override
     public void validate(ValidationContext context, AbstractValidationResult result) {
         super.validate(context, result);
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
 
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
         final Identifier identifier = getIdentifier();
-        final AssessmentItem item = itemContext.getItem();
+        final AssessmentItem item = context.getSubjectItem();
         final List<Choice> choices = item.getItemBody().search(Choice.class);
         for (final Choice choice : choices) {
             if (choice != this && choice.getIdentifier().equals(identifier)) {

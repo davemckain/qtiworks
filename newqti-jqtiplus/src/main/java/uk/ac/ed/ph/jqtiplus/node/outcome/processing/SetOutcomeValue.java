@@ -122,7 +122,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
-        final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getIdentifier());
+        final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QTIEvaluationException("Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier());
         }

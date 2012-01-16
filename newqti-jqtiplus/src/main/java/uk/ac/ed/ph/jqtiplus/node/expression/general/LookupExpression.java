@@ -37,17 +37,11 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -119,89 +113,19 @@ public abstract class LookupExpression extends AbstractExpression {
     @Override
     protected final void validateAttributes(ValidationContext context, AbstractValidationResult result) {
         super.validateAttributes(context, result);
+        
+        /* Check reference */
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        if (context instanceof ItemValidationContext) {
-            if (localIdentifier != null) {
-                final VariableDeclaration declaration = context.getOwner().getVariableDeclaration(localIdentifier);
-                if (declaration == null) {
-                    result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                            "Cannot find variable declaration " + getIdentifier()));
-                }
-                validateTargetVariableDeclaration(result, declaration);
-            }
-            else {
-                result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                        "Variable reference '" + getIdentifier() + "' of the form itemRefIdentifier.itemVariableIdentifier may only be used in tests "));
-            }
-            validateAdditionalAttributes(result, null);
-        }
-        else {
-            if (localIdentifier != null) {
-                /* Referring to another test variable */
-                final VariableDeclaration declaration = context.getOwner().getVariableDeclaration(localIdentifier);
-                if (declaration == null) {
-                    result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                            "Cannot find variable declaration " + getIdentifier()));
-                }
-                validateTargetVariableDeclaration(result, declaration);
-                validateAdditionalAttributes(result, null);
-            }
-            else {
-                /* It's a special ITEM.VAR reference */
-                /* First resolve the assessmentItemRef */
-                final TestValidationContext testContext = (TestValidationContext) context;
-                final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
-                final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
-                final ControlObject<?> controlObject = testContext.getTest().lookupDescendentOrSelf(itemRefIdentifier);
-                if (controlObject == null) {
-                    result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                            "Cannot find referenced item with identifier " + itemRefIdentifier));
-                }
-                else if (!(controlObject instanceof AssessmentItemRef)) {
-                    result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                            "Prefix " + itemRefIdentifier + " does not refer to an assessmentItemRef"));
-                }
-                else {
-                    final AssessmentItemRef itemRef = (AssessmentItemRef) controlObject;
-                    if (itemRef.getHref()!=null) {
-                        final AssessmentItem item = testContext.getResolvedItem(itemRef);
-                        if (item!=null) {
-                            final VariableDeclaration declaration = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
-                            if (declaration == null) {
-                                result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                        "Cannot find variable declaration " + itemVarIdentifier + " in item " + itemRefIdentifier));
-                            }
-                            validateTargetVariableDeclaration(result, declaration);
-                            validateAdditionalAttributes(result, itemRef);
-                        }
-                        else {
-                            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                    "assessmentItemRef with identifier " + itemRefIdentifier
-                                    + " was not successfully resolved so cannot dereference the variable "
-                                    + itemVarIdentifier + " within it"));
-                        }
-                    }
-                    else {
-                        result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
-                                "assessmentItemRef with identifier " + itemRefIdentifier
-                                + " has no href so cannot be resolved in order to dereference the variable "
-                                + itemVarIdentifier + " within it"));
-                    }
-                }
-            }
+        VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
+        
+        /* If reference was OK, let subclasses do any further validation as required */
+        if (resolvedDeclaration!=null) {
+            validateResolvedVariableReference(context, variableReferenceIdentifier, resolvedDeclaration);
+            
         }
     }
-
-    @SuppressWarnings("unused")
-    protected void validateTargetVariableDeclaration(AbstractValidationResult result, VariableDeclaration targetVariableDeclaration) {
-        /* (Subclasses should override as required to validate the "target" of the variable reference) */
-    }
-
-    @SuppressWarnings("unused")
-    protected void validateAdditionalAttributes(AbstractValidationResult result, AssessmentItemRef resolvedItemReference) {
-        /* (Subclasses should override as required to validate any attributes other than "identifier") */
-    }
+    
+    protected abstract void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
 
     //----------------------------------------------------------------------
 
@@ -235,7 +159,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     public VariableDeclaration lookupTargetVariableDeclaration(ValidationContext context)
             throws ReferencingException {
-        return context.resolveVariableReference(getIdentifier());
+        return context.checkVariableReference(getIdentifier());
     }
 
     //----------------------------------------------------------------------

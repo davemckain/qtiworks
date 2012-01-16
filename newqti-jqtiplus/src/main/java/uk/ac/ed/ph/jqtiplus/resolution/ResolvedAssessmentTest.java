@@ -100,6 +100,10 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return systemIdByItemRefMap;
     }
     
+    public Map<Identifier, List<AssessmentItemRef>> getItemRefsByIdentifierMap() {
+        return itemRefsByIdentifierMap;
+    }
+    
     public Map<URI, List<AssessmentItemRef>> getItemRefsBySystemIdMap() {
         return itemRefsBySystemIdMap;
     }

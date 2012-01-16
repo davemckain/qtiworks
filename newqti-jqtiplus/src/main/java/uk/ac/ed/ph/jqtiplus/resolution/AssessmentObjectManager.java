@@ -33,21 +33,24 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.net.URI;
@@ -153,15 +156,15 @@ public final class AssessmentObjectManager {
         return validateItem(resolveAssessmentItem(systemId, ModelRichness.FOR_VALIDATION));
     }
     
-    private ItemValidationResult validateItem(ResolvedAssessmentItem itemHolder) {
-        final ItemValidationResult result = new ItemValidationResult(itemHolder);
-        AssessmentItem item = itemHolder.getItemLookup().extractIfSuccessful();
+    private ItemValidationResult validateItem(ResolvedAssessmentItem resolvedAssessmentItem) {
+        final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
+        AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
         if (item!=null) {
-            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = itemHolder.getResolvedResponseProcessingTemplateLookup();
+            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
                 result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
-            item.validate(new ItemValidationContextImpl(itemHolder), result);
+            item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem), result);
         }
         else {
             result.add(new ValidationError(null, "AssessmentItem was not successfully instantiated"));
@@ -169,47 +172,130 @@ public final class AssessmentObjectManager {
         return result;
     }
     
-    public VariableDeclaration resolveVariableReference(ResolvedAssessmentItem itemHolder, VariableReferenceIdentifier variableReferenceIdentifier) {
-        if (!itemHolder.getItemLookup().wasSuccessful()) {
-            return null;
+    abstract class AbstractValidationContextImpl<E extends AssessmentObject> implements ValidationContext {
+        
+        protected final AbstractValidationResult validationResult;
+        protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
+        protected final E subject;
+        
+        AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+            this.validationResult = validationResult;
+            this.resolvedAssessmentObject = resolvedAssessmentObject;
+            this.subject = resolvedAssessmentObject.getObjectLookup().extractEnsuringSuccessful();
         }
-        AssessmentItem item = itemHolder.getItemLookup().extractIfSuccessful();
+        
+        @Override
+        public final AbstractValidationResult getValidationResult() {
+            return validationResult;
+        }
+        
+        @Override
+        public final ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
+            return resolvedAssessmentObject;
+        }
+        
+        @Override
+        public final AssessmentObject getSubject() {
+            return subject;
+        }
+        
+        @Override
+        public final VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... allowedTypes) {
+            VariableDeclaration result = null;
+            try {
+                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
+                if (declaration.isType(allowedTypes)) {
+                    result = declaration;
+                }
+                else {
+                    StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
+                        .append(variableDeclarationIdentifier)
+                        .append(" is a ")
+                        .append(declaration.getVariableType().getName())
+                        .append(" variable but must be a ");
+                    for (int i=0; i<allowedTypes.length; i++) {
+                        messageBuilder.append(allowedTypes[i].getName())
+                            .append(i < allowedTypes.length-1 ? ", " : " or ");
+                    }
+                    messageBuilder.append("variable");
+                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
+                }
 
-        /* (In Items, we only allow local references) */
-        VariableDeclaration result = null;
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        if (localIdentifier != null) {
-            result = item.getVariableDeclaration(localIdentifier);
+            }
+            catch (VariableResolutionException e) {
+                validationResult.add(new ValidationError(source, e.getMessage()));
+            }
+            return result;
         }
-        return result;
+        
+        @Override
+        public final VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes) {
+            VariableDeclaration result = null;
+            try {
+                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
+                if (declaration.isType(allowedTypes)) {
+                    result = declaration;
+                }
+                else {
+                    StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
+                        .append(variableReferenceIdentifier)
+                        .append(" is a ")
+                        .append(declaration.getVariableType().getName())
+                        .append(" variable but must be a ");
+                    for (int i=0; i<allowedTypes.length; i++) {
+                        messageBuilder.append(allowedTypes[i].getName())
+                            .append(i < allowedTypes.length-1 ? ", " : " or ");
+                    }
+                    messageBuilder.append("variable");
+                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
+                }
+
+            }
+            catch (VariableResolutionException e) {
+                validationResult.add(new ValidationError(source, e.getMessage()));
+            }
+            return result;
+        }
     }
     
-    class ItemValidationContextImpl implements ItemValidationContext {
+    class ItemValidationContextImpl extends AbstractValidationContextImpl<AssessmentItem> {
         
-        private final ResolvedAssessmentItem itemHolder;
-        
-        public ItemValidationContextImpl(final ResolvedAssessmentItem itemHolder) {
-            this.itemHolder = itemHolder;
+        ItemValidationContextImpl(final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
+            super(validationResult, resolvedAssessmentItem);
         }
         
         @Override
-        public AssessmentItem getItem() {
-            return itemHolder.getItemLookup().extractIfSuccessful();
+        public ResolvedAssessmentItem getResolvedAssessmentItem() {
+            return (ResolvedAssessmentItem) resolvedAssessmentObject;
         }
         
         @Override
-        public AssessmentObject getOwner() {
-            return getItem();
+        public ResolvedAssessmentTest getResolvedAssessmentTest() {
+            throw fail();
+        }
+
+        @Override
+        public boolean isValidatingItem() {
+            return true;
         }
         
         @Override
-        public ResponseProcessing getResolvedResponseProcessingTemplate() {
-            return itemHolder.getResolvedResponseProcessingTemplateLookup().extractIfSuccessful();
+        public boolean isValidatingTest() {
+            return false;
         }
         
         @Override
-        public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
-            return AssessmentObjectManager.this.resolveVariableReference(itemHolder, variableReferenceIdentifier);
+        public AssessmentItem getSubjectItem() {
+            return subject;
+        }
+
+        @Override
+        public AssessmentTest getSubjectTest() {
+            throw fail();
+        }
+        
+        private QtiLogicException fail() {
+            return new QtiLogicException("Current ValidationContext is for an item, not a test");
         }
     }
     
@@ -276,18 +362,18 @@ public final class AssessmentObjectManager {
         return validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
     }
     
-    private TestValidationResult validateTest(ResolvedAssessmentTest testHolder) {
-        final TestValidationResult result = new TestValidationResult(testHolder);
-        AssessmentTest test = testHolder.getTestLookup().extractIfSuccessful();
+    private TestValidationResult validateTest(ResolvedAssessmentTest testResolutionContext) {
+        final TestValidationResult result = new TestValidationResult(testResolutionContext);
+        AssessmentTest test = testResolutionContext.getTestLookup().extractIfSuccessful();
         if (test!=null) {
             /* Validate each unique item first */
-            for (Entry<URI, ResolvedAssessmentItem> entry : testHolder.getResolvedAssessmentItemMap().entrySet()) {
+            for (Entry<URI, ResolvedAssessmentItem> entry : testResolutionContext.getResolvedAssessmentItemMap().entrySet()) {
                 URI itemSystemId = entry.getKey();
                 ResolvedAssessmentItem itemHolder = entry.getValue();
                 StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
                     .append(itemSystemId)
                     .append(" referenced by identifiers ");
-                List<AssessmentItemRef> itemRefs = testHolder.getItemRefsBySystemIdMap().get(itemSystemId);
+                List<AssessmentItemRef> itemRefs = testResolutionContext.getItemRefsBySystemIdMap().get(itemSystemId);
                 for (int i=0,size=itemRefs.size(); i<size; i++) {
                     messageBuilder.append(itemRefs.get(i).getIdentifier());
                     messageBuilder.append((i<size-1) ? ", " : " and ");
@@ -312,7 +398,7 @@ public final class AssessmentObjectManager {
             }
             
             /* Then validate the test itself */
-            test.validate(new TestValidationContextImpl(testHolder), result);
+            test.validate(new TestValidationContextImpl(result, testResolutionContext), result);
         }
         else {
             result.add(new ValidationError(null, "Provision of AssessmentTest failed"));
@@ -320,67 +406,48 @@ public final class AssessmentObjectManager {
         return result;
     }
     
-    public VariableDeclaration resolveVariableReference(ResolvedAssessmentTest testHolder, VariableReferenceIdentifier variableReferenceIdentifier) {
-        if (!testHolder.getTestLookup().wasSuccessful()) {
-            return null;
+    class TestValidationContextImpl extends AbstractValidationContextImpl<AssessmentTest> {
+        
+        TestValidationContextImpl(final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
+            super(result, resolvedAssessmentTest);
         }
-        final AssessmentTest test = testHolder.getTestLookup().extractIfSuccessful();
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+        
+        @Override
+        public ResolvedAssessmentItem getResolvedAssessmentItem() {
+            throw fail();
+        }
+        
+        @Override
+        public ResolvedAssessmentTest getResolvedAssessmentTest() {
+            return (ResolvedAssessmentTest) resolvedAssessmentObject;
+        }
 
-        /* (In tests, we allow both local and item references) */
-        VariableDeclaration declaration = null;
-        if (localIdentifier != null) {
-            /* Referring to another test variable */
-            declaration = test.getVariableDeclaration(localIdentifier);
-        }
-        else {
-            /* It's a special ITEM.VAR reference */
-            final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
-            final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
-            final AssessmentItemRef itemRef = test.lookupItemRef(itemRefIdentifier);
-            if (itemRef != null) {
-                Identifier mappedItemVarIdentifier = itemRef.resolveVariableMapping(itemVarIdentifier);
-                final ResolvedAssessmentItem itemHolder = testHolder.getResolvedAssessmentItem(itemRef);
-                RootObjectLookup<AssessmentItem> itemLookup = itemHolder.getItemLookup();
-                if (itemLookup.wasSuccessful()) {
-                    declaration = itemLookup.extractIfSuccessful().getVariableDeclaration(mappedItemVarIdentifier);
-                }
-                else {
-                    logger.warn("Variable lookup " + variableReferenceIdentifier + " failed because resolution of target item failed");
-                }
-            }
-        }
-        return declaration;
-    }
-    
-    class TestValidationContextImpl implements TestValidationContext {
-        
-        private final ResolvedAssessmentTest testHolder;
-        
-        public TestValidationContextImpl(final ResolvedAssessmentTest testHolder) {
-            this.testHolder = testHolder;
+
+        @Override
+        public boolean isValidatingItem() {
+            return false;
         }
         
         @Override
-        public AssessmentTest getTest() {
-            return testHolder.getTestLookup().extractIfSuccessful();
+        public boolean isValidatingTest() {
+            return true;
         }
         
         @Override
-        public AssessmentObject getOwner() {
-            return getTest();
+        public AssessmentItem getSubjectItem() {
+            throw fail();
+        }
+
+        @Override
+        public AssessmentTest getSubjectTest() {
+            return subject;
         }
         
-        @Override
-        public AssessmentItem getResolvedItem(AssessmentItemRef itemRef) {
-            return testHolder.getResolvedAssessmentItem(itemRef).getItemLookup().extractIfSuccessful();
-        }
-        
-        @Override
-        public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
-            return AssessmentObjectManager.this.resolveVariableReference(testHolder, variableReferenceIdentifier);
+        private QtiLogicException fail() {
+            return new QtiLogicException("Current ValidationContext is for a test, not an item");
         }
     }
+
     
     //-------------------------------------------------------------------
     

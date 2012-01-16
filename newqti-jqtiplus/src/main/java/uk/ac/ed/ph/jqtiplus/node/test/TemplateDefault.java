@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -133,9 +132,8 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
 
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         if (getTemplateIdentifier() != null) {
-            final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getTemplateIdentifier());
+            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -145,9 +143,8 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
 
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         if (getTemplateIdentifier() != null) {
-            final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getTemplateIdentifier());
+            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }

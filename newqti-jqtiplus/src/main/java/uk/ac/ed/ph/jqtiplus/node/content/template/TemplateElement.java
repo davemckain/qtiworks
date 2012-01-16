@@ -38,11 +38,11 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
-import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -150,27 +150,24 @@ public abstract class TemplateElement extends BodyElement {
 
     @Override
     public void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         super.validateAttributes(context, result);
 
-        if (getTemplateIdentifier() != null) {
-            final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getTemplateIdentifier());
-
-            if (declaration == null) {
-                result.add(new ValidationError(this, "Cannot find " + TemplateDeclaration.CLASS_TAG + ": " + getTemplateIdentifier()));
-            }
-
-            if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
-                        + " or "
-                        + Cardinality.MULTIPLE
-                        + ", but found: "
-                        + declaration.getCardinality()));
-            }
-
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                result.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+        Identifier templateIdentifier = getTemplateIdentifier();
+        if (templateIdentifier != null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, templateIdentifier, VariableType.TEMPLATE);
+            if (declaration!=null) {
+                if (declaration.getCardinality() != null
+                        && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
+                    result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                            + " or "
+                            + Cardinality.MULTIPLE
+                            + ", but found: "
+                            + declaration.getCardinality()));
+                }
+    
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+                    result.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+                }
             }
         }
     }

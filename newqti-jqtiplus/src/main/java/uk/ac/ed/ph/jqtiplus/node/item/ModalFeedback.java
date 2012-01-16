@@ -176,7 +176,7 @@ public class ModalFeedback extends AbstractNode {
         super.validateAttributes(context, result);
 
         if (getOutcomeIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getOwner().getOutcomeDeclaration(getOutcomeIdentifier());
+            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
                 result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));

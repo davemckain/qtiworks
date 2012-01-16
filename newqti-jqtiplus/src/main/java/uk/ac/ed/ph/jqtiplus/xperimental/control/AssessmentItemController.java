@@ -704,7 +704,7 @@ public final class AssessmentItemController {
         }
 
         @Override
-        public AssessmentObject getOwner() {
+        public AssessmentObject getSubject() {
             return item;
         }
 

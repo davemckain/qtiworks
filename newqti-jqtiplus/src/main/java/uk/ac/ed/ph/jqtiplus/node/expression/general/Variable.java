@@ -35,10 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -124,21 +127,23 @@ public class Variable extends LookupExpression {
     }
 
     //----------------------------------------------------------------------
-
+    
     @Override
-    protected void validateAdditionalAttributes(AbstractValidationResult result, AssessmentItemRef resolvedItemReference) {
-        if (resolvedItemReference == null) {
-            if (getWeightIdentifier() != null) {
-                result.add(new AttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
-                        "Weights may only be used when referencing item variables from tests"));
-            }
-        }
-        else {
-            final Identifier weightIdentifier = getWeightIdentifier();
-            if (weightIdentifier != null) {
-                if (resolvedItemReference.getWeight(weightIdentifier) == null) {
-                    result.add(new ValidationWarning(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier));
+    protected void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier,
+            VariableDeclaration resolvedDeclaration) {
+        final Identifier weightIdentifier = getWeightIdentifier();
+        if (weightIdentifier!=null) {
+            if (context.isValidatingTest() && variableReferenceIdentifier.isDotted()) {
+                Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
+                ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
+                AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
+                if (itemRef.getWeight(weightIdentifier) == null) {
+                    context.getValidationResult().add(new ValidationWarning(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier));
                 }
+            }
+            else if (context.isValidatingItem()) {
+                context.getValidationResult().add(new AttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
+                        "Weights may only be used when referencing item variables from tests"));
             }
         }
     }

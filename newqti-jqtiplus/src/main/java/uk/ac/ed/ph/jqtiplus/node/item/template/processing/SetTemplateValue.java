@@ -37,10 +37,9 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -80,9 +79,8 @@ public class SetTemplateValue extends ProcessTemplateValue {
 
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         if (getIdentifier() != null) {
-            final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getIdentifier());
+            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -93,9 +91,8 @@ public class SetTemplateValue extends ProcessTemplateValue {
 
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         if (getIdentifier() != null) {
-            final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getIdentifier());
+            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -119,11 +116,11 @@ public class SetTemplateValue extends ProcessTemplateValue {
 
     @Override
     protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        final ItemValidationContext itemContext = (ItemValidationContext) context;
         super.validateAttributes(context, result);
-
-        if (getIdentifier() != null && itemContext.getItem().getTemplateDeclaration(getIdentifier()) == null) {
-            result.add(new ValidationError(this, "Cannot find " + TemplateDeclaration.CLASS_TAG + ": " + getIdentifier()));
+        
+        Identifier identifier = getIdentifier();
+        if (identifier!=null) {
+            context.checkVariableReference(this, identifier);
         }
     }
 }

@@ -37,8 +37,9 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
@@ -74,13 +75,14 @@ public class Correct extends LookupExpression {
         return CLASS_TAG;
     }
 
-    /**
-     * Overridden to ensure that the referenced variable is a response variable.
-     */
+    //----------------------------------------------------------------------
+    
     @Override
-    protected void validateTargetVariableDeclaration(AbstractValidationResult result, VariableDeclaration targetVariableDeclaration) {
-        if (targetVariableDeclaration.getVariableType() != VariableType.RESPONSE) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+    protected void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier,
+            VariableDeclaration resolvedDeclaration) {
+        /* Ensure that the referenced variable is a response variable. */
+        if (resolvedDeclaration.getVariableType() != VariableType.RESPONSE) {
+            context.getValidationResult().add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
                     "Target variable " + getIdentifier() + " must be a response variable"));
         }
     }

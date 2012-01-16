@@ -42,8 +42,9 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
@@ -156,10 +157,10 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
         }
         else {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
-            ItemValidationContext itemContext = (ItemValidationContext) context;
-            ResponseProcessing resolvedResponseProcessingTemplate = itemContext.getResolvedResponseProcessingTemplate();
-            if (resolvedResponseProcessingTemplate!=null) {
-                resolvedResponseProcessingTemplate.validate(context, result);
+            ResolvedAssessmentItem resolvedAssessmentItem = (ResolvedAssessmentItem) context.getResolvedAssessmentItem();
+            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            if (resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
+                resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context, result);
             }
         }
     }
