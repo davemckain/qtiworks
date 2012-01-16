@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
@@ -48,7 +49,7 @@ import java.io.Serializable;
  * 
  * @author David McKain
  */
-public final class ResolvedAssessmentItem implements Serializable {
+public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<AssessmentItem> implements Serializable {
 
     private static final long serialVersionUID = -8302050952592265206L;
 
@@ -58,41 +59,42 @@ public final class ResolvedAssessmentItem implements Serializable {
     /** Resolved {@link ResponseProcessing} template, if specified, otherwise null */
     private final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
     
-    private final ModelRichness modelRichness;
-
     public ResolvedAssessmentItem(final ModelRichness modelRichness, final RootObjectLookup<AssessmentItem> itemLookup, final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
+        super(modelRichness, itemLookup);
         this.itemLookup = itemLookup;
         this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
-        this.modelRichness = modelRichness;
     }
     
     public RootObjectLookup<AssessmentItem> getItemLookup() {
         return itemLookup;
     }
     
-    public ModelRichness getModelRichness() {
-        return modelRichness;
-    }
-    
     public RootObjectLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
         return resolvedResponseProcessingTemplateLookup;
     }
-    
-    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        if (localIdentifier != null) {
-            return resolveVariableReference(localIdentifier);
-        }
-        /* FIXME: Should probably blow up with localIdentifier is not right here! */
-        return null;
-    }
-    
-    public VariableDeclaration resolveVariableReference(Identifier variableDeclarationIdentifier) {
+
+    @Override
+    public VariableDeclaration resolveVariableReference(Identifier variableReferenceIdentifier)
+            throws VariableResolutionException {
         if (!itemLookup.wasSuccessful()) {
-            return null;
+            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.THIS_ITEM_LOOKUP_FAILURE);
         }
         AssessmentItem item = itemLookup.extractIfSuccessful();
-        return item.getVariableDeclaration(variableDeclarationIdentifier);
+        VariableDeclaration result = item.getVariableDeclaration(variableReferenceIdentifier);
+        if (result==null) {
+            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.ITEM_VARIABLE_NOT_DECLARED);
+        }
+        return result;
+    }
+    
+    @Override
+    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
+            throws VariableResolutionException {
+        if (variableReferenceIdentifier.isDotted()) {
+            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.DOTTED_VARIABLE_IN_ITEM);
+        }
+        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+        return resolveVariableReference(localIdentifier);
     }
     
     //-------------------------------------------------------------------

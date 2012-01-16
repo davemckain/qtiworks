@@ -100,11 +100,18 @@ public final class VariableReferenceIdentifier {
     /**
      * @see Identifier#toVariableReferenceIdentifier()
      */
-    VariableReferenceIdentifier(Identifier identifier) {
-        this.localIdentifier = identifier;
+    public VariableReferenceIdentifier(Identifier localIdentifier) {
+        this.localIdentifier = localIdentifier;
         this.assessmentItemItemVariableIdentifier = null;
         this.assessmentItemRefIdentifier = null;
-        this.value = identifier.toString();
+        this.value = localIdentifier.toString();
+    }
+    
+    public VariableReferenceIdentifier(Identifier assessmentItemRefIdentifier, Identifier assessmentItemItemVariableIdentifier) {
+        this.localIdentifier = null;
+        this.assessmentItemRefIdentifier = assessmentItemRefIdentifier;
+        this.assessmentItemItemVariableIdentifier = assessmentItemItemVariableIdentifier;
+        this.value = assessmentItemRefIdentifier.toString() + "." + assessmentItemItemVariableIdentifier.toString();
     }
 
     public Identifier getLocalIdentifier() {
@@ -117,6 +124,10 @@ public final class VariableReferenceIdentifier {
 
     public Identifier getAssessmentItemItemVariableIdentifier() {
         return assessmentItemItemVariableIdentifier;
+    }
+    
+    public boolean isDotted() {
+        return localIdentifier==null;
     }
 
     @Override
