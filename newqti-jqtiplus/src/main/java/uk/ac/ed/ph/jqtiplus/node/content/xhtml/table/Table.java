@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -218,11 +217,11 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getColgroups().size() > 0 && getCols().size() > 0) {
-            result.add(new ValidationError(this, CLASS_TAG + " cannot contain both " + Colgroup.CLASS_TAG + " and " + Col.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, CLASS_TAG + " cannot contain both " + Colgroup.CLASS_TAG + " and " + Col.CLASS_TAG + " children"));
         }
     }
 

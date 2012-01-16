@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
@@ -135,14 +134,14 @@ public abstract class ItemSubset extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
+    protected void validateAttributes(ValidationContext context) {
         if (getIdentifier() != null && getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getIdentifier()) == null) {
-            result.add(new ValidationWarning(this, "Cannot find control object: " + getIdentifier()));
+            context.add(new ValidationWarning(this, "Cannot find control object: " + getIdentifier()));
         }
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
+    public void validate(ValidationContext context) {
         XmlNode parent = getParent();
 
         while (parent != null) {
@@ -153,7 +152,7 @@ public abstract class ItemSubset extends AbstractExpression {
         }
 
         if (parent == null) {
-            result.add(new ValidationError(this, "Outcome expression can be used only in outcome processing."));
+            context.add(new ValidationError(this, "Outcome expression can be used only in outcome processing."));
         }
     }
 }

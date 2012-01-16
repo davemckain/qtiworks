@@ -70,7 +70,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -326,9 +325,9 @@ public class AttributeList implements Validatable, Iterable<Attribute> {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
+    public void validate(ValidationContext context) {
         for (final Attribute attribute : attributes) {
-            attribute.validate(context, result);
+            attribute.validate(context);
         }
     }
 

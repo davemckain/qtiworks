@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -119,18 +118,18 @@ public class Index extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getIndex() != null && getIndex() < 1) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
                     " (" + getIndex() + ") must be positive."));
         }
 
         if (getIndex() != null && getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
             final Ordered ordered = (Ordered) getChildren().get(0);
             if (ordered.getChildren().size() > 0 && getIndex() > ordered.getChildren().size()) {
-                result.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
+                context.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
                         ordered.getChildren().size() + ", but found: " + getIndex()));
             }
         }

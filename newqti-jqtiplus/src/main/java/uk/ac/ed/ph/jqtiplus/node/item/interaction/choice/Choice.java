@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
@@ -191,8 +190,8 @@ public abstract class Choice extends BodyElement {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
         final Identifier identifier = getIdentifier();
@@ -200,17 +199,17 @@ public abstract class Choice extends BodyElement {
         final List<Choice> choices = item.getItemBody().search(Choice.class);
         for (final Choice choice : choices) {
             if (choice != this && choice.getIdentifier().equals(identifier)) {
-                result.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by another choice"));
+                context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by another choice"));
             }
         }
         if (item.getTemplateDeclaration(identifier) != null) {
-            result.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a template variable"));
+            context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a template variable"));
         }
         if (item.getResponseDeclaration(identifier) != null) {
-            result.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a response variable"));
+            context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a response variable"));
         }
         if (item.getOutcomeDeclaration(identifier) != null) {
-            result.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a outcome variable"));
+            context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by a outcome variable"));
         }
     }
 

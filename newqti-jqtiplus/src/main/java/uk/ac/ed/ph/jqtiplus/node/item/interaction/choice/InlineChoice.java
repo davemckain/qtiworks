@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +70,14 @@ public class InlineChoice extends Choice {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         final List<Interaction> interactions = new ArrayList<Interaction>();
         search(getChildren(), Interaction.class, interactions);
 
         if (interactions.size() > 0) {
-            result.add(new ValidationError(this, CLASS_TAG + " cannot contain nested interactions"));
+            context.add(new ValidationError(this, CLASS_TAG + " cannot contain nested interactions"));
         }
     }
 

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * @author David McKain
@@ -86,9 +85,9 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
-        validateUniqueIdentifier(result, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
+        validateUniqueIdentifier(context.getValidationResult(), getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
     }
 }

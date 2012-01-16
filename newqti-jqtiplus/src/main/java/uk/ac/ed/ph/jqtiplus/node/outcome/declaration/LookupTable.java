@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -145,13 +144,13 @@ public abstract class LookupTable extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (!cardinality.isSingle()) {
-                result.add(new ValidationError(this, "This node is not supported for " + Cardinality.CLASS_TAG + ": " + cardinality));
+                context.add(new ValidationError(this, "This node is not supported for " + Cardinality.CLASS_TAG + ": " + cardinality));
             }
         }
 
@@ -161,8 +160,8 @@ public abstract class LookupTable extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         for (int i = 0; i < getLookupEntries().size(); i++) {
             final LookupTableEntry firstEntry = getLookupEntries().get(i);
@@ -170,7 +169,7 @@ public abstract class LookupTable extends AbstractNode {
                 for (int j = i + 1; j < getLookupEntries().size(); j++) {
                     final LookupTableEntry secondEntry = getLookupEntries().get(j);
                     if (secondEntry.getSourceValue() != null && firstEntry.getSourceValue().doubleValue() == secondEntry.getSourceValue().doubleValue()) {
-                        result.add(new ValidationWarning(this, "Duplicate source value: " + firstEntry.getSourceValue()));
+                        context.add(new ValidationWarning(this, "Duplicate source value: " + firstEntry.getSourceValue()));
                     }
                 }
             }

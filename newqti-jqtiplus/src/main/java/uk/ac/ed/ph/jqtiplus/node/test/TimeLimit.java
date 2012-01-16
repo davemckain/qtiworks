@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * In the context of A specific assessmentTest an item, or group of items, may be subject to A time constraint.
@@ -155,15 +154,15 @@ public class TimeLimit extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getMinimum() != null && getMinimum() < 0) {
-            result.add(new ValidationError(this, "Minimum time cannot be negative."));
+            context.add(new ValidationError(this, "Minimum time cannot be negative."));
         }
 
         if (getMaximum() != null && getMaximum() < 0) {
-            result.add(new ValidationError(this, "Maximum time cannot be negative."));
+            context.add(new ValidationError(this, "Maximum time cannot be negative."));
         }
     }
 }

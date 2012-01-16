@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -103,13 +102,13 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
-                result.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
+                context.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.CLASS_TAG
                         + ": "

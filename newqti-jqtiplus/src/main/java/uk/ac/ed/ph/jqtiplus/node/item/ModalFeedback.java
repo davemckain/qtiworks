@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -172,19 +171,19 @@ public class ModalFeedback extends AbstractNode {
     }
 
     @Override
-    public void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    public void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
-                result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
+                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
             }
 
             if (declaration != null && declaration.getCardinality() != null
                     && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
                         + " or "
                         + Cardinality.MULTIPLE
                         + ", but found: "
@@ -192,17 +191,17 @@ public class ModalFeedback extends AbstractNode {
             }
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                result.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+                context.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            result.add(new ValidationWarning(this, "ModalFeedback is empty."));
+            context.add(new ValidationWarning(this, "ModalFeedback is empty."));
         }
     }
 

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -90,8 +89,8 @@ public class Match extends AbstractExpression {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         for (final Expression expression : getChildren()) {
             final Cardinality[] cardinalities = expression.getProducedCardinalities(context);
@@ -99,7 +98,7 @@ public class Match extends AbstractExpression {
                 for (final Expression ex : expression.getChildren()) {
                     final BaseType[] baseTypes = ex.getProducedBaseTypes(context);
                     if (baseTypes.length == 1 && baseTypes[0].isDuration()) {
-                        result.add(new BaseTypeValidationError(this, BaseType.values(new BaseType[] { BaseType.DURATION }), baseTypes));
+                        context.add(new BaseTypeValidationError(this, BaseType.values(new BaseType[] { BaseType.DURATION }), baseTypes));
                     }
                 }
             }

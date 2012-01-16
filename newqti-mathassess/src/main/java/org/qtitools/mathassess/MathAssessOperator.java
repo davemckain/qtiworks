@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
@@ -223,14 +222,14 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     @Override
-    public final void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public final void validate(ValidationContext context) {
+        super.validate(context);
 
         /* First make sure that variable names are all acceptable */
         for (final VariableDeclaration decl : getAllReadableVariableDeclarations()) {
             final String ident = decl.getIdentifier().toString();
             if (!ident.matches(IDENTIFIER_REGEX_VALUE)) {
-                result.add(new ValidationWarning(this, "Variable " + ident
+                context.add(new ValidationWarning(this, "Variable " + ident
                         + " does not follow the naming convention stated in the MathAssess extensions specification"));
             }
         }
@@ -242,13 +241,13 @@ public abstract class MathAssessOperator extends CustomOperator {
                     break;
 
                 default:
-                    result.add(new ValidationError(this, "Unsupported syntax type: " + getSyntax()));
+                    context.add(new ValidationError(this, "Unsupported syntax type: " + getSyntax()));
             }
         }
 
         /* Get subclass to validate remaining attrs and/or children */
-        doAdditionalValidation(context, result);
+        doAdditionalValidation(context);
     }
 
-    protected abstract void doAdditionalValidation(ValidationContext context, AbstractValidationResult result);
+    protected abstract void doAdditionalValidation(ValidationContext context);
 }

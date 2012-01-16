@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -196,29 +195,29 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getMinChoices() != null && getMinChoices() < 1) {
-            result.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
+            context.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
         }
 
         if (getMaxChoices() != null && getMinChoices() != null && getMaxChoices() < getMinChoices()) {
-            result.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
+            context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
         }
 
         if (getMaxChoices() != null && getMaxChoices() > getHotspotChoices().size()) {
-            result.add(new ValidationError(this, "Maximum number of choices cannot be larger than the number of choice children"));
+            context.add(new ValidationError(this, "Maximum number of choices cannot be larger than the number of choice children"));
         }
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                result.add(new ValidationError(this, "Response variable must have identifier base type"));
+                context.add(new ValidationError(this, "Response variable must have identifier base type"));
             }
 
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
-                result.add(new ValidationError(this, "Response variable must have ordered cardinality"));
+                context.add(new ValidationError(this, "Response variable must have ordered cardinality"));
             }
         }
     }

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
@@ -74,11 +73,11 @@ public abstract class OutcomeConditionChild extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
-            result.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
         }
     }
 

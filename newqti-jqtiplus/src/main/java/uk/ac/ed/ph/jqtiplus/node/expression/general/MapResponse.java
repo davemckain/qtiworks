@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -109,16 +108,16 @@ public class MapResponse extends AbstractExpression {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         final AssessmentItem item = context.getSubjectItem();
         if (item.getResponseDeclaration(getIdentifier()) == null) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
                     "Cannot find response declaration: " + getIdentifier()));
         }
         else if (item.getResponseDeclaration(getIdentifier()).getMapping() == null) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
                     "Cannot find mapping for response declaration: " + getIdentifier()));
         }
     }

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
@@ -83,11 +82,11 @@ public class ResponseProcessingFragment extends ResponseRule {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getResponseRules().size() == 0) {
-            result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
         }
     }
 

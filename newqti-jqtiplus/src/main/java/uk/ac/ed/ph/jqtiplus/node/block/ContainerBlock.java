@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,11 +120,11 @@ public abstract class ContainerBlock extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         for (final XmlNode child : children) {
-            child.validate(context, result);
+            child.validate(context);
         }
     }
 }

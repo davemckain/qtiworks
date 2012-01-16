@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
@@ -149,18 +148,18 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
+    protected void validateChildren(ValidationContext context) {
         List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */
-            super.validateChildren(context, result);
+            super.validateChildren(context);
         }
         else {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
             ResolvedAssessmentItem resolvedAssessmentItem = (ResolvedAssessmentItem) context.getResolvedAssessmentItem();
             RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
-                resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context, result);
+                resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context);
             }
         }
     }

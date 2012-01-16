@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
@@ -155,16 +154,16 @@ public class RandomInteger extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum()) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
                     ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
         }
 
         if (getStep() != null && getStep() < 1) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME), "Attribute " + ATTR_STEP_NAME
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME), "Attribute " + ATTR_STEP_NAME
                     + " ("
                     + getStep()
                     + ") must be positive."));

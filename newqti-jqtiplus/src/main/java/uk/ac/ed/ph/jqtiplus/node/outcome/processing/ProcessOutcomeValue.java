@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * Abstract parent for setOutcomeValue and lookupOutcomeValue classes.
@@ -120,11 +119,11 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier()) == null) {
-            result.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
+            context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
         }
     }
 }

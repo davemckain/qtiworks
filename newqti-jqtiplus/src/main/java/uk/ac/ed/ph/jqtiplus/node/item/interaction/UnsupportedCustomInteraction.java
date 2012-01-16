@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
@@ -55,8 +54,8 @@ public final class UnsupportedCustomInteraction extends CustomInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        result.add(new ValidationWarning(this, "customInteraction with class attribute " + getClassAttr() + " is not supported"));
+    public void validate(ValidationContext context) {
+        context.add(new ValidationWarning(this, "customInteraction with class attribute " + getClassAttr() + " is not supported"));
     }
 
     @Override

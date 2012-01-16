@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -150,13 +149,13 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isSingle() && getFieldValues().size() > 1) {
-                result.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
+                context.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
             }
         }
     }

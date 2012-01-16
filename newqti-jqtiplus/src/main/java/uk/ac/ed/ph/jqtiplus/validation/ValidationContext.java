@@ -52,6 +52,8 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
  */
 public interface ValidationContext {
     
+    void add(ValidationItem item);
+    
     AbstractValidationResult getValidationResult();
     
     boolean isValidatingItem();

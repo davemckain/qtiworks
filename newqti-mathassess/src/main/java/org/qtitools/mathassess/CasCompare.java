@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -160,22 +159,22 @@ public class CasCompare extends MathAssessOperator {
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context, AbstractValidationResult result) {
+    protected void doAdditionalValidation(ValidationContext context) {
         if (getAction() == ActionType.CODE && getCode() == null) {
-            result.add(new ValidationError(this, "The " + ATTR_CODE_NAME + " attribute must be specified when the " + ATTR_ACTION_NAME + " is " + getAction()));
+            context.add(new ValidationError(this, "The " + ATTR_CODE_NAME + " attribute must be specified when the " + ATTR_ACTION_NAME + " is " + getAction()));
         }
         else if (getAction() != null && getCode() == null) {
             switch (getSyntax()) {
                 case MAXIMA:
                     if (!isActionSupported(getAction())) {
-                        result.add(new ValidationError(this, "The action '" + getAction() + "' is not supported by the '" + getSyntax() + "' engine."));
+                        context.add(new ValidationError(this, "The action '" + getAction() + "' is not supported by the '" + getSyntax() + "' engine."));
                     }
                     break;
             }
         }
 
         if (getChildren().size() != 2) {
-            result.add(new ValidationError(this, "Wrong number of children - expected 2"));
+            context.add(new ValidationError(this, "Wrong number of children - expected 2"));
         }
     }
 

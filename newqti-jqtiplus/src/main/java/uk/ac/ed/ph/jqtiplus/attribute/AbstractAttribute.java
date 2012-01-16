@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 /**
@@ -199,19 +198,19 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
+    public void validate(ValidationContext context) {
         if (supported) {
             // if (getLoadingProblem() != null)
             // result.add(new AttributeValidationError(this,
             // getLoadingProblem().getMessage()));
             // else
             if (required && valueToString().length() == 0) {
-                result.add(new AttributeValidationError(this, "Required attribute is not defined: " + name));
+                context.add(new AttributeValidationError(this, "Required attribute is not defined: " + name));
             }
         }
         else {
             if (!(name.startsWith("xmlns:") || name.startsWith("xsi:") || name.startsWith("xml:"))) {
-                result.add(new ValidationWarning(this, "Unsupported attribute: " + name));
+                context.add(new ValidationWarning(this, "Unsupported attribute: " + name));
             }
         }
     }

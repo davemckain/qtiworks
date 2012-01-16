@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sub;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sup;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * pre
@@ -74,28 +73,28 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         //Although pre inherits from atomicBlock it must not contain, either directly 
         //or indirectly, any of the following objects: img, object, big, small, sub, sup.
         if (search(Img.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Img.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Img.CLASS_TAG + " children"));
         }
         if (search(Object.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Object.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Object.CLASS_TAG + " children"));
         }
         if (search(Big.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Big.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Big.CLASS_TAG + " children"));
         }
         if (search(Small.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Small.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Small.CLASS_TAG + " children"));
         }
         if (search(Sub.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sub.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sub.CLASS_TAG + " children"));
         }
         if (search(Sup.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sup.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sup.CLASS_TAG + " children"));
         }
     }
 }

@@ -37,8 +37,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
@@ -62,8 +60,7 @@ public final class UnsupportedCustomOperator extends CustomOperator {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        result.add(new ValidationWarning(this, "customOperator with class attribute " + getClassAttr() + " is not supported"));
+    public void validate(ValidationContext context) {
     }
 
     @Override

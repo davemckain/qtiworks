@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
@@ -90,11 +89,11 @@ public class OutcomeProcessing extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
-            result.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
         }
     }
 

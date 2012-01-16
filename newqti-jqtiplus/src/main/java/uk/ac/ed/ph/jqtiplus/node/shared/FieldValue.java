@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -216,39 +215,39 @@ public class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isRecord() && getIdentifier() == null) {
-                result.add(new ValidationError(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") is not defined."));
+                context.add(new ValidationError(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") is not defined."));
             }
 
             if (cardinality.isRecord() && getBaseTypeAttrValue() == null) {
-                result.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
+                context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
             }
 
             if (!cardinality.isRecord() && getIdentifier() != null) {
-                result.add(new ValidationWarning(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") should not be defined."));
+                context.add(new ValidationWarning(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") should not be defined."));
             }
 
             if (!cardinality.isRecord() && getBaseTypeAttrValue() != null) {
-                result.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
+                context.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (singleValue == null) {
-            result.add(new ValidationError(this, "Value is not defined."));
+            context.add(new ValidationError(this, "Value is not defined."));
         }
 
         if (singleValue != null && getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
-            result.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType()));
+            context.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType()));
         }
     }
 

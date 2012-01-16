@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
@@ -252,17 +251,17 @@ public class SliderInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                result.add(new ValidationError(this, "Response variable must have single cardinality"));
+                context.add(new ValidationError(this, "Response variable must have single cardinality"));
             }
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isNumeric()) {
-                result.add(new ValidationError(this, "Response variable must have numeric base type"));
+                context.add(new ValidationError(this, "Response variable must have numeric base type"));
             }
         }
     }

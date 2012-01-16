@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -101,17 +100,17 @@ public class MapResponsePoint extends AbstractExpression {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         final ResponseDeclaration responseDeclaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
             if (responseDeclaration.getCardinality().isRecord()) {
-                result.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of single or container cardinalities."));
+                context.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of single or container cardinalities."));
             }
 
             if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
-                result.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of point base type."));
+                context.add(new ValidationError(this, "The " + CLASS_TAG + " expression can only be bound to variables of point base type."));
             }
         }
     }

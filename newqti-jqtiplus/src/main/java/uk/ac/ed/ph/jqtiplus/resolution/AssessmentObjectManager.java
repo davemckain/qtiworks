@@ -52,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -164,7 +165,7 @@ public final class AssessmentObjectManager {
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
                 result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
-            item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem), result);
+            item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem));
         }
         else {
             result.add(new ValidationError(null, "AssessmentItem was not successfully instantiated"));
@@ -182,6 +183,11 @@ public final class AssessmentObjectManager {
             this.validationResult = validationResult;
             this.resolvedAssessmentObject = resolvedAssessmentObject;
             this.subject = resolvedAssessmentObject.getObjectLookup().extractEnsuringSuccessful();
+        }
+        
+        @Override
+        public void add(ValidationItem item) {
+            validationResult.add(item);
         }
         
         @Override
@@ -362,18 +368,18 @@ public final class AssessmentObjectManager {
         return validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
     }
     
-    private TestValidationResult validateTest(ResolvedAssessmentTest testResolutionContext) {
-        final TestValidationResult result = new TestValidationResult(testResolutionContext);
-        AssessmentTest test = testResolutionContext.getTestLookup().extractIfSuccessful();
+    private TestValidationResult validateTest(ResolvedAssessmentTest resolvedAssessmentTest) {
+        final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
+        AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         if (test!=null) {
             /* Validate each unique item first */
-            for (Entry<URI, ResolvedAssessmentItem> entry : testResolutionContext.getResolvedAssessmentItemMap().entrySet()) {
+            for (Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemMap().entrySet()) {
                 URI itemSystemId = entry.getKey();
                 ResolvedAssessmentItem itemHolder = entry.getValue();
                 StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
                     .append(itemSystemId)
                     .append(" referenced by identifiers ");
-                List<AssessmentItemRef> itemRefs = testResolutionContext.getItemRefsBySystemIdMap().get(itemSystemId);
+                List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
                 for (int i=0,size=itemRefs.size(); i<size; i++) {
                     messageBuilder.append(itemRefs.get(i).getIdentifier());
                     messageBuilder.append((i<size-1) ? ", " : " and ");
@@ -398,7 +404,7 @@ public final class AssessmentObjectManager {
             }
             
             /* Then validate the test itself */
-            test.validate(new TestValidationContextImpl(result, testResolutionContext), result);
+            test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
         }
         else {
             result.add(new ValidationError(null, "Provision of AssessmentTest failed"));

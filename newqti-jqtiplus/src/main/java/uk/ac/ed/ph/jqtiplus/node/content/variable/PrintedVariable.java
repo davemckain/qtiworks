@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -160,8 +159,8 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     }
 
     @Override
-    public void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    public void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getIdentifier() != null) {
             VariableDeclaration declaration = context.checkVariableReference(this, getIdentifier(), VariableType.TEMPLATE, VariableType.OUTCOME);
@@ -170,10 +169,10 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
             // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
             // pollute this code with too much MathAssess-specfic stuff.
             //            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
-            //                result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()));
+            //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()));
             if (declaration != null && declaration.getCardinality() != null
                     && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isRecord())) {
-                result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()
+                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()
                         + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
             }
         }

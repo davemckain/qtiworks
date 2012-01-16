@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -149,8 +148,8 @@ public abstract class TemplateElement extends BodyElement {
     }
 
     @Override
-    public void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    public void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
@@ -158,7 +157,7 @@ public abstract class TemplateElement extends BodyElement {
             if (declaration!=null) {
                 if (declaration.getCardinality() != null
                         && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                    result.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                    context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
                             + " or "
                             + Cardinality.MULTIPLE
                             + ", but found: "
@@ -166,18 +165,18 @@ public abstract class TemplateElement extends BodyElement {
                 }
     
                 if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                    result.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+                    context.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
                 }
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            result.add(new ValidationWarning(this, "Feedback should contain something."));
+            context.add(new ValidationWarning(this, "Feedback should contain something."));
         }
     }
 

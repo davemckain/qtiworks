@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
@@ -97,13 +96,13 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {
-                result.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
+                context.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.CLASS_TAG
                         + ": "

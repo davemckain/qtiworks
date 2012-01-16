@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.InterpolationTableEntryGroup;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -109,8 +108,8 @@ public class InterpolationTable extends LookupTable {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         Double lastValue = null;
         for (final InterpolationTableEntry entry : getInterpolationEntries()) {
@@ -121,7 +120,7 @@ public class InterpolationTable extends LookupTable {
                     lastValue = currentValue;
                 }
                 else {
-                    result.add(new ValidationWarning(this, "Invalid order of entries. Entries should be ordered from highest to lowest."));
+                    context.add(new ValidationWarning(this, "Invalid order of entries. Entries should be ordered from highest to lowest."));
                     break;
                 }
             }

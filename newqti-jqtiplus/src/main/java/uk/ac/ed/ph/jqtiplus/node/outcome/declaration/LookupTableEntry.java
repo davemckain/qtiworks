@@ -37,7 +37,6 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
 /**
@@ -96,8 +95,8 @@ public abstract class LookupTableEntry extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getParent().getParent().getBaseType() != null) {
             getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).setBaseType(getParent().getParent().getBaseType());

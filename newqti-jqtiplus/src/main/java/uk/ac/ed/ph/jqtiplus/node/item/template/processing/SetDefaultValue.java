@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -120,14 +119,14 @@ public class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
             final AssessmentItem item = getRootObject(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
-                result.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
+                context.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
             }
         }
     }

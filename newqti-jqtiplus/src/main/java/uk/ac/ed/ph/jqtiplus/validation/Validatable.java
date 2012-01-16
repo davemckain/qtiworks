@@ -45,5 +45,5 @@ public interface Validatable extends Serializable {
     /**
      * Validates this object, appending to the given {@link AbstractValidationResult}
      */
-    public void validate(ValidationContext context, AbstractValidationResult result);
+    public void validate(ValidationContext context);
 }

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -124,11 +123,11 @@ public class RoundTo extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getRoundingMode() != null && getFigures() != null) {
-            getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), result,
+            getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), context.getValidationResult(),
                     getFigures());
         }
     }

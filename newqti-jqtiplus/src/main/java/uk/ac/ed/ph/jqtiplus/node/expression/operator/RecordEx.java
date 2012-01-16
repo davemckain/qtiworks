@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
@@ -115,11 +114,11 @@ public class RecordEx extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context, AbstractValidationResult result) {
-        super.validateAttributes(context, result);
+    protected void validateAttributes(ValidationContext context) {
+        super.validateAttributes(context);
 
         if (getIdentifiers().size() != getChildren().size()) {
-            result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Invalid number of identifiers. Expected: " + getChildren()
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Invalid number of identifiers. Expected: " + getChildren()
                     .size() + ", but found: " + getIdentifiers().size() + "."));
         }
 
@@ -129,17 +128,17 @@ public class RecordEx extends AbstractExpression {
                 identifiers.add(identifier);
             }
             else {
-                result.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Duplicate identifier: " + identifier));
+                context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Duplicate identifier: " + identifier));
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context, AbstractValidationResult result) {
-        super.validateChildren(context, result);
+    protected void validateChildren(ValidationContext context) {
+        super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            result.add(new ValidationWarning(this, "Container should contain some children."));
+            context.add(new ValidationWarning(this, "Container should contain some children."));
         }
     }
 

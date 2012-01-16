@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.net.URI;
 
@@ -81,12 +80,12 @@ public class A extends AbstractSimpleInline {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. 
         if (search(A.class).size() > 0) {
-            result.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + CLASS_TAG + " children"));
+            context.getValidationResult().add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + CLASS_TAG + " children"));
         }
     }
 

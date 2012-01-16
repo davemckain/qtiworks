@@ -273,27 +273,27 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        validateThisOnly(context, result);
+    public void validate(ValidationContext context) {
+        validateThisOnly(context);
 
         // This is unusual order, because previous code logically belongs to parent validation.
-        super.validate(context, result);
+        super.validate(context);
     }
 
     /** Validates this Expression only, without descending into children */
-    private void validateThisOnly(ValidationContext context, AbstractValidationResult result) {
+    private void validateThisOnly(ValidationContext context) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
         if (!check(requiredCardinalities, producedCardinalities)) {
-            result.add(new CardinalityValidationError(this, requiredCardinalities, producedCardinalities));
+            context.add(new CardinalityValidationError(this, requiredCardinalities, producedCardinalities));
         }
 
         final BaseType[] requiredBaseTypes = getParentRequiredBaseTypes(context);
         final BaseType[] producedBaseTypes = getProducedBaseTypes(context);
 
         if (!check(requiredBaseTypes, producedBaseTypes)) {
-            result.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
+            context.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
         }
     }
 
@@ -424,7 +424,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             }
 
             // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-            validateThisOnly(context, runtimeValidationResult);
+            validateThisOnly(context);
 
             // 3) Evaluates this expression.
             value = evaluateSelf(context, depth);

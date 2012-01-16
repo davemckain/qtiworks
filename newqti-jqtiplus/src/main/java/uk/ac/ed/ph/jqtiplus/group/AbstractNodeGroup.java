@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,22 +196,22 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      */
     protected XmlNode createChild(Element childElement, JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
-        XmlNode result;
+        XmlNode context;
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             final ExpressionParent expressionParent = (ExpressionParent) getParent();
             final String operatorClass = childElement.getAttribute("class");
-            result = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
+            context = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
         }
         else if ("customInteraction".equals(localName)) {
             final XmlNode parentObject = getParent();
             final String interactionClass = childElement.getAttribute("class");
-            result = jqtiExtensionManager.createCustomInteraction(parentObject, interactionClass);
+            context = jqtiExtensionManager.createCustomInteraction(parentObject, interactionClass);
         }
         else {
-            result = create(localName);
+            context = create(localName);
         }
-        return result;
+        return context;
     }
 
     @Override
@@ -225,12 +224,12 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
+    public void validate(ValidationContext context) {
         if (minimum != null && children.size() < minimum) {
-            result.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
+            context.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
         }
         if (maximum != null && children.size() > maximum) {
-            result.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
+            context.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
         }
     }
 }

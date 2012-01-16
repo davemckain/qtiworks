@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 /**
@@ -141,11 +140,11 @@ public class ResponseDeclaration extends VariableDeclaration {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getAreaMapping() != null && getBaseType() != null && !getBaseType().isPoint()) {
-            result.add(new ValidationError(this, "Base type must be point when using areaMapping."));
+            context.add(new ValidationError(this, "Base type must be point when using areaMapping."));
         }
     }
 

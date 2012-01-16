@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
@@ -245,17 +244,17 @@ public class MediaInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context, AbstractValidationResult result) {
-        super.validate(context, result);
+    public void validate(ValidationContext context) {
+        super.validate(context);
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isInteger()) {
-                result.add(new ValidationError(this, "Response variable must have integer base type"));
+                context.add(new ValidationError(this, "Response variable must have integer base type"));
             }
 
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                result.add(new ValidationError(this, "Response variable must have single cardinality"));
+                context.add(new ValidationError(this, "Response variable must have single cardinality"));
             }
         }
     }
