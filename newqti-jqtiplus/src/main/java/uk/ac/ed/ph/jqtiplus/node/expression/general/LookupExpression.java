@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
@@ -46,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
 import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
@@ -138,7 +138,8 @@ public abstract class LookupExpression extends AbstractExpression {
                 return new BaseType[] { declaration.getBaseType() };
             }
         }
-        catch (final ReferencingException e) {
+        catch (VariableResolutionException e) {
+            logger.warn("Refactor this:", e);
         }
         return super.getProducedBaseTypes(context);
     }
@@ -152,15 +153,16 @@ public abstract class LookupExpression extends AbstractExpression {
                 return new Cardinality[] { declaration.getCardinality() };
             }
         }
-        catch (final ReferencingException e) {
+        catch (VariableResolutionException e) {
+            logger.warn("Refactor this:", e);
         }
         return super.getProducedCardinalities(context);
     }
 
     @ToRefactor
     public VariableDeclaration lookupTargetVariableDeclaration(ValidationContext context)
-            throws ReferencingException {
-        return context.checkVariableReference(getIdentifier());
+            throws VariableResolutionException {
+        return context.getResolvedAssessmentObject().resolveVariableReference(getIdentifier());
     }
 
     //----------------------------------------------------------------------

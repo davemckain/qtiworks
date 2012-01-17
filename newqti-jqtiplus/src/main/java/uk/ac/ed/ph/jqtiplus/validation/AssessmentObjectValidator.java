@@ -83,7 +83,7 @@ public final class AssessmentObjectValidator {
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
-        logger.info("Validaitng {}", resolvedAssessmentItem);
+        logger.info("Validating {}", resolvedAssessmentItem);
         final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
         AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
         if (item!=null) {
@@ -104,7 +104,7 @@ public final class AssessmentObjectValidator {
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
-        logger.info("Validaitng {}", resolvedAssessmentTest);
+        logger.info("Validating {}", resolvedAssessmentTest);
         final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
         AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         if (test!=null) {

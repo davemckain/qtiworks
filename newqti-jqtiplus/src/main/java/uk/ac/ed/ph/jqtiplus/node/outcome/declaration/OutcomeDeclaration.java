@@ -49,13 +49,16 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
+import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.ReferencingException;
 
 import java.net.URI;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Outcome variables are declared by outcome declarations.
@@ -63,8 +66,10 @@ import java.util.List;
  * @author Jiri Kajaba
  */
 public class OutcomeDeclaration extends VariableDeclaration {
-
+    
     private static final long serialVersionUID = -5519664280437668195L;
+    
+    private static final Logger logger = LoggerFactory.getLogger(OutcomeDeclaration.class);
 
     /** Name of this class in xml schema. */
     public static final String CLASS_TAG = "outcomeDeclaration";
@@ -339,7 +344,8 @@ public class OutcomeDeclaration extends VariableDeclaration {
                     return true;
                 }
             }
-            catch (final ReferencingException e) {
+            catch (VariableResolutionException e) {
+                logger.warn("Refactor this:", e);
             }
         }
         else if (xmlNode instanceof TestFeedback) {

@@ -33,28 +33,19 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.JQTIController;
 
-import org.qtitools.mathassess.MathAssessConstants;
 import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MathAssessTest {
 
@@ -65,58 +56,39 @@ public class MathAssessTest {
         mathAssessPackage.setStylesheetCache(new SimpleStylesheetCache());
         mathAssessPackage.init();
 
-        final JQTIController jqtiController = new JQTIController();
-        jqtiController.getExtensionPackages().add(mathAssessPackage);
+        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(mathAssessPackage);
+        final QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
+        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+        
+        ItemValidationResult result = objectManager.validateItem(inputUri);
+        System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
 
-        try {
-            System.out.println("Reading and validating");
-            final SupportedXMLReader xmlReader = new SupportedXMLReader(true);
-
-            /* FIXME: Can this somehow be integrated with the package stuff? */
-            xmlReader.getRegisteredSchemaMap().put(MathAssessConstants.MATHASSESS_NAMESPACE_URI, MathAssessConstants.MATHASSESS_SCHEMA_LOCATION);
-
-            final QTIObjectManager objectManager = new QTIObjectManager(jqtiController, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
-            final QTIReadResult<AssessmentItem> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentItem.class);
-            final XmlParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
-            if (!xmlParseResult.isSchemaValid()) {
-                System.out.println("Schema validation failed:" + xmlParseResult);
-                return;
-            }
-
-            final AssessmentItem item = qtiReadResult.getResolvedQtiObject();
-
-            final AssessmentItemManager itemManager = new AssessmentItemManager(objectManager, item);
-            final AbstractValidationResult validationResult = itemManager.validateItem();
-            if (!validationResult.getAllItems().isEmpty()) {
-                System.out.println("JQTI validation failed: " + validationResult);
-                return;
-            }
-
-            final AssessmentItemState itemState = new AssessmentItemState();
-            final AssessmentItemController itemController = new AssessmentItemController(itemManager, itemState);
-
-            System.out.println("\n\nInitialising");
-            itemController.initialize(null);
-            System.out.println("\nTemplate Values: " + itemState.getTemplateValues());
-            System.out.println("\nResponse Values: " + itemState.getResponseValues());
-            System.out.println("\nOutcome Values: " + itemState.getOutcomeValues());
-
-            System.out.println("\n\nSetting Math responses");
-            final Map<String, List<String>> responses = new HashMap<String, List<String>>();
-            responses.put("RESPONSE", Arrays.asList(new String[] { "1+x" }));
-            itemController.setResponses(responses);
-            System.out.println("Response Values: " + itemState.getResponseValues());
-
-            System.out.println("\n\nStarting response processiong");
-            itemController.processResponses();
-            System.out.println("Response processing finished");
-            System.out.println("Outcome Values: " + itemState.getOutcomeValues());
-
-            System.out.println("\n\nResult XML");
-            System.out.println(itemController.computeItemResult().toXmlString());
-        }
-        finally {
-            mathAssessPackage.shutdown();
-        }
+//        try {
+//            final AssessmentItemState itemState = new AssessmentItemState();
+//            final AssessmentItemController itemController = new AssessmentItemController(itemManager, itemState);
+//
+//            System.out.println("\n\nInitialising");
+//            itemController.initialize(null);
+//            System.out.println("\nTemplate Values: " + itemState.getTemplateValues());
+//            System.out.println("\nResponse Values: " + itemState.getResponseValues());
+//            System.out.println("\nOutcome Values: " + itemState.getOutcomeValues());
+//
+//            System.out.println("\n\nSetting Math responses");
+//            final Map<String, List<String>> responses = new HashMap<String, List<String>>();
+//            responses.put("RESPONSE", Arrays.asList(new String[] { "1+x" }));
+//            itemController.setResponses(responses);
+//            System.out.println("Response Values: " + itemState.getResponseValues());
+//
+//            System.out.println("\n\nStarting response processiong");
+//            itemController.processResponses();
+//            System.out.println("Response processing finished");
+//            System.out.println("Outcome Values: " + itemState.getOutcomeValues());
+//
+//            System.out.println("\n\nResult XML");
+//            System.out.println(itemController.computeItemResult().toXmlString());
+//        }
+//        finally {
+//            mathAssessPackage.shutdown();
+//        }
     }
 }
