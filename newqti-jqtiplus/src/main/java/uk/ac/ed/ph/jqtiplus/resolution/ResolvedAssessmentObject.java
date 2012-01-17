@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 
 import java.io.Serializable;
 
@@ -47,6 +48,7 @@ import java.io.Serializable;
  * Base class for the result of "resolving" an {@link AssessmentObject}.
  * 
  * @see AssessmentObjectManager
+ * @see AssessmentObjectValidator
  * 
  * @author David McKain
  */

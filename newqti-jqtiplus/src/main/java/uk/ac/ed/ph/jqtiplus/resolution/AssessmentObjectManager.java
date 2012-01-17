@@ -33,33 +33,23 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,156 +144,10 @@ public final class AssessmentObjectManager {
     }
     
     public ItemValidationResult validateItem(URI systemId) {
-        return validateItem(resolveAssessmentItem(systemId, ModelRichness.FOR_VALIDATION));
+        return new AssessmentObjectValidator(resourceProvider).validate(resolveAssessmentItem(systemId, ModelRichness.FOR_VALIDATION));
     }
     
-    private ItemValidationResult validateItem(ResolvedAssessmentItem resolvedAssessmentItem) {
-        final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
-        AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
-        if (item!=null) {
-            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
-            if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
-                result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
-            }
-            item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem));
-        }
-        else {
-            result.add(new ValidationError(null, "AssessmentItem was not successfully instantiated"));
-        }
-        return result;
-    }
     
-    abstract class AbstractValidationContextImpl<E extends AssessmentObject> implements ValidationContext {
-        
-        protected final AbstractValidationResult validationResult;
-        protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
-        protected final E subject;
-        
-        AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
-            this.validationResult = validationResult;
-            this.resolvedAssessmentObject = resolvedAssessmentObject;
-            this.subject = resolvedAssessmentObject.getObjectLookup().extractEnsuringSuccessful();
-        }
-        
-        @Override
-        public void add(ValidationItem item) {
-            validationResult.add(item);
-        }
-        
-        @Override
-        public final AbstractValidationResult getValidationResult() {
-            return validationResult;
-        }
-        
-        @Override
-        public final ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
-            return resolvedAssessmentObject;
-        }
-        
-        @Override
-        public final AssessmentObject getSubject() {
-            return subject;
-        }
-        
-        @Override
-        public final VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... allowedTypes) {
-            VariableDeclaration result = null;
-            try {
-                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
-                        .append(variableDeclarationIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
-            }
-            catch (VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
-            }
-            return result;
-        }
-        
-        @Override
-        public final VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes) {
-            VariableDeclaration result = null;
-            try {
-                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
-                        .append(variableReferenceIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
-            }
-            catch (VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
-            }
-            return result;
-        }
-    }
-    
-    class ItemValidationContextImpl extends AbstractValidationContextImpl<AssessmentItem> {
-        
-        ItemValidationContextImpl(final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
-            super(validationResult, resolvedAssessmentItem);
-        }
-        
-        @Override
-        public ResolvedAssessmentItem getResolvedAssessmentItem() {
-            return (ResolvedAssessmentItem) resolvedAssessmentObject;
-        }
-        
-        @Override
-        public ResolvedAssessmentTest getResolvedAssessmentTest() {
-            throw fail();
-        }
-
-        @Override
-        public boolean isValidatingItem() {
-            return true;
-        }
-        
-        @Override
-        public boolean isValidatingTest() {
-            return false;
-        }
-        
-        @Override
-        public AssessmentItem getSubjectItem() {
-            return subject;
-        }
-
-        @Override
-        public AssessmentTest getSubjectTest() {
-            throw fail();
-        }
-        
-        private QtiLogicException fail() {
-            return new QtiLogicException("Current ValidationContext is for an item, not a test");
-        }
-    }
     
     //-------------------------------------------------------------------
     // AssessmentTest stuff
@@ -365,95 +209,8 @@ public final class AssessmentObjectManager {
     }
     
     public TestValidationResult validateTest(URI systemId) {
-        return validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
+        return new AssessmentObjectValidator(resourceProvider).validate(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
     }
-    
-    private TestValidationResult validateTest(ResolvedAssessmentTest resolvedAssessmentTest) {
-        final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
-        AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
-        if (test!=null) {
-            /* Validate each unique item first */
-            for (Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemMap().entrySet()) {
-                URI itemSystemId = entry.getKey();
-                ResolvedAssessmentItem itemHolder = entry.getValue();
-                StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
-                    .append(itemSystemId)
-                    .append(" referenced by identifiers ");
-                List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
-                for (int i=0,size=itemRefs.size(); i<size; i++) {
-                    messageBuilder.append(itemRefs.get(i).getIdentifier());
-                    messageBuilder.append((i<size-1) ? ", " : " and ");
-                }
-                
-                if (itemHolder.getItemLookup().wasSuccessful()) {
-                    ItemValidationResult itemValidationResult = validateItem(itemHolder);
-                    result.addItemValidationResult(itemValidationResult);
-                    if (itemValidationResult.hasErrors()) {
-                        result.add(new ValidationError(test, messageBuilder.toString()
-                                + " has errors. Please see the attached validation result for this item for further information."));
-                    }
-                    if (itemValidationResult.hasWarnings()) {
-                        result.add(new ValidationError(test, messageBuilder.toString()
-                                + " has warnings. Please see the attached validation result for this item for further information."));
-                    }
-                }
-                else {
-                    result.add(new ValidationError(test, messageBuilder.toString()
-                            + " was not successfully instantiated. Further details are attached elsewhere."));
-                }
-            }
-            
-            /* Then validate the test itself */
-            test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
-        }
-        else {
-            result.add(new ValidationError(null, "Provision of AssessmentTest failed"));
-        }
-        return result;
-    }
-    
-    class TestValidationContextImpl extends AbstractValidationContextImpl<AssessmentTest> {
-        
-        TestValidationContextImpl(final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
-            super(result, resolvedAssessmentTest);
-        }
-        
-        @Override
-        public ResolvedAssessmentItem getResolvedAssessmentItem() {
-            throw fail();
-        }
-        
-        @Override
-        public ResolvedAssessmentTest getResolvedAssessmentTest() {
-            return (ResolvedAssessmentTest) resolvedAssessmentObject;
-        }
-
-
-        @Override
-        public boolean isValidatingItem() {
-            return false;
-        }
-        
-        @Override
-        public boolean isValidatingTest() {
-            return true;
-        }
-        
-        @Override
-        public AssessmentItem getSubjectItem() {
-            throw fail();
-        }
-
-        @Override
-        public AssessmentTest getSubjectTest() {
-            return subject;
-        }
-        
-        private QtiLogicException fail() {
-            return new QtiLogicException("Current ValidationContext is for a test, not an item");
-        }
-    }
-
     
     //-------------------------------------------------------------------
     
