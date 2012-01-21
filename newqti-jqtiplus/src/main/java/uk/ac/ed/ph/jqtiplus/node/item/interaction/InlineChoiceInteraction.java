@@ -38,12 +38,12 @@ import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.InlineChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.InlineChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.HashSet;
 import java.util.List;
@@ -196,13 +196,13 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     }
 
     @Override
-    public void initialize(AssessmentItemController itemController) {
+    public void initialize(AssessmentItemAttemptController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getInlineChoices());
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
+    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
         if (responseValue.isNull()) {
             if (getRequired()) {
                 return false;

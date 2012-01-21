@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -49,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.List;
 
@@ -188,7 +188,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public void bindResponse(AssessmentItemController itemController, List<String> responseList) throws ResponseBindingException {
+    public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList) throws ResponseBindingException {
         super.bindResponse(itemController, responseList);
 
         /* Also handle stringIdentifier binding if required */
@@ -283,7 +283,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
+    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
         if (getPatternMask() != null) {
             if (!responseValue.toString().matches(getPatternMask())) {
                 return false;

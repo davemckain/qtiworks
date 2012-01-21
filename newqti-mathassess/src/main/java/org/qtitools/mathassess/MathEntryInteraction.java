@@ -50,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -57,7 +58,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
@@ -193,7 +193,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void bindResponse(AssessmentItemController itemController, List<String> responseList) {
+    public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList) {
         if (responseList.size() != 1) {
             throw new QTIEvaluationException("Error: Expected one value to be returned from interaction.");
         }
@@ -234,7 +234,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
+    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
         /* Currently, a successful binding is considered the same as a response
          * being valid */
         return true;

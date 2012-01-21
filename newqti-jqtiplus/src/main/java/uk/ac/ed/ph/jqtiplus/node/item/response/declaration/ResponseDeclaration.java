@@ -40,9 +40,9 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 /**
  * Response variables are declared by response declarations and bound to interactions in the itemBody.
@@ -148,7 +148,7 @@ public class ResponseDeclaration extends VariableDeclaration {
         }
     }
 
-    public Boolean isCorrectResponse(AssessmentItemController itemController) {
+    public Boolean isCorrectResponse(AssessmentItemAttemptController itemController) {
         return itemController.isCorrectResponse(this);
     }
 }

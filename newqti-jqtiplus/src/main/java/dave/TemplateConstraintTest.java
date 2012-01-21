@@ -8,6 +8,7 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
@@ -17,7 +18,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.XMLParseResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.net.URI;
 
@@ -48,7 +48,7 @@ public class TemplateConstraintTest {
         }
         
         AssessmentItemState itemState = new AssessmentItemState();
-        AssessmentItemController itemController = new AssessmentItemController(itemManager, itemState);
+        AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(itemManager, itemState);
         
         System.out.println("\nInitialising");
         itemController.initialize(null);

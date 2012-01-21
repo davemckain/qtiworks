@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -48,7 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.List;
 
@@ -129,7 +129,7 @@ public abstract class Interaction extends BodyElement {
      * Initialize the interaction.
      * Subclasses should override this method as required.
      */
-    public void initialize(@SuppressWarnings("unused") AssessmentItemController itemController) {
+    public void initialize(@SuppressWarnings("unused") AssessmentItemAttemptController itemController) {
         /* Let subclasses override as required */
     }
 
@@ -146,7 +146,7 @@ public abstract class Interaction extends BodyElement {
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(AssessmentItemController itemController, List<String> responseList)
+    public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList)
             throws ResponseBindingException {
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = bindResponse(responseDeclaration, responseList);
@@ -162,7 +162,7 @@ public abstract class Interaction extends BodyElement {
      * 
      * @param responseList Response to process
      * @param resposneDeclaration underlying response declaration
-     * @see #bindResponse(AssessmentItemController, List)
+     * @see #bindResponse(AssessmentItemAttemptController, List)
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
@@ -198,9 +198,9 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Validate the response associated with this interaction.
-     * This is called after {@link #bindResponse(AssessmentItemController, List)}
+     * This is called after {@link #bindResponse(AssessmentItemAttemptController, List)}
      * 
      * @return true if the response is valid, false otherwise
      */
-    public abstract boolean validateResponse(AssessmentItemController itemController, Value responseValue);
+    public abstract boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue);
 }

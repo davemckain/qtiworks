@@ -65,7 +65,7 @@ public class MathAssessTest {
 
 //        try {
 //            final AssessmentItemState itemState = new AssessmentItemState();
-//            final AssessmentItemController itemController = new AssessmentItemController(itemManager, itemState);
+//            final AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(itemManager, itemState);
 //
 //            System.out.println("\n\nInitialising");
 //            itemController.initialize(null);

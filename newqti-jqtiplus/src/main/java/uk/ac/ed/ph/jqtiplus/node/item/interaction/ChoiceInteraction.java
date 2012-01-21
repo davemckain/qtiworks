@@ -40,13 +40,13 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -250,13 +250,13 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     }
 
     @Override
-    public void initialize(AssessmentItemController itemController) {
+    public void initialize(AssessmentItemAttemptController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
+    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
         /* Extract response values */
         final Set<String> responseChoiceIdentifiers = new HashSet<String>();
         if (responseValue.isNull()) {

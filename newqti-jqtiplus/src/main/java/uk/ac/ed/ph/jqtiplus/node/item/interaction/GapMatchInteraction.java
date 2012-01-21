@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Gap;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -49,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -217,13 +217,13 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     }
 
     @Override
-    public void initialize(AssessmentItemController itemController) {
+    public void initialize(AssessmentItemAttemptController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getGapChoices());
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemController itemController, Value responseValue) {
+    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
@@ -51,7 +50,7 @@ import java.util.Map;
  * @author David McKain
  * @revision $Revision: 2782 $
  */
-public interface TestProcessingContext extends TestValidationContext, ProcessingContext {
+public interface TestProcessingContext extends ProcessingContext {
 
     Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> resolveDottedVariableReference(
             VariableReferenceIdentifier variableReferenceIdentifier);

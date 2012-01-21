@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.TimeRecord;
 import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
@@ -53,7 +54,7 @@ public final class AssessmentItemRefController {
 
     private final AssessmentTestController testController;
 
-    private final AssessmentItemController itemController;
+    private final AssessmentItemAttemptController itemController;
 
     private final AssessmentItemRef itemRef;
 
@@ -66,7 +67,7 @@ public final class AssessmentItemRefController {
         ConstraintUtilities.ensureNotNull(itemManager, "assessmentItemManager");
         ConstraintUtilities.ensureNotNull(itemRefState, "assessmentItemRefState");
         this.testController = testController;
-        this.itemController = new AssessmentItemController(itemManager, itemRefState.getItemState());
+        this.itemController = new AssessmentItemAttemptController(itemManager, itemRefState.getItemState());
         this.itemRef = itemRef;
         this.itemRefState = itemRefState;
     }
@@ -75,7 +76,7 @@ public final class AssessmentItemRefController {
         return testController;
     }
 
-    public AssessmentItemController getItemController() {
+    public AssessmentItemAttemptController getItemController() {
         return itemController;
     }
 
