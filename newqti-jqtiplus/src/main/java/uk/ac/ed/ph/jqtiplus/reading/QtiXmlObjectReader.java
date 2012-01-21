@@ -48,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -97,6 +98,14 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
 
     //--------------------------------------------------------------------------
     
+    /**
+     * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
+     *             located using the current {@link #inputResourceLocator}
+     * @throws QtiXmlInterpretationException if the required QTI Object model could not be instantiated from
+     *             the XML
+     * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
+     *             if any of the required schemas could not be located.
+     */
     @Override
     public <E extends RootObject> QtiXmlObjectReadResult<E> lookupRootObject(URI systemId, ModelRichness requiredModelRichness, Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {

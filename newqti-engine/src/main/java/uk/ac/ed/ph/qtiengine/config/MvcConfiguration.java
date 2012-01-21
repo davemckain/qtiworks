@@ -42,7 +42,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.web"})
 public class MvcConfiguration {
     
     public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;

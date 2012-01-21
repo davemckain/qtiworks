@@ -31,30 +31,79 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine;
+package uk.ac.ed.ph.qtiengine.web.domain;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+
+import java.io.Serializable;
+import java.util.Set;
 
 /**
- * FIXME: Document this type
+ * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
+ * 
+ * TODO: This will eventually become a persisted Object so needs to stick to convention.
  *
  * @author David McKain
  */
-public class UnsupportedUploadException extends Exception {
+public class AssessmentPackage implements Serializable {
     
-    private static final long serialVersionUID = -699513250898841731L;
+    private static final long serialVersionUID = -8906026282623891941L;
 
-    public static enum UploadFailureReason {
-        BAD_ZIP;
+    public static enum PackageType {
+        ITEM,
+        TEST,
+        ;
     }
     
-    private final UploadFailureReason reason;
+    private PackageType packageType;
+    private String sandboxPath;
+    private String assessmentObjectHref;
+    private Set<String> fileHrefs;
     
-    public UnsupportedUploadException(UploadFailureReason reason) {
-        super("Unsupported upload " + reason);
-        this.reason = reason;
+    public AssessmentPackage() {
+    }
+
+    
+    public PackageType getPackageType() {
+        return packageType;
     }
     
-    public UploadFailureReason getReason() {
-        return reason;
+    public void setPackageType(PackageType packageType) {
+        this.packageType = packageType;
+    }
+
+    
+    public String getSandboxPath() {
+        return sandboxPath;
+    }
+    
+    public void setSandboxPath(String sandboxPath) {
+        this.sandboxPath = sandboxPath;
+    }
+
+    
+    public String getAssessmentObjectHref() {
+        return assessmentObjectHref;
+    }
+
+    public void setAssessmentObjectHref(String assessmentObjectHref) {
+        this.assessmentObjectHref = assessmentObjectHref;
+    }
+
+    
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
+    }
+
+    public void setFileHrefs(Set<String> fileHrefs) {
+        this.fileHrefs = fileHrefs;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 
 }

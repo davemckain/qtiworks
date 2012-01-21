@@ -45,8 +45,10 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,18 +99,20 @@ public final class QtiContentPackageExtractor {
     public QtiContentPackageSummary parse() throws XmlResourceNotFoundException, ImsManifestException {
         /* First parse the "top" IMS manifest, which should always be present */
         ImsManifestReadResult manifest = readManifestFile(IMS_MANIFEST_FILE_NAME);
-        List<URI> testResources = null;
-        List<URI> itemResources = null;
+        Set<String> testResourceHrefs = null;
+        Set<String> itemResourceHrefs = null;
+        Set<String> fileHrefs = null;
         if (manifest.isUnderstood()) {
             /* Extract items & tests */
-            itemResources = getResolvedResourceUrisByTypes(manifest, ITEM_TYPES);
-            testResources = getResolvedResourceUrisByTypes(manifest, TEST_TYPES);
+            itemResourceHrefs = getResolvedResourceHrefsByTypes(manifest, ITEM_TYPES);
+            testResourceHrefs = getResolvedResourceHrefsByTypes(manifest, TEST_TYPES);
+            fileHrefs = getResolvedFileHrefs(manifest);
         }
-        return new QtiContentPackageSummary(manifest, testResources, itemResources);
+        return new QtiContentPackageSummary(manifest, testResourceHrefs, itemResourceHrefs, fileHrefs);
     }
     
-    private List<URI> getResolvedResourceUrisByTypes(ImsManifestReadResult manifest, String... types) {
-        ArrayList<URI> result = new ArrayList<URI>();
+    private Set<String> getResolvedResourceHrefsByTypes(ImsManifestReadResult manifest, String... types) {
+        Set<String> result = new HashSet<String>();
         Map<String, List<ContentPackageResource>> resourcesByTypeMap = manifest.getResourcesByTypeMap();
         for (String type : types) {
             List<ContentPackageResource> resourcesByType = resourcesByTypeMap.get(type);
@@ -116,10 +120,21 @@ public final class QtiContentPackageExtractor {
                 for (ContentPackageResource resource : resourcesByType) {
                     URI resourceUri = resource.getHref();
                     URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(resourceUri);
-                    result.add(resolvedUri);
+                    result.add(PACKAGE_URI_SCHEME.uriToPath(resolvedUri));
                 }
             }
 
+        }
+        return result;
+    }
+    
+    private Set<String> getResolvedFileHrefs(ImsManifestReadResult manifest) {
+        Set<String> result = new HashSet<String>();
+        for (ContentPackageResource resource : manifest.getResourceList()) {
+            for (URI fileHref : resource.getFileHrefs()) {
+                URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(fileHref);
+                result.add(PACKAGE_URI_SCHEME.uriToPath(resolvedUri));
+            }
         }
         return result;
     }
@@ -131,15 +146,15 @@ public final class QtiContentPackageExtractor {
      * This currently does NOT check namespaces, so probably permits any recent version of
      * Content Packaging to be considered as legal.
      * 
-     * @param manifestPath path of the manifest within the package
+     * @param manifestHref href/path of the manifest within the package
      * 
      * @throws XmlResourceNotFoundException if the manifest file could not be found
      * @throws ImsManifestException if the manifest could not be understood 
      */
-    private ImsManifestReadResult readManifestFile(String manifestPath)
+    private ImsManifestReadResult readManifestFile(String manifestHref)
             throws XmlResourceNotFoundException, ImsManifestException {
         /* Attempt to parse the manifest XML */
-        URI manifestSystemId = PACKAGE_URI_SCHEME.pathToUri(manifestPath);
+        URI manifestSystemId = PACKAGE_URI_SCHEME.pathToUri(manifestHref);
         logger.info("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
         XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, false);
         XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
@@ -147,7 +162,7 @@ public final class QtiContentPackageExtractor {
         /* If successful, extract information from the DOM */
         if (!xmlParseResult.isParsed()) {
             logger.warn("XML parse of IMS manifest at System ID {} failed: {}", manifestSystemId, xmlParseResult);
-            throw new ImsManifestException("XML parse of IMS manifest file at " + manifestPath + " failed", xmlParseResult);
+            throw new ImsManifestException("XML parse of IMS manifest file at " + manifestHref + " failed", xmlParseResult);
         }
         
         /* Let's check that this looks like a proper manifest document.
@@ -157,7 +172,7 @@ public final class QtiContentPackageExtractor {
         Element docElement = document.getDocumentElement();
         if (!"manifest".equals(docElement.getLocalName())) {
             logger.warn("Parsed manifest at System ID {} has root element <{}> instead of <manifest>", manifestSystemId, docElement.getLocalName());
-            throw new ImsManifestException("XML file at " + manifestPath
+            throw new ImsManifestException("XML file at " + manifestHref
                     + " does not appear to be an IMS manifest - its root element is "
                     + docElement.getNodeName(), xmlParseResult);
         }
@@ -182,7 +197,7 @@ public final class QtiContentPackageExtractor {
                     xmlParseResult, errorMessageBuilder);
         }
         
-        ImsManifestReadResult result = new ImsManifestReadResult(xmlParseResult, manifestNamespaceUri, resources);
+        ImsManifestReadResult result = new ImsManifestReadResult(manifestHref, xmlParseResult, manifestNamespaceUri, resources);
         logger.info("Parsed of manifest at system ID {} yielded {}", manifestSystemId, result);
         return result;
     }

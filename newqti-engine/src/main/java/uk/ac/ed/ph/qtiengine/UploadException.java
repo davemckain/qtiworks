@@ -31,28 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.config;
+package uk.ac.ed.ph.qtiengine;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import org.qtitools.mathassess.MathAssessExtensionPackage;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.services"})
-public class ApplicationConfiguration {
+/**
+ * FIXME: Document this!
+ *
+ * @author David McKain
+ */
+public class UploadException extends Exception {
     
-    @Bean
-    public String myString() {
-        return "dave";
+    private static final long serialVersionUID = -699513250898841731L;
+
+    public static enum UploadFailureReason {
+        NOT_ITEM_OR_ZIP,
+        BAD_ZIP,
+        NOT_CONTENT_PACKAGE,
+        BAD_IMS_MANIFEST,
+        UNSUPPORTED_PACKAGE_CONTENTS,
+        ;
     }
     
-    @Bean
-    JqtiExtensionManager jqtiExtensionManager() {
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
-        return jqtiExtensionManager;
+    private final UploadFailureReason reason;
+    
+    public UploadException(UploadFailureReason reason) {
+        super("Unsupported upload " + reason);
+        this.reason = reason;
+    }
+    
+    public UploadException(UploadFailureReason reason, Throwable cause) {
+        super("Unsupported upload " + reason, cause);
+        this.reason = reason;
+    }
+    
+    public UploadFailureReason getReason() {
+        return reason;
     }
 
 }

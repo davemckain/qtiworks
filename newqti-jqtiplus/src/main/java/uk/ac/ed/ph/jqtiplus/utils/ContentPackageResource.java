@@ -66,7 +66,7 @@ public final class ContentPackageResource implements Serializable {
         return href;
     }
     
-    public List<URI> getFiles() {
+    public List<URI> getFileHrefs() {
         return fileHrefs;
     }
     

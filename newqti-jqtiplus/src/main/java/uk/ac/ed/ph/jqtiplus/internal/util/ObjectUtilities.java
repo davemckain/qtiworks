@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Some random "macros" for doing common Object-based tasks.
@@ -56,6 +57,14 @@ public final class ObjectUtilities {
         List<T> result = Collections.emptyList();
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableList(input);
+        }
+        return result;
+    }
+    
+    public static <T> Set<T> unmodifiableSet(Set<T> input) {
+        Set<T> result = Collections.emptySet();
+        if (input!=null && !input.isEmpty()) {
+            result = Collections.unmodifiableSet(input);
         }
         return result;
     }

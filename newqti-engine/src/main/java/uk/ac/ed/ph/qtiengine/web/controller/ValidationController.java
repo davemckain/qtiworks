@@ -33,23 +33,24 @@
  */
 package uk.ac.ed.ph.qtiengine.web.controller;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.utils.ImsManifestException;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 
-import uk.ac.ed.ph.qtiengine.web.services.ValidationService;
+import uk.ac.ed.ph.qtiengine.UploadException;
+import uk.ac.ed.ph.qtiengine.services.UploadService;
+import uk.ac.ed.ph.qtiengine.services.ValidationService;
+import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,10 +64,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ValidationController {
     
-    private static final Logger logger = LoggerFactory.getLogger(ValidationController.class);
-    
     @Resource
     private ValidationService validationService;
+    
+    @Resource
+    private UploadService uploadService;
     
     /** 
      * Validates a raw payload sent via POST.
@@ -80,22 +82,17 @@ public class ValidationController {
      * @throws IOException 
      * @throws ImsManifestException 
      * @throws XmlResourceNotFoundException 
+     * @throws UploadException 
      */
     @RequestMapping(value="/validate", method=RequestMethod.POST)
     @ResponseBody
-    public String validate(@RequestHeader("Content-Type") String contentType, @RequestBody byte[] data)
-            throws IOException, XmlResourceNotFoundException, ImsManifestException {
-        File requestFile = File.createTempFile("qtiengine", "dat");
-        try {
-            IOUtilities.transfer(new ByteArrayInputStream(data), new FileOutputStream(requestFile));
-            String result = validationService.validate(contentType, requestFile);
-            logger.info("Result is {}", result);
-            return result;
-        }
-        finally {
-            if (requestFile.exists()) {
-                requestFile.delete();
-            }
-        }
+    public String validate(@RequestHeader("Content-Type") String contentType, HttpServletRequest request)
+            throws UploadException, IOException {
+        ServletInputStream uploadStream = request.getInputStream();
+        AssessmentPackage assessmentPackage = uploadService.importData(uploadStream, contentType);
+        AbstractValidationResult result = validationService.validate(assessmentPackage);
+        
+        /* TEMP! */
+        return ObjectDumper.dumpObject(result, DumpMode.DEEP);
     }
 }

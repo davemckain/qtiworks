@@ -35,10 +35,10 @@ package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
-import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Encapsulates details of the contents of a Content Package that are of interest to QTI.
@@ -50,13 +50,15 @@ public final class QtiContentPackageSummary implements Serializable {
     private static final long serialVersionUID = 6791550769947268491L;
     
     private final ImsManifestReadResult packageManifestDetails;
-    private final List<URI> testResourceUris;
-    private final List<URI> itemResourceUris;
+    private final Set<String> testResourceHrefs;
+    private final Set<String> itemResourceHrefs;
+    private final Set<String> fileHrefs;
     
-    public QtiContentPackageSummary(ImsManifestReadResult packageManifestDetails, List<URI> testResourceUris, List<URI> itemResourceUris) {
+    public QtiContentPackageSummary(ImsManifestReadResult packageManifestDetails, Set<String> testResourceHrefs, Set<String> itemResourceHrefs, Set <String> fileHrefs) {
         this.packageManifestDetails = packageManifestDetails;
-        this.testResourceUris = testResourceUris;
-        this.itemResourceUris = itemResourceUris;
+        this.testResourceHrefs = ObjectUtilities.unmodifiableSet(testResourceHrefs);
+        this.itemResourceHrefs = ObjectUtilities.unmodifiableSet(itemResourceHrefs);
+        this.fileHrefs = ObjectUtilities.unmodifiableSet(fileHrefs);
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -64,20 +66,25 @@ public final class QtiContentPackageSummary implements Serializable {
         return packageManifestDetails;
     }
     
-    public List<URI> getTestResourceUris() {
-        return testResourceUris;
+    public Set<String> getTestResourceHrefs() {
+        return testResourceHrefs;
     }
     
-    public List<URI> getItemResourceUris() {
-        return itemResourceUris;
+    public Set<String> getItemResourceHrefs() {
+        return itemResourceHrefs;
+    }
+    
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(packageManifestDetails=" + packageManifestDetails
-                + ",testResourceUris=" + testResourceUris
-                + ",itemResourceUris=" + itemResourceUris
+                + ",testResourceHrefs=" + testResourceHrefs
+                + ",itemResourceHrefs=" + itemResourceHrefs
+                + ",fileHrefs=" + fileHrefs
                 + ")";
     }
 }

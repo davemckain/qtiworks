@@ -54,13 +54,15 @@ public final class ImsManifestReadResult implements Serializable {
 
     private static final long serialVersionUID = -4113064947715847310L;
     
+    private final String manifestHref;
     private final XmlParseResult xmlParseResult;
     private final String namespaceUri;
     private final List<ContentPackageResource> resourceList;
     private final Map<String, List<ContentPackageResource>> resourcesByTypeMap;
     
-    public ImsManifestReadResult(final XmlParseResult xmlParseResult, final String namespaceUri,
+    public ImsManifestReadResult(final String manifestHref, final XmlParseResult xmlParseResult, final String namespaceUri,
             final List<ContentPackageResource> resources) {
+        this.manifestHref = manifestHref;
         this.xmlParseResult = xmlParseResult;
         this.namespaceUri = namespaceUri;
         this.resourceList = ObjectUtilities.unmodifiableList(resources);
@@ -77,7 +79,8 @@ public final class ImsManifestReadResult implements Serializable {
         this.resourcesByTypeMap = Collections.unmodifiableMap(builder);
     }
     
-    public ImsManifestReadResult(final XmlParseResult xmlParseResult) {
+    public ImsManifestReadResult(final String manifestHref, final XmlParseResult xmlParseResult) {
+        this.manifestHref = manifestHref;
         this.xmlParseResult = xmlParseResult;
         this.namespaceUri = null;
         this.resourceList = Collections.emptyList();
@@ -86,6 +89,10 @@ public final class ImsManifestReadResult implements Serializable {
     
     public boolean isUnderstood() {
         return namespaceUri!=null;
+    }
+    
+    public String getManifestHref() {
+        return manifestHref;
     }
     
     public XmlParseResult getXmlParseResult() {
@@ -107,7 +114,8 @@ public final class ImsManifestReadResult implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(xmlParseResult=" + xmlParseResult
+                + "(manifestHref=" + manifestHref
+                + ",xmlParseResult=" + xmlParseResult
                 + ",understood=" + isUnderstood()
                 + ",namespaceUri=" + namespaceUri
                 + ",resourceList=" + resourceList
