@@ -38,6 +38,9 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -46,9 +49,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +161,7 @@ public class Variable extends LookupExpression {
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
         Value result = itemRefController.getItemController().lookupVariable(itemVariableIdentifier);
 
         /* Maybe apply weight */

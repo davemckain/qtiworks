@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 
 /**
  * Abstract parent of all template processing rules.

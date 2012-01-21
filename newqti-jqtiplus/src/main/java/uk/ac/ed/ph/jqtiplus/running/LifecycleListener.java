@@ -31,25 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental.control;
-
 /**
- * Enumerates the different types of lifecycle events fired off by the controllers
+ * Listener for lifecycle events. Used by MathAssess to hook into the processing lifecycle
+ * without having to pollute this code too much.
+ * 
+ * @see LifecycleEventSource
  * 
  * @author David McKain
  */
-public enum LifecycleEventType {
+package uk.ac.ed.ph.jqtiplus.running;
 
-    ITEM_INITIALISATION_STARTING,
-    ITEM_INITIALISATION_FINISHED,
+/**
+ * Interface for classes that want to hear about Lifecycle events.
+ * 
+ * @author David McKain
+ * @version $Revision: 2777 $
+ */
+public interface LifecycleListener {
 
-    ITEM_RESPONSE_PROCESSING_STARTING,
-    ITEM_RESPONSE_PROCESSING_FINISHED,
-
-    TEST_INITIALISATION_STARTING,
-    TEST_INITIALISATION_FINISHED,
-
-    TEST_OUTCOME_PROCESSING_STARTING,
-    TEST_OUTCOME_PROCESSING_FINISHED,
+    /**
+     * TODO: What superclass should we have for the controller?
+     * (This may be called from any Thread)
+     * 
+     * @param controller
+     * @param eventType
+     */
+    void lifecycleEvent(Object controller, LifecycleEventType eventType);
 
 }

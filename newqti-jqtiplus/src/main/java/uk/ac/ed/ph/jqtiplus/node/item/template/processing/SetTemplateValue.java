@@ -37,13 +37,13 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 
 /**
@@ -105,7 +105,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final Value value = getExpression().evaluate(context);
 
-        final TemplateDeclaration declaration = itemContext.getItem().getTemplateDeclaration(getIdentifier());
+        final TemplateDeclaration declaration = itemContext.getSubjectItem().getTemplateDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QTIEvaluationException("Cannot find " + TemplateDeclaration.CLASS_TAG + ": " + getIdentifier());
         }

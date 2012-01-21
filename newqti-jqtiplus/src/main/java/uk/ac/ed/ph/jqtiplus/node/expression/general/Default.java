@@ -35,14 +35,14 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 /**
  * This expression looks up the declaration of an itemVariable and returns the associated defaultValue or NULL
@@ -91,12 +91,12 @@ public class Default extends LookupExpression {
     protected Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier) {
         /* Default don't get overridden in tests */
         /* FIXME: Should we even be allowed to access test variables here? */
-        final VariableDeclaration variableDeclaration = testContext.getTest().getVariableDeclaration(testVariableIdentifier);
+        final VariableDeclaration variableDeclaration = testContext.getSubjectTest().getVariableDeclaration(testVariableIdentifier);
         return variableDeclaration != null ? variableDeclaration.getDefaultValue().evaluate() : NullValue.INSTANCE;
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
         return itemRefController.getItemController().computeDefaultValue(itemVariableIdentifier);
     }
 }

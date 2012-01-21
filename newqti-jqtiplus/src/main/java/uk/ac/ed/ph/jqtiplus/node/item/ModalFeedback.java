@@ -154,7 +154,6 @@ public class ModalFeedback extends AbstractNode {
      * Gets value of identifier attribute.
      * 
      * @return value of identifier attribute
-     * @see #setOutcomeValue
      */
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
@@ -164,7 +163,6 @@ public class ModalFeedback extends AbstractNode {
      * Sets new value of identifier attribute.
      * 
      * @param identifier new value of identifier attribute
-     * @see #getOutcomeValue
      */
     public void setIdentifier(Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);

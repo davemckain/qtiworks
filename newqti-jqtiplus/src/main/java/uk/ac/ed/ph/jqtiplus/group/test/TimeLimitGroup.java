@@ -52,7 +52,7 @@ public class TimeLimitGroup extends AbstractNodeGroup {
      * 
      * @param parent parent of created group
      */
-    public TimeLimitGroup(ControlObject parent) {
+    public TimeLimitGroup(ControlObject<?> parent) {
         super(parent, TimeLimit.CLASS_TAG, false);
     }
 
@@ -86,6 +86,6 @@ public class TimeLimitGroup extends AbstractNodeGroup {
      */
     @Override
     public TimeLimit create(String classTag) {
-        return new TimeLimit((ControlObject) getParent());
+        return new TimeLimit((ControlObject<?>) getParent());
     }
 }

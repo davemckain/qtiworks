@@ -36,6 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -47,9 +50,6 @@ import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +181,7 @@ public class TestVariables extends ItemSubset {
         boolean floatFound = false;
 
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefController itemRefController = testContext.getItemRefController(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
             final Value value = itemRefController.getItemController().lookupVariable(getVariableIdentifier());
             if (value != null && !value.isNull() && value.getCardinality() == Cardinality.SINGLE) {
                 if (baseType != null && value.getBaseType() == baseType ||

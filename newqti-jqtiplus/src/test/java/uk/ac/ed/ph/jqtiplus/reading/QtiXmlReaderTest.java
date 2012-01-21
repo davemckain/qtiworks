@@ -39,13 +39,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -179,8 +178,6 @@ public class QtiXmlReaderTest {
     //-------------------------------
 
     static class NoResourceLocator implements ResourceLocator {
-
-        private static final long serialVersionUID = -3305449197115182185L;
 
         @Override
         public InputStream findResource(URI systemIdUri) {

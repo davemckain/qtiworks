@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -44,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * The index operator takes A sub-expression with an ordered container value and any base-type.

@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.running.LifecycleEventType;
 
 import org.qtitools.mathassess.tools.glue.extras.pooling.PooledQTIMaximaSessionManager;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;

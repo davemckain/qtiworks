@@ -46,13 +46,11 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
-import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -325,14 +323,16 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
         if (getStringIdentifier() != null) {
             final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
-            if (declaration != null && getMinStrings() > 1 || getMaxStrings() != null && getMaxStrings() > 1
-                    && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
-                context.add(new ValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality"));
+            if (declaration!=null) {
+                if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))
+                        && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
+                    context.add(new ValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality"));
+                }
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
+                    context.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
+                }
             }
 
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
-                context.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
-            }
         }
     }
 
@@ -361,7 +361,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 responseString = responseList.get(0);
             }
 
-            result = bindRecordValueResponse(responseString);
+            result = TextEntryInteraction.bindRecordValueResponse(responseString, getBase());
         }
         else if (responseDeclaration.getBaseType().isInteger()) {
             if (responseDeclaration.getCardinality().isList()) {
@@ -386,60 +386,6 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
             result = super.bindResponse(responseDeclaration, responseList);
         }
         return result;
-    }
-
-    protected RecordValue bindRecordValueResponse(String responseString) {
-        final RecordValue value = new RecordValue();
-
-        value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
-        value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
-
-        String exponentIndicator = null;
-        if (responseString.contains("e")) {
-            exponentIndicator = "e";
-        }
-        if (responseString.contains("E")) {
-            exponentIndicator = "E";
-        }
-
-        final String exponentPart = exponentIndicator == null ? null : responseString.substring(responseString.indexOf(exponentIndicator) + 1);
-        responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
-        final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
-        final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
-
-        if (exponentIndicator != null || responseString.contains(".")) {
-            value.add(KEY_INTEGER_VALUE_NAME, null);
-        }
-        else {
-            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, getBase()));
-        }
-
-        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
-        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
-
-        if (exponentIndicator == null) {
-            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
-        }
-        else {
-            int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-            if (exponentPart != null && exponentPart.length() > 0) {
-                frac -= Integer.parseInt(exponentPart);
-            }
-
-            value.add(KEY_NDP_NAME, new IntegerValue(frac));
-        }
-
-        int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
-        nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-        value.add(KEY_NSF_NAME, new IntegerValue(nsf));
-
-        if (exponentIndicator != null) {
-            value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart.length() == 0 ? "0" : exponentPart));
-        }
-        else {
-            value.add(KEY_EXPONENT_NAME, null);
-        }
-        return value;
     }
 
     @Override

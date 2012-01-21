@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.attribute;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentTestController;
+import uk.ac.ed.ph.jqtiplus.control.AssessmentTestAttemptController;
 import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
@@ -72,7 +72,7 @@ public class AttributeRefuseTest {
 
     @Test(expected = QTIAttributeException.class)
     public void test() {
-        final AssessmentTestController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
+        final AssessmentTestAttemptController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
         final ValidationResult result = testController.validate();
 
         switch (validationType) {

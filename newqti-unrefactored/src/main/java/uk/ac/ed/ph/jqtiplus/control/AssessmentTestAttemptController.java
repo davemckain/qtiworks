@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.control;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -61,6 +62,11 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.Timer;
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
@@ -75,13 +81,7 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.LifecycleEventType;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.Timer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,14 +105,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author David McKain
  */
-public final class AssessmentTestController {
+public final class AssessmentTestAttemptController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestAttemptController.class);
 
-    private final AssessmentTestManager testManager;
-
+    private final JqtiExtensionManager jqtiExtensionManager;
+    private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final AssessmentTest test;
-
     private final AssessmentTestState testState;
 
     private final Timer timer;
@@ -125,25 +124,23 @@ public final class AssessmentTestController {
      * that it's possible for a referenced {@link AssessmentItemRef} to be used
      * zero or more times in the delivered test.
      */
-    private final Map<AssessmentItemRefState, AssessmentItemRefController> itemRefControllerMap;
-
-    public AssessmentTestController(AssessmentTestManager testManager, AssessmentTestState assessmentTestState, Timer timer) {
-        ConstraintUtilities.ensureNotNull(testManager, "assessmentTestManager");
+    private final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap;
+    
+    public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
+        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        ConstraintUtilities.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
         ConstraintUtilities.ensureNotNull(assessmentTestState, "assessmentTestState");
         ConstraintUtilities.ensureNotNull(timer, "timer");
-        this.testManager = testManager;
-        this.test = testManager.getTest();
+        this.jqtiExtensionManager = jqtiExtensionManager;
+        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        this.test = resolvedAssessmentTest.getTestLookup().extractEnsuringSuccessful();
         this.testState = assessmentTestState;
-        this.itemRefControllerMap = new HashMap<AssessmentItemRefState, AssessmentItemRefController>();
+        this.itemRefControllerMap = new HashMap<AssessmentItemRefState, AssessmentItemRefAttemptController>();
         this.timer = timer;
     }
 
     public AssessmentTestState getTestState() {
         return testState;
-    }
-
-    public AssessmentTestManager getTestManager() {
-        return testManager;
     }
 
     public AssessmentTest getTest() {
@@ -152,12 +149,6 @@ public final class AssessmentTestController {
 
     public Timer getTimer() {
         return timer;
-    }
-
-    // -------------------------------------------------------------------
-
-    public ValidationResult validate() {
-        return testManager.validateTest();
     }
 
     // -------------------------------------------------------------------
@@ -195,12 +186,12 @@ public final class AssessmentTestController {
      * Returns data for all of the items selected for the given
      * {@link AssessmentItemRef}.
      */
-    public Map<AssessmentItemRefState, AssessmentItemRefController> getItemRefControllers(AssessmentItemRef itemRef) {
-        final Map<AssessmentItemRefState, AssessmentItemRefController> result = new HashMap<AssessmentItemRefState, AssessmentItemRefController>();
+    public Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef) {
+        final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> result = new HashMap<AssessmentItemRefState, AssessmentItemRefAttemptController>();
         final List<AbstractPartState> correspondingStates = testState.getAbstractPartStateMap().get(itemRef.getIdentifier());
         for (final AbstractPartState state : correspondingStates) {
             final AssessmentItemRefState itemRefState = (AssessmentItemRefState) state;
-            final AssessmentItemRefController itemRefController = itemRefControllerMap.get(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.get(itemRefState);
             result.put(itemRefState, itemRefController);
         }
         return result;
@@ -213,7 +204,7 @@ public final class AssessmentTestController {
      * Note that {@link Selection} may result in zero or more matches. This is
      * more general than what is supported by {@link LookupExpression}.
      */
-    public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> resolveDottedVariableReference(
+    public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
             VariableReferenceIdentifier variableReferenceIdentifier) {
         ConstraintUtilities.ensureNotNull(variableReferenceIdentifier);
         final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
@@ -222,7 +213,7 @@ public final class AssessmentTestController {
             throw new IllegalArgumentException("Reference " + variableReferenceIdentifier + " is not of the form ITEM_REF_IDENTIFIER.ITEM_VAR_IDENTIFIER");
         }
 
-        Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> result = null;
+        Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> result = null;
         final AssessmentItemRef itemRef = getTest().lookupItemRef(itemRefIdentifier);
         if (itemRef != null) {
             /* Get the resulting VariableDeclaration, applying any
@@ -230,8 +221,8 @@ public final class AssessmentTestController {
             final AssessmentItem item = testManager.resolveItem(itemRef).getItem();
             final VariableDeclaration itemVariableDeclation = item.getVariableDeclaration(itemRef.resolveVariableMapping(itemVarIdentifier));
             if (itemVariableDeclation != null) {
-                final Map<AssessmentItemRefState, AssessmentItemRefController> itemRefControllers = getItemRefControllers(itemRef);
-                result = new Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>>(itemVariableDeclation, itemRefControllers);
+                final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllers = getItemRefControllers(itemRef);
+                result = new Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>>(itemVariableDeclation, itemRefControllers);
             }
         }
         return result;
@@ -290,7 +281,7 @@ public final class AssessmentTestController {
         final AssessmentItemManager itemManager = getTestManager().resolveItem(itemRef);
 
         /* Create controller for this ref */
-        final AssessmentItemRefController itemRefController = new AssessmentItemRefController(this, itemManager, itemRef, itemRefState);
+        final AssessmentItemRefAttemptController itemRefController = new AssessmentItemRefAttemptController(this, itemManager, itemRef, itemRefState);
         itemRefControllerMap.put(itemRefState, itemRefController);
     }
 
@@ -312,7 +303,7 @@ public final class AssessmentTestController {
     /* NEEDS A BETTER NAME, AND CLARITY WHEN IT'S ACTUALLY CALLED */
     public void setOutcomes(SectionPartStateKey itemRefKey, Map<Identifier, Value> outcomes) {
         final AssessmentItemRefState itemRefState = testState.getSectionPartState(itemRefKey, AssessmentItemRefState.class);
-        final AssessmentItemRefController itemRefController = itemRefControllerMap.get(itemRefState);
+        final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.get(itemRefState);
 
         if (itemRefState.isFinished()) {
             throw new QTIItemFlowException(this, "Item reference is already finished.");
@@ -433,7 +424,7 @@ public final class AssessmentTestController {
         int sequenceIndex = 1;
         final List<AssessmentItemRefState> itemRefStates = testState.lookupItemRefStates();
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefController itemRefController = itemRefControllerMap.get(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.get(itemRefState);
             final ItemResult itemResult = itemRefController.computeItemResult(result, sequenceIndex++, null); // FIXME:
                                                                                                               // Needs
                                                                                                               // proper
@@ -495,8 +486,8 @@ public final class AssessmentTestController {
         return testState.getAbstractPartStateMap().get(controlObject.getIdentifier());
     }
 
-    public List<AssessmentItemRefController> findAssessmentItemRefControllers(ControlObject<?> start) {
-        final List<AssessmentItemRefController> result = new ArrayList<AssessmentItemRefController>();
+    public List<AssessmentItemRefAttemptController> findAssessmentItemRefControllers(ControlObject<?> start) {
+        final List<AssessmentItemRefAttemptController> result = new ArrayList<AssessmentItemRefAttemptController>();
         for (final AssessmentItemRef itemRef : start.searchItemRefs()) {
             final List<AbstractPartState> itemRefStates = testState.getAbstractPartStateMap().get(itemRef.getIdentifier());
             for (final AbstractPartState itemRefState : itemRefStates) {
@@ -506,8 +497,8 @@ public final class AssessmentTestController {
         return result;
     }
 
-    public List<AssessmentItemRefController> findAssessmentItemRefControllers(ControlObjectState<?> start) {
-        final List<AssessmentItemRefController> result = new ArrayList<AssessmentItemRefController>();
+    public List<AssessmentItemRefAttemptController> findAssessmentItemRefControllers(ControlObjectState<?> start) {
+        final List<AssessmentItemRefAttemptController> result = new ArrayList<AssessmentItemRefAttemptController>();
         for (final AssessmentItemRefState itemRefState : start.lookupItemRefStates()) {
             result.add(itemRefControllerMap.get(itemRefState));
         }
@@ -544,7 +535,7 @@ public final class AssessmentTestController {
      * @return
      */
     public boolean isPresented(ControlObjectState<?> start) {
-        for (final AssessmentItemRefController itemRefController : findAssessmentItemRefControllers(start)) {
+        for (final AssessmentItemRefAttemptController itemRefController : findAssessmentItemRefControllers(start)) {
             if (!itemRefController.getItemRefState().isPresented()) {
                 return true;
             }
@@ -560,7 +551,7 @@ public final class AssessmentTestController {
      */
     public int calculatePresentedCount(ControlObjectState<?> start) {
         int result = 0;
-        for (final AssessmentItemRefController itemRefController : findAssessmentItemRefControllers(start)) {
+        for (final AssessmentItemRefAttemptController itemRefController : findAssessmentItemRefControllers(start)) {
             if (itemRefController.isPresented()) {
                 result++;
             }
@@ -575,7 +566,7 @@ public final class AssessmentTestController {
      */
     public int calculateFinishedCount(ControlObjectState<?> start) {
         int result = 0;
-        for (final AssessmentItemRefController itemRefController : findAssessmentItemRefControllers(start)) {
+        for (final AssessmentItemRefAttemptController itemRefController : findAssessmentItemRefControllers(start)) {
             if (itemRefController.isFinished()) {
                 result++;
             }
@@ -593,7 +584,7 @@ public final class AssessmentTestController {
      */
     public long calculateTotalTime(ControlObjectState<?> start) {
         long total = 0;
-        for (final AssessmentItemRefController itemRefController : findAssessmentItemRefControllers(start)) {
+        for (final AssessmentItemRefAttemptController itemRefController : findAssessmentItemRefControllers(start)) {
             total += itemRefController.getTotalTime();
         }
         return total;
@@ -604,7 +595,7 @@ public final class AssessmentTestController {
     public long getDuration(ControlObjectState<?> start) {
         long result;
         if (start instanceof AssessmentItemRefState) {
-            final AssessmentItemRefController itemRefController = itemRefControllerMap.get(start);
+            final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.get(start);
             result = itemRefController.getResponseTime();
         }
         else {
@@ -688,8 +679,6 @@ public final class AssessmentTestController {
      */
     protected class TestProcessingContextImpl implements TestProcessingContext {
 
-        private static final long serialVersionUID = 5390209865608918154L;
-
         private final Map<String, Value> expressionValues;
 
         public TestProcessingContextImpl() {
@@ -716,17 +705,17 @@ public final class AssessmentTestController {
             return testManager.resolveVariableReference(variableReferenceIdentifier);
         }
 
-        public Map<AssessmentItemRefState, AssessmentItemRefController> getItemRefControllers(AssessmentItemRef itemRef) {
-            return AssessmentTestController.this.getItemRefControllers(itemRef);
+        public Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef) {
+            return AssessmentTestAttemptController.this.getItemRefControllers(itemRef);
         }
 
-        public AssessmentItemRefController getItemRefController(AssessmentItemRefState itemRefState) {
-            return AssessmentTestController.this.itemRefControllerMap.get(itemRefState);
+        public AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState) {
+            return AssessmentTestAttemptController.this.itemRefControllerMap.get(itemRefState);
         }
 
-        public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> resolveDottedVariableReference(
+        public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
                 VariableReferenceIdentifier variableReferenceIdentifier) {
-            return AssessmentTestController.this.resolveDottedVariableReference(variableReferenceIdentifier);
+            return AssessmentTestAttemptController.this.resolveDottedVariableReference(variableReferenceIdentifier);
         }
 
         public List<AssessmentItemRefState> lookupItemRefStates() {
@@ -791,7 +780,7 @@ public final class AssessmentTestController {
         @Override
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()
-                    + "(controller=" + AssessmentTestController.this
+                    + "(controller=" + AssessmentTestAttemptController.this
                     + ",expressionValues=" + expressionValues
                     + ")";
         }

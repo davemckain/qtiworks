@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -49,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
 
 /**
  * Abstract parent of feedback elements
@@ -130,7 +130,6 @@ public abstract class FeedbackElement extends BodyElement {
      * Gets value of identifier attribute.
      * 
      * @return value of identifier attribute
-     * @see #setOutcomeValue
      */
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
@@ -140,7 +139,6 @@ public abstract class FeedbackElement extends BodyElement {
      * Sets new value of identifier attribute.
      * 
      * @param identifier new value of identifier attribute
-     * @see #getOutcomeValue
      */
     public void setIdentifier(Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);

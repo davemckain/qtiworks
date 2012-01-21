@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.control.AssessmentTestController;
+import uk.ac.ed.ph.jqtiplus.control.AssessmentTestAttemptController;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -64,12 +64,12 @@ public final class UnitTestHelper {
         return new AssessmentItemController(itemManager, itemState);
     }
 
-    public static AssessmentTestController loadTestForControl(String fileName, Class<?> baseClass) {
+    public static AssessmentTestAttemptController loadTestForControl(String fileName, Class<?> baseClass) {
         final QTIObjectManager qtiObjectManager = createUnitTestObjectManager(baseClass);
         final AssessmentTest test = loadUnitTestFile(fileName, qtiObjectManager, AssessmentTest.class);
         final AssessmentTestState testState = new AssessmentTestState();
         final AssessmentTestManager testManager = new AssessmentTestManager(qtiObjectManager, test);
-        return new AssessmentTestController(testManager, testState);
+        return new AssessmentTestAttemptController(testManager, testState);
     }
 
     public static QTIObjectManager createUnitTestObjectManager(Class<?> baseClass) {

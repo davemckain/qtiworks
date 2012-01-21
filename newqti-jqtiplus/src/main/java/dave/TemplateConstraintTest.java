@@ -7,48 +7,33 @@ package dave;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIObjectManager;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.QTIReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SimpleQTIObjectCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.XMLParseResult;
 
 import java.net.URI;
 
 public class TemplateConstraintTest {
     
     public static void main(String[] args) throws RuntimeValidationException {
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        SupportedXMLReader xmlReader = new SupportedXMLReader(true);
-        QTIObjectManager objectManager = new QTIObjectManager(jqtiExtensionManager, xmlReader, new ClassPathResourceLocator(), new SimpleQTIObjectCache());
-
         URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
         
         System.out.println("Reading and validating");
-        QTIReadResult<AssessmentItem> qtiReadResult = objectManager.getQTIObject(inputUri, AssessmentItem.class);
-        XMLParseResult xmlParseResult = qtiReadResult.getXMLParseResult();
-        if (!xmlParseResult.isSchemaValid()) {
-            System.out.println("Schema validation failed: " + xmlParseResult);
-            return;
-        }
+        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
         
-        AssessmentItem item = qtiReadResult.getJQTIObject();
-        
-        AssessmentItemManager itemManager = new AssessmentItemManager(objectManager, item);
-        AbstractValidationResult validationResult = itemManager.validateItem();
-        if (!validationResult.getAllItems().isEmpty()) {
-            System.out.println("JQTI validation failed: " + validationResult);
-            return;          
-        }
+        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+
+        ItemValidationResult result = objectManager.validateItem(inputUri);
+        System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
         
         AssessmentItemState itemState = new AssessmentItemState();
-        AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(itemManager, itemState);
+        AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(jqtiExtensionManager, result.getResolvedAssessmentItem(), itemState);
         
         System.out.println("\nInitialising");
         itemController.initialize(null);

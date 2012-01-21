@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,53 +31,35 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
+package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
-import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
-
-import java.io.Serializable;
-import java.util.List;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * FIXME: Document this type!
+ * FIXME: We need to merge this somehow with {@link ValidationContext}
  * 
  * @author David McKain
  */
-public final class QTIReadResult<E extends RootObject> implements Serializable {
+public interface ItemProcessingContext extends ProcessingContext {
+    
+    Value computeDefaultValue(Identifier identifier);
 
-    private static final long serialVersionUID = -6470500039269477402L;
+    Value computeCorrectReponse(Identifier responseIdentifier);
 
-    private final E jqtiObject;
+    void setTemplateValue(TemplateDeclaration outcomeDeclaration, Value value);
 
-    private final XMLParseResult xmlParseResult;
+    void setVariableValue(VariableDeclaration variableDeclaration, Value value);
 
-    private final List<QtiModelBuildingError> qtiParseErrors;
+    void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value);
 
-    public QTIReadResult(E jqtiObject, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors) {
-        this.jqtiObject = jqtiObject;
-        this.xmlParseResult = xmlParseResult;
-        this.qtiParseErrors = qtiParseErrors;
-    }
+    void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value);
 
-    public E getJQTIObject() {
-        return jqtiObject;
-    }
+    void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value);
 
-    public XMLParseResult getXMLParseResult() {
-        return xmlParseResult;
-    }
-
-    public List<QtiModelBuildingError> getQTIParseErrors() {
-        return qtiParseErrors;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
-                + "(jqtiObject=" + jqtiObject
-                + ",xmlParseResult=" + xmlParseResult
-                + ",qtiParseErrors=" + qtiParseErrors
-                + ")";
-    }
 }

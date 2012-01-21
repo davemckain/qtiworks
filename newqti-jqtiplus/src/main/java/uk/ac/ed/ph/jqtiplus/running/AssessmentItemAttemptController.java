@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -63,20 +64,19 @@ import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.LifecycleEventType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,23 +93,26 @@ import org.slf4j.LoggerFactory;
  * Usage: one-shot, not thread safe.
  * FIXME: Document this!
  * FIXME: This now includes runtime context information, so is no longer stateless. Need to fix that!
+ * 
+ * @author David McKain
  */
 public final class AssessmentItemAttemptController {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentItemAttemptController.class);
 
-    /** FIXME: Make this settable! */
+    /** TODO: Make this settable! */
     public static int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
+    private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
-
     private final AssessmentItem item;
-
     private final AssessmentItemState itemState;
 
-    public AssessmentItemAttemptController(ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemState assessmentItemState) {
+    public AssessmentItemAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemState assessmentItemState) {
+        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractEnsuringSuccessful();
         this.itemState = assessmentItemState;
@@ -125,16 +128,6 @@ public final class AssessmentItemAttemptController {
 
     public AssessmentItemState getItemState() {
         return itemState;
-    }
-
-    //-------------------------------------------------------------------
-
-    public AbstractValidationResult validate() {
-        return resolvedAssessmentItem.validateItem();
-    }
-
-    public ResponseProcessing getResolvedResponseProcessing() {
-        return resolvedAssessmentItem.getResolvedResponseProcessing();
     }
 
     //-------------------------------------------------------------------
@@ -320,7 +313,7 @@ public final class AssessmentItemAttemptController {
     // Workflow methods
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
-        for (final JqtiExtensionPackage extensionPackage : resolvedAssessmentItem.getQTIObjectManager().getJQTIExtensionManager().getExtensionPackages()) {
+        for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
             extensionPackage.lifecycleEvent(this, eventType);
         }
     }
@@ -488,11 +481,6 @@ public final class AssessmentItemAttemptController {
         return badResponses;
     }
 
-    /**
-     * Process the responses
-     * 
-     * @throws RuntimeValidationException
-     */
     public void processResponses() throws RuntimeValidationException {
         final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
@@ -522,7 +510,7 @@ public final class AssessmentItemAttemptController {
                 }
             }
 
-            final ResponseProcessing responseProcessing = getResolvedResponseProcessing();
+            final ResponseProcessing responseProcessing = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup().extractEnsuringSuccessful();
             if (responseProcessing != null) {
                 responseProcessing.evaluate(processingContext);
             }
@@ -692,32 +680,50 @@ public final class AssessmentItemAttemptController {
      */
     protected class ItemProcessingContextImpl implements ItemProcessingContext {
 
-        private static final long serialVersionUID = -6778262823346257573L;
-
         private final Map<String, Value> expressionValues;
 
         public ItemProcessingContextImpl() {
             this.expressionValues = new TreeMap<String, Value>();
         }
+        
+        @Override
+        public boolean isItem() {
+            return true;
+        }
 
         @Override
-        public AssessmentItem getItem() {
-            return item;
+        public boolean isTest() {
+            return false;
+        }
+
+        @Override
+        public ResolvedAssessmentObject<?> getResolvedAssessmentObject() {
+            return resolvedAssessmentItem;
+        }
+
+        @Override
+        public ResolvedAssessmentItem getResolvedAssessmentItem() {
+            return resolvedAssessmentItem;
+        }
+
+        @Override
+        public ResolvedAssessmentTest getResolvedAssessmentTest() {
+            return null;
         }
 
         @Override
         public AssessmentObject getSubject() {
             return item;
         }
-
+        
         @Override
-        public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
-            return resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
+        public AssessmentTest getSubjectTest() {
+            return null;
         }
-
+        
         @Override
-        public ResponseProcessing getResolvedResponseProcessing() {
-            return resolvedAssessmentItem.getResolvedResponseProcessing();
+        public AssessmentItem getSubjectItem() {
+            return item;
         }
 
         @Override
@@ -822,5 +828,10 @@ public final class AssessmentItemAttemptController {
                     + ",expressionValues=" + expressionValues
                     + ")";
         }
+
+
+
+
+
     }
 }

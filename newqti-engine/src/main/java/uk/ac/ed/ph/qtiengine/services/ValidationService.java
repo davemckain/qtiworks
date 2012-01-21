@@ -54,26 +54,6 @@ import org.springframework.stereotype.Service;
 /**
  * FIXME: Document this type
  * 
- * General idea:
- * 
- * ZIP:
- *   * Treated as CP
- *   * Must contain 1T+nI or 0T+1I (where T=test, I=item, n >=0)
- *   
- * XML:
- *   * Must be item (no point in validating tests!)
- *   
- * Things that can go wrong:
- * 
- * - Unexpected/low level Exceptions handling submitted file & areas where they're stored (internal, so log well and fail)
- * - Can't handle given file (not ZIP or XML)
- * ZIP:
- * - Not a ZIP file despite content type
- * - Can't find manifest in content package
- * - ImsManifestException when parsing CP
- * - Can't handle the combination of items/tests sent.
- * XML:
- * - Not an assessmentItem
  * 
  * Then we've got the validation result to account for.
  * 

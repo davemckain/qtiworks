@@ -40,8 +40,8 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackInline;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

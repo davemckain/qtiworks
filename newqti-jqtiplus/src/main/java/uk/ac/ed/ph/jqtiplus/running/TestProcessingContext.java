@@ -31,52 +31,37 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
+package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.reading.QtiModelBuildingError;
+import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * This Exception is thrown if a referenced XML resource (e.g. a {@link ResponseProcessing} template) could not be successfully resolved and instantiated.
+ * FIXME: We need to merge this somehow with {@link ValidationContext}
  * 
  * @author David McKain
+ * @revision $Revision: 2782 $
  */
-public class QTIXMLReferencingException extends QTIRuntimeException {
+public interface TestProcessingContext extends ProcessingContext {
 
-    private static final long serialVersionUID = 5628758708191965953L;
+    Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
+            VariableReferenceIdentifier variableReferenceIdentifier);
 
-    /** Result of reading in XML, if we got that far */
-    private final XMLParseResult xmlReadResult;
+    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
 
-    /** QTI Parse errors, if we got that far */
-    private final List<QtiModelBuildingError> qtiParseErrors;
+    Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef);
 
-    public QTIXMLReferencingException(String message, Throwable cause) {
-        this(message, null, null, cause);
-    }
+    List<AssessmentItemRefState> lookupItemRefStates();
 
-    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult) {
-        this(message, xmlParseResult, null, null);
-    }
+    /** Called during outcome processing when there's a {@link QTIProcessingInterrupt} */
+    void terminate();
 
-    public QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors) {
-        this(message, xmlParseResult, qtiParseErrors, null);
-    }
-
-    private QTIXMLReferencingException(String message, XMLParseResult xmlParseResult, List<QtiModelBuildingError> qtiParseErrors, Throwable cause) {
-        super(message, cause);
-        this.xmlReadResult = xmlParseResult;
-        this.qtiParseErrors = qtiParseErrors;
-    }
-
-    public XMLParseResult getXMLParseResult() {
-        return xmlReadResult;
-    }
-
-    public List<QtiModelBuildingError> getQtiParseErrors() {
-        return qtiParseErrors;
-    }
 }

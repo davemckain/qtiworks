@@ -31,42 +31,69 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental.control;
+package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
+import java.util.Map;
 
 /**
- * FIXME: We need to merge this somehow with {@link ValidationContext}
+ * FIXME: This needs refactored!
  * 
+ *  @author David McKain
  */
-public interface ItemProcessingContext extends ProcessingContext {
+public interface ProcessingContext {
     
-    AssessmentItem getItem();
+    boolean isItem();
+    
+    boolean isTest();
+    
+    ResolvedAssessmentObject<?> getResolvedAssessmentObject();
+    
+    ResolvedAssessmentItem getResolvedAssessmentItem();
+    
+    ResolvedAssessmentTest getResolvedAssessmentTest();
 
-    @ToRefactor
-    ResponseProcessing getResolvedResponseProcessing();
+    /**
+     * NB: This is guaranteed to return non-null
+     */
+    AssessmentObject getSubject();
+    
+    AssessmentItem getSubjectItem();
+    
+    AssessmentTest getSubjectTest();
 
-    Value computeDefaultValue(Identifier identifier);
+    Value lookupVariable(VariableDeclaration variableDeclaration);
 
-    Value computeCorrectReponse(Identifier responseIdentifier);
+    /**
+     * NB: Returns null if variable is not defined!
+     */
+    Value lookupVariable(Identifier identifier);
 
-    void setTemplateValue(TemplateDeclaration outcomeDeclaration, Value value);
+    Value lookupVariable(Identifier identifier, VariableType... permittedTypes);
 
-    void setVariableValue(VariableDeclaration variableDeclaration, Value value);
+    void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value);
 
-    void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value);
+    void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value);
 
-    void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value);
+    /** NB: Returns null if expression is not found or if value has not been set */
+    Value getExpressionValue(Expression expression);
 
-    void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value);
+    Map<String, Value> exportExpressionValues();
+
+    void setExpressionValue(Expression expression, Value value);
+
 
 }

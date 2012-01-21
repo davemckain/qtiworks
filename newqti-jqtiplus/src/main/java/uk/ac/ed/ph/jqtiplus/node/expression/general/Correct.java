@@ -36,15 +36,15 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 /**
  * This expression looks up the declaration of A response variable and returns the associated correctResponse or NULL
@@ -101,7 +101,7 @@ public class Correct extends LookupExpression {
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
         return itemRefController.getItemController().computeCorrectResponse(itemVariableIdentifier);
     }
 }

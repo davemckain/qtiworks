@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental.control;
+package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
@@ -39,10 +39,9 @@ import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.TimeRecord;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentItemManager;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Date;
@@ -50,34 +49,33 @@ import java.util.Date;
 /**
  * @author David McKain
  */
-public final class AssessmentItemRefController {
+public final class AssessmentItemRefAttemptController {
 
-    private final AssessmentTestController testController;
-
-    private final AssessmentItemAttemptController itemController;
-
+    private final AssessmentTestAttemptController testAttemptController;
+    private final AssessmentItemAttemptController itemAttemptController;
     private final AssessmentItemRef itemRef;
-
     private final AssessmentItemRefState itemRefState;
 
-    AssessmentItemRefController(AssessmentTestController testController,
-            AssessmentItemManager itemManager, AssessmentItemRef itemRef,
+    AssessmentItemRefAttemptController(AssessmentTestAttemptController testAttemptController,
+            ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemRef itemRef,
             AssessmentItemRefState itemRefState) {
-        ConstraintUtilities.ensureNotNull(itemManager, "assessmentTestManager");
-        ConstraintUtilities.ensureNotNull(itemManager, "assessmentItemManager");
+        ConstraintUtilities.ensureNotNull(testAttemptController, "testAttemptController");
+        ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        ConstraintUtilities.ensureNotNull(itemRef, "itemRef");
         ConstraintUtilities.ensureNotNull(itemRefState, "assessmentItemRefState");
-        this.testController = testController;
-        this.itemController = new AssessmentItemAttemptController(itemManager, itemRefState.getItemState());
+        this.testAttemptController = testAttemptController;
+        this.itemAttemptController = new AssessmentItemAttemptController(testAttemptController.getJqtiExtensionManager(),
+                resolvedAssessmentItem, itemRefState.getItemState());
         this.itemRef = itemRef;
         this.itemRefState = itemRefState;
     }
 
-    public AssessmentTestController getTestController() {
-        return testController;
+    public AssessmentTestAttemptController getTestController() {
+        return testAttemptController;
     }
 
     public AssessmentItemAttemptController getItemController() {
-        return itemController;
+        return itemAttemptController;
     }
 
     public AssessmentItemRef getItemRef() {
@@ -100,11 +98,11 @@ public final class AssessmentItemRefController {
     }
 
     public Boolean isCorrect() {
-        return itemController.isCorrect();
+        return itemAttemptController.isCorrect();
     }
 
     public Boolean isIncorrect() {
-        return itemController.isIncorrect();
+        return itemAttemptController.isIncorrect();
     }
 
     public boolean isResponded() {
@@ -136,6 +134,7 @@ public final class AssessmentItemRefController {
      * @throws QTIItemFlowException if this item reference if already finished or skipping is not allowed
      * @see #isSkipped
      */
+    @ToRefactor
     public void skip() {
         if (isFinished()) {
             throw new QTIItemFlowException(this, "Item reference is already finished.");
@@ -143,7 +142,7 @@ public final class AssessmentItemRefController {
         if (!itemRef.getItemSessionControl().getAllowSkipping()) {
             throw new QTIItemFlowException(this, "It is not allowed to skip this item: ");
         }
-        skip(testController.getTimer().getCurrentTime());
+        skip(testAttemptController.getTimer().getCurrentTime());
         itemRefState.setSkipped(true);
         itemRefState.setFinished(true);
     }
@@ -156,11 +155,12 @@ public final class AssessmentItemRefController {
      * @throws QTIItemFlowException if this item reference is already finished
      * @see #isTimedOut
      */
+    @ToRefactor
     public void timeOut() {
         if (isFinished()) {
             throw new QTIItemFlowException(this, "Item reference is already finished.");
         }
-        setTimeOutTime(testController.getTimer().getCurrentTime());
+        setTimeOutTime(testAttemptController.getTimer().getCurrentTime());
         itemRefState.setTimedOut(true);
         itemRefState.setFinished(true);
     }
@@ -168,7 +168,7 @@ public final class AssessmentItemRefController {
     // ---------------------------------------------------
 
     public boolean passMaximumTimeLimit() {
-        return testController.passMaximumTimeLimit(itemRefState);
+        return testAttemptController.passMaximumTimeLimit(itemRefState);
     }
 
 
@@ -182,7 +182,7 @@ public final class AssessmentItemRefController {
         result.setDateStamp(new Date());
         result.setSequenceIndex(sequenceIndex);
         result.setSessionStatus(sessionStatus);
-        itemController.recordItemVariables(result);
+        itemAttemptController.recordItemVariables(result);
         return result;
     }
 
@@ -284,7 +284,7 @@ public final class AssessmentItemRefController {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(itemController=" + itemController
+                + "(itemController=" + itemAttemptController
                 + ",itemRef=" + itemRef
                 + ",itemRefState=" + itemRefState + ")";
     }

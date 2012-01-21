@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 
 /**
  * The exit response rule terminates response processing immediately (for this invocation).

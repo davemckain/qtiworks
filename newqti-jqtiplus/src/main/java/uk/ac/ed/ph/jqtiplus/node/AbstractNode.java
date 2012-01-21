@@ -43,8 +43,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.SupportedXMLReader;
 
 import org.w3c.dom.Element;
 
@@ -131,8 +131,8 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public void load(Element sourceElement, LoadingContext context) {
-        /* Extract SAX Locator data stowed away by QTIXMLReader, if used */
-        this.xmlSourceLocationInformation = SupportedXMLReader.extractLocationInformation(sourceElement);
+        /* Extract SAX Locator data stowed away by XmlResourceReader, if used */
+        this.xmlSourceLocationInformation = XmlResourceReader.extractLocationInformation(sourceElement);
 
         // 1) Read all attributes.
         loadAttributes(sourceElement, context);

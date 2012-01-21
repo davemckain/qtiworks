@@ -38,13 +38,13 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * @author Jonathon Hare
@@ -99,7 +99,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
         final Value value = getExpression().evaluate(context);
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
 
-        final ResponseDeclaration declaration = itemContext.getItem().getResponseDeclaration(getIdentifier());
+        final ResponseDeclaration declaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QTIEvaluationException("Cannot find " + ResponseDeclaration.CLASS_TAG + ": " + getIdentifier());
         }

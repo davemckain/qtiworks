@@ -47,37 +47,21 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
 /**
- * A textEntry interaction is an inlineInteraction that obtains A
- * simple piece of text from the candidate. Like inlineChoiceInteraction,
- * the delivery engine must allow the candidate to review their choice
- * within the context of the surrounding text.
- * The textEntryInteraction must be bound to A response variable with single
- * cardinality only. The baseType must be one of string, integer, or float.
- * Note: Spec is slightly wrong: record response is also allowed from inherited
- * StringInteraction
+ * Base class for {@link TextEntryInteraction} and {@link ExtendedTextInteraction}
  * 
- * @author Jonathon Hare
+ * @author David McKain
  */
-public class TextEntryInteraction extends InlineInteraction implements StringInteraction {
+public abstract class AbstractStringInteraction extends InlineInteraction implements StringInteraction {
 
     private static final long serialVersionUID = 1113644056576463196L;
-
-    /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "textEntryInteraction";
-
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
-    public TextEntryInteraction(XmlNode parent) {
+    
+    public AbstractStringInteraction(XmlNode parent) {
         super(parent);
 
         //for StringInteraction...
@@ -89,12 +73,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public final List<? extends XmlNode> getChildren() {
         return null;
     }
 
@@ -199,36 +178,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         }
     }
 
-    @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) throws ResponseBindingException {
-        String responseString = null;
-        if (responseList != null) {
-            if (responseList.size() > 1) {
-                throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
-            }
-            responseString = responseList.get(0);
-        }
-
-        //handle record special case
-        Value result;
-        if (responseDeclaration.getCardinality().isRecord()) {
-            result = bindRecordValueResponse(responseString, getBase());
-        }
-        else if (responseDeclaration.getBaseType().isInteger()) {
-            if (responseString == null || responseString.trim().length() == 0) {
-                result = NullValue.INSTANCE;
-            }
-            else {
-                result = new IntegerValue(responseString, getBase());
-            }
-        }
-        else {
-            result = super.bindResponse(responseDeclaration, responseList);
-        }
-        return result;
-    }
-
-    protected static RecordValue bindRecordValueResponse(String responseString, Integer base) {
+    protected final RecordValue bindRecordValueResponse(String responseString) {
         final RecordValue value = new RecordValue();
 
         value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
@@ -251,7 +201,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             value.add(KEY_INTEGER_VALUE_NAME, null);
         }
         else {
-            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, base));
+            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, getBase()));
         }
 
         value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));

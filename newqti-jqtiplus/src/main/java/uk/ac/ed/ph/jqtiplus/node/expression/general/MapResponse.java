@@ -38,12 +38,12 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
 
 /**
  * This expression looks up the value of A response variable and then transforms it using the associated mapping,
@@ -125,7 +125,7 @@ public class MapResponse extends AbstractExpression {
     @Override
     protected Value evaluateSelf(ProcessingContext context, int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
-        final ResponseDeclaration responseDeclaration = itemContext.getItem().getResponseDeclaration(getIdentifier());
+        final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         final Value responseValue = itemContext.lookupVariable(getIdentifier());
 
         return responseDeclaration.getMapping().getTargetValue(responseValue);

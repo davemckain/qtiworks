@@ -31,37 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental.control;
-
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-
-import java.util.List;
-import java.util.Map;
+package uk.ac.ed.ph.jqtiplus.running;
 
 /**
- * FIXME: We need to merge this somehow with {@link ValidationContext}
+ * Enumerates the different types of lifecycle events fired off by the controllers
  * 
  * @author David McKain
- * @revision $Revision: 2782 $
  */
-public interface TestProcessingContext extends ProcessingContext {
+public enum LifecycleEventType {
 
-    Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> resolveDottedVariableReference(
-            VariableReferenceIdentifier variableReferenceIdentifier);
+    ITEM_INITIALISATION_STARTING,
+    ITEM_INITIALISATION_FINISHED,
 
-    AssessmentItemRefController getItemRefController(AssessmentItemRefState itemRefState);
+    ITEM_RESPONSE_PROCESSING_STARTING,
+    ITEM_RESPONSE_PROCESSING_FINISHED,
 
-    Map<AssessmentItemRefState, AssessmentItemRefController> getItemRefControllers(AssessmentItemRef itemRef);
+    TEST_INITIALISATION_STARTING,
+    TEST_INITIALISATION_FINISHED,
 
-    List<AssessmentItemRefState> lookupItemRefStates();
-
-    /** Called during outcome processing when there's a {@link QTIProcessingInterrupt} */
-    void terminate();
+    TEST_OUTCOME_PROCESSING_STARTING,
+    TEST_OUTCOME_PROCESSING_FINISHED,
 
 }

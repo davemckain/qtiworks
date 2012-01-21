@@ -39,6 +39,10 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
@@ -48,10 +52,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 import java.util.Map;
 
@@ -189,20 +189,20 @@ public abstract class LookupExpression extends AbstractExpression {
                 /* It's a special ITEM.VAR reference */
                 final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
                 final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
-                final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefController>> resolved = testContext
+                final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolved = testContext
                         .resolveDottedVariableReference(variableReferenceIdentifier);
                 if (resolved == null) {
                     logger.error("{}Cannot find assessmentItemRef with identifier {}. Returning NULL value.", getIndent(depth), itemRefIdentifier);
                 }
                 else {
-                    final Map<AssessmentItemRefState, AssessmentItemRefController> itemRefControllerMap = resolved.getSecond();
+                    final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap = resolved.getSecond();
                     if (itemRefControllerMap.size() != 1) {
                         logger.error("{}Lookup of variable {} with identifier in assessmentItemRef with identifier {} resulted in {} matches. "
                                 + "The '.' notation in QTI only supports assessmentItemRefs that are selected exactly one. Returning NULL value.",
                                 new Object[] { getIndent(depth), itemVarIdentifier, itemRefIdentifier, itemRefControllerMap.size() });
                     }
                     else {
-                        final AssessmentItemRefController itemRefController = itemRefControllerMap.values().iterator().next();
+                        final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.values().iterator().next();
                         result = evaluateInReferencedItem(depth, itemRefController, itemVarIdentifier);
                     }
                 }
@@ -217,7 +217,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     protected abstract Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier);
 
-    protected abstract Value evaluateInReferencedItem(int depth, AssessmentItemRefController itemRefController, Identifier itemVariableIdentifier);
+    protected abstract Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier);
 
     //----------------------------------------------------------------------
 

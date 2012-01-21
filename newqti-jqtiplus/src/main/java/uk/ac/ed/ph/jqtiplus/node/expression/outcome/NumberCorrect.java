@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class NumberCorrect extends ItemSubset {
 
         int correctCount = 0;
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefController itemRefController = testContext.getItemRefController(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
             if (itemRefController.isCorrect()) {
                 correctCount++;
             }

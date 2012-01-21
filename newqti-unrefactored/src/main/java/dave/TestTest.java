@@ -33,7 +33,7 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentTestController;
+import uk.ac.ed.ph.jqtiplus.control.AssessmentTestAttemptController;
 import uk.ac.ed.ph.jqtiplus.control.JQTIController;
 import uk.ac.ed.ph.jqtiplus.control.Timer;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -82,7 +82,7 @@ public class TestTest {
 
         System.out.println("Initializing test");
         final AssessmentTestState testState = new AssessmentTestState(test);
-        final AssessmentTestController testController = new AssessmentTestController(testManager, testState, new Timer());
+        final AssessmentTestAttemptController testController = new AssessmentTestAttemptController(testManager, testState, new Timer());
         testController.initialize();
 
         System.out.println("Test state: " + ObjectDumper.dumpObject(testState, DumpMode.DEEP));

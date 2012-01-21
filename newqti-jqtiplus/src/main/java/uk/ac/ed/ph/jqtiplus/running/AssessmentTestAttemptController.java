@@ -31,15 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xperimental.control;
+package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.legacy.AssessmentTestManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * THIS IS A MINIMISED BUT NON-FUNCTIONAL VERSION OF THE CLASS IN THE UNREFACTORED MODULE
@@ -47,12 +47,29 @@ import org.slf4j.LoggerFactory;
  * 
  * @author David McKain
  */
-public class AssessmentTestController {
+@SuppressWarnings("unused")
+public class AssessmentTestAttemptController {
+    
+    private final JqtiExtensionManager jqtiExtensionManager;
+    private final ResolvedAssessmentTest resolvedAssessmentTest;
+    private final AssessmentTest test;
+    private final AssessmentTestState testState;
+    private final Timer timer;
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestController.class);
-
-    @SuppressWarnings("unused")
-    public AssessmentTestController(AssessmentTestManager testManager, AssessmentTestState assessmentTestState, Timer timer) {
+    public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
+        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        ConstraintUtilities.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
+        ConstraintUtilities.ensureNotNull(assessmentTestState, "assessmentTestState");
+        ConstraintUtilities.ensureNotNull(timer, "timer");
+        this.jqtiExtensionManager = jqtiExtensionManager;
+        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        this.test = resolvedAssessmentTest.getTestLookup().extractEnsuringSuccessful();
+        this.testState = assessmentTestState;
+        this.timer = timer;
+    }
+    
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
     }
 
     private void blowUp() {
@@ -64,7 +81,7 @@ public class AssessmentTestController {
         return null;
     }
 
-    public boolean passMaximumTimeLimit(@SuppressWarnings("unused") ControlObjectState<?> start) {
+    public boolean passMaximumTimeLimit(ControlObjectState<?> start) {
         blowUp();
         return false;
     }

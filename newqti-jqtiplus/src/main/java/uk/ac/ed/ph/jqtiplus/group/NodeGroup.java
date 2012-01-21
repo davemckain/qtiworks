@@ -118,12 +118,13 @@ public interface NodeGroup extends Validatable, Serializable {
     //     * @return list of all currently possible QTI class names (all currently possible children in this group)
     //     */
     //    List<String> getCurrentSupportedClasses(int index);
-            /**
-             * Gets list of all children.
-             *
-             * @return list of all children
-             */
-            List<XmlNode> getChildren();
+    
+    /**
+     * Gets list of all children.
+     *
+     * @return list of all children
+     */
+    List<XmlNode> getChildren();
 
     /**
      * Gets required minimum number of children or null.

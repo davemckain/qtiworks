@@ -37,6 +37,8 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
@@ -46,8 +48,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.RuntimeValidationResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -423,8 +423,10 @@ public abstract class AbstractExpression extends AbstractNode implements Express
                 }
             }
 
-            // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-            validateThisOnly(context);
+// DM: I think we should be able to catch all validation errors before runtime now, but haven't implemented this yet.
+// I have commented out the check here as the context interfaces aren't linked like they used to be.
+//            // 2) Validates this expression (but not its children, since they will have been done in 1 above).
+//            validateThisOnly(context);
 
             // 3) Evaluates this expression.
             value = evaluateSelf(context, depth);

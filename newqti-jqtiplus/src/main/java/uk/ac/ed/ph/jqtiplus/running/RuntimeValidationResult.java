@@ -31,35 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils.legacy;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
+package uk.ac.ed.ph.jqtiplus.running;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
- * Exception thrown when a required XML resource cannot be found.
+ * FIXME: This needs refactored and probably isn't needed as I think we can do validation better
+ * to remove the need for runtime checking.
  * 
  * @author David McKain
  */
-public class QTIXMLResourceNotFoundException extends QTIRuntimeException {
+@ToRefactor
+public final class RuntimeValidationResult extends AbstractValidationResult {
 
-    private static final long serialVersionUID = 4325972690545164979L;
-
-    private final ResourceLocator resourceLocator;
-
-    private final String systemId;
-
-    public QTIXMLResourceNotFoundException(final ResourceLocator resourceLocator, final String systemId) {
-        super("Could not locate required XML resource with systemId " + systemId + " using ResourceLocator " + resourceLocator);
-        this.resourceLocator = resourceLocator;
-        this.systemId = systemId;
+    private static final long serialVersionUID = -6570165277334622467L;
+    
+    private final AssessmentObject assessmentObject;
+    
+    public RuntimeValidationResult(AssessmentObject assessmentObject) {
+        this.assessmentObject = assessmentObject;
     }
 
-    public ResourceLocator getResourceLocator() {
-        return resourceLocator;
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AssessmentObject getAssessmentObject() {
+        return assessmentObject;
     }
-
-    public String getSystemId() {
-        return systemId;
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(assessmentObject=" + assessmentObject
+                + ",errors=" + getErrors()
+                + ",warnings=" + getWarnings()
+                + ",infos=" + getInfos()
+                + ")";
     }
 }

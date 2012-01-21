@@ -35,14 +35,14 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.AssessmentItemRefController;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.control.TestProcessingContext;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class OutcomeMinimum extends OutcomeMinMax {
 
         final MultipleValue list = new MultipleValue();
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefController itemRefController = testContext.getItemRefController(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
             final OutcomeDeclaration outcomeDeclaration = itemRefController.getItemController().getItem().getOutcomeDeclaration(getOutcomeIdentifier());
             if (outcomeDeclaration != null && outcomeDeclaration.getCardinality().isSingle()) {
                 if (!outcomeDeclaration.getBaseType().isNumeric() || outcomeDeclaration.getNormalMaximum() == null) {
