@@ -90,9 +90,15 @@ public class ValidationController {
             throws UploadException, IOException {
         ServletInputStream uploadStream = request.getInputStream();
         AssessmentPackage assessmentPackage = uploadService.importData(uploadStream, contentType);
-        AbstractValidationResult result = validationService.validate(assessmentPackage);
-        
-        /* TEMP! */
-        return ObjectDumper.dumpObject(result, DumpMode.DEEP);
+        try {
+            AbstractValidationResult result = validationService.validate(assessmentPackage);
+            
+            /* TEMP! */
+            return ObjectDumper.dumpObject(result, DumpMode.DEEP);
+        }
+        finally {
+            uploadService.deletePackage(assessmentPackage);
+        }
+
     }
 }

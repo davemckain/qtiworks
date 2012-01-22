@@ -128,6 +128,16 @@ public class UploadService {
         return result;
     }
     
+    public void deletePackage(AssessmentPackage assessmentPackage) {
+        logger.info("Deleting sandbox for package {}", assessmentPackage);
+        try {
+            IOUtilities.recursivelyDelete(new File(assessmentPackage.getSandboxPath()));
+        }
+        catch (IOException e) {
+            logger.error("Could not delete package at {}", assessmentPackage.getSandboxPath());
+        }
+    }
+    
     private AssessmentPackage trySaveSingleFile(InputStream inputStream, File sandboxDirectory) throws UploadException {
         /* (We'll call the resulting file XML, even though it might not be */
         CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
@@ -231,5 +241,7 @@ public class UploadService {
         }
         return sandboxDirectory;
     }
+
+
 
 }

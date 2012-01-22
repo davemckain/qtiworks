@@ -1,0 +1,79 @@
+<%--
+
+Copyright (c) 2012, The University of Edinburgh.
+All Rights Reserved
+
+************************************************************
+
+Base JSP Page Header
+
+Attributes:
+
+title: Optional page title
+javascript: Optional space-separated list of JavaScript URLs
+css: Optional space-separated list of extra CSS stylesheet URLs
+
+@author  David McKain
+@version $Revision: 1085 $
+
+--%>
+<%@ page contentType="text/html; charset=UTF-8" session="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="author" content="David McKain">
+    <meta name="publisher" content="The University of Edinburgh">
+    <title>QTI - <c:out value="${title}" default="QTI Experimental"/></title>
+    <link rel="stylesheet" type="text/css" href="<c:url value='/includes/webapp-base.css'/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value='/includes/content-styles.css'/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value='/includes/qtiengine.css'/>">
+    <%-- Import jQuery if requested --%>
+    <c:if test="${!empty jquery}">
+      <script type="text/javascript" src="<c:url value='/protected/includes/jquery/jquery-1.4.4.min.js'/>"></script>
+    </c:if>
+    <%-- Import jQuery UI if requested --%>
+    <c:if test="${!empty jqueryui}">
+      <script type="text/javascript" src="<c:url value='/protected/includes/jquery/jquery-ui-1.8.7.custom.min.js'/>"></script>
+      <link rel="stylesheet" type="text/css" href="<c:url value='/protected/includes/jquery/smoothness/jquery-ui-1.8.7.custom.css'/>"/>
+    </c:if>
+    <%-- Import additional CSS and JavaScript if requested --%>
+    <c:if test="${!empty css}">
+      <c:forEach var="cssUrl" items="${fn:split(css, ' ')}">
+        <link rel="stylesheet" type="text/css" href="<c:url value='${cssUrl}'/>">
+      </c:forEach>
+    </c:if>
+    <c:if test="${!empty javascript}">
+      <c:forEach var="jsUrl" items="${fn:split(javascript, ' ')}">
+        <script type="text/javascript" src="<c:url value='${jsUrl}'/>"></script>
+      </c:forEach>
+    </c:if>
+  </head>
+  <body>
+    <div id="container">
+      <div id="header">
+        <div id="identities">
+          <div id="edlogo"><a href="http://www.ed.ac.uk"><img src="<c:url value='/includes/images/ed_logo.gif'/>" alt="University of Edinburgh Logo"/></a></div>
+          <div id="edname"><a href="http://www.ed.ac.uk"><img src="<c:url value='/includes/images/uofe2.gif'/>" alt="University of Edinburgh"></a></div>
+          <div id="schoolname"><a href="/"><img src="<c:url value='/includes/images/panda.gif'/>" alt="School of Physics &amp; Astronomy"></a></div>
+        </div>
+        <div id="GlobalNav">
+          <ul>
+            <li class="active"><a href="http://www2.ph.ed.ac.uk/elearning/" class="active"><span>e-Learning</span></a></li>
+          </ul>
+        </div>
+        <div id="utility">
+          <a class="utilContact" href="http://www2.ph.ed.ac.uk/elearning/contacts/#dmckain">Contact us</a>
+        </div>
+      </div>
+      <div id="sectionHeader">
+        <div id="sectionHeaderTitle">
+          New QTI (make this a link)
+        </div>
+      </div>
+      <div id="contentArea">
+        <%-- Main content goes in this container --%>
+        <div id="content" class="content">

@@ -1,0 +1,236 @@
+/* ======================================================================== */
+/* General */
+/* ======================================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: black;
+  background: white url(images/centralsitebg.gif) repeat-x;
+}
+
+/* (Style for IE<=6) */
+* html body {
+  background-image: url(images/bgbodyie.jpg)
+}
+
+/* YUI Font size reset
+Copyright (c) 2007, Yahoo! Inc. All rights reserved. Code licensed under the BSD License: http://developer.yahoo.net/yui/license.txt
+version: 2.3.1 */
+body {
+  font: 13px/1.22 arial, helvetica, clean, sans-serif;
+  font-size:small;
+}
+
+table {
+  font-size: inherit;
+}
+
+/* Bump up IE to get to 13px equivalent */
+pre,
+code,
+kbd,
+samp,
+tt {
+  font-family:monospace;
+  font-size:108%;
+  line-height:99%;
+}
+
+a:hover {
+  color:#ff0000;
+}
+
+/* ======================================================================== */
+/* Content Container */
+/* ======================================================================== */
+
+#container {
+  width: 100%;
+  margin: 0;
+  text-align: left
+}
+
+/* ======================================================================== */
+/* Header */
+/* ======================================================================== */
+
+#header {
+  background-color: #25476c;
+  border-bottom: #cad8e5 10px solid;
+  height: 70px;
+}
+
+#header img {
+  border: none;
+}
+
+#identities {
+  width:615px;
+  float:left
+}
+
+#edlogo {
+  height:70px;
+  width:70px;
+  float:left
+}
+
+#edname {
+  height:29px;
+  margin-left: 70px;
+  margin-top:5px
+}
+
+#schoolname {
+  margin-left: 70px;
+  height:41px;
+}
+
+/* Global Navigation Tabs (top right) */
+
+#GlobalNav {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #25476C;
+  font-size: 85%; /* 11px*/
+  text-align: right;
+}
+
+#GlobalNav ul {
+  list-style: none;
+}
+
+#GlobalNav li {
+  display: inline;
+  padding-left: 2px;
+}
+
+#GlobalNav li a {
+  text-decoration: none;
+  color: #fff;
+  line-height: 2em;
+  text-align: center;
+}
+
+#GlobalNav li.active a,
+#GlobalNav li.active-trail a {
+  border-top: #cad8e5 2px solid;
+}
+
+#GlobalNav li a:hover {
+  background-color: #006699;
+  border-top: #cad8e5 2px solid;
+}
+
+#GlobalNav li a:active {
+  color: #fff;
+}
+
+/* Utility Area */
+
+#utility {
+  position: absolute;
+  right: 0;
+  height: 20px;
+  margin-top: 50px;
+  width: 10em;
+  background-color: #cad8e5;
+  text-align: center;
+  line-height: 20px;
+}
+
+#utility div {
+  display: inline;
+}
+
+#utility a {
+  color: #25476C;
+  font-size: 100%;
+  font-weight: bold;
+}
+
+#utility a:hover {
+  color: #ff0000;
+}
+
+/* ======================================================================== */
+/* App (Section) Header */
+/* ======================================================================== */
+
+#sectionHeader {
+  clear: both;
+  background: #eaeff5 url(images/school-webapp-banner.png) right top no-repeat;
+  height: 50px;
+  border-bottom: 2px solid #25476c;
+}
+
+#sectionHeader div#sectionHeaderTitle {
+  display: block;
+  padding: 10px 0 0 10px;
+  font-size: 167%; /* 22px */
+  color: #25476C;
+}
+
+#sectionHeader a {
+  text-decoration: none;
+  color: #25476C;
+}
+
+#sectionHeader div#sectionHeaderTitle:hover {
+  text-decoration: none;
+}
+
+/* ======================================================================== */
+/* Footer */
+/* ======================================================================== */
+
+#footer {
+  clear: both;
+  border-top: #25476C 10px solid;
+  font-size: 1em;
+  padding: 0 10px 0 20px;
+  background: white url(images/footerbg.jpg) repeat-x;
+  min-height: 90px;
+}
+
+#footer a {
+  color: #999999;
+}
+
+#footer a:hover {
+  color: #FF0000;
+}
+
+#footer #copyright {
+  width: auto;
+  margin: 0 auto;
+  text-align: left;
+  color: #000;
+  padding: 10px 0;
+}
+
+#footer p {
+  display: block;
+  padding-bottom: 5px;
+  font-size: 85%
+}
+
+#footer-text {
+  width: auto;
+  float: left;
+}
+
+/* ======================================================================== */
+/* Body Content */
+/* ======================================================================== */
+
+#contentArea {
+  margin: 1em;
+}
