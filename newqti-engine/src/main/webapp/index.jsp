@@ -7,6 +7,6 @@ All Rights Reserved
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<a href="validate/">Validation Demo</a>
+<a href="dispatcher/validator">Validation Demo</a>
 
 <%@ include file="/WEB-INF/jsp/includes/footer.jspf" %>

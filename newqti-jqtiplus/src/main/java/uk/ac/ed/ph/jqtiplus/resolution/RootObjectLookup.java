@@ -96,10 +96,12 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
         return rootObjectHolder;
     }
     
+    @ObjectDumperOptions(DumpMode.DEEP)
     public BadResourceException getBadResultException() {
         return badResultException;
     }
     
+    @ObjectDumperOptions(DumpMode.DEEP)
     public ResourceNotFoundException getNotFoundException() {
         return notFoundException;
     }

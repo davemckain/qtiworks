@@ -35,9 +35,7 @@ package uk.ac.ed.ph.qtiengine.web.controller;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.utils.ImsManifestException;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 
 import uk.ac.ed.ph.qtiengine.UploadException;
 import uk.ac.ed.ph.qtiengine.services.UploadService;
@@ -51,10 +49,13 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * FIXME: Document this type
@@ -72,19 +73,8 @@ public class ValidationController {
     
     /** 
      * Validates a raw payload sent via POST.
-     * 
-     * FIXME: It's probably more scalable to stream the incoming request body straight to a File
-     * rather than a byte array.
-     *  
-     * @param contentType
-     * @param data
-     * @return
-     * @throws IOException 
-     * @throws ImsManifestException 
-     * @throws XmlResourceNotFoundException 
-     * @throws UploadException 
      */
-    @RequestMapping(value="/validate", method=RequestMethod.POST)
+    @RequestMapping(value="/ws/validate", method=RequestMethod.POST)
     @ResponseBody
     public String validate(@RequestHeader("Content-Type") String contentType, HttpServletRequest request)
             throws UploadException, IOException {
@@ -100,5 +90,29 @@ public class ValidationController {
             uploadService.deletePackage(assessmentPackage);
         }
 
+    }
+    
+    //------------------------------------------------------
+    
+    @RequestMapping(value="/validator", method=RequestMethod.GET)
+    public String showValidatorForm() {
+        return "validator-uploadForm";
+    }
+    
+    @RequestMapping(value="/validator", method=RequestMethod.POST)
+    public String handleValidatorForm(HttpServletRequest request, Model model)
+            throws UploadException, IOException {
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultipartFile uploadFile = multipartRequest.getFile("upload");
+        AssessmentPackage assessmentPackage = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
+        try {
+            AbstractValidationResult result = validationService.validate(assessmentPackage);
+            
+            model.addAttribute("result", ObjectDumper.dumpObject(result, DumpMode.DEEP));
+            return "validator-results";
+        }
+        finally {
+            uploadService.deletePackage(assessmentPackage);
+        }
     }
 }

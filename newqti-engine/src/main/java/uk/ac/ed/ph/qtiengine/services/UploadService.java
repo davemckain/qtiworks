@@ -36,15 +36,13 @@ package uk.ac.ed.ph.qtiengine.services;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.ImsManifestException;
 import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageSummary;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 
 import uk.ac.ed.ph.qtiengine.EngineException;
@@ -149,14 +147,14 @@ public class UploadService {
             throw EngineException.unexpectedException(e);
         }
         
-        /* Let's make sure it's really an item by parsing it (and throwing away the result) */
+        /* Let's make sure it's really XML by parsing it (and throwing away the result) */
         FileSandboxResourceLocator inputResourceLocator = new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory);
-        QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, inputResourceLocator);
+        QtiXmlReader xmlReader = new QtiXmlReader();
         try {
-            objectReader.lookupRootObject(packageUriScheme.pathToUri(SINGLE_FILE_NAME), ModelRichness.EXECUTION_ONLY, AssessmentItem.class);
-        }
-        catch (QtiXmlInterpretationException e) {
-            throw new UploadException(UploadFailureReason.NOT_ITEM_OR_ZIP, e);
+            XmlReadResult xmlReadResult = xmlReader.read(packageUriScheme.pathToUri(SINGLE_FILE_NAME), inputResourceLocator, false);
+            if (!xmlReadResult.getXmlParseResult().isParsed()) {
+                throw new UploadException(UploadFailureReason.NOT_XML_OR_ZIP);
+            }
         }
         catch (XmlResourceNotFoundException e) {
             throw EngineException.unexpectedException(e);

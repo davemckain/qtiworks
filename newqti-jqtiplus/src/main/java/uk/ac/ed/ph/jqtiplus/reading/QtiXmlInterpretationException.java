@@ -52,24 +52,41 @@ public final class QtiXmlInterpretationException extends BadResourceException {
     
     private static final long serialVersionUID = 5190957743384561923L;
     
+    public static enum InterpretationFailureReason {
+        XML_PARSE_FAILED,
+        XML_SCHEMA_VALIDATION_FAILED,
+        UNSUPPORTED_ROOT_NODE,
+        JQTI_MODEL_BUILD_FAILED,
+        WRONG_RESULT_TYPE,
+        ;
+    }
+
+    private final InterpretationFailureReason reason;
     private final ModelRichness requiredModelRichness;
     private final Class<? extends RootObject> requiredResultClass;
     private final XmlParseResult xmlParseResult;
     private final RootObject rootObject;
     private final List<QtiModelBuildingError> qtiModelBuildingErrors;
     
-    QtiXmlInterpretationException(String message, ModelRichness modelRichness, Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult) {
-        this(message, modelRichness, requiredResultClass, xmlParseResult, null, null);
+    QtiXmlInterpretationException(InterpretationFailureReason reason, String message, ModelRichness modelRichness,
+            Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult) {
+        this(reason, message, modelRichness, requiredResultClass, xmlParseResult, null, null);
     }
     
-    QtiXmlInterpretationException(String message, ModelRichness modelRichness, Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult,
+    QtiXmlInterpretationException(InterpretationFailureReason reason, String message, ModelRichness modelRichness,
+            Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult,
             RootObject rootObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
         super(message);
+        this.reason = reason;
         this.requiredModelRichness = modelRichness;
         this.requiredResultClass = requiredResultClass;
         this.xmlParseResult = xmlParseResult;
         this.rootObject = rootObject;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
+    }
+    
+    public InterpretationFailureReason getReason() {
+        return reason;
     }
     
     public URI getSystemId() {

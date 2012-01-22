@@ -33,6 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
+import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.JQTI_MODEL_BUILD_FAILED;
+import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.UNSUPPORTED_ROOT_NODE;
+import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.WRONG_RESULT_TYPE;
+import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.XML_PARSE_FAILED;
+import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.XML_SCHEMA_VALIDATION_FAILED;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -127,13 +133,13 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         final Document document = xmlReadResult.getDocument();
         if (document==null) {
             /* Parsing failed */
-            throw new QtiXmlInterpretationException("XML parsing failed",
+            throw new QtiXmlInterpretationException(XML_PARSE_FAILED, "XML parsing failed",
                     requiredModelRichness, requiredResultClass, xmlParseResult);
         }
         
         /* Bail out if we're validating and the resulting XML was not valid */
         if (schemaValidating && !xmlParseResult.isSchemaValid()) {
-            throw new QtiXmlInterpretationException("XML schema validation was requested and the resulting XML was not valid",
+            throw new QtiXmlInterpretationException(XML_SCHEMA_VALIDATION_FAILED, "XML schema validation was requested and the resulting XML was not valid",
                    requiredModelRichness, requiredResultClass, xmlParseResult);
         }
 
@@ -149,7 +155,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         catch (final IllegalArgumentException e) {
             /* Unsupported root Node type */
             logger.warn("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
-            throw new QtiXmlInterpretationException("XML parse succeeded but had an unsupported root Node {"
+            throw new QtiXmlInterpretationException(UNSUPPORTED_ROOT_NODE, "XML parse succeeded but had an unsupported root Node {"
                     + rootElement.getNamespaceURI() + "}:" + rootElement.getLocalName(), 
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
@@ -159,8 +165,9 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         
         /* Make sure there were no model building errors */
         if (!qtiModelBuildingErrors.isEmpty()) {
-            logger.warn("QTI Object read of system ID {} resulting in {} model building errors", systemId, qtiModelBuildingErrors.size());
-            throw new QtiXmlInterpretationException("XML parse succeeded but generated " + qtiModelBuildingErrors.size() + " model building errors",
+            logger.warn("QTI Object read of system ID {} resulting in {} model building error(s): {}",
+                    new Object[] { systemId, qtiModelBuildingErrors.size(), qtiModelBuildingErrors });
+            throw new QtiXmlInterpretationException(JQTI_MODEL_BUILD_FAILED, "XML parse succeeded but generated " + qtiModelBuildingErrors.size() + " model building error(s)",
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
         
@@ -168,7 +175,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         QtiXmlObjectReadResult<E> result = null;
         if (!requiredResultClass.isInstance(rootObject)) {
             logger.warn("QTI Object {} is not of the required type {}", rootObject, requiredResultClass);
-            throw new QtiXmlInterpretationException("QTI Object Model was not of the required type " + requiredResultClass,
+            throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredResultClass,
                     requiredModelRichness, RootObject.class, xmlParseResult, rootObject, qtiModelBuildingErrors);
         }
         

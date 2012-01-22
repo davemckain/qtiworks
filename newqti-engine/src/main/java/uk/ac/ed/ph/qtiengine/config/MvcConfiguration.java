@@ -38,7 +38,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 @EnableWebMvc
 @Configuration
@@ -54,14 +57,14 @@ public class MvcConfiguration {
         return resolver;
     }
     
-//    @Bean
-//    ViewResolver viewResolver() {
-//        UrlBasedViewResolver result = new UrlBasedViewResolver();
-//        result.setViewClass(JstlView.class);
-//        result.setPrefix("/WEB-INF/jsp/views/");
-//        result.setSuffix(".jsp");
-//        return result;
-//    }
+    @Bean
+    ViewResolver viewResolver() {
+        UrlBasedViewResolver result = new UrlBasedViewResolver();
+        result.setViewClass(JstlView.class);
+        result.setPrefix("/WEB-INF/jsp/views/");
+        result.setSuffix(".jsp");
+        return result;
+    }
     
 //    @Bean
 //    MessageSource messageSource() {

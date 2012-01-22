@@ -43,7 +43,7 @@ public class UploadException extends Exception {
     private static final long serialVersionUID = -699513250898841731L;
 
     public static enum UploadFailureReason {
-        NOT_ITEM_OR_ZIP,
+        NOT_XML_OR_ZIP,
         BAD_ZIP,
         NOT_CONTENT_PACKAGE,
         BAD_IMS_MANIFEST,

@@ -27,6 +27,7 @@ All Rights Reserved
     <log4j.version>1.2.16</log4j.version>
     <spring.version>3.1.0.RELEASE</spring.version>
     <cglib.version>2.2.2</cglib.version>
+    <commons-io.version>2.1</commons-io.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <guava.version>11.0.1</guava.version>
     <maven.site.url>http://snuggletex.sourceforge.net/maven/</maven.site.url>
