@@ -54,7 +54,6 @@ import org.junit.Test;
 /**
  * @author David McKain
  */
-@SuppressWarnings("static-method")
 public class QtiXmlReaderTest {
 
     @Test(expected = XmlResourceNotFoundException.class)
@@ -159,7 +158,7 @@ public class QtiXmlReaderTest {
         assertNotNull(result.getDocument());
         assertEquals(makeSystemId(fileName), parseResult.getSystemId());
         assertTrue(parseResult.isParsed());
-        assertTrue(parseResult.isValidated());
+        assertFalse(parseResult.isValidated());
         assertFalse(parseResult.isSchemaValid());
         assertEquals(0, parseResult.getFatalErrors().size());
         assertEquals(0, parseResult.getErrors().size());
