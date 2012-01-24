@@ -28,7 +28,25 @@ ${assessmentPackage.packaging}.</p>
 
 <c:set var="resolvedObject" value="${validationResult.resolvedAssessmentObject}"/>
 <c:set var="objectLookup" value="${resolvedObject.objectLookup}"/>
+<c:set var="xmlResourceNotFoundException" value="${objectLookup.notFoundException}"/>
 <c:set var="badResourceException" value="${objectLookup.badResourceException}"/>
+
+<c:choose>
+  <c:when test="${xmlResourceNotFoundException==null}">
+    <h3 class="success">XML lookup succeeded</h3>
+    <p>
+      XML resource at <c:out value="${objectLookup.systemId}"/> was successfully
+      located within your submitted content package.
+    </p>
+  </c:when>
+  <c:otherwise>
+    <h3 class="success">XML lookup failed</h3>
+    <p>
+      Could not find XML resource at <c:out value="${objectLookup.systemId}"/> within your
+      submitted content package.
+    </p>
+  </c:otherwise>
+</c:choose>
 
 <c:if test="${badResourceException!=null}">
   <c:set var="xmlParseResult" value="${badResourceException.xmlParseResult}"/>
