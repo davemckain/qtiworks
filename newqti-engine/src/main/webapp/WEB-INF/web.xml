@@ -49,16 +49,6 @@ All Rights Reserved
     </init-param>
   </servlet>
 
-  <servlet>
-    <description>Test</description>
-    <servlet-name>TestServlet</servlet-name>
-    <servlet-class>uk.ac.ed.ph.qtiengine.TestServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>TestServlet</servlet-name>
-    <url-pattern>/test</url-pattern>
-  </servlet-mapping>
-
   <servlet-mapping>
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/dispatcher/*</url-pattern>

@@ -53,11 +53,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * FIXME: Document this type
- * 
- * 
- * Then we've got the validation result to account for.
- * 
- * For ZIPs, we'll need to unpack into a temporary directory and ensure it's deleted afterwards.
  *
  * @author David McKain
  */

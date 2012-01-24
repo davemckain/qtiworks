@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiengine.services;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -60,7 +59,6 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,9 +98,6 @@ public class UploadService {
     private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
     
     public static final String SINGLE_FILE_NAME = "qti.xml";
-    
-    @Resource
-    private JqtiExtensionManager jqtiExtensionManager;
     
     private File sandboxRootDirectory;
     

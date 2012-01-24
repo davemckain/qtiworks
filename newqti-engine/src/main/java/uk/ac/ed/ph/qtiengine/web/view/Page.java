@@ -30,30 +30,33 @@
  * This software is derived from (and contains code from) QTItools and MathAssessEngine.
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
+ *//* $Id: CSTPage.java 1083 2010-12-15 14:21:21Z dmckain $
+ *
+ * Copyright (c) 2012, The University of Edinburgh.
+ * All Rights Reserved
  */
-package uk.ac.ed.ph.qtiengine;
+package uk.ac.ed.ph.qtiengine.web.view;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class TestServlet extends HttpServlet {
+/**
+ * Enumeration of all of the pages within the app, making it "easy" to construct URL
+ * references to them.
+ * 
+ * @author David McKain
+ */
+public enum Page {
     
-    private static final long serialVersionUID = -3862728852466145739L;
+    HOME("/"),
+    ;
     
-    private static final Logger logger = LoggerFactory.getLogger(TestServlet.class);
+    //--------------------------------------------------------------
     
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
-        logger.info("Logging here!");
-        response.setContentType("text/plain");
-        response.getOutputStream().println("Hello");
-        response.getOutputStream().flush();
+    private final String withinContextUrl;
+    
+    private Page(String withinContextUrl) {
+        this.withinContextUrl = withinContextUrl;
     }
 
+    public String getWithinContextUrl() {
+        return this.withinContextUrl;
+    }
 }
