@@ -35,13 +35,11 @@ package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Encapsulates the result of instantiating a QTI {@link RootObject} from XML, as returned
@@ -58,14 +56,12 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
     private final Class<E> requiredResultClass;
     private final XmlParseResult xmlParseResult;
     private final E rootObjectResult;
-    private final List<QtiModelBuildingError> qtiModelBuildingErrors;
     
-    QtiXmlObjectReadResult(Class<E> requiredClass, XmlParseResult xmlParseResult,
-            E rootObjectResult, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+    QtiXmlObjectReadResult(final Class<E> requiredClass, final XmlParseResult xmlParseResult,
+            final E rootObjectResult) {
         this.requiredResultClass = requiredClass;
         this.rootObjectResult = rootObjectResult;
         this.xmlParseResult = xmlParseResult;
-        this.qtiModelBuildingErrors = ObjectUtilities.unmodifiableList(qtiModelBuildingErrors);
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -77,10 +73,6 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
         return rootObjectResult;
     }
     
-    public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
-        return qtiModelBuildingErrors;
-    }
-
     public Class<E> getRequiredClass() {
         return requiredResultClass;
     }
@@ -96,7 +88,6 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
                 + "(requiredResultClass=" + requiredResultClass
                 + ",xmlParseResult=" + xmlParseResult
                 + ",rootObjectResult=" + rootObjectResult
-                + ",qtiModelBuildingErrors=" + qtiModelBuildingErrors
                 + ")";
     }
 

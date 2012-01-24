@@ -44,28 +44,25 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
  *
  * @author David McKain
  */
-public final class ItemValidationResult extends AbstractValidationResult {
+public final class ItemValidationResult extends AssessmentObjectValidationResult<AssessmentItem> {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final ResolvedAssessmentItem resolvedAssessmentItem;
-    
     public ItemValidationResult(ResolvedAssessmentItem resolvedAssessmentItem) {
-        this.resolvedAssessmentItem = resolvedAssessmentItem;
+        super(resolvedAssessmentItem);
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
-        return resolvedAssessmentItem;
+        return (ResolvedAssessmentItem) getResolvedAssessmentObject();
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(resolvedAssessmentItem=" + resolvedAssessmentItem
+                + "(resolvedAssessmentItem=" + getResolvedAssessmentItem()
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()
-                + ",infos=" + getInfos()
                 + ")";
     }
 }

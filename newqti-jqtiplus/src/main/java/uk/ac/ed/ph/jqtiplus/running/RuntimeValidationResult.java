@@ -68,7 +68,6 @@ public final class RuntimeValidationResult extends AbstractValidationResult {
                 + "(assessmentObject=" + assessmentObject
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()
-                + ",infos=" + getInfos()
                 + ")";
     }
 }

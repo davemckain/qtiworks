@@ -31,32 +31,32 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
+
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 
 /**
- * Validation item of info type.
- * 
- * @author Jiri Kajaba
+ * Encapsulates the result of doing validation on an {@link AssessmentItem}
+ *
+ * @author David McKain
  */
-public class ValidationInfo extends AbstractValidationItem {
+public abstract class AssessmentObjectValidationResult<E extends AssessmentObject> extends AbstractValidationResult {
 
-    private static final long serialVersionUID = -1019892031021482363L;
-
-    /**
-     * Constructs validation item.
-     * 
-     * @param source source of constructed item
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationInfo(Validatable source, XmlNode node, String message) {
-        super(source, node, message);
+    private static final long serialVersionUID = -6570165277334622467L;
+    
+    private final ResolvedAssessmentObject<E> resolvedAssessmentObject;
+    
+    public AssessmentObjectValidationResult(ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+        this.resolvedAssessmentObject = resolvedAssessmentObject;
     }
 
-    @Override
-    public ValidationType getType() {
-        return ValidationType.INFO;
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
+        return resolvedAssessmentObject;
     }
 }

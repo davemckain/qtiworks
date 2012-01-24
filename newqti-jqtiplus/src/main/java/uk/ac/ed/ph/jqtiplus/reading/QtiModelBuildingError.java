@@ -72,7 +72,7 @@ public final class QtiModelBuildingError implements Serializable {
         return elementNamespace;
     }
 
-    public XmlSourceLocationInformation getLocation() {
+    public XmlSourceLocationInformation getElementLocation() {
         return elementLocation;
     }
 

@@ -83,7 +83,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public XmlSourceLocationInformation getXMLSourceLocationInformation() {
+    public XmlSourceLocationInformation getSourceLocation() {
         return xmlSourceLocationInformation;
     }
 

@@ -274,8 +274,8 @@ public final class XmlResourceReader {
                 }
             }
 
-            /* Validate (if some supported schemas were declared) */
-            if (!schemaUris.isEmpty()) {
+            /* Validate (if at least supported schemas was used and no unsupported schemas) */
+            if (!schemaUris.isEmpty() && unsupportedSchemaNamespaces.isEmpty()) {
                 logger.info("Will validate {} against schemas {}", systemIdString, schemaUris);
                 final Schema schema = compileSchema(resourceResolver, schemaUris);
 
@@ -293,7 +293,8 @@ public final class XmlResourceReader {
                 logger.debug("Schema validation of {} finished", systemIdString);
             }
             else {
-                logger.warn("No supported schemas declared, so no validation will be performed");
+                logger.warn("No schema validation was performed as {} supported and {} unsupported schemas were detected",
+                        schemaUris.size(), unsupportedSchemaNamespaces.size());
             }
         }
         

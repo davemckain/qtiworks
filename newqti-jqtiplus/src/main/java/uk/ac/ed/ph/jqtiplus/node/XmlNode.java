@@ -53,7 +53,7 @@ public interface XmlNode extends Validatable {
     /** Default indent. */
     static final String INDENT = "  ";
 
-    XmlSourceLocationInformation getXMLSourceLocationInformation();
+    XmlSourceLocationInformation getSourceLocation();
 
     /**
      * Gets parent of this node or null (if node is root; for example AssessmentTest).
@@ -140,7 +140,7 @@ public interface XmlNode extends Validatable {
     String computeXPathComponent();
 
     /**
-     * Returns a full XPath expression that can be used to navigate to this Node. (The expression will
+     * Computes and returns a full XPath expression that can be used to navigate to this Node. (The expression will
      * probably be over-verbose!)
      */
     String computeXPath();

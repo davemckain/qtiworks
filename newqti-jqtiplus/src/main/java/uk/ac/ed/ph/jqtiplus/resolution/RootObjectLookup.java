@@ -61,7 +61,7 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
     private final URI systemId;
     private final RootObjectHolder<E> rootObjectHolder;
     private final ResourceNotFoundException notFoundException;
-    private final BadResourceException badResultException;
+    private final BadResourceException badResourceException;
     
     public RootObjectLookup(final E rootNode) {
         this(rootNode.getSystemId(), new DynamicResourceHolder<E>(rootNode));
@@ -75,16 +75,16 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
         this(systemId, null, notFoundException, null);
     }
     
-    public RootObjectLookup(URI systemId, BadResourceException badResultException) {
-        this(systemId, null, null, badResultException);
+    public RootObjectLookup(URI systemId, BadResourceException badResourceException) {
+        this(systemId, null, null, badResourceException);
     }
     
     private RootObjectLookup(URI systemId, RootObjectHolder<E> resourceProvideResult,
-            ResourceNotFoundException notFoundException, BadResourceException badResultException) {
+            ResourceNotFoundException notFoundException, BadResourceException badResourceException) {
         this.systemId = systemId;
         this.rootObjectHolder = resourceProvideResult;
         this.notFoundException = notFoundException;
-        this.badResultException = badResultException;
+        this.badResourceException = badResourceException;
     }
     
     public URI getSystemId() {
@@ -97,8 +97,8 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
-    public BadResourceException getBadResultException() {
-        return badResultException;
+    public BadResourceException getBadResourceException() {
+        return badResourceException;
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -119,8 +119,8 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
         else if (notFoundException!=null) {
             throw notFoundException;
         }
-        else if (badResultException!=null) {
-            throw badResultException;
+        else if (badResourceException!=null) {
+            throw badResourceException;
         }
         else {
             throw new QtiLogicException("Unexpected logic branch");
@@ -154,8 +154,8 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
         else if (notFoundException!=null) {
             stringBuilder.append("notFoundException=").append(notFoundException);
         }
-        else if (badResultException!=null) {
-            stringBuilder.append("badResultException=").append(badResultException);
+        else if (badResourceException!=null) {
+            stringBuilder.append("badResourceException=").append(badResourceException);
         }
         stringBuilder.append(')');
         return stringBuilder.toString();

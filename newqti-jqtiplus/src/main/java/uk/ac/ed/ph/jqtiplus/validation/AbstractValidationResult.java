@@ -58,9 +58,6 @@ public abstract class AbstractValidationResult implements Serializable {
     /** Container of all warnings. */
     private final List<ValidationWarning> warnings;
 
-    /** Container of all infos. */
-    private final List<ValidationInfo> infos;
-
     /**
      * Container of all validation items.
      * <p>
@@ -76,7 +73,6 @@ public abstract class AbstractValidationResult implements Serializable {
     public AbstractValidationResult() {
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
-        this.infos = new ArrayList<ValidationInfo>();
         this.allItems = new ArrayList<ValidationItem>();
     }
 
@@ -140,33 +136,6 @@ public abstract class AbstractValidationResult implements Serializable {
     }
 
     /**
-     * Gets all infos of this container.
-     * <p>
-     * Do not add infos directly getInfos().add(INFO), use add(INFO) method instead of it!
-     * 
-     * @return all infos of this container
-     * @see #getInfos(XmlNode)
-     */
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationInfo> getInfos() {
-        return infos;
-    }
-
-    /**
-     * Gets all infos of this container for given source node.
-     * <p>
-     * Convenient method for obtaining only infos related to one node.
-     * 
-     * @param source given source node
-     * @return all infos of this container for given source node
-     * @see #getInfos()
-     */
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationInfo> getInfos(XmlNode source) {
-        return get(infos, source);
-    }
-
-    /**
      * Gets all validation items (error, warning, info) of this container.
      * <p>
      * Do not add validation items directly getAllItems().add(ITEM), use add(ITEM) method instead of it!
@@ -226,9 +195,6 @@ public abstract class AbstractValidationResult implements Serializable {
         }
         else if (item instanceof ValidationWarning) {
             warnings.add((ValidationWarning) item);
-        }
-        else if (item instanceof ValidationInfo) {
-            infos.add((ValidationInfo) item);
         }
         else {
             throw new IllegalArgumentException("Unsupported validation item: " + item.getClass().getName());

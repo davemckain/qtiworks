@@ -181,7 +181,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         
         /* Success! */
         result = new QtiXmlObjectReadResult<E>(requiredResultClass,
-                xmlParseResult, requiredResultClass.cast(rootObject), qtiModelBuildingErrors);
+                xmlParseResult, requiredResultClass.cast(rootObject));
         logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }

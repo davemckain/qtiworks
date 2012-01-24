@@ -47,23 +47,21 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class TestValidationResult extends AbstractValidationResult {
+public final class TestValidationResult extends AssessmentObjectValidationResult<AssessmentTest> {
 
     private static final long serialVersionUID = -6570165277334622467L;
     
-    private final ResolvedAssessmentTest resolvedAssessmentTest;
-
     /** Results of validating each item */
     private final List<ItemValidationResult> itemValidationResults;
     
     public TestValidationResult(ResolvedAssessmentTest resolvedAssessmentTest) {
-        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        super(resolvedAssessmentTest);
         this.itemValidationResults = new ArrayList<ItemValidationResult>();
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
     public ResolvedAssessmentTest getResolvedAssessmentTest() {
-        return resolvedAssessmentTest;
+        return (ResolvedAssessmentTest) getResolvedAssessmentObject();
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -78,10 +76,9 @@ public final class TestValidationResult extends AbstractValidationResult {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(resolvedAssessmentTest=" + resolvedAssessmentTest
+                + "(resolvedAssessmentTest=" + getResolvedAssessmentTest()
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()
-                + ",infos=" + getInfos()
                 + ",itemValidationResults=" + itemValidationResults
                 + ")";
     }
