@@ -72,7 +72,8 @@ public class ValidationController {
     private UploadService uploadService;
     
     /** 
-     * Validates a raw payload sent via POST.
+     * Validates a raw payload sent via POST, returning a Java Object dump.
+     * (This could become something better in due course...)
      */
     @RequestMapping(value="/ws/validate", method=RequestMethod.POST)
     @ResponseBody
@@ -82,8 +83,6 @@ public class ValidationController {
         AssessmentPackage assessmentPackage = uploadService.importData(uploadStream, contentType);
         try {
             AbstractValidationResult result = validationService.validate(assessmentPackage);
-            
-            /* TEMP! */
             return ObjectDumper.dumpObject(result, DumpMode.DEEP);
         }
         finally {
@@ -108,7 +107,8 @@ public class ValidationController {
         try {
             AbstractValidationResult result = validationService.validate(assessmentPackage);
             
-            model.addAttribute("result", ObjectDumper.dumpObject(result, DumpMode.DEEP));
+            model.addAttribute("assessmentPackage", assessmentPackage);
+            model.addAttribute("validationResult", result);
             return "validator-results";
         }
         finally {

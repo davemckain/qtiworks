@@ -70,7 +70,7 @@ public class ValidationService {
         URI objectSystemId = packageUriScheme.pathToUri(assessmentPackage.getAssessmentObjectHref());
         
         AbstractValidationResult result = null;
-        switch (assessmentPackage.getPackageType()) {
+        switch (assessmentPackage.getAssessmentType()) {
             case ITEM:
                 result = objectManager.validateItem(objectSystemId);
                 break;
@@ -80,7 +80,7 @@ public class ValidationService {
                 break;
                 
             default:
-                throw new EngineException("Unexpected switch case " + assessmentPackage.getPackageType());
+                throw new EngineException("Unexpected switch case " + assessmentPackage.getAssessmentType());
                 
         }
         return result;

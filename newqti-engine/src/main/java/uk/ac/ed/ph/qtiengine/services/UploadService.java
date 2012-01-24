@@ -48,7 +48,8 @@ import uk.ac.ed.ph.qtiengine.EngineException;
 import uk.ac.ed.ph.qtiengine.UploadException;
 import uk.ac.ed.ph.qtiengine.UploadException.UploadFailureReason;
 import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage.PackageType;
+import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage.AssessmentType;
+import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage.Packaging;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -156,7 +157,8 @@ public class UploadService {
         }
         
         AssessmentPackage result = new AssessmentPackage();
-        result.setPackageType(PackageType.ITEM);
+        result.setPackaging(Packaging.STANDALONE);
+        result.setAssessmentType(AssessmentType.ITEM);
         result.setAssessmentObjectHref(SINGLE_FILE_NAME);
         result.setSandboxPath(sandboxDirectory.getAbsolutePath());
         return result;
@@ -204,17 +206,18 @@ public class UploadService {
         
         AssessmentPackage result = new AssessmentPackage();
         result.setSandboxPath(sandboxDirectory.getAbsolutePath());
+        result.setPackaging(Packaging.CONTENT_PACKAGING);
         if (testCount==1) {
             /* Treat as a test */
             logger.info("Package contains 1 test resource, so treating this as an AssessmentTest");
-            result.setPackageType(PackageType.TEST);
+            result.setAssessmentType(AssessmentType.TEST);
             result.setAssessmentObjectHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
             result.setFileHrefs(contentPackageSummary.getFileHrefs());
         }
         else if (testCount==0 && itemCount==1) {
             /* Treat as an item */
             logger.info("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
-            result.setPackageType(PackageType.ITEM);
+            result.setAssessmentType(AssessmentType.ITEM);
             result.setAssessmentObjectHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
             result.setFileHrefs(contentPackageSummary.getFileHrefs());
         }

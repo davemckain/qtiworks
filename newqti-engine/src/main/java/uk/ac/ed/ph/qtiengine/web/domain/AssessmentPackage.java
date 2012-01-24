@@ -49,14 +49,21 @@ import java.util.Set;
 public class AssessmentPackage implements Serializable {
     
     private static final long serialVersionUID = -8906026282623891941L;
+    
+    public static enum Packaging {
+        STANDALONE,
+        CONTENT_PACKAGING,
+        ;
+    }
 
-    public static enum PackageType {
+    public static enum AssessmentType {
         ITEM,
         TEST,
         ;
     }
     
-    private PackageType packageType;
+    private AssessmentType assessmentType;
+    private Packaging packaging;
     private String sandboxPath;
     private String assessmentObjectHref;
     private Set<String> fileHrefs;
@@ -65,15 +72,24 @@ public class AssessmentPackage implements Serializable {
     }
 
     
-    public PackageType getPackageType() {
-        return packageType;
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
     }
     
-    public void setPackageType(PackageType packageType) {
-        this.packageType = packageType;
+    public void setAssessmentType(AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
+    }
+    
+    
+    public Packaging getPackaging() {
+        return packaging;
+    }
+    
+    public void setPackaging(Packaging packaging) {
+        this.packaging = packaging;
     }
 
-    
+
     public String getSandboxPath() {
         return sandboxPath;
     }
