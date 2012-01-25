@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Created by Aardvark 0.14.16-dev
+    http://www2.ph.ed.ac.uk/elearning/projects/aardvark/
+
+    (c) 2003 - 2010, The University of Edinburgh
+
+-->
+<assessmentItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:m="http://www.w3.org/1998/Math/MathML"
+                xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+                title="Projectile Trajectory"
+                identifier="aardvark-501073-qti"
+                adaptive="false"
+                timeDependent="false">
+   <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+         <value>CHOICE2</value>
+      </correctResponse>
+   </responseDeclaration>
+   <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer"/>
+   <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+   <stylesheet href="css-snuggletex.css" type="text/css"/>
+   <itemBody>
+      <div class="questionBody">
+         <div class="figure">
+            <div class="embed">
+               <div class="embed_content">
+                  <img alt="Graphic - No title - cannon" src="cannon-dynamicpng.png"
+                       class="graphic png"/>
+               </div>
+            </div>
+         </div>A cannon fires a projectile as shown. The dashed line shows the
+trajectory in the absence of gravity. Points on the actual trajectory, marked M N O P, correspond to one second
+intervals.  Using <m:math>
+            <m:semantics>
+               <m:mrow>
+                  <m:mi>g</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>10</m:mn>
+                  <m:mspace width="0.167em"/>
+                  <m:mi>m</m:mi>
+                  <m:msup>
+                     <m:mi>s</m:mi>
+                     <m:mn>-2</m:mn>
+                  </m:msup>
+               </m:mrow>
+               <m:annotation encoding="SnuggleTeX">$g = 10\, ms^{-2}$</m:annotation>
+            </m:semantics>
+         </m:math>, the lengths x,y and z are:</div>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1" minChoices="1">
+         <simpleChoice identifier="CHOICE1">
+            <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>5</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$5\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>10</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$10\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>15</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$15\,m$</m:annotation>
+               </m:semantics>
+            </m:math>
+            <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CHOICE1" showHide="show">
+               <div class="feedbackBlock">The dashed line represents the trajectory in the absence of gravity.  The solid vertical lines (lenght x, y, z) represent the distance dropped below the zero-<m:math>
+                     <m:semantics>
+                        <m:mi>g</m:mi>
+                        <m:annotation encoding="SnuggleTeX">$g$</m:annotation>
+                     </m:semantics>
+                  </m:math> (dashed) line.  In each case this is <m:math>
+                     <m:semantics>
+                        <m:mrow>
+                           <m:mfrac>
+                              <m:mn>1</m:mn>
+                              <m:mn>2</m:mn>
+                           </m:mfrac>
+                           <m:mi>g</m:mi>
+                           <m:msup>
+                              <m:mi>t</m:mi>
+                              <m:mn>2</m:mn>
+                           </m:msup>
+                        </m:mrow>
+                        <m:annotation encoding="SnuggleTeX">$\frac{1}{2}gt^2$</m:annotation>
+                     </m:semantics>
+                  </m:math>.</div>
+            </feedbackBlock>
+         </simpleChoice>
+         <simpleChoice identifier="CHOICE2">
+            <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>5</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$5\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>20</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$20\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>45</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$45\,m$</m:annotation>
+               </m:semantics>
+            </m:math>
+            <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CHOICE2" showHide="show">
+               <div class="feedbackBlock">The dashed line represents the trajectory in the absence of gravity.  The solid vertical lines (lenght x, y, z) represent the distance dropped below the zero-<m:math>
+                     <m:semantics>
+                        <m:mi>g</m:mi>
+                        <m:annotation encoding="SnuggleTeX">$g$</m:annotation>
+                     </m:semantics>
+                  </m:math> (dashed) line.  In each case this is <m:math>
+                     <m:semantics>
+                        <m:mrow>
+                           <m:mfrac>
+                              <m:mn>1</m:mn>
+                              <m:mn>2</m:mn>
+                           </m:mfrac>
+                           <m:mi>g</m:mi>
+                           <m:msup>
+                              <m:mi>t</m:mi>
+                              <m:mn>2</m:mn>
+                           </m:msup>
+                        </m:mrow>
+                        <m:annotation encoding="SnuggleTeX">$\frac{1}{2}gt^2$</m:annotation>
+                     </m:semantics>
+                  </m:math>.</div>
+            </feedbackBlock>
+         </simpleChoice>
+         <simpleChoice identifier="CHOICE3">
+            <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>10</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$10\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>40</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$40\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>90</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$90\,m$</m:annotation>
+               </m:semantics>
+            </m:math>
+            <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CHOICE3" showHide="show">
+               <div class="feedbackBlock">The dashed line represents the trajectory in the absence of gravity.  The solid vertical lines (lenght x, y, z) represent the distance dropped below the zero-<m:math>
+                     <m:semantics>
+                        <m:mi>g</m:mi>
+                        <m:annotation encoding="SnuggleTeX">$g$</m:annotation>
+                     </m:semantics>
+                  </m:math> (dashed) line.  In each case this is <m:math>
+                     <m:semantics>
+                        <m:mrow>
+                           <m:mfrac>
+                              <m:mn>1</m:mn>
+                              <m:mn>2</m:mn>
+                           </m:mfrac>
+                           <m:mi>g</m:mi>
+                           <m:msup>
+                              <m:mi>t</m:mi>
+                              <m:mn>2</m:mn>
+                           </m:msup>
+                        </m:mrow>
+                        <m:annotation encoding="SnuggleTeX">$\frac{1}{2}gt^2$</m:annotation>
+                     </m:semantics>
+                  </m:math>.</div>
+            </feedbackBlock>
+         </simpleChoice>
+         <simpleChoice identifier="CHOICE4">
+            <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>10</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$10\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>20</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$20\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>30</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$30\,m$</m:annotation>
+               </m:semantics>
+            </m:math>
+            <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CHOICE4" showHide="show">
+               <div class="feedbackBlock">The dashed line represents the trajectory in the absence of gravity.  The solid vertical lines (lenght x, y, z) represent the distance dropped below the zero-<m:math>
+                     <m:semantics>
+                        <m:mi>g</m:mi>
+                        <m:annotation encoding="SnuggleTeX">$g$</m:annotation>
+                     </m:semantics>
+                  </m:math> (dashed) line.  In each case this is <m:math>
+                     <m:semantics>
+                        <m:mrow>
+                           <m:mfrac>
+                              <m:mn>1</m:mn>
+                              <m:mn>2</m:mn>
+                           </m:mfrac>
+                           <m:mi>g</m:mi>
+                           <m:msup>
+                              <m:mi>t</m:mi>
+                              <m:mn>2</m:mn>
+                           </m:msup>
+                        </m:mrow>
+                        <m:annotation encoding="SnuggleTeX">$\frac{1}{2}gt^2$</m:annotation>
+                     </m:semantics>
+                  </m:math>.</div>
+            </feedbackBlock>
+         </simpleChoice>
+         <simpleChoice identifier="CHOICE5">
+            <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>0.2</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$0.2\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>0.8</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$0.8\,m$</m:annotation>
+               </m:semantics>
+            </m:math>, <m:math>
+               <m:semantics>
+                  <m:mrow>
+                     <m:mn>1.8</m:mn>
+                     <m:mspace width="0.167em"/>
+                     <m:mi>m</m:mi>
+                  </m:mrow>
+                  <m:annotation encoding="SnuggleTeX">$1.8\,m$</m:annotation>
+               </m:semantics>
+            </m:math>
+            <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CHOICE5" showHide="show">
+               <div class="feedbackBlock">The dashed line represents the trajectory in the absence of gravity.  The solid vertical lines (lenght x, y, z) represent the distance dropped below the zero-<m:math>
+                     <m:semantics>
+                        <m:mi>g</m:mi>
+                        <m:annotation encoding="SnuggleTeX">$g$</m:annotation>
+                     </m:semantics>
+                  </m:math> (dashed) line.  In each case this is <m:math>
+                     <m:semantics>
+                        <m:mrow>
+                           <m:mfrac>
+                              <m:mn>1</m:mn>
+                              <m:mn>2</m:mn>
+                           </m:mfrac>
+                           <m:mi>g</m:mi>
+                           <m:msup>
+                              <m:mi>t</m:mi>
+                              <m:mn>2</m:mn>
+                           </m:msup>
+                        </m:mrow>
+                        <m:annotation encoding="SnuggleTeX">$\frac{1}{2}gt^2$</m:annotation>
+                     </m:semantics>
+                  </m:math>.</div>
+            </feedbackBlock>
+         </simpleChoice>
+      </choiceInteraction>
+   </itemBody>
+   <responseProcessing>
+      <responseCondition>
+         <responseIf>
+            <match>
+               <variable identifier="RESPONSE"/>
+               <correct identifier="RESPONSE"/>
+            </match>
+            <setOutcomeValue identifier="SCORE">
+               <baseValue baseType="integer">1</baseValue>
+            </setOutcomeValue>
+         </responseIf>
+         <responseElse>
+            <setOutcomeValue identifier="SCORE">
+               <baseValue baseType="integer">0</baseValue>
+            </setOutcomeValue>
+         </responseElse>
+      </responseCondition>
+      <setOutcomeValue identifier="FEEDBACK">
+         <variable identifier="RESPONSE"/>
+      </setOutcomeValue>
+   </responseProcessing>
+</assessmentItem>

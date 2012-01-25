@@ -24,7 +24,7 @@
   <templateDeclaration identifier="popSD" cardinality="single" baseType="float"/>
   <templateDeclaration identifier="temp" cardinality="single" baseType="integer">
     <defaultValue>
-      <value>1.1</value>
+      <value>1</value>
     </defaultValue>
   </templateDeclaration>
   <templateProcessing>
@@ -34,7 +34,7 @@
         <baseValue baseType="integer">4</baseValue>
       </divide>
     </setTemplateValue>
-    <setTemplateValue identifier="sinPiOver4">
+    <setTemplateValue identifier="xsinPiOver4">
       <mathOperator name="sin">
         <variable identifier="PiOver4"/>
       </mathOperator>

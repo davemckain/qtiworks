@@ -60,7 +60,7 @@ public class MathAssessTest {
         final QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         
-        ItemValidationResult result = objectManager.validateItem(inputUri);
+        ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
 
 //        try {

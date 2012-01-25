@@ -4,7 +4,6 @@
 $Id: log4j.xml 2764 2011-07-21 16:08:31Z davemckain $
 
 -->
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <!-- Create usual appender sending messages to STDOUT -->
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">

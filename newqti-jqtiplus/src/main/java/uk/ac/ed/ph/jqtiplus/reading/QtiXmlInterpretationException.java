@@ -63,23 +63,25 @@ public final class QtiXmlInterpretationException extends BadResourceException {
         ;
     }
 
-    private final InterpretationFailureReason reason;
+    private final InterpretationFailureReason interpretationFailureReason;
     private final ModelRichness requiredModelRichness;
     private final Class<? extends RootObject> requiredResultClass;
     private final XmlParseResult xmlParseResult;
     private final RootObject rootObject;
     private final List<QtiModelBuildingError> qtiModelBuildingErrors;
     
-    QtiXmlInterpretationException(InterpretationFailureReason reason, String message, ModelRichness modelRichness,
+    QtiXmlInterpretationException(InterpretationFailureReason interpretationFailureReason, String message, 
+            ModelRichness modelRichness,
             Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult) {
-        this(reason, message, modelRichness, requiredResultClass, xmlParseResult, null, null);
+        this(interpretationFailureReason, message, modelRichness, requiredResultClass, xmlParseResult, null, null);
     }
     
-    QtiXmlInterpretationException(InterpretationFailureReason reason, String message, ModelRichness modelRichness,
+    QtiXmlInterpretationException(InterpretationFailureReason interpretationFailureReason, String message,
+            ModelRichness modelRichness,
             Class<? extends RootObject> requiredResultClass, XmlParseResult xmlParseResult,
             RootObject rootObject, List<QtiModelBuildingError> qtiModelBuildingErrors) {
         super(message);
-        this.reason = reason;
+        this.interpretationFailureReason = interpretationFailureReason;
         this.requiredModelRichness = modelRichness;
         this.requiredResultClass = requiredResultClass;
         this.xmlParseResult = xmlParseResult;
@@ -87,8 +89,8 @@ public final class QtiXmlInterpretationException extends BadResourceException {
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
     }
     
-    public InterpretationFailureReason getReason() {
-        return reason;
+    public InterpretationFailureReason getInterpretationFailureReason() {
+        return interpretationFailureReason;
     }
     
     public URI getSystemId() {
