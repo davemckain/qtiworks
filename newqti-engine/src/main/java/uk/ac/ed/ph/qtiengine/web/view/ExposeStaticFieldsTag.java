@@ -54,7 +54,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 public final class ExposeStaticFieldsTag extends SimpleTagSupport {
     
     private String className;
-    
     private String targetName;
     
     @Override
