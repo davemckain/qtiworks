@@ -59,29 +59,32 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
     private static final long serialVersionUID = -6339477418787798594L;
     
     private final URI systemId;
+    private final Class<E> requestedRootObjectClass;
     private final RootObjectHolder<E> rootObjectHolder;
     private final ResourceNotFoundException notFoundException;
     private final BadResourceException badResourceException;
     
-    public RootObjectLookup(final E rootNode) {
+    RootObjectLookup(final E rootNode) {
         this(rootNode.getSystemId(), new DynamicResourceHolder<E>(rootNode));
     }
     
-    public RootObjectLookup(URI systemId, RootObjectHolder<E> resourceProvideResult) {
-        this(systemId, resourceProvideResult, null, null);
+    RootObjectLookup(URI systemId, RootObjectHolder<E> rootObjectHolder) {
+        this(systemId, rootObjectHolder.getRequestedRootObjectClass(), rootObjectHolder, null, null);
     }
     
-    public RootObjectLookup(URI systemId, ResourceNotFoundException notFoundException) {
-        this(systemId, null, notFoundException, null);
+    RootObjectLookup(URI systemId, Class<E> requestedRootObjectClass, ResourceNotFoundException notFoundException) {
+        this(systemId, requestedRootObjectClass, null, notFoundException, null);
     }
     
-    public RootObjectLookup(URI systemId, BadResourceException badResourceException) {
-        this(systemId, null, null, badResourceException);
+    RootObjectLookup(URI systemId, Class<E> requestedRootObjectClass, BadResourceException badResourceException) {
+        this(systemId, requestedRootObjectClass, null, null, badResourceException);
     }
     
-    private RootObjectLookup(URI systemId, RootObjectHolder<E> resourceProvideResult,
+    private RootObjectLookup(URI systemId, Class<E> rootObjectClass,
+            RootObjectHolder<E> resourceProvideResult,
             ResourceNotFoundException notFoundException, BadResourceException badResourceException) {
         this.systemId = systemId;
+        this.requestedRootObjectClass = rootObjectClass;
         this.rootObjectHolder = resourceProvideResult;
         this.notFoundException = notFoundException;
         this.badResourceException = badResourceException;
@@ -89,6 +92,10 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
     
     public URI getSystemId() {
         return systemId;
+    }
+    
+    public Class<E> getRequestedRootObjectClass() {
+        return requestedRootObjectClass;
     }
     
     @ObjectDumperOptions(DumpMode.DEEP)

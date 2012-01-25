@@ -57,6 +57,12 @@ public class DynamicResourceHolder<E extends RootObject> implements RootObjectHo
         return rootObject;
     }
     
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<E> getRequestedRootObjectClass() {
+        return (Class<E>) rootObject.getClass();
+    }
+    
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()

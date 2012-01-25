@@ -53,41 +53,38 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
 
     private static final long serialVersionUID = -6470500039269477402L;
 
-    private final Class<E> requiredResultClass;
+    private final Class<E> requestedRootObjectClass;
+    private final E rootObject;
     private final XmlParseResult xmlParseResult;
-    private final E rootObjectResult;
     
-    QtiXmlObjectReadResult(final Class<E> requiredClass, final XmlParseResult xmlParseResult,
-            final E rootObjectResult) {
-        this.requiredResultClass = requiredClass;
-        this.rootObjectResult = rootObjectResult;
+    QtiXmlObjectReadResult(final Class<E> requestedRootObjectClass, final E rootObject,
+            final XmlParseResult xmlParseResult) {
+        this.requestedRootObjectClass = requestedRootObjectClass;
+        this.rootObject = rootObject;
         this.xmlParseResult = xmlParseResult;
+    }
+    
+    @Override
+    public Class<E> getRequestedRootObjectClass() {
+        return requestedRootObjectClass;
+    }
+    
+    @Override
+    public E getRootObject() {
+        return rootObject;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
     public XmlParseResult getXmlParseResult() {
         return xmlParseResult;
     }
-    
-    public RootObject getQtiObject() {
-        return rootObjectResult;
-    }
-    
-    public Class<E> getRequiredClass() {
-        return requiredResultClass;
-    }
-    
-    @Override
-    public E getRootObject() {
-        return rootObjectResult;
-    }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(requiredResultClass=" + requiredResultClass
+                + "(rootObjectClass=" + requestedRootObjectClass
                 + ",xmlParseResult=" + xmlParseResult
-                + ",rootObjectResult=" + rootObjectResult
+                + ",rootObject=" + rootObject
                 + ")";
     }
 

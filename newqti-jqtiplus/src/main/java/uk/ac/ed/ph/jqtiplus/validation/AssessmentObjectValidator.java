@@ -77,8 +77,8 @@ public final class AssessmentObjectValidator {
     public AssessmentObjectValidator(final RootObjectProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
-
-    public ItemValidationResult validate(ResolvedAssessmentItem resolvedAssessmentItem) {
+    
+    public ItemValidationResult validateItem(ResolvedAssessmentItem resolvedAssessmentItem) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem);
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
@@ -99,7 +99,7 @@ public final class AssessmentObjectValidator {
         return result;
     }
     
-    public TestValidationResult validate(ResolvedAssessmentTest resolvedAssessmentTest) {
+    public TestValidationResult validateTest(ResolvedAssessmentTest resolvedAssessmentTest) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentTest);
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
@@ -122,7 +122,7 @@ public final class AssessmentObjectValidator {
                 }
                 
                 if (itemHolder.getItemLookup().wasSuccessful()) {
-                    ItemValidationResult itemValidationResult = validate(itemHolder);
+                    ItemValidationResult itemValidationResult = validateItem(itemHolder);
                     result.addItemValidationResult(itemValidationResult);
                     if (itemValidationResult.hasErrors()) {
                         result.add(new ValidationError(test, messageBuilder.toString()

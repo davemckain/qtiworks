@@ -26,7 +26,7 @@ public class TestTest {
         
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
 
-        TestValidationResult result = objectManager.validateTest(inputUri);
+        TestValidationResult result = objectManager.resolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
     }
 }

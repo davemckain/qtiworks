@@ -52,6 +52,8 @@ import java.net.URI;
  */
 public interface RootObjectHolder<E extends RootObject> extends Serializable {
     
+    Class<E> getRequestedRootObjectClass();
+    
     /** 
      * Resulting {@link RootObject}, which will not be null. It will have had its
      * {@link RootObject#setModelRichness(ModelRichness)} and

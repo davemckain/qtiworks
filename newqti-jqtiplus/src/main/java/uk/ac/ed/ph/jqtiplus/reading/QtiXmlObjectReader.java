@@ -163,6 +163,13 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
             throw new QtiLogicException("All QTIParseExceptions should have been caught before this point!", e);
         }
         
+        /* Make sure we got the right type of Object */
+        if (!requiredResultClass.isInstance(rootObject)) {
+            logger.warn("QTI Object {} is not of the required type {}", rootObject, requiredResultClass);
+            throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredResultClass,
+                    requiredModelRichness, requiredResultClass, xmlParseResult, rootObject, qtiModelBuildingErrors);
+        }
+        
         /* Make sure there were no model building errors */
         if (!qtiModelBuildingErrors.isEmpty()) {
             logger.warn("QTI Object read of system ID {} resulting in {} model building error(s): {}",
@@ -171,17 +178,9 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
         
-        /* Make sure we got the right type of Object */
-        QtiXmlObjectReadResult<E> result = null;
-        if (!requiredResultClass.isInstance(rootObject)) {
-            logger.warn("QTI Object {} is not of the required type {}", rootObject, requiredResultClass);
-            throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredResultClass,
-                    requiredModelRichness, RootObject.class, xmlParseResult, rootObject, qtiModelBuildingErrors);
-        }
-        
         /* Success! */
-        result = new QtiXmlObjectReadResult<E>(requiredResultClass,
-                xmlParseResult, requiredResultClass.cast(rootObject));
+        QtiXmlObjectReadResult<E> result = new QtiXmlObjectReadResult<E>(requiredResultClass,
+                requiredResultClass.cast(rootObject), xmlParseResult);
         logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }

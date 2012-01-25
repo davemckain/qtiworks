@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
@@ -101,6 +103,7 @@ public final class QtiXmlInterpretationException extends BadResourceException {
         return requiredResultClass;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public XmlParseResult getXmlParseResult() {
         return xmlParseResult;
     }
@@ -109,6 +112,7 @@ public final class QtiXmlInterpretationException extends BadResourceException {
         return rootObject;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<QtiModelBuildingError> getQtiModelBuildingErrors() {
         return qtiModelBuildingErrors;
     }

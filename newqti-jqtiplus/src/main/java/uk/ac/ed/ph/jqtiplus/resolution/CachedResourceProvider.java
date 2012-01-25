@@ -65,7 +65,6 @@ final class CachedResourceProvider implements Serializable {
     
     private final RootObjectProvider rootObjectProvider;
     private final ModelRichness modelRichness;
-
     private final Map<URI, RootObjectLookup<?>> cacheData;
     
     public CachedResourceProvider(final RootObjectProvider rootObjectProvider, ModelRichness modelRichness) {
@@ -101,10 +100,10 @@ final class CachedResourceProvider implements Serializable {
                 frozenResult = new RootObjectLookup<E>(systemId, result);
             }
             catch (BadResourceException e) {
-                frozenResult = new RootObjectLookup<E>(systemId, e);
+                frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
             }
             catch (ResourceNotFoundException e) {
-                frozenResult = new RootObjectLookup<E>(systemId, e);
+                frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
             }
             cacheData.put(systemId, frozenResult);
             logger.info("Cache miss for key {} stored {}", systemId, frozenResult);
