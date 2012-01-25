@@ -28,13 +28,13 @@ ${assessmentUpload.uploadType}.</p>
 
 <%-- Show main result --%>
 <c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
-<c:set var="showLookupResult" value="${false}"/>
+<c:set var="showLookupSearch" value="${false}"/>
 <%@ include file="validator-single-result.jspf" %>
 
 <%-- If test, show child results --%>
 <c:if test="${assessmentUpload.assessmentPackage.assessmentType==AssessmentType.TEST}">
   <c:forEach var="validationResult" items="${assessmentUpload.validationResult.itemValidationResults}">
-    <c:set var="showLookupResult" value="${true}"/>
+    <c:set var="showLookupSearch" value="${true}"/>
     <%@ include file="validator-single-result.jspf" %>
   </c:forEach>
 </c:if>
