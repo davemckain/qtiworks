@@ -29,7 +29,9 @@ ${assessmentUpload.uploadType}.</p>
 <%-- Show main result --%>
 <c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
 <c:set var="showLookupSearch" value="${false}"/>
-<%@ include file="validator-single-result.jspf" %>
+<div class="validationResult">
+  <%@ include file="validator-single-result.jspf" %>
+</div>
 
 <%-- If test, show child results --%>
 <c:if test="${assessmentUpload.assessmentPackage.assessmentType==AssessmentType.TEST}">

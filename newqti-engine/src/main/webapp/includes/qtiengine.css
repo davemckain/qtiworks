@@ -4,3 +4,25 @@ Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 ************************************************************/
+
+.resultPanelSuccess {
+  background-color: #eeffee;
+}
+
+.resultPanelSuccess > h3 {
+  background-color: #00ff00;
+  padding: 0.5em;
+}
+
+.resultPanelDetails {
+  margin-left: 2em;
+}
+
+.resultPanelFailure {
+  background-color: #ffeeee;
+}
+
+.resultPanelFailure > h3 {
+  background-color: #ff0000;
+  padding: 0.5em;
+}

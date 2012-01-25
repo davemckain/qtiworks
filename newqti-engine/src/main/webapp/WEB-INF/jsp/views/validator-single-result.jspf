@@ -26,90 +26,96 @@ showLookupSearch - set to true to show result of lookup (used for referenced ite
 <c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
 <c:set var="isItem" value="${rootObjectLookup.requestedRootObjectClass.simpleName=='AssessmentItem'}"/>
 <c:set var="isTest" value="${rootObjectLookup.requestedRootObjectClass.simpleName=='AssessmentTest'}"/>
+<c:set var="isValid" value="${qtiXmlObjectReadResult!=null && empty validationResult.errors && empty validationResult.warnings}"/>
 
-<%-- Show lookup of object --%>
-<c:choose>
-  <c:when test="${isItem}">
-    <h3>Item lookup</h3>
-    <%@ include file="validator-single-lookup.jspf" %>
-
-    <c:if test="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup!=null}">
-      <h3>Response Processing template lookup</h3>
-      <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
-      <c:set var="showLookupSearch" value="${true}"/>
-      <%@ include file="validator-single-lookup.jspf" %>
-    </c:if>
-  </c:when>
-  <c:otherwise>
-    <h3>Test lookup</h3>
-    <%@ include file="validator-single-lookup.jspf" %>
-  </c:otherwise>
-</c:choose>
-
-<c:if test="${qtiXmlObjectReadResult!=null}">
-  <%-- Successful lookup --%>
-  <c:set var="xmlParseResult" value="${qtiXmlObjectReadResult.xmlParseResult}"/>
-  <h3 class="success">XML parsing success</h3>
-  <p>The QTI XML was successfully parsed.</p>
-  <h3 class="success">Schema validation success</h3>
-  <p>
-    The QTI XML was successfully validated against our golden copies of
-    the following supported schemas:
-  </p>
-  <c:if test="${!empty xmlParseResult.supportedSchemaNamespaces}">
-    <ul>
-      <c:forEach var="ns" items="${xmlParseResult.supportedSchemaNamespaces}">
-        <li><c:out value="${ns}"/></li>
-      </c:forEach>
-    </ul>
-  </c:if>
-  <h3 class="success">JQTI model building succeeded</h3>
-  <p>
-    A JQTI model was successfully constructed from your XML.
-  </p>
+<%-- Show overall result --%>
+<div class="${isValid ? 'resultPanelSuccess' : 'resultPanelFailure'}">
   <c:choose>
-    <c:when test="${empty validationResult.errors && empty validationResult.warnings}">
-      <h3 class="success">Model validation succeeded</h3>
-      <p>
-        Further validation of your QTI detected some errors and/or warnings.
-      </p>
+    <c:when test="${isItem}">
+      <h3>Item Validation ${isValid ? 'success' : 'failure'}</h3>
+      <div class="resultPanelDetails">
+        <c:set var="lookupTitle" value="Item"/>
+        <%@ include file="validator-single-lookup.jspf" %>
+
+        <c:if test="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup!=null}">
+          <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
+          <c:set var="lookupTitle" value="Response Processing template"/>
+          <%@ include file="validator-single-lookup.jspf" %>
+        </c:if>
+      </div>
     </c:when>
     <c:otherwise>
-      <h3 class="fail">Model validation failed</h3>
-      <p>
-        Further validation of your QTI detected some errors and/or warnings.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Severity</th>
-            <th>Node</th>
-            <th>Line number</th>
-            <th>Column number</th>
-            <th>Message</th>
-          </tr>
-        </thead>
-        <tbody>
-          <c:forEach var="i" items="${validationResult.errors}">
-            <tr>
-             <td>Error</td>
-             <td>${i.node.classTag}</td>
-             <td>${i.node.sourceLocation.lineNumber}</td>
-             <td>${i.node.sourceLocation.columnNumber}</td>
-             <td><c:out value="${i.message}"/></td>
-            </tr>
-          </c:forEach>
-          <c:forEach var="i" items="${validationResult.warnings}">
-            <tr>
-             <td>Warning</td>
-             <td>${i.node.classTag}</td>
-             <td>${i.node.sourceLocation.lineNumber}</td>
-             <td>${i.node.sourceLocation.columnNumber}</td>
-             <td><c:out value="${i.message}"/></td>
-            </tr>
-          </c:forEach>
-        </tbody>
-      </table>
+      <h3>Test lookup</h3>
+      <%@ include file="validator-single-lookup.jspf" %>
+      FINISH ME!
     </c:otherwise>
   </c:choose>
-</c:if>
+
+  <c:if test="${qtiXmlObjectReadResult!=null}">
+    <%-- Successful lookup --%>
+    <c:set var="xmlParseResult" value="${qtiXmlObjectReadResult.xmlParseResult}"/>
+    <h3 class="success">XML parsing success</h3>
+    <p>The QTI XML was successfully parsed.</p>
+    <h3 class="success">Schema validation success</h3>
+    <p>
+      The QTI XML was successfully validated against our golden copies of
+      the following supported schemas:
+    </p>
+    <c:if test="${!empty xmlParseResult.supportedSchemaNamespaces}">
+      <ul>
+        <c:forEach var="ns" items="${xmlParseResult.supportedSchemaNamespaces}">
+          <li><c:out value="${ns}"/></li>
+        </c:forEach>
+      </ul>
+    </c:if>
+    <h3 class="success">JQTI model building succeeded</h3>
+    <p>
+      A JQTI model was successfully constructed from your XML.
+    </p>
+    <c:choose>
+      <c:when test="${empty validationResult.errors && empty validationResult.warnings}">
+        <h3 class="success">Model validation succeeded</h3>
+        <p>
+          Further validation of your QTI detected some errors and/or warnings.
+        </p>
+      </c:when>
+      <c:otherwise>
+        <h3 class="fail">Model validation failed</h3>
+        <p>
+          Further validation of your QTI detected some errors and/or warnings.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Severity</th>
+              <th>Node</th>
+              <th>Line number</th>
+              <th>Column number</th>
+              <th>Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <c:forEach var="i" items="${validationResult.errors}">
+              <tr>
+               <td>Error</td>
+               <td>${i.node.classTag}</td>
+               <td>${i.node.sourceLocation.lineNumber}</td>
+               <td>${i.node.sourceLocation.columnNumber}</td>
+               <td><c:out value="${i.message}"/></td>
+              </tr>
+            </c:forEach>
+            <c:forEach var="i" items="${validationResult.warnings}">
+              <tr>
+               <td>Warning</td>
+               <td>${i.node.classTag}</td>
+               <td>${i.node.sourceLocation.lineNumber}</td>
+               <td>${i.node.sourceLocation.columnNumber}</td>
+               <td><c:out value="${i.message}"/></td>
+              </tr>
+            </c:forEach>
+          </tbody>
+        </table>
+      </c:otherwise>
+    </c:choose>
+  </c:if>
+</div>
