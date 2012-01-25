@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiengine.web.view;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
 
@@ -48,8 +51,12 @@ public final class ELFunctions {
                 ViewUtilities.decodePathName(pageName), null, null));
     }
     
-    public static String escapeLink(String link) {
+    static String escapeLink(String link) {
         return link.replace("&", "&amp;");
+    }
+    
+    public static String dumpObject(Object object) {
+        return ObjectDumper.dumpObject(object, DumpMode.DEEP);
     }
     
     private static HttpServletRequest getRequest(PageContext pageContext) {

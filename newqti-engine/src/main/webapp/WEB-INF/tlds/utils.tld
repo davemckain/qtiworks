@@ -81,33 +81,6 @@ All Rights Reserved.
     </attribute>
   </tag>
   <tag>
-    <name>adminLink</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.AdminLinkTag</tag-class>
-    <body-content>empty</body-content>
-  </tag>
-  <tag>
-    <name>userLink</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.UserLinkTag</tag-class>
-    <body-content>empty</body-content>
-    <attribute>
-      <name>user</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>uk.ac.ed.ph.qtiengine.domain.entities.User</type>
-    </attribute>
-  </tag>
-  <tag>
-    <name>userLinks</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.UserLinksTag</tag-class>
-    <body-content>empty</body-content>
-    <attribute>
-      <name>users</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.util.Collection</type>
-    </attribute>
-  </tag>
-  <tag>
     <name>exposeStaticFields</name>
     <tag-class>uk.ac.ed.ph.qtiengine.web.view.ExposeStaticFieldsTag</tag-class>
     <body-content>empty</body-content>
@@ -122,36 +95,11 @@ All Rights Reserved.
   </tag>
 
   <function>
-    <description>Checks whether a Collection contains a particular entity</description>
-    <name>containsEntity</name>
+    <description>Object Dump</description>
+    <name>dumpObject</name>
     <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>java.lang.boolean containsEntity(
-      java.util.Collection,
+    <function-signature>String dumpObject(
       java.lang.Object
-    )</function-signature>
-  </function>
-  <function>
-    <description>Creates a List from a Collection, which can be useful at times</description>
-    <name>toList</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>java.util.List toList(
-      java.util.Collection
-    )</function-signature>
-  </function>
-  <function>
-    <description>Sorts (complex) entity Objects in sensible ways</description>
-    <name>sortEntities</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>java.util.List sortEntities(
-      java.util.Collection
-    )</function-signature>
-  </function>
-  <function>
-    <description>Calculates the total mark represented by a Summable entity</description>
-    <name>sumMarks</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>java.math.BigDecimal sumMarks(
-      uk.ac.ed.ph.qtiengine.domain.entities.Summable
     )</function-signature>
   </function>
   <function>
@@ -162,78 +110,6 @@ All Rights Reserved.
       javax.servlet.jsp.PageContext,
       java.lang.String
     )</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints a CourseInstance session of delivery</description>
-    <name>formatSessionOfDelivery</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatSessionOfDelivery(uk.ac.ed.ph.qtiengine.domain.entities.CourseInstance)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints the details of an Assignment</description>
-    <name>formatAssignmentDetails</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatAssignmentDetails(uk.ac.ed.ph.qtiengine.domain.entities.Assignment)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints the details of a Deliverable</description>
-    <name>formatDeliverableDetails</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatDeliverableDetails(uk.ac.ed.ph.qtiengine.domain.entities.Deliverable)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints the name of a User</description>
-    <name>formatName</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatName(uk.ac.ed.ph.qtiengine.domain.entities.User)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints information about a StudentUser</description>
-    <name>formatStudentDetails</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatStudentDetails(uk.ac.ed.ph.qtiengine.domain.entities.StudentUser)</function-signature>
-  </function>
-  <function>
-    <description>Creates an HTML email link for the given User</description>
-    <name>formatUserEmailLink</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatUserEmailLink(uk.ac.ed.ph.qtiengine.domain.entities.User)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints a Date as a date in a suitable form</description>
-    <name>formatDate</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatDate(java.util.Date)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints a Date as a date and time in a suitable form</description>
-    <name>formatDateAndTime</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatDateAndTime(java.util.Date)</function-signature>
-  </function>
-  <function>
-    <description>Pretty-prints a Date as a day, date and time in a suitable form</description>
-    <name>formatDayDateAndTime</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatDayDateAndTime(java.util.Date)</function-signature>
-  </function>
-  <function>
-    <description>Generates a Map for a range of numbers suitable for passing to Spring form:options</description>
-    <name>createRangeMap</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>java.util.LinkedHashMap createRangeMap(int, int, java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>Does simple Wiki-like formatting of blobs of text</description>
-    <name>formatSimpleMarkup</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String formatSimpleMarkup(java.lang.String)</function-signature>
-  </function>
-  <function>
-    <description>Creates a download file name from a given Submission and base name</description>
-    <name>createDownloadName</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
-    <function-signature>String createDownloadName(uk.ac.ed.ph.qtiengine.domain.entities.Submission, java.lang.String)</function-signature>
   </function>
 
 </taglib>

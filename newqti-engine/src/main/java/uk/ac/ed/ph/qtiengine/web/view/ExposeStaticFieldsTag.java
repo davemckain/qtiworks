@@ -31,79 +31,53 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.domain;
+package uk.ac.ed.ph.qtiengine.web.view;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.qtiengine.EngineException;
+import uk.ac.ed.ph.qtiengine.web.WebUtilities;
 
-import java.io.Serializable;
-import java.util.Set;
+import java.util.Map;
+
+import javax.servlet.jsp.JspContext;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
- * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
- * 
- * TODO: This will eventually become a persisted Object so needs to stick to convention.
+ * Exposes the static fields of the Class having the given name into the JSP context
+ * using the given target attribute name.
+ * <p>
+ * NOTE: This is does work if there is no attribute with the given target name already
+ * set, allowing the tag to be used multiple times in one JSP without wasting time recalculating
+ * details.
  *
  * @author David McKain
  */
-public class AssessmentPackage implements Serializable {
+public final class ExposeStaticFieldsTag extends SimpleTagSupport {
     
-    private static final long serialVersionUID = -8906026282623891941L;
+    private String className;
     
-    public static enum AssessmentType {
-        ITEM,
-        TEST,
-        ;
-    }
-    
-    private AssessmentType assessmentType;
-    private String sandboxPath;
-    private String assessmentObjectHref;
-    private Set<String> fileHrefs;
-    
-    public AssessmentPackage() {
-    }
-
-    
-    public AssessmentType getAssessmentType() {
-        return assessmentType;
-    }
-    
-    public void setAssessmentType(AssessmentType assessmentType) {
-        this.assessmentType = assessmentType;
-    }
-    
-    
-    public String getSandboxPath() {
-        return sandboxPath;
-    }
-    
-    public void setSandboxPath(String sandboxPath) {
-        this.sandboxPath = sandboxPath;
-    }
-
-    
-    public String getAssessmentObjectHref() {
-        return assessmentObjectHref;
-    }
-
-    public void setAssessmentObjectHref(String assessmentObjectHref) {
-        this.assessmentObjectHref = assessmentObjectHref;
-    }
-
-    
-    public Set<String> getFileHrefs() {
-        return fileHrefs;
-    }
-
-    public void setFileHrefs(Set<String> fileHrefs) {
-        this.fileHrefs = fileHrefs;
-    }
-    
+    private String targetName;
     
     @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    public void doTag() {
+        JspContext jspContext = getJspContext();
+        if (jspContext.getAttribute(targetName)==null) {
+            Class<?> globalClass;
+            try {
+                globalClass = Class.forName(className);
+            }
+            catch (ClassNotFoundException e) {
+                throw new EngineException("Could not find class " + className, e);
+            }
+            Map<String, Object> staticFields = WebUtilities.exposeStaticFields(globalClass);
+            jspContext.setAttribute(targetName, staticFields);
+        }
     }
 
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
+    }
 }

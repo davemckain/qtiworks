@@ -35,12 +35,10 @@ package uk.ac.ed.ph.qtiengine.web.controller;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import uk.ac.ed.ph.qtiengine.UploadException;
 import uk.ac.ed.ph.qtiengine.services.UploadService;
-import uk.ac.ed.ph.qtiengine.services.ValidationService;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage;
+import uk.ac.ed.ph.qtiengine.web.domain.AssessmentUpload;
 
 import java.io.IOException;
 
@@ -66,9 +64,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class ValidationController {
     
     @Resource
-    private ValidationService validationService;
-    
-    @Resource
     private UploadService uploadService;
     
     /** 
@@ -80,15 +75,16 @@ public class ValidationController {
     public String validate(@RequestHeader("Content-Type") String contentType, HttpServletRequest request)
             throws UploadException, IOException {
         ServletInputStream uploadStream = request.getInputStream();
-        AssessmentPackage assessmentPackage = uploadService.importData(uploadStream, contentType);
+        AssessmentUpload assessmentUpload = null;
         try {
-            AbstractValidationResult result = validationService.validate(assessmentPackage);
-            return ObjectDumper.dumpObject(result, DumpMode.DEEP);
+            assessmentUpload = uploadService.importData(uploadStream, contentType);
+            return ObjectDumper.dumpObject(assessmentUpload, DumpMode.DEEP);
         }
         finally {
-            uploadService.deletePackage(assessmentPackage);
+            if (assessmentUpload!=null) {
+                uploadService.deleteUpload(assessmentUpload);
+            }
         }
-
     }
     
     //------------------------------------------------------
@@ -103,16 +99,16 @@ public class ValidationController {
             throws UploadException, IOException {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         MultipartFile uploadFile = multipartRequest.getFile("upload");
-        AssessmentPackage assessmentPackage = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
+        AssessmentUpload assessmentUpload = null;
         try {
-            AbstractValidationResult result = validationService.validate(assessmentPackage);
-            
-            model.addAttribute("assessmentPackage", assessmentPackage);
-            model.addAttribute("validationResult", result);
+            assessmentUpload = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
+            model.addAttribute("assessmentUpload", assessmentUpload);
             return "validator-results";
         }
         finally {
-            uploadService.deletePackage(assessmentPackage);
+            if (assessmentUpload!=null) {
+                uploadService.deleteUpload(assessmentUpload);
+            }
         }
     }
 }

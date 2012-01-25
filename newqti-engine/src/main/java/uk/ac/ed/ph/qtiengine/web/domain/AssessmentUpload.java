@@ -33,11 +33,13 @@
  */
 package uk.ac.ed.ph.qtiengine.web.domain;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
@@ -46,61 +48,41 @@ import java.util.Set;
  *
  * @author David McKain
  */
-public class AssessmentPackage implements Serializable {
+public class AssessmentUpload implements Serializable {
     
     private static final long serialVersionUID = -8906026282623891941L;
     
-    public static enum AssessmentType {
-        ITEM,
-        TEST,
+    public static enum UploadType {
+        STANDALONE,
+        CONTENT_PACKAGE,
         ;
     }
     
-    private AssessmentType assessmentType;
-    private String sandboxPath;
-    private String assessmentObjectHref;
-    private Set<String> fileHrefs;
+    private final AssessmentPackage assessmentPackage;
+    private final UploadType uploadType;
+    private final AbstractValidationResult validationResult;
+
+    public AssessmentUpload(AssessmentPackage assessmentPackage, UploadType uploadType, AbstractValidationResult validationResult) {
+        this.assessmentPackage = assessmentPackage;
+        this.uploadType = uploadType;
+        this.validationResult = validationResult;
+    }
     
-    public AssessmentPackage() {
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+    
+    public UploadType getUploadType() {
+        return uploadType;
     }
 
-    
-    public AssessmentType getAssessmentType() {
-        return assessmentType;
-    }
-    
-    public void setAssessmentType(AssessmentType assessmentType) {
-        this.assessmentType = assessmentType;
-    }
-    
-    
-    public String getSandboxPath() {
-        return sandboxPath;
-    }
-    
-    public void setSandboxPath(String sandboxPath) {
-        this.sandboxPath = sandboxPath;
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AbstractValidationResult getValidationResult() {
+        return validationResult;
     }
 
-    
-    public String getAssessmentObjectHref() {
-        return assessmentObjectHref;
-    }
 
-    public void setAssessmentObjectHref(String assessmentObjectHref) {
-        this.assessmentObjectHref = assessmentObjectHref;
-    }
-
-    
-    public Set<String> getFileHrefs() {
-        return fileHrefs;
-    }
-
-    public void setFileHrefs(Set<String> fileHrefs) {
-        this.fileHrefs = fileHrefs;
-    }
-    
-    
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);

@@ -7,19 +7,22 @@ All Rights Reserved
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
 <%--
 
 Validator submission form
 
 Model attributes:
 
-assessmentPackage
-validationResult
+assessmentUpload
 
 --%>
-<%-- Generate Header --%>
 <c:set var="title" value="QTI Validator" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
+
+<pre>
+${utils:dumpObject(assessmentUpload)}
+</pre>
 
 <h2>Validation Result</h2>
 
