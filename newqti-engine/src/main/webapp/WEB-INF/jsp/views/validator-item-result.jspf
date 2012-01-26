@@ -15,21 +15,47 @@ This fragment formats an ItemValidationResult
 
 Model attributes:
 
-validationResult - itemValidationResult
+validationResult: itemValidationResult
+isTest: set to true if item is part of a test
 
 --%>
 <c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
 
 <%-- Show overall result --%>
 <div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
-  <h3>Item validation ${isValid ? 'success' : 'failure'}</h3>
+  <h3>
+    <c:choose>
+      <c:when test="${isTest}">
+        Test Item at ${utils:extractContentPackagePath(resolvedAssessmentObject.rootObjectLookup.systemId)} validation
+        ${validationResult.valid ? 'success' : 'failure'}
+      </c:when>
+      <c:otherwise>
+        Item validation
+        ${validationResult.valid ? 'success' : 'failure'}
+      </c:otherwise>
+    </c:choose>
+  </h3>
   <div class="details">
     <p>
-      Your item
-      ${isValid ? 'passed' : 'did not pass'}
-      all of our validation checks. Further details are provided below.
+      <c:choose>
+        <c:when test="${isTest}">
+          The item at path ${utils:extractContentPackagePath(resolvedAssessmentObject.rootObjectLookup.systemId)}
+          referenced by this test
+          ${validationResult.valid ? 'passed' : 'did not pass'}
+          all of our validation checks. Further details are provided below.
+          (This prevents the test itself from being valid.)
+        </c:when>
+        <c:otherwise>
+          Your item
+          ${validationResult.valid ? 'passed' : 'did not pass'}
+          all of our validation checks. Further details are provided below.
+        </c:otherwise>
+      </c:choose>
     </p>
     <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.rootObjectLookup}"/>
+    <c:if test="${isTest}">
+      <%@ include file="validator-xml-find-result.jspf" %>
+    </c:if>
     <%@ include file="validator-xml-parse-result.jspf" %>
     <%@ include file="validator-xml-schema-result.jspf" %>
     <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>

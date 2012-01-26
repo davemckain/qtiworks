@@ -76,23 +76,26 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     
     @Override
     public InputStream findResource(URI systemIdUri) {
-        final String normalizedPath = uriScheme.uriToPath(systemIdUri.normalize());
-        if (normalizedPath!=null) {
-            if (normalizedPath.startsWith("..")) {
-                /* This is trying to go outside the package, so we'll return null here */
-                logger.warn("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
-                return null;
+        URI normalizedUri = systemIdUri.normalize();
+        if (uriScheme.isInScheme(normalizedUri)) {
+            final String normalizedPath = uriScheme.uriToPath(normalizedUri);
+            if (normalizedPath!=null) {
+                if (normalizedPath.startsWith("..")) {
+                    /* This is trying to go outside the package, so we'll return null here */
+                    logger.warn("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
+                    return null;
+                }
+                final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
+                FileInputStream result = null;
+                try {
+                    result = new FileInputStream(resultingFile);
+                    logger.info("URI {} successfully mapped to file {}", systemIdUri, resultingFile);
+                }
+                catch (FileNotFoundException e) {
+                    logger.warn("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
+                }
+                return result;
             }
-            final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
-            FileInputStream result = null;
-            try {
-                result = new FileInputStream(resultingFile);
-                logger.info("URI {} successfully mapped to file {}", systemIdUri, resultingFile);
-            }
-            catch (FileNotFoundException e) {
-                logger.warn("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
-            }
-            return result;
         }
         return null;
     }

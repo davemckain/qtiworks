@@ -60,15 +60,20 @@ public final class CustomUriScheme {
         return URI.create(schemeName + ":/" + path);
     }
     
+    public boolean isInScheme(URI uri) {
+        String path = uri.getPath();
+        return schemeName.equals(uri.getScheme())
+                && uri.getAuthority()==null
+                && path!=null
+                && path.length()>0
+                && path.charAt(0)=='/';
+    }
+    
     public String uriToPath(URI uri) {
-        String result = null;
-        if (schemeName.equals(uri.getScheme()) && uri.getAuthority()==null) {
-            String path = uri.getPath();
-            if (path.length() > 0 && path.charAt(0)=='/') {
-                result = uri.getPath().substring(1);
-            }
+        if (isInScheme(uri)) {
+            return uri.getPath().substring(1);
         }
-        return result;
+        return uri.toString();
     }
     
     public String getSchemeName() {

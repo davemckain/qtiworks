@@ -43,6 +43,11 @@ rootObjectLookup
           <b><c:out value="${utils:extractContentPackagePath(rootObjectLookup.systemId)}"/></b>
           within your submitted content package.
         </p>
+        <p>
+          <strong>Note:</strong> We do not currently support loading arbitrary HTTP resources, though that feature
+          will be added shortly. We also don't currently have the legacy QTI 2.0 responce processing templates loaded
+          into the system.
+        </p>
       </div>
     </div>
   </c:otherwise>
