@@ -18,27 +18,49 @@ Model attributes:
 assessmentUpload
 
 --%>
+<c:set var="assessmentPackage" value="${assessmentUpload.assessmentPackage}"/>
+<c:set var="assessmentType" value="${assessmentPackage.assessmentType}"/>
+<c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
+
+<%-- Generate header --%>
 <c:set var="title" value="QTI Validator" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
 <h2>Upload &amp; validation result</h2>
 
-<p>You uploaded a ${assessmentUpload.assessmentPackage.assessmentType}, uploaded as
-${assessmentUpload.uploadType}.</p>
+<p>You uploaded a ${assessmentType}, uploaded as ${assessmentUpload.uploadType}.</p>
 
-<%-- Show main result --%>
-<c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
-<c:set var="showLookupSearch" value="${false}"/>
+<%-- NEW! --%>
 <div class="validationResult">
-  <%@ include file="validator-single-result.jspf" %>
+  <c:choose>
+    <c:when test="${assessmentType==AssessmentType.ITEM}">
+      <%@ include file="validator-item-result.jspf" %>
+    </c:when>
+    <c:when test="${assessmentType==AssessmentType.TEST}">
+      TO DO!
+    </c:when>
+    <c:otherwise>
+      <%-- Blow up! --%>
+    </c:otherwise>
+  </c:choose>
 </div>
 
-<%-- If test, show child results --%>
-<c:if test="${assessmentUpload.assessmentPackage.assessmentType==AssessmentType.TEST}">
-  <c:forEach var="validationResult" items="${assessmentUpload.validationResult.itemValidationResults}">
-    <c:set var="showLookupSearch" value="${true}"/>
+<%-- OLD! --%>
+<c:if test="${false}">
+  <%-- Show main result --%>
+  <c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
+  <c:set var="showLookupSearch" value="${false}"/>
+  <div class="validationResult">
     <%@ include file="validator-single-result.jspf" %>
-  </c:forEach>
+  </div>
+
+  <%-- If test, show child results --%>
+  <c:if test="${assessmentUpload.assessmentPackage.assessmentType==AssessmentType.TEST}">
+    <c:forEach var="validationResult" items="${assessmentUpload.validationResult.itemValidationResults}">
+      <c:set var="showLookupSearch" value="${true}"/>
+      <%@ include file="validator-single-result.jspf" %>
+    </c:forEach>
+  </c:if>
 </c:if>
 
 <h2>Java Object dump (geeks only!)</h2>

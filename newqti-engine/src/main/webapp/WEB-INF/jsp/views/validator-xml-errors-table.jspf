@@ -1,0 +1,62 @@
+<%--
+
+Copyright (c) 2012, The University of Edinburgh.
+All Rights Reserved
+
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<utils:exposeStaticFields className="uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException$InterpretationFailureReason" targetName="InterpretationFailureReason" />
+<%--
+
+Formats errors contained within an xmlParseResult
+
+Model attribute:
+
+xmlParseResult
+
+--%>
+
+<h4>Error summary</h4>
+<table>
+  <thead>
+    <tr>
+      <td>Severity</td>
+      <td>Line number</td>
+      <td>Column number</td>
+      <td>Error message</td>
+    </tr>
+  </thead>
+  <tbody>
+    <c:forEach var="i" items="${xmlParseResult.fatalErrors}">
+      <tr>
+        <td>Fatal Error</td>
+        <td>${i.lineNumber}</td>
+        <td>${i.columnNumber}</td>
+        <td><c:out value="${i.message}"/></td>
+      </tr>
+    </c:forEach>
+    <c:forEach var="i" items="${xmlParseResult.errors}">
+      <tr>
+        <td>Error</td>
+        <td>${i.lineNumber}</td>
+        <td>${i.columnNumber}</td>
+        <td><c:out value="${i.message}"/></td>
+      </tr>
+    </c:forEach>
+    <c:forEach var="i" items="${xmlParseResult.warnings}">
+      <tr>
+        <td>Warning</td>
+        <td>${i.lineNumber}</td>
+        <td>${i.columnNumber}</td>
+        <td><c:out value="${i.message}"/></td>
+      </tr>
+    </c:forEach>
+  </tbody>
+</table>
+<p>
+  (Please note that line/column numbers usually correspond to the end of the
+  XML open/closing tag, so are intended to be helpful rather than exact!)
+</p>

@@ -15,9 +15,7 @@ This fragment formats the properties contained within an AbstractValidationResul
 
 Model attributes:
 
-assessmentUpload - owning assessmentUpload
 validationResult - current validationResult
-showLookupSearch - set to true to show result of lookup (used for referenced items in tests)
 
 --%>
 

@@ -35,6 +35,10 @@ package uk.ac.ed.ph.qtiengine.web.view;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+
+import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -45,6 +49,11 @@ import javax.servlet.jsp.PageContext;
  * @author David McKain
  */
 public final class ELFunctions {
+    
+    public static String extractContentPackagePath(URI uri) {
+        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        return packageUriScheme.uriToPath(uri);
+    }
     
     public static String encodePageLink(PageContext pageContext, String pageName) {
         return escapeLink(ViewUtilities.createPageLink(getRequest(pageContext),

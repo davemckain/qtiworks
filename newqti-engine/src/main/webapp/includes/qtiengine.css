@@ -5,24 +5,66 @@ All Rights Reserved
 
 ************************************************************/
 
-.resultPanelSuccess {
-  background-color: #eeffee;
+.validationResult {
+  margin-bottom: 2em;
 }
 
-.resultPanelSuccess > h3 {
-  background-color: #00ff00;
+.resultPanel {
+  border: 2px dotted white;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+}
+
+.resultPanel .resultPanel {
+  margin: 1em 1em 0.3em 2em;
+}
+
+.resultPanel.success {
+  background-color: #f7fff7;
+}
+
+.resultPanel.failure {
+  background-color: #fff0e0;
+}
+
+.resultPanel > h3 {
+  padding: 0.5em 0.5em 0.5em 25px;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  color: black;
+  background-position: 5px center;
+  background-repeat: no-repeat;
+}
+
+.resultPanel.success > h3 {
+  background: url(images/accept.png) #55ff66 5px center no-repeat;
+}
+
+.resultPanel.failure > h3 {
+  padding: 0.5em 0.5em 0.5em 25px;
+  color: black;
+  background: url(images/error.png) #ff6655 5px center no-repeat;
+}
+
+.resultPanel .details {
+  padding: 0 0.5em 0.5em 0.5em;
+}
+
+.validationResult table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.validationResult table th, .validationResult table td {
   padding: 0.5em;
+  border: 1px solid #ff6655;
 }
 
-.resultPanelDetails {
-  margin-left: 2em;
+.validationResult table td.center, .validationResult table th.center {
+  text-align: center;
 }
 
-.resultPanelFailure {
-  background-color: #ffeeee;
-}
-
-.resultPanelFailure > h3 {
-  background-color: #ff0000;
-  padding: 0.5em;
+.validationResult table th {
+  background-color: #ff6655;
 }

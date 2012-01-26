@@ -26,40 +26,34 @@ lookupTitle
 <c:choose>
   <c:when test="${qtiXmlObjectReadResult!=null}">
     <c:set var="xmlParseResult" value="${qtiXmlObjectReadResult.xmlParseResult}"/>
-    <div class="resultPanelSuccess">
-      <h3>${lookupTitle} XML lookup succeeded</h3>
-      <div class="resultPanelDetails">
+    <div class="resultPanel success">
+      <h3>${lookupTitle} success</h3>
+      <div class="details">
         <p>
-          XML resource at <c:out value="${rootObjectLookup.systemId}"/> was successfully
-          located within your submitted content package.
+          XML resource at href <b><c:out value="${utils:extractContentPackagePath(rootObjectLookup.systemId)}"/></b>
+          was successfully located within your submitted content package.
         </p>
-        <h4 class="success">XML parsing success</h4>
-        <p>The QTI XML was successfully parsed.</p>
-        <h4 class="success">Schema validation success</h4>
-        <p>
-          The QTI XML was successfully validated against our golden copies of
-          the following supported schemas:
-        </p>
-        <c:if test="${!empty xmlParseResult.supportedSchemaNamespaces}">
-          <ul>
-            <c:forEach var="ns" items="${xmlParseResult.supportedSchemaNamespaces}">
-              <li><c:out value="${ns}"/></li>
-            </c:forEach>
-          </ul>
-        </c:if>
-        <h4 class="success">JQTI model building succeeded</h4>
-        <p>
-          A JQTI model was successfully constructed from your XML.
-        </p>
+        <%@ include file="validator-xml-parse-result.jspf" %>
+        <%@ include file="validator-xml-schema-result.jspf" %>
+        <div class="resultPanel success">
+          <h3>JQTI model building succeeded</h3>
+          <div class="details">
+            <p>
+              A JQTI model was successfully constructed from your XML.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </c:when>
   <c:when test="${xmlResourceNotFoundException!=null}">
-    <div class="resultPanelFailure">
+    <div class="resultPanel failure">
       <h3>${lookupTitle} was not found</h3>
-      <div class="resultPanelDetails">
-        Could not find XML resource at <c:out value="${rootObjectLookup.systemId}"/> within your
-        submitted content package.
+      <div class="details">
+        <p>
+          Could not locate the XML resource at <b><c:out value="${utils:extractContentPackagePath(rootObjectLookup.systemId)}"/></b>
+          within your submitted content package.
+        </p>
       </div>
     </div>
   </c:when>

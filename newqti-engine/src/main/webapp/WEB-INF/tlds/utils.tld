@@ -95,6 +95,14 @@ All Rights Reserved.
   </tag>
 
   <function>
+    <description>Converts internal CP URI scheme to path</description>
+    <name>extractContentPackagePath</name>
+    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
+    <function-signature>String extractContentPackagePath(
+      java.net.URI
+    )</function-signature>
+  </function>
+  <function>
     <description>Object Dump</description>
     <name>dumpObject</name>
     <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>

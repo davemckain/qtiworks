@@ -1,0 +1,50 @@
+<%--
+
+Copyright (c) 2012, The University of Edinburgh.
+All Rights Reserved
+
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<utils:exposeStaticFields className="uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException$InterpretationFailureReason" targetName="InterpretationFailureReason" />
+<%--
+
+This fragment formats the result of XML parsing
+
+Model attributes:
+
+rootObjectLookup
+
+--%>
+
+<c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
+<c:set var="qtiXmlInterpretationException" value="${rootObjectLookup.badResourceException}"/>
+<c:set var="xmlParseResult" value="${qtiXmlObjectReadResult!=null ? qtiXmlObjectReadResult.xmlParseResult : (qtiXmlInterpretationException!=null ? qtiXmlInterpretationException.xmlParseResult : null)}"/>
+<c:choose>
+  <c:when test="${xmlParseResult==null}">
+    <%-- Did not get this far --%>
+  </c:when>
+  <c:otherwise>
+    <c:choose>
+      <c:when test="${xmlParseResult.parsed}">
+        <div class="resultPanel success">
+          <h3>XML parse success</h3>
+          <div class="details">
+            <p>The QTI XML was successfully parsed.</p>
+          </div>
+        </div>
+      </c:when>
+      <c:otherwise>
+        <div class="resultPanel failure">
+          <h3>XML parse failed</h3>
+          <div class="details">
+            <p>The QTI XML was not successfully parsed. Error details are listed below:</p>
+            <%@ include file="validator-xml-errors-table.jspf" %>
+          </div>
+        </div>
+      </c:otherwise>
+    </c:choose>
+  </c:otherwise>
+</c:choose>

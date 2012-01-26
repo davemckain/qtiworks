@@ -1,0 +1,71 @@
+<%--
+
+Copyright (c) 2012, The University of Edinburgh.
+All Rights Reserved
+
+--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<utils:exposeStaticFields className="uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException$InterpretationFailureReason" targetName="InterpretationFailureReason" />
+<%--
+
+This fragment formats an ItemValidationResult
+
+Model attributes:
+
+validationResult - itemValidationResult
+
+--%>
+<c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
+
+<%-- Show overall result --%>
+<div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
+  <h3>Item validation ${isValid ? 'success' : 'failure'}</h3>
+  <div class="details">
+    <p>
+      Your item
+      ${isValid ? 'passed' : 'did not pass'}
+      all of our validation checks. Further details are provided below.
+    </p>
+    <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.rootObjectLookup}"/>
+    <%@ include file="validator-xml-parse-result.jspf" %>
+    <%@ include file="validator-xml-schema-result.jspf" %>
+    <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
+    <c:if test="${resolvedResponseProcessingTemplateLookup!=null}">
+      <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
+      <c:choose>
+        <c:when test="${rootObjectLookup.rootObjectHolder!=null}">
+          <div class="resultPanel success">
+            <h3>The referenced response processing template was successfully resolved</h3>
+            <div class="details">
+              <%-- (These are in context of RP) --%>
+              <%@ include file="validator-xml-find-result.jspf" %>
+              <%@ include file="validator-xml-parse-result.jspf" %>
+              <%@ include file="validator-xml-schema-result.jspf" %>
+            </div>
+          </div>
+        </c:when>
+        <c:otherwise>
+          <div class="resultPanel failure">
+            <h3>The referenced response processing template was not successfully resolved</h3>
+            <div class="details">
+              <p>
+                We could not read in and parse the response processing template with href
+                <b>${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}</b>.
+              </p>
+              <%-- (These are in context of RP) --%>
+              <%@ include file="validator-xml-find-result.jspf" %>
+              <%@ include file="validator-xml-parse-result.jspf" %>
+              <%@ include file="validator-xml-schema-result.jspf" %>
+            </div>
+          </div>
+        </c:otherwise>
+      </c:choose>
+    </c:if>
+    <%@ include file="validator-model-build-result.jspf" %>
+    <%@ include file="validator-validation-result.jspf" %>
+  </div>
+</div>
+
