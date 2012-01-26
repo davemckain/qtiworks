@@ -13,6 +13,12 @@ h2, h3 {
   margin: 0.5em 0;
 }
 
+.error {
+  color: red;
+  font-weight: bold;
+  padding: 0 0 1em 0;
+}
+
 .validatorUpload {
   margin: 2em auto;
   padding: 1.5em;
@@ -21,6 +27,10 @@ h2, h3 {
   border: #25476c solid 2px;
   -moz-border-radius: 1em;
   -webkit-border-radius: 1em;
+}
+
+.validatorUpload dd {
+  margin-bottom: 1em;
 }
 
 .validationResult {

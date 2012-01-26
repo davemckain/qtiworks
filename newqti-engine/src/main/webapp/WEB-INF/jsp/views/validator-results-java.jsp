@@ -26,29 +26,11 @@ assessmentUpload
 <c:set var="title" value="QTI Validator" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
-<h2>Validation result</h2>
+<h2>Validation result (Java Object dump)</h2>
 
-<p>You uploaded a ${assessmentType}, uploaded as ${assessmentUpload.uploadType}.</p>
-
-<div class="validationResult">
-  <c:choose>
-    <c:when test="${assessmentType==AssessmentType.ITEM}">
-      <%@ include file="validator-item-result.jspf" %>
-    </c:when>
-    <c:when test="${assessmentType==AssessmentType.TEST}">
-      <c:set var="testValidationResult" value="${validationResult}"/>
-      <%@ include file="validator-test-result.jspf" %>
-    </c:when>
-    <c:otherwise>
-      <%-- Blow up! --%>
-    </c:otherwise>
-  </c:choose>
-</div>
-
-<h2>Java Object dump (geeks only!)</h2>
 <p>
-  This is a temporary dump of the Java Object graph generated from the upload and validation process,
-  which will be useful for developers but is likely to scare everyone else away!
+  This is the Java Object graph generated from the upload and validation process,
+  which will be useful for developers and geeky types.
 </p>
 <pre>
 ${utils:dumpObject(assessmentUpload)}

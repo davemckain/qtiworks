@@ -31,48 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.config;
+package uk.ac.ed.ph.qtiengine.web.domain;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-@EnableWebMvc
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.web"})
-public class MvcConfiguration {
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * FIXME: Document this type
+ *
+ * @author David McKain
+ */
+public final class ValidateCommand {
     
-    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+    MultipartFile uploadFile;
+    String reportType;
     
-    @Bean
-    MultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
-        return resolver;
+    public MultipartFile getUploadFile() {
+        return uploadFile;
     }
     
-    @Bean
-    ViewResolver viewResolver() {
-        UrlBasedViewResolver result = new UrlBasedViewResolver();
-        result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
-        result.setSuffix(".jsp");
-        return result;
+    public void setUploadFile(MultipartFile uploadFile) {
+        this.uploadFile = uploadFile;
     }
     
-    @Bean
-    MessageSource messageSource() {
-        ResourceBundleMessageSource result = new ResourceBundleMessageSource();
-        result.setBasename("messages");
-        return result;
+    
+    public String getReportType() {
+        return reportType;
     }
-
+    
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

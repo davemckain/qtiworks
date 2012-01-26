@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.qtiengine.UploadException;
 import uk.ac.ed.ph.qtiengine.services.UploadService;
 import uk.ac.ed.ph.qtiengine.web.domain.AssessmentUpload;
+import uk.ac.ed.ph.qtiengine.web.domain.ValidateCommand;
 
 import java.io.IOException;
 
@@ -48,12 +49,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * FIXME: Document this type
@@ -90,25 +92,53 @@ public class ValidationController {
     //------------------------------------------------------
     
     @RequestMapping(value="/validator", method=RequestMethod.GET)
-    public String showValidatorForm() {
+    public String showValidatorForm(Model model) {
+        ValidateCommand command = new ValidateCommand();
+        command.setReportType("HTML");
+        
+        model.addAttribute("validateCommand", command);
         return "validator-uploadForm";
     }
     
+    /**
+     * TODO: Maybe add Exception handler to deal with {@link UploadException}.
+     * @param model
+     * @param command
+     * @param errors
+     * @return
+     * @throws IOException
+     */
+    @SuppressWarnings("null")
     @RequestMapping(value="/validator", method=RequestMethod.POST)
-    public String handleValidatorForm(HttpServletRequest request, Model model)
-            throws UploadException, IOException {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile uploadFile = multipartRequest.getFile("upload");
+    public String handleValidatorForm(Model model, @ModelAttribute ValidateCommand command, BindingResult errors)
+            throws IOException {
+        /* Catch any binding errors */
+        if (errors.hasErrors()) {
+            return "validator-uploadForm";
+        }
+        
+        /* Make sure something was submitted */
+        MultipartFile uploadFile = command.getUploadFile();
+        if (uploadFile!=null && uploadFile.getSize()==0L) {
+            errors.reject("validator.nofile");
+            return "validator-uploadForm";
+        }
+        
         AssessmentUpload assessmentUpload = null;
         try {
             assessmentUpload = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
             model.addAttribute("assessmentUpload", assessmentUpload);
-            return "validator-results";
+            return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
+        }
+        catch (UploadException e) {
+            errors.reject("validator.uploadException." + e.getReason());
+            return "validator-uploadForm";
         }
         finally {
             if (assessmentUpload!=null) {
                 uploadService.deleteUpload(assessmentUpload);
             }
         }
+
     }
 }
