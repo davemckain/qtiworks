@@ -54,20 +54,22 @@ validationResult - current validationResult
           </thead>
           <tbody>
             <c:forEach var="i" items="${validationResult.errors}">
+              <c:set var="node" value="${i.node}"/>
               <tr>
                <td class="center">Error</td>
-               <td class="center">${i.node.classTag}</td>
-               <td class="center">${i.node.sourceLocation.lineNumber}</td>
-               <td class="center">${i.node.sourceLocation.columnNumber}</td>
+               <td class="center">${node!=null ? node.classTag : 'Not available'}</td>
+               <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
+               <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
                <td><c:out value="${i.message}"/></td>
               </tr>
             </c:forEach>
             <c:forEach var="i" items="${validationResult.warnings}">
+              <c:set var="node" value="${i.node}"/>
               <tr>
                <td class="center">Warning</td>
-               <td class="center">${i.node.classTag}</td>
-               <td class="center">${i.node.sourceLocation.lineNumber}</td>
-               <td class="center">${i.node.sourceLocation.columnNumber}</td>
+               <td class="center">${node!=null ? node.classTag : 'Not available'}</td>
+               <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
+               <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
                <td><c:out value="${i.message}"/></td>
               </tr>
             </c:forEach>
