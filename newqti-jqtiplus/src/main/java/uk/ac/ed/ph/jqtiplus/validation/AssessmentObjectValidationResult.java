@@ -59,4 +59,10 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
     public ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
         return resolvedAssessmentObject;
     }
+    
+    public boolean isValid() {
+        return resolvedAssessmentObject.getRootObjectLookup().getRootObjectHolder()!=null
+                && getErrors().isEmpty()
+                && getWarnings().isEmpty();
+    }
 }
