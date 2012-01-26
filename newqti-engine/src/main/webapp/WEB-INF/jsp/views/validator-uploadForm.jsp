@@ -58,9 +58,9 @@ validateCommand:
   You may upload any of the following to the validator:
 </p>
 <ul>
-  <li>An IMS Content Package containing a QTI 2.1 AssessmentItem (plus any related resources, such as images, response processing templates...)</li>
-  <li>An IMS Content Package containing a QTI 2.1 AssessmentTest and corresponding AssessmentItems and related resources.</li>
-  <li>A self-contained QTI 2.1 AssessmentItem XML file.</li>
+  <li>An IMS Content Package containing a QTI 2.1 Assessment Item plus any related resources, such as images, response processing templates...</li>
+  <li>An IMS Content Package containing a QTI 2.1 Assessment Test, its Assessment Items, plus any related resources.</li>
+  <li>A self-contained QTI 2.1 Assessment Item XML file.</li>
 </ul>
 
 <h3>Current limitations</h3>
