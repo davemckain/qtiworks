@@ -108,7 +108,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return itemRefsBySystemIdMap;
     }
     
-    @ObjectDumperOptions(DumpMode.DEEP)
+    @ObjectDumperOptions(DumpMode.TO_STRING)
     public Map<URI, ResolvedAssessmentItem> getResolvedAssessmentItemMap() {
         return resolvedAssessmentItemMap;
     }

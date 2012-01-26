@@ -391,7 +391,9 @@ public abstract class AbstractNode implements XmlNode {
     @Override
     public String toString() {
         return "<" + getClassTag() + ">@" + hashCode()
-                + "(xPath=" + computeXPath() + ")";
+                + "(xPath=" + computeXPath()
+                + ",location=" + xmlSourceLocationInformation
+                + ")";
     }
 
 }

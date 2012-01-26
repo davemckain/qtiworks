@@ -219,11 +219,4 @@ public abstract class LookupExpression extends AbstractExpression {
 
     protected abstract Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier);
 
-    //----------------------------------------------------------------------
-
-
-    @Override
-    public String toString() {
-        return getIdentifier() != null ? getIdentifier().toString() : "<NONE>";
-    }
 }

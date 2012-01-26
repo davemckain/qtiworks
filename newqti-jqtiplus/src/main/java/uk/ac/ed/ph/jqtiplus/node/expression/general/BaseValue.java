@@ -184,6 +184,8 @@ public class BaseValue extends AbstractExpression {
 
     @Override
     public String toString() {
-        return singleValue != null ? singleValue.toString() : "<NONE>";
+        return super.toString()
+                + "(value=" + singleValue
+                + ")";
     }
 }

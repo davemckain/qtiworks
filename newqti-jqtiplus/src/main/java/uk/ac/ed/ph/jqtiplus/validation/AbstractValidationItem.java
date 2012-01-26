@@ -97,17 +97,11 @@ abstract class AbstractValidationItem implements ValidationItem, Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(getType());
-        builder.append(": ");
-        builder.append(message);
-        if (cause != null) {
-            builder.append(" [").append(cause.getMessage()).append("] ");
-        }
-        if (node!=null) {
-            builder.append(" (").append(node.computeXPath()).append(")");
-        }
-        return builder.toString();
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(source=" + source
+                + ",node=" + node
+                + ",message=" + message
+                + ",cause=" + cause
+                + ")";
     }
 }

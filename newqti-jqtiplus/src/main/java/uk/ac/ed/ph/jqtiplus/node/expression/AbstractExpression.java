@@ -491,21 +491,4 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         }
         return result;
     }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(getClassTag());
-        builder.append("(");
-        for (int i = 0; i < getChildren().size(); i++) {
-            builder.append(getChildren().get(i));
-            if (i < getChildren().size() - 1) {
-                builder.append(", ");
-            }
-        }
-        builder.append(")");
-
-        return builder.toString();
-    }
 }
