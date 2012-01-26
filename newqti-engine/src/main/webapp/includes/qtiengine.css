@@ -33,6 +33,19 @@ h2, h3 {
   margin-bottom: 1em;
 }
 
+.toggler {
+  float: right;
+}
+
+.toggler.plus {
+  float: right;
+}
+
+.toggler.minus {
+  float: right;
+  display: none;
+}
+
 .validationResult {
   margin-bottom: 2em;
 }
@@ -44,7 +57,7 @@ h2, h3 {
 }
 
 .resultPanel .resultPanel {
-  margin: 1em 1em 0.3em 2em;
+  margin: 1em 0em 0.3em 2em;
 }
 
 .resultPanel.success {

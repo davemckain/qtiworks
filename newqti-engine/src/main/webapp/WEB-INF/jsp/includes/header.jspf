@@ -33,6 +33,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/content-styles.css'/>">
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/qtiengine.css'/>">
     <script type="text/javascript" src="<c:url value='/lib/jquery/jquery-1.4.4.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/includes/validation-toggler.js'/>"></script>
     <%-- Import jQuery UI if requested --%>
     <c:if test="${!empty jqueryui}">
       <script type="text/javascript" src="<c:url value='/protected/includes/jquery/jquery-ui-1.8.7.custom.min.js'/>"></script>
