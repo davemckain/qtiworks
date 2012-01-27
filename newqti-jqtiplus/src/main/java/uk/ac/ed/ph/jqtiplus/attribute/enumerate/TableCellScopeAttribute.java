@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
  * 
  * @author Jiri Kajaba
  */
-public class TableCellScopeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class TableCellScopeAttribute extends SingleAttribute<TableCellScope> implements EnumerateAttribute<TableCellScope> {
 
     private static final long serialVersionUID = -5619179078436198190L;
 
@@ -51,66 +51,36 @@ public class TableCellScopeAttribute extends SingleAttribute implements Enumerat
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public TableCellScopeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public TableCellScopeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public TableCellScopeAttribute(XmlNode parent, String name, TableCellScope defaultValue) {
-        super(parent, name, defaultValue);
+    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public TableCellScopeAttribute(XmlNode parent, String name, TableCellScope value, TableCellScope defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope value, TableCellScope defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public TableCellScope getValue() {
-        return (TableCellScope) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(TableCellScope value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public TableCellScope getDefaultValue() {
-        return (TableCellScope) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(TableCellScope defaultValue) {
-        super.setDefaultValue(defaultValue);
-    }
-
+    
     @Override
     protected TableCellScope parseValue(String value) {
         return TableCellScope.parseTableCellScope(value);

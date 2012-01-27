@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class LongAttribute extends SingleAttribute {
+public class LongAttribute extends SingleAttribute<Long> {
 
     private static final long serialVersionUID = 1138880928751132617L;
 
@@ -50,64 +50,34 @@ public class LongAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public LongAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public LongAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public LongAttribute(XmlNode parent, String name, Long defaultValue) {
-        super(parent, name, defaultValue);
+    public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public LongAttribute(XmlNode parent, String name, Long value, Long defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public Long getValue() {
-        return (Long) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Long value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Long getDefaultValue() {
-        return (Long) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Long defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public LongAttribute(XmlNode parent, String localName, Long value, Long defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

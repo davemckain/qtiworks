@@ -44,73 +44,13 @@ import org.qtitools.mathassess.type.ReturnType;
  * 
  * @author Jonathon Hare
  */
-public class ReturnTypeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class ReturnTypeAttribute extends SingleAttribute<ReturnType> implements EnumerateAttribute<ReturnType> {
 
     private static final long serialVersionUID = -1032549489931459690L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param name attribute's name
-     */
-    public ReturnTypeAttribute(XmlNode parent, String name) {
-        super(parent, name);
-    }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param name attribute's name
-     * @param defaultValue attribute's default value
-     */
-    public ReturnTypeAttribute(XmlNode parent, String name, ReturnType defaultValue) {
-        super(parent, name, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param name attribute's name
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public ReturnTypeAttribute(XmlNode parent, String name, ReturnType value,
-            ReturnType defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public ReturnType getValue() {
-        return (ReturnType) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(ReturnType value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public ReturnType getDefaultValue() {
-        return (ReturnType) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(ReturnType defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public ReturnTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
+        super(parent, localName, namespaceUri, null, null, true);
     }
 
     @Override

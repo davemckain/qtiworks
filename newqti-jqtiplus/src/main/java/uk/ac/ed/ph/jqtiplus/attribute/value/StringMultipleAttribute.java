@@ -51,34 +51,34 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public StringMultipleAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public StringMultipleAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public StringMultipleAttribute(XmlNode parent, String name, List<String> defaultValue) {
-        super(parent, name, defaultValue);
+    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public StringMultipleAttribute(XmlNode parent, String name, List<String> value, List<String> defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public StringMultipleAttribute(XmlNode parent, String localName, List<String> value, List<String> defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

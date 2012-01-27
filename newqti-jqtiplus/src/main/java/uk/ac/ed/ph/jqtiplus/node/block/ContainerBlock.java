@@ -95,7 +95,7 @@ public abstract class ContainerBlock extends AbstractNode {
 
     private void readChildNode(Node node, LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            final UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName());
+            final UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName(), node.getNamespaceURI());
             children.add(unsupportedBlock);
             unsupportedBlock.load((Element) node, context);
         }

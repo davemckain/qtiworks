@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.value.Orientation;
  * 
  * @author Jiri Kajaba
  */
-public class OrientationAttribute extends SingleAttribute implements EnumerateAttribute {
+public class OrientationAttribute extends SingleAttribute<Orientation> implements EnumerateAttribute<Orientation> {
 
     private static final long serialVersionUID = 5170134258927740739L;
 
@@ -51,64 +51,34 @@ public class OrientationAttribute extends SingleAttribute implements EnumerateAt
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public OrientationAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public OrientationAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public OrientationAttribute(XmlNode parent, String name, Orientation defaultValue) {
-        super(parent, name, defaultValue);
+    public OrientationAttribute(XmlNode parent, String localName, Orientation defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public OrientationAttribute(XmlNode parent, String name, Orientation value, Orientation defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public Orientation getValue() {
-        return (Orientation) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Orientation value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Orientation getDefaultValue() {
-        return (Orientation) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Orientation defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public OrientationAttribute(XmlNode parent, String localName, Orientation value, Orientation defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

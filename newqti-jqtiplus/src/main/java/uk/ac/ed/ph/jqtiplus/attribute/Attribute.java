@@ -35,6 +35,8 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
 import org.w3c.dom.Element;
@@ -45,23 +47,31 @@ import org.w3c.dom.Node;
  * 
  * @author Jiri Kajaba
  */
-public interface Attribute extends Validatable {
+public interface Attribute<V> extends Validatable {
 
     /**
-     * Gets parent node of attribute.
+     * Gets the {@link XmlNode} owning this attribute.
+     * 
+     * NB: This was previously called getParent()
      * 
      * @return parent node of attribute
      */
-    public XmlNode getParent();
+    XmlNode getOwner();
 
     /**
-     * Gets name of attribute.
+     * Gets XML local name of attribute.
      * 
      * @return name of attribute
      */
-    public String getName();
-
-    public String computeXPath();
+    String getLocalName();
+    
+    /**
+     * Gets the namespace URI for this attribute, with an empty String corresponding to
+     * "no namespace"
+     */
+    String getNamespaceUri();
+    
+    String computeXPath();
 
     /**
      * Returns true if attribute is mandatory; false otherwise (attribute is
@@ -70,26 +80,33 @@ public interface Attribute extends Validatable {
      * @return true if attribute is mandatory; false otherwise (attribute is
      *         optional)
      */
-    public boolean isRequired();
+    boolean isRequired();
 
     /**
-     * Returns true if attribute is supported; false otherwise (attribute is not
-     * supported).
-     * This approach enables to load test even if there are unknown (not
-     * supported) attributes.
-     * 
-     * @return true if attribute is supported; false otherwise (attribute is not
-     *         supported)
+     * Returns true if this attribute is foreign, i.e. not declared explicitly
+     * in the QTI specification. MathML attributes, namespaced attributes for
+     * {@link CustomOperator}s and {@link CustomInteraction}s, plus any unknown
+     * attributes should be considered foreign.
      */
-    public boolean isSupported();
-
+    boolean isForeign();
+    
     /**
-     * Sets whenever this attribute is supported or not.
+     * Sets whether or not this attribute is considered foreign.
      * 
-     * @param supported if true this attribute is supported; otherwise this
-     *            attribute is unsupported
+     * @see #isForeign()
+     *
+     * @param foreign
      */
-    public void setSupported(boolean supported);
+    void setForeign(boolean foreign);
+    
+    /**
+     * Gets value of attribute.
+     * 
+     * @return value of attribute
+     */
+    V getValue();
+    
+    V getDefaultValue();
 
     /**
      * Loads attribute's value from given source node.
@@ -97,7 +114,7 @@ public interface Attribute extends Validatable {
      * 
      * @param node source node
      */
-    public void load(Element owner, Node node, LoadingContext context);
+    void load(Element owner, Node node, LoadingContext context);
 
     /**
      * Loads attribute's value from given source string.
@@ -105,7 +122,7 @@ public interface Attribute extends Validatable {
      * 
      * @param value source string
      */
-    public void load(Element owner, String value, LoadingContext context);
+    void load(Element owner, String value, LoadingContext context);
 
     /**
      * Gets attribute converted to string (name="value").
@@ -117,7 +134,7 @@ public interface Attribute extends Validatable {
      *            default value is not printed
      * @return attribute converted to string (name="value")
      */
-    public String toXmlString(boolean printDefaultValue);
+    String toXmlString(boolean printDefaultValue);
 
     /**
      * Gets attribute's value converted to string.
@@ -125,7 +142,7 @@ public interface Attribute extends Validatable {
      * 
      * @return attribute's value converted to string
      */
-    public String valueToString();
+    String valueToString();
 
     /**
      * Gets attribute's defaultValue converted to string.
@@ -133,5 +150,5 @@ public interface Attribute extends Validatable {
      * 
      * @return attribute's defaultValue converted to string
      */
-    public String defaultValueToString();
+    String defaultValueToString();
 }

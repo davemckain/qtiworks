@@ -61,8 +61,8 @@ public class ValidationWarning extends AbstractValidationItem {
      * @param attribute source attribute of constructed item
      * @param message message of constructed item
      */
-    public ValidationWarning(Attribute attribute, String message) {
-        super(attribute, attribute.getParent(), message);
+    public ValidationWarning(Attribute<?> attribute, String message) {
+        super(attribute, attribute.getOwner(), message);
     }
 
     @Override

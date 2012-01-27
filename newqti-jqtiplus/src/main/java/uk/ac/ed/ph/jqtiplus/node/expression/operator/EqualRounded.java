@@ -129,7 +129,7 @@ public class EqualRounded extends AbstractExpression {
         super.validateAttributes(context);
 
         if (getRoundingMode() != null && getFigures() != null) {
-            getRoundingMode().validateFigures(getAttributes().get(ATTR_FIGURES_NAME), context.getValidationResult(), getFigures());
+            getRoundingMode().validateFigures(getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME), context.getValidationResult(), getFigures());
         }
 
     }

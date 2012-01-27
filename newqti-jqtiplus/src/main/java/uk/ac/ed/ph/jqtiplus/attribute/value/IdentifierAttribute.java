@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * 
  * @author Jiri Kajaba
  */
-public class IdentifierAttribute extends SingleAttribute {
+public class IdentifierAttribute extends SingleAttribute<Identifier> {
 
     private static final long serialVersionUID = -2194882443131770832L;
 
@@ -50,64 +50,38 @@ public class IdentifierAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public IdentifierAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public IdentifierAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public IdentifierAttribute(XmlNode parent, String name, Identifier defaultValue) {
-        super(parent, name, defaultValue);
+    public IdentifierAttribute(XmlNode parent, String localName, Identifier defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public IdentifierAttribute(XmlNode parent, String name, Identifier value, Identifier defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public IdentifierAttribute(XmlNode parent, String localName, Identifier value, Identifier defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public Identifier getValue() {
-        return (Identifier) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Identifier value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Identifier getDefaultValue() {
-        return (Identifier) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Identifier defaultValue) {
-        super.setDefaultValue(defaultValue);
+    
+    public IdentifierAttribute(XmlNode parent, String localName, String namespaceUri, Identifier value, Identifier defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, value, defaultValue, required);
     }
 
     @Override

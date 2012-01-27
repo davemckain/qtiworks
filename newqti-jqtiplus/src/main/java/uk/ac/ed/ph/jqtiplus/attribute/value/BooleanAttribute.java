@@ -43,75 +43,49 @@ import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
  * 
  * @author Jiri Kajaba
  */
-public class BooleanAttribute extends SingleAttribute implements EnumerateAttribute {
+public class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
 
     private static final long serialVersionUID = -6757069543350955429L;
 
     /** Supported values. */
-    private static final Boolean[] values = new Boolean[] { true, false };
+    private static final Boolean[] values = new Boolean[] { Boolean.TRUE, Boolean.FALSE };
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public BooleanAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public BooleanAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public BooleanAttribute(XmlNode parent, String name, Boolean defaultValue) {
-        super(parent, name, defaultValue);
+    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public BooleanAttribute(XmlNode parent, String name, Boolean value, Boolean defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public BooleanAttribute(XmlNode parent, String localName, Boolean value, Boolean defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public Boolean getValue() {
-        return (Boolean) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Boolean value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Boolean getDefaultValue() {
-        return (Boolean) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Boolean defaultValue) {
-        super.setDefaultValue(defaultValue);
+    
+    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean value, Boolean defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, value, defaultValue, required);
     }
 
     @Override
@@ -125,7 +99,7 @@ public class BooleanAttribute extends SingleAttribute implements EnumerateAttrib
      * @return all supported values of this attribute
      */
     @Override
-    public Object[] getSupportedValues() {
+    public Boolean[] getSupportedValues() {
         return values;
     }
 }

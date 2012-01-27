@@ -47,5 +47,7 @@ public final class QtiConstants {
     
     public static final String CP_11_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p1";
     public static final String CP_12_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imscp_v1p2";
+    
+    public static final String MATHML_NAMESPACE_URI = "http://www.w3.org/1998/Math/MathML";
 
 }

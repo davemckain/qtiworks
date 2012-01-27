@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -45,52 +46,85 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
  * 
  * @author Jiri Kajaba
  */
-public abstract class AbstractAttribute implements Attribute {
+public abstract class AbstractAttribute<V> implements Attribute<V> {
 
     private static final long serialVersionUID = -3172377961902212482L;
 
-    /** Parent of this attribute. */
-    private final XmlNode parent;
+    /** Owner of this attribute. */
+    private final XmlNode owner;
 
     /** Name of this attribute. */
-    private final String name;
-
+    private final String localName;
+    
+    private final String namespaceUri;
+    
     /** Is this attribute mandatory (true) or optional (false). */
     private final boolean required;
+    
+    private boolean foreign;
+    
+    protected V value;
+    protected V defaultValue;
 
-    /** Is this attribute supported (true) or not supported (false). */
-    private boolean supported;
+    public AbstractAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required, boolean foreign) {
+        this(owner, localName, "", value, defaultValue, required, foreign);
+    }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent parent of constructed attribute
-     * @param name name of constructed attribute
-     * @param required if true this attribute is required; otherwise this
-     *            attribute is optional
-     * @param supported if true this attribute is supported; otherwise this
-     *            attribute is unsupported
-     */
-    public AbstractAttribute(XmlNode parent, String name, boolean required, boolean supported) {
-        this.parent = parent;
-        this.name = name;
+    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V value,
+            V defaultValue, boolean required, boolean foreign) {
+        ConstraintUtilities.ensureNotNull(owner, "owner");
+        ConstraintUtilities.ensureNotNull(localName, "localName");
+        ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
+        this.owner = owner;
+        this.localName = localName;
+        this.namespaceUri = namespaceUri;
+        this.defaultValue = defaultValue;
+        this.value = value;
         this.required = required;
-        this.supported = supported;
+        this.foreign = foreign;
     }
 
     @Override
-    public XmlNode getParent() {
-        return parent;
+    public XmlNode getOwner() {
+        return owner;
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getLocalName() {
+        return localName;
+    }
+    
+    @Override
+    public String getNamespaceUri() {
+        return namespaceUri;
+    }
+    
+    @Override
+    public boolean isForeign() {
+        return foreign;
+    }
+    
+    @Override
+    public void setForeign(boolean foreign) {
+        this.foreign = foreign;
     }
 
+    @Override
+    public V getDefaultValue() {
+        return defaultValue;
+    }
+    
+    @Override
+    public V getValue() {
+        return value;
+    }
+    
     @Override
     public String computeXPath() {
-        return (parent != null ? parent.computeXPath() + "/" : "") + "@" + name;
+        return (owner != null ? owner.computeXPath() + "/" : "") 
+                + "@"
+                + ((namespaceUri!=null) ? "{" + namespaceUri + "}:" : "")
+                + localName;
     }
 
     @Override
@@ -99,41 +133,19 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     @Override
-    public boolean isSupported() {
-        return supported;
-    }
-
-    /**
-     * Sets whenever this attribute is supported or not.
-     * 
-     * @param supported if true this attribute is supported; otherwise this
-     *            attribute is unsupported
-     */
-    @Override
-    public void setSupported(boolean supported) {
-        this.supported = supported;
-    }
-
-    @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(name);
-        builder.append("(");
-        builder.append("value = \"");
-        builder.append(valueToString());
-        builder.append("\"");
-        if (!isRequired()) {
-            builder.append(", defaultValue = \"");
-            builder.append(defaultValueToString());
-            builder.append("\"");
-        }
-        builder.append(")");
-
-        return builder.toString();
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(localName=" + localName
+                + ",namespaceUri=" + namespaceUri
+                + ",required=" + required
+                + ",foreign=" + foreign
+                + ",value=" + value
+                + ",defaultValue=" + defaultValue
+                + ")";
     }
 
     @Override
+    @ToRefactor
     public final String toXmlString(boolean printDefaultValue) {
         final StringBuilder builder = new StringBuilder();
 
@@ -143,7 +155,7 @@ public abstract class AbstractAttribute implements Attribute {
         final String defaultValue = defaultValueToString();
 
         if (value.length() != 0 && (!value.equals(defaultValue) || required || printDefaultValue)) {
-            builder.append(name);
+            builder.append(localName);
             builder.append("=\"");
             builder.append(AbstractNode.escapeForXmlString(value, true));
             builder.append("\"");
@@ -156,18 +168,18 @@ public abstract class AbstractAttribute implements Attribute {
     @ToRefactor
     @Override
     public void validate(ValidationContext context) {
-        if (supported) {
+        if (!foreign) {
             // if (getLoadingProblem() != null)
             // result.add(new AttributeValidationError(this,
             // getLoadingProblem().getMessage()));
             // else
             if (required && valueToString().length() == 0) {
-                context.add(new AttributeValidationError(this, "Required attribute is not defined: " + name));
+                context.add(new AttributeValidationError(this, "Required attribute is not defined: " + localName));
             }
         }
         else {
-            if (!(name.startsWith("xmlns:") || name.startsWith("xsi:") || name.startsWith("xml:"))) {
-                context.add(new ValidationWarning(this, "Unsupported attribute: " + name));
+            if (!(localName.startsWith("xmlns:") || localName.startsWith("xsi:") || localName.startsWith("xml:"))) {
+                context.add(new ValidationWarning(this, "Unsupported attribute: " + localName));
             }
         }
     }

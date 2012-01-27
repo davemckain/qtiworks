@@ -43,30 +43,12 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * @author David McKain
  * @revision $Revision: 2642 $
  */
-public class MathOperatorNameAttribute extends SingleAttribute implements EnumerateAttribute {
+public class MathOperatorNameAttribute extends SingleAttribute<MathOperatorTarget> implements EnumerateAttribute<MathOperatorTarget> {
 
     private static final long serialVersionUID = -2367561162140765443L;
 
     public MathOperatorNameAttribute(XmlNode parent, String name) {
         super(parent, name);
-    }
-
-    @Override
-    public MathOperatorTarget getValue() {
-        return (MathOperatorTarget) super.getValue();
-    }
-
-    public void setValue(MathOperatorTarget value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public MathOperatorTarget getDefaultValue() {
-        return (MathOperatorTarget) super.getDefaultValue();
-    }
-
-    public void setDefaultValue(MathOperatorTarget defaultValue) {
-        super.setDefaultValue(defaultValue);
     }
 
     @Override

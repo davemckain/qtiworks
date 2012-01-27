@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
@@ -66,12 +64,6 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     /** Name of this class in xml schema. */
     public static String CLASS_TAG = "math";
 
-    /** Name of xmlns attribute in xml schema. */
-    public static final String ATTR_DEFAULT_NAME_SPACE_NAME = "xmlns";
-
-    /** Value of xmlns attribute. */
-    public static final String ATTR_DEFAULT_NAME_SPACE_VALUE = "http://www.w3.org/1998/Math/MathML";
-
     /** Children of this block. */
     private final List<XmlNode> children;
 
@@ -82,9 +74,6 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
      */
     public Math(XmlNode parent) {
         super(parent);
-
-        getAttributes().add(0, new StringAttribute(this, ATTR_DEFAULT_NAME_SPACE_NAME, ATTR_DEFAULT_NAME_SPACE_VALUE, null, true));
-
         children = new ArrayList<XmlNode>();
     }
 
@@ -114,7 +103,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
 
     private void readChildNode(Node node, LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            final UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName());
+            final UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName(), node.getNamespaceURI());
             children.add(unsupportedBlock);
             unsupportedBlock.load((Element) node, context);
         }
@@ -141,19 +130,10 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     @Override
     public void load(Element sourceElement, LoadingContext context) {
         super.load(sourceElement, context);
-
-        if (getAttributes().getStringAttribute(ATTR_DEFAULT_NAME_SPACE_NAME).getValue() == null) {
-            getAttributes().getStringAttribute(ATTR_DEFAULT_NAME_SPACE_NAME).setValue(ATTR_DEFAULT_NAME_SPACE_VALUE);
-        }
     }
 
     @Override
     protected void validateAttributes(ValidationContext context) {
-        //mark all attributes as supported... we currently don't properly validate them
-        for (final Attribute attribute : getAttributes()) {
-            attribute.setSupported(true);
-        }
-
-        super.validateAttributes(context);
+        /* Do nothing here - we rely on schema validation */
     }
 }

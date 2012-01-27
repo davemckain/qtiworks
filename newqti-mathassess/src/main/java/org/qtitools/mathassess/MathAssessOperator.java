@@ -37,10 +37,7 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -77,32 +74,7 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     public MathAssessOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
-
-        // add a namespace prefix to this if none there, and no global prefix
-        if (getNamespacePrefix().length() == 0) {
-            getAttributes().add(new StringAttribute(this, "xmlns:ma", MATHASSESS_NAMESPACE_URI,
-                    MATHASSESS_NAMESPACE_URI, true));
-        }
-        getAttributes().add(new SyntaxTypeAttribute(this, getNamespacePrefix() + ATTR_SYNTAX_NAME,
-                null, null, true));
-    }
-
-
-    /* Iterate through parent nodes looking for a mathassess namespace decl If
-     * one is found return the prefix, otherwise return empty string */
-    protected String getNamespacePrefix() {
-        AbstractNode parent = this;
-        while (parent != null) {
-            for (final Attribute attr : parent.getAttributes()) {
-                if (attr.getName() != null && attr.getName().startsWith("xmlns:")
-                        && attr.valueToString() != null
-                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI)) {
-                    return attr.getName().substring(6) + ":";
-                }
-            }
-            parent = (AbstractNode) parent.getParent();
-        }
-        return "";
+        getAttributes().add(new SyntaxTypeAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
     }
 
     /**
@@ -111,7 +83,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
-        return ((SyntaxTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_SYNTAX_NAME))
+        return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getValue();
     }
 
@@ -121,7 +93,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @param syntax value to set
      */
     public void setSyntax(SyntaxType syntax) {
-        ((SyntaxTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_SYNTAX_NAME))
+        ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 

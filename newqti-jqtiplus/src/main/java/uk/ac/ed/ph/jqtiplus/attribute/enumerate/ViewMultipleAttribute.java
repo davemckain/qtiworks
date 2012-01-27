@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
@@ -45,7 +44,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class ViewMultipleAttribute extends MultipleAttribute<View> implements EnumerateAttribute {
+public class ViewMultipleAttribute extends MultipleAttribute<View> {
 
     private static final long serialVersionUID = -2076945522660615196L;
 
@@ -53,34 +52,34 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> implements En
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public ViewMultipleAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public ViewMultipleAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public ViewMultipleAttribute(XmlNode parent, String name, List<View> defaultValue) {
-        super(parent, name, defaultValue);
+    public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public ViewMultipleAttribute(XmlNode parent, String name, List<View> value, List<View> defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public ViewMultipleAttribute(XmlNode parent, String localName, List<View> value, List<View> defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override
@@ -96,15 +95,5 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> implements En
     @Override
     protected View parseValue(String value) {
         return View.parseView(value);
-    }
-
-    /**
-     * Gets all supported values of this attribute.
-     * 
-     * @return all supported values of this attribute
-     */
-    @Override
-    public View[] getSupportedValues() {
-        return View.values();
     }
 }

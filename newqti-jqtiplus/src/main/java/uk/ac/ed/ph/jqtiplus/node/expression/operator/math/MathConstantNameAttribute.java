@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * @author David McKain
  * @revision $Revision: 2642 $
  */
-public class MathConstantNameAttribute extends SingleAttribute implements EnumerateAttribute {
+public class MathConstantNameAttribute extends SingleAttribute<MathConstantTarget> implements EnumerateAttribute<MathConstantTarget> {
 
     private static final long serialVersionUID = -2367561162140765443L;
 
@@ -55,24 +55,6 @@ public class MathConstantNameAttribute extends SingleAttribute implements Enumer
      */
     public MathConstantNameAttribute(XmlNode parent, String name) {
         super(parent, name);
-    }
-
-    @Override
-    public MathConstantTarget getValue() {
-        return (MathConstantTarget) super.getValue();
-    }
-
-    public void setValue(MathConstantTarget value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public MathConstantTarget getDefaultValue() {
-        return (MathConstantTarget) super.getDefaultValue();
-    }
-
-    public void setDefaultValue(MathConstantTarget defaultValue) {
-        super.setDefaultValue(defaultValue);
     }
 
     @Override

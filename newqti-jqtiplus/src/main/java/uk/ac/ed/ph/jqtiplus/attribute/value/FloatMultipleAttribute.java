@@ -52,34 +52,34 @@ public class FloatMultipleAttribute extends MultipleAttribute<Double> {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public FloatMultipleAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public FloatMultipleAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public FloatMultipleAttribute(XmlNode parent, String name, List<Double> defaultValue) {
-        super(parent, name, defaultValue);
+    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public FloatMultipleAttribute(XmlNode parent, String name, List<Double> value, List<Double> defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> value, List<Double> defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

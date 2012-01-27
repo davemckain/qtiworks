@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
  * 
  * @author Jiri Kajaba
  */
-public class SessionStatusAttribute extends SingleAttribute implements EnumerateAttribute {
+public class SessionStatusAttribute extends SingleAttribute<SessionStatus> implements EnumerateAttribute<SessionStatus> {
 
     private static final long serialVersionUID = 8759133738524182291L;
 
@@ -51,64 +51,34 @@ public class SessionStatusAttribute extends SingleAttribute implements Enumerate
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public SessionStatusAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public SessionStatusAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public SessionStatusAttribute(XmlNode parent, String name, SessionStatus defaultValue) {
-        super(parent, name, defaultValue);
+    public SessionStatusAttribute(XmlNode parent, String localName, SessionStatus defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public SessionStatusAttribute(XmlNode parent, String name, SessionStatus value, SessionStatus defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public SessionStatus getValue() {
-        return (SessionStatus) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(SessionStatus value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public SessionStatus getDefaultValue() {
-        return (SessionStatus) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(SessionStatus defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public SessionStatusAttribute(XmlNode parent, String localName, SessionStatus value, SessionStatus defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

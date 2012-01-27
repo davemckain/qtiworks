@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  * 
  * @author Jiri Kajaba
  */
-public class SingleValueAttribute extends SingleAttribute {
+public class SingleValueAttribute extends SingleAttribute<SingleValue> {
 
     private static final long serialVersionUID = 3061500904873811836L;
 
@@ -57,38 +57,38 @@ public class SingleValueAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param baseType attribute's baseType
      */
-    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType) {
-        this(parent, name, baseType, null, null, true);
+    public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType) {
+        this(parent, localName, baseType, null, null, true);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param baseType attribute's baseType
      * @param defaultValue attribute's default value
      */
-    public SingleValueAttribute(XmlNode parent, String name, BaseType baseType, SingleValue defaultValue) {
-        this(parent, name, baseType, null, defaultValue, false);
+    public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType, SingleValue defaultValue) {
+        this(parent, localName, baseType, null, defaultValue, false);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param baseType attribute's baseType
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
     public SingleValueAttribute(
-            XmlNode parent, String name, BaseType baseType, SingleValue value, SingleValue defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+            XmlNode parent, String localName, BaseType baseType, SingleValue value, SingleValue defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
 
         this.baseType = baseType;
     }
@@ -114,36 +114,6 @@ public class SingleValueAttribute extends SingleAttribute {
     }
 
     @Override
-    public SingleValue getValue() {
-        return (SingleValue) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(SingleValue value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public SingleValue getDefaultValue() {
-        return (SingleValue) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(SingleValue defaultValue) {
-        super.setDefaultValue(defaultValue);
-    }
-
-    @Override
     protected SingleValue parseValue(String value) {
         return baseType.parseSingleValue(value);
     }
@@ -153,7 +123,7 @@ public class SingleValueAttribute extends SingleAttribute {
         super.validate(context);
 
         if (getValue() != null && getValue().getBaseType() != baseType) {
-            context.add(new AttributeValidationError(this, "BaseType of " + getName()
+            context.add(new AttributeValidationError(this, "BaseType of " + getLocalName()
                     + " attribute does not match. Expected:  "
                     + baseType
                     + ", but found: "

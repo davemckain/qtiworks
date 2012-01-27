@@ -52,34 +52,34 @@ public class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public IdentifierMultipleAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public IdentifierMultipleAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public IdentifierMultipleAttribute(XmlNode parent, String name, List<Identifier> defaultValue) {
-        super(parent, name, defaultValue);
+    public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public IdentifierMultipleAttribute(XmlNode parent, String name, List<Identifier> value, List<Identifier> defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> value, List<Identifier> defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

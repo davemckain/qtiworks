@@ -49,16 +49,16 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     private static final long serialVersionUID = -3499455085135083349L;
 
     /** Values separator. */
-    public String FIELDS_SEPARATOR = ",";
+    public static String FIELDS_SEPARATOR = ",";
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public CoordsAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public CoordsAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
 
@@ -66,11 +66,11 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public CoordsAttribute(XmlNode parent, String name, List<Integer> defaultValue) {
-        super(parent, name, defaultValue);
+    public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue) {
+        super(parent, localName, defaultValue);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
 
@@ -78,13 +78,13 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public CoordsAttribute(XmlNode parent, String name, List<Integer> value, List<Integer> defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public CoordsAttribute(XmlNode parent, String localName, List<Integer> value, List<Integer> defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
 

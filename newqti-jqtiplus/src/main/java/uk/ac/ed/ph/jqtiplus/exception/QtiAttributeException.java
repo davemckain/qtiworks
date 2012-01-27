@@ -38,7 +38,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * 
  * @author Jiri Kajaba
  */
-public class QTIAttributeException extends QTIRuntimeException {
+public class QtiAttributeException extends QTIRuntimeException {
 
     private static final long serialVersionUID = 2704011285854256980L;
 
@@ -47,7 +47,7 @@ public class QTIAttributeException extends QTIRuntimeException {
      * 
      * @param message the detail message
      */
-    public QTIAttributeException(String message) {
+    public QtiAttributeException(String message) {
         super(message);
     }
 }

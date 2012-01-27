@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * 
  * @author Jiri Kajaba
  */
-public class ParamTypeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class ParamTypeAttribute extends SingleAttribute<ParamType> implements EnumerateAttribute<ParamType> {
 
     private static final long serialVersionUID = 1206043208733719873L;
 
@@ -51,64 +51,34 @@ public class ParamTypeAttribute extends SingleAttribute implements EnumerateAttr
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public ParamTypeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public ParamTypeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public ParamTypeAttribute(XmlNode parent, String name, ParamType defaultValue) {
-        super(parent, name, defaultValue);
+    public ParamTypeAttribute(XmlNode parent, String localName, ParamType defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public ParamTypeAttribute(XmlNode parent, String name, ParamType value, ParamType defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public ParamType getValue() {
-        return (ParamType) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(ParamType value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public ParamType getDefaultValue() {
-        return (ParamType) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(ParamType defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public ParamTypeAttribute(XmlNode parent, String localName, ParamType value, ParamType defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

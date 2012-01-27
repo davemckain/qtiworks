@@ -35,6 +35,7 @@ package org.qtitools.mathassess;
 
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_CODE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -73,8 +74,8 @@ public class CasCondition extends MathAssessOperator {
     public CasCondition(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new StringAttribute(this, getNamespacePrefix() + ATTR_CODE_NAME, null, null, true));
-        getAttributes().add(new BooleanAttribute(this, getNamespacePrefix() + ATTR_SIMPLIFY_NAME, Boolean.FALSE, Boolean.FALSE, false));
+        getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, null, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
     }
 
     /**
@@ -84,7 +85,8 @@ public class CasCondition extends MathAssessOperator {
      * @see #setCode
      */
     public String getCode() {
-        return getAttributes().getStringAttribute(getNamespacePrefix() + ATTR_CODE_NAME).getValue();
+        return ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -94,7 +96,8 @@ public class CasCondition extends MathAssessOperator {
      * @see #getCode
      */
     public void setCode(String code) {
-        getAttributes().getStringAttribute(getNamespacePrefix() + ATTR_CODE_NAME).setValue(code);
+        ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(code);
     }
 
     /**
@@ -104,7 +107,7 @@ public class CasCondition extends MathAssessOperator {
      * @see #setSimplify
      */
     public Boolean getSimplify() {
-        return getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME)
+        return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
                 .getValue();
     }
 
@@ -115,8 +118,8 @@ public class CasCondition extends MathAssessOperator {
      * @see #getSimplify
      */
     public void setSimplify(Boolean simplify) {
-        getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).setValue(
-                simplify);
+        ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(simplify);
     }
 
     @Override

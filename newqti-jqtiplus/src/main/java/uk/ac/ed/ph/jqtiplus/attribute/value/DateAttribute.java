@@ -47,7 +47,7 @@ import java.util.Date;
  * 
  * @author Jiri Kajaba
  */
-public class DateAttribute extends SingleAttribute {
+public class DateAttribute extends SingleAttribute<Date> {
 
     private static final long serialVersionUID = 2736828962257037608L;
 
@@ -58,64 +58,34 @@ public class DateAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public DateAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public DateAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public DateAttribute(XmlNode parent, String name, Date defaultValue) {
-        super(parent, name, defaultValue);
+    public DateAttribute(XmlNode parent, String localName, Date defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public DateAttribute(XmlNode parent, String name, Date value, Date defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public Date getValue() {
-        return (Date) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Date value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Date getDefaultValue() {
-        return (Date) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Date defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public DateAttribute(XmlNode parent, String localName, Date value, Date defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

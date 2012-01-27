@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
  * 
  * @author Jiri Kajaba
  */
-public class ToleranceModeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class ToleranceModeAttribute extends SingleAttribute<ToleranceMode> implements EnumerateAttribute<ToleranceMode> {
 
     private static final long serialVersionUID = 1737056425484603310L;
 
@@ -51,64 +51,34 @@ public class ToleranceModeAttribute extends SingleAttribute implements Enumerate
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public ToleranceModeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public ToleranceModeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public ToleranceModeAttribute(XmlNode parent, String name, ToleranceMode defaultValue) {
-        super(parent, name, defaultValue);
+    public ToleranceModeAttribute(XmlNode parent, String localName, ToleranceMode defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public ToleranceModeAttribute(XmlNode parent, String name, ToleranceMode value, ToleranceMode defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public ToleranceMode getValue() {
-        return (ToleranceMode) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(ToleranceMode value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public ToleranceMode getDefaultValue() {
-        return (ToleranceMode) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(ToleranceMode defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public ToleranceModeAttribute(XmlNode parent, String localName, ToleranceMode value, ToleranceMode defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

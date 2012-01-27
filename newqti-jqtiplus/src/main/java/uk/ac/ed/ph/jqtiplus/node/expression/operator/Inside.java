@@ -128,7 +128,8 @@ public class Inside extends AbstractExpression {
         super.validateAttributes(context);
 
         if (getShape() != null) {
-            getShape().validateCoords(getAttributes().get(ATTR_COORDINATES_NAME), context.getValidationResult(), convertCoordinates(getCoordinates()));
+            getShape().validateCoords(getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME), 
+                    context.getValidationResult(), convertCoordinates(getCoordinates()));
         }
     }
 

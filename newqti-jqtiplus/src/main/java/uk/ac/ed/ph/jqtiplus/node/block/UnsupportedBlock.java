@@ -51,23 +51,23 @@ public class UnsupportedBlock extends ContainerBlock {
     private static final long serialVersionUID = 474940437634236118L;
 
     /** Class tag of this block. */
-    private final String name;
+    private final String localName;
+    
+    private final String namespaceUri;
 
-    /**
-     * Constructs block.
-     * 
-     * @param parent parent of this block
-     * @param name class tag of this block
-     */
-    public UnsupportedBlock(XmlNode parent, String name) {
+    public UnsupportedBlock(XmlNode parent, String localName, String namespaceUri) {
         super(parent);
-
-        this.name = name;
+        this.localName = localName;
+        this.namespaceUri = namespaceUri;
     }
 
     @Override
     public String getClassTag() {
-        return name;
+        return localName;
+    }
+    
+    public String getNamespaceUri() {
+        return namespaceUri;
     }
 
     @Override
@@ -76,8 +76,8 @@ public class UnsupportedBlock extends ContainerBlock {
 
         for (int i = 0; i < element.getAttributes().getLength(); i++) {
             final Node attribute = element.getAttributes().item(i);
-
-            getAttributes().add(new StringAttribute(this, attribute.getNodeName(), attribute.getNodeValue(), null, false));
+            getAttributes().add(new StringAttribute(this, attribute.getLocalName(), attribute.getNamespaceURI(),
+                    attribute.getNodeValue(), null, false, true));
         }
     }
 }

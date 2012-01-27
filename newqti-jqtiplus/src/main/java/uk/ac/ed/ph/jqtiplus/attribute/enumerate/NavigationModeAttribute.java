@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
  * 
  * @author Jiri Kajaba
  */
-public class NavigationModeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class NavigationModeAttribute extends SingleAttribute<NavigationMode> implements EnumerateAttribute<NavigationMode> {
 
     private static final long serialVersionUID = -8896482192798423143L;
 
@@ -51,64 +51,34 @@ public class NavigationModeAttribute extends SingleAttribute implements Enumerat
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public NavigationModeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public NavigationModeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public NavigationModeAttribute(XmlNode parent, String name, NavigationMode defaultValue) {
-        super(parent, name, defaultValue);
+    public NavigationModeAttribute(XmlNode parent, String localName, NavigationMode defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public NavigationModeAttribute(XmlNode parent, String name, NavigationMode value, NavigationMode defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public NavigationMode getValue() {
-        return (NavigationMode) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(NavigationMode value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public NavigationMode getDefaultValue() {
-        return (NavigationMode) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(NavigationMode defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public NavigationModeAttribute(XmlNode parent, String localName, NavigationMode value, NavigationMode defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

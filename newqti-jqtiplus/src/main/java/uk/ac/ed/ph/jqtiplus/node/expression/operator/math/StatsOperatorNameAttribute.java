@@ -43,30 +43,12 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * @author David McKain
  * @revision $Revision: 2766 $
  */
-public class StatsOperatorNameAttribute extends SingleAttribute implements EnumerateAttribute {
+public class StatsOperatorNameAttribute extends SingleAttribute<StatsOperatorTarget> implements EnumerateAttribute<StatsOperatorTarget> {
 
     private static final long serialVersionUID = -2367561162140765443L;
 
     public StatsOperatorNameAttribute(XmlNode parent, String name) {
         super(parent, name);
-    }
-
-    @Override
-    public StatsOperatorTarget getValue() {
-        return (StatsOperatorTarget) super.getValue();
-    }
-
-    public void setValue(StatsOperatorTarget value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public StatsOperatorTarget getDefaultValue() {
-        return (StatsOperatorTarget) super.getDefaultValue();
-    }
-
-    public void setDefaultValue(StatsOperatorTarget defaultValue) {
-        super.setDefaultValue(defaultValue);
     }
 
     @Override

@@ -41,12 +41,12 @@ package uk.ac.ed.ph.jqtiplus.attribute;
  * 
  * @author Jiri Kajaba
  */
-public interface EnumerateAttribute extends Attribute {
+public interface EnumerateAttribute<V> extends Attribute<V> {
 
     /**
      * Gets all supported values of this attribute.
      * 
      * @return all supported values of this attribute
      */
-    public Object[] getSupportedValues();
+    public V[] getSupportedValues();
 }

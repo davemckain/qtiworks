@@ -35,6 +35,7 @@ package org.qtitools.mathassess;
 
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_RETURN_TYPE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -74,8 +75,8 @@ public class CasProcess extends MathAssessOperator {
     public CasProcess(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new ReturnTypeAttribute(this, getNamespacePrefix() + ATTR_RETURN_TYPE_NAME, null, null, true));
-        getAttributes().add(new BooleanAttribute(this, getNamespacePrefix() + ATTR_SIMPLIFY_NAME, Boolean.FALSE, Boolean.FALSE, false));
+        getAttributes().add(new ReturnTypeAttribute(this, ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
 
         // Allow 1 child only
         getNodeGroups().clear();
@@ -89,8 +90,8 @@ public class CasProcess extends MathAssessOperator {
      * @see #setReturnType
      */
     public ReturnType getReturnType() {
-        return ((ReturnTypeAttribute) getAttributes().get(
-                getNamespacePrefix() + ATTR_RETURN_TYPE_NAME)).getValue();
+        return ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -100,7 +101,7 @@ public class CasProcess extends MathAssessOperator {
      * @see #getReturnType
      */
     public void setReturnType(ReturnType returnType) {
-        ((ReturnTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_RETURN_TYPE_NAME))
+        ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(returnType);
     }
 
@@ -111,7 +112,7 @@ public class CasProcess extends MathAssessOperator {
      * @see #setSimplify
      */
     public Boolean getSimplify() {
-        return getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME)
+        return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
                 .getValue();
     }
 
@@ -122,8 +123,8 @@ public class CasProcess extends MathAssessOperator {
      * @see #getSimplify
      */
     public void setSimplify(Boolean simplify) {
-        getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).setValue(
-                simplify);
+        ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(simplify);
     }
 
     @Override

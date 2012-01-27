@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class StringAttribute extends SingleAttribute {
+public class StringAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = 3119455031436453049L;
 
@@ -49,64 +49,44 @@ public class StringAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public StringAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public StringAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public StringAttribute(XmlNode parent, String name, String defaultValue) {
-        super(parent, name, defaultValue);
+    public StringAttribute(XmlNode parent, String localName, String defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public StringAttribute(XmlNode parent, String name, String value, String defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public StringAttribute(XmlNode parent, String localName, String value, String defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public String getValue() {
-        return (String) super.getValue();
+    
+    public StringAttribute(XmlNode parent, String localName, String namespaceUri, 
+            String value, String defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, value, defaultValue, required);
     }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(String value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public String getDefaultValue() {
-        return (String) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(String defaultValue) {
-        super.setDefaultValue(defaultValue);
+    
+    public StringAttribute(XmlNode parent, String localName, String namespaceUri, 
+            String value, String defaultValue, boolean required, boolean foreign) {
+        super(parent, localName, namespaceUri, value, defaultValue, required, foreign);
     }
 
     @Override

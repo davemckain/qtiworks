@@ -45,81 +45,62 @@ import org.w3c.dom.Node;
  * 
  * @author Jiri Kajaba
  */
-public abstract class SingleAttribute extends AbstractAttribute {
+public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     private static final long serialVersionUID = 7394997591576564116L;
 
-    /** Value of this attribute. */
-    private Object value;
-
-    /** Default value of this attribute. */
-    private Object defaultValue;
-
     /**
      * Constructs attribute.
      * 
-     * @param parent attribute's parent
+     * @param owner attribute's owner
      * @param name attribute's name
      */
-    public SingleAttribute(XmlNode parent, String name) {
-        this(parent, name, null, null, true);
+    public SingleAttribute(XmlNode owner, String name) {
+        this(owner, name, null, null, true);
     }
 
     /**
      * Constructs attribute.
      * 
-     * @param parent attribute's parent
+     * @param owner attribute's owner
      * @param name attribute's name
      * @param defaultValue attribute's default value
      */
-    public SingleAttribute(XmlNode parent, String name, Object defaultValue) {
-        this(parent, name, defaultValue, defaultValue, false);
+    public SingleAttribute(XmlNode owner, String name, V defaultValue) {
+        this(owner, name, defaultValue, defaultValue, false);
     }
 
     /**
      * Constructs attribute.
      * 
-     * @param parent attribute's parent
+     * @param owner attribute's owner
      * @param name attribute's name
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public SingleAttribute(XmlNode parent, String name, Object value, Object defaultValue, boolean required) {
-        super(parent, name, required, true);
-
-        this.value = value;
-        this.defaultValue = defaultValue;
+    public SingleAttribute(XmlNode owner, String name, V value, V defaultValue, boolean required) {
+        super(owner, name, value, defaultValue, required, false);
     }
-
-    /**
-     * Gets value of attribute.
-     * 
-     * @return value of attribute
-     * @see #setValue
-     */
-    public Object getValue() {
-        return value;
+    
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value, 
+            V defaultValue, boolean required) {
+        super(owner, localName, namespaceUri, value, defaultValue, required, false);
     }
-
+    
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value, 
+            V defaultValue, boolean required, boolean foreign) {
+        super(owner, localName, namespaceUri, value, defaultValue, required, foreign);
+    }
+    
     /**
      * Sets new value of attribute.
      * 
      * @param value new value of attribute
      * @see #getValue
      */
-    protected void setValue(Object value) {
+    public void setValue(V value) {
         this.value = value;
-    }
-
-    /**
-     * Gets default value of attribute.
-     * 
-     * @return default value of attribute
-     * @see #setDefaultValue
-     */
-    public Object getDefaultValue() {
-        return defaultValue;
     }
 
     /**
@@ -128,7 +109,7 @@ public abstract class SingleAttribute extends AbstractAttribute {
      * @param defaultValue new default value of attribute
      * @see #getDefaultValue
      */
-    protected void setDefaultValue(Object defaultValue) {
+    public void setDefaultValue(V defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -159,7 +140,7 @@ public abstract class SingleAttribute extends AbstractAttribute {
      * @param value string value
      * @return parsed value
      */
-    protected abstract Object parseValue(String value);
+    protected abstract V parseValue(String value);
 
     @Override
     public String valueToString() {

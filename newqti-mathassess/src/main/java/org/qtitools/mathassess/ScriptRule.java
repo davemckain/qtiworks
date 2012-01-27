@@ -34,6 +34,7 @@
 package org.qtitools.mathassess;
 
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -72,7 +73,7 @@ public final class ScriptRule extends MathAssessOperator {
     public ScriptRule(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new BooleanAttribute(this, getNamespacePrefix() + ATTR_SIMPLIFY_NAME, Boolean.FALSE, Boolean.FALSE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
 
         // Allow 1 child only
         getNodeGroups().clear();
@@ -86,7 +87,8 @@ public final class ScriptRule extends MathAssessOperator {
      * @see #setSimplify
      */
     public Boolean getSimplify() {
-        return getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).getValue();
+        return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -96,7 +98,7 @@ public final class ScriptRule extends MathAssessOperator {
      * @see #getSimplify
      */
     public void setSimplify(Boolean simplify) {
-        getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).setValue(simplify);
+        ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI)).setValue(simplify);
     }
 
     @Override

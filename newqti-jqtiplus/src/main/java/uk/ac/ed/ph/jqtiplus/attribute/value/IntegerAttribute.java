@@ -11,7 +11,7 @@
  *   list of conditions and the following disclaimer in the documentation and/or
  *   other materials provided with the distribution.
  *
- * * Neither the name of the University of Edinburgh nor the names of its
+ * * Neither the localName of the University of Edinburgh nor the localNames of its
  *   contributors may be used to endorse or promote products derived from this
  *   software without specific prior written permission.
  *
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
  * 
  * @author Jiri Kajaba
  */
-public class IntegerAttribute extends SingleAttribute {
+public class IntegerAttribute extends SingleAttribute<Integer> {
 
     private static final long serialVersionUID = 6169314176032331265L;
 
@@ -50,64 +50,38 @@ public class IntegerAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public IntegerAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public IntegerAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public IntegerAttribute(XmlNode parent, String name, Integer defaultValue) {
-        super(parent, name, defaultValue);
+    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public IntegerAttribute(XmlNode parent, String name, Integer value, Integer defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public IntegerAttribute(XmlNode parent, String localName, Integer value, Integer defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public Integer getValue() {
-        return (Integer) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Integer value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Integer getDefaultValue() {
-        return (Integer) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Integer defaultValue) {
-        super.setDefaultValue(defaultValue);
+    
+    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer value, Integer defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, value, defaultValue, required);
     }
 
     @Override

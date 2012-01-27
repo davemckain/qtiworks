@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.RoundingMode;
  * 
  * @author Jiri Kajaba
  */
-public class RoundingModeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class RoundingModeAttribute extends SingleAttribute<RoundingMode> implements EnumerateAttribute<RoundingMode> {
 
     private static final long serialVersionUID = 7527369761752182141L;
 
@@ -51,64 +51,34 @@ public class RoundingModeAttribute extends SingleAttribute implements EnumerateA
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public RoundingModeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public RoundingModeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public RoundingModeAttribute(XmlNode parent, String name, RoundingMode defaultValue) {
-        super(parent, name, defaultValue);
+    public RoundingModeAttribute(XmlNode parent, String localName, RoundingMode defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public RoundingModeAttribute(XmlNode parent, String name, RoundingMode value, RoundingMode defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public RoundingMode getValue() {
-        return (RoundingMode) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(RoundingMode value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public RoundingMode getDefaultValue() {
-        return (RoundingMode) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(RoundingMode defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public RoundingModeAttribute(XmlNode parent, String localName, RoundingMode value, RoundingMode defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

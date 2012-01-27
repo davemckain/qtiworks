@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
  * 
  * @author Jiri Kajaba
  */
-public class DurationAttribute extends SingleAttribute {
+public class DurationAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -2706570073349757182L;
 
@@ -50,64 +50,34 @@ public class DurationAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public DurationAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public DurationAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public DurationAttribute(XmlNode parent, String name, Double defaultValue) {
-        super(parent, name, defaultValue);
+    public DurationAttribute(XmlNode parent, String localName, Double defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public DurationAttribute(XmlNode parent, String name, Double value, Double defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public Double getValue() {
-        return (Double) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Double value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Double getDefaultValue() {
-        return (Double) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Double defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public DurationAttribute(XmlNode parent, String localName, Double value, Double defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

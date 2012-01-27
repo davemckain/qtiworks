@@ -11,7 +11,7 @@
  *   list of conditions and the following disclaimer in the documentation and/or
  *   other materials provided with the distribution.
  *
- * * Neither the name of the University of Edinburgh nor the names of its
+ * * Neither the localName of the University of Edinburgh nor the localNames of its
  *   contributors may be used to endorse or promote products derived from this
  *   software without specific prior written permission.
  *
@@ -48,51 +48,45 @@ import org.w3c.dom.Node;
  * 
  * @author Jiri Kajaba
  */
-public abstract class MultipleAttribute<E> extends AbstractAttribute {
+public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
     private static final long serialVersionUID = -2295280039498864733L;
 
     /** Values separator. */
     public String FIELDS_SEPARATOR = " ";
 
-    /** Value of this attribute. */
-    private List<E> value;
-
-    /** Default value of this attribute. */
-    private List<E> defaultValue;
-
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public MultipleAttribute(XmlNode parent, String name) {
-        this(parent, name, null, null, true);
+    public MultipleAttribute(XmlNode parent, String localName) {
+        this(parent, localName, null, null, true);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public MultipleAttribute(XmlNode parent, String name, List<E> defaultValue) {
-        this(parent, name, defaultValue, defaultValue, false);
+    public MultipleAttribute(XmlNode parent, String localName, List<E> defaultValue) {
+        this(parent, localName, defaultValue, defaultValue, false);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public MultipleAttribute(XmlNode parent, String name, List<E> value, List<E> defaultValue, boolean required) {
-        super(parent, name, required, true);
+    public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
+        super(parent, localName, null, null, required, false);
 
         if (value != null) {
             this.value = value;
@@ -118,7 +112,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute {
      * @return value of attribute
      */
     public List<E> getValues() {
-        return value;
+        return getValue();
     }
 
     /**

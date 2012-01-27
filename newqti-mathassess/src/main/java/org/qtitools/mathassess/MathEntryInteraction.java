@@ -39,13 +39,10 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -86,33 +83,9 @@ public final class MathEntryInteraction extends CustomInteraction {
     public MathEntryInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
-        // add a namespace prefix to this if none there, and no global prefix
-        if (getNamespacePrefix().length() == 0) {
-            getAttributes().add(
-                    new StringAttribute(this, "xmlns:ma", MATHASSESS_NAMESPACE_URI,
-                            MATHASSESS_NAMESPACE_URI, true));
-        }
-
-        getAttributes().add(new SyntaxTypeAttribute(this, getNamespacePrefix() + ATTR_SYNTAX_NAME, null, null, true));
-        getAttributes().add(new IntegerAttribute(this, getNamespacePrefix() + ATTR_EXPECTED_LENGTH_NAME, null, null, false));
-        getAttributes().add(new IdentifierAttribute(this, getNamespacePrefix() + ATTR_PRINT_IDENTIFIER_NAME, null, null, false));
-    }
-
-    /* Iterate through parent nodes looking for a mathassess namespace decl If
-     * one is found return the prefix, otherwise return empty string */
-    protected String getNamespacePrefix() {
-        AbstractNode parent = this;
-        while (parent != null) {
-            for (final Attribute attr : parent.getAttributes()) {
-                if (attr.getName() != null && attr.getName().startsWith("xmlns:")
-                        && attr.valueToString() != null
-                        && attr.valueToString().equals(MATHASSESS_NAMESPACE_URI)) {
-                    return attr.getName().substring(6) + ":";
-                }
-            }
-            parent = (AbstractNode) parent.getParent();
-        }
-        return "";
+        getAttributes().add(new SyntaxTypeAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
     }
 
     /**
@@ -121,7 +94,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
-        return ((SyntaxTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_SYNTAX_NAME))
+        return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getValue();
     }
 
@@ -131,7 +104,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @param syntax value to set
      */
     public void setSyntax(SyntaxType syntax) {
-        ((SyntaxTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_SYNTAX_NAME))
+        ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
@@ -141,7 +114,8 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @return the value of the printIdentifier attribute
      */
     public Identifier getPrintIdentifier() {
-        return getAttributes().getIdentifierAttribute(getNamespacePrefix() + ATTR_PRINT_IDENTIFIER_NAME).getValue();
+        return ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -150,7 +124,8 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @param printIdentifier value to set
      */
     public void setPrintIdentifier(Identifier printIdentifier) {
-        getAttributes().getIdentifierAttribute(getNamespacePrefix() + ATTR_PRINT_IDENTIFIER_NAME).setValue(printIdentifier);
+        ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(printIdentifier);
     }
 
     /**

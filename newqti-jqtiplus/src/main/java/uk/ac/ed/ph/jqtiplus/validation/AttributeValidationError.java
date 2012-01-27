@@ -50,7 +50,7 @@ public class AttributeValidationError extends ValidationError {
      * @param attribute source attribute of constructed item
      * @param message message of constructed item
      */
-    public AttributeValidationError(Attribute attribute, String message) {
-        super(attribute, attribute.getParent(), message);
+    public AttributeValidationError(Attribute<?> attribute, String message) {
+        super(attribute, attribute.getOwner(), message);
     }
 }

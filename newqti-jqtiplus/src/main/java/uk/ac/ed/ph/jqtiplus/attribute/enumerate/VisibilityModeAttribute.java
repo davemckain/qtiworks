@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
  * 
  * @author Jiri Kajaba
  */
-public class VisibilityModeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class VisibilityModeAttribute extends SingleAttribute<VisibilityMode> implements EnumerateAttribute<VisibilityMode> {
 
     private static final long serialVersionUID = 6524337813805169272L;
 
@@ -51,66 +51,36 @@ public class VisibilityModeAttribute extends SingleAttribute implements Enumerat
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public VisibilityModeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public VisibilityModeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public VisibilityModeAttribute(XmlNode parent, String name, VisibilityMode defaultValue) {
-        super(parent, name, defaultValue);
+    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public VisibilityModeAttribute(XmlNode parent, String name, VisibilityMode value, VisibilityMode defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
+    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode value, VisibilityMode defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
-
-    @Override
-    public VisibilityMode getValue() {
-        return (VisibilityMode) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(VisibilityMode value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public VisibilityMode getDefaultValue() {
-        return (VisibilityMode) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(VisibilityMode defaultValue) {
-        super.setDefaultValue(defaultValue);
-    }
-
+    
     @Override
     protected VisibilityMode parseValue(String value) {
         return VisibilityMode.parseVisibilityMode(value);

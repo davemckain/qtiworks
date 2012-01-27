@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
@@ -55,7 +55,7 @@ public enum RoundingMode {
     SIGNIFICANT_FIGURES("significantFigures") {
 
         @Override
-        public void validateFigures(Attribute attribute, AbstractValidationResult result, int figures) {
+        public void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures) {
             if (figures < 1) {
                 result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") must be positive."));
             }
@@ -102,7 +102,7 @@ public enum RoundingMode {
     DECIMAL_PLACES("decimalPlaces") {
 
         @Override
-        public void validateFigures(Attribute attribute, AbstractValidationResult result, int figures) {
+        public void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures) {
             if (figures < 0) {
                 result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") cannot be negative."));
             }
@@ -141,7 +141,7 @@ public enum RoundingMode {
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
      */
-    public abstract void validateFigures(Attribute attribute, AbstractValidationResult result, int figures);
+    public abstract void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures);
 
     /**
      * Rounds given number for given number of figures.

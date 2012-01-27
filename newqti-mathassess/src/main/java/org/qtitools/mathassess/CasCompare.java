@@ -36,6 +36,7 @@ package org.qtitools.mathassess;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_ACTION_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_CODE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -93,9 +94,9 @@ public class CasCompare extends MathAssessOperator {
     public CasCompare(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new ActionTypeAttribute(this, getNamespacePrefix() + ATTR_ACTION_NAME, null, null, true));
-        getAttributes().add(new StringAttribute(this, getNamespacePrefix() + ATTR_CODE_NAME, null, null, false));
-        getAttributes().add(new BooleanAttribute(this, getNamespacePrefix() + ATTR_SIMPLIFY_NAME, Boolean.FALSE, Boolean.FALSE, false));
+        getAttributes().add(new ActionTypeAttribute(this, ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
     }
 
     /**
@@ -105,7 +106,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #setCode
      */
     public String getCode() {
-        return getAttributes().getStringAttribute(getNamespacePrefix() + ATTR_CODE_NAME).getValue();
+        return ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -115,7 +117,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #getCode
      */
     public void setCode(String code) {
-        getAttributes().getStringAttribute(getNamespacePrefix() + ATTR_CODE_NAME).setValue(code);
+        ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(code);
     }
 
     /**
@@ -125,7 +128,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #setAction
      */
     public ActionType getAction() {
-        return ((ActionTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_ACTION_NAME)).getValue();
+        return ((ActionTypeAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -135,7 +139,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #getAction
      */
     public void setAction(ActionType action) {
-        ((ActionTypeAttribute) getAttributes().get(getNamespacePrefix() + ATTR_ACTION_NAME)).setValue(action);
+        ((ActionTypeAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(action);
     }
 
     /**
@@ -145,7 +150,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #setSimplify
      */
     public Boolean getSimplify() {
-        return getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).getValue();
+        return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
+                .getValue();
     }
 
     /**
@@ -155,7 +161,8 @@ public class CasCompare extends MathAssessOperator {
      * @see #getSimplify
      */
     public void setSimplify(Boolean simplify) {
-        getAttributes().getBooleanAttribute(getNamespacePrefix() + ATTR_SIMPLIFY_NAME).setValue(simplify);
+        ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
+            .setValue(simplify);
     }
 
     @Override

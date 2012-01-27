@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
  * 
  * @author Jiri Kajaba
  */
-public class TestFeedbackAccessAttribute extends SingleAttribute implements EnumerateAttribute {
+public class TestFeedbackAccessAttribute extends SingleAttribute<TestFeedbackAccess> implements EnumerateAttribute<TestFeedbackAccess> {
 
     private static final long serialVersionUID = 3074149624431788342L;
 
@@ -51,64 +51,34 @@ public class TestFeedbackAccessAttribute extends SingleAttribute implements Enum
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public TestFeedbackAccessAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public TestFeedbackAccessAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public TestFeedbackAccessAttribute(XmlNode parent, String name, TestFeedbackAccess defaultValue) {
-        super(parent, name, defaultValue);
+    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public TestFeedbackAccessAttribute(XmlNode parent, String name, TestFeedbackAccess value, TestFeedbackAccess defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public TestFeedbackAccess getValue() {
-        return (TestFeedbackAccess) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(TestFeedbackAccess value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public TestFeedbackAccess getDefaultValue() {
-        return (TestFeedbackAccess) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(TestFeedbackAccess defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess value, TestFeedbackAccess defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

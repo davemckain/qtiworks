@@ -44,7 +44,7 @@ import java.net.URI;
  * 
  * @author Jiri Kajaba
  */
-public class UriAttribute extends SingleAttribute {
+public class UriAttribute extends SingleAttribute<URI> {
 
     private static final long serialVersionUID = -4951687349594320740L;
 
@@ -52,64 +52,34 @@ public class UriAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public UriAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public UriAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public UriAttribute(XmlNode parent, String name, URI defaultValue) {
-        super(parent, name, defaultValue);
+    public UriAttribute(XmlNode parent, String localName, URI defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public UriAttribute(XmlNode parent, String name, URI value, URI defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public URI getValue() {
-        return (URI) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(URI value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public URI getDefaultValue() {
-        return (URI) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(URI defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public UriAttribute(XmlNode parent, String localName, URI value, URI defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

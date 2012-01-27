@@ -84,7 +84,8 @@ public class AreaMapEntry extends AbstractNode {
     @Override
     protected void validateAttributes(ValidationContext context) {
         if (getShape() != null) {
-            getShape().validateCoords(getAttributes().get(ATTR_COORDS_NAME), context.getValidationResult(), convertCoordinates(getCoordinates()));
+            getShape().validateCoords(getAttributes().getCoordsAttribute(ATTR_COORDS_NAME),
+                    context.getValidationResult(), convertCoordinates(getCoordinates()));
         }
     }
 

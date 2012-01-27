@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
  * 
  * @author Jiri Kajaba
  */
-public class ShapeAttribute extends SingleAttribute implements EnumerateAttribute {
+public class ShapeAttribute extends SingleAttribute<Shape> implements EnumerateAttribute<Shape> {
 
     private static final long serialVersionUID = -5369017290814290862L;
 
@@ -51,64 +51,34 @@ public class ShapeAttribute extends SingleAttribute implements EnumerateAttribut
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public ShapeAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public ShapeAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public ShapeAttribute(XmlNode parent, String name, Shape defaultValue) {
-        super(parent, name, defaultValue);
+    public ShapeAttribute(XmlNode parent, String localName, Shape defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public ShapeAttribute(XmlNode parent, String name, Shape value, Shape defaultValue, boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public Shape getValue() {
-        return (Shape) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(Shape value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public Shape getDefaultValue() {
-        return (Shape) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(Shape defaultValue) {
-        super.setDefaultValue(defaultValue);
+    public ShapeAttribute(XmlNode parent, String localName, Shape value, Shape defaultValue, boolean required) {
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

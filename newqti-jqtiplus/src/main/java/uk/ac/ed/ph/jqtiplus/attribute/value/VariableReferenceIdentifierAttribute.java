@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
  * 
  * @author Jiri Kajaba
  */
-public class VariableReferenceIdentifierAttribute extends SingleAttribute {
+public class VariableReferenceIdentifierAttribute extends SingleAttribute<VariableReferenceIdentifier> {
 
     private static final long serialVersionUID = 797959114072746763L;
 
@@ -50,65 +50,35 @@ public class VariableReferenceIdentifierAttribute extends SingleAttribute {
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      */
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param defaultValue attribute's default value
      */
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String name, VariableReferenceIdentifier defaultValue) {
-        super(parent, name, defaultValue);
+    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, VariableReferenceIdentifier defaultValue) {
+        super(parent, localName, defaultValue);
     }
 
     /**
      * Constructs attribute.
      * 
      * @param parent attribute's parent
-     * @param name attribute's name
+     * @param localName attribute's localName
      * @param value attribute's value
      * @param defaultValue attribute's default value
      * @param required is this attribute required
      */
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String name, VariableReferenceIdentifier value, VariableReferenceIdentifier defaultValue,
+    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, VariableReferenceIdentifier value, VariableReferenceIdentifier defaultValue,
             boolean required) {
-        super(parent, name, value, defaultValue, required);
-    }
-
-    @Override
-    public VariableReferenceIdentifier getValue() {
-        return (VariableReferenceIdentifier) super.getValue();
-    }
-
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(VariableReferenceIdentifier value) {
-        super.setValue(value);
-    }
-
-    @Override
-    public VariableReferenceIdentifier getDefaultValue() {
-        return (VariableReferenceIdentifier) super.getDefaultValue();
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(VariableReferenceIdentifier defaultValue) {
-        super.setDefaultValue(defaultValue);
+        super(parent, localName, value, defaultValue, required);
     }
 
     @Override
