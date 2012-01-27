@@ -206,7 +206,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         if (asciiMathInput.length() != 0) {
             /* Convert the ASCIIMath input to the appropriate Math Context
              * variable */
-            final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+            final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
             final ASCIIMathMLHelper helper = new ASCIIMathMLHelper(mathAssessExtensionPackage.getStylesheetCache());
             final MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();

@@ -76,11 +76,11 @@ public abstract class CustomInteraction extends Interaction implements Block, Fl
         return CLASS_TAG;
     }
 
-    public JqtiExtensionPackage getJQTIExtensionPackage() {
+    public JqtiExtensionPackage getJqtiExtensionPackage() {
         return jqtiExtensionPackage;
     }
 
-    public void setJQTIExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
+    public void setJqtiExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
 }

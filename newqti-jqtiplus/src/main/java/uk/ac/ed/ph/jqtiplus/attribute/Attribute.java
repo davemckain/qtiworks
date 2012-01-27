@@ -107,25 +107,6 @@ public interface Attribute extends Validatable {
      */
     public void load(Element owner, String value, LoadingContext context);
 
-    // /**
-    // * Gets loaded attribute's value.
-    // * If attribute has not string baseType loaded value can be different from
-    // value.
-    // * For example if we have integer attribute, loaded value is a10, but
-    // value is null (a10 is not valid integer).
-    // * This approach enables to load test even if there are errors.
-    // *
-    // * @return loaded attribute's value
-    // */
-    // public String getLoadedValue();
-    //
-    // /**
-    // * Gets parse exception (if there were problem while loading) or null.
-    // *
-    // * @return parse exception (if there were problem while loading) or null
-    // */
-    // public QTIParseException getLoadingProblem();
-
     /**
      * Gets attribute converted to string (name="value").
      * If value is not defined or is same as defaultValue (and printDefaultValue

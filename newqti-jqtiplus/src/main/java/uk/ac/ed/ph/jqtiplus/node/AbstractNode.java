@@ -68,7 +68,7 @@ public abstract class AbstractNode implements XmlNode {
     private final NodeGroupList groups;
 
     /** Information about the location of this Node in the original source XML, if loaded that way */
-    private XmlSourceLocationInformation xmlSourceLocationInformation;
+    private XmlSourceLocationInformation sourceLocation;
 
     /**
      * Constructs node.
@@ -79,16 +79,16 @@ public abstract class AbstractNode implements XmlNode {
         this.parent = parent;
         this.attributes = new AttributeList(this);
         this.groups = new NodeGroupList(this);
-        this.xmlSourceLocationInformation = null;
+        this.sourceLocation = null;
     }
 
     @Override
     public XmlSourceLocationInformation getSourceLocation() {
-        return xmlSourceLocationInformation;
+        return sourceLocation;
     }
 
-    public void setXmlSourceLocationInformation(XmlSourceLocationInformation xmlSourceLocationInformation) {
-        this.xmlSourceLocationInformation = xmlSourceLocationInformation;
+    public void setSourceLocation(XmlSourceLocationInformation sourceLocation) {
+        this.sourceLocation = sourceLocation;
     }
 
     public NodeGroupList getGroups() {
@@ -132,7 +132,7 @@ public abstract class AbstractNode implements XmlNode {
     @Override
     public void load(Element sourceElement, LoadingContext context) {
         /* Extract SAX Locator data stowed away by XmlResourceReader, if used */
-        this.xmlSourceLocationInformation = XmlResourceReader.extractLocationInformation(sourceElement);
+        this.sourceLocation = XmlResourceReader.extractLocationInformation(sourceElement);
 
         // 1) Read all attributes.
         loadAttributes(sourceElement, context);
@@ -392,7 +392,7 @@ public abstract class AbstractNode implements XmlNode {
     public String toString() {
         return "<" + getClassTag() + ">@" + hashCode()
                 + "(xPath=" + computeXPath()
-                + ",location=" + xmlSourceLocationInformation
+                + ",location=" + sourceLocation
                 + ")";
     }
 

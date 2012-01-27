@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Node's attribute implementation.
@@ -59,20 +60,6 @@ public abstract class AbstractAttribute implements Attribute {
 
     /** Is this attribute supported (true) or not supported (false). */
     private boolean supported;
-
-    // /**
-    // * Loaded value.
-    // *
-    // * @see #getLoadedValue()
-    // */
-    // private String loadedValue;
-    //
-    // /**
-    // * Loading problem.
-    // *
-    // * @see #getLoadingProblem()
-    // */
-    // private QTIParseException loadingProblem;
 
     /**
      * Constructs attribute.
@@ -127,38 +114,6 @@ public abstract class AbstractAttribute implements Attribute {
         this.supported = supported;
     }
 
-    // public String getLoadedValue()
-    // {
-    // return loadedValue;
-    // }
-    //
-    // /**
-    // * Sets new loaded value.
-    // *
-    // * @param loadedValue new loaded value
-    // * @see #getLoadedValue
-    // */
-    // protected void setLoadedValue(String loadedValue)
-    // {
-    // this.loadedValue = loadedValue;
-    // }
-    //
-    // public QTIParseException getLoadingProblem()
-    // {
-    // return loadingProblem;
-    // }
-    //
-    // /**
-    // * Sets new loading problem.
-    // *
-    // * @param loadingProblem loading problem.
-    // * @see #getLoadingProblem
-    // */
-    // protected void setLoadingProblem(QTIParseException loadingProblem)
-    // {
-    // this.loadingProblem = loadingProblem;
-    // }
-
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
@@ -179,7 +134,7 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     @Override
-    public String toXmlString(boolean printDefaultValue) {
+    public final String toXmlString(boolean printDefaultValue) {
         final StringBuilder builder = new StringBuilder();
 
         final String value = valueToString();
@@ -197,6 +152,8 @@ public abstract class AbstractAttribute implements Attribute {
         return builder.toString();
     }
 
+    /** FIXME: Remove the xmlns stuff from this */
+    @ToRefactor
     @Override
     public void validate(ValidationContext context) {
         if (supported) {
