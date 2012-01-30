@@ -73,7 +73,7 @@ public class Contains extends AbstractExpression {
     private static final long serialVersionUID = 3829603738168267516L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "contains";
+    public static final String QTI_CLASS_NAME = "contains";
 
     /**
      * Constructs expression.
@@ -81,12 +81,7 @@ public class Contains extends AbstractExpression {
      * @param parent parent of this expression
      */
     public Contains(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

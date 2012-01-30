@@ -51,22 +51,12 @@ public class Ol extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = 755033578152552941L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "ol";
+    public static final String QTI_CLASS_NAME = "ol";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Ol(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new LiGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

@@ -58,20 +58,10 @@ public class NumberCorrect extends ItemSubset {
     private static final long serialVersionUID = 6849376958348641996L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "numberCorrect";
+    public static final String QTI_CLASS_NAME = "numberCorrect";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public NumberCorrect(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

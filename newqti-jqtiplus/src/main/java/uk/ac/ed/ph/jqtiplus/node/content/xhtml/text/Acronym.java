@@ -47,7 +47,7 @@ public class Acronym extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 2710087373517650589L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "acronym";
+    public static final String QTI_CLASS_NAME = "acronym";
 
     /**
      * Constructs object.
@@ -55,11 +55,6 @@ public class Acronym extends AbstractSimpleInline implements SimpleInline {
      * @param parent parent of constructed object
      */
     public Acronym(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

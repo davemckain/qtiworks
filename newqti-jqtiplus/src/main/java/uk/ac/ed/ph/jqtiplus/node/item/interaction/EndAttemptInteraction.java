@@ -70,7 +70,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     private static final long serialVersionUID = -4043944468486325265L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "endAttemptInteraction";
+    public static final String QTI_CLASS_NAME = "endAttemptInteraction";
 
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
@@ -87,15 +87,10 @@ public class EndAttemptInteraction extends InlineInteraction {
      * @param parent Parent node
      */
     public EndAttemptInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_COUNT_ATTEMPT_NAME, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

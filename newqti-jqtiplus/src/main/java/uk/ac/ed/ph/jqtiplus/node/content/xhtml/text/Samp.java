@@ -47,19 +47,9 @@ public class Samp extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 6762336461341613427L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "samp";
+    public static final String QTI_CLASS_NAME = "samp";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Samp(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

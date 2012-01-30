@@ -57,7 +57,7 @@ public class SimpleMatchSetGroup extends AbstractNodeGroup {
      * @param maximum maximum number of children
      */
     public SimpleMatchSetGroup(SimpleMatchSetContainer parent, Integer minimum, Integer maximum) {
-        super(parent, SimpleMatchSet.CLASS_TAG, minimum, maximum);
+        super(parent, SimpleMatchSet.QTI_CLASS_NAME, minimum, maximum);
     }
 
     /**
@@ -67,7 +67,7 @@ public class SimpleMatchSetGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public SimpleMatchSetGroup(SimpleMatchSetContainer parent, Integer minimum) {
-        super(parent, SimpleMatchSet.CLASS_TAG, minimum, null);
+        super(parent, SimpleMatchSet.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

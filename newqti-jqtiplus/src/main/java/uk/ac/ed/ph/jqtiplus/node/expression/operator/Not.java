@@ -54,20 +54,10 @@ public class Not extends AbstractExpression {
     private static final long serialVersionUID = -7772967854466117906L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "not";
+    public static final String QTI_CLASS_NAME = "not";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Not(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

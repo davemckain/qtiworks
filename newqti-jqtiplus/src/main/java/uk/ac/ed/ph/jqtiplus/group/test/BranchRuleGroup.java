@@ -56,7 +56,7 @@ public class BranchRuleGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public BranchRuleGroup(AbstractPart parent) {
-        super(parent, BranchRule.CLASS_TAG, null, null);
+        super(parent, BranchRule.QTI_CLASS_NAME, null, null);
     }
 
     /**

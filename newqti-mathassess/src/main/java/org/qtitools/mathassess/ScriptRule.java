@@ -109,7 +109,7 @@ public final class ScriptRule extends MathAssessOperator {
     @Override
     protected Value maximaEvaluate(ItemProcessingContext context)
             throws MaximaTimeoutException, MathsContentTooComplexException {
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
         final String code = context.getExpressionValue(getFirstChild()).toString().trim();
         final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();

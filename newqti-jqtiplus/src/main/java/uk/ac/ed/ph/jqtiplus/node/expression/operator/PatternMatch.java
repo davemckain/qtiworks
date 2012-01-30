@@ -61,25 +61,15 @@ public class PatternMatch extends AbstractExpression {
     private static final long serialVersionUID = 2422777906725885061L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "patternMatch";
+    public static final String QTI_CLASS_NAME = "patternMatch";
 
     /** Name of pattern attribute in xml schema. */
     public static final String ATTR_PATTERN_NAME = "pattern";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public PatternMatch(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

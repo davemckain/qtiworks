@@ -61,22 +61,12 @@ public class OutcomeProcessing extends AbstractNode {
     private static final long serialVersionUID = -6656454519339347157L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeProcessing";
+    public static final String QTI_CLASS_NAME = "outcomeProcessing";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of this object
-     */
     public OutcomeProcessing(AssessmentTest parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -93,7 +83,7 @@ public class OutcomeProcessing extends AbstractNode {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
         }
     }
 

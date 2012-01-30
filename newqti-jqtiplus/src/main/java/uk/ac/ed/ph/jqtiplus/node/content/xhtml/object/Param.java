@@ -73,7 +73,7 @@ public class Param extends AbstractNode implements ObjectFlow {
     private static final long serialVersionUID = 2765069194418566232L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "param";
+    public static final String QTI_CLASS_NAME = "param";
 
     /** Name of name attribute in xml schema. */
     public static final String ATTR_NAME_NAME = "name";
@@ -87,23 +87,13 @@ public class Param extends AbstractNode implements ObjectFlow {
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Param(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_VALUE_NAME));
         getAttributes().add(new ParamTypeAttribute(this, ATTR_VALUETYPE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

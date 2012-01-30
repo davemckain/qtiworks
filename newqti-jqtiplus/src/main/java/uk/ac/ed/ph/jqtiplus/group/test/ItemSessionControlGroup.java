@@ -53,7 +53,7 @@ public class ItemSessionControlGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ItemSessionControlGroup(AbstractPart parent) {
-        super(parent, ItemSessionControl.CLASS_TAG, false);
+        super(parent, ItemSessionControl.QTI_CLASS_NAME, false);
     }
 
     /**

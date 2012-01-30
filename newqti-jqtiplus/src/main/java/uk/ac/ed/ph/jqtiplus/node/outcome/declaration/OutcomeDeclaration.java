@@ -72,10 +72,10 @@ public class OutcomeDeclaration extends VariableDeclaration {
     private static final Logger logger = LoggerFactory.getLogger(OutcomeDeclaration.class);
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeDeclaration";
+    public static final String QTI_CLASS_NAME = "outcomeDeclaration";
 
     /** Name of view attribute in xml schema. */
-    public static final String ATTR_VIEWS_NAME = View.CLASS_TAG;
+    public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
     /** Default value of view attribute. */
     public static final List<View> ATTR_VIEWS_DEFAULT_VALUE = null;
@@ -110,13 +110,8 @@ public class OutcomeDeclaration extends VariableDeclaration {
     /** Default value of masteryValue attribute. */
     public static final Double ATTR_MASTERY_VALUE_DEFAULT_VALUE = null;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public OutcomeDeclaration(AssessmentObject parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, ATTR_VIEWS_DEFAULT_VALUE));
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
@@ -131,11 +126,6 @@ public class OutcomeDeclaration extends VariableDeclaration {
     @Override
     public VariableType getVariableType() {
         return VariableType.OUTCOME;
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -60,24 +60,14 @@ public class OutcomeCondition extends OutcomeRule {
     private static final long serialVersionUID = -4591371291453896351L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeCondition";
+    public static final String QTI_CLASS_NAME = "outcomeCondition";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public OutcomeCondition(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeIfGroup(this));
         getNodeGroups().add(new OutcomeElseIfGroup(this));
         getNodeGroups().add(new OutcomeElseGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

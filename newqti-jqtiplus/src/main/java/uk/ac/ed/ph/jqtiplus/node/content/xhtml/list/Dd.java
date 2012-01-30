@@ -48,7 +48,7 @@ public class Dd extends DlElement {
     private static final long serialVersionUID = -7552284695766277971L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "dd";
+    public static final String QTI_CLASS_NAME = "dd";
 
     /**
      * Constructs object.
@@ -56,14 +56,9 @@ public class Dd extends DlElement {
      * @param parent parent of constructed object
      */
     public Dd(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

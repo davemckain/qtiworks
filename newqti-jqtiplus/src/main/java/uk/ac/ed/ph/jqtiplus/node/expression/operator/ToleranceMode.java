@@ -130,7 +130,7 @@ public enum ToleranceMode {
     };
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "toleranceMode";
+    public static final String QTI_CLASS_NAME = "toleranceMode";
 
     private static Map<String, ToleranceMode> toleranceModes;
 
@@ -182,7 +182,7 @@ public enum ToleranceMode {
         final ToleranceMode result = toleranceModes.get(toleranceMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + toleranceMode + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + toleranceMode + "'.");
         }
 
         return result;

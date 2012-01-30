@@ -66,13 +66,13 @@ public class ModalFeedback extends AbstractNode {
     private static final long serialVersionUID = -3911613199124971014L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "modalFeedback";
+    public static final String QTI_CLASS_NAME = "modalFeedback";
 
     /** Name of outcomeIdentifier attribute in xml schema. */
     public static final String ATTR_OUTCOME_IDENTIFIER_NAME = "outcomeIdentifier";
 
     /** Name of showHide attribute in xml schema. */
-    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.CLASS_TAG;
+    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.QTI_CLASS_NAME;
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
@@ -80,13 +80,8 @@ public class ModalFeedback extends AbstractNode {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ModalFeedback(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME));
         getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME));
@@ -94,11 +89,6 @@ public class ModalFeedback extends AbstractNode {
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, null, null, false));
 
         getNodeGroups().add(new FlowStaticGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -176,7 +166,7 @@ public class ModalFeedback extends AbstractNode {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
+                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
             }
 
             if (declaration != null && declaration.getCardinality() != null

@@ -56,21 +56,15 @@ public class MathOperator extends AbstractExpression {
     private static final long serialVersionUID = 709298090798424712L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "mathOperator";
+    public static final String QTI_CLASS_NAME = "mathOperator";
 
     /** Name of 'name' attribute */
     public static final String ATTR_NAME_NAME = "name";
 
-
     public MathOperator(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new MathOperatorNameAttribute(this, "name"));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

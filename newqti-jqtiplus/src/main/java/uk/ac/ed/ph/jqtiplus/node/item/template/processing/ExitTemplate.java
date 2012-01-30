@@ -48,25 +48,14 @@ public class ExitTemplate extends TemplateRule {
     private static final long serialVersionUID = -2578412242742380715L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "exitTemplate";
+    public static final String QTI_CLASS_NAME = "exitTemplate";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ExitTemplate(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
     public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt {
         throw new TemplateProcessingInterrupt(InterruptType.EXIT_TEMPLATE);
     }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-
 }

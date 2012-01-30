@@ -47,19 +47,9 @@ public class H3 extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 2922593746978910985L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "h3";
+    public static final String QTI_CLASS_NAME = "h3";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public H3(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

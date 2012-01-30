@@ -53,7 +53,7 @@ public class ItemBodyGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ItemBodyGroup(AssessmentItem parent) {
-        super(parent, ItemBody.CLASS_TAG, false);
+        super(parent, ItemBody.QTI_CLASS_NAME, false);
     }
 
     /**

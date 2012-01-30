@@ -61,8 +61,8 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
      * 
      * @param parent parent of created object
      */
-    public AbstractJump(AbstractPart parent) {
-        super(parent);
+    public AbstractJump(AbstractPart parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
     }

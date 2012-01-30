@@ -57,20 +57,10 @@ public class Round extends AbstractExpression {
     private static final long serialVersionUID = -4725940996976019125L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "round";
+    public static final String QTI_CLASS_NAME = "round";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Round(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

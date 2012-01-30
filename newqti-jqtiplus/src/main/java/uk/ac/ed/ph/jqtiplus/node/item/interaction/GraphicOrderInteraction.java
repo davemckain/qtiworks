@@ -89,7 +89,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     private static final long serialVersionUID = 1043633373106381307L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "graphicOrderInteraction";
+    public static final String QTI_CLASS_NAME = "graphicOrderInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
@@ -97,23 +97,13 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     /** Name of minChoices attribute in xml schema. */
     public static String ATTR_MIN_CHOICES_NAME = "minChoices";
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public GraphicOrderInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
 
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

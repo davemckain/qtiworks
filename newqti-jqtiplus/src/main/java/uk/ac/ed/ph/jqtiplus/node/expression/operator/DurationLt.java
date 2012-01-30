@@ -56,20 +56,10 @@ public class DurationLt extends AbstractExpression {
     private static final long serialVersionUID = 4163382539527919528L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "durationLT";
+    public static final String QTI_CLASS_NAME = "durationLT";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public DurationLt(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class RandomFloatEx extends RandomFloat {
     private static final long serialVersionUID = -2184877054673297858L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "randomFloatEx";
+    public static final String QTI_CLASS_NAME = "randomFloatEx";
 
     /** Name of seed attribute in xml schema. */
     public static final String ATTR_SEED_NAME = "seed";
@@ -56,20 +56,10 @@ public class RandomFloatEx extends RandomFloat {
     /** Default value of seed attribute. */
     public static final Long ATTR_SEED_DEFAULT_VALUE = null;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public RandomFloatEx(ExpressionParent parent) {
         super(parent);
 
         getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, ATTR_SEED_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

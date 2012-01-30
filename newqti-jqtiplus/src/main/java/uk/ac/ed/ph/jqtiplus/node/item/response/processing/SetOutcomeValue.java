@@ -61,20 +61,10 @@ public class SetOutcomeValue extends ProcessResponseValue {
     private static final long serialVersionUID = 2510329183906024639L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "setOutcomeValue";
+    public static final String QTI_CLASS_NAME = "setOutcomeValue";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public SetOutcomeValue(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
@@ -107,14 +97,14 @@ public class SetOutcomeValue extends ProcessResponseValue {
 
         if (getIdentifier() != null) {
             if (context.getSubject().getOutcomeDeclaration(getIdentifier()) == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
+                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
             }
 
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 context.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
-                        + OutcomeDeclaration.CLASS_TAG
+                        + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
                         + getIdentifier()));
             }
@@ -127,7 +117,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         if (declaration == null) {
-            throw new QTIEvaluationException("Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier());
+            throw new QTIEvaluationException("Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
         context.setOutcomeValue(declaration, value);
     }

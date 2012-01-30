@@ -56,7 +56,7 @@ public class SessionIdentifierGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public SessionIdentifierGroup(Context parent) {
-        super(parent, SessionIdentifier.CLASS_TAG, null, null);
+        super(parent, SessionIdentifier.QTI_CLASS_NAME, null, null);
     }
 
     /**

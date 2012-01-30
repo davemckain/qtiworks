@@ -76,7 +76,7 @@ public enum SessionStatus {
     FINAL("final");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "sessionStatus";
+    public static final String QTI_CLASS_NAME = "sessionStatus";
 
     private static Map<String, SessionStatus> sessionStatuses;
 
@@ -110,7 +110,7 @@ public enum SessionStatus {
         final SessionStatus result = sessionStatuses.get(sessionStatus);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + sessionStatus + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + sessionStatus + "'.");
         }
 
         return result;

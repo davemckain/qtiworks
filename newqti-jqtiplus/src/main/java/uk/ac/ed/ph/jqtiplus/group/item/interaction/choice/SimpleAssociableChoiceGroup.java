@@ -55,7 +55,7 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public SimpleAssociableChoiceGroup(SimpleAssociableChoiceContainer parent) {
-        super(parent, SimpleAssociableChoice.CLASS_TAG, null, null);
+        super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, null, null);
     }
 
     /**
@@ -65,7 +65,7 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public SimpleAssociableChoiceGroup(SimpleAssociableChoiceContainer parent, Integer minimum) {
-        super(parent, SimpleAssociableChoice.CLASS_TAG, minimum, null);
+        super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

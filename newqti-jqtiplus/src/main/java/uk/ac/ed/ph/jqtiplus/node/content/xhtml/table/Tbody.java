@@ -49,22 +49,12 @@ public class Tbody extends BodyElement {
     private static final long serialVersionUID = 3729259231245328140L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "tbody";
+    public static final String QTI_CLASS_NAME = "tbody";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Tbody(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

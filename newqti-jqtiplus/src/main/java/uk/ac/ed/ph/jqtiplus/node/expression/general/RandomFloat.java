@@ -57,7 +57,7 @@ public class RandomFloat extends RandomExpression {
     private static final long serialVersionUID = 3837760238885597058L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "randomFloat";
+    public static final String QTI_CLASS_NAME = "randomFloat";
 
     /** Name of min attribute in xml schema. */
     public static final String ATTR_MINIMUM_NAME = "min";
@@ -65,21 +65,15 @@ public class RandomFloat extends RandomExpression {
     /** Name of max attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "max";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public RandomFloat(ExpressionParent parent) {
-        super(parent);
+        this(parent, QTI_CLASS_NAME);
+    }
+
+    protected RandomFloat(ExpressionParent parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new FloatAttribute(this, ATTR_MINIMUM_NAME));
         getAttributes().add(new FloatAttribute(this, ATTR_MAXIMUM_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

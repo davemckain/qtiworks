@@ -53,7 +53,7 @@ public class OrderingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public OrderingGroup(AssessmentSection parent) {
-        super(parent, Ordering.CLASS_TAG, false);
+        super(parent, Ordering.QTI_CLASS_NAME, false);
     }
 
     /**

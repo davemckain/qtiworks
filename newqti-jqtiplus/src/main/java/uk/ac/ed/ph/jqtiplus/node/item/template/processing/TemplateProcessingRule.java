@@ -56,8 +56,8 @@ public abstract class TemplateProcessingRule extends AbstractNode {
      * 
      * @param parent parent of this rule
      */
-    public TemplateProcessingRule(XmlNode parent) {
-        super(parent);
+    public TemplateProcessingRule(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**

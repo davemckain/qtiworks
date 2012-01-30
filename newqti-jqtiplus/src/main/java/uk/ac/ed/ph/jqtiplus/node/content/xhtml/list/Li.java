@@ -49,22 +49,12 @@ public class Li extends BodyElement {
     private static final long serialVersionUID = -7210506194879969407L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "li";
+    public static final String QTI_CLASS_NAME = "li";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Li(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

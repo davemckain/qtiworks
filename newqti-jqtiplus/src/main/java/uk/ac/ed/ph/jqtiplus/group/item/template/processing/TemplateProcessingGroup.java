@@ -53,7 +53,7 @@ public class TemplateProcessingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TemplateProcessingGroup(AssessmentItem parent) {
-        super(parent, TemplateProcessing.CLASS_TAG, false);
+        super(parent, TemplateProcessing.QTI_CLASS_NAME, false);
     }
 
     /**

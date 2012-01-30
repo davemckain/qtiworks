@@ -59,6 +59,6 @@ public class CardinalityValidationError extends ValidationError {
     }
 
     private static String createMessage(Cardinality[] expected, Cardinality[] found) {
-        return "Invalid " + Cardinality.CLASS_TAG + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
+        return "Invalid " + Cardinality.QTI_CLASS_NAME + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
     }
 }

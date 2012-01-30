@@ -146,7 +146,7 @@ public class CasCondition extends MathAssessOperator {
             values.add(v);
         }
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
         return BooleanValue.valueOf(qtiMaximaSession.executeCasCondition(code, simplify, CasTypeGlue.convertFromJQTI(values)));
     }

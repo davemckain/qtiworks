@@ -74,7 +74,7 @@ public enum TableCellScope {
     COLGROUP("colgroup");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "tableCellScope";
+    public static final String QTI_CLASS_NAME = "tableCellScope";
 
     private static Map<String, TableCellScope> types;
 
@@ -144,7 +144,7 @@ public enum TableCellScope {
         final TableCellScope result = types.get(tableCellScope);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + tableCellScope + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + tableCellScope + "'.");
         }
 
         return result;

@@ -49,7 +49,7 @@ public class VariableMapping extends AbstractNode {
     private static final long serialVersionUID = -7050008243126365490L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "variableMapping";
+    public static final String QTI_CLASS_NAME = "variableMapping";
 
     /** Name of sourceIdentifier attribute in xml schema. */
     public static final String ATTR_SOURCE_IDENTIFIER_NAME = "sourceIdentifier";
@@ -57,21 +57,11 @@ public class VariableMapping extends AbstractNode {
     /** Name of targetIdentifier attribute in xml schema. */
     public static final String ATTR_TARGET_IDENTIFIER_NAME = "targetIdentifier";
 
-    /**
-     * Constructs parent.
-     * 
-     * @param parent parent of created object
-     */
     public VariableMapping(AssessmentItemRef parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_SOURCE_IDENTIFIER_NAME));
         getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_IDENTIFIER_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

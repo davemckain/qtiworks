@@ -53,8 +53,8 @@ public abstract class AbstractPart extends UniqueControlObject {
      * 
      * @param parent parent of constructed part
      */
-    public AbstractPart(ControlObject<?> parent) {
-        super(parent);
+    public AbstractPart(ControlObject<?> parent,  String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(0, new PreConditionGroup(this));
         getNodeGroups().add(1, new BranchRuleGroup(this));

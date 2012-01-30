@@ -62,22 +62,12 @@ public class DrawingInteraction extends BlockInteraction {
     private static final long serialVersionUID = 6364289440013765516L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "drawingInteraction";
+    public static final String QTI_CLASS_NAME = "drawingInteraction";
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public DrawingInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

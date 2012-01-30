@@ -56,7 +56,7 @@ public class RandomInteger extends RandomExpression {
     private static final long serialVersionUID = 4707680766519679314L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "randomInteger";
+    public static final String QTI_CLASS_NAME = "randomInteger";
 
     /** Name of min attribute in xml schema. */
     public static final String ATTR_MINIMUM_NAME = "min";
@@ -70,22 +70,16 @@ public class RandomInteger extends RandomExpression {
     /** Default value of step attribute. */
     public static final int ATTR_STEP_DEFAULT_VALUE = 1;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public RandomInteger(ExpressionParent parent) {
-        super(parent);
+        this(parent, QTI_CLASS_NAME);
+    }
+    
+    protected RandomInteger(ExpressionParent parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, ATTR_STEP_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

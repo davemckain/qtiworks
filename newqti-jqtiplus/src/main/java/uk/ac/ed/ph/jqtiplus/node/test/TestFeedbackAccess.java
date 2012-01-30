@@ -54,7 +54,7 @@ public enum TestFeedbackAccess {
     AT_END("atEnd");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "access";
+    public static final String QTI_CLASS_NAME = "access";
 
     private static Map<String, TestFeedbackAccess> testFeedbackAccesses;
 
@@ -88,7 +88,7 @@ public enum TestFeedbackAccess {
         final TestFeedbackAccess result = testFeedbackAccesses.get(testFeedbackAccess);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + testFeedbackAccess + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + testFeedbackAccess + "'.");
         }
 
         return result;

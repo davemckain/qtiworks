@@ -49,23 +49,13 @@ public class Context extends AbstractNode {
     private static final long serialVersionUID = 127609712848444904L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "context";
+    public static final String QTI_CLASS_NAME = "context";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Context(AssessmentResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new SessionIdentifierGroup(this));
         getNodeGroups().add(new IdentificationGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

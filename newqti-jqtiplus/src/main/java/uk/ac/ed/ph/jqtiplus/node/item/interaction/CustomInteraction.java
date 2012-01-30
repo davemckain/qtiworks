@@ -51,29 +51,19 @@ public abstract class CustomInteraction extends Interaction implements Block, Fl
     private static final long serialVersionUID = 4937420907911035196L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "customInteraction";
+    public static final String QTI_CLASS_NAME = "customInteraction";
 
     /** The {@link JqtiExtensionPackage} that defines this Interaction */
     private JqtiExtensionPackage jqtiExtensionPackage;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public CustomInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
 
     @Override
     public List<? extends XmlNode> getChildren() {
         return null;
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     public JqtiExtensionPackage getJqtiExtensionPackage() {

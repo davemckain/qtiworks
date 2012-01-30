@@ -53,8 +53,8 @@ public abstract class AbstractSimpleBlock extends BodyElement implements SimpleB
      * 
      * @param parent parent of constructed object
      */
-    public AbstractSimpleBlock(XmlNode parent) {
-        super(parent);
+    public AbstractSimpleBlock(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new BlockGroup(this));
     }

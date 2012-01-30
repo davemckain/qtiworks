@@ -139,7 +139,7 @@ public class CasProcess extends MathAssessOperator {
 
         logger.info("Performing casProcess: code={}, simplify={}", code, simplify);
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         /* Pass variables to Maxima */

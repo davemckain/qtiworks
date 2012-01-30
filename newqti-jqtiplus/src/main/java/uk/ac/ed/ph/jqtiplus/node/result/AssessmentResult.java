@@ -56,7 +56,7 @@ public class AssessmentResult extends AbstractNode implements RootObject {
     private static final long serialVersionUID = 7910600704491621036L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "assessmentResult";
+    public static final String QTI_CLASS_NAME = "assessmentResult";
 
     private URI systemId;
     private ModelRichness modelRichness;
@@ -65,16 +65,11 @@ public class AssessmentResult extends AbstractNode implements RootObject {
      * Constructs assessmentResult.
      */
     public AssessmentResult() {
-        super(null);
+        super(null, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ContextGroup(this));
         getNodeGroups().add(new TestResultGroup(this));
         getNodeGroups().add(new ItemResultGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

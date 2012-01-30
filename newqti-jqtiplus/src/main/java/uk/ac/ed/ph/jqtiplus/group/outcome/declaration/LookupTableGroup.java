@@ -58,8 +58,8 @@ public class LookupTableGroup extends AbstractNodeGroup {
         super(parent, LookupTable.DISPLAY_NAME, false);
 
         getAllSupportedClasses().clear();
-        getAllSupportedClasses().add(MatchTable.CLASS_TAG);
-        getAllSupportedClasses().add(InterpolationTable.CLASS_TAG);
+        getAllSupportedClasses().add(MatchTable.QTI_CLASS_NAME);
+        getAllSupportedClasses().add(InterpolationTable.QTI_CLASS_NAME);
     }
 
     @Override
@@ -97,10 +97,10 @@ public class LookupTableGroup extends AbstractNodeGroup {
      */
     @Override
     public LookupTable create(String classTag) {
-        if (classTag.equals(MatchTable.CLASS_TAG)) {
+        if (classTag.equals(MatchTable.QTI_CLASS_NAME)) {
             return new MatchTable((OutcomeDeclaration) getParent());
         }
-        else if (classTag.equals(InterpolationTable.CLASS_TAG)) {
+        else if (classTag.equals(InterpolationTable.QTI_CLASS_NAME)) {
             return new InterpolationTable((OutcomeDeclaration) getParent());
         }
         else {

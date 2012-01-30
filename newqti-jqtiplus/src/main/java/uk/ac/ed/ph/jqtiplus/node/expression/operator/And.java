@@ -56,7 +56,7 @@ public class And extends AbstractExpression {
     private static final long serialVersionUID = -4630697734460296251L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "and";
+    public static final String QTI_CLASS_NAME = "and";
 
     /**
      * Constructs expression.
@@ -64,12 +64,7 @@ public class And extends AbstractExpression {
      * @param parent parent of this expression
      */
     public And(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

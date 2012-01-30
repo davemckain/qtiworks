@@ -56,7 +56,7 @@ public class TbodyGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TbodyGroup(Table parent) {
-        super(parent, Tbody.CLASS_TAG, 1, null);
+        super(parent, Tbody.QTI_CLASS_NAME, 1, null);
     }
 
     /**

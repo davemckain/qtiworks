@@ -49,22 +49,12 @@ public class SimpleChoice extends Choice {
     private static final long serialVersionUID = 5742864616479376297L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "simpleChoice";
+    public static final String QTI_CLASS_NAME = "simpleChoice";
 
-    /**
-     * Construct new simpleChoice.
-     * 
-     * @param parent Parent node
-     */
     public SimpleChoice(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowStaticGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

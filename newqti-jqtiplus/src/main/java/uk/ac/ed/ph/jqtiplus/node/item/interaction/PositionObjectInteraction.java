@@ -86,7 +86,7 @@ public class PositionObjectInteraction extends BlockInteraction {
     private static final long serialVersionUID = 6496712889271262175L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "positionObjectInteraction";
+    public static final String QTI_CLASS_NAME = "positionObjectInteraction";
 
     /** Name of centerPoint attribute in xml schema. */
     public static String ATTR_CENTER_POINT_NAME = "centerPoint";
@@ -100,24 +100,14 @@ public class PositionObjectInteraction extends BlockInteraction {
     /** Name of minChoices attribute in xml schema. */
     public static String ATTR_MIN_CHOICES_NAME = "minChoices";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public PositionObjectInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new CoordsAttribute(this, ATTR_CENTER_POINT_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
 
         getNodeGroups().add(new ObjectGroup(this, true));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

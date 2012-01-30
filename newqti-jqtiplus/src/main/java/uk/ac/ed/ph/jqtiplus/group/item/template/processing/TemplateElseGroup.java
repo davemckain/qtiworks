@@ -53,7 +53,7 @@ public class TemplateElseGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TemplateElseGroup(TemplateCondition parent) {
-        super(parent, TemplateElse.CLASS_TAG, false);
+        super(parent, TemplateElse.QTI_CLASS_NAME, false);
     }
 
     /**

@@ -61,8 +61,8 @@ public abstract class AssociableChoice extends Choice {
      * 
      * @param parent parent of constructed object
      */
-    public AssociableChoice(XmlNode parent) {
-        super(parent);
+    public AssociableChoice(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, null, false));
     }

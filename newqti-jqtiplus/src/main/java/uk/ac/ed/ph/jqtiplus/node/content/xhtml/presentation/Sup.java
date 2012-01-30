@@ -47,19 +47,9 @@ public class Sup extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 4801091548663100889L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "sup";
+    public static final String QTI_CLASS_NAME = "sup";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Sup(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

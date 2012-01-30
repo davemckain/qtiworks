@@ -76,8 +76,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -98,9 +96,6 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
 
     /** Line wrap limit while printing attributes. */
     public static final int LINE_WRAP_LIMIT = 100;
-
-    /** Logger. */
-    private static Logger logger = LoggerFactory.getLogger(AttributeList.class);
 
     /** Owner (node) of these attributes. */
     private final XmlNode owner;
@@ -149,7 +144,6 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
         for (final Attribute<?> child : attributes) {
             if (child.getLocalName().equals(attribute.getLocalName())) {
                 final QtiAttributeException ex = new QtiAttributeException("Duplicate attribute name: " + attribute.computeXPath());
-                logger.error(ex.getMessage());
                 throw ex;
             }
         }
@@ -277,21 +271,6 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
         return get(localName, namespaceUri, false);
     }
 
-    /**
-     * Gets attribute with given local name in no namespace, or null (if attribute is not found).
-     * Silent parameter is useful for support of unknown attributes.
-     * 
-     * @param localName name of requested attribute
-     * @param silent if exception should be thrown in case attribute is not
-     *            found
-     * @return attribute with given name
-     * @throws QtiAttributeException if silent is false and if attribute is not
-     *             found
-     */
-    private Attribute<?> get(String localName, boolean silent) {
-        return get(localName, "", silent);
-    }
-    
     /**
      * Gets attribute with given local name and namespace URI or null (if attribute is not found).
      * Silent parameter is useful for support of unknown attributes.

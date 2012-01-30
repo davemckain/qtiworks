@@ -51,22 +51,12 @@ public class Div extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = -3635119989161671687L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "div";
+    public static final String QTI_CLASS_NAME = "div";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Div(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

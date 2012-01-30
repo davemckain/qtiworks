@@ -52,7 +52,7 @@ public enum ReturnType {
     BOOLEAN_ORDERED("booleanOrdered");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "returnTypeCard";
+    public static final String QTI_CLASS_NAME = "returnTypeCard";
 
     private static Map<String, ReturnType> returnTypes = new HashMap<String, ReturnType>();
     static {
@@ -75,7 +75,7 @@ public enum ReturnType {
         final ReturnType result = returnTypes.get(returnType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + returnType + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + returnType + "'.");
         }
 
         return result;

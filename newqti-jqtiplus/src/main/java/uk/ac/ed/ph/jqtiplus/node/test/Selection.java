@@ -50,7 +50,7 @@ public class Selection extends AbstractNode {
     private static final long serialVersionUID = 1716825756388015143L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "selection";
+    public static final String QTI_CLASS_NAME = "selection";
 
     /** Name of select attribute in xml schema. */
     public static final String ATTR_SELECT_NAME = "select";
@@ -61,13 +61,8 @@ public class Selection extends AbstractNode {
     /** Default value of withReplacement attribute. */
     public static final Boolean ATTR_WITH_REPLACEMENT_DEFAULT_VALUE = false;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object.
-     */
     public Selection(AssessmentSection parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SELECT_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_WITH_REPLACEMENT_NAME, ATTR_WITH_REPLACEMENT_DEFAULT_VALUE));
@@ -76,11 +71,6 @@ public class Selection extends AbstractNode {
     @Override
     public AssessmentSection getParent() {
         return (AssessmentSection) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

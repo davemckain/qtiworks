@@ -47,7 +47,7 @@ public class Address extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = -8796823739089840465L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "address";
+    public static final String QTI_CLASS_NAME = "address";
 
     /**
      * Constructs object.
@@ -55,11 +55,6 @@ public class Address extends AbstractAtomicBlock implements AtomicBlock {
      * @param parent parent of constructed object
      */
     public Address(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

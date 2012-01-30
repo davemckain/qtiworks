@@ -54,7 +54,7 @@ public class GapImgGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public GapImgGroup(XmlNode parent) {
-        super(parent, GapImg.CLASS_TAG, null, null);
+        super(parent, GapImg.QTI_CLASS_NAME, null, null);
     }
 
     /**
@@ -64,7 +64,7 @@ public class GapImgGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public GapImgGroup(XmlNode parent, Integer minimum) {
-        super(parent, GapImg.CLASS_TAG, minimum, null);
+        super(parent, GapImg.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

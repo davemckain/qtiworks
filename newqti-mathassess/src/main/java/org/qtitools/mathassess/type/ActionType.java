@@ -45,7 +45,7 @@ public enum ActionType {
     CODE("code");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "actionType";
+    public static final String QTI_CLASS_NAME = "actionType";
 
     private static Map<String, ActionType> actionTypes = new HashMap<String, ActionType>();
     static {
@@ -68,7 +68,7 @@ public enum ActionType {
         final ActionType result = actionTypes.get(actionType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + actionType + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + actionType + "'.");
         }
 
         return result;

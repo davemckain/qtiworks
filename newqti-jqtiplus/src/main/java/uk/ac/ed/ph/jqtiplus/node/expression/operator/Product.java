@@ -50,20 +50,10 @@ public class Product extends MathMapExpression {
     private static final long serialVersionUID = -2295060978243080278L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "product";
+    public static final String QTI_CLASS_NAME = "product";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Product(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

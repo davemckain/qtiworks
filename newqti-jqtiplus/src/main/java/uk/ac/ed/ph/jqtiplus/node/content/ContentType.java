@@ -155,7 +155,7 @@ public enum ContentType {
     /**
      * associateInteraction
      */
-    ASSOCIATE_INTERACTION(AssociateInteraction.CLASS_TAG, AssociateInteraction.class) {
+    ASSOCIATE_INTERACTION(AssociateInteraction.QTI_CLASS_NAME, AssociateInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -165,7 +165,7 @@ public enum ContentType {
     /**
      * choiceInteraction
      */
-    CHOICE_INTERACTION(ChoiceInteraction.CLASS_TAG, ChoiceInteraction.class) {
+    CHOICE_INTERACTION(ChoiceInteraction.QTI_CLASS_NAME, ChoiceInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -175,7 +175,7 @@ public enum ContentType {
     /**
      * drawingInteraction
      */
-    DRAWING_INTERACTION(DrawingInteraction.CLASS_TAG, DrawingInteraction.class) {
+    DRAWING_INTERACTION(DrawingInteraction.QTI_CLASS_NAME, DrawingInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -185,7 +185,7 @@ public enum ContentType {
     /**
      * extendedTextInteraction
      */
-    EXTENDED_TEXT_INTERACTION(ExtendedTextInteraction.CLASS_TAG, ExtendedTextInteraction.class) {
+    EXTENDED_TEXT_INTERACTION(ExtendedTextInteraction.QTI_CLASS_NAME, ExtendedTextInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -195,7 +195,7 @@ public enum ContentType {
     /**
      * gapMatchInteraction
      */
-    GAP_MATCH_INTERACTION(GapMatchInteraction.CLASS_TAG, GapMatchInteraction.class) {
+    GAP_MATCH_INTERACTION(GapMatchInteraction.QTI_CLASS_NAME, GapMatchInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -205,7 +205,7 @@ public enum ContentType {
     /**
      * graphicAssociateInteraction
      */
-    GRAPHIC_ASSOCIATE_INTERACTION(GraphicAssociateInteraction.CLASS_TAG, GraphicAssociateInteraction.class) {
+    GRAPHIC_ASSOCIATE_INTERACTION(GraphicAssociateInteraction.QTI_CLASS_NAME, GraphicAssociateInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -215,7 +215,7 @@ public enum ContentType {
     /**
      * graphicGapMatchInteraction
      */
-    GRAPHIC_GAP_MATCH_INTERACTION(GraphicGapMatchInteraction.CLASS_TAG, GraphicGapMatchInteraction.class) {
+    GRAPHIC_GAP_MATCH_INTERACTION(GraphicGapMatchInteraction.QTI_CLASS_NAME, GraphicGapMatchInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -225,7 +225,7 @@ public enum ContentType {
     /**
      * graphicOrderInteration
      */
-    GRAPHIC_ORDER_INTERACTION(GraphicOrderInteraction.CLASS_TAG, GraphicOrderInteraction.class) {
+    GRAPHIC_ORDER_INTERACTION(GraphicOrderInteraction.QTI_CLASS_NAME, GraphicOrderInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -235,7 +235,7 @@ public enum ContentType {
     /**
      * hotspotInteraction
      */
-    HOTSPOT_INTERACTION(HotspotInteraction.CLASS_TAG, HotspotInteraction.class) {
+    HOTSPOT_INTERACTION(HotspotInteraction.QTI_CLASS_NAME, HotspotInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -245,7 +245,7 @@ public enum ContentType {
     /**
      * selectPointInteraction
      */
-    SELECT_POINT_INTERACTION(SelectPointInteraction.CLASS_TAG, SelectPointInteraction.class) {
+    SELECT_POINT_INTERACTION(SelectPointInteraction.QTI_CLASS_NAME, SelectPointInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -255,7 +255,7 @@ public enum ContentType {
     /**
      * hottextInteraction
      */
-    HOTTEXT_INTERACTION(HottextInteraction.CLASS_TAG, HottextInteraction.class) {
+    HOTTEXT_INTERACTION(HottextInteraction.QTI_CLASS_NAME, HottextInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -265,7 +265,7 @@ public enum ContentType {
     /**
      * matchInteraction
      */
-    MATCH_INTERACTION(MatchInteraction.CLASS_TAG, MatchInteraction.class) {
+    MATCH_INTERACTION(MatchInteraction.QTI_CLASS_NAME, MatchInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -275,7 +275,7 @@ public enum ContentType {
     /**
      * mediaInteraction
      */
-    MEDIA_INTERACTION(MediaInteraction.CLASS_TAG, MediaInteraction.class) {
+    MEDIA_INTERACTION(MediaInteraction.QTI_CLASS_NAME, MediaInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -285,7 +285,7 @@ public enum ContentType {
     /**
      * orderInteraction
      */
-    ORDER_INTERACTION(OrderInteraction.CLASS_TAG, OrderInteraction.class) {
+    ORDER_INTERACTION(OrderInteraction.QTI_CLASS_NAME, OrderInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -295,7 +295,7 @@ public enum ContentType {
     /**
      * sliderInteraction
      */
-    SLIDER_INTERACTION(SliderInteraction.CLASS_TAG, SliderInteraction.class) {
+    SLIDER_INTERACTION(SliderInteraction.QTI_CLASS_NAME, SliderInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -305,7 +305,7 @@ public enum ContentType {
     /**
      * uploadInteraction
      */
-    UPLOAD_INTERACTION(UploadInteraction.CLASS_TAG, UploadInteraction.class) {
+    UPLOAD_INTERACTION(UploadInteraction.QTI_CLASS_NAME, UploadInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -316,7 +316,7 @@ public enum ContentType {
     /**
      * address
      */
-    ADDRESS(Address.CLASS_TAG, Address.class) {
+    ADDRESS(Address.QTI_CLASS_NAME, Address.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -326,7 +326,7 @@ public enum ContentType {
     /**
      * h1
      */
-    H1(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.class) {
+    H1(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -336,7 +336,7 @@ public enum ContentType {
     /**
      * h2
      */
-    H2(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.class) {
+    H2(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -346,7 +346,7 @@ public enum ContentType {
     /**
      * h3
      */
-    H3(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.class) {
+    H3(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -356,7 +356,7 @@ public enum ContentType {
     /**
      * h4
      */
-    H4(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.class) {
+    H4(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -366,7 +366,7 @@ public enum ContentType {
     /**
      * h5
      */
-    H5(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.class) {
+    H5(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -376,7 +376,7 @@ public enum ContentType {
     /**
      * h6
      */
-    H6(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.class) {
+    H6(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -386,7 +386,7 @@ public enum ContentType {
     /**
      * p
      */
-    P(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.class) {
+    P(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -396,7 +396,7 @@ public enum ContentType {
     /**
      * pre
      */
-    PRE(Pre.CLASS_TAG, Pre.class) {
+    PRE(Pre.QTI_CLASS_NAME, Pre.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -406,7 +406,7 @@ public enum ContentType {
     /**
      * div
      */
-    DIV(Div.CLASS_TAG, Div.class) {
+    DIV(Div.QTI_CLASS_NAME, Div.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -414,7 +414,7 @@ public enum ContentType {
         }
     },
 
-    INFOCONTROL(InfoControl.CLASS_TAG, InfoControl.class) {
+    INFOCONTROL(InfoControl.QTI_CLASS_NAME, InfoControl.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -425,7 +425,7 @@ public enum ContentType {
     /**
      * dl
      */
-    DL(Dl.CLASS_TAG, Dl.class) {
+    DL(Dl.QTI_CLASS_NAME, Dl.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -435,7 +435,7 @@ public enum ContentType {
     /**
      * hr
      */
-    HR(Hr.CLASS_TAG, Hr.class) {
+    HR(Hr.QTI_CLASS_NAME, Hr.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -445,7 +445,7 @@ public enum ContentType {
     /**
      * math
      */
-    MATH(Math.CLASS_TAG, Math.class) {
+    MATH(Math.QTI_CLASS_NAME, Math.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -455,7 +455,7 @@ public enum ContentType {
     /**
      * ol
      */
-    OL(Ol.CLASS_TAG, Ol.class) {
+    OL(Ol.QTI_CLASS_NAME, Ol.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -465,7 +465,7 @@ public enum ContentType {
     /**
      * blockquote
      */
-    BLOCKQUOTE(Blockquote.CLASS_TAG, Blockquote.class) {
+    BLOCKQUOTE(Blockquote.QTI_CLASS_NAME, Blockquote.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -475,7 +475,7 @@ public enum ContentType {
     /**
      * feedbackBlock
      */
-    FEEDBACK_BLOCK(FeedbackBlock.CLASS_TAG, FeedbackBlock.class) {
+    FEEDBACK_BLOCK(FeedbackBlock.QTI_CLASS_NAME, FeedbackBlock.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -485,7 +485,7 @@ public enum ContentType {
     /**
      * rubricBlock
      */
-    RUBRIC_BLOCK(RubricBlock.CLASS_TAG, RubricBlock.class) {
+    RUBRIC_BLOCK(RubricBlock.QTI_CLASS_NAME, RubricBlock.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -495,7 +495,7 @@ public enum ContentType {
     /**
      * table
      */
-    TABLE(Table.CLASS_TAG, Table.class) {
+    TABLE(Table.QTI_CLASS_NAME, Table.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -505,7 +505,7 @@ public enum ContentType {
     /**
      * ul
      */
-    UL(Ul.CLASS_TAG, Ul.class) {
+    UL(Ul.QTI_CLASS_NAME, Ul.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -515,7 +515,7 @@ public enum ContentType {
     /**
      * customInteraction
      */
-    CUSTOM_INTERACTION(CustomInteraction.CLASS_TAG, CustomInteraction.class) {
+    CUSTOM_INTERACTION(CustomInteraction.QTI_CLASS_NAME, CustomInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -525,7 +525,7 @@ public enum ContentType {
     /**
      * positionObjectStage
      */
-    POSITION_OBJECT_STAGE(PositionObjectStage.CLASS_TAG, PositionObjectStage.class) {
+    POSITION_OBJECT_STAGE(PositionObjectStage.QTI_CLASS_NAME, PositionObjectStage.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -535,7 +535,7 @@ public enum ContentType {
     /**
      * positionObjectInteraction
      */
-    POSITION_OBJECT_INTERACTION(PositionObjectInteraction.CLASS_TAG, PositionObjectInteraction.class) {
+    POSITION_OBJECT_INTERACTION(PositionObjectInteraction.QTI_CLASS_NAME, PositionObjectInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -545,7 +545,7 @@ public enum ContentType {
     /**
      * endAttemptInteraction
      */
-    END_ATTEMPT_INTERACTION(EndAttemptInteraction.CLASS_TAG, EndAttemptInteraction.class) {
+    END_ATTEMPT_INTERACTION(EndAttemptInteraction.QTI_CLASS_NAME, EndAttemptInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -555,7 +555,7 @@ public enum ContentType {
     /**
      * inlineChoiceInteraction
      */
-    INLINE_CHOICE_INTERACTION(InlineChoiceInteraction.CLASS_TAG, InlineChoiceInteraction.class) {
+    INLINE_CHOICE_INTERACTION(InlineChoiceInteraction.QTI_CLASS_NAME, InlineChoiceInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -565,7 +565,7 @@ public enum ContentType {
     /**
      * textEntyInteraction
      */
-    TEXT_ENTRY_INTERACTION(TextEntryInteraction.CLASS_TAG, TextEntryInteraction.class) {
+    TEXT_ENTRY_INTERACTION(TextEntryInteraction.QTI_CLASS_NAME, TextEntryInteraction.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -576,7 +576,7 @@ public enum ContentType {
     /**
      * br
      */
-    BR(Br.CLASS_TAG, Br.class) {
+    BR(Br.QTI_CLASS_NAME, Br.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -586,7 +586,7 @@ public enum ContentType {
     /**
      * img
      */
-    IMG(Img.CLASS_TAG, Img.class) {
+    IMG(Img.QTI_CLASS_NAME, Img.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -596,7 +596,7 @@ public enum ContentType {
     /**
      * gap
      */
-    GAP(Gap.CLASS_TAG, Gap.class) {
+    GAP(Gap.QTI_CLASS_NAME, Gap.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -606,7 +606,7 @@ public enum ContentType {
     /**
      * hottext
      */
-    HOTTEXT(Hottext.CLASS_TAG, Hottext.class) {
+    HOTTEXT(Hottext.QTI_CLASS_NAME, Hottext.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -616,7 +616,7 @@ public enum ContentType {
     /**
      * object
      */
-    OBJECT(uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.class) {
+    OBJECT(uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -626,7 +626,7 @@ public enum ContentType {
     /**
      * printedVariable
      */
-    PRINTED_VARIABLE(PrintedVariable.CLASS_TAG, PrintedVariable.class) {
+    PRINTED_VARIABLE(PrintedVariable.QTI_CLASS_NAME, PrintedVariable.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -636,7 +636,7 @@ public enum ContentType {
     /**
      * a
      */
-    A(uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.class) {
+    A(uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -646,7 +646,7 @@ public enum ContentType {
     /**
      * abbr
      */
-    ABBR(Abbr.CLASS_TAG, Abbr.class) {
+    ABBR(Abbr.QTI_CLASS_NAME, Abbr.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -656,7 +656,7 @@ public enum ContentType {
     /**
      * acronym
      */
-    ACRONYM(Acronym.CLASS_TAG, Acronym.class) {
+    ACRONYM(Acronym.QTI_CLASS_NAME, Acronym.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -666,7 +666,7 @@ public enum ContentType {
     /**
      * b
      */
-    B(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.class) {
+    B(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -676,7 +676,7 @@ public enum ContentType {
     /**
      * big
      */
-    BIG(Big.CLASS_TAG, Big.class) {
+    BIG(Big.QTI_CLASS_NAME, Big.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -686,7 +686,7 @@ public enum ContentType {
     /**
      * cite
      */
-    CITE(Cite.CLASS_TAG, Cite.class) {
+    CITE(Cite.QTI_CLASS_NAME, Cite.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -696,7 +696,7 @@ public enum ContentType {
     /**
      * code
      */
-    CODE(Code.CLASS_TAG, Code.class) {
+    CODE(Code.QTI_CLASS_NAME, Code.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -706,7 +706,7 @@ public enum ContentType {
     /**
      * dfn
      */
-    DFN(Dfn.CLASS_TAG, Dfn.class) {
+    DFN(Dfn.QTI_CLASS_NAME, Dfn.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -716,7 +716,7 @@ public enum ContentType {
     /**
      * em
      */
-    EM(Em.CLASS_TAG, Em.class) {
+    EM(Em.QTI_CLASS_NAME, Em.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -726,7 +726,7 @@ public enum ContentType {
     /**
      * feedbackInline
      */
-    FEEDBACK_INLINE(FeedbackInline.CLASS_TAG, FeedbackInline.class) {
+    FEEDBACK_INLINE(FeedbackInline.QTI_CLASS_NAME, FeedbackInline.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -736,7 +736,7 @@ public enum ContentType {
     /**
      * i
      */
-    I(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.class) {
+    I(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -746,7 +746,7 @@ public enum ContentType {
     /**
      * kbd
      */
-    KBD(Kbd.CLASS_TAG, Kbd.class) {
+    KBD(Kbd.QTI_CLASS_NAME, Kbd.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -756,7 +756,7 @@ public enum ContentType {
     /**
      * q
      */
-    Q(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.CLASS_TAG, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.class) {
+    Q(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -766,7 +766,7 @@ public enum ContentType {
     /**
      * samp
      */
-    SAMP(Samp.CLASS_TAG, Samp.class) {
+    SAMP(Samp.QTI_CLASS_NAME, Samp.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -776,7 +776,7 @@ public enum ContentType {
     /**
      * small
      */
-    SMALL(Small.CLASS_TAG, Small.class) {
+    SMALL(Small.QTI_CLASS_NAME, Small.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -786,7 +786,7 @@ public enum ContentType {
     /**
      * span
      */
-    SPAN(Span.CLASS_TAG, Span.class) {
+    SPAN(Span.QTI_CLASS_NAME, Span.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -796,7 +796,7 @@ public enum ContentType {
     /**
      * strong
      */
-    STRONG(Strong.CLASS_TAG, Strong.class) {
+    STRONG(Strong.QTI_CLASS_NAME, Strong.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -806,7 +806,7 @@ public enum ContentType {
     /**
      * sub
      */
-    SUB(Sub.CLASS_TAG, Sub.class) {
+    SUB(Sub.QTI_CLASS_NAME, Sub.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -816,7 +816,7 @@ public enum ContentType {
     /**
      * sup
      */
-    SUP(Sup.CLASS_TAG, Sup.class) {
+    SUP(Sup.QTI_CLASS_NAME, Sup.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -826,7 +826,7 @@ public enum ContentType {
     /**
      * tt
      */
-    TT(Tt.CLASS_TAG, Tt.class) {
+    TT(Tt.QTI_CLASS_NAME, Tt.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -836,7 +836,7 @@ public enum ContentType {
     /**
      * var
      */
-    VAR(Var.CLASS_TAG, Var.class) {
+    VAR(Var.QTI_CLASS_NAME, Var.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -846,7 +846,7 @@ public enum ContentType {
     /**
      * templateInline
      */
-    TEMPLATE_INLINE(TemplateInline.CLASS_TAG, TemplateInline.class) {
+    TEMPLATE_INLINE(TemplateInline.QTI_CLASS_NAME, TemplateInline.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -866,7 +866,7 @@ public enum ContentType {
     /**
      * param
      */
-    PARAM(Param.CLASS_TAG, Param.class) {
+    PARAM(Param.QTI_CLASS_NAME, Param.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -876,7 +876,7 @@ public enum ContentType {
     /**
      * caption
      */
-    CAPTION(Caption.CLASS_TAG, Caption.class) {
+    CAPTION(Caption.QTI_CLASS_NAME, Caption.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -886,7 +886,7 @@ public enum ContentType {
     /**
      * simpleChoice
      */
-    SIMPLE_CHOICE(SimpleChoice.CLASS_TAG, SimpleChoice.class) {
+    SIMPLE_CHOICE(SimpleChoice.QTI_CLASS_NAME, SimpleChoice.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -896,7 +896,7 @@ public enum ContentType {
     /**
      * simpleAssociableChoice
      */
-    SIMPLE_ASSOCIABLE_CHOICE(SimpleAssociableChoice.CLASS_TAG, SimpleAssociableChoice.class) {
+    SIMPLE_ASSOCIABLE_CHOICE(SimpleAssociableChoice.QTI_CLASS_NAME, SimpleAssociableChoice.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -906,7 +906,7 @@ public enum ContentType {
     /**
      * simpleMatchSet
      */
-    SIMPLE_MATCH_SET(SimpleMatchSet.CLASS_TAG, SimpleMatchSet.class) {
+    SIMPLE_MATCH_SET(SimpleMatchSet.QTI_CLASS_NAME, SimpleMatchSet.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -916,7 +916,7 @@ public enum ContentType {
     /**
      * gapImg
      */
-    GAP_IMG(GapImg.CLASS_TAG, GapImg.class) {
+    GAP_IMG(GapImg.QTI_CLASS_NAME, GapImg.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -926,7 +926,7 @@ public enum ContentType {
     /**
      * gapText
      */
-    GAP_TEXT(GapText.CLASS_TAG, GapText.class) {
+    GAP_TEXT(GapText.QTI_CLASS_NAME, GapText.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -936,7 +936,7 @@ public enum ContentType {
     /**
      * associableHotspot
      */
-    ASSOCIABLE_HOTSPOT(AssociableHotspot.CLASS_TAG, AssociableHotspot.class) {
+    ASSOCIABLE_HOTSPOT(AssociableHotspot.QTI_CLASS_NAME, AssociableHotspot.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -946,7 +946,7 @@ public enum ContentType {
     /**
      * hotspotChoice
      */
-    HOTSPOT_CHOICE(HotspotChoice.CLASS_TAG, HotspotChoice.class) {
+    HOTSPOT_CHOICE(HotspotChoice.QTI_CLASS_NAME, HotspotChoice.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -956,7 +956,7 @@ public enum ContentType {
     /**
      * inlineChoice
      */
-    INLINE_CHOICE(InlineChoice.CLASS_TAG, InlineChoice.class) {
+    INLINE_CHOICE(InlineChoice.QTI_CLASS_NAME, InlineChoice.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -966,7 +966,7 @@ public enum ContentType {
     /**
      * col
      */
-    COL(Col.CLASS_TAG, Col.class) {
+    COL(Col.QTI_CLASS_NAME, Col.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -976,7 +976,7 @@ public enum ContentType {
     /**
      * colgroup
      */
-    COLGROUP(Colgroup.CLASS_TAG, Colgroup.class) {
+    COLGROUP(Colgroup.QTI_CLASS_NAME, Colgroup.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -986,7 +986,7 @@ public enum ContentType {
     /**
      * dd
      */
-    DD(Dd.CLASS_TAG, Dd.class) {
+    DD(Dd.QTI_CLASS_NAME, Dd.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -996,7 +996,7 @@ public enum ContentType {
     /**
      * dt
      */
-    DT(Dt.CLASS_TAG, Dt.class) {
+    DT(Dt.QTI_CLASS_NAME, Dt.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1006,7 +1006,7 @@ public enum ContentType {
     /**
      * itemBody
      */
-    ITEM_BODY(ItemBody.CLASS_TAG, ItemBody.class) {
+    ITEM_BODY(ItemBody.QTI_CLASS_NAME, ItemBody.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1016,7 +1016,7 @@ public enum ContentType {
     /**
      * li
      */
-    LI(Li.CLASS_TAG, Li.class) {
+    LI(Li.QTI_CLASS_NAME, Li.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1026,7 +1026,7 @@ public enum ContentType {
     /**
      * prompt
      */
-    PROMPT(Prompt.CLASS_TAG, Prompt.class) {
+    PROMPT(Prompt.QTI_CLASS_NAME, Prompt.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1036,7 +1036,7 @@ public enum ContentType {
     /**
      * td
      */
-    TD(Td.CLASS_TAG, Td.class) {
+    TD(Td.QTI_CLASS_NAME, Td.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1046,7 +1046,7 @@ public enum ContentType {
     /**
      * th
      */
-    TH(Th.CLASS_TAG, Th.class) {
+    TH(Th.QTI_CLASS_NAME, Th.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1056,7 +1056,7 @@ public enum ContentType {
     /**
      * tbody
      */
-    TBODY(Tbody.CLASS_TAG, Tbody.class) {
+    TBODY(Tbody.QTI_CLASS_NAME, Tbody.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1066,7 +1066,7 @@ public enum ContentType {
     /**
      * tfoot
      */
-    TFOOT(Tfoot.CLASS_TAG, Tfoot.class) {
+    TFOOT(Tfoot.QTI_CLASS_NAME, Tfoot.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1076,7 +1076,7 @@ public enum ContentType {
     /**
      * thead
      */
-    THEAD(Thead.CLASS_TAG, Thead.class) {
+    THEAD(Thead.QTI_CLASS_NAME, Thead.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1086,7 +1086,7 @@ public enum ContentType {
     /**
      * tr
      */
-    TR(Tr.CLASS_TAG, Tr.class) {
+    TR(Tr.QTI_CLASS_NAME, Tr.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1096,7 +1096,7 @@ public enum ContentType {
     /**
      * templateBlock
      */
-    TEMPLATE_BLOCK(TemplateBlock.CLASS_TAG, TemplateBlock.class) {
+    TEMPLATE_BLOCK(TemplateBlock.QTI_CLASS_NAME, TemplateBlock.class) {
 
         @Override
         public XmlNode create(XmlNode parent) {
@@ -1303,9 +1303,9 @@ public enum ContentType {
     }
 
     /**
-     * Gets CLASS_TAG of this block type.
+     * Gets QTI_CLASS_NAME of this block type.
      * 
-     * @return CLASS_TAG of this block type
+     * @return QTI_CLASS_NAME of this block type
      */
     public String getClassTag() {
         return classTag;
@@ -1334,10 +1334,10 @@ public enum ContentType {
     }
 
     /**
-     * Gets content type for given CLASS_TAG.
+     * Gets content type for given QTI_CLASS_NAME.
      * 
-     * @param classTag CLASS_TAG
-     * @return content type for given CLASS_TAG
+     * @param classTag QTI_CLASS_NAME
+     * @return content type for given QTI_CLASS_NAME
      */
     public static ContentType getType(String classTag) {
         return contentTypes.get(classTag);
@@ -1347,7 +1347,7 @@ public enum ContentType {
      * Creates content element.
      * 
      * @param parent parent of created content
-     * @param classTag CLASS_TAG of created content
+     * @param classTag QTI_CLASS_NAME of created content
      * @return created content
      */
     public static XmlNode getInstance(XmlNode parent, String classTag) {
@@ -1364,7 +1364,7 @@ public enum ContentType {
      * Creates block element.
      * 
      * @param parent parent of created block
-     * @param classTag CLASS_TAG of created block
+     * @param classTag QTI_CLASS_NAME of created block
      * @return created block
      */
     public static Block getBlockInstance(XmlNode parent, String classTag) {
@@ -1381,7 +1381,7 @@ public enum ContentType {
      * Creates inline element.
      * 
      * @param parent parent of created inline
-     * @param classTag CLASS_TAG of created inline
+     * @param classTag QTI_CLASS_NAME of created inline
      * @return created inline
      */
     public static Inline getInlineInstance(XmlNode parent, String classTag) {
@@ -1398,7 +1398,7 @@ public enum ContentType {
      * Creates flow element.
      * 
      * @param parent parent of created flow
-     * @param classTag CLASS_TAG of created flow
+     * @param classTag QTI_CLASS_NAME of created flow
      * @return created flow
      */
     public static Flow getFlowInstance(XmlNode parent, String classTag) {
@@ -1415,7 +1415,7 @@ public enum ContentType {
      * Creates objectFlow element.
      * 
      * @param parent parent of created objectFlow
-     * @param classTag CLASS_TAG of created objectFlow
+     * @param classTag QTI_CLASS_NAME of created objectFlow
      * @return created objectFlow
      */
     public static ObjectFlow getObjectFlowInstance(XmlNode parent, String classTag) {
@@ -1432,7 +1432,7 @@ public enum ContentType {
      * Creates inlineStatic element.
      * 
      * @param parent parent of created inlineStatic
-     * @param classTag CLASS_TAG of created inlineStatic
+     * @param classTag QTI_CLASS_NAME of created inlineStatic
      * @return created inlineStatic
      */
     public static InlineStatic getInlineStaticInstance(XmlNode parent, String classTag) {
@@ -1449,7 +1449,7 @@ public enum ContentType {
      * Creates flowStatic element.
      * 
      * @param parent parent of created flowStatic
-     * @param classTag CLASS_TAG of created flowStatic
+     * @param classTag QTI_CLASS_NAME of created flowStatic
      * @return created flowStatic
      */
     public static FlowStatic getFlowStaticInstance(XmlNode parent, String classTag) {
@@ -1466,7 +1466,7 @@ public enum ContentType {
      * Creates textOrVariable element.
      * 
      * @param parent parent of created textOrVariable
-     * @param classTag CLASS_TAG of created textOrVariable
+     * @param classTag QTI_CLASS_NAME of created textOrVariable
      * @return created textOrVariable
      */
     public static TextOrVariable getTextOrVariableInstance(XmlNode parent, String classTag) {
@@ -1483,7 +1483,7 @@ public enum ContentType {
      * Creates blockStatic element.
      * 
      * @param parent parent of created blockStatic
-     * @param classTag CLASS_TAG of created blockStatic
+     * @param classTag QTI_CLASS_NAME of created blockStatic
      * @return created blockStatic
      */
     public static BlockStatic getBlockStaticInstance(XmlNode parent, String classTag) {
@@ -1500,7 +1500,7 @@ public enum ContentType {
      * Creates gapChoice element.
      * 
      * @param parent parent of created gapChoice
-     * @param classTag CLASS_TAG of created gapChoice
+     * @param classTag QTI_CLASS_NAME of created gapChoice
      * @return created gapChoice
      */
     public static GapChoice getGapChoiceInstance(XmlNode parent, String classTag) {
@@ -1517,7 +1517,7 @@ public enum ContentType {
      * Creates interaction element.
      * 
      * @param parent parent of created interaction
-     * @param classTag CLASS_TAG of created interaction
+     * @param classTag QTI_CLASS_NAME of created interaction
      * @return created interaction
      */
     public static Interaction getInteractionInstance(XmlNode parent, String classTag) {

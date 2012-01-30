@@ -52,20 +52,10 @@ public class Null extends AbstractExpression {
     private static final long serialVersionUID = -8742970323886675294L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "null";
+    public static final String QTI_CLASS_NAME = "null";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Null(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

@@ -46,7 +46,7 @@ import java.net.URI;
  * by this specification.
  * <p>
  * use the class attr to point to A java class (fully qualified) that implements Expression (and possibly extends AbstractExpression). If you do extend
- * AbstractExpression, set the CLASS_TAG to "customOperator", or override relevant methods required for validation that might call getType() to stop
+ * AbstractExpression, set the QTI_CLASS_NAME to "customOperator", or override relevant methods required for validation that might call getType() to stop
  * unsupportedExpression exceptions at runtime.
  * 
  * @author Jonathon Hare
@@ -56,7 +56,7 @@ public abstract class CustomOperator extends AbstractExpression {
     private static final long serialVersionUID = -3800871694273961417L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "customOperator";
+    public static final String QTI_CLASS_NAME = "customOperator";
 
     /** Name of the class attribute in xml schema. */
     public static final String ATTR_CLASS_NAME = "class";
@@ -67,28 +67,18 @@ public abstract class CustomOperator extends AbstractExpression {
     /** The {@link JqtiExtensionPackage} that defines this operator */
     private JqtiExtensionPackage jqtiExtensionPackage;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     protected CustomOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
         getAttributes().add(new StringAttribute(this, ATTR_CLASS_NAME, null, null, false)); //allow .'s, so use String
         getAttributes().add(new UriAttribute(this, ATTR_DEFINITION_NAME, null, null, false));
     }
 
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-
-    public JqtiExtensionPackage getJQTIExtensionPackage() {
+    public JqtiExtensionPackage getJqtiExtensionPackage() {
         return jqtiExtensionPackage;
     }
 
-    public void setJQTIExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
+    public void setJqtiExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
         this.jqtiExtensionPackage = jqtiExtensionPackage;
     }
 

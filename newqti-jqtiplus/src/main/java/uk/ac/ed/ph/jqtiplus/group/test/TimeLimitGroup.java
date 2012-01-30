@@ -53,7 +53,7 @@ public class TimeLimitGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TimeLimitGroup(ControlObject<?> parent) {
-        super(parent, TimeLimit.CLASS_TAG, false);
+        super(parent, TimeLimit.QTI_CLASS_NAME, false);
     }
 
     /**

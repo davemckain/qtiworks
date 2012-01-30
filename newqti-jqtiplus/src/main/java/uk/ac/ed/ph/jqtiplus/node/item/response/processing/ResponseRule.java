@@ -56,8 +56,8 @@ public abstract class ResponseRule extends AbstractNode {
      * 
      * @param parent parent of this rule
      */
-    public ResponseRule(XmlNode parent) {
-        super(parent);
+    public ResponseRule(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 
     /**

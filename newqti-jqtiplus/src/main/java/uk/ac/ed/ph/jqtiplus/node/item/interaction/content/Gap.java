@@ -54,7 +54,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
     private static final long serialVersionUID = 8587068031186931243L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "gap";
+    public static final String QTI_CLASS_NAME = "gap";
 
     /** Name of required attribute in xml schema. */
     public static String ATTR_REQUIRED_NAME = "required";
@@ -68,7 +68,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
      * @param parent parent of constructed object
      */
     public Gap(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE));
     }
@@ -97,10 +97,4 @@ public class Gap extends AssociableChoice implements InlineStatic {
     public List<? extends XmlNode> getChildren() {
         return null;
     }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-
 }

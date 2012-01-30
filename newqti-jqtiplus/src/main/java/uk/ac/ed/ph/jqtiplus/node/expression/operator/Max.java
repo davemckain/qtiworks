@@ -43,20 +43,10 @@ public class Max extends MathMapExpression {
     private static final long serialVersionUID = 226234156269457952L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "max";
+    public static final String QTI_CLASS_NAME = "max";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Max(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

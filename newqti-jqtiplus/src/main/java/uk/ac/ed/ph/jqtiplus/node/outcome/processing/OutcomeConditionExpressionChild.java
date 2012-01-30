@@ -59,8 +59,8 @@ public abstract class OutcomeConditionExpressionChild extends OutcomeConditionCh
      * 
      * @param parent parent of this condition rule child
      */
-    public OutcomeConditionExpressionChild(OutcomeCondition parent) {
-        super(parent);
+    public OutcomeConditionExpressionChild(OutcomeCondition parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }

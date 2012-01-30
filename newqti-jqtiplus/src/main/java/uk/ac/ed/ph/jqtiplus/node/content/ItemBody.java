@@ -78,22 +78,12 @@ public class ItemBody extends BodyElement {
     private static final long serialVersionUID = 5141415636417548133L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "itemBody";
+    public static final String QTI_CLASS_NAME = "itemBody";
 
-    /**
-     * Constructs assessmentItem.
-     * 
-     * @param parent The parent assessmentItem of this itemBody.
-     */
     public ItemBody(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

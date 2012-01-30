@@ -52,7 +52,7 @@ public class ItemSessionControl extends AbstractNode {
     private static final long serialVersionUID = 4320465731424106788L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "itemSessionControl";
+    public static final String QTI_CLASS_NAME = "itemSessionControl";
 
     /** Name of maxAttempts attribute in xml schema. */
     public static final String ATTR_MAX_ATTEMPTS_NAME = "maxAttempts";
@@ -117,13 +117,8 @@ public class ItemSessionControl extends AbstractNode {
     /** Default value of getValidateResponses method. */
     public static final boolean VALIDATE_RESPONSES_DEFAULT_VALUE = false;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public ItemSessionControl(AbstractPart parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ATTEMPTS_NAME, ATTR_MAX_ATTEMPTS_DEFAULT_VALUE));
         getAttributes().add(new BooleanAttribute(this, ATTR_SHOW_FEEDBACK_NAME, ATTR_SHOW_FEEDBACK_DEFAULT_VALUE));
@@ -137,11 +132,6 @@ public class ItemSessionControl extends AbstractNode {
     @Override
     public AbstractPart getParent() {
         return (AbstractPart) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

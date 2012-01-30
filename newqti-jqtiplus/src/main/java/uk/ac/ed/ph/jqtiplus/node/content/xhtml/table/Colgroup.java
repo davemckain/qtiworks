@@ -50,7 +50,7 @@ public class Colgroup extends BodyElement {
     private static final long serialVersionUID = -6478683798347489536L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "colgroup";
+    public static final String QTI_CLASS_NAME = "colgroup";
 
     /** Name of span attribute in xml schema. */
     public static final String ATTR_SPAN_NAME = "span";
@@ -58,22 +58,12 @@ public class Colgroup extends BodyElement {
     /** Default value of span attribute. */
     public static final int ATTR_SPAN_DEFAULT_VALUE = 1;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Colgroup(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE));
 
         getNodeGroups().add(new ColGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

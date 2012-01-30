@@ -56,7 +56,7 @@ public class WeightGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public WeightGroup(AssessmentItemRef parent) {
-        super(parent, Weight.CLASS_TAG, null, null);
+        super(parent, Weight.QTI_CLASS_NAME, null, null);
     }
 
     /**

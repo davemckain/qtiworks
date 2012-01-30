@@ -51,24 +51,19 @@ public class TestPart extends AbstractPart {
     private static final long serialVersionUID = 1808165853579519400L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "testPart";
+    public static final String QTI_CLASS_NAME = "testPart";
 
     /** Name of navigationMode attribute in xml schema. */
-    public static final String ATTR_NAVIGATION_MODE_NAME = NavigationMode.CLASS_TAG;
+    public static final String ATTR_NAVIGATION_MODE_NAME = NavigationMode.QTI_CLASS_NAME;
 
     /** Name of submissionMode attribute in xml schema. */
-    public static final String ATTR_SUBMISSION_MODE_NAME = SubmissionMode.CLASS_TAG;
+    public static final String ATTR_SUBMISSION_MODE_NAME = SubmissionMode.QTI_CLASS_NAME;
 
     /** ItemSessionControl with default values. It is used if no other is provided. */
     private final ItemSessionControl defaultItemSessionControl;
 
-    /**
-     * Constructs testPart.
-     * 
-     * @param parent parent of this testPart.
-     */
     public TestPart(AssessmentTest parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new NavigationModeAttribute(this, ATTR_NAVIGATION_MODE_NAME));
         getAttributes().add(new SubmissionModeAttribute(this, ATTR_SUBMISSION_MODE_NAME));
@@ -82,11 +77,6 @@ public class TestPart extends AbstractPart {
     @Override
     public AssessmentTest getParent() {
         return (AssessmentTest) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

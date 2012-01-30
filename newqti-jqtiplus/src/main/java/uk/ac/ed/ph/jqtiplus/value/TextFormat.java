@@ -76,7 +76,7 @@ public enum TextFormat {
     XHTML("xhtml");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "textFormat";
+    public static final String QTI_CLASS_NAME = "textFormat";
 
     private static Map<String, TextFormat> formats;
 
@@ -137,7 +137,7 @@ public enum TextFormat {
         final TextFormat result = formats.get(textFormat);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + textFormat + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + textFormat + "'.");
         }
 
         return result;

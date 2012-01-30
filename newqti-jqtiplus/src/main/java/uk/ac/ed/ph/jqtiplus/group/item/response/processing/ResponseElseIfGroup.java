@@ -55,7 +55,7 @@ public class ResponseElseIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ResponseElseIfGroup(ResponseCondition parent) {
-        super(parent, ResponseElseIf.CLASS_TAG, null, null);
+        super(parent, ResponseElseIf.QTI_CLASS_NAME, null, null);
     }
 
     /**

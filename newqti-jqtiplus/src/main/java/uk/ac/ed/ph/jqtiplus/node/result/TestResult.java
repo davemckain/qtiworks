@@ -43,19 +43,9 @@ public class TestResult extends AbstractResult {
     private static final long serialVersionUID = -8429518408087759547L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "testResult";
+    public static final String QTI_CLASS_NAME = "testResult";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public TestResult(AssessmentResult parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

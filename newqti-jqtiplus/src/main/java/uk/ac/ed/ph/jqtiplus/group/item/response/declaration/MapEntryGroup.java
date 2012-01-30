@@ -55,7 +55,7 @@ public class MapEntryGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public MapEntryGroup(Mapping parent) {
-        super(parent, MapEntry.CLASS_TAG, 1, null);
+        super(parent, MapEntry.QTI_CLASS_NAME, 1, null);
     }
 
     /**

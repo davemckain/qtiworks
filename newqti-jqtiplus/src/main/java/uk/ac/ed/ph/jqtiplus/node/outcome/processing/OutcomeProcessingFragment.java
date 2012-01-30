@@ -54,22 +54,12 @@ public class OutcomeProcessingFragment extends OutcomeRule {
     private static final long serialVersionUID = 4189180798268332071L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeProcessingFragment";
+    public static final String QTI_CLASS_NAME = "outcomeProcessingFragment";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public OutcomeProcessingFragment(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -86,7 +76,7 @@ public class OutcomeProcessingFragment extends OutcomeRule {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
         }
     }
 

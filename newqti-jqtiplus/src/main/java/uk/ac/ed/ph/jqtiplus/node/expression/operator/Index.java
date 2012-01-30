@@ -62,25 +62,15 @@ public class Index extends AbstractExpression {
     private static final long serialVersionUID = 909169733159523992L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "index";
+    public static final String QTI_CLASS_NAME = "index";
 
     /** Name of n attribute in xml schema. */
     public static final String ATTR_INDEX_NAME = "n";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Index(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_INDEX_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

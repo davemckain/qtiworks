@@ -47,19 +47,9 @@ public class I extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 1051111981638620976L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "i";
+    public static final String QTI_CLASS_NAME = "i";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public I(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

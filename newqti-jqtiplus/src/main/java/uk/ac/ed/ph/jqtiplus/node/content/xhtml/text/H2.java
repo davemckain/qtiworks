@@ -47,19 +47,9 @@ public class H2 extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 8951645593298920257L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "h2";
+    public static final String QTI_CLASS_NAME = "h2";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public H2(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

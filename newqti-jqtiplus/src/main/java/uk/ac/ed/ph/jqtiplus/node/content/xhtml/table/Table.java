@@ -69,18 +69,13 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = -13930375270014305L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "table";
+    public static final String QTI_CLASS_NAME = "table";
 
     /** Name of summary attribute in xml schema. */
     public static final String ATTR_SUMMARY_NAME = "summary";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Table(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, null, null, false));
 
@@ -90,11 +85,6 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
         getNodeGroups().add(new TheadGroup(this));
         getNodeGroups().add(new TfootGroup(this));
         getNodeGroups().add(new TbodyGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -221,7 +211,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
         super.validate(context);
 
         if (getColgroups().size() > 0 && getCols().size() > 0) {
-            context.add(new ValidationError(this, CLASS_TAG + " cannot contain both " + Colgroup.CLASS_TAG + " and " + Col.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, QTI_CLASS_NAME + " cannot contain both " + Colgroup.QTI_CLASS_NAME + " and " + Col.QTI_CLASS_NAME + " children"));
         }
     }
 

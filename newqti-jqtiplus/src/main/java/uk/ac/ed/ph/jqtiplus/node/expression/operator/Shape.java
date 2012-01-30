@@ -296,7 +296,7 @@ public enum Shape {
     };
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "shape";
+    public static final String QTI_CLASS_NAME = "shape";
 
     private static Map<String, Shape> shapes;
 
@@ -378,7 +378,7 @@ public enum Shape {
         final Shape result = shapes.get(shape);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + shape + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + shape + "'.");
         }
 
         return result;

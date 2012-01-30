@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
@@ -62,7 +63,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     private static final long serialVersionUID = 8090241210739302355L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "math";
+    public static final String QTI_CLASS_NAME = "math";
 
     /** Children of this block. */
     private final List<XmlNode> children;
@@ -73,13 +74,8 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
      * @param parent parent of constructed object
      */
     public Math(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME, QtiConstants.MATHML_NAMESPACE_URI);
         children = new ArrayList<XmlNode>();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

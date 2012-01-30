@@ -67,14 +67,8 @@ public abstract class GapChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-
-    /**
-     * Construct new GapChoice.
-     * 
-     * @param parent Parent node
-     */
-    public GapChoice(XmlNode parent) {
-        super(parent);
+    public GapChoice(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, ATTR_MATCH_MIN_DEFAULT_VALUE, false));

@@ -66,20 +66,10 @@ public class Delete extends AbstractExpression {
     private static final long serialVersionUID = -3347943030791068562L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "delete";
+    public static final String QTI_CLASS_NAME = "delete";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Delete(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

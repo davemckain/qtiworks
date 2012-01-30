@@ -48,7 +48,7 @@ public enum DlElementType {
     /**
      * dd
      */
-    DD(Dd.CLASS_TAG) {
+    DD(Dd.QTI_CLASS_NAME) {
 
         @Override
         public DlElement create(BodyElement parent) {
@@ -58,7 +58,7 @@ public enum DlElementType {
     /**
      * dt
      */
-    DT(Dt.CLASS_TAG) {
+    DT(Dt.QTI_CLASS_NAME) {
 
         @Override
         public DlElement create(BodyElement parent) {
@@ -83,9 +83,9 @@ public enum DlElementType {
     }
 
     /**
-     * Gets CLASS_TAG of this dlElement type.
+     * Gets QTI_CLASS_NAME of this dlElement type.
      * 
-     * @return CLASS_TAG of this dlElement type
+     * @return QTI_CLASS_NAME of this dlElement type
      */
     public String getClassTag() {
         return dlElementType;
@@ -105,10 +105,10 @@ public enum DlElementType {
     }
 
     /**
-     * Gets dlElement type for given CLASS_TAG.
+     * Gets dlElement type for given QTI_CLASS_NAME.
      * 
-     * @param classTag CLASS_TAG
-     * @return dlElement type for given CLASS_TAG
+     * @param classTag QTI_CLASS_NAME
+     * @return dlElement type for given QTI_CLASS_NAME
      */
     public static DlElementType getType(String classTag) {
         return dlElementTypes.get(classTag);
@@ -118,7 +118,7 @@ public enum DlElementType {
      * Creates dlElement element.
      * 
      * @param parent parent of created dlElement
-     * @param classTag CLASS_TAG of created dlElement
+     * @param classTag QTI_CLASS_NAME of created dlElement
      * @return created expression
      */
     public static DlElement getInstance(BodyElement parent, String classTag) {

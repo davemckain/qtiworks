@@ -47,19 +47,9 @@ public class H1 extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 7097611120659051862L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "h1";
+    public static final String QTI_CLASS_NAME = "h1";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public H1(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

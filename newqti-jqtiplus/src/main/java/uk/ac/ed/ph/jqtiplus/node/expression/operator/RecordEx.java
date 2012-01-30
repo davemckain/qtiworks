@@ -67,25 +67,15 @@ public class RecordEx extends AbstractExpression {
     private static final long serialVersionUID = -3277492769483531993L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "recordEx";
+    public static final String QTI_CLASS_NAME = "recordEx";
 
     /** Name of identifiers attribute in xml schema. */
     public static final String ATTR_IDENTIFIERS_NAME = "identifiers";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public RecordEx(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_IDENTIFIERS_NAME, null));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

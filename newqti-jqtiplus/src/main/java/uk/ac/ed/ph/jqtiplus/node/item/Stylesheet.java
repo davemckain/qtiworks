@@ -50,7 +50,7 @@ public class Stylesheet extends AbstractNode {
     private static final long serialVersionUID = -8528135114011904600L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "stylesheet";
+    public static final String QTI_CLASS_NAME = "stylesheet";
 
     /** Name of href attribute in xml schema. */
     public static final String ATTR_HREF_NAME = "href";
@@ -64,23 +64,13 @@ public class Stylesheet extends AbstractNode {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    /**
-     * Construct A stylesheet
-     * 
-     * @param parent Parent assessmentItem
-     */
     public Stylesheet(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_MEDIA_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

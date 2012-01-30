@@ -58,20 +58,10 @@ public class OutcomeMinimum extends OutcomeMinMax {
     private static final long serialVersionUID = 6240420428843348630L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeMinimum";
+    public static final String QTI_CLASS_NAME = "outcomeMinimum";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public OutcomeMinimum(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

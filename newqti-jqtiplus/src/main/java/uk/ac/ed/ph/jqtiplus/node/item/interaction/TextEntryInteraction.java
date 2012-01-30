@@ -70,15 +70,10 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     private static final long serialVersionUID = 1113644056576463196L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "textEntryInteraction";
+    public static final String QTI_CLASS_NAME = "textEntryInteraction";
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public TextEntryInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         //for StringInteraction...
         getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, ATTR_BASE_DEFAULT_VALUE, false));
@@ -86,11 +81,6 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

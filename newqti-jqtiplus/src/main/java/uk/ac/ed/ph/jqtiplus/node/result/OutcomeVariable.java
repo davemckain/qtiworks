@@ -59,10 +59,10 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
     private static final long serialVersionUID = -8458195126681286797L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeVariable";
+    public static final String QTI_CLASS_NAME = "outcomeVariable";
 
     /** Name of view attribute in xml schema. */
-    public static final String ATTR_VIEWS_NAME = View.CLASS_TAG;
+    public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
     /** Default value of view attribute. */
     public static final List<View> ATTR_VIEWS_DEFAULT_VALUE = null;
@@ -100,13 +100,9 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
     //    /** Value of this variableDeclaration. */
     //    private Value value;
 
-    /**
-     * Creates new outcomeVariable.
-     * 
-     * @param parent parent of created outcomeVariable
-     */
     public OutcomeVariable(AbstractResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
+        
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, ATTR_VIEWS_DEFAULT_VALUE));
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
         getAttributes().add(new UriAttribute(this, ATTR_LONG_INTERPRETATION, ATTR_LONG_INTERPRETATION_DEFAULT_VALUE));
@@ -160,11 +156,6 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
             //            evaluate();
         }
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

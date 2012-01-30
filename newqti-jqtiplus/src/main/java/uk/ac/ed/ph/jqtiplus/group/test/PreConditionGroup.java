@@ -56,7 +56,7 @@ public class PreConditionGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public PreConditionGroup(AbstractPart parent) {
-        super(parent, PreCondition.CLASS_TAG, null, null);
+        super(parent, PreCondition.QTI_CLASS_NAME, null, null);
     }
 
     /**

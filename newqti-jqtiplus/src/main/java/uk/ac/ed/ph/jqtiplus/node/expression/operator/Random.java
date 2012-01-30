@@ -57,20 +57,14 @@ public class Random extends RandomExpression {
     private static final long serialVersionUID = -4841943053695949471L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "random";
+    public static final String QTI_CLASS_NAME = "random";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Random(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
 
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+    protected Random(ExpressionParent parent, String localName) {
+        super(parent, localName);
     }
 
     @Override

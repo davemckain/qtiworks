@@ -56,16 +56,11 @@ public class TemplateProcessing extends AbstractNode {
     private static final long serialVersionUID = 4102163277727881279L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateProcessing";
+    public static final String QTI_CLASS_NAME = "templateProcessing";
 
     public TemplateProcessing(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new TemplateProcessingRuleGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -82,7 +77,7 @@ public class TemplateProcessing extends AbstractNode {
         super.validateChildren(context);
 
         if (getTemplateProcessingRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + CLASS_TAG + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
         }
     }
 }

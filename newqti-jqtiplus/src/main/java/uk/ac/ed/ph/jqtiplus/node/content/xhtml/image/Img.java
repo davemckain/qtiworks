@@ -56,7 +56,7 @@ public class Img extends BodyElement implements AtomicInline {
     private static final long serialVersionUID = 5705344980101577516L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "img";
+    public static final String QTI_CLASS_NAME = "img";
 
     /** Name of src attribute in xml schema. */
     public static final String ATTR_SRC_NAME = "src";
@@ -73,24 +73,14 @@ public class Img extends BodyElement implements AtomicInline {
     /** Name of width attribute in xml schema. */
     public static final String ATTR_WIDTH_NAME = "width";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Img(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_SRC_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_ALT_NAME));
         getAttributes().add(new UriAttribute(this, ATTR_LONGDESC_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

@@ -68,20 +68,10 @@ public class Ordered extends AbstractExpression {
     private static final long serialVersionUID = -1785588795962181470L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "ordered";
+    public static final String QTI_CLASS_NAME = "ordered";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Ordered(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

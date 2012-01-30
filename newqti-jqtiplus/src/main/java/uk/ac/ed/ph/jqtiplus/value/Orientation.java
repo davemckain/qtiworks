@@ -59,7 +59,7 @@ public enum Orientation {
     VERTICAL("vertical");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "orientation";
+    public static final String QTI_CLASS_NAME = "orientation";
 
     private static Map<String, Orientation> orientations;
 
@@ -111,7 +111,7 @@ public enum Orientation {
         final Orientation result = orientations.get(orientation);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + orientation + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + orientation + "'.");
         }
 
         return result;

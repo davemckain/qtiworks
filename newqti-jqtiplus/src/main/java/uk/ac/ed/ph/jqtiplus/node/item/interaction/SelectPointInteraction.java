@@ -75,7 +75,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     private static final long serialVersionUID = -8629020921488399059L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "selectPointInteraction";
+    public static final String QTI_CLASS_NAME = "selectPointInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
@@ -89,21 +89,11 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     /** Default value of minChoices attribute. */
     public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public SelectPointInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE, ATTR_MIN_CHOICES_DEFAULT_VALUE, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

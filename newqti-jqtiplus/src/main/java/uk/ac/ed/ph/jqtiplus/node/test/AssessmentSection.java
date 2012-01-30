@@ -54,7 +54,7 @@ public class AssessmentSection extends SectionPart {
     private static final long serialVersionUID = 371468215845203409L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "assessmentSection";
+    public static final String QTI_CLASS_NAME = "assessmentSection";
 
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
@@ -74,7 +74,7 @@ public class AssessmentSection extends SectionPart {
      * @param parent parent of constructed section
      */
     public AssessmentSection(AbstractPart parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_VISIBLE_NAME));
@@ -84,11 +84,6 @@ public class AssessmentSection extends SectionPart {
         getNodeGroups().add(new OrderingGroup(this));
         getNodeGroups().add(new RubricBlockGroup(this));
         getNodeGroups().add(new SectionPartGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

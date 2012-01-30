@@ -48,7 +48,7 @@ public class MapEntry extends AbstractNode {
     private static final long serialVersionUID = -5119382551204617489L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "mapEntry";
+    public static final String QTI_CLASS_NAME = "mapEntry";
 
     /** Name of mapKey attribute in xml schema. */
     public static final String ATTR_MAP_KEY_NAME = "mapKey";
@@ -62,22 +62,12 @@ public class MapEntry extends AbstractNode {
     /** Default value of caseSensitive attribute */
     public static final boolean ATTR_CASE_SENSITIVE_DEFAULT_VALUE = true;
 
-    /**
-     * Construct A new MapEntry.
-     * 
-     * @param parent MapEntry parent
-     */
     public MapEntry(Mapping parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_MAP_KEY_NAME, parent.getParent().getBaseType()));
         getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_VALUE_NAME, ATTR_CASE_SENSITIVE_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

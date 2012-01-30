@@ -53,7 +53,7 @@ public class CandidateResponseGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public CandidateResponseGroup(ResponseVariable parent) {
-        super(parent, CandidateResponse.CLASS_TAG, true);
+        super(parent, CandidateResponse.QTI_CLASS_NAME, true);
     }
 
     /**

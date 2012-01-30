@@ -100,8 +100,8 @@ public abstract class Choice extends BodyElement {
      * 
      * @param parent Parent node
      */
-    public Choice(XmlNode parent) {
-        super(parent);
+    public Choice(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE));

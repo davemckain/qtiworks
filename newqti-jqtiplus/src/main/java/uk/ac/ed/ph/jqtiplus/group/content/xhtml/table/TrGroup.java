@@ -56,7 +56,7 @@ public class TrGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TrGroup(BodyElement parent) {
-        super(parent, Tr.CLASS_TAG, 1, null);
+        super(parent, Tr.QTI_CLASS_NAME, 1, null);
     }
 
     /**

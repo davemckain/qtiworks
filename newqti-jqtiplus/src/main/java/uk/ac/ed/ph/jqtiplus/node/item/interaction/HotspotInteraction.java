@@ -93,7 +93,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     private static final long serialVersionUID = 7817305977968014345L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "hotspotInteraction";
+    public static final String QTI_CLASS_NAME = "hotspotInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
@@ -107,23 +107,13 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     /** Default value of minChoices attribute. */
     public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public HotspotInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE, ATTR_MIN_CHOICES_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -71,6 +71,12 @@ public interface Attribute<V> extends Validatable {
      */
     String getNamespaceUri();
     
+    /**
+     * Computes a pseudo XPath expression for this Attribute.
+     * 
+     * NOTE: This uses the form {nsURI}localName for non-QTI elements, so is not
+     * a "proper" XPath.
+     */
     String computeXPath();
 
     /**

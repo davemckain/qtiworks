@@ -53,7 +53,7 @@ public class TemplateIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TemplateIfGroup(TemplateCondition parent) {
-        super(parent, TemplateIf.CLASS_TAG, true);
+        super(parent, TemplateIf.QTI_CLASS_NAME, true);
     }
 
     /**

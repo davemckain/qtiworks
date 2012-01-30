@@ -62,20 +62,10 @@ public class Match extends AbstractExpression {
     private static final long serialVersionUID = 6569951232209204404L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "match";
+    public static final String QTI_CLASS_NAME = "match";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Match(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

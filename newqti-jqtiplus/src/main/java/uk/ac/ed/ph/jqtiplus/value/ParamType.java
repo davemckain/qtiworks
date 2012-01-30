@@ -62,7 +62,7 @@ public enum ParamType {
     REF("REF");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "paramType";
+    public static final String QTI_CLASS_NAME = "paramType";
 
     private static Map<String, ParamType> types;
 
@@ -114,7 +114,7 @@ public enum ParamType {
         final ParamType result = types.get(paramType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + paramType + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + paramType + "'.");
         }
 
         return result;

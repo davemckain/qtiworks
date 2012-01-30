@@ -56,7 +56,7 @@ public class AssessmentSectionGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public AssessmentSectionGroup(AbstractPart parent) {
-        super(parent, AssessmentSection.CLASS_TAG, 1, null);
+        super(parent, AssessmentSection.QTI_CLASS_NAME, 1, null);
     }
 
     /**

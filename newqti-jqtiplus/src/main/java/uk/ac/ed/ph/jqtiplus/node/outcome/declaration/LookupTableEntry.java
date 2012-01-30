@@ -56,8 +56,8 @@ public abstract class LookupTableEntry extends AbstractNode {
      * 
      * @param parent parent of this object
      */
-    public LookupTableEntry(LookupTable parent) {
-        super(parent);
+    public LookupTableEntry(LookupTable parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_TARGET_VALUE_NAME, getParent().getTargetValueBaseType()));
     }

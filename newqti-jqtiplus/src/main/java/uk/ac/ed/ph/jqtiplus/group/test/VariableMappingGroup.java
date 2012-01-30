@@ -56,7 +56,7 @@ public class VariableMappingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public VariableMappingGroup(AssessmentItemRef parent) {
-        super(parent, VariableMapping.CLASS_TAG, null, null);
+        super(parent, VariableMapping.QTI_CLASS_NAME, null, null);
     }
 
     /**

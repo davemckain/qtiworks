@@ -60,24 +60,14 @@ public class TemplateCondition extends TemplateRule {
     private static final long serialVersionUID = 5066193969135526272L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateCondition";
+    public static final String QTI_CLASS_NAME = "templateCondition";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public TemplateCondition(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TemplateIfGroup(this));
         getNodeGroups().add(new TemplateElseIfGroup(this));
         getNodeGroups().add(new TemplateElseGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

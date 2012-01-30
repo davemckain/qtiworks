@@ -207,7 +207,7 @@ public class CasCompare extends MathAssessOperator {
             return NullValue.INSTANCE;
         }
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJQTIExtensionPackage();
+        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         return BooleanValue.valueOf(qtiMaximaSession.executeCasCompare(code,

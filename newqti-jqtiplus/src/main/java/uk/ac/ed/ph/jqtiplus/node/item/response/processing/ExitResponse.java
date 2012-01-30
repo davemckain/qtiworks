@@ -47,25 +47,14 @@ public class ExitResponse extends ResponseRule {
     private static final long serialVersionUID = -778593205773785128L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "exitResponse";
+    public static final String QTI_CLASS_NAME = "exitResponse";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ExitResponse(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
     public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt {
         throw new QTIProcessingInterrupt();
     }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-
 }

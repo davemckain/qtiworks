@@ -61,8 +61,8 @@ public abstract class AbstractStringInteraction extends InlineInteraction implem
 
     private static final long serialVersionUID = 1113644056576463196L;
     
-    public AbstractStringInteraction(XmlNode parent) {
-        super(parent);
+    public AbstractStringInteraction(XmlNode parent, String localName) {
+        super(parent, localName);
 
         //for StringInteraction...
         getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, ATTR_BASE_DEFAULT_VALUE, false));

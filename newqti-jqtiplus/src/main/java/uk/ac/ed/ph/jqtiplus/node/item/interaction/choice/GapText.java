@@ -50,22 +50,12 @@ public class GapText extends GapChoice {
     private static final long serialVersionUID = -1368834690176977960L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "gapText";
+    public static final String QTI_CLASS_NAME = "gapText";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public GapText(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

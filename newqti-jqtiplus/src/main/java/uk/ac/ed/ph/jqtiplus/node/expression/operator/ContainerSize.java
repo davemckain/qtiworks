@@ -55,7 +55,7 @@ public class ContainerSize extends AbstractExpression {
     private static final long serialVersionUID = -874213914129154217L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "containerSize";
+    public static final String QTI_CLASS_NAME = "containerSize";
 
     /**
      * Constructs expression.
@@ -63,12 +63,7 @@ public class ContainerSize extends AbstractExpression {
      * @param parent parent of this expression
      */
     public ContainerSize(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

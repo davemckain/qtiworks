@@ -84,7 +84,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
     private static final long serialVersionUID = -4225511237180886978L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "graphicAssociateInteraction";
+    public static final String QTI_CLASS_NAME = "graphicAssociateInteraction";
 
     /** Name of maxAssociations attribute in xml schema. */
     public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
@@ -98,17 +98,12 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
      * @param parent Parent node
      */
     public GraphicAssociateInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(
                 new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
 
         getNodeGroups().add(new AssociableHotspotGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

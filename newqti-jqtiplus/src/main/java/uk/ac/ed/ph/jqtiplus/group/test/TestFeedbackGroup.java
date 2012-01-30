@@ -56,7 +56,7 @@ public class TestFeedbackGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TestFeedbackGroup(ControlObject<?> parent) {
-        super(parent, TestFeedback.CLASS_TAG, null, null);
+        super(parent, TestFeedback.QTI_CLASS_NAME, null, null);
     }
 
     /**

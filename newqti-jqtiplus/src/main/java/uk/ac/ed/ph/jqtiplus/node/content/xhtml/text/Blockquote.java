@@ -50,25 +50,15 @@ public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
     private static final long serialVersionUID = -5825718968041113996L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "blockquote";
+    public static final String QTI_CLASS_NAME = "blockquote";
 
     /** Name of label attribute in xml schema. */
     public static final String ATTR_CITE_NAME = "cite";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Blockquote(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

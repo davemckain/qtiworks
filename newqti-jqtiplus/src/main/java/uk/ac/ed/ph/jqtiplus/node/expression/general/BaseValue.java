@@ -60,10 +60,10 @@ public class BaseValue extends AbstractExpression {
     private static final long serialVersionUID = -8675475225499495315L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "baseValue";
+    public static final String QTI_CLASS_NAME = "baseValue";
 
     /** Name of baseType attribute in xml schema. */
-    public static final String ATTR_BASE_TYPE_NAME = BaseType.CLASS_TAG;
+    public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
     /** Single value of this baseValue. */
     private SingleValue singleValue;
@@ -74,14 +74,9 @@ public class BaseValue extends AbstractExpression {
      * @param parent parent of this expression
      */
     public BaseValue(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

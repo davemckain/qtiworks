@@ -53,7 +53,7 @@ public class ResponseProcessingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ResponseProcessingGroup(AssessmentItem parent) {
-        super(parent, ResponseProcessing.CLASS_TAG, false);
+        super(parent, ResponseProcessing.QTI_CLASS_NAME, false);
     }
 
     /**

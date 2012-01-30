@@ -59,7 +59,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
     private static final long serialVersionUID = 3376688582142515352L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "simpleAssociableChoice";
+    public static final String QTI_CLASS_NAME = "simpleAssociableChoice";
 
     /** Name of matchMax attribute in xml schema. */
     public static String ATTR_MATCH_MAX_NAME = "matchMax";
@@ -70,14 +70,8 @@ public class SimpleAssociableChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-
-    /**
-     * Construct new SimpleAssociableChoice.
-     * 
-     * @param parent Parent node
-     */
     public SimpleAssociableChoice(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
@@ -123,11 +117,6 @@ public class SimpleAssociableChoice extends AssociableChoice {
      */
     public void setMatchMin(Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

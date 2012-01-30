@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported outcome rules from given CLASS_TAG.
+ * This class creates all supported outcome rules from given QTI_CLASS_NAME.
  * <p>
  * Supported outcome rules: outcomeCondition, setOutcomeValue, exitTest.
  * <p>
@@ -54,7 +54,7 @@ public enum OutcomeRuleType {
      * 
      * @see LookupOutcomeValue
      */
-    LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.CLASS_TAG) {
+    LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
         public OutcomeRule create(XmlNode parent) {
@@ -67,7 +67,7 @@ public enum OutcomeRuleType {
      * 
      * @see OutcomeCondition
      */
-    OUTCOME_CONDITION(OutcomeCondition.CLASS_TAG) {
+    OUTCOME_CONDITION(OutcomeCondition.QTI_CLASS_NAME) {
 
         @Override
         public OutcomeRule create(XmlNode parent) {
@@ -80,7 +80,7 @@ public enum OutcomeRuleType {
      * 
      * @see OutcomeProcessingFragment
      */
-    OUTCOME_PROCESSING_FRAGMENT(OutcomeProcessingFragment.CLASS_TAG) {
+    OUTCOME_PROCESSING_FRAGMENT(OutcomeProcessingFragment.QTI_CLASS_NAME) {
 
         @Override
         public OutcomeRule create(XmlNode parent) {
@@ -93,7 +93,7 @@ public enum OutcomeRuleType {
      * 
      * @see SetOutcomeValue
      */
-    SET_OUTCOME_VALUE(SetOutcomeValue.CLASS_TAG) {
+    SET_OUTCOME_VALUE(SetOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
         public OutcomeRule create(XmlNode parent) {
@@ -105,7 +105,7 @@ public enum OutcomeRuleType {
      * 
      * @see ExitTest
      */
-    EXIT_TEST(ExitTest.CLASS_TAG) {
+    EXIT_TEST(ExitTest.QTI_CLASS_NAME) {
 
         @Override
         public OutcomeRule create(XmlNode parent) {
@@ -146,7 +146,7 @@ public enum OutcomeRuleType {
      * Creates outcome rule.
      * 
      * @param parent parent of created outcome rule
-     * @param classTag CLASS_TAG of created outcome rule
+     * @param classTag QTI_CLASS_NAME of created outcome rule
      * @return created outcome rule
      */
     public static OutcomeRule getInstance(XmlNode parent, String classTag) {

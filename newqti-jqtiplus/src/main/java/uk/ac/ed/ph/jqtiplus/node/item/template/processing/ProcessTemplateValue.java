@@ -52,13 +52,8 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Creates rule.
-     * 
-     * @param parent parent of this rule.
-     */
-    public ProcessTemplateValue(XmlNode parent) {
-        super(parent);
+    public ProcessTemplateValue(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
 

@@ -59,7 +59,7 @@ public enum NavigationMode {
     NONLINEAR("nonlinear");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "navigationMode";
+    public static final String QTI_CLASS_NAME = "navigationMode";
 
     private static Map<String, NavigationMode> navigationModes;
 
@@ -93,7 +93,7 @@ public enum NavigationMode {
         final NavigationMode result = navigationModes.get(navigationMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + navigationMode + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + navigationMode + "'.");
         }
 
         return result;

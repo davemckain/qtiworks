@@ -66,10 +66,10 @@ public class Inside extends AbstractExpression {
     private static final long serialVersionUID = 4926097648005221931L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "inside";
+    public static final String QTI_CLASS_NAME = "inside";
 
     /** Name of shape attribute in xml schema. */
-    public static final String ATTR_SHAPE_NAME = Shape.CLASS_TAG;
+    public static final String ATTR_SHAPE_NAME = Shape.QTI_CLASS_NAME;
 
     /** Name of coords attribute in xml schema. */
     public static final String ATTR_COORDINATES_NAME = "coords";
@@ -77,21 +77,11 @@ public class Inside extends AbstractExpression {
     /** Default value of coords attribute. */
     public static final List<Integer> ATTR_COORDINATES_DEFAULT_VALUE = null;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Inside(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
         getAttributes().add(new CoordsAttribute(this, ATTR_COORDINATES_NAME, ATTR_COORDINATES_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -54,15 +54,10 @@ public class ResponseDeclaration extends VariableDeclaration {
     private static final long serialVersionUID = 1574002038906870724L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseDeclaration";
+    public static final String QTI_CLASS_NAME = "responseDeclaration";
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public ResponseDeclaration(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new CorrectResponseGroup(this));
         getNodeGroups().add(new MappingGroup(this));
@@ -72,11 +67,6 @@ public class ResponseDeclaration extends VariableDeclaration {
     @Override
     public VariableType getVariableType() {
         return VariableType.RESPONSE;
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

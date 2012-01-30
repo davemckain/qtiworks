@@ -54,8 +54,8 @@ public abstract class MathMapExpression extends AbstractExpression {
 
     private static final long serialVersionUID = 5311729106818194456L;
 
-    public MathMapExpression(ExpressionParent parent) {
-        super(parent);
+    public MathMapExpression(ExpressionParent parent, String localName) {
+        super(parent, localName);
     }
 
     @Override

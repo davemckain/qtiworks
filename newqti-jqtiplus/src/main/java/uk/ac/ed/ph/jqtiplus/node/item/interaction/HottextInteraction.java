@@ -85,7 +85,7 @@ public class HottextInteraction extends BlockInteraction {
     private static final long serialVersionUID = 9164925050514182744L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "hottextInteraction";
+    public static final String QTI_CLASS_NAME = "hottextInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
@@ -99,23 +99,13 @@ public class HottextInteraction extends BlockInteraction {
     /** Default value of minChoices attribute . */
     public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public HottextInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE));
 
         getNodeGroups().add(new BlockStaticGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

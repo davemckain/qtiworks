@@ -117,7 +117,7 @@ public enum RoundingMode {
     };
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "roundingMode";
+    public static final String QTI_CLASS_NAME = "roundingMode";
 
     private static Map<String, RoundingMode> roundingModes;
 
@@ -182,7 +182,7 @@ public enum RoundingMode {
         final RoundingMode result = roundingModes.get(roundingMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + roundingMode + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + roundingMode + "'.");
         }
 
         return result;

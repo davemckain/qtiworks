@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
-
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.SimpleAssociableChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -51,15 +50,10 @@ public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoi
     private static final long serialVersionUID = -4494300021425573347L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "simpleMatchSet";
+    public static final String QTI_CLASS_NAME = "simpleMatchSet";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public SimpleMatchSet(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this));
     }
@@ -71,10 +65,5 @@ public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoi
      */
     public List<SimpleAssociableChoice> getSimpleAssociableChoices() {
         return getNodeGroups().getSimpleAssociableChoiceGroup().getSimpleAssociableChoices();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

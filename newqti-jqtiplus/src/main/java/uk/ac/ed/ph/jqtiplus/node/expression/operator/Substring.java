@@ -58,25 +58,15 @@ public class Substring extends AbstractExpression {
     private static final long serialVersionUID = 389530305199141690L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "substring";
+    public static final String QTI_CLASS_NAME = "substring";
 
     /** Name of caseSensitive attribute in xml schema. */
     public static final String ATTR_CASE_SENSITIVE_NAME = "caseSensitive";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Substring(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

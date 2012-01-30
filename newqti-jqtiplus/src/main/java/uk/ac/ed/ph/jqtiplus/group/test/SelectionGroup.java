@@ -53,7 +53,7 @@ public class SelectionGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public SelectionGroup(AssessmentSection parent) {
-        super(parent, Selection.CLASS_TAG, false);
+        super(parent, Selection.QTI_CLASS_NAME, false);
     }
 
     /**

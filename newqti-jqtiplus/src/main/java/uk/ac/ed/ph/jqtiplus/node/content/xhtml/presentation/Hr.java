@@ -50,20 +50,10 @@ public class Hr extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = 6658237844126900030L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "hr";
+    public static final String QTI_CLASS_NAME = "hr";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Hr(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

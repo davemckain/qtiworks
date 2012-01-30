@@ -77,7 +77,7 @@ public enum Cardinality {
     RECORD("record");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "cardinality";
+    public static final String QTI_CLASS_NAME = "cardinality";
 
     private static Map<String, Cardinality> cardinalities;
 
@@ -156,7 +156,7 @@ public enum Cardinality {
         final Cardinality result = cardinalities.get(cardinality);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + cardinality + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + cardinality + "'.");
         }
 
         return result;

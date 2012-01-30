@@ -58,7 +58,7 @@ public class BranchRule extends AbstractJump {
     private static final long serialVersionUID = -6025143798114714329L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "branchRule";
+    public static final String QTI_CLASS_NAME = "branchRule";
 
     /** Name of target attribute in xml schema. */
     public static final String ATTR_TARGET_NAME = "target";
@@ -72,20 +72,10 @@ public class BranchRule extends AbstractJump {
     /** Special target for exiting assessmentSection. */
     public static final String EXIT_SECTION = "EXIT_SECTION";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public BranchRule(AbstractPart parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

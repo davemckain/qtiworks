@@ -60,24 +60,14 @@ public class ResponseCondition extends ResponseRule {
     private static final long serialVersionUID = -7662549073016916667L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseCondition";
+    public static final String QTI_CLASS_NAME = "responseCondition";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public ResponseCondition(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ResponseIfGroup(this));
         getNodeGroups().add(new ResponseElseIfGroup(this));
         getNodeGroups().add(new ResponseElseGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -65,7 +65,7 @@ public class Mapping extends AbstractNode {
     private static final long serialVersionUID = 6513135215422316146L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "mapping";
+    public static final String QTI_CLASS_NAME = "mapping";
 
     /** Name of lowerBound attribute in xml schema. */
     public static final String ATTR_LOWER_BOUND_NAME = "lowerBound";
@@ -79,24 +79,14 @@ public class Mapping extends AbstractNode {
     /** Default value of the defaultValue attribute */
     public static final double ATTR_DEFAULT_VALUE_DEFAULT_VALUE = 0.0;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public Mapping(ResponseDeclaration parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, null, null, false));
         getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME, null, null, false));
         getAttributes().add(new FloatAttribute(this, ATTR_DEFAULT_VALUE_NAME, ATTR_DEFAULT_VALUE_DEFAULT_VALUE));
 
         getNodeGroups().add(new MapEntryGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ItemResultGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ItemResultGroup(AssessmentResult parent) {
-        super(parent, ItemResult.CLASS_TAG, null, null);
+        super(parent, ItemResult.QTI_CLASS_NAME, null, null);
     }
 
     /**

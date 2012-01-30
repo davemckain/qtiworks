@@ -55,7 +55,7 @@ public class AssociableHotspotGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public AssociableHotspotGroup(AssociableHotspotContainer parent) {
-        super(parent, AssociableHotspot.CLASS_TAG, null, null);
+        super(parent, AssociableHotspot.QTI_CLASS_NAME, null, null);
     }
 
     /**
@@ -65,7 +65,7 @@ public class AssociableHotspotGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public AssociableHotspotGroup(AssociableHotspotContainer parent, Integer minimum) {
-        super(parent, AssociableHotspot.CLASS_TAG, minimum, null);
+        super(parent, AssociableHotspot.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

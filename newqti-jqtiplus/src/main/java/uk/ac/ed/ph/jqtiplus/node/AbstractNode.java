@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
@@ -60,6 +61,10 @@ public abstract class AbstractNode implements XmlNode {
 
     /** Parent of this node. */
     private final XmlNode parent;
+    
+    private final String localName;
+    
+    private final String namespaceUri;
 
     /** Attributes of this node. */
     private final AttributeList attributes;
@@ -70,18 +75,39 @@ public abstract class AbstractNode implements XmlNode {
     /** Information about the location of this Node in the original source XML, if loaded that way */
     private XmlSourceLocationInformation sourceLocation;
 
-    /**
-     * Constructs node.
-     * 
-     * @param parent parent of constructed node (can be null for root nodes)
-     */
-    public AbstractNode(XmlNode parent) {
+    public AbstractNode(XmlNode parent, String localName) {
+        this(parent, localName, QtiConstants.QTI_21_NAMESPACE_URI);
+    }
+    
+    public AbstractNode(XmlNode parent, String localName, String namespaceUri) {
         this.parent = parent;
+        this.localName = localName;
+        this.namespaceUri = namespaceUri;
         this.attributes = new AttributeList(this);
         this.groups = new NodeGroupList(this);
         this.sourceLocation = null;
     }
 
+    @Override
+    public XmlNode getParent() {
+        return parent;
+    }
+    
+    @Override
+    public final String getLocalName() {
+        return localName;
+    }
+    
+    @Override
+    public final String getNamespaceUri() {
+        return namespaceUri;
+    }
+    
+    @Override
+    public final String getClassTag() {
+        return localName;
+    }
+    
     @Override
     public XmlSourceLocationInformation getSourceLocation() {
         return sourceLocation;
@@ -95,10 +121,6 @@ public abstract class AbstractNode implements XmlNode {
         return groups;
     }
 
-    @Override
-    public XmlNode getParent() {
-        return parent;
-    }
 
     @Override
     public RootObject getRootObject() {

@@ -49,22 +49,12 @@ public class Tr extends BodyElement {
     private static final long serialVersionUID = 309306649093335733L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "tr";
+    public static final String QTI_CLASS_NAME = "tr";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Tr(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TableCellGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

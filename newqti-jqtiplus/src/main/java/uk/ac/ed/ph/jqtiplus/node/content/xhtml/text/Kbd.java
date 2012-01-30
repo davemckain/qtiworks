@@ -47,19 +47,9 @@ public class Kbd extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -3716696049202913365L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "kbd";
+    public static final String QTI_CLASS_NAME = "kbd";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Kbd(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

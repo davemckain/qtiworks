@@ -99,7 +99,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     private static final long serialVersionUID = 4283024380579062066L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "orderInteraction";
+    public static final String QTI_CLASS_NAME = "orderInteraction";
 
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
@@ -116,13 +116,8 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     /** Name of orientation attribute in xml schema. */
     public static String ATTR_ORIENTATION_NAME = "orientation";
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public OrderInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));
@@ -130,11 +125,6 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
         getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, null, null, false));
 
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

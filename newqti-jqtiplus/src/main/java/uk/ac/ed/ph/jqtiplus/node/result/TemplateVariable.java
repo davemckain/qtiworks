@@ -51,15 +51,10 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
     private static final long serialVersionUID = 1551667865654592820L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateVariable";
+    public static final String QTI_CLASS_NAME = "templateVariable";
 
-    /**
-     * Creates new templateVariable.
-     * 
-     * @param parent parent of created templateVariable
-     */
     public TemplateVariable(AbstractResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new FieldValueGroup(this, null, null));
     }
 
@@ -77,11 +72,6 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
             setBaseType(declaration.getBaseType());
             getFieldValues().addAll(FieldValue.getValues(this, value));
         }
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -74,7 +74,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     private static final long serialVersionUID = 1331855266262194665L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "inlineChoiceInteraction";
+    public static final String QTI_CLASS_NAME = "inlineChoiceInteraction";
 
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
@@ -88,23 +88,13 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     /** Default value of required attribute. */
     public static boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public InlineChoiceInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, ATTR_REQUIRED_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new InlineChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

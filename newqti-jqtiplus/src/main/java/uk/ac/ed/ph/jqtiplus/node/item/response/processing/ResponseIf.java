@@ -43,19 +43,9 @@ public class ResponseIf extends ResponseConditionExpressionChild {
     private static final long serialVersionUID = -1201227015207925136L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseIf";
+    public static final String QTI_CLASS_NAME = "responseIf";
 
-    /**
-     * Constructs IF responseCondition child.
-     * 
-     * @param parent parent of this IF responseCondition child
-     */
     public ResponseIf(ResponseCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

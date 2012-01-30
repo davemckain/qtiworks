@@ -49,22 +49,12 @@ public class Caption extends BodyElement {
     private static final long serialVersionUID = -3804663980903972490L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "caption";
+    public static final String QTI_CLASS_NAME = "caption";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Caption(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

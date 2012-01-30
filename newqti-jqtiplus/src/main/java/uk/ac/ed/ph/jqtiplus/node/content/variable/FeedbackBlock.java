@@ -50,15 +50,10 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
     private static final long serialVersionUID = 456106105509332955L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "feedbackBlock";
+    public static final String QTI_CLASS_NAME = "feedbackBlock";
 
-    /**
-     * Constructs feedbackBlock element.
-     * 
-     * @param parent parent of this element
-     */
     public FeedbackBlock(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));
     }
@@ -66,10 +61,5 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
     @Override
     public List<Block> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

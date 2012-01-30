@@ -48,7 +48,7 @@ public class ItemResult extends AbstractResult {
     private static final long serialVersionUID = -8853021160737704001L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "itemResult";
+    public static final String QTI_CLASS_NAME = "itemResult";
 
     /** Name of sequenceIndex attribute in xml schema. */
     public static final String ATTR_SEQUENCE_INDEX_NAME = "sequenceIndex";
@@ -59,23 +59,13 @@ public class ItemResult extends AbstractResult {
     /** Name of sessionStatus attribute in xml schema. */
     public static final String ATTR_SESSION_STATUS_NAME = "sessionStatus";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ItemResult(AssessmentResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SEQUENCE_INDEX_NAME, ATTR_SEQUENCE_INDEX_DEFAULT_VALUE));
         getAttributes().add(new SessionStatusAttribute(this, ATTR_SESSION_STATUS_NAME));
 
         getNodeGroups().add(new CandidateCommentGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

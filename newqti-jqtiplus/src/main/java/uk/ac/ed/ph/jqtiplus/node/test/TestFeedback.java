@@ -65,13 +65,13 @@ public class TestFeedback extends AbstractNode {
     private static final long serialVersionUID = 6567681516055125776L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "testFeedback";
+    public static final String QTI_CLASS_NAME = "testFeedback";
 
     /** Name of access attribute in xml schema. */
-    public static final String ATTR_ACCESS_NAME = TestFeedbackAccess.CLASS_TAG;
+    public static final String ATTR_ACCESS_NAME = TestFeedbackAccess.QTI_CLASS_NAME;
 
     /** Name of showHide attribute in xml schema. */
-    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.CLASS_TAG;
+    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.QTI_CLASS_NAME;
 
     /** Name of outcomeIdentifier attribute in xml schema. */
     public static final String ATTR_OUTCOME_IDENTIFIER_NAME = "outcomeIdentifier";
@@ -85,13 +85,8 @@ public class TestFeedback extends AbstractNode {
     /** Default value of title attribute. */
     public static final String ATTR_TITLE_DEFAULT_VALUE = null;
 
-    /**
-     * Constructs feedback.
-     * 
-     * @param parent parent of constructed feedback
-     */
     public TestFeedback(ControlObject<?> parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new TestFeedbackAccessAttribute(this, ATTR_ACCESS_NAME));
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME));
@@ -100,11 +95,6 @@ public class TestFeedback extends AbstractNode {
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, ATTR_TITLE_DEFAULT_VALUE));
 
         getNodeGroups().add(new FlowStaticGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**
@@ -212,7 +202,7 @@ public class TestFeedback extends AbstractNode {
         super.validateAttributes(context);
 
         if (getOutcomeIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
-            context.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
+            context.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
         }
     }
 

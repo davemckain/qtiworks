@@ -57,21 +57,16 @@ public abstract class ItemVariable extends AbstractNode {
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
     /** Name of cardinality attribute in xml schema. */
-    public static final String ATTR_CARDINALITY_NAME = Cardinality.CLASS_TAG;
+    public static final String ATTR_CARDINALITY_NAME = Cardinality.QTI_CLASS_NAME;
 
     /** Name of baseType attribute in xml schema. */
-    public static final String ATTR_BASE_TYPE_NAME = BaseType.CLASS_TAG;
+    public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
     /** Default value of baseType attribute. */
     public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
-    public ItemVariable(AbstractResult parent) {
-        super(parent);
+    public ItemVariable(AbstractResult parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
         getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));

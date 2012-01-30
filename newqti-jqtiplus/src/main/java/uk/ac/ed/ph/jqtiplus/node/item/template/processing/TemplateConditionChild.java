@@ -52,13 +52,8 @@ public abstract class TemplateConditionChild extends AbstractNode {
 
     private static final long serialVersionUID = 1073349682487961960L;
 
-    /**
-     * Constructs condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
-    public TemplateConditionChild(TemplateCondition parent) {
-        super(parent);
+    public TemplateConditionChild(TemplateCondition parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new TemplateRuleGroup(this));
     }

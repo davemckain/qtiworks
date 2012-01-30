@@ -81,7 +81,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     private static final long serialVersionUID = -6064451970355204988L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "associateInteraction";
+    public static final String QTI_CLASS_NAME = "associateInteraction";
 
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
@@ -107,7 +107,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @param parent Parent node
      */
     public AssociateInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(
@@ -116,11 +116,6 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
                 new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -63,7 +63,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     private static final long serialVersionUID = 1096970249266471727L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "printedVariable";
+    public static final String QTI_CLASS_NAME = "printedVariable";
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
@@ -80,22 +80,12 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     /** Default value of base attribute. */
     public static final int ATTR_BASE_DEFAULT_VALUE = 10;
 
-    /**
-     * Constructs block.
-     * 
-     * @param parent parent of this block.
-     */
     public PrintedVariable(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_FORMAT_NAME, ATTR_FORMAT_DEFAULT_VALUE));
         getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

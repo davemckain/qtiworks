@@ -62,21 +62,16 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     private static final long serialVersionUID = -2027681803807985451L;
 
     /** Name of cardinality attribute in xml schema. */
-    public static final String ATTR_CARDINALITY_NAME = Cardinality.CLASS_TAG;
+    public static final String ATTR_CARDINALITY_NAME = Cardinality.QTI_CLASS_NAME;
 
     /** Name of baseType attribute in xml schema. */
-    public static final String ATTR_BASE_TYPE_NAME = BaseType.CLASS_TAG;
+    public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
     /** Default value of baseType attribute. */
     public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
-    public VariableDeclaration(AssessmentObject parent) {
-        super(parent);
+    public VariableDeclaration(AssessmentObject parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
         getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));

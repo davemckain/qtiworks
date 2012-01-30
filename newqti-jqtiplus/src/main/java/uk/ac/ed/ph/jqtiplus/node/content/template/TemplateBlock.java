@@ -50,25 +50,15 @@ public class TemplateBlock extends TemplateElement implements FlowStatic, BlockS
     private static final long serialVersionUID = -7030953780473751904L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateBlock";
+    public static final String QTI_CLASS_NAME = "templateBlock";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public TemplateBlock(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new BlockStaticGroup(this));
     }
 
     @Override
     public List<? extends XmlNode> getChildren() {
         return getNodeGroups().getBlockStaticGroup().getBlockStatics();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

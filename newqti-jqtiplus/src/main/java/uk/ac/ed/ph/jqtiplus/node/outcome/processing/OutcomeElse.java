@@ -43,19 +43,9 @@ public class OutcomeElse extends OutcomeConditionChild {
     private static final long serialVersionUID = -7354013424656238553L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeElse";
+    public static final String QTI_CLASS_NAME = "outcomeElse";
 
-    /**
-     * Constructs ELSE outcomeCondition child.
-     * 
-     * @param parent parent of this ELSE outcomeCondition child
-     */
     public OutcomeElse(OutcomeCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

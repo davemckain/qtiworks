@@ -53,7 +53,7 @@ public class TfootGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TfootGroup(Table parent) {
-        super(parent, Tfoot.CLASS_TAG, false);
+        super(parent, Tfoot.QTI_CLASS_NAME, false);
     }
 
     /**

@@ -58,20 +58,10 @@ public class NumberResponded extends ItemSubset {
     private static final long serialVersionUID = 5232907668517997814L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "numberResponded";
+    public static final String QTI_CLASS_NAME = "numberResponded";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public NumberResponded(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

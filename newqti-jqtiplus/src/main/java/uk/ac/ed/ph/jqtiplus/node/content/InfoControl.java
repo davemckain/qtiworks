@@ -50,18 +50,13 @@ public class InfoControl extends BodyElement implements Block {
     private static final long serialVersionUID = -2306839345848098435L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "infoControl";
+    public static final String QTI_CLASS_NAME = "infoControl";
 
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public InfoControl(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
@@ -73,11 +68,6 @@ public class InfoControl extends BodyElement implements Block {
 
     public void setTitle(String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

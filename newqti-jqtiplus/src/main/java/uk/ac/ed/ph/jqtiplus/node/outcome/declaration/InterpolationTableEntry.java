@@ -46,7 +46,7 @@ public class InterpolationTableEntry extends LookupTableEntry {
     private static final long serialVersionUID = -7963297659090182595L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "interpolationTableEntry";
+    public static final String QTI_CLASS_NAME = "interpolationTableEntry";
 
     /** Name of sourceValue attribute in xml schema. */
     public static final String ATTR_SOURCE_VALUE_NAME = "sourceValue";
@@ -57,21 +57,11 @@ public class InterpolationTableEntry extends LookupTableEntry {
     /** Default value of includeBoundary attribute. */
     public static final Boolean ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE = true;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public InterpolationTableEntry(InterpolationTable parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(0, new FloatAttribute(this, ATTR_SOURCE_VALUE_NAME));
         getAttributes().add(1, new BooleanAttribute(this, ATTR_INCLUDE_BOUNDARY_NAME, ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

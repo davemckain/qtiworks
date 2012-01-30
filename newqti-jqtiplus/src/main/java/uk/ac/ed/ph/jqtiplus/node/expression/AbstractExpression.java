@@ -75,8 +75,8 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * 
      * @param parent parent of this expression
      */
-    public AbstractExpression(ExpressionParent parent) {
-        super(parent);
+    public AbstractExpression(ExpressionParent parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new ExpressionGroup(this, getType().getMinimum(), getType().getMaximum()));
     }

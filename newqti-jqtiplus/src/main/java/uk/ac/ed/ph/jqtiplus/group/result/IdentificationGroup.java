@@ -53,7 +53,7 @@ public class IdentificationGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public IdentificationGroup(Context parent) {
-        super(parent, Identification.CLASS_TAG, false);
+        super(parent, Identification.QTI_CLASS_NAME, false);
     }
 
     /**

@@ -61,8 +61,8 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
      * 
      * @param parent parent of this rule.
      */
-    public ProcessOutcomeValue(XmlNode parent) {
-        super(parent);
+    public ProcessOutcomeValue(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
 
@@ -123,7 +123,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
         super.validateAttributes(context);
 
         if (getIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier()) == null) {
-            context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
+            context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
         }
     }
 }

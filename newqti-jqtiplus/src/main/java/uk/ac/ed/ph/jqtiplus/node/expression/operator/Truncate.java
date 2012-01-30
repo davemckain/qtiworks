@@ -56,20 +56,10 @@ public class Truncate extends AbstractExpression {
     private static final long serialVersionUID = 3302338197715284071L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "truncate";
+    public static final String QTI_CLASS_NAME = "truncate";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Truncate(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

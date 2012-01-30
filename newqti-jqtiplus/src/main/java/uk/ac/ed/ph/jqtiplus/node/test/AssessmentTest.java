@@ -64,7 +64,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     private static final long serialVersionUID = 7638099859697920203L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "assessmentTest";
+    public static final String QTI_CLASS_NAME = "assessmentTest";
 
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
@@ -101,7 +101,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * Constructs assessmentTest.
      */
     public AssessmentTest() {
-        super(null); // Test doesn't have any parent.
+        super(null, QTI_CLASS_NAME); // Test doesn't have any parent.
 
         getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
 
@@ -153,12 +153,6 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     @Override
     public void setModelRichness(ModelRichness modelRichness) {
         this.modelRichness = modelRichness;
-    }
-    
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
     
     /**

@@ -53,7 +53,7 @@ public class CaptionGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public CaptionGroup(Table parent) {
-        super(parent, Caption.CLASS_TAG, false);
+        super(parent, Caption.QTI_CLASS_NAME, false);
     }
 
     /**

@@ -50,24 +50,8 @@ public class UnsupportedBlock extends ContainerBlock {
 
     private static final long serialVersionUID = 474940437634236118L;
 
-    /** Class tag of this block. */
-    private final String localName;
-    
-    private final String namespaceUri;
-
     public UnsupportedBlock(XmlNode parent, String localName, String namespaceUri) {
-        super(parent);
-        this.localName = localName;
-        this.namespaceUri = namespaceUri;
-    }
-
-    @Override
-    public String getClassTag() {
-        return localName;
-    }
-    
-    public String getNamespaceUri() {
-        return namespaceUri;
+        super(parent, localName, namespaceUri);
     }
 
     @Override

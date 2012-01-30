@@ -51,7 +51,7 @@ public class SessionIdentifier extends AbstractNode {
     private static final long serialVersionUID = 29615834277891621L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "sessionIdentifier";
+    public static final String QTI_CLASS_NAME = "sessionIdentifier";
 
     /** Name of sourceID attribute in xml schema. */
     public static final String ATTR_SOURCE_ID_NAME = "sourceID";
@@ -59,21 +59,11 @@ public class SessionIdentifier extends AbstractNode {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public SessionIdentifier(Context parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_SOURCE_ID_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

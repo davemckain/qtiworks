@@ -119,15 +119,20 @@ public interface XmlNode extends Validatable {
      * @see #toXmlString()
      */
     String toXmlString(int depth, boolean printDefaultAttributes);
+    
+    /**
+     * Gets the XML local name of this node.
+     */
+    String getLocalName();
 
     /**
-     * Gets QTI class name of this node.
-     * <p>
-     * QTI class name has very important role during loading/saving nodes.
-     * <p>
-     * For example: Java class name is AssessmentTest; QTI class name is assessmentTest.
-     * 
-     * @return QTI class name of this node
+     * Gets the XML namespace URI for this Node.
+     */
+    String getNamespaceUri();
+
+    /**
+     * Gets QTI class name of this node (as used in the specification).
+     * This always returns the same as {@link #getLocalName()}.
      */
     String getClassTag();
 
@@ -140,8 +145,11 @@ public interface XmlNode extends Validatable {
     String computeXPathComponent();
 
     /**
-     * Computes and returns a full XPath expression that can be used to navigate to this Node. (The expression will
-     * probably be over-verbose!)
+     * Computes and returns a pseudo XPath expression that can be used to navigate to this Node.
+     * (The expression will probably be over-verbose!)
+     * 
+     * NOTE: This uses the form {nsURI}localName for non-QTI elements, so is not
+     * a "proper" XPath.
      */
     String computeXPath();
 

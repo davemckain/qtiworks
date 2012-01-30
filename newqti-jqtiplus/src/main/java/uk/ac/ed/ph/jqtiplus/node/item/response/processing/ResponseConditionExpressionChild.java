@@ -59,8 +59,8 @@ public abstract class ResponseConditionExpressionChild extends ResponseCondition
      * 
      * @param parent parent of this condition rule child
      */
-    public ResponseConditionExpressionChild(ResponseCondition parent) {
-        super(parent);
+    public ResponseConditionExpressionChild(ResponseCondition parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }

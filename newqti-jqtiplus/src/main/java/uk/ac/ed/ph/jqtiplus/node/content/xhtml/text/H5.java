@@ -47,19 +47,9 @@ public class H5 extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = -6668752714648863886L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "h5";
+    public static final String QTI_CLASS_NAME = "h5";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public H5(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

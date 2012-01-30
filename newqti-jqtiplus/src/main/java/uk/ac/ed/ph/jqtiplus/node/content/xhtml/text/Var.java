@@ -47,19 +47,9 @@ public class Var extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 9045153485959986131L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "var";
+    public static final String QTI_CLASS_NAME = "var";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Var(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

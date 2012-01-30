@@ -59,29 +59,19 @@ public class EqualRounded extends AbstractExpression {
     private static final long serialVersionUID = 8925002756918753453L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "equalRounded";
+    public static final String QTI_CLASS_NAME = "equalRounded";
 
     /** Name of roundingMode attribute in xml schema. */
-    public static final String ATTR_ROUNDING_MODE_NAME = RoundingMode.CLASS_TAG;
+    public static final String ATTR_ROUNDING_MODE_NAME = RoundingMode.QTI_CLASS_NAME;
 
     /** Name of figures attribute in xml schema. */
     public static final String ATTR_FIGURES_NAME = "figures";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public EqualRounded(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_FIGURES_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

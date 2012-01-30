@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported item variables from given CLASS_TAG.
+ * This class creates all supported item variables from given QTI_CLASS_NAME.
  * 
  * @author Jonathon Hare
  */
@@ -47,7 +47,7 @@ public enum ItemVariableType {
     /**
      * Creates outcomeVariable.
      */
-    OUTCOME_VARIABLE(OutcomeVariable.CLASS_TAG) {
+    OUTCOME_VARIABLE(OutcomeVariable.QTI_CLASS_NAME) {
 
         @Override
         public ItemVariable create(AbstractResult parent) {
@@ -57,7 +57,7 @@ public enum ItemVariableType {
     /**
      * Creates responseVariable.
      */
-    RESPONSE_VARIABLE(ResponseVariable.CLASS_TAG) {
+    RESPONSE_VARIABLE(ResponseVariable.QTI_CLASS_NAME) {
 
         @Override
         public ItemVariable create(AbstractResult parent) {
@@ -67,7 +67,7 @@ public enum ItemVariableType {
     /**
      * Creates templateVariable.
      */
-    TEMPLATE_VARIABLE(TemplateVariable.CLASS_TAG) {
+    TEMPLATE_VARIABLE(TemplateVariable.QTI_CLASS_NAME) {
 
         @Override
         public ItemVariable create(AbstractResult parent) {
@@ -108,7 +108,7 @@ public enum ItemVariableType {
      * Creates itemVariable.
      * 
      * @param parent parent of created itemVariable
-     * @param classTag CLASS_TAG of created itemVariable
+     * @param classTag QTI_CLASS_NAME of created itemVariable
      * @return created itemVariable
      */
     public static ItemVariable getInstance(AbstractResult parent, String classTag) {

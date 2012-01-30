@@ -110,7 +110,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported expressions from given CLASS_TAG.
+ * This class creates all supported expressions from given QTI_CLASS_NAME.
  * <p>
  * Supported expressions: and, anyN, baseValue, containerSize, contains, correct, customOperator, default, delete, divide, durationGTE, durationLT, equal,
  * equalRounded, fieldValue, gt, gte, index, inside, integerDivide, integerModulus, integerToFloat, isNull, lt, lte, mapResponse, mapResponsePoint, match,
@@ -129,7 +129,7 @@ public enum ExpressionType {
      * 
      * @see And
      */
-    AND(And.CLASS_TAG, 1, null
+    AND(And.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -146,7 +146,7 @@ public enum ExpressionType {
      * 
      * @see AnyN
      */
-    ANY_N(AnyN.CLASS_TAG, 1, null
+    ANY_N(AnyN.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -163,7 +163,7 @@ public enum ExpressionType {
      * 
      * @see BaseValue
      */
-    BASE_VALUE(BaseValue.CLASS_TAG, null, 0
+    BASE_VALUE(BaseValue.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -180,7 +180,7 @@ public enum ExpressionType {
      * 
      * @see ContainerSize
      */
-    CONTAINER_SIZE(ContainerSize.CLASS_TAG, 1, 1
+    CONTAINER_SIZE(ContainerSize.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -197,7 +197,7 @@ public enum ExpressionType {
      * 
      * @see Contains
      */
-    CONTAINS(Contains.CLASS_TAG, 2, 2
+    CONTAINS(Contains.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
@@ -214,7 +214,7 @@ public enum ExpressionType {
      * 
      * @see Correct
      */
-    CORRECT(Correct.CLASS_TAG, null, 0
+    CORRECT(Correct.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , Cardinality.values()
@@ -231,7 +231,7 @@ public enum ExpressionType {
      * 
      * @see Correct
      */
-    CUSTOM_OPERATOR(CustomOperator.CLASS_TAG, 0, null
+    CUSTOM_OPERATOR(CustomOperator.QTI_CLASS_NAME, 0, null
             , Cardinality.values()
             , BaseType.values()
             , Cardinality.values()
@@ -248,7 +248,7 @@ public enum ExpressionType {
      * 
      * @see Default
      */
-    DEFAULT(Default.CLASS_TAG, null, 0
+    DEFAULT(Default.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , Cardinality.values()
@@ -265,7 +265,7 @@ public enum ExpressionType {
      * 
      * @see Delete
      */
-    DELETE(Delete.CLASS_TAG, 2, 2
+    DELETE(Delete.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
@@ -294,7 +294,7 @@ public enum ExpressionType {
      * 
      * @see Divide
      */
-    DIVIDE(Divide.CLASS_TAG, 2, 2
+    DIVIDE(Divide.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -311,7 +311,7 @@ public enum ExpressionType {
      * 
      * @see DurationGte
      */
-    DURATION_GTE(DurationGte.CLASS_TAG, 2, 2
+    DURATION_GTE(DurationGte.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.DURATION }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -328,7 +328,7 @@ public enum ExpressionType {
      * 
      * @see DurationLt
      */
-    DURATION_LT(DurationLt.CLASS_TAG, 2, 2
+    DURATION_LT(DurationLt.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.DURATION }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -345,7 +345,7 @@ public enum ExpressionType {
      * 
      * @see Equal
      */
-    EQUAL(Equal.CLASS_TAG, 2, 2
+    EQUAL(Equal.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -362,7 +362,7 @@ public enum ExpressionType {
      * 
      * @see EqualRounded
      */
-    EQUAL_ROUNDED(EqualRounded.CLASS_TAG, 2, 2
+    EQUAL_ROUNDED(EqualRounded.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -379,7 +379,7 @@ public enum ExpressionType {
      * 
      * @see FieldValue
      */
-    FIELD_VALUE(FieldValue.CLASS_TAG, 1, 1
+    FIELD_VALUE(FieldValue.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.RECORD }
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -396,7 +396,7 @@ public enum ExpressionType {
      * 
      * @see Gt
      */
-    GT(Gt.CLASS_TAG, 2, 2
+    GT(Gt.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -413,7 +413,7 @@ public enum ExpressionType {
      * 
      * @see Gte
      */
-    GTE(Gte.CLASS_TAG, 2, 2
+    GTE(Gte.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -430,7 +430,7 @@ public enum ExpressionType {
      * 
      * @see Index
      */
-    INDEX(Index.CLASS_TAG, 1, 1
+    INDEX(Index.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.ORDERED }
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -447,7 +447,7 @@ public enum ExpressionType {
      * 
      * @see Inside
      */
-    INSIDE(Inside.CLASS_TAG, 1, 1
+    INSIDE(Inside.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , new BaseType[] { BaseType.POINT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -464,7 +464,7 @@ public enum ExpressionType {
      * 
      * @see IntegerDivide
      */
-    INTEGER_DIVIDE(IntegerDivide.CLASS_TAG, 2, 2
+    INTEGER_DIVIDE(IntegerDivide.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -481,7 +481,7 @@ public enum ExpressionType {
      * 
      * @see IntegerModulus
      */
-    INTEGER_MODULUS(IntegerModulus.CLASS_TAG, 2, 2
+    INTEGER_MODULUS(IntegerModulus.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -498,7 +498,7 @@ public enum ExpressionType {
      * 
      * @see IntegerToFloat
      */
-    INTEGER_TO_FLOAT(IntegerToFloat.CLASS_TAG, 1, 1
+    INTEGER_TO_FLOAT(IntegerToFloat.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -515,7 +515,7 @@ public enum ExpressionType {
      * 
      * @see IsNull
      */
-    IS_NULL(IsNull.CLASS_TAG, 1, 1
+    IS_NULL(IsNull.QTI_CLASS_NAME, 1, 1
             , Cardinality.values()
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -532,7 +532,7 @@ public enum ExpressionType {
      * 
      * @see Lt
      */
-    LT(Lt.CLASS_TAG, 2, 2
+    LT(Lt.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -549,7 +549,7 @@ public enum ExpressionType {
      * 
      * @see Lte
      */
-    LTE(Lte.CLASS_TAG, 2, 2
+    LTE(Lte.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -566,7 +566,7 @@ public enum ExpressionType {
      * 
      * @see MapResponse
      */
-    MAP_RESPONSE(MapResponse.CLASS_TAG, null, 0
+    MAP_RESPONSE(MapResponse.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -583,7 +583,7 @@ public enum ExpressionType {
      * 
      * @see MapResponsePoint
      */
-    MAP_RESPONSE_POINT(MapResponsePoint.CLASS_TAG, null, 0
+    MAP_RESPONSE_POINT(MapResponsePoint.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -600,7 +600,7 @@ public enum ExpressionType {
      * 
      * @see Match
      */
-    MATCH(Match.CLASS_TAG, 2, 2
+    MATCH(Match.QTI_CLASS_NAME, 2, 2
             , Cardinality.values()
             , BaseType.values(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
@@ -617,7 +617,7 @@ public enum ExpressionType {
      * 
      * @see MathConstant
      */
-    MATH_CONSTANT(MathConstant.CLASS_TAG, 0, 0
+    MATH_CONSTANT(MathConstant.QTI_CLASS_NAME, 0, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -634,7 +634,7 @@ public enum ExpressionType {
      * 
      * @see MathOperator
      */
-    MATH_OPERATOR(MathOperator.CLASS_TAG, 1, null
+    MATH_OPERATOR(MathOperator.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -651,7 +651,7 @@ public enum ExpressionType {
      * 
      * @see Max
      */
-    MAX(Max.CLASS_TAG, 1, null
+    MAX(Max.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -668,7 +668,7 @@ public enum ExpressionType {
      * 
      * @see Min
      */
-    MIN(Min.CLASS_TAG, 1, null
+    MIN(Min.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -685,7 +685,7 @@ public enum ExpressionType {
      * 
      * @see Member
      */
-    MEMBER(Member.CLASS_TAG, 2, 2
+    MEMBER(Member.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values(new BaseType[] { BaseType.DURATION })
             , new Cardinality[] { Cardinality.SINGLE }
@@ -714,7 +714,7 @@ public enum ExpressionType {
      * 
      * @see Multiple
      */
-    MULTIPLE(Multiple.CLASS_TAG, null, null
+    MULTIPLE(Multiple.QTI_CLASS_NAME, null, null
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE }
             , BaseType.values()
             , new Cardinality[] { Cardinality.MULTIPLE }
@@ -731,7 +731,7 @@ public enum ExpressionType {
      * 
      * @see Not
      */
-    NOT(Not.CLASS_TAG, 1, 1
+    NOT(Not.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -748,7 +748,7 @@ public enum ExpressionType {
      * 
      * @see Null
      */
-    NULL(Null.CLASS_TAG, null, 0
+    NULL(Null.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , Cardinality.values()
@@ -765,7 +765,7 @@ public enum ExpressionType {
      * 
      * @see NumberCorrect
      */
-    NUMBER_CORRECT(NumberCorrect.CLASS_TAG, null, 0
+    NUMBER_CORRECT(NumberCorrect.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -782,7 +782,7 @@ public enum ExpressionType {
      * 
      * @see NumberIncorrect
      */
-    NUMBER_INCORRECT(NumberIncorrect.CLASS_TAG, null, 0
+    NUMBER_INCORRECT(NumberIncorrect.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -799,7 +799,7 @@ public enum ExpressionType {
      * 
      * @see NumberPresented
      */
-    NUMBER_PRESENTED(NumberPresented.CLASS_TAG, null, 0
+    NUMBER_PRESENTED(NumberPresented.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -816,7 +816,7 @@ public enum ExpressionType {
      * 
      * @see NumberResponded
      */
-    NUMBER_RESPONDED(NumberResponded.CLASS_TAG, null, 0
+    NUMBER_RESPONDED(NumberResponded.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -833,7 +833,7 @@ public enum ExpressionType {
      * 
      * @see NumberSelected
      */
-    NUMBER_SELECTED(NumberSelected.CLASS_TAG, null, 0
+    NUMBER_SELECTED(NumberSelected.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -850,7 +850,7 @@ public enum ExpressionType {
      * 
      * @see Or
      */
-    OR(Or.CLASS_TAG, 1, null
+    OR(Or.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.BOOLEAN }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -867,7 +867,7 @@ public enum ExpressionType {
      * 
      * @see OutcomeMaximum
      */
-    OUTCOME_MAXIMUM(OutcomeMaximum.CLASS_TAG, null, 0
+    OUTCOME_MAXIMUM(OutcomeMaximum.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.MULTIPLE }
@@ -884,7 +884,7 @@ public enum ExpressionType {
      * 
      * @see OutcomeMinimum
      */
-    OUTCOME_MINIMUM(OutcomeMinimum.CLASS_TAG, null, 0
+    OUTCOME_MINIMUM(OutcomeMinimum.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.MULTIPLE }
@@ -901,7 +901,7 @@ public enum ExpressionType {
      * 
      * @see Ordered
      */
-    ORDERED(Ordered.CLASS_TAG, null, null
+    ORDERED(Ordered.QTI_CLASS_NAME, null, null
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.ORDERED }
             , BaseType.values()
             , new Cardinality[] { Cardinality.ORDERED }
@@ -918,7 +918,7 @@ public enum ExpressionType {
      * 
      * @see PatternMatch
      */
-    PATTERN_MATCH(PatternMatch.CLASS_TAG, 1, 1
+    PATTERN_MATCH(PatternMatch.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.STRING }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -935,7 +935,7 @@ public enum ExpressionType {
      * 
      * @see Power
      */
-    POWER(Power.CLASS_TAG, 2, 2
+    POWER(Power.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -952,7 +952,7 @@ public enum ExpressionType {
      * 
      * @see Product
      */
-    PRODUCT(Product.CLASS_TAG, 1, null
+    PRODUCT(Product.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -969,7 +969,7 @@ public enum ExpressionType {
      * 
      * @see Random
      */
-    RANDOM(Random.CLASS_TAG, 1, 1
+    RANDOM(Random.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -986,7 +986,7 @@ public enum ExpressionType {
      * 
      * @see RandomEx
      */
-    RANDOM_EX(RandomEx.CLASS_TAG, 1, 1
+    RANDOM_EX(RandomEx.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
             , BaseType.values()
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1003,7 +1003,7 @@ public enum ExpressionType {
      * 
      * @see RandomFloat
      */
-    RANDOM_FLOAT(RandomFloat.CLASS_TAG, null, 0
+    RANDOM_FLOAT(RandomFloat.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1020,7 +1020,7 @@ public enum ExpressionType {
      * 
      * @see RandomFloatEx
      */
-    RANDOM_FLOAT_EX(RandomFloatEx.CLASS_TAG, null, 0
+    RANDOM_FLOAT_EX(RandomFloatEx.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1037,7 +1037,7 @@ public enum ExpressionType {
      * 
      * @see RandomInteger
      */
-    RANDOM_INTEGER(RandomInteger.CLASS_TAG, null, 0
+    RANDOM_INTEGER(RandomInteger.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1054,7 +1054,7 @@ public enum ExpressionType {
      * 
      * @see RandomIntegerEx
      */
-    RANDOM_INTEGER_EX(RandomIntegerEx.CLASS_TAG, null, 0
+    RANDOM_INTEGER_EX(RandomIntegerEx.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1071,7 +1071,7 @@ public enum ExpressionType {
      * 
      * @see RecordEx
      */
-    RECORD_EX(RecordEx.CLASS_TAG, null, null
+    RECORD_EX(RecordEx.QTI_CLASS_NAME, null, null
             , new Cardinality[] { Cardinality.SINGLE }
             , BaseType.values()
             , new Cardinality[] { Cardinality.RECORD }
@@ -1088,7 +1088,7 @@ public enum ExpressionType {
      * 
      * @see Round
      */
-    ROUND(Round.CLASS_TAG, 1, 1
+    ROUND(Round.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1105,7 +1105,7 @@ public enum ExpressionType {
      * 
      * @see RoundTo
      */
-    ROUND_TO(RoundTo.CLASS_TAG, 1, 1
+    ROUND_TO(RoundTo.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.FLOAT, BaseType.INTEGER }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1122,7 +1122,7 @@ public enum ExpressionType {
      * 
      * @see StatsOperator
      */
-    STATS_OPERATOR(StatsOperator.CLASS_TAG, 1, 1
+    STATS_OPERATOR(StatsOperator.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1139,7 +1139,7 @@ public enum ExpressionType {
      * 
      * @see StringMatch
      */
-    STRING_MATCH(StringMatch.CLASS_TAG, 2, 2
+    STRING_MATCH(StringMatch.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.STRING }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1156,7 +1156,7 @@ public enum ExpressionType {
      * 
      * @see Substring
      */
-    SUBSTRING(Substring.CLASS_TAG, 2, 2
+    SUBSTRING(Substring.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.STRING }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1173,7 +1173,7 @@ public enum ExpressionType {
      * 
      * @see Subtract
      */
-    SUBTRACT(Subtract.CLASS_TAG, 2, 2
+    SUBTRACT(Subtract.QTI_CLASS_NAME, 2, 2
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1190,7 +1190,7 @@ public enum ExpressionType {
      * 
      * @see Sum
      */
-    SUM(Sum.CLASS_TAG, 1, null
+    SUM(Sum.QTI_CLASS_NAME, 1, null
             , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1207,7 +1207,7 @@ public enum ExpressionType {
      * 
      * @see TestVariables
      */
-    TEST_VARIABLES(TestVariables.CLASS_TAG, null, 0
+    TEST_VARIABLES(TestVariables.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , new Cardinality[] { Cardinality.MULTIPLE }
@@ -1224,7 +1224,7 @@ public enum ExpressionType {
      * 
      * @see Truncate
      */
-    TRUNCATE(Truncate.CLASS_TAG, 1, 1
+    TRUNCATE(Truncate.QTI_CLASS_NAME, 1, 1
             , new Cardinality[] { Cardinality.SINGLE }
             , new BaseType[] { BaseType.FLOAT }
             , new Cardinality[] { Cardinality.SINGLE }
@@ -1241,7 +1241,7 @@ public enum ExpressionType {
      * 
      * @see Variable
      */
-    VARIABLE(Variable.CLASS_TAG, null, 0
+    VARIABLE(Variable.QTI_CLASS_NAME, null, 0
             , new Cardinality[] {}
             , new BaseType[] {}
             , Cardinality.values()
@@ -1294,9 +1294,9 @@ public enum ExpressionType {
     }
 
     /**
-     * Gets CLASS_TAG of this expression type.
+     * Gets QTI_CLASS_NAME of this expression type.
      * 
-     * @return CLASS_TAG of this expression type
+     * @return QTI_CLASS_NAME of this expression type
      */
     public String getClassTag() {
         return expressionType;
@@ -1376,10 +1376,10 @@ public enum ExpressionType {
     }
 
     /**
-     * Gets expression type for given CLASS_TAG.
+     * Gets expression type for given QTI_CLASS_NAME.
      * 
-     * @param classTag CLASS_TAG
-     * @return expression type for given CLASS_TAG
+     * @param classTag QTI_CLASS_NAME
+     * @return expression type for given QTI_CLASS_NAME
      */
     public static ExpressionType getType(String classTag) {
         return expressionTypes.get(classTag);
@@ -1428,7 +1428,7 @@ public enum ExpressionType {
              * Creates expression.
              *
              * @param parent parent of created expression
-             * @param classTag CLASS_TAG of created expression
+             * @param classTag QTI_CLASS_NAME of created expression
              * @return created expression
              */
             public static

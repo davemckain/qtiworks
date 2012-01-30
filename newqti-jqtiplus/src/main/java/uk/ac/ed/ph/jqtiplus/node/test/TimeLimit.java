@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -56,7 +55,7 @@ public class TimeLimit extends AbstractNode {
     private static final long serialVersionUID = 2090259996374843635L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "timeLimits";
+    public static final String QTI_CLASS_NAME = "timeLimits";
 
     /** Name of minTime attribute in xml schema. */
     public static final String ATTR_MINIMUM_NAME = "minTime";
@@ -70,21 +69,11 @@ public class TimeLimit extends AbstractNode {
     /** Default value of maxTime attribute. */
     public static final Double ATTR_MAXIMUM_DEFAULT_VALUE = null;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public TimeLimit(ControlObject<?> parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, ATTR_MINIMUM_DEFAULT_VALUE));
         getAttributes().add(new DurationAttribute(this, ATTR_MAXIMUM_NAME, ATTR_MAXIMUM_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

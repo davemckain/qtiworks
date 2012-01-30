@@ -50,7 +50,7 @@ public abstract class DlElement extends BodyElement {
      * 
      * @param parent parent of constructed object
      */
-    public DlElement(XmlNode parent) {
-        super(parent);
+    public DlElement(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 }

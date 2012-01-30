@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported template rules from given CLASS_TAG.
+ * This class creates all supported template rules from given QTI_CLASS_NAME.
  * <p>
  * Supported template rules: templateCondition, setTemplateValue, exitTemplate, setCorrectResponse, setDefaultValue.
  * 
@@ -52,7 +52,7 @@ public enum TemplateRuleType {
      * 
      * @see TemplateCondition
      */
-    TEMPLATE_CONDITION(TemplateCondition.CLASS_TAG) {
+    TEMPLATE_CONDITION(TemplateCondition.QTI_CLASS_NAME) {
 
         @Override
         public TemplateRule create(XmlNode parent) {
@@ -65,7 +65,7 @@ public enum TemplateRuleType {
      * 
      * @see SetTemplateValue
      */
-    SET_TEMPLATE_VALUE(SetTemplateValue.CLASS_TAG) {
+    SET_TEMPLATE_VALUE(SetTemplateValue.QTI_CLASS_NAME) {
 
         @Override
         public TemplateRule create(XmlNode parent) {
@@ -78,7 +78,7 @@ public enum TemplateRuleType {
      * 
      * @see ExitTemplate
      */
-    EXIT_TEMPLATE(ExitTemplate.CLASS_TAG) {
+    EXIT_TEMPLATE(ExitTemplate.QTI_CLASS_NAME) {
 
         @Override
         public TemplateRule create(XmlNode parent) {
@@ -91,7 +91,7 @@ public enum TemplateRuleType {
      * 
      * @see SetCorrectResponse
      */
-    SET_CORRECT_RESPONSE(SetCorrectResponse.CLASS_TAG) {
+    SET_CORRECT_RESPONSE(SetCorrectResponse.QTI_CLASS_NAME) {
 
         @Override
         public TemplateRule create(XmlNode parent) {
@@ -104,7 +104,7 @@ public enum TemplateRuleType {
      * 
      * @see SetDefaultValue
      */
-    SET_DEFAULT_VALUE(SetDefaultValue.CLASS_TAG) {
+    SET_DEFAULT_VALUE(SetDefaultValue.QTI_CLASS_NAME) {
 
         @Override
         public TemplateRule create(XmlNode parent) {
@@ -145,7 +145,7 @@ public enum TemplateRuleType {
      * Creates template rule.
      * 
      * @param parent parent of created template rule
-     * @param classTag CLASS_TAG of created template rule
+     * @param classTag QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
     public static TemplateRule getInstance(XmlNode parent, String classTag) {

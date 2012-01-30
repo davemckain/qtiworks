@@ -56,7 +56,7 @@ public class RubricBlockGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public RubricBlockGroup(AssessmentSection parent) {
-        super(parent, RubricBlock.CLASS_TAG, null, null);
+        super(parent, RubricBlock.QTI_CLASS_NAME, null, null);
     }
 
     /**

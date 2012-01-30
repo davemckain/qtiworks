@@ -53,18 +53,13 @@ public class GapImg extends GapChoice {
     private static final long serialVersionUID = 5559510721926679180L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "gapImg";
+    public static final String QTI_CLASS_NAME = "gapImg";
 
     /** Name of objectLabel attribute in xml schema. */
     public static String ATTR_OBJECT_LABEL_NAME = "objectLabel";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public GapImg(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, null, null, false));
 
@@ -89,11 +84,6 @@ public class GapImg extends GapChoice {
      */
     public void setObjectLabel(String objectLabel) {
         getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).setValue(objectLabel);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

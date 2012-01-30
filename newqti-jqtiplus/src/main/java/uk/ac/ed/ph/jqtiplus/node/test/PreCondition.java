@@ -50,19 +50,9 @@ public class PreCondition extends AbstractJump {
     private static final long serialVersionUID = -2772457788311121437L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "preCondition";
+    public static final String QTI_CLASS_NAME = "preCondition";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public PreCondition(AbstractPart parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

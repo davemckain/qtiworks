@@ -123,7 +123,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     public String computeXPath() {
         return (owner != null ? owner.computeXPath() + "/" : "") 
                 + "@"
-                + ((namespaceUri!=null) ? "{" + namespaceUri + "}:" : "")
+                + ((namespaceUri!=null) ? "{" + namespaceUri + "}" : "")
                 + localName;
     }
 

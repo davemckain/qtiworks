@@ -49,22 +49,12 @@ public class Tfoot extends BodyElement {
     private static final long serialVersionUID = -7296081488924803711L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "tfoot";
+    public static final String QTI_CLASS_NAME = "tfoot";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Tfoot(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

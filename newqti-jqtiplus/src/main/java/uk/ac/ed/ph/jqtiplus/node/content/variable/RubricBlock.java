@@ -54,18 +54,13 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
     private static final long serialVersionUID = -531414949035924206L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "rubricBlock";
+    public static final String QTI_CLASS_NAME = "rubricBlock";
 
     /** Name of view attribute in xml schema. */
-    public static final String ATTR_VIEWS_NAME = View.CLASS_TAG;
+    public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
-    /**
-     * Constructs block.
-     * 
-     * @param parent parent of this block
-     */
     public RubricBlock(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME));
 
@@ -75,11 +70,6 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
     @Override
     public List<Block> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

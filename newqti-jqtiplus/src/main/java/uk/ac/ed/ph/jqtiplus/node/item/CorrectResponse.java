@@ -65,7 +65,7 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     private static final long serialVersionUID = -652960952495143854L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "correctResponse";
+    public static final String QTI_CLASS_NAME = "correctResponse";
 
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
@@ -79,7 +79,7 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
      * @param xmlObject parent of this object
      */
     public CorrectResponse(XmlNode xmlObject) {
-        super(xmlObject);
+        super(xmlObject, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
 
@@ -102,11 +102,6 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     @Override
     public ResponseDeclaration getParent() {
         return (ResponseDeclaration) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

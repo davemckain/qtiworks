@@ -100,23 +100,13 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     private static final long serialVersionUID = 3722218691380560119L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "graphicGapMatchInteraction";
+    public static final String QTI_CLASS_NAME = "graphicGapMatchInteraction";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public GraphicGapMatchInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new GapImgGroup(this, 1));
         getNodeGroups().add(new AssociableHotspotGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

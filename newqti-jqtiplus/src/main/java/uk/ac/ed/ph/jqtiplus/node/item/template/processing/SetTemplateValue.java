@@ -60,20 +60,10 @@ public class SetTemplateValue extends ProcessTemplateValue {
     private static final long serialVersionUID = -2471023279990149463L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "setTemplateValue";
+    public static final String QTI_CLASS_NAME = "setTemplateValue";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public SetTemplateValue(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
@@ -107,7 +97,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
 
         final TemplateDeclaration declaration = itemContext.getSubjectItem().getTemplateDeclaration(getIdentifier());
         if (declaration == null) {
-            throw new QTIEvaluationException("Cannot find " + TemplateDeclaration.CLASS_TAG + ": " + getIdentifier());
+            throw new QTIEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
         ((ItemProcessingContext) context).setTemplateValue(declaration, value);

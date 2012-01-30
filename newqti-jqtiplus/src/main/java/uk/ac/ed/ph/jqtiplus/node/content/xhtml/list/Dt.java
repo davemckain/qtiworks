@@ -48,22 +48,12 @@ public class Dt extends DlElement {
     private static final long serialVersionUID = 1260530915777087249L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "dt";
+    public static final String QTI_CLASS_NAME = "dt";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Dt(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

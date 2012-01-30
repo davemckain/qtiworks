@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported response rules from given CLASS_TAG.
+ * This class creates all supported response rules from given QTI_CLASS_NAME.
  * <p>
  * Supported response rules: responseCondition, setOutcomeValue, responseProcessingFragment, responseCondition, exitResponse.
  * <p>
@@ -54,7 +54,7 @@ public enum ResponseRuleType {
      * 
      * @see LookupOutcomeValue
      */
-    LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.CLASS_TAG) {
+    LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
         public ResponseRule create(XmlNode parent) {
@@ -67,7 +67,7 @@ public enum ResponseRuleType {
      * 
      * @see ResponseCondition
      */
-    RESPONSE_CONDITION(ResponseCondition.CLASS_TAG) {
+    RESPONSE_CONDITION(ResponseCondition.QTI_CLASS_NAME) {
 
         @Override
         public ResponseRule create(XmlNode parent) {
@@ -80,7 +80,7 @@ public enum ResponseRuleType {
      * 
      * @see ResponseProcessingFragment
      */
-    RESPONSE_PROCESSING_FRAGMENT(ResponseProcessingFragment.CLASS_TAG) {
+    RESPONSE_PROCESSING_FRAGMENT(ResponseProcessingFragment.QTI_CLASS_NAME) {
 
         @Override
         public ResponseRule create(XmlNode parent) {
@@ -93,7 +93,7 @@ public enum ResponseRuleType {
      * 
      * @see SetOutcomeValue
      */
-    SET_OUTCOME_VALUE(SetOutcomeValue.CLASS_TAG) {
+    SET_OUTCOME_VALUE(SetOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
         public ResponseRule create(XmlNode parent) {
@@ -106,7 +106,7 @@ public enum ResponseRuleType {
      * 
      * @see SetOutcomeValue
      */
-    EXIT_RESPONSE(ExitResponse.CLASS_TAG) {
+    EXIT_RESPONSE(ExitResponse.QTI_CLASS_NAME) {
 
         @Override
         public ResponseRule create(XmlNode parent) {
@@ -147,7 +147,7 @@ public enum ResponseRuleType {
      * Creates response rule.
      * 
      * @param parent parent of created response rule
-     * @param classTag CLASS_TAG of created response rule
+     * @param classTag QTI_CLASS_NAME of created response rule
      * @return created response rule
      */
     public static ResponseRule getInstance(XmlNode parent, String classTag) {

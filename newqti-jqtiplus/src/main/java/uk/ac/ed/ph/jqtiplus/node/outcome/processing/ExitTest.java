@@ -47,24 +47,14 @@ public class ExitTest extends OutcomeRule {
     private static final long serialVersionUID = 1431851586138265131L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "exitTest";
+    public static final String QTI_CLASS_NAME = "exitTest";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ExitTest(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
     public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt {
         throw new QTIProcessingInterrupt();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

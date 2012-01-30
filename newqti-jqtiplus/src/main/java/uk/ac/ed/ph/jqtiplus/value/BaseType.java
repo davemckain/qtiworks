@@ -207,7 +207,7 @@ public enum BaseType {
     };
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "baseType";
+    public static final String QTI_CLASS_NAME = "baseType";
 
     private static Map<String, BaseType> baseTypes;
 
@@ -358,7 +358,7 @@ public enum BaseType {
         final BaseType result = baseTypes.get(baseType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + baseType + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
         }
 
         return result;

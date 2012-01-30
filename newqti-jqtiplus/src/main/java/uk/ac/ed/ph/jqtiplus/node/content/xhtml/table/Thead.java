@@ -49,22 +49,12 @@ public class Thead extends BodyElement {
     private static final long serialVersionUID = 8964640245554999284L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "thead";
+    public static final String QTI_CLASS_NAME = "thead";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Thead(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

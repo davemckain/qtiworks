@@ -75,8 +75,8 @@ public abstract class LookupTable extends AbstractNode {
      * 
      * @param parent parent of this object
      */
-    public LookupTable(OutcomeDeclaration parent) {
-        super(parent);
+    public LookupTable(OutcomeDeclaration parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new SingleValueAttribute(
                 this, ATTR_DEFAULT_VALUE_NAME, getTargetValueBaseType(), ATTR_DEFAULT_VALUE_DEFAULT_VALUE));
@@ -150,7 +150,7 @@ public abstract class LookupTable extends AbstractNode {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (!cardinality.isSingle()) {
-                context.add(new ValidationError(this, "This node is not supported for " + Cardinality.CLASS_TAG + ": " + cardinality));
+                context.add(new ValidationError(this, "This node is not supported for " + Cardinality.QTI_CLASS_NAME + ": " + cardinality));
             }
         }
 

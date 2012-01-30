@@ -48,18 +48,13 @@ public class Ordering extends AbstractNode {
     private static final long serialVersionUID = 8836454929046981760L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "ordering";
+    public static final String QTI_CLASS_NAME = "ordering";
 
     /** Name of shuffle attribute in xml schema. */
     public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public Ordering(AssessmentSection parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME));
     }
@@ -67,11 +62,6 @@ public class Ordering extends AbstractNode {
     @Override
     public AssessmentSection getParent() {
         return (AssessmentSection) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

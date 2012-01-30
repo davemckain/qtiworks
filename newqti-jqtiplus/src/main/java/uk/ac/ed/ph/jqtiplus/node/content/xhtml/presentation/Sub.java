@@ -47,19 +47,9 @@ public class Sub extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -5317368301954539294L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "sub";
+    public static final String QTI_CLASS_NAME = "sub";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Sub(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

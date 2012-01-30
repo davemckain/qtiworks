@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item;
 
-import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.ItemBodyGroup;
@@ -76,7 +75,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     private static final long serialVersionUID = 4723748473878175232L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "assessmentItem";
+    public static final String QTI_CLASS_NAME = "assessmentItem";
 
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
@@ -149,7 +148,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * Constructs assessmentItem.
      */
     public AssessmentItem() {
-        super(null); // Item doesn't have any parent.
+        super(null, QTI_CLASS_NAME); // Item doesn't have any parent.
 
         getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
 
@@ -188,32 +187,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_NAME_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
-    }
-
-    /**
-     * Convenience constructor for assessmentItem.
-     * Sets the JQTI toolName and toolVersion automatically.
-     * 
-     * @param identifier Value of the identifier attribute.
-     * @param title Value of the title attribute.
-     * @param adaptive Value of the adaptive attribute.
-     * @param timeDependent Value of the timeDependent attribute.
-     */
-    public AssessmentItem(String identifier, String title, boolean adaptive, boolean timeDependent) {
-        this();
-
-        setIdentifier(identifier);
-        setTitle(title);
-        setAdaptive(adaptive);
-        setTimeDependent(timeDependent);
-
-        setToolName(JqtiPlus.TOOL_NAME);
-        setToolVersion(JqtiPlus.TOOL_VERSION);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

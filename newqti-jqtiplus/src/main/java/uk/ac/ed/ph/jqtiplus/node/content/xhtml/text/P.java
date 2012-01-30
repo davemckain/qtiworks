@@ -47,19 +47,9 @@ public class P extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 4510020492307855741L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "p";
+    public static final String QTI_CLASS_NAME = "p";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public P(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

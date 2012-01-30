@@ -101,7 +101,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     private static final long serialVersionUID = 8382652026744422992L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "extendedTextInteraction";
+    public static final String QTI_CLASS_NAME = "extendedTextInteraction";
 
     /** Name of maxStrings attribute in xml schema. */
     public static String ATTR_MAX_STRINGS_NAME = "maxStrings";
@@ -121,13 +121,8 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     /** Default value of format attribute. */
     public static TextFormat ATTR_FORMAT_DEFAULT_VALUE = TextFormat.PLAIN;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public ExtendedTextInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_STRINGS_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_STRINGS_NAME, ATTR_MIN_STRINGS_DEFAULT_VALUE, ATTR_MIN_STRINGS_DEFAULT_VALUE, false));
@@ -140,11 +135,6 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

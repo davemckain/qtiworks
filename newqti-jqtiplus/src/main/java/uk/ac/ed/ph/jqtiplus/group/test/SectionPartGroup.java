@@ -60,8 +60,8 @@ public class SectionPartGroup extends AbstractNodeGroup {
         super(parent, SectionPart.DISPLAY_NAME, null, null);
 
         getAllSupportedClasses().clear();
-        getAllSupportedClasses().add(AssessmentSection.CLASS_TAG);
-        getAllSupportedClasses().add(AssessmentItemRef.CLASS_TAG);
+        getAllSupportedClasses().add(AssessmentSection.QTI_CLASS_NAME);
+        getAllSupportedClasses().add(AssessmentItemRef.QTI_CLASS_NAME);
     }
 
     @Override
@@ -89,10 +89,10 @@ public class SectionPartGroup extends AbstractNodeGroup {
      */
     @Override
     public SectionPart create(String classTag) {
-        if (classTag.equals(AssessmentSection.CLASS_TAG)) {
+        if (classTag.equals(AssessmentSection.QTI_CLASS_NAME)) {
             return new AssessmentSection((AssessmentSection) getParent());
         }
-        else if (classTag.equals(AssessmentItemRef.CLASS_TAG)) {
+        else if (classTag.equals(AssessmentItemRef.QTI_CLASS_NAME)) {
             return new AssessmentItemRef((AssessmentSection) getParent());
         }
         else {

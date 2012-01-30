@@ -80,25 +80,15 @@ public class Variable extends LookupExpression {
     private static Logger logger = LoggerFactory.getLogger(Variable.class);
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "variable";
+    public static final String QTI_CLASS_NAME = "variable";
 
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Variable(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

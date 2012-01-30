@@ -53,7 +53,7 @@ public class DefaultValueGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public DefaultValueGroup(VariableDeclaration parent) {
-        super(parent, DefaultValue.CLASS_TAG, false);
+        super(parent, DefaultValue.QTI_CLASS_NAME, false);
     }
 
     /**

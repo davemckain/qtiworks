@@ -49,20 +49,10 @@ public class Br extends BodyElement implements AtomicInline {
     private static final long serialVersionUID = 5514344847268031135L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "br";
+    public static final String QTI_CLASS_NAME = "br";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Br(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
@@ -88,13 +89,12 @@ public abstract class BodyElement extends AbstractNode {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_LABEL_NAME = "label";
 
-    /**
-     * Constructs bodyElement.
-     * 
-     * @param parent parent of this bodyElement
-     */
-    public BodyElement(XmlNode parent) {
-        super(parent);
+    public BodyElement(XmlNode parent, String localName) {
+        this(parent, localName, QtiConstants.QTI_21_NAMESPACE_URI);
+    }
+    
+    public BodyElement(XmlNode parent, String localName, String namespaceUri) {
+        super(parent, localName, namespaceUri);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, null, null, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, null, null, false));

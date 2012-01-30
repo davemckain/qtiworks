@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class creates all supported template processing rules from given CLASS_TAG.
+ * This class creates all supported template processing rules from given QTI_CLASS_NAME.
  * <p>
  * Supported template rules: templateConstraint, templateCondition, setTemplateValue, exitTemplate, setCorrectResponse, setDefaultValue.
  * 
@@ -51,7 +51,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see TemplateCondition
      */
-    TEMPLATE_CONSTRAINT(TemplateConstraint.CLASS_TAG) {
+    TEMPLATE_CONSTRAINT(TemplateConstraint.QTI_CLASS_NAME) {
 
         @Override
         public TemplateConstraint create(TemplateProcessing parent) {
@@ -64,7 +64,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see TemplateCondition
      */
-    TEMPLATE_CONDITION(TemplateCondition.CLASS_TAG) {
+    TEMPLATE_CONDITION(TemplateCondition.QTI_CLASS_NAME) {
 
         @Override
         public TemplateCondition create(TemplateProcessing parent) {
@@ -77,7 +77,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see SetTemplateValue
      */
-    SET_TEMPLATE_VALUE(SetTemplateValue.CLASS_TAG) {
+    SET_TEMPLATE_VALUE(SetTemplateValue.QTI_CLASS_NAME) {
 
         @Override
         public TemplateProcessingRule create(TemplateProcessing parent) {
@@ -90,7 +90,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see ExitTemplate
      */
-    EXIT_TEMPLATE(ExitTemplate.CLASS_TAG) {
+    EXIT_TEMPLATE(ExitTemplate.QTI_CLASS_NAME) {
 
         @Override
         public TemplateProcessingRule create(TemplateProcessing parent) {
@@ -103,7 +103,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see SetCorrectResponse
      */
-    SET_CORRECT_RESPONSE(SetCorrectResponse.CLASS_TAG) {
+    SET_CORRECT_RESPONSE(SetCorrectResponse.QTI_CLASS_NAME) {
 
         @Override
         public TemplateProcessingRule create(TemplateProcessing parent) {
@@ -116,7 +116,7 @@ public enum TemplateProcessingRuleType {
      * 
      * @see SetDefaultValue
      */
-    SET_DEFAULT_VALUE(SetDefaultValue.CLASS_TAG) {
+    SET_DEFAULT_VALUE(SetDefaultValue.QTI_CLASS_NAME) {
 
         @Override
         public TemplateProcessingRule create(TemplateProcessing parent) {
@@ -156,7 +156,7 @@ public enum TemplateProcessingRuleType {
      * Creates template rule.
      * 
      * @param parent parent of created template rule
-     * @param classTag CLASS_TAG of created template rule
+     * @param classTag QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
     public static TemplateProcessingRule getInstance(TemplateProcessing parent, String classTag) {

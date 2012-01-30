@@ -83,7 +83,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     private static final long serialVersionUID = 7280640816320200269L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "choiceInteraction";
+    public static final String QTI_CLASS_NAME = "choiceInteraction";
 
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
@@ -103,24 +103,14 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     /** Default value of minChoices attribute . */
     public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public ChoiceInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE));
 
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -56,20 +56,10 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 6314971744269416971L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "pre";
+    public static final String QTI_CLASS_NAME = "pre";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Pre(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
@@ -79,22 +69,22 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
         //Although pre inherits from atomicBlock it must not contain, either directly 
         //or indirectly, any of the following objects: img, object, big, small, sub, sup.
         if (search(Img.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Img.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Img.QTI_CLASS_NAME + " children"));
         }
         if (search(Object.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Object.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Object.QTI_CLASS_NAME + " children"));
         }
         if (search(Big.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Big.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Big.QTI_CLASS_NAME + " children"));
         }
         if (search(Small.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Small.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Small.QTI_CLASS_NAME + " children"));
         }
         if (search(Sub.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sub.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sub.QTI_CLASS_NAME + " children"));
         }
         if (search(Sup.class).size() > 0) {
-            context.add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + Sup.CLASS_TAG + " children"));
+            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sup.QTI_CLASS_NAME + " children"));
         }
     }
 }

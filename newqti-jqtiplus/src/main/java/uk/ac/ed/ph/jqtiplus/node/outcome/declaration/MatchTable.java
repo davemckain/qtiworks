@@ -51,22 +51,12 @@ public class MatchTable extends LookupTable {
     private static final long serialVersionUID = 352441541205819413L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "matchTable";
+    public static final String QTI_CLASS_NAME = "matchTable";
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public MatchTable(OutcomeDeclaration parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new MatchTableEntryGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

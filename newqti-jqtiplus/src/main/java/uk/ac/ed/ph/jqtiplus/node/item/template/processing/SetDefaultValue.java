@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -57,20 +56,10 @@ public class SetDefaultValue extends ProcessTemplateValue {
     private static final long serialVersionUID = -1151254253813354211L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "setDefaultValue";
+    public static final String QTI_CLASS_NAME = "setDefaultValue";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public SetDefaultValue(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

@@ -63,7 +63,7 @@ public enum View {
     TUTOR("tutor");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "view";
+    public static final String QTI_CLASS_NAME = "view";
 
     private static Map<String, View> views;
 
@@ -97,7 +97,7 @@ public enum View {
         final View result = views.get(view);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + view + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + view + "'.");
         }
 
         return result;

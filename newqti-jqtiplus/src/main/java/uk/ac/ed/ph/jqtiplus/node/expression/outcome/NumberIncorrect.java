@@ -59,20 +59,10 @@ public class NumberIncorrect extends ItemSubset {
     private static final long serialVersionUID = 4021572578869533272L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "numberIncorrect";
+    public static final String QTI_CLASS_NAME = "numberIncorrect";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public NumberIncorrect(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

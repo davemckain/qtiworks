@@ -59,20 +59,10 @@ public class LookupOutcomeValue extends ProcessResponseValue {
     private static final long serialVersionUID = 6219648842420369995L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "lookupOutcomeValue";
+    public static final String QTI_CLASS_NAME = "lookupOutcomeValue";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public LookupOutcomeValue(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
@@ -101,12 +91,12 @@ public class LookupOutcomeValue extends ProcessResponseValue {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getIdentifier()));
+                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
             }
             else if (declaration.getLookupTable() == null) {
                 context.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
-                        + OutcomeDeclaration.CLASS_TAG
+                        + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
                         + getIdentifier()));
             }

@@ -48,7 +48,7 @@ public class CandidateComment extends AbstractNode {
     private static final long serialVersionUID = 3338529928447111381L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "candidateComment";
+    public static final String QTI_CLASS_NAME = "candidateComment";
 
     /** Text content of this block. */
     private String textContent;
@@ -59,7 +59,7 @@ public class CandidateComment extends AbstractNode {
      * @param parent parent of constructed block
      */
     public CandidateComment(ItemResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
 
     /**
@@ -69,14 +69,8 @@ public class CandidateComment extends AbstractNode {
      * @param textContent text content of constructed block
      */
     public CandidateComment(ItemResult parent, String textContent) {
-        super(parent);
-
+        super(parent, QTI_CLASS_NAME);
         this.textContent = textContent;
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

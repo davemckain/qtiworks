@@ -43,19 +43,9 @@ public class ResponseElse extends ResponseConditionChild {
     private static final long serialVersionUID = -4985863101677875164L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseElse";
+    public static final String QTI_CLASS_NAME = "responseElse";
 
-    /**
-     * Constructs ELSE responseCondition child.
-     * 
-     * @param parent parent of this ELSE responseCondition child
-     */
     public ResponseElse(ResponseCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

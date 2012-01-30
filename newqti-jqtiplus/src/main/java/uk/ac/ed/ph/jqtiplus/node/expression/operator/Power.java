@@ -57,20 +57,10 @@ public class Power extends AbstractExpression {
     private static final long serialVersionUID = 3939643652476701791L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "power";
+    public static final String QTI_CLASS_NAME = "power";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Power(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

@@ -56,15 +56,10 @@ public class InlineChoice extends Choice {
     private static final long serialVersionUID = 2530302190076210162L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "inlineChoice";
+    public static final String QTI_CLASS_NAME = "inlineChoice";
 
-    /**
-     * Construct new inlineChoice.
-     * 
-     * @param parent Parent node
-     */
     public InlineChoice(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));
     }
@@ -77,17 +72,12 @@ public class InlineChoice extends Choice {
         search(getChildren(), Interaction.class, interactions);
 
         if (interactions.size() > 0) {
-            context.add(new ValidationError(this, CLASS_TAG + " cannot contain nested interactions"));
+            context.add(new ValidationError(this, QTI_CLASS_NAME + " cannot contain nested interactions"));
         }
     }
 
     @Override
     public List<TextOrVariable> getChildren() {
         return getNodeGroups().getTextOrVariableGroup().getTextOrVariables();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

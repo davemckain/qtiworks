@@ -67,7 +67,7 @@ public class StringMatch extends AbstractExpression {
     private static final long serialVersionUID = 8495415247770053078L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "stringMatch";
+    public static final String QTI_CLASS_NAME = "stringMatch";
 
     /** Name of caseSensitive attribute in xml schema. */
     public static final String ATTR_CASE_SENSITIVE_NAME = "caseSensitive";
@@ -78,21 +78,11 @@ public class StringMatch extends AbstractExpression {
     /** Default value of substring attribute. */
     public static final boolean ATTR_SUBSTRING_DEFAULT_VALUE = false;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public StringMatch(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_SUBSTRING_NAME, ATTR_SUBSTRING_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

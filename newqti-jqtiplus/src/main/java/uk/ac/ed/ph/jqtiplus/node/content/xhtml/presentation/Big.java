@@ -47,19 +47,9 @@ public class Big extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -8733186300087654841L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "big";
+    public static final String QTI_CLASS_NAME = "big";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Big(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

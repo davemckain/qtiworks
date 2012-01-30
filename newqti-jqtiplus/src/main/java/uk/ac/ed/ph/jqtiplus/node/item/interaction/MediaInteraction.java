@@ -85,7 +85,7 @@ public class MediaInteraction extends BlockInteraction {
     private static final long serialVersionUID = -1273962848944879873L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "mediaInteraction";
+    public static final String QTI_CLASS_NAME = "mediaInteraction";
 
     /** Name of autostart attribute in xml schema. */
     public static String ATTR_AUTOSTART_NAME = "autostart";
@@ -108,13 +108,8 @@ public class MediaInteraction extends BlockInteraction {
     /** Default value of loop attribute. */
     public static boolean ATTR_LOOP_DEFAULT_VALUE = false;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public MediaInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_AUTOSTART_NAME, null, null, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_PLAYS_NAME, ATTR_MIN_PLAYS_DEFAULT_VALUE));
@@ -202,11 +197,6 @@ public class MediaInteraction extends BlockInteraction {
      */
     public Boolean getLoop() {
         return getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).getValue();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

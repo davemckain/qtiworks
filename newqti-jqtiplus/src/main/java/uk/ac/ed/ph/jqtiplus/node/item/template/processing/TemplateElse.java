@@ -43,19 +43,9 @@ public class TemplateElse extends TemplateConditionChild {
     private static final long serialVersionUID = -6857697040115787154L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateElse";
+    public static final String QTI_CLASS_NAME = "templateElse";
 
-    /**
-     * Constructs ELSE templateCondition child.
-     * 
-     * @param parent parent of this ELSE templateCondition child
-     */
     public TemplateElse(TemplateCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

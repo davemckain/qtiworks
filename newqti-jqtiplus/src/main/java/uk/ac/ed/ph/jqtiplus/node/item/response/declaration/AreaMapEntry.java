@@ -52,7 +52,7 @@ public class AreaMapEntry extends AbstractNode {
     private static final long serialVersionUID = -8158849868275249200L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "areaMapEntry";
+    public static final String QTI_CLASS_NAME = "areaMapEntry";
 
     /** Name of shape attribute in xml schema. */
     public static final String ATTR_SHAPE_NAME = "shape";
@@ -69,16 +69,11 @@ public class AreaMapEntry extends AbstractNode {
      * @param parent AreaMapEntry parent
      */
     public AreaMapEntry(AreaMapping parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
         getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
         getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

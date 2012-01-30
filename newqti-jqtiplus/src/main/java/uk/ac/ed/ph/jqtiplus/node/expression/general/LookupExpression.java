@@ -78,8 +78,8 @@ public abstract class LookupExpression extends AbstractExpression {
      * 
      * @param parent parent of this expression
      */
-    public LookupExpression(ExpressionParent parent) {
-        super(parent);
+    public LookupExpression(ExpressionParent parent, String localName) {
+        super(parent, localName);
         getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
     }
 

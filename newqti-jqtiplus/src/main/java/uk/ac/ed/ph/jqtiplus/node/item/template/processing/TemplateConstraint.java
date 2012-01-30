@@ -55,21 +55,11 @@ public class TemplateConstraint extends TemplateProcessingRule implements Expres
 
     private static final long serialVersionUID = -8911245073155354573L;
 
-    public static final String CLASS_TAG = "templateConstraint";
+    public static final String QTI_CLASS_NAME = "templateConstraint";
 
-    /**
-     * Construct condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
     public TemplateConstraint(TemplateProcessing parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

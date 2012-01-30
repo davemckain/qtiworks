@@ -59,15 +59,10 @@ public class Hottext extends Choice implements InlineStatic, FlowStatic {
     private static final long serialVersionUID = 1456204540250149804L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "hottext";
+    public static final String QTI_CLASS_NAME = "hottext";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Hottext(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineStaticGroup(this));
     }
@@ -75,10 +70,5 @@ public class Hottext extends Choice implements InlineStatic, FlowStatic {
     @Override
     public List<? extends XmlNode> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

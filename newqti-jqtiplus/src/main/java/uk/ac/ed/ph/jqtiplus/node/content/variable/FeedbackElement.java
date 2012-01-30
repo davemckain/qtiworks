@@ -64,7 +64,7 @@ public abstract class FeedbackElement extends BodyElement {
     public static final String ATTR_OUTCOME_IDENTIFIER_NAME = "outcomeIdentifier";
 
     /** Name of showHide attribute in xml schema. */
-    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.CLASS_TAG;
+    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.QTI_CLASS_NAME;
 
     /** Default value of showHide attribute. */
     public static final VisibilityMode ATTR_VISIBILITY_MODE_DEFAULT_VALUE = VisibilityMode.SHOW_IF_MATCH;
@@ -77,8 +77,8 @@ public abstract class FeedbackElement extends BodyElement {
      * 
      * @param parent parent of this element
      */
-    public FeedbackElement(XmlNode parent) {
-        super(parent);
+    public FeedbackElement(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(
                 new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
@@ -152,7 +152,7 @@ public abstract class FeedbackElement extends BodyElement {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.CLASS_TAG + ": " + getOutcomeIdentifier()));
+                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
             }
 
             if (declaration != null && declaration.getCardinality() != null

@@ -47,7 +47,7 @@ public class Abbr extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -4473224789901730303L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "abbr";
+    public static final String QTI_CLASS_NAME = "abbr";
 
     /**
      * Constructs object.
@@ -55,11 +55,6 @@ public class Abbr extends AbstractSimpleInline implements SimpleInline {
      * @param parent parent of constructed object
      */
     public Abbr(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

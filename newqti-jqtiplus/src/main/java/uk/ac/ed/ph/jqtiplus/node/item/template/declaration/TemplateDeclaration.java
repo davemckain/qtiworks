@@ -54,7 +54,7 @@ public class TemplateDeclaration extends VariableDeclaration {
     private static final long serialVersionUID = -3230507842769055868L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateDeclaration";
+    public static final String QTI_CLASS_NAME = "templateDeclaration";
 
     /** Name of paramVariable attribute in xml schema. */
     public static final String ATTR_PARAM_VARIABLE_NAME = "paramVariable";
@@ -68,13 +68,8 @@ public class TemplateDeclaration extends VariableDeclaration {
     /** Default value of mathVariable attribute. */
     public static final Boolean ATTR_MATH_VARIABLE_DEFAULT_VALUE = false;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public TemplateDeclaration(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_PARAM_VARIABLE_NAME, ATTR_PARAM_VARIABLE_DEFAULT_VALUE));
         getAttributes().add(new BooleanAttribute(this, ATTR_MATH_VARIABLE_NAME, ATTR_MATH_VARIABLE_DEFAULT_VALUE));
@@ -83,11 +78,6 @@ public class TemplateDeclaration extends VariableDeclaration {
     @Override
     public VariableType getVariableType() {
         return VariableType.TEMPLATE;
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

@@ -53,7 +53,7 @@ public class OutcomeIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public OutcomeIfGroup(OutcomeCondition parent) {
-        super(parent, OutcomeIf.CLASS_TAG, true);
+        super(parent, OutcomeIf.QTI_CLASS_NAME, true);
     }
 
     /**

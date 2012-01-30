@@ -47,19 +47,9 @@ public class H4 extends AbstractAtomicBlock implements AtomicBlock {
     private static final long serialVersionUID = 1573856832954852737L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "h4";
+    public static final String QTI_CLASS_NAME = "h4";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public H4(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

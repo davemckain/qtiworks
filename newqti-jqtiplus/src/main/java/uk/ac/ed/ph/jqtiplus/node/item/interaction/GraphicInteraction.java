@@ -57,8 +57,8 @@ public abstract class GraphicInteraction extends BlockInteraction {
      * 
      * @param parent parent of constructed object
      */
-    public GraphicInteraction(XmlNode parent) {
-        super(parent);
+    public GraphicInteraction(XmlNode parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }

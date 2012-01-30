@@ -56,7 +56,7 @@ public class InterpolationTableEntryGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public InterpolationTableEntryGroup(InterpolationTable parent) {
-        super(parent, InterpolationTableEntry.CLASS_TAG, 1, null);
+        super(parent, InterpolationTableEntry.QTI_CLASS_NAME, 1, null);
     }
 
     /**

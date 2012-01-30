@@ -43,19 +43,9 @@ public class OutcomeElseIf extends OutcomeConditionExpressionChild {
     private static final long serialVersionUID = 1315729870633785646L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "outcomeElseIf";
+    public static final String QTI_CLASS_NAME = "outcomeElseIf";
 
-    /**
-     * Constructs ELSE-IF outcomeCondition child.
-     * 
-     * @param parent parent of this ELSE-IF outcomeCondition child
-     */
     public OutcomeElseIf(OutcomeCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

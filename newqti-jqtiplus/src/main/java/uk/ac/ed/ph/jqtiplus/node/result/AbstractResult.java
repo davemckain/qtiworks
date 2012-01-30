@@ -62,8 +62,8 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
      * 
      * @param parent parent of constructed object
      */
-    public AbstractResult(AssessmentResult parent) {
-        super(parent);
+    public AbstractResult(AssessmentResult parent, String localName) {
+        super(parent, localName);
 
         getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME));
         getAttributes().add(new DateAttribute(this, ATTR_DATE_STAMP_NAME));

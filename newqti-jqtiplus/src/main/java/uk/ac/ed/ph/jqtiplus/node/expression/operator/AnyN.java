@@ -64,7 +64,7 @@ public class AnyN extends AbstractExpression {
     private static final long serialVersionUID = -2513872740143850055L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "anyN";
+    public static final String QTI_CLASS_NAME = "anyN";
 
     /** Name of min attribute in xml schema. */
     public static final String ATTR_MINIMUM_NAME = "min";
@@ -78,15 +78,10 @@ public class AnyN extends AbstractExpression {
      * @param parent parent of this expression
      */
     public AnyN(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

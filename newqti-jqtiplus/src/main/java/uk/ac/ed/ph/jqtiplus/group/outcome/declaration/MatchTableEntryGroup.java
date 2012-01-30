@@ -56,7 +56,7 @@ public class MatchTableEntryGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public MatchTableEntryGroup(MatchTable parent) {
-        super(parent, MatchTableEntry.CLASS_TAG, 1, null);
+        super(parent, MatchTableEntry.QTI_CLASS_NAME, 1, null);
     }
 
     /**

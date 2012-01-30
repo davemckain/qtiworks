@@ -59,28 +59,28 @@ public enum RootObjectTypes {
      * 
      * @see AssessmentTest
      */
-    ASSESSMENT_TEST(AssessmentTest.CLASS_TAG, AssessmentTest.class),
+    ASSESSMENT_TEST(AssessmentTest.QTI_CLASS_NAME, AssessmentTest.class),
 
     /**
      * Creates assessmentItem root node.
      * 
      * @see AssessmentItem
      */
-    ASSESSMENT_ITEM(AssessmentItem.CLASS_TAG, AssessmentItem.class),
+    ASSESSMENT_ITEM(AssessmentItem.QTI_CLASS_NAME, AssessmentItem.class),
 
     /**
      * Creates responseProcessing root node.
      * 
      * @see AssessmentItem
      */
-    RESPONSE_PROCESSING(ResponseProcessing.CLASS_TAG, ResponseProcessing.class),
+    RESPONSE_PROCESSING(ResponseProcessing.QTI_CLASS_NAME, ResponseProcessing.class),
 
     /**
      * Creates assessmentResult root node.
      * 
      * @see AssessmentResult
      */
-    ASSESSMENT_RESULT(AssessmentResult.CLASS_TAG, AssessmentResult.class),
+    ASSESSMENT_RESULT(AssessmentResult.QTI_CLASS_NAME, AssessmentResult.class),
 
     ;
 
@@ -118,7 +118,7 @@ public enum RootObjectTypes {
     /**
      * Creates root node with given classTag
      * 
-     * @param classTag CLASS_TAG of created root node
+     * @param classTag QTI_CLASS_NAME of created root node
      * @return created root node
      * @throws IllegalArgumentException if the given classTag does not correspond to a root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated

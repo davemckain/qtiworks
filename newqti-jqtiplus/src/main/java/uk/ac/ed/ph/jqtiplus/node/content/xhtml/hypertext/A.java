@@ -54,7 +54,7 @@ public class A extends AbstractSimpleInline {
     private static final long serialVersionUID = -838798085866010380L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "a";
+    public static final String QTI_CLASS_NAME = "a";
 
     /** Name of href attribute in xml schema. */
     public static final String ATTR_HREF_NAME = "href";
@@ -68,15 +68,10 @@ public class A extends AbstractSimpleInline {
      * @param parent parent of constructed object
      */
     public A(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override
@@ -85,7 +80,7 @@ public class A extends AbstractSimpleInline {
 
         //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. 
         if (search(A.class).size() > 0) {
-            context.getValidationResult().add(new ValidationError(this, "The " + CLASS_TAG + " class cannot contain " + CLASS_TAG + " children"));
+            context.getValidationResult().add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + QTI_CLASS_NAME + " children"));
         }
     }
 

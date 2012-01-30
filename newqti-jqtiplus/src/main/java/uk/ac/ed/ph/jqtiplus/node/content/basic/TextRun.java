@@ -54,21 +54,10 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
     /** Text content of this block. */
     private String textContent;
 
-    /**
-     * Constructs block.
-     * 
-     * @param parent parent of this block
-     * @param textContent text content of this block
-     */
     public TextRun(XmlNode parent, String textContent) {
-        super(parent);
+        super(parent, DISPLAY_NAME);
 
         this.textContent = textContent;
-    }
-
-    @Override
-    public String getClassTag() {
-        return DISPLAY_NAME;
     }
 
     /**

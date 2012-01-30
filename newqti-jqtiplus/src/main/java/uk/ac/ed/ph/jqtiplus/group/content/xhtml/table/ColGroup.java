@@ -56,7 +56,7 @@ public class ColGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ColGroup(BodyElement parent) {
-        super(parent, Col.CLASS_TAG, null, null);
+        super(parent, Col.QTI_CLASS_NAME, null, null);
     }
 
     /**

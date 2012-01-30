@@ -43,7 +43,7 @@ public enum SyntaxType {
     MAXIMA("text/x-maxima");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "casType";
+    public static final String QTI_CLASS_NAME = "casType";
 
     private static Map<String, SyntaxType> syntaxTypes = new HashMap<String, SyntaxType>();
     static {
@@ -66,7 +66,7 @@ public enum SyntaxType {
         final SyntaxType result = syntaxTypes.get(syntaxType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + syntaxType + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
         }
 
         return result;

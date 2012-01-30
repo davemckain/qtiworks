@@ -47,12 +47,7 @@ public abstract class TemplateRule extends TemplateProcessingRule {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "templateRule";
 
-    /**
-     * Creates rule.
-     * 
-     * @param parent parent of this rule
-     */
-    public TemplateRule(XmlNode parent) {
-        super(parent);
+    public TemplateRule(XmlNode parent, String localName) {
+        super(parent, localName);
     }
 }

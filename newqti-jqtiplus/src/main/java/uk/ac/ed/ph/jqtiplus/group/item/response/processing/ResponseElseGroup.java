@@ -53,7 +53,7 @@ public class ResponseElseGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ResponseElseGroup(ResponseCondition parent) {
-        super(parent, ResponseElse.CLASS_TAG, false);
+        super(parent, ResponseElse.QTI_CLASS_NAME, false);
     }
 
     /**

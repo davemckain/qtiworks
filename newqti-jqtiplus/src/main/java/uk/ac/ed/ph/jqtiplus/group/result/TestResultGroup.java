@@ -53,7 +53,7 @@ public class TestResultGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TestResultGroup(AssessmentResult parent) {
-        super(parent, TestResult.CLASS_TAG, false);
+        super(parent, TestResult.QTI_CLASS_NAME, false);
     }
 
     /**

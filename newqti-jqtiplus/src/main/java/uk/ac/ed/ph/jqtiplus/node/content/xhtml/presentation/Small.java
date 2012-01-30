@@ -47,19 +47,9 @@ public class Small extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -2040187836620701422L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "small";
+    public static final String QTI_CLASS_NAME = "small";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Small(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

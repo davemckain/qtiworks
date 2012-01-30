@@ -56,7 +56,7 @@ public class LiGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public LiGroup(BodyElement parent) {
-        super(parent, Li.CLASS_TAG, null, null);
+        super(parent, Li.QTI_CLASS_NAME, null, null);
     }
 
     /**

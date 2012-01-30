@@ -53,7 +53,7 @@ public class OutcomeProcessingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public OutcomeProcessingGroup(AssessmentTest parent) {
-        super(parent, OutcomeProcessing.CLASS_TAG, false);
+        super(parent, OutcomeProcessing.QTI_CLASS_NAME, false);
     }
 
     /**

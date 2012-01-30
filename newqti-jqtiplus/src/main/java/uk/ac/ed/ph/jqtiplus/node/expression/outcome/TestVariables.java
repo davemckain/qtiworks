@@ -69,13 +69,13 @@ public class TestVariables extends ItemSubset {
     private static final long serialVersionUID = 9071109513721979269L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "testVariables";
+    public static final String QTI_CLASS_NAME = "testVariables";
 
     /** Name of variableIdentifier attribute in xml schema. */
     public static final String ATTR_VARIABLE_IDENTIFIER_NAME = "variableIdentifier";
 
     /** Name of baseType attribute in xml schema. */
-    public static final String ATTR_BASE_TYPE_NAME = BaseType.CLASS_TAG;
+    public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
     /** Default value of baseType attribute. */
     public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
@@ -83,22 +83,12 @@ public class TestVariables extends ItemSubset {
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public TestVariables(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_VARIABLE_IDENTIFIER_NAME));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

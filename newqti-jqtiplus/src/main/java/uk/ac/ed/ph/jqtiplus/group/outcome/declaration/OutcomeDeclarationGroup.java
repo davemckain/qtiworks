@@ -55,7 +55,7 @@ public class OutcomeDeclarationGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public OutcomeDeclarationGroup(AssessmentObject parent) {
-        super(parent, OutcomeDeclaration.CLASS_TAG, null, null);
+        super(parent, OutcomeDeclaration.QTI_CLASS_NAME, null, null);
     }
 
     /**

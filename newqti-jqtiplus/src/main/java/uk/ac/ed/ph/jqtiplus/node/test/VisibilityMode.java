@@ -59,7 +59,7 @@ public enum VisibilityMode {
     HIDE_IF_MATCH("hide");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "showHide";
+    public static final String QTI_CLASS_NAME = "showHide";
 
     private static Map<String, VisibilityMode> visibilityModes;
 
@@ -93,7 +93,7 @@ public enum VisibilityMode {
         final VisibilityMode result = visibilityModes.get(visibilityMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + visibilityMode + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + visibilityMode + "'.");
         }
 
         return result;

@@ -90,7 +90,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     private static final long serialVersionUID = 8556474552543752269L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "matchInteraction";
+    public static final String QTI_CLASS_NAME = "matchInteraction";
 
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
@@ -110,13 +110,8 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     /** Default value of minAssociations attribute . */
     public static int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public MatchInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(
@@ -124,11 +119,6 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE));
 
         getNodeGroups().add(new SimpleMatchSetGroup(this, 2, 2));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

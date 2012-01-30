@@ -58,20 +58,10 @@ public class Gte extends AbstractExpression {
     private static final long serialVersionUID = 4211189479866044968L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "gte";
+    public static final String QTI_CLASS_NAME = "gte";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Gte(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

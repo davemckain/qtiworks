@@ -46,19 +46,9 @@ public class Identification extends ContainerBlock {
     private static final long serialVersionUID = -8659230051787654613L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "identification";
+    public static final String QTI_CLASS_NAME = "identification";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Identification(Context parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

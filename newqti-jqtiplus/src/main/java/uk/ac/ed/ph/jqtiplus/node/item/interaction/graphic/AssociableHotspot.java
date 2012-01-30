@@ -60,7 +60,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     private static final long serialVersionUID = -2953567424581731978L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "associableHotspot";
+    public static final String QTI_CLASS_NAME = "associableHotspot";
 
     /** Name of matchMax attribute in xml schema. */
     public static String ATTR_MATCH_MAX_NAME = "matchMax";
@@ -78,7 +78,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
      * @param parent Parent node
      */
     public AssociableHotspot(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
         getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
@@ -125,11 +125,6 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
      */
     public void setMatchMin(Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

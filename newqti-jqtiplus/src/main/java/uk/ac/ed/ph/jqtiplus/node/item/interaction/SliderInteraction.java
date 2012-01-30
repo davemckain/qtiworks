@@ -89,7 +89,7 @@ public class SliderInteraction extends BlockInteraction {
     private static final long serialVersionUID = -1475285258141745276L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "sliderInteraction";
+    public static final String QTI_CLASS_NAME = "sliderInteraction";
 
     /** Name of lowerBound attribute in xml schema. */
     public static String ATTR_LOWER_BOUND_NAME = "lowerBound";
@@ -109,13 +109,8 @@ public class SliderInteraction extends BlockInteraction {
     /** Name of reverse attribute in xml schema. */
     public static String ATTR_REVERSE_NAME = "reverse";
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public SliderInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME));
         getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME));
@@ -123,11 +118,6 @@ public class SliderInteraction extends BlockInteraction {
         getAttributes().add(new BooleanAttribute(this, ATTR_STEP_LABEL_NAME, null, null, false));
         getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, null, null, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_REVERSE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

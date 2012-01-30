@@ -57,25 +57,15 @@ public class UploadInteraction extends BlockInteraction {
     private static final long serialVersionUID = -8426318923809371089L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "uploadInteraction";
+    public static final String QTI_CLASS_NAME = "uploadInteraction";
 
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public UploadInteraction(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

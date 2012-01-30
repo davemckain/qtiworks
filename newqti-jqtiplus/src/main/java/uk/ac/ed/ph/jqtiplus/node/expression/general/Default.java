@@ -56,22 +56,11 @@ public class Default extends LookupExpression {
     private static final long serialVersionUID = -1031669571748673912L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "default";
+    public static final String QTI_CLASS_NAME = "default";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Default(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
     }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
-    
 
     //----------------------------------------------------------------------
     

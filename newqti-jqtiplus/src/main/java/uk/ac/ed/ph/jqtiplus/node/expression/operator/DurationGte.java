@@ -54,20 +54,10 @@ public class DurationGte extends AbstractExpression {
     private static final long serialVersionUID = 1768930756619437645L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "durationGTE";
+    public static final String QTI_CLASS_NAME = "durationGTE";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public DurationGte(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

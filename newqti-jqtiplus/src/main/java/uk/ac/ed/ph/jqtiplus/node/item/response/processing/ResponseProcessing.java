@@ -65,7 +65,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
     private static final long serialVersionUID = -4551768580135824154L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseProcessing";
+    public static final String QTI_CLASS_NAME = "responseProcessing";
 
     /** Name of template attribute in xml schema. */
     public static final String ATTR_TEMPLATE_NAME = "template";
@@ -80,23 +80,13 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
         this(null);
     }
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of this object
-     */
     public ResponseProcessing(AssessmentItem parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_NAME, null, null, false));
         getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_LOCATION_NAME, null, null, false));
 
         getNodeGroups().add(new ResponseRuleGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

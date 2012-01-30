@@ -55,18 +55,13 @@ public class ResponseVariable extends ItemVariable {
     private static final long serialVersionUID = 6478318320056351297L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "responseVariable";
+    public static final String QTI_CLASS_NAME = "responseVariable";
 
     /** Name of choiceSequence attribute in xml schema. */
     public static final String ATTR_CHOICE_SEQUENCE_NAME = "choiceSequence";
 
-    /**
-     * Creates new responseVariable.
-     * 
-     * @param parent parent of created responseVariable
-     */
     public ResponseVariable(AbstractResult parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_CHOICE_SEQUENCE_NAME, null, null, false));
 
@@ -100,11 +95,6 @@ public class ResponseVariable extends ItemVariable {
                 choiceSequence.addAll(shuffledInteractionChoiceIdentifiers);
             }
         }
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

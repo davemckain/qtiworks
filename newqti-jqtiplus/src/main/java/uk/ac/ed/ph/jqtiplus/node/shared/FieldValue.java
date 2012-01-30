@@ -72,13 +72,13 @@ public class FieldValue extends AbstractNode {
     private static final long serialVersionUID = -3645062478164419548L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "value";
+    public static final String QTI_CLASS_NAME = "value";
 
     /** Name of fieldIdentifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "fieldIdentifier";
 
     /** Name of baseType attribute in xml schema. */
-    public static final String ATTR_BASE_TYPE_NAME = BaseType.CLASS_TAG;
+    public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
     /** Default value of baseType attribute. */
     public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
@@ -86,13 +86,8 @@ public class FieldValue extends AbstractNode {
     /** Single value of this fieldValue. */
     private SingleValue singleValue;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public FieldValue(FieldValueParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, null));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
@@ -101,11 +96,6 @@ public class FieldValue extends AbstractNode {
     @Override
     public FieldValueParent getParent() {
         return (FieldValueParent) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override
@@ -297,7 +287,7 @@ public class FieldValue extends AbstractNode {
                 return value;
             }
             default:
-                throw new QtiLogicException("Unsupported " + Cardinality.CLASS_TAG + ": " + cardinality);
+                throw new QtiLogicException("Unsupported " + Cardinality.QTI_CLASS_NAME + ": " + cardinality);
         }
     }
 
@@ -354,7 +344,7 @@ public class FieldValue extends AbstractNode {
                 break;
             }
             default:
-                throw new QtiLogicException("Unsupported " + Cardinality.CLASS_TAG + ": " + value.getCardinality());
+                throw new QtiLogicException("Unsupported " + Cardinality.QTI_CLASS_NAME + ": " + value.getCardinality());
         }
 
         return values;

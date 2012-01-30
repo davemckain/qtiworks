@@ -57,7 +57,7 @@ public class FieldValueGroup extends AbstractNodeGroup {
      * @param maximum maximum allowed children of created group
      */
     public FieldValueGroup(FieldValueParent parent, Integer minimum, Integer maximum) {
-        super(parent, FieldValue.CLASS_TAG, minimum, maximum);
+        super(parent, FieldValue.QTI_CLASS_NAME, minimum, maximum);
     }
 
     /**

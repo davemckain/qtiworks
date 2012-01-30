@@ -66,7 +66,7 @@ public class AreaMapping extends AbstractNode {
     private static final long serialVersionUID = 6134649478484970261L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "areaMapping";
+    public static final String QTI_CLASS_NAME = "areaMapping";
 
     /** Name of lowerBound attribute in xml schema. */
     public static final String ATTR_LOWER_BOUND_NAME = "lowerBound";
@@ -86,18 +86,13 @@ public class AreaMapping extends AbstractNode {
      * @param parent parent of this object
      */
     public AreaMapping(ResponseDeclaration parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, null, null, false));
         getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME, null, null, false));
         getAttributes().add(new FloatAttribute(this, ATTR_DEFAULT_VALUE_NAME, ATTR_DEFAULT_VALUE_DEFAULT_VALUE));
 
         getNodeGroups().add(new AreaMapEntryGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

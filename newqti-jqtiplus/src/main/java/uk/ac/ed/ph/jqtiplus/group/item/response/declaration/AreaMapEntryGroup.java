@@ -56,7 +56,7 @@ public class AreaMapEntryGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public AreaMapEntryGroup(AreaMapping parent) {
-        super(parent, AreaMapEntry.CLASS_TAG, 1, null);
+        super(parent, AreaMapEntry.QTI_CLASS_NAME, 1, null);
     }
 
     /**

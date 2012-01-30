@@ -56,7 +56,7 @@ public class OutcomeElseIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public OutcomeElseIfGroup(OutcomeCondition parent) {
-        super(parent, OutcomeElseIf.CLASS_TAG, null, null);
+        super(parent, OutcomeElseIf.QTI_CLASS_NAME, null, null);
     }
 
     /**

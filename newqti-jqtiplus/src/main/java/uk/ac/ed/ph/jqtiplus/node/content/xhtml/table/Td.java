@@ -45,19 +45,9 @@ public class Td extends TableCell {
     private static final long serialVersionUID = -1927071799608200763L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "td";
+    public static final String QTI_CLASS_NAME = "td";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Td(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

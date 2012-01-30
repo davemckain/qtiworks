@@ -45,25 +45,15 @@ public class MatchTableEntry extends LookupTableEntry {
     private static final long serialVersionUID = -8718983129595237072L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "matchTableEntry";
+    public static final String QTI_CLASS_NAME = "matchTableEntry";
 
     /** Name of sourceValue attribute in xml schema. */
     public static final String ATTR_SOURCE_VALUE_NAME = "sourceValue";
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public MatchTableEntry(MatchTable parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(0, new IntegerAttribute(this, ATTR_SOURCE_VALUE_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

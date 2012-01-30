@@ -66,25 +66,15 @@ public class MapResponse extends AbstractExpression {
     private static final long serialVersionUID = -45151156141657308L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "mapResponse";
+    public static final String QTI_CLASS_NAME = "mapResponse";
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public MapResponse(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

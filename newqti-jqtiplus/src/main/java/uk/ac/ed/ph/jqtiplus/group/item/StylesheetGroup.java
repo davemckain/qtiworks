@@ -56,7 +56,7 @@ public class StylesheetGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public StylesheetGroup(AssessmentItem parent) {
-        super(parent, Stylesheet.CLASS_TAG, null, null);
+        super(parent, Stylesheet.QTI_CLASS_NAME, null, null);
     }
 
     /**

@@ -89,10 +89,10 @@ public class Equal extends AbstractExpression {
     private static final long serialVersionUID = 2741395727993314516L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "equal";
+    public static final String QTI_CLASS_NAME = "equal";
 
     /** Name of toleranceMode attribute in xml schema. */
-    public static final String ATTR_TOLERANCE_MODE_NAME = ToleranceMode.CLASS_TAG;
+    public static final String ATTR_TOLERANCE_MODE_NAME = ToleranceMode.QTI_CLASS_NAME;
 
     /** Name of tolerance attribute in xml schema. */
     public static final String ATTR_TOLERANCES_NAME = "tolerance";
@@ -112,23 +112,13 @@ public class Equal extends AbstractExpression {
     /** Default value of incluseUpperBound attribute. */
     public static final boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = true;
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Equal(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ToleranceModeAttribute(this, ATTR_TOLERANCE_MODE_NAME));
         getAttributes().add(new FloatMultipleAttribute(this, ATTR_TOLERANCES_NAME, ATTR_TOLERANCES_DEFAULT_VALUE));
         getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_LOWER_BOUND_NAME, ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE));
         getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_UPPER_BOUND_NAME, ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

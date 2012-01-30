@@ -56,7 +56,7 @@ public class ModalFeedbackGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ModalFeedbackGroup(AssessmentItem parent) {
-        super(parent, ModalFeedback.CLASS_TAG, null, null);
+        super(parent, ModalFeedback.QTI_CLASS_NAME, null, null);
     }
 
     /**

@@ -56,7 +56,7 @@ public class InlineChoiceGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public InlineChoiceGroup(InlineChoiceInteraction parent) {
-        super(parent, InlineChoice.CLASS_TAG, null, null);
+        super(parent, InlineChoice.QTI_CLASS_NAME, null, null);
     }
 
     /**
@@ -66,7 +66,7 @@ public class InlineChoiceGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public InlineChoiceGroup(InlineChoiceInteraction parent, Integer minimum) {
-        super(parent, InlineChoice.CLASS_TAG, minimum, null);
+        super(parent, InlineChoice.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

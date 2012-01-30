@@ -60,7 +60,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     private static final long serialVersionUID = -3631226504088317341L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "defaultValue";
+    public static final String QTI_CLASS_NAME = "defaultValue";
 
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
@@ -68,13 +68,8 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     /** Default value of interpretation attribute. */
     public static final String ATTR_INTERPRETATION_DEFAULT_VALUE = null;
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public DefaultValue(VariableDeclaration parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
 
@@ -98,11 +93,6 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     @Override
     public VariableDeclaration getParent() {
         return (VariableDeclaration) super.getParent();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

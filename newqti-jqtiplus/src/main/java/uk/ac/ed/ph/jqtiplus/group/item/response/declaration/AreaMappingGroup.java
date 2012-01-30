@@ -53,7 +53,7 @@ public class AreaMappingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public AreaMappingGroup(ResponseDeclaration parent) {
-        super(parent, AreaMapping.CLASS_TAG, null, null);
+        super(parent, AreaMapping.QTI_CLASS_NAME, null, null);
     }
 
     /**

@@ -59,6 +59,6 @@ public class BaseTypeValidationError extends ValidationError {
     }
 
     private static String createMessage(BaseType[] expected, BaseType[] found) {
-        return "Invalid " + BaseType.CLASS_TAG + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
+        return "Invalid " + BaseType.QTI_CLASS_NAME + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
     }
 }

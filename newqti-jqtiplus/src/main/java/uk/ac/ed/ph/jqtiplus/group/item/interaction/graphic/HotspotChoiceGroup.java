@@ -55,7 +55,7 @@ public class HotspotChoiceGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public HotspotChoiceGroup(HotspotChoiceContainer parent) {
-        super(parent, HotspotChoice.CLASS_TAG, null, null);
+        super(parent, HotspotChoice.QTI_CLASS_NAME, null, null);
     }
 
     /**
@@ -65,7 +65,7 @@ public class HotspotChoiceGroup extends AbstractNodeGroup {
      * @param minimum minimum number of children
      */
     public HotspotChoiceGroup(HotspotChoiceContainer parent, Integer minimum) {
-        super(parent, HotspotChoice.CLASS_TAG, minimum, null);
+        super(parent, HotspotChoice.QTI_CLASS_NAME, minimum, null);
     }
 
     /**

@@ -50,25 +50,15 @@ public class Q extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -4273454055675294757L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "q";
+    public static final String QTI_CLASS_NAME = "q";
 
     /** Name of label attribute in xml schema. */
     public static final String ATTR_CITE_NAME = "cite";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Q(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, null, null, false));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     /**

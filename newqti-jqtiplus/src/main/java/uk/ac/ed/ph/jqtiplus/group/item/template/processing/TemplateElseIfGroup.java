@@ -55,7 +55,7 @@ public class TemplateElseIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TemplateElseIfGroup(TemplateCondition parent) {
-        super(parent, TemplateElseIf.CLASS_TAG, null, null);
+        super(parent, TemplateElseIf.QTI_CLASS_NAME, null, null);
     }
 
     /**

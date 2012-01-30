@@ -53,7 +53,7 @@ public class ObjectGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ObjectGroup(XmlNode parent) {
-        super(parent, Object.CLASS_TAG, false);
+        super(parent, Object.QTI_CLASS_NAME, false);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ObjectGroup extends AbstractNodeGroup {
      * @param required if true then group is mandatory
      */
     public ObjectGroup(XmlNode parent, boolean required) {
-        super(parent, Object.CLASS_TAG, true);
+        super(parent, Object.QTI_CLASS_NAME, true);
     }
 
     /**

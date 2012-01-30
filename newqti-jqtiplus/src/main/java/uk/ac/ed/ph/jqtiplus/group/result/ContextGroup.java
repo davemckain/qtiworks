@@ -53,7 +53,7 @@ public class ContextGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ContextGroup(AssessmentResult parent) {
-        super(parent, Context.CLASS_TAG, true);
+        super(parent, Context.QTI_CLASS_NAME, true);
     }
 
     /**

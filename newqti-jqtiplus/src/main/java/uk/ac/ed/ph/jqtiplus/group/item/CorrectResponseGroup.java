@@ -53,7 +53,7 @@ public class CorrectResponseGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public CorrectResponseGroup(XmlNode parent) {
-        super(parent, CorrectResponse.CLASS_TAG, false);
+        super(parent, CorrectResponse.QTI_CLASS_NAME, false);
     }
 
     /**

@@ -56,20 +56,10 @@ public class Lt extends AbstractExpression {
     private static final long serialVersionUID = 3430071915183181771L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "lt";
+    public static final String QTI_CLASS_NAME = "lt";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Lt(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

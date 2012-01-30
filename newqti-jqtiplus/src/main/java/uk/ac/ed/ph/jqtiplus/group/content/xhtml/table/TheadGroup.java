@@ -53,7 +53,7 @@ public class TheadGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TheadGroup(Table parent) {
-        super(parent, Thead.CLASS_TAG, false);
+        super(parent, Thead.QTI_CLASS_NAME, false);
     }
 
     /**

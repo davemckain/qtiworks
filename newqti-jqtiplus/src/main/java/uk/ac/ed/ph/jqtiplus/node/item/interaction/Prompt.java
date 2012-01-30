@@ -49,15 +49,10 @@ public class Prompt extends BodyElement {
     private static final long serialVersionUID = 7037795246303226401L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "prompt";
+    public static final String QTI_CLASS_NAME = "prompt";
 
-    /**
-     * Construct new prompt.
-     * 
-     * @param parent Parent node
-     */
     public Prompt(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineStaticGroup(this));
     }
@@ -65,10 +60,5 @@ public class Prompt extends BodyElement {
     @Override
     public List<? extends XmlNode> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

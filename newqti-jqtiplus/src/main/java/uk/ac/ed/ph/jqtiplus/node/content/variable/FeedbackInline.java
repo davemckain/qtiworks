@@ -50,22 +50,12 @@ public class FeedbackInline extends FeedbackElement implements SimpleInline {
     private static final long serialVersionUID = -5503044620142722718L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "feedbackInline";
+    public static final String QTI_CLASS_NAME = "feedbackInline";
 
-    /**
-     * Constructs feedbackInline element.
-     * 
-     * @param parent parent of this element
-     */
     public FeedbackInline(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

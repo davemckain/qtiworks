@@ -53,7 +53,7 @@ public class PromptGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public PromptGroup(BlockInteraction parent) {
-        super(parent, Prompt.CLASS_TAG, false);
+        super(parent, Prompt.QTI_CLASS_NAME, false);
     }
 
     /**

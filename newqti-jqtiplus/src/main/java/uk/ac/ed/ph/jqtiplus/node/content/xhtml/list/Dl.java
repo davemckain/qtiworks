@@ -51,22 +51,12 @@ public class Dl extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = -4443987270132457444L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "dl";
+    public static final String QTI_CLASS_NAME = "dl";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Dl(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new DlElementGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

@@ -43,19 +43,9 @@ public class TemplateElseIf extends TemplateConditionExpressionChild {
     private static final long serialVersionUID = -897584194555151863L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateElseIf";
+    public static final String QTI_CLASS_NAME = "templateElseIf";
 
-    /**
-     * Constructs ELSE-IF templateCondition child.
-     * 
-     * @param parent parent of this ELSE-IF templateCondition child
-     */
     public TemplateElseIf(TemplateCondition parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

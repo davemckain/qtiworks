@@ -56,20 +56,10 @@ public class Gt extends AbstractExpression {
     private static final long serialVersionUID = -5408253885508181187L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "gt";
+    public static final String QTI_CLASS_NAME = "gt";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Gt(ExpressionParent parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override

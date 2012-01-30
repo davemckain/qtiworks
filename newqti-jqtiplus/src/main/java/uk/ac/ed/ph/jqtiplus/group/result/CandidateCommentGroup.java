@@ -53,7 +53,7 @@ public class CandidateCommentGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public CandidateCommentGroup(ItemResult parent) {
-        super(parent, CandidateComment.CLASS_TAG, false);
+        super(parent, CandidateComment.QTI_CLASS_NAME, false);
     }
 
     /**

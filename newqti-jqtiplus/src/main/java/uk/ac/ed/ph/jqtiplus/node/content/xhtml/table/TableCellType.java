@@ -47,7 +47,7 @@ public enum TableCellType {
     /**
      * td
      */
-    TD(Td.CLASS_TAG) {
+    TD(Td.QTI_CLASS_NAME) {
 
         @Override
         public TableCell create(Tr parent) {
@@ -57,7 +57,7 @@ public enum TableCellType {
     /**
      * th
      */
-    TH(Th.CLASS_TAG) {
+    TH(Th.QTI_CLASS_NAME) {
 
         @Override
         public TableCell create(Tr parent) {
@@ -82,9 +82,9 @@ public enum TableCellType {
     }
 
     /**
-     * Gets CLASS_TAG of this tableCell type.
+     * Gets QTI_CLASS_NAME of this tableCell type.
      * 
-     * @return CLASS_TAG of this tableCell type
+     * @return QTI_CLASS_NAME of this tableCell type
      */
     public String getClassTag() {
         return tableCellType;
@@ -104,10 +104,10 @@ public enum TableCellType {
     }
 
     /**
-     * Gets tableCell type for given CLASS_TAG.
+     * Gets tableCell type for given QTI_CLASS_NAME.
      * 
-     * @param classTag CLASS_TAG
-     * @return tableCell type for given CLASS_TAG
+     * @param classTag QTI_CLASS_NAME
+     * @return tableCell type for given QTI_CLASS_NAME
      */
     public static TableCellType getType(String classTag) {
         return tableCellTypes.get(classTag);
@@ -117,7 +117,7 @@ public enum TableCellType {
      * Creates tableCell element.
      * 
      * @param parent parent of created tableCell
-     * @param classTag CLASS_TAG of created tableCell
+     * @param classTag QTI_CLASS_NAME of created tableCell
      * @return created expression
      */
     public static TableCell getInstance(Tr parent, String classTag) {

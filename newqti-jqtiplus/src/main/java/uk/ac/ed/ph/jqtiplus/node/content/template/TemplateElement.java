@@ -65,7 +65,7 @@ public abstract class TemplateElement extends BodyElement {
     public static final String ATTR_TEMPLATE_IDENTIFIER_NAME = "templateIdentifier";
 
     /** Name of showHide attribute in xml schema. */
-    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.CLASS_TAG;
+    public static final String ATTR_VISIBILITY_MODE_NAME = VisibilityMode.QTI_CLASS_NAME;
 
     /** Default value of showHide attribute. */
     public static final VisibilityMode ATTR_VISIBILITY_MODE_DEFAULT_VALUE = VisibilityMode.SHOW_IF_MATCH;
@@ -73,16 +73,10 @@ public abstract class TemplateElement extends BodyElement {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs feedback element.
-     * 
-     * @param parent parent of this element
-     */
-    public TemplateElement(XmlNode parent) {
-        super(parent);
+    public TemplateElement(XmlNode parent, String localName) {
+        super(parent, localName);
 
-        getAttributes().add(
-                new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
+        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME));
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
     }

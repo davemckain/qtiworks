@@ -56,7 +56,7 @@ public class TestPartGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TestPartGroup(AssessmentTest parent) {
-        super(parent, TestPart.CLASS_TAG, 1, null);
+        super(parent, TestPart.QTI_CLASS_NAME, 1, null);
     }
 
     /**

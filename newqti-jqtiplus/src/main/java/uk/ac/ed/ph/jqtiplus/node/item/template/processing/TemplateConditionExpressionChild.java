@@ -59,8 +59,8 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
      * 
      * @param parent parent of this condition rule child
      */
-    public TemplateConditionExpressionChild(TemplateCondition parent) {
-        super(parent);
+    public TemplateConditionExpressionChild(TemplateCondition parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }

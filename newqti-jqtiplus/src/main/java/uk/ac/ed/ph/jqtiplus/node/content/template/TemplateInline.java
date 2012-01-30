@@ -50,25 +50,15 @@ public class TemplateInline extends TemplateElement implements FlowStatic, Inlin
     private static final long serialVersionUID = 1126170727488675506L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateInline";
+    public static final String QTI_CLASS_NAME = "templateInline";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public TemplateInline(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
     @Override
     public List<? extends XmlNode> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

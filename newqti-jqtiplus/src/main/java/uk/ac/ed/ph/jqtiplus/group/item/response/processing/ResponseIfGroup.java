@@ -53,7 +53,7 @@ public class ResponseIfGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public ResponseIfGroup(ResponseCondition parent) {
-        super(parent, ResponseIf.CLASS_TAG, true);
+        super(parent, ResponseIf.QTI_CLASS_NAME, true);
     }
 
     /**

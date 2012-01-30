@@ -49,7 +49,7 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
     private static final long serialVersionUID = -115358594629456681L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "weight";
+    public static final String QTI_CLASS_NAME = "weight";
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
@@ -60,21 +60,11 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
     /** Default weight if no weight is specified. */
     public static final double DEFAULT_WEIGHT = 1;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public Weight(AssessmentItemRef parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
         getAttributes().add(new FloatAttribute(this, ATTR_VALUE_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

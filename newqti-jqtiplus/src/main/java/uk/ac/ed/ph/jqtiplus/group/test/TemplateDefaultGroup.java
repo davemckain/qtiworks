@@ -56,7 +56,7 @@ public class TemplateDefaultGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public TemplateDefaultGroup(AssessmentItemRef parent) {
-        super(parent, TemplateDefault.CLASS_TAG, null, null);
+        super(parent, TemplateDefault.QTI_CLASS_NAME, null, null);
     }
 
     /**

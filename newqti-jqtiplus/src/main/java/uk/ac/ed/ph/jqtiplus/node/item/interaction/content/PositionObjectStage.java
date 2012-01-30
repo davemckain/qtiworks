@@ -53,15 +53,10 @@ public class PositionObjectStage extends AbstractNode implements Block {
     private static final long serialVersionUID = 7818462825403440725L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "positionObjectStage";
+    public static final String QTI_CLASS_NAME = "positionObjectStage";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public PositionObjectStage(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));
         getNodeGroups().add(new PositionObjectInteractionGroup(this, 1));
@@ -94,10 +89,5 @@ public class PositionObjectStage extends AbstractNode implements Block {
      */
     public void setObject(Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

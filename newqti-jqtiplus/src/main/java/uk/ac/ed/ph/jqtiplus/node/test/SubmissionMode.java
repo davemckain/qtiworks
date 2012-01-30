@@ -59,7 +59,7 @@ public enum SubmissionMode {
     SIMULTANEOUS("simultaneous");
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "submissionMode";
+    public static final String QTI_CLASS_NAME = "submissionMode";
 
     private static Map<String, SubmissionMode> submissionModes;
 
@@ -93,7 +93,7 @@ public enum SubmissionMode {
         final SubmissionMode result = submissionModes.get(submissionMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + CLASS_TAG + " '" + submissionMode + "'.");
+            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + submissionMode + "'.");
         }
 
         return result;

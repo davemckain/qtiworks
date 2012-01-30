@@ -53,7 +53,7 @@ public class MappingGroup extends AbstractNodeGroup {
      * @param parent parent of created group
      */
     public MappingGroup(ResponseDeclaration parent) {
-        super(parent, Mapping.CLASS_TAG, null, null);
+        super(parent, Mapping.QTI_CLASS_NAME, null, null);
     }
 
     /**

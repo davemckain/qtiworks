@@ -49,7 +49,7 @@ public class Col extends BodyElement {
     private static final long serialVersionUID = -3421263709139263344L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "col";
+    public static final String QTI_CLASS_NAME = "col";
 
     /** Name of span attribute in xml schema. */
     public static final String ATTR_SPAN_NAME = "span";
@@ -57,20 +57,10 @@ public class Col extends BodyElement {
     /** Default value of span attribute. */
     public static final int ATTR_SPAN_DEFAULT_VALUE = 1;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Col(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

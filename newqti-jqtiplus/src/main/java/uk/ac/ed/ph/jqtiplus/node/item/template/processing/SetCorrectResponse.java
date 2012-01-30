@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -54,20 +53,10 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     private static final long serialVersionUID = -2721596310184612994L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "setCorrectResponse";
+    public static final String QTI_CLASS_NAME = "setCorrectResponse";
 
-    /**
-     * Constructs rule.
-     * 
-     * @param parent parent of this rule
-     */
     public SetCorrectResponse(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
@@ -101,7 +90,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
 
         final ResponseDeclaration declaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (declaration == null) {
-            throw new QTIEvaluationException("Cannot find " + ResponseDeclaration.CLASS_TAG + ": " + getIdentifier());
+            throw new QTIEvaluationException("Cannot find " + ResponseDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
         ((ItemProcessingContext) context).setOverriddenCorrectResponseValue(declaration, value);

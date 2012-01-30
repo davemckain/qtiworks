@@ -65,7 +65,7 @@ public class AssessmentItemRef extends SectionPart {
     private static final long serialVersionUID = 5469740022955051680L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "assessmentItemRef";
+    public static final String QTI_CLASS_NAME = "assessmentItemRef";
 
     /** Name of href attribute in xml schema. */
     public static final String ATTR_HREF_NAME = "href";
@@ -112,7 +112,7 @@ public class AssessmentItemRef extends SectionPart {
      * @param parent parent of constructed item reference
      */
     public AssessmentItemRef(AssessmentSection parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CATEGORIES_NAME, ATTR_CATEGORIES_DEFAULT_VALUE));
@@ -158,11 +158,6 @@ public class AssessmentItemRef extends SectionPart {
     //    public List<ItemState> getStates() {
     //        return states;
     //    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
-    }
 
     @Override
     public List<AbstractPart> getChildren() {

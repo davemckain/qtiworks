@@ -47,19 +47,9 @@ public class Span extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = 2093398480095329880L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "span";
+    public static final String QTI_CLASS_NAME = "span";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Span(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

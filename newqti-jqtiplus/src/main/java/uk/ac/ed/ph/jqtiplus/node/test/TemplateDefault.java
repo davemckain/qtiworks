@@ -62,27 +62,17 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
     private static final long serialVersionUID = 8370382226052240583L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "templateDefault";
+    public static final String QTI_CLASS_NAME = "templateDefault";
 
     /** Name of templateIdentifier attribute in xml schema. */
     public static final String ATTR_TEMPLATE_IDENTIFIER_NAME = "templateIdentifier";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
     public TemplateDefault(AssessmentItemRef parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME));
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

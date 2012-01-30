@@ -65,8 +65,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * 
      * @param parent parent of constructed object
      */
-    public ControlObject(ControlObject<?> parent) {
-        super(parent);
+    public ControlObject(ControlObject<?> parent, String localName) {
+        super(parent, localName);
 
         getNodeGroups().add(new TimeLimitGroup(this));
     }

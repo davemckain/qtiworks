@@ -60,25 +60,15 @@ public class FieldValue extends AbstractExpression {
     private static final long serialVersionUID = 5076276250973789782L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "fieldValue";
+    public static final String QTI_CLASS_NAME = "fieldValue";
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "fieldIdentifier";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public FieldValue(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

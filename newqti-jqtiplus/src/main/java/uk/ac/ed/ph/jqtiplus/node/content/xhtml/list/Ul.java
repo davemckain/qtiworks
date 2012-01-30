@@ -51,22 +51,12 @@ public class Ul extends BodyElement implements BlockStatic, FlowStatic {
     private static final long serialVersionUID = 7641186229829346349L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "ul";
+    public static final String QTI_CLASS_NAME = "ul";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Ul(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new LiGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

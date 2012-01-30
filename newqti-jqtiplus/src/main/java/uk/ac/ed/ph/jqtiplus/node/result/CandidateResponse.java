@@ -53,22 +53,12 @@ public class CandidateResponse extends AbstractNode implements FieldValueParent 
     private static final long serialVersionUID = -4218274532355049504L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "candidateResponse";
+    public static final String QTI_CLASS_NAME = "candidateResponse";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public CandidateResponse(ResponseVariable parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FieldValueGroup(this, null, null));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

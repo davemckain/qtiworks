@@ -52,15 +52,10 @@ public class HotspotChoice extends Choice implements Hotspot {
     private static final long serialVersionUID = 462353986705124436L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "hotspotChoice";
+    public static final String QTI_CLASS_NAME = "hotspotChoice";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public HotspotChoice(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
         getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
@@ -95,10 +90,5 @@ public class HotspotChoice extends Choice implements Hotspot {
     @Override
     public void setShape(Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 }

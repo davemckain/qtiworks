@@ -57,7 +57,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
     private static final long serialVersionUID = -6905074851539593411L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "object";
+    public static final String QTI_CLASS_NAME = "object";
 
     /** Name of data attribute in xml schema. */
     public static final String ATTR_DATA_NAME = "data";
@@ -71,13 +71,8 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
     /** Name of height attribute in xml schema. */
     public static final String ATTR_HEIGHT_NAME = "height";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Object(XmlNode parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME));
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME));
@@ -85,11 +80,6 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
         getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, null, null, false));
 
         getNodeGroups().add(new ObjectFlowGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

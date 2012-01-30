@@ -55,22 +55,12 @@ public class InterpolationTable extends LookupTable {
     private static final long serialVersionUID = -7056243816798489068L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "interpolationTable";
+    public static final String QTI_CLASS_NAME = "interpolationTable";
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
     public InterpolationTable(OutcomeDeclaration parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InterpolationTableEntryGroup(this));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override

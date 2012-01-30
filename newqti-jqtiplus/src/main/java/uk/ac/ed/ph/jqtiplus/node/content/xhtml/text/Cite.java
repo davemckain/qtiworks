@@ -47,19 +47,9 @@ public class Cite extends AbstractSimpleInline implements SimpleInline {
     private static final long serialVersionUID = -5483443862036413672L;
 
     /** Name of this class in xml schema. */
-    public static String CLASS_TAG = "cite";
+    public static final String QTI_CLASS_NAME = "cite";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Cite(XmlNode parent) {
-        super(parent);
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
+        super(parent, QTI_CLASS_NAME);
     }
 }

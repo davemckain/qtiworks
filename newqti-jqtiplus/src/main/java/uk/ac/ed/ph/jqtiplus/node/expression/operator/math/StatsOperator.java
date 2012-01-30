@@ -50,28 +50,21 @@ import java.util.List;
  * Implementation of <tt>statsOperator</tt>
  * 
  * @author David McKain
- * @revision $Revision: 2766 $
  */
 public class StatsOperator extends AbstractExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
     /** Name of this class in xml schema. */
-    public static final String CLASS_TAG = "statsOperator";
+    public static final String QTI_CLASS_NAME = "statsOperator";
 
     /** Name of 'name' attribute */
     public static final String ATTR_NAME_NAME = "name";
 
-
     public StatsOperator(ExpressionParent parent) {
-        super(parent);
+        super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StatsOperatorNameAttribute(this, "name"));
-    }
-
-    @Override
-    public String getClassTag() {
-        return CLASS_TAG;
     }
 
     @Override
