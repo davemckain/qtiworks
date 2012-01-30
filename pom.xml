@@ -16,8 +16,8 @@ All Rights Reserved
   <packaging>pom</packaging>
   <modules>
     <module>newqti-jqtiplus</module>
-    <module>newqti-unrefactored</module>
     <module>newqti-mathassess</module>
+    <module>newqti-unrefactored</module>
     <module>newqti-engine</module>
   </modules>
   <properties>
