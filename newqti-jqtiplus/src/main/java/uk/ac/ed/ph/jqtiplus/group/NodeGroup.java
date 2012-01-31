@@ -165,5 +165,6 @@ public interface NodeGroup extends Validatable, Serializable {
      * @param printDefaultAttributes whether print attribute's default values
      * @return xml string of all children
      */
+    @Deprecated
     String toXmlString(int depth, boolean printDefaultAttributes);
 }

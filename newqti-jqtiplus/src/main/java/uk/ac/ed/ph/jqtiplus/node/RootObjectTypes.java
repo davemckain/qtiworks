@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -116,24 +117,24 @@ public enum RootObjectTypes {
     }
 
     /**
-     * Creates root node with given classTag
+     * Creates a QTI root node with given class name.
      * 
-     * @param classTag QTI_CLASS_NAME of created root node
+     * @param qtiClassName QTI_CLASS_NAME of created root node
      * @return created root node
-     * @throws IllegalArgumentException if the given classTag does not correspond to a root Node
+     * @throws IllegalArgumentException if the given classTag does not correspond to a QTI root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
-    public static RootObject getInstance(String classTag, URI systemId, ModelRichness modelRichness) {
-        final RootObjectTypes rootObjectType = rootObjectTypesMap.get(classTag);
+    public static RootObject getInstance(String qtiClassName, URI systemId, ModelRichness modelRichness) {
+        final RootObjectTypes rootObjectType = rootObjectTypesMap.get(qtiClassName);
         RootObject result = null;
         if (rootObjectType == null) {
-            throw new IllegalArgumentException("Class Tag " + classTag + " does not correspond to a QTI Root Node");
+            throw new IllegalArgumentException("Class Tag " + qtiClassName + " does not correspond to a QTI Root Node");
         }
         try {
             result = rootObjectType.getRootObjectClass().newInstance();
         }
         catch (final Exception e) {
-            throw new QtiLogicException("Could not instantiate root node Class " + classTag, e);
+            throw new QtiLogicException("Could not instantiate root node Class " + qtiClassName, e);
         }
         result.setSystemId(systemId);
         result.setModelRichness(modelRichness);
@@ -149,6 +150,11 @@ public enum RootObjectTypes {
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
     public static RootObject load(Element sourceElement, URI systemId, ModelRichness modelRichness, LoadingContext context) {
+        if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(sourceElement.getNamespaceURI())) {
+            throw new IllegalArgumentException("Element {" + sourceElement.getNamespaceURI()
+                    + "}" + sourceElement.getLocalName()
+                    + " is not in the QTI 2.1 namespace");
+        }
         final RootObject root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
         root.load(sourceElement, context);
         return root;

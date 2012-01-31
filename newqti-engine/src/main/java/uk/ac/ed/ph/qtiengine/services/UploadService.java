@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiengine.services;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -88,7 +87,7 @@ public class UploadService {
     private File sandboxRootDirectory;
     
     @Resource
-    private JqtiExtensionManager jqtiExtensionManager;
+    private QtiXmlReader qtiXmlReader;
     
     @PostConstruct
     public void init() {
@@ -256,7 +255,7 @@ public class UploadService {
     private <E extends AssessmentObjectValidationResult<?>> E validate(File importSandboxDirectory, String assessmentObjectHref, Class<E> resultClass) {
         CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         FileSandboxResourceLocator inputResourceLocator = new FileSandboxResourceLocator(QtiContentPackageExtractor.PACKAGE_URI_SCHEME, importSandboxDirectory);
-        QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, inputResourceLocator);
+        QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
         E result;

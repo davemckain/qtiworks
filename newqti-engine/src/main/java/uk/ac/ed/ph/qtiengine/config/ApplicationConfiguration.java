@@ -34,6 +34,10 @@
 package uk.ac.ed.ph.qtiengine.config;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.LruHashMap;
+
+import javax.xml.validation.Schema;
 
 import org.qtitools.mathassess.MathAssessExtensionPackage;
 import org.springframework.context.annotation.Bean;
@@ -44,15 +48,24 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.services"})
 public class ApplicationConfiguration {
     
-    @Bean
-    public String myString() {
-        return "dave";
+    private final JqtiExtensionManager jqtiExtensionManager;
+    private final QtiXmlReader qtiXmlReader;
+    
+    public ApplicationConfiguration() {
+        jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
+        
+        LruHashMap<String, Schema> schemaCache = new LruHashMap<String, Schema>(5);
+        qtiXmlReader = new QtiXmlReader(jqtiExtensionManager, schemaCache);
     }
     
     @Bean
     JqtiExtensionManager jqtiExtensionManager() {
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
         return jqtiExtensionManager;
+    }
+    
+    @Bean
+    QtiXmlReader qtiXmlReader() {
+        return qtiXmlReader;
     }
 
 }

@@ -383,7 +383,7 @@ public abstract class AbstractNode implements XmlNode {
 
                 case '"':
                     if (asAttribute) {
-                        /* (We're always writing attributes within double-quotes so need to escape in this case) */
+                        /* (We're always uk.ac.ed.ph.jqtiplus.writing attributes within double-quotes so need to escape in this case) */
                         builder.append("&quot;");
                     }
                     else {

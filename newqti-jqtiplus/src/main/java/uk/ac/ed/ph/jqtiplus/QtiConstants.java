@@ -40,7 +40,7 @@ package uk.ac.ed.ph.jqtiplus;
  */
 public final class QtiConstants {
 
-    public static final String QTI_20_NAMESPACE = "http://www.imsglobal.org/xsd/imsqti_v2p0";
+    public static final String QTI_20_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p0";
     public static final String QTI_21_NAMESPACE_URI = "http://www.imsglobal.org/xsd/imsqti_v2p1";
 
     public static final String QTI_21_SCHEMA_LOCATION = "http://www.imsglobal.org/xsd/imsqti_v2p1.xsd";

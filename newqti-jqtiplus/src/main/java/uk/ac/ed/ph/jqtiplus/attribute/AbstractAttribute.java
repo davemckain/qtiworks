@@ -74,10 +74,9 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
             V defaultValue, boolean required, boolean foreign) {
         ConstraintUtilities.ensureNotNull(owner, "owner");
         ConstraintUtilities.ensureNotNull(localName, "localName");
-        ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
         this.owner = owner;
         this.localName = localName;
-        this.namespaceUri = namespaceUri;
+        this.namespaceUri = namespaceUri!=null ? namespaceUri : "";
         this.defaultValue = defaultValue;
         this.value = value;
         this.required = required;

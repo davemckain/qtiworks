@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -41,9 +42,10 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.validation.Schema;
 
 /**
  * Wraps around {@link XmlResourceReader} to provide specific support for QTI 2.1
@@ -53,42 +55,54 @@ import java.util.Map;
  */
 public final class QtiXmlReader {
 
+    private final JqtiExtensionManager jqtiExtensionManager;
+    
     /** Delegating {@link XmlResourceReader} */
     private final XmlResourceReader xmlResourceReader;
-
-    /** Registered extension schemas, which may be null or empty */
-    private final Map<String, String> extensionSchemaMap;
-
+    
     public QtiXmlReader() {
-        this(null, null);
+        this(null, null, null);
     }
-
+    
+    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager) {
+        this(jqtiExtensionManager, null, null);
+    }
+    
+    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator) {
+        this(jqtiExtensionManager, parserResourceLocator, null);
+    }
+    
     public QtiXmlReader(ResourceLocator parserResourceLocator) {
-        this(parserResourceLocator, null);
+        this(null, parserResourceLocator, null);
+    }
+    
+    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, Map<String, Schema> schemaCacheMap) {
+        this(jqtiExtensionManager, null, schemaCacheMap);
     }
 
-    public QtiXmlReader(Map<String, String> extensionSchemaMapTemplate) {
-        this(null, extensionSchemaMapTemplate);
-    }
-
-    public QtiXmlReader(ResourceLocator parserResourceLocator, Map<String, String> extensionSchemaMapTemplate) {
+    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator,
+            Map<String, Schema> schemaCacheMap) {
         /* Merge extension schema with QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
-        if (extensionSchemaMapTemplate != null) {
-            resultingSchemaMapTemplate.putAll(extensionSchemaMapTemplate);
+        if (jqtiExtensionManager!=null) {
+            resultingSchemaMapTemplate.putAll(jqtiExtensionManager.getExtensionSchemaMap());
         }
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
-        this.extensionSchemaMap = extensionSchemaMapTemplate != null ? Collections.unmodifiableMap(extensionSchemaMapTemplate) : null;
-        this.xmlResourceReader = new XmlResourceReader(parserResourceLocator, resultingSchemaMapTemplate);
+        this.jqtiExtensionManager = jqtiExtensionManager;
+        this.xmlResourceReader = new XmlResourceReader(parserResourceLocator, resultingSchemaMapTemplate, schemaCacheMap);
+    }
+    
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
     }
 
     public ResourceLocator getParserResourceLocator() {
         return xmlResourceReader.getParserResourceLocator();
     }
 
-    public Map<String, String> getExtensionSchemaMap() {
-        return extensionSchemaMap;
+    public Map<String, Schema> getSchemaCacheMap() {
+        return xmlResourceReader.getSchemaCacheMap();
     }
 
     //--------------------------------------------------
@@ -103,6 +117,14 @@ public final class QtiXmlReader {
             throws XmlResourceNotFoundException {
         return xmlResourceReader.read(systemIdUri, inputResourceLocator, schemaValidating);
     }
+    
+    /**
+     * Creates a new {@link QtiXmlObjectReader} from this reader and the given 
+     * input {@link ResourceLocator}.
+     */
+    public QtiXmlObjectReader createQtiXmlObjectReader(ResourceLocator inputResourceLocator) {
+        return new QtiXmlObjectReader(this, inputResourceLocator);
+    }
 
     //--------------------------------------------------
 
@@ -110,7 +132,8 @@ public final class QtiXmlReader {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(parserResourceLocator=" + getParserResourceLocator()
-                + ",extensionSchemaMap=" + extensionSchemaMap
+                + ",jqtiExtensionManager=" + jqtiExtensionManager
+                + ",schemaCacheMap=" + getSchemaCacheMap()
                 + ")";
     }
 }

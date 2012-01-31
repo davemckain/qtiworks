@@ -108,6 +108,7 @@ public interface XmlNode extends Validatable {
      * @return xml string of this node and all its children
      * @see #toXmlString(int, boolean)
      */
+    @Deprecated
     String toXmlString();
 
     /**
@@ -118,6 +119,7 @@ public interface XmlNode extends Validatable {
      * @return xml string of this node and all its children
      * @see #toXmlString()
      */
+    @Deprecated
     String toXmlString(int depth, boolean printDefaultAttributes);
     
     /**

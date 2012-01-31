@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
@@ -57,7 +58,8 @@ public class MathAssessTest {
         mathAssessPackage.init();
 
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(mathAssessPackage);
-        final QtiXmlObjectReader objectReader = new QtiXmlObjectReader(jqtiExtensionManager, new ClassPathResourceLocator());
+        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);

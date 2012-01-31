@@ -120,22 +120,45 @@ public final class XmlResourceReader {
      * The default is null,
      */
     private final Map<String, String> registeredSchemaMap;
+    
+    /**
+     * Optional Map that will be used to cache compiled schemas. If set, the Map will be used
+     * to obtain and store compiled schemas, and it will be used in a thread-safe way, hence any
+     * of the standard Java {@link Map} implementations may be used safely.
+     * <p>
+     * A convenience {@link LruHashMap} is provided, which may prove useful.
+     */
+    private final Map<String, Schema> schemaCacheMap;
+    
+    /**
+     * Resolver used to look up parser-related resources, such as schema and DTD files.
+     */
+    private final UnifiedXmlResourceResolver resourceResolver;
+
 
     public XmlResourceReader() {
-        this(null, null);
+        this(null, null, null);
     }
 
     public XmlResourceReader(ResourceLocator parserResourceLocator) {
-        this(parserResourceLocator, null);
+        this(parserResourceLocator, null, null);
     }
 
-    public XmlResourceReader(Map<String, String> registeredSchemaMap) {
-        this(null, registeredSchemaMap);
+    public XmlResourceReader(Map<String, String> registeredSchemaMapTemplate, Map<String, Schema> schemaCacheMap) {
+        this(null, registeredSchemaMapTemplate, schemaCacheMap);
     }
 
-    public XmlResourceReader(ResourceLocator parserResourceLocator, Map<String, String> registeredSchemaMapTemplate) {
+    public XmlResourceReader(ResourceLocator parserResourceLocator, Map<String, String> registeredSchemaMapTemplate,
+            Map<String, Schema> schemaCacheMap) {
         this.parserResourceLocator = parserResourceLocator != null ? parserResourceLocator : DEFAULT_PARSER_RESOURCE_LOCATOR;
         this.registeredSchemaMap = registeredSchemaMapTemplate != null ? Collections.unmodifiableMap(registeredSchemaMapTemplate) : null;
+        this.schemaCacheMap = schemaCacheMap;
+
+        /* Set up special resource resolver based on parserResourceLocator */
+        this.resourceResolver = new UnifiedXmlResourceResolver();
+        resourceResolver.setResourceLocator(this.parserResourceLocator);
+        resourceResolver.setFailOnMissedEntityResolution(false);
+        resourceResolver.setFailOnMissedLRResourceResolution(true);
     }
 
     public ResourceLocator getParserResourceLocator() {
@@ -145,7 +168,11 @@ public final class XmlResourceReader {
     public Map<String, String> getRegisteredSchemaMap() {
         return registeredSchemaMap;
     }
-
+    
+    public Map<String, Schema> getSchemaCacheMap() {
+        return schemaCacheMap;
+    }
+    
     //--------------------------------------------------
 
     /**
@@ -189,14 +216,8 @@ public final class XmlResourceReader {
         boolean validated = false;
         final List<String> supportedSchemaNamespaces = new ArrayList<String>();
         final List<String> unsupportedSchemaNamespaces = new ArrayList<String>();
-
-        logger.debug("XML parse of {} starting", systemIdString);
-        
         final InputErrorHandler inputErrorHandler = new InputErrorHandler();
-        final UnifiedXmlResourceResolver resourceResolver = new UnifiedXmlResourceResolver();
-        resourceResolver.setResourceLocator(parserResourceLocator);
-        resourceResolver.setFailOnMissedEntityResolution(false);
-        resourceResolver.setFailOnMissedLRResourceResolution(true);
+
 
         /* Create DOM Document. (We'll wire this up for parsing, even though we're now doing a SAX parse) */
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -222,6 +243,7 @@ public final class XmlResourceReader {
         xmlReader.setErrorHandler(inputErrorHandler);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
+        logger.debug("XML parse of {} starting", systemIdString);
         final InputSource inputSource = new InputSource();
         inputSource.setByteStream(ensureLocateInput(systemId, inputResourceLocator));
         inputSource.setSystemId(systemIdString);
@@ -277,7 +299,7 @@ public final class XmlResourceReader {
             /* Validate (if at least supported schemas was used and no unsupported schemas) */
             if (!schemaUris.isEmpty() && unsupportedSchemaNamespaces.isEmpty()) {
                 logger.info("Will validate {} against schemas {}", systemIdString, schemaUris);
-                final Schema schema = compileSchema(resourceResolver, schemaUris);
+                final Schema schema = getSchema(schemaUris);
 
                 /* Now validate. Note that we read in the input again, as this will let the parser provide source
                  * information to the schema validator. (I couldn't work out a way of passing source information
@@ -305,7 +327,38 @@ public final class XmlResourceReader {
         return new XmlReadResult(parsed ? document : null, xmlParseResult);
     }
     
-    private Schema compileSchema(UnifiedXmlResourceResolver resourceResolver, List<String> schemaUris) {
+    /**
+     * Obtains the schema compiled from the given list of URIs, using a cached version if
+     * possible.
+     */
+    private Schema getSchema(List<String> schemaUris) {
+        Schema result = null;
+        if (schemaCacheMap!=null) {
+            String key = schemaUris.toString();
+            synchronized (schemaCacheMap) {
+                result = schemaCacheMap.get(key);
+                if (result!=null) {
+                    logger.debug("Schema cache hit for URIs {} yielded {}", key, result);
+                }
+                else {
+                    result = compileSchema(schemaUris);
+                    schemaCacheMap.put(key, result);
+                    logger.debug("Schema cache miss for URIs {} stored {}", key, result);
+                }
+            }
+        }
+        else {
+            logger.debug("No schema caching confiured, so compiling new schema");
+            result = compileSchema(schemaUris);
+        }
+        return result;
+    }
+    
+    /**
+     * Compiles a schema from the given list of URIs.
+     */
+    private Schema compileSchema(List<String> schemaUris) {
+        logger.debug("Compiling schema(s) with URI(s) {}", schemaUris);
         final Source[] schemaSources = new Source[schemaUris.size()];
         for (int i = 0; i < schemaSources.length; i++) {
             final Source schemaSource = resourceResolver.loadResourceAsSource(schemaUris.get(i));
@@ -319,7 +372,6 @@ public final class XmlResourceReader {
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         sf.setResourceResolver(resourceResolver);
         sf.setErrorHandler(new SchemaParsingErrorHandler(schemaUris));
-        logger.debug("Compiling schema(s) with URI(s) {}", schemaUris);
         try {
             return sf.newSchema(schemaSources);
         }
@@ -426,6 +478,7 @@ public final class XmlResourceReader {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(parserResourceLocator=" + parserResourceLocator
                 + ",registeredSchemaMap=" + registeredSchemaMap
+                + ",schemaCacheMap=" + schemaCacheMap
                 + ")";
     }
 }

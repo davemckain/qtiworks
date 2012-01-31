@@ -76,6 +76,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -204,13 +206,18 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
                 namespaceUri = "";
             }
             
-            Attribute<?> attribute = get(localName, namespaceUri, true);
-            if (attribute == null) {
-                /* (Foreign attribute) */
-                attribute = new StringAttribute(owner, localName, namespaceUri, null, null, true, true);
-                attributes.add(attribute);
+            if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(namespaceUri)) {
+                /* (xsi attributes get ignored in our model) */
             }
-            attribute.load(element, attributeNode, context);
+            else {
+                Attribute<?> attribute = get(localName, namespaceUri, true);
+                if (attribute == null) {
+                    /* (Foreign attribute) */
+                    attribute = new StringAttribute(owner, localName, namespaceUri, null, null, true, true);
+                    attributes.add(attribute);
+                }
+                attribute.load(element, attributeNode, context);
+            }
         }
     }
 

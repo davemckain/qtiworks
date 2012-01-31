@@ -75,31 +75,20 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(QtiXmlObjectReader.class);
 
-    private final JqtiExtensionManager jqtiExtensionManager;
     private final ResourceLocator inputResourceLocator;
     private final QtiXmlReader qtiXmlReader;
     
-    public QtiXmlObjectReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator inputResourceLocator) {
-        this(jqtiExtensionManager, null, inputResourceLocator);
-    }
-
-    public QtiXmlObjectReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator, 
-            ResourceLocator inputResourceLocator) {
-        this.jqtiExtensionManager = jqtiExtensionManager;
+    QtiXmlObjectReader(QtiXmlReader qtiXmlReader, ResourceLocator inputResourceLocator) {
+        this.qtiXmlReader = qtiXmlReader;
         this.inputResourceLocator = inputResourceLocator;
-        this.qtiXmlReader = new QtiXmlReader(parserResourceLocator, jqtiExtensionManager.getExtensionSchemaMap());
     }
-
-    public JqtiExtensionManager getJqtiExtensionManager() {
-        return jqtiExtensionManager;
+    
+    public QtiXmlReader getQtiXmlReader() {
+        return qtiXmlReader;
     }
 
     public ResourceLocator getInputResourceLocator() {
         return inputResourceLocator;
-    }
-
-    public ResourceLocator getParserResourceLocator() {
-        return qtiXmlReader.getParserResourceLocator();
     }
 
     //--------------------------------------------------------------------------
@@ -201,7 +190,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         
         @Override
         public JqtiExtensionManager getJqtiExtensionManager() {
-            return jqtiExtensionManager;
+            return qtiXmlReader.getJqtiExtensionManager();
         }
 
         @Override
@@ -214,8 +203,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(jqtiExtensionManager=" + jqtiExtensionManager
-                + ",parserResourceLocator=" + getParserResourceLocator()
+                + "(qtiXmlReader=" + qtiXmlReader
                 + ",inputResourceLocator=" + inputResourceLocator
                 + ")";
     }
