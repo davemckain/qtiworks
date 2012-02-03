@@ -88,11 +88,11 @@ All Rights Reserved
     <!-- (This is not intended for general use!) -->
     <repository>
       <id>www2.ph.ed.ac.uk</id>
-      <url>file:///Disk/webteam/maven2</url>
+      <url>file:///Disk/apps-team/repositories/maven2</url>
     </repository>
     <snapshotRepository>
       <id>www2.ph.ed.ac.uk</id>
-      <url>file:///Disk/webteam/maven2</url>
+      <url>file:///Disk/apps-team/repositories/maven2</url>
     </snapshotRepository>
     <site>
       <!--
