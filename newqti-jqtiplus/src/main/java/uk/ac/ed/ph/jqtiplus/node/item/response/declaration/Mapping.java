@@ -224,31 +224,29 @@ public class Mapping extends AbstractNode {
                 }
             }
             else {
-                if (sourceValue instanceof ListValue) {
-                    double sum = 0.0;
-                    final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());
+                if (!(sourceValue instanceof ListValue)) {
+                    throw new QTINotImplementedException();                   
+                }
+                double sum = 0.0;
+                final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());
 
-                    for (final MapEntry entry : getMapEntries()) {
-                        boolean allow = true;
+                for (final MapEntry entry : getMapEntries()) {
+                    boolean allow = true;
 
-                        for (int i = 0; i < ((ListValue) sourceValue).size(); i++) {
-                            if (entryCompare(entry, ((ListValue) sourceValue).get(i))) {
-                                if (allow) {
-                                    sum += entry.getMappedValue();
-                                    allow = false;
-                                }
-                                values.remove(((ListValue) sourceValue).get(i));
+                    for (int i = 0; i < ((ListValue) sourceValue).size(); i++) {
+                        if (entryCompare(entry, ((ListValue) sourceValue).get(i))) {
+                            if (allow) {
+                                sum += entry.getMappedValue();
+                                allow = false;
                             }
+                            values.remove(((ListValue) sourceValue).get(i));
                         }
                     }
-
-                    sum += getDefaultValue() * values.size();
-
-                    return new FloatValue(applyConstraints(sum));
                 }
-                else {
-                    throw new QTINotImplementedException();
-                }
+
+                sum += getDefaultValue() * values.size();
+
+                return new FloatValue(applyConstraints(sum));
             }
         }
 

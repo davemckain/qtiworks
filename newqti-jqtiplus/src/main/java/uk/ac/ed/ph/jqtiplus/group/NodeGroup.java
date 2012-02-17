@@ -100,7 +100,6 @@ public interface NodeGroup extends Validatable, Serializable {
      * For example: SectionPartNodegroups returns assessmentSection and assessmentItemRef.
      * 
      * @return list of all possible QTI class names (all possible children in this group)
-     * @see #getCurrentSupportedClasses
      */
     List<String> getAllSupportedClasses();
 

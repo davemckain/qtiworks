@@ -79,11 +79,13 @@ public class Subtract extends AbstractExpression {
         final NumberValue firstNumber = (NumberValue) getFirstChild().getValue(context);
         final NumberValue secondNumber = (NumberValue) getSecondChild().getValue(context);
 
+        Value result;
         if (getFirstChild().getBaseType(context).isInteger() && getSecondChild().getBaseType(context).isInteger()) {
-            return new IntegerValue(firstNumber.intValue() - secondNumber.intValue());
+            result = new IntegerValue(firstNumber.intValue() - secondNumber.intValue());
         }
         else {
-            return new FloatValue(firstNumber.doubleValue() - secondNumber.doubleValue());
+            result = new FloatValue(firstNumber.doubleValue() - secondNumber.doubleValue());
         }
+        return result;
     }
 }

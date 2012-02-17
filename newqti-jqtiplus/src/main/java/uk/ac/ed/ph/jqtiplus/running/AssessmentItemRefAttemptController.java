@@ -153,7 +153,7 @@ public final class AssessmentItemRefAttemptController {
      * This method should be called when user submits answer but time was already out.
      * 
      * @throws QTIItemFlowException if this item reference is already finished
-     * @see #isTimedOut
+     * @see AssessmentItemRefState#isTimedOut()
      */
     @ToRefactor
     public void timeOut() {

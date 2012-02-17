@@ -220,12 +220,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             }
         }
 
-        if (getChildren().size() == 0 || floatFound) {
-            return getType().getProducedBaseTypes();
-        }
-        else {
-            return new BaseType[] { BaseType.INTEGER };
-        }
+        return (getChildren().size() == 0 || floatFound) ? getType().getProducedBaseTypes() : new BaseType[] { BaseType.INTEGER };
     }
 
     /**

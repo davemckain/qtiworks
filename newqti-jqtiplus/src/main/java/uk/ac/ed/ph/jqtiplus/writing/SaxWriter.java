@@ -31,64 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression;
+package uk.ac.ed.ph.jqtiplus.writing;
 
-import java.util.Random;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
- * Parent of all expressions with random values.
+ * TODO: Need to be able to specify how to output MathML elements, i.e. using a prefix, or by changing
+ * the default namespace.
  * 
- * @author Jiri Kajaba
+ * TODO: Do we really need to keep support for printing default values? It gets stupidly complicated in
+ * classes like {@link ItemSessionControl} and I'm not sure I see the value in doing this.
+ * 
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public abstract class RandomExpression extends AbstractExpression {
-
-    private static final long serialVersionUID = -3110092399048367667L;
-
-    private static Logger logger = LoggerFactory.getLogger(RandomExpression.class);
-
-    private static Random randomGenerator = new Random();
-
-    public RandomExpression(ExpressionParent parent, String localName) {
-        super(parent, localName);
-    }
-
-    /**
-     * Gets value of seed attribute.
-     * 
-     * @return value of seed attribute
-     */
-    protected abstract Long getSeedAttributeValue();
-
-    /**
-     * Generates long seed for random generator.
-     * <ol>
-     * <li>returns value of seed attribute if defined</li>
-     * <li>returns null otherwise</li>
-     * </ol>
-     * 
-     * @param depth depth of current expression in expression tree (root's depth = 0)
-     * @return long seed for random generator
-     */
-    private Long getSeed(int depth) {
-        final Long seed = getSeedAttributeValue();
-
-        logger.debug("{}Got seed: {}", getIndent(depth), seed);
-
-        return seed;
-    }
-
-    /**
-     * Gets a random number generator.
-     * Generator will be created with seed if provided, otherwise the default generator is returned
-     * 
-     * @param depth depth of current expression in expression tree (root's depth = 0)
-     */
-    protected Random getRandomGenerator(int depth) {
-        final Long seed = getSeed(depth);
+public class SaxWriter {
+    
+    public void fireSaxDocument(XmlNode node, ContentHandler target) throws SAXException {
+        target.startDocument();
         
-        return seed!=null ? new Random(seed) : randomGenerator;
+        /* TODO: Fire off prefix mappings for extension namespaces, e.g. mathassess */
+        
+        /* TODO: Fire off schema namespace declarations */
+        
+        /* TODO: Fire document events now */
+        
+        /* TODO: End prefix mappings done above */
+        
+        target.endDocument();
     }
+
 }

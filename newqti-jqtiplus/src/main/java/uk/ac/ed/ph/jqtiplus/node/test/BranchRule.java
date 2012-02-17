@@ -109,28 +109,30 @@ public class BranchRule extends AbstractJump {
      * @return target ControlObject of this branchRule or null it target doesn't exist
      */
     public ControlObject<?> getTargetControlObject() {
+        ControlObject<?> result;
         if (isExitTest()) {
-            return getRootObject(AssessmentTest.class);
+            result = getRootObject(AssessmentTest.class);
         }
         else if (isExitTestPart()) {
             if (getParent() instanceof TestPart) {
-                return null;
+                result = null;
             }
             else {
-                return getParent().getParentTestPart();
+                result = getParent().getParentTestPart();
             }
         }
         else if (isExitSection()) {
             if (getParent() instanceof SectionPart) {
-                return ((SectionPart) getParent()).getParentSection();
+                result = ((SectionPart) getParent()).getParentSection();
             }
             else {
-                return null;
+                result = null;
             }
         }
         else {
-            return getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+            result = getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
         }
+        return result;
     }
 
     /**
