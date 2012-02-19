@@ -66,10 +66,16 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     protected V value;
     protected V defaultValue;
 
-    public AbstractAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required, boolean foreign) {
-        this(owner, localName, "", value, defaultValue, required, foreign);
+    /**
+     * (This constructor is useful for standard QTI attributes)
+     */
+    public AbstractAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required) {
+        this(owner, localName, "", value, defaultValue, required, false);
     }
 
+    /**
+     * (This constructor is useful for foreign attributes)
+     */
     public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V value,
             V defaultValue, boolean required, boolean foreign) {
         ConstraintUtilities.ensureNotNull(owner, "owner");

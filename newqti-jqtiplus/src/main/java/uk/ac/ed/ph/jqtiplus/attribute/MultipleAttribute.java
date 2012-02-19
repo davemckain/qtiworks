@@ -86,7 +86,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      * @param required is this attribute required
      */
     public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
-        super(parent, localName, null, null, required, false);
+        super(parent, localName, null, null, required);
 
         if (value != null) {
             this.value = value;

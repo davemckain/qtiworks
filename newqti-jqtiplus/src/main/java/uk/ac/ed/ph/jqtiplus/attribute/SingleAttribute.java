@@ -80,7 +80,7 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
      * @param required is this attribute required
      */
     public SingleAttribute(XmlNode owner, String name, V value, V defaultValue, boolean required) {
-        super(owner, name, value, defaultValue, required, false);
+        super(owner, name, value, defaultValue, required);
     }
     
     public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value, 

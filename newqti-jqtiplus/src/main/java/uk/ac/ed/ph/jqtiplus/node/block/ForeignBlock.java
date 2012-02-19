@@ -41,16 +41,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * This block can contain any xml node.
- * It should contain only xhtml node, but there is no such check.
+ * This block can contain arbitrary XML, including the contents of MathML islands.
  * 
  * @author Jonathon Hare
  */
-public class UnsupportedBlock extends ContainerBlock {
+public class ForeignBlock extends ContainerBlock {
 
     private static final long serialVersionUID = 474940437634236118L;
 
-    public UnsupportedBlock(XmlNode parent, String localName, String namespaceUri) {
+    public ForeignBlock(XmlNode parent, String localName, String namespaceUri) {
         super(parent, localName, namespaceUri);
     }
 
