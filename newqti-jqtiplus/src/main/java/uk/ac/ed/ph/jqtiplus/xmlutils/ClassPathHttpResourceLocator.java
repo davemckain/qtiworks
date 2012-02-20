@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-
 import java.io.InputStream;
 import java.net.URI;
 
@@ -41,10 +40,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ResourceLocator} that looks for HTTP resources
+ * Implementation of {@link ResourceLocator} that looks for HTTP or HTTPS resources
  * in the ClassPath using a simple naming mechanism as follows:
  * <p>
- * A resource with URL <tt>http://server/path</tt> is mapped to a resource <tt>[basePath]/server/path</tt>, which is then looked up within the ClassPath.
+ * A resource with URL <tt>http(s)://server/path</tt>
+ * is mapped to a resource <tt>[basePath]/server/path</tt>, 
+ * which is then looked up within the ClassPath.
  * <p>
  * This can be used to load "provided" or bundled resources, such as schemas, DTDs, standard resource processing templates etc.
  * 
@@ -78,8 +79,8 @@ public final class ClassPathHttpResourceLocator implements ResourceLocator {
     @Override
     public InputStream findResource(final URI systemId) {
         final String scheme = systemId.getScheme();
-        if ("http".equals(scheme)) {
-            final String relativeSystemId = systemId.toString().substring("http://".length());
+        if ("http".equals(scheme) || "https".equals(scheme)) {
+            final String relativeSystemId = systemId.getSchemeSpecificPart().substring(2); // Get bit after http:// or https://
             final String resultingPath = basePath != null ? basePath + "/" + relativeSystemId : relativeSystemId;
             return loadResource(systemId, resultingPath);
         }
