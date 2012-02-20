@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.block.UnsupportedBlock;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -52,7 +52,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implements a QTI MathML block. Only supports children in the form of UnsupportedBlock,
+ * Implements a QTI MathML block. Only supports children in the form of {@link ForeignBlock},
  * so validation of the content is left to the user. (Obviously xml schema validation
  * could help!)
  * 
@@ -99,9 +99,9 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
 
     private void readChildNode(Node node, LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            final UnsupportedBlock unsupportedBlock = new UnsupportedBlock(this, node.getLocalName(), node.getNamespaceURI());
-            children.add(unsupportedBlock);
-            unsupportedBlock.load((Element) node, context);
+            final ForeignBlock foreignBlock = new ForeignBlock(this, node.getLocalName(), node.getNamespaceURI());
+            children.add(foreignBlock);
+            foreignBlock.load((Element) node, context);
         }
         else if (node.getNodeType() == Node.TEXT_NODE) {
             final String textContent = node.getTextContent().trim();
