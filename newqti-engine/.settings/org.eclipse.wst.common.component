@@ -11,6 +11,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/NewQTI (newqti-engine)/target/classes"/>
-        <property name="context-root" value="qtiengine"/>
+        <property name="context-root" value="engine"/>
     </wb-module>
 </project-modules>

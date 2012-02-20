@@ -43,10 +43,14 @@ import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageSummary;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.NetworkHttpResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 
 import uk.ac.ed.ph.qtiengine.EngineException;
 import uk.ac.ed.ph.qtiengine.UploadException;
@@ -155,7 +159,7 @@ public class UploadService {
         }
         
         /* Let's make sure it's really XML by parsing it (and throwing away the result) */
-        FileSandboxResourceLocator inputResourceLocator = new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory);
+        ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
         QtiXmlReader xmlReader = new QtiXmlReader();
         try {
             XmlReadResult xmlReadResult = xmlReader.read(packageUriScheme.pathToUri(SINGLE_FILE_NAME), inputResourceLocator, false);
@@ -254,7 +258,7 @@ public class UploadService {
     @SuppressWarnings("unchecked")
     private <E extends AssessmentObjectValidationResult<?>> E validate(File importSandboxDirectory, String assessmentObjectHref, Class<E> resultClass) {
         CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        FileSandboxResourceLocator inputResourceLocator = new FileSandboxResourceLocator(QtiContentPackageExtractor.PACKAGE_URI_SCHEME, importSandboxDirectory);
+        ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
         QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
@@ -268,6 +272,16 @@ public class UploadService {
         else {
             throw new EngineException("Unexpected switch case " + resultClass);
         }
+        return result;
+    }
+    
+    private ResourceLocator createInputResourceLocator(File importSandboxDirectory) {
+        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        ChainedResourceLocator result = new ChainedResourceLocator(
+                new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
+                XmlResourceReader.DEFAULT_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
+                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
+        );
         return result;
     }
     
