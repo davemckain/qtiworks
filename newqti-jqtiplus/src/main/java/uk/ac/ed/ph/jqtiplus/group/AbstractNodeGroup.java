@@ -196,22 +196,22 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      */
     protected XmlNode createChild(Element childElement, JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
-        XmlNode context;
+        XmlNode child;
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             final ExpressionParent expressionParent = (ExpressionParent) getParent();
             final String operatorClass = childElement.getAttribute("class");
-            context = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
+            child = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
         }
         else if ("customInteraction".equals(localName)) {
             final XmlNode parentObject = getParent();
             final String interactionClass = childElement.getAttribute("class");
-            context = jqtiExtensionManager.createCustomInteraction(parentObject, interactionClass);
+            child = jqtiExtensionManager.createCustomInteraction(parentObject, interactionClass);
         }
         else {
-            context = create(localName);
+            child = create(localName);
         }
-        return context;
+        return child;
     }
 
     @Override
