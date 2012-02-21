@@ -37,10 +37,12 @@ import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,17 +104,25 @@ public abstract class BodyElement extends AbstractNode {
     }
 
     /**
-     * Get A list of the content child nodes of this element
+     * Get a modifiable list of the content child nodes of this element.
+     * <p>
+     * This works at this level because there is only ever a single {@link NodeGroupList}
+     * within these elements.
+     * 
+     * FIXME: This is a legacy method and I'm not sure how sensible it is.
+     * FIXME: If we do keep this, we should create an interface that subsumes all the types
+     * of things we can return and change the generified return type as appropriate.
      * 
      * @return List of child nodes
      */
+    @ToRefactor
     public abstract List<? extends XmlNode> getChildren();
 
     /**
      * Search the children of this node for instances of the given class
      * 
      * @param target class to search for
-     * @return unmodifiable list of mathcing children
+     * @return unmodifiable list of matching children
      */
     public <E extends XmlNode> List<E> search(Class<E> target) {
         final List<E> results = new ArrayList<E>();
