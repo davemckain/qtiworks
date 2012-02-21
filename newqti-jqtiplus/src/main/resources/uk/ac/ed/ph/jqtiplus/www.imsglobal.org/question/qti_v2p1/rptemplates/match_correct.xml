@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <responseProcessing xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsddraft/imsqti_v2p1.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd">
     <responseCondition>
         <responseIf>
-            <isNull>
+            <match>
                 <variable identifier="RESPONSE"/>
-            </isNull>
+                <correct identifier="RESPONSE"/>
+            </match>
             <setOutcomeValue identifier="SCORE">
-                <baseValue baseType="float">0.0</baseValue>
+                <baseValue baseType="integer">1</baseValue>
             </setOutcomeValue>
         </responseIf>
         <responseElse>
             <setOutcomeValue identifier="SCORE">
-                <mapResponse identifier="RESPONSE"/>
+                <baseValue baseType="integer">0</baseValue>
             </setOutcomeValue>
         </responseElse>
     </responseCondition>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<responseProcessing xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsddraft/imsqti_v2p1.xsd">
+	<!-- This template defines an algorithm to process items with text entry interactions -->
+	<responseCondition>
+		<responseIf>
+			<isNull>
+				<variable identifier="RESPONSE"/>
+			</isNull>
+			<setOutcomeValue identifier="SCORE">
+				<baseValue baseType="float">0.0</baseValue>
+			</setOutcomeValue>
+		</responseIf>
+		<responseElse>
+			<setOutcomeValue identifier="SCORE">
+				<mapResponse identifier="RESPONSE"/>
+			</setOutcomeValue>
+		</responseElse>
+	</responseCondition>
+	<responseCondition>
+		<responseIf>
+		<equal toleranceMode="exact">
+			<variable identifier="MAXSCORE"/>
+			<variable identifier="SCORE"/>
+		</equal>
+			<setOutcomeValue identifier="FEEDBACK">
+				<baseValue baseType="identifier">correct</baseValue>
+			</setOutcomeValue>
+		</responseIf>
+        <responseElse>
+			<setOutcomeValue identifier="FEEDBACK">
+				<baseValue baseType="identifier">incorrect</baseValue>
+			</setOutcomeValue>
+       </responseElse>
+	</responseCondition>
+</responseProcessing>

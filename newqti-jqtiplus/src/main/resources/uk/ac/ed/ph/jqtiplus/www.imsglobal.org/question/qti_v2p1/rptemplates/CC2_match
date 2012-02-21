@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<responseProcessing xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsddraft/imsqti_v2p1.xsd">
+    <!-- This template gets called by default for matching. It should be used by those systems who can support inline feedback.
+    Those systems that can't should use the processing defined in CC2_match_basic.xml-->
+    <setOutcomeValue identifier="FEEDBACK">
+        <variable identifier="RESPONSE"/>
+    </setOutcomeValue>  
+    <responseCondition>
+        <responseIf>
+            <match>
+                <variable identifier="RESPONSE"/>
+                <correct identifier="RESPONSE"/>
+            </match>
+            <setOutcomeValue identifier="SCORE">
+                <variable identifier="MAXSCORE"/>
+            </setOutcomeValue>
+        </responseIf>
+    </responseCondition>
+</responseProcessing>
