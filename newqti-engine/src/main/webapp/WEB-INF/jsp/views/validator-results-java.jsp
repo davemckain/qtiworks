@@ -33,7 +33,7 @@ assessmentUpload
   which will be useful for developers and geeky types.
 </p>
 <pre>
-${utils:dumpObject(assessmentUpload)}
+<c:out value="${utils:dumpObject(assessmentUpload)}"/>
 </pre>
 
 <%@ include file="/WEB-INF/jsp/includes/footer.jspf" %>
