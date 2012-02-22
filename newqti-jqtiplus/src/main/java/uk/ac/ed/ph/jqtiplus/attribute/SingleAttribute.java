@@ -120,7 +120,7 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     @Override
     public void load(Element owner, String value, LoadingContext context) {
-        if (value != null && value.length() != 0) {
+        if (value != null) {
             try {
                 this.value = parseValue(value);
             }
