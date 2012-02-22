@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 
@@ -148,26 +147,12 @@ public class UploadService {
         }
     }
     
-    private AssessmentUpload importXml(InputStream inputStream, File importSandboxDirectory) throws UploadException {
-        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+    private AssessmentUpload importXml(InputStream inputStream, File importSandboxDirectory) {
         File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
         try {
             IOUtilities.transfer(inputStream, new FileOutputStream(resultFile));
         }
         catch (IOException e) {
-            throw EngineException.unexpectedException(e);
-        }
-        
-        /* Let's make sure it's really XML by parsing it (and throwing away the result) */
-        ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
-        QtiXmlReader xmlReader = new QtiXmlReader();
-        try {
-            XmlReadResult xmlReadResult = xmlReader.read(packageUriScheme.pathToUri(SINGLE_FILE_NAME), inputResourceLocator, false);
-            if (!xmlReadResult.getXmlParseResult().isParsed()) {
-                throw new UploadException(UploadFailureReason.NOT_XML_OR_ZIP);
-            }
-        }
-        catch (XmlResourceNotFoundException e) {
             throw EngineException.unexpectedException(e);
         }
         
