@@ -178,11 +178,13 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
             // result.add(new AttributeValidationError(this,
             // getLoadingProblem().getMessage()));
             // else
-            if (required && valueToString().length() == 0) {
+            System.out.println("TESTING: this=" + this + ",value=" + value);
+            if (required && value==null) {
                 context.add(new AttributeValidationError(this, "Required attribute is not defined: " + localName));
             }
         }
         else {
+            /* FIXME: Kill this stuff here! */
             if (!(localName.startsWith("xmlns:") || localName.startsWith("xsi:") || localName.startsWith("xml:"))) {
                 context.add(new ValidationWarning(this, "Unsupported attribute: " + localName));
             }
