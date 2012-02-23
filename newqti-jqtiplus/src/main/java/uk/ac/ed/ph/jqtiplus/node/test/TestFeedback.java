@@ -215,7 +215,7 @@ public class TestFeedback extends AbstractNode {
         }
     }
 
-    private List<FlowStatic> getChildren() {
+    public List<FlowStatic> getChildren() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
     }
 
