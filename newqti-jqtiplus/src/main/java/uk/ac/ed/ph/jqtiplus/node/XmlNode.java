@@ -99,6 +99,14 @@ public interface XmlNode extends Validatable {
      * Loads this node from given DOM source {@link Element}.
      */
     void load(Element sourceElement, LoadingContext context);
+    
+//    /**
+//     * FIXME: Document this!
+//     * @param saxFiringContext
+//     * @throws SAXException
+//     */
+//    void fireSaxEvents(SaxFiringContext saxFiringContext)
+//            throws SAXException;
 
     /**
      * Prints this node and all its children into string.

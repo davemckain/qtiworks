@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
@@ -41,16 +42,16 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.UnsupportedCustomInteraction;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Once created, all properties of this manager are unmodifiable and safe to use by multiple threads.
+ * (Once created, all properties of this manager are unmodifiable and safe to use by multiple threads.)
  * 
  * @author David McKain
  */
@@ -59,30 +60,42 @@ public final class JqtiExtensionManager {
     private static final Logger logger = LoggerFactory.getLogger(JqtiExtensionManager.class);
 
     private final List<JqtiExtensionPackage> extensionPackages;
-
-    private final Map<String, String> extensionSchemaMap;
+    private final Map<String, ExtensionNamespaceInfo> extensionNamepaceInfoMap;
 
     public JqtiExtensionManager(JqtiExtensionPackage... jqtiExtensionPackages) {
         this(Arrays.asList(jqtiExtensionPackages));
     }
 
     public JqtiExtensionManager(List<JqtiExtensionPackage> jqtiExtensionPackages) {
-        this.extensionPackages = Collections.unmodifiableList(jqtiExtensionPackages);
-        this.extensionSchemaMap = Collections.unmodifiableMap(buildExtensionSchemaMap());
+        this.extensionPackages = ObjectUtilities.unmodifiableList(jqtiExtensionPackages);
+        this.extensionNamepaceInfoMap = ObjectUtilities.unmodifiableMap(buildExtensionNamespaceInfoMap());
     }
 
     public List<JqtiExtensionPackage> getExtensionPackages() {
         return extensionPackages;
     }
-
-    public Map<String, String> getExtensionSchemaMap() {
-        return extensionSchemaMap;
+    
+    public Map<String, ExtensionNamespaceInfo> getExtensionNamepaceInfoMap() {
+        return extensionNamepaceInfoMap;
     }
 
-    private Map<String, String> buildExtensionSchemaMap() {
-        final Map<String, String> result = new HashMap<String, String>();
+    private Map<String, ExtensionNamespaceInfo> buildExtensionNamespaceInfoMap() {
+        final Map<String, ExtensionNamespaceInfo> result = new HashMap<String, ExtensionNamespaceInfo>();
         for (final JqtiExtensionPackage extensionPackage : extensionPackages) {
-            result.putAll(extensionPackage.getSchemaInformation());
+            for (Entry<String, ExtensionNamespaceInfo> entry : extensionPackage.getNamespaceInfoMap().entrySet()) {
+                String namespaceUri = entry.getKey();
+                if (QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) || QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
+                    throw new IllegalArgumentException("Namespace URI " + namespaceUri
+                            + " is reserved for QTI and may not be used for extensions");                    
+                }
+                if (result.containsKey(namespaceUri)) {
+                    throw new IllegalArgumentException("Namespace URI " + namespaceUri
+                            + " is used by more than one extension in " + extensionPackages
+                            + ". We can only support one at a time.");
+                }
+                ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
+                result.put(namespaceUri, extensionNamespaceInfo);
+            }
         }
         return result;
     }

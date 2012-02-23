@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
+import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
@@ -44,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.validation.Schema;
 
@@ -85,7 +87,9 @@ public final class QtiXmlReader {
         /* Merge extension schema with QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
         if (jqtiExtensionManager!=null) {
-            resultingSchemaMapTemplate.putAll(jqtiExtensionManager.getExtensionSchemaMap());
+            for (Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
+                resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaUri());
+            }
         }
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 

@@ -33,42 +33,45 @@
  */
 package uk.ac.ed.ph.jqtiplus;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
-import uk.ac.ed.ph.jqtiplus.running.LifecycleListener;
-
-import java.util.Map;
+import java.io.Serializable;
 
 /**
- * FIXME: Document this!
- * 
+ * Encapsulates details about a particular XML namespace used by a QTI extension
+ *
  * @author David McKain
  */
-public interface JqtiExtensionPackage extends LifecycleListener {
+public final class ExtensionNamespaceInfo implements Serializable {
+    
+    private static final long serialVersionUID = -8191755193016965572L;
+    
+    private final String namespaceUri;
+    private final String schemaUri;
+    private final String defaultPrefix;
+    
+    public ExtensionNamespaceInfo(String namespaceUri, String schemaUri, String defaultPrefix) {
+        this.namespaceUri = namespaceUri;
+        this.schemaUri = schemaUri;
+        this.defaultPrefix = defaultPrefix;
+    }
 
-    /**
-     * Return details about each namespace used by this extension, in the form
-     * of a {@link Map} keyed on namespace URI.
-     * <p>
-     * This must not be null.
-     */
-    Map<String, ExtensionNamespaceInfo> getNamespaceInfoMap();
+    public String getNamespaceUri() {
+        return namespaceUri;
+    }
 
-    /**
-     * Instantiate and return a new {@link CustomOperator} corresponding to the given class name,
-     * returning null if this package does not support the stated class.
-     * 
-     * @param expressionParent
-     * @param operatorClassName
-     */
-    CustomOperator createCustomOperator(ExpressionParent expressionParent, String operatorClassName);
+    public String getSchemaUri() {
+        return schemaUri;
+    }
 
-    /**
-     * Instantiate and return a new {@link CustomInteraction} corresponding to the given class name,
-     * returning null if this package does not support the stated class.
-     */
-    CustomInteraction createCustomInteraction(XmlNode parentObject, String interactionClassName);
-
+    public String getDefaultPrefix() {
+        return defaultPrefix;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(namespaceUri=" + namespaceUri
+                + ",schemaUri=" + schemaUri
+                + ",defaultPrefix=" + defaultPrefix
+                + ")";
+    }
 }
