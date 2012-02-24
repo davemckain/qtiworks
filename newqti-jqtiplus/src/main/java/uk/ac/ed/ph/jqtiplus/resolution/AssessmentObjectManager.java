@@ -83,7 +83,7 @@ public final class AssessmentObjectManager {
     }
 
     //-------------------------------------------------------------------
-    // AssessmentItem stuff
+    // AssessmentItem resolution & validation
     
     public ResolvedAssessmentItem resolveAssessmentItem(URI systemId, ModelRichness modelRichness) {
         return resolveAssessmentItem(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
@@ -148,7 +148,7 @@ public final class AssessmentObjectManager {
     }
  
     //-------------------------------------------------------------------
-    // AssessmentTest stuff
+    // AssessmentTest resolution & validation
     
     public ResolvedAssessmentTest resolveAssessmentTest(URI systemId, ModelRichness modelRichness) {
         return resolveAssessmentTest(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
