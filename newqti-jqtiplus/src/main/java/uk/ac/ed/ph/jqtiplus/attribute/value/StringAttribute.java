@@ -45,36 +45,14 @@ public class StringAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = 3119455031436453049L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public StringAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public StringAttribute(XmlNode parent, String localName, String defaultValue) {
-        super(parent, localName, defaultValue);
+        super(parent, localName, null, defaultValue, false);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
     public StringAttribute(XmlNode parent, String localName, String value, String defaultValue, boolean required) {
         super(parent, localName, value, defaultValue, required);
     }
@@ -84,11 +62,6 @@ public class StringAttribute extends SingleAttribute<String> {
         super(parent, localName, namespaceUri, value, defaultValue, required);
     }
     
-    public StringAttribute(XmlNode parent, String localName, String namespaceUri, 
-            String value, String defaultValue, boolean required, boolean foreign) {
-        super(parent, localName, namespaceUri, value, defaultValue, required, foreign);
-    }
-
     @Override
     protected String parseValue(String value) {
         return value;

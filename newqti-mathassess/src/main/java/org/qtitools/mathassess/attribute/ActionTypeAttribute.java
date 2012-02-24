@@ -49,7 +49,7 @@ public class ActionTypeAttribute extends SingleAttribute<ActionType> implements 
     private static final long serialVersionUID = 2096278682370848167L;
 
     public ActionTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri, null, null, true);
+        super(parent, localName, namespaceUri);
     }
 
     @Override

@@ -35,8 +35,6 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
 import org.w3c.dom.Element;
@@ -87,23 +85,6 @@ public interface Attribute<V> extends Validatable {
      *         optional)
      */
     boolean isRequired();
-
-    /**
-     * Returns true if this attribute is foreign, i.e. not declared explicitly
-     * in the QTI specification. MathML attributes, namespaced attributes for
-     * {@link CustomOperator}s and {@link CustomInteraction}s, plus any unknown
-     * attributes should be considered foreign.
-     */
-    boolean isForeign();
-    
-    /**
-     * Sets whether or not this attribute is considered foreign.
-     * 
-     * @see #isForeign()
-     *
-     * @param foreign
-     */
-    void setForeign(boolean foreign);
     
     /**
      * Gets value of attribute.

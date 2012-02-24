@@ -94,7 +94,7 @@ public class CandidateComment extends AbstractNode {
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         textContent = element.getTextContent();
     }
 

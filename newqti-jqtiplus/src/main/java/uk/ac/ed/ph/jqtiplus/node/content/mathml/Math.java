@@ -78,7 +78,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         children.clear();
         final NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {

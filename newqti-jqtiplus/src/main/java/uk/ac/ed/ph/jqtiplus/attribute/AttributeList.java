@@ -183,18 +183,20 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
     /**
      * Loads attribute's values from given source node.
      * If there is a foreign attribute, it creates new optional
-     * StringAttribute with its foreign property set.
+     * ForeignAttribute with its foreign property set.
      * 
      * @param element source node
      */
     public void load(Element element, LoadingContext context) {
         for (int i = 0; i < attributes.size(); i++) {
             final Attribute<?> attribute = attributes.get(i);
-            if (!attribute.isForeign()) {
-                attribute.load(element, (String) null, context);
+            if (attribute instanceof ForeignAttribute) {
+                /* Foreign attribute, so remove to add in again */
+                attributes.remove(i);
             }
             else {
-                attributes.remove(i);
+                /* Supported attribute, so clear for setting later */
+                attribute.load(element, (String) null, context);
             }
         }
 
@@ -212,10 +214,11 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
             else {
                 Attribute<?> attribute = get(localName, namespaceUri, true);
                 if (attribute == null) {
-                    /* (Foreign attribute) */
-                    attribute = new StringAttribute(owner, localName, namespaceUri, null, null, true, true);
+                    /* Foreign attribute, so create new */
+                    attribute = new ForeignAttribute(owner, localName, namespaceUri);
                     attributes.add(attribute);
                 }
+                /* Load value into attribute */
                 attribute.load(element, attributeNode, context);
             }
         }

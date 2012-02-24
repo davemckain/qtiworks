@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
@@ -61,32 +60,26 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     /** Is this attribute mandatory (true) or optional (false). */
     private final boolean required;
     
-    private boolean foreign;
-    
+    /** Attribute value (may be null) */
     protected V value;
+    
+    /** Attribute default value (may be null) */
     protected V defaultValue;
 
-    /**
-     * (This constructor is useful for standard QTI attributes)
-     */
     public AbstractAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required) {
-        this(owner, localName, "", value, defaultValue, required, false);
+        this(owner, localName, "", value, defaultValue, required);
     }
 
-    /**
-     * (This constructor is useful for foreign attributes)
-     */
-    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V value,
-            V defaultValue, boolean required, boolean foreign) {
+    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V value, V defaultValue, boolean required) {
         ConstraintUtilities.ensureNotNull(owner, "owner");
         ConstraintUtilities.ensureNotNull(localName, "localName");
+        ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
         this.owner = owner;
         this.localName = localName;
-        this.namespaceUri = namespaceUri!=null ? namespaceUri : "";
-        this.defaultValue = defaultValue;
-        this.value = value;
+        this.namespaceUri = namespaceUri;
         this.required = required;
-        this.foreign = foreign;
+        this.value = value;
+        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -105,16 +98,6 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
     
     @Override
-    public boolean isForeign() {
-        return foreign;
-    }
-    
-    @Override
-    public void setForeign(boolean foreign) {
-        this.foreign = foreign;
-    }
-
-    @Override
     public V getDefaultValue() {
         return defaultValue;
     }
@@ -128,7 +111,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     public String computeXPath() {
         return (owner != null ? owner.computeXPath() + "/" : "") 
                 + "@"
-                + ((namespaceUri!=null) ? "{" + namespaceUri + "}" : "")
+                + (!namespaceUri.isEmpty() ? "{" + namespaceUri + "}" : "")
                 + localName;
     }
 
@@ -143,7 +126,6 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + "(localName=" + localName
                 + ",namespaceUri=" + namespaceUri
                 + ",required=" + required
-                + ",foreign=" + foreign
                 + ",value=" + value
                 + ",defaultValue=" + defaultValue
                 + ")";
@@ -169,25 +151,10 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
         return builder.toString();
     }
 
-    /** FIXME: Remove the xmlns stuff from this */
-    @ToRefactor
     @Override
     public void validate(ValidationContext context) {
-        if (!foreign) {
-            // if (getLoadingProblem() != null)
-            // result.add(new AttributeValidationError(this,
-            // getLoadingProblem().getMessage()));
-            // else
-            System.out.println("TESTING: this=" + this + ",value=" + value);
-            if (required && value==null) {
-                context.add(new AttributeValidationError(this, "Required attribute is not defined: " + localName));
-            }
-        }
-        else {
-            /* FIXME: Kill this stuff here! */
-            if (!(localName.startsWith("xmlns:") || localName.startsWith("xsi:") || localName.startsWith("xml:"))) {
-                context.add(new ValidationWarning(this, "Unsupported attribute: " + localName));
-            }
+        if (required && value==null) {
+            context.add(new AttributeValidationError(this, "Required attribute is not defined: " + localName));
         }
     }
 }

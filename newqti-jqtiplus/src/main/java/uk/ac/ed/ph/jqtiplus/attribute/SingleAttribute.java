@@ -49,48 +49,24 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     private static final long serialVersionUID = 7394997591576564116L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param owner attribute's owner
-     * @param name attribute's name
-     */
-    public SingleAttribute(XmlNode owner, String name) {
-        this(owner, name, null, null, true);
+    public SingleAttribute(XmlNode owner, String localName) {
+        this(owner, localName, null, null, true);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param owner attribute's owner
-     * @param name attribute's name
-     * @param defaultValue attribute's default value
-     */
-    public SingleAttribute(XmlNode owner, String name, V defaultValue) {
-        this(owner, name, defaultValue, defaultValue, false);
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri) {
+        this(owner, localName, namespaceUri, null, null, true);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param owner attribute's owner
-     * @param name attribute's name
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public SingleAttribute(XmlNode owner, String name, V value, V defaultValue, boolean required) {
-        super(owner, name, value, defaultValue, required);
+    public SingleAttribute(XmlNode owner, String localName, V defaultValue) {
+        this(owner, localName, defaultValue, defaultValue, false);
+    }
+
+    public SingleAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required) {
+        super(owner, localName, value, defaultValue, required);
     }
     
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value, 
-            V defaultValue, boolean required) {
-        super(owner, localName, namespaceUri, value, defaultValue, required, false);
-    }
-    
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value, 
-            V defaultValue, boolean required, boolean foreign) {
-        super(owner, localName, namespaceUri, value, defaultValue, required, foreign);
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value,  V defaultValue, boolean required) {
+        super(owner, localName, namespaceUri, value, defaultValue, required);
     }
     
     /**
@@ -114,12 +90,12 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
     }
 
     @Override
-    public void load(Element owner, Node node, LoadingContext context) {
+    public final void load(Element owner, Node node, LoadingContext context) {
         load(owner, node.getNodeValue(), context);
     }
 
     @Override
-    public void load(Element owner, String value, LoadingContext context) {
+    public final void load(Element owner, String value, LoadingContext context) {
         if (value != null) {
             try {
                 this.value = parseValue(value);

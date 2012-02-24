@@ -147,7 +147,7 @@ public abstract class AbstractNode implements XmlNode {
         loadAttributes(sourceElement, context);
 
         // 2) Read all children nodes and/or content.
-        readChildren(sourceElement, context);
+        loadChildren(sourceElement, context);
     }
 
     /**
@@ -166,7 +166,7 @@ public abstract class AbstractNode implements XmlNode {
      * 
      * @param element xml source
      */
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         groups.load(element, context);
     }
 

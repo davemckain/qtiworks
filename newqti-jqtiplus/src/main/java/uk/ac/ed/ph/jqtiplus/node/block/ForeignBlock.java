@@ -33,19 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.block;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * This block can contain arbitrary XML, including the contents of MathML islands.
  * 
  * @author Jonathon Hare
  */
-public class ForeignBlock extends ContainerBlock {
+public final class ForeignBlock extends ContainerBlock {
 
     private static final long serialVersionUID = 474940437634236118L;
     
@@ -58,16 +53,5 @@ public class ForeignBlock extends ContainerBlock {
     
     public final String getNamespaceUri() {
         return namespaceUri;
-    }
-
-    @Override
-    protected void loadAttributes(Element element, LoadingContext context) {
-        getAttributes().clear();
-
-        for (int i = 0; i < element.getAttributes().getLength(); i++) {
-            final Node attribute = element.getAttributes().item(i);
-            getAttributes().add(new StringAttribute(this, attribute.getLocalName(), attribute.getNamespaceURI(),
-                    attribute.getNodeValue(), null, false, true));
-        }
     }
 }

@@ -31,39 +31,27 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.mathassess.attribute;
+package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-
-import org.qtitools.mathassess.type.SyntaxType;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
 
 /**
- * Attribute with syntaxType value.
+ * An attribute for a {@link ForeignBlock}, or any other unkown attribute. 
+ * These are simply wrapped up {@link String}s.
  * 
- * @author Jonathon Hare
+ * @author David McKain
  */
-public class SyntaxTypeAttribute extends SingleAttribute<SyntaxType> implements EnumerateAttribute<SyntaxType> {
+public final class ForeignAttribute extends SingleAttribute<String> {
 
-    private static final long serialVersionUID = 8834496656714809174L;
+    private static final long serialVersionUID = -2789631230857582434L;
 
-    public SyntaxTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+    public ForeignAttribute(XmlNode parent, String localName, String namespaceUri) {
+        super(parent, localName, namespaceUri, null, null, false);
     }
 
     @Override
-    protected SyntaxType parseValue(String value) {
-        return SyntaxType.parseSyntaxType(value);
-    }
-
-    /**
-     * Gets all supported values of this attribute.
-     * 
-     * @return all supported values of this attribute
-     */
-    @Override
-    public SyntaxType[] getSupportedValues() {
-        return SyntaxType.values();
+    protected String parseValue(String value) {
+        return value;
     }
 }

@@ -50,7 +50,7 @@ public class ReturnTypeAttribute extends SingleAttribute<ReturnType> implements 
 
 
     public ReturnTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri, null, null, true);
+        super(parent, localName, namespaceUri);
     }
 
     @Override

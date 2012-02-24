@@ -75,7 +75,7 @@ public abstract class ContainerBlock extends AbstractNode {
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         children.clear();
 
         final NodeList nodes = element.getChildNodes();

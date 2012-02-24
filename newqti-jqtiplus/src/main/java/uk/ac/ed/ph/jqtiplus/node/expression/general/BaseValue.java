@@ -128,7 +128,7 @@ public class BaseValue extends AbstractExpression {
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         if (getBaseTypeAttrValue() != null && element.getTextContent().length() != 0) {
             try {
                 singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent());

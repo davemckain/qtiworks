@@ -188,7 +188,7 @@ public class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void readChildren(Element element, LoadingContext context) {
+    protected void loadChildren(Element element, LoadingContext context) {
         if (getBaseType() != null && element.getTextContent().length() != 0) {
             try {
                 singleValue = getBaseType().parseSingleValue(element.getTextContent());
