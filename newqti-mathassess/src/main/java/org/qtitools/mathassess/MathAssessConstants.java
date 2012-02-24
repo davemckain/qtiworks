@@ -43,6 +43,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  */
 public interface MathAssessConstants {
 
+    public static final String MATHASSESS_DEFAULT_NAMESPACE_PREFIX = "ma";
+    
     public static final String MATHASSESS_NAMESPACE_URI = "http://mathassess.qtitools.org/xsd/mathassess";
 
     public static final String MATHASSESS_SCHEMA_LOCATION = "http://mathassess.qtitools.org/xsd/mathassess.xsd";
@@ -84,6 +86,7 @@ public interface MathAssessConstants {
     public static final String ATTR_PRINT_IDENTIFIER_NAME = "printIdentifier";
 
     public static final String ATTR_RETURN_TYPE_NAME = "returnType";
+
 
 
 }

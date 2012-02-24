@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 
@@ -64,6 +65,8 @@ public class MathAssessTest {
         
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
+        System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
+        System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful()));
 
 //        try {
 //            final AssessmentItemState itemState = new AssessmentItemState();

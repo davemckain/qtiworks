@@ -51,7 +51,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * (Once created, all properties of this manager are unmodifiable and safe to use by multiple threads.)
+ * Registry/manager for all JQTI extensions you choose to support.
+ * <p>
+ * Once created, all properties of this manager are unmodifiable and safe to use by multiple threads.
  * 
  * @author David McKain
  */

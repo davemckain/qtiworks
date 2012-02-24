@@ -31,18 +31,17 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus;
+package uk.ac.ed.ph.jqtiplus.utils;
+
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
- * Placeholder class for static JQTI information
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
- * @author Jonathon Hare
  */
-public final class JqtiPlus {
-
-    public static final String TOOL_NAME = "JQTIPlus";
-
-    public static final String TOOL_VERSION = "1.0";
+public interface NodeHandler {
+    
+    boolean handleNode(XmlNode node);
 
 }

@@ -42,15 +42,25 @@ import uk.ac.ed.ph.jqtiplus.running.LifecycleListener;
 import java.util.Map;
 
 /**
- * FIXME: Document this!
+ * Interface for connecting QTI extensions, such as MathAssess. 
  * 
  * @author David McKain
  */
 public interface JqtiExtensionPackage extends LifecycleListener {
 
     /**
+     * Returns a displayable name for this extension package.
+     * <p>
+     * (This may change in future if we ever have some kind of centralised
+     * registry for extensions...)
+     */
+    String getDisplayName();
+
+    /**
      * Return details about each namespace used by this extension, in the form
      * of a {@link Map} keyed on namespace URI.
+     * <p>
+     * In JQTI, it is illegal to register more than one package handling the same namespace URI.
      * <p>
      * This must not be null.
      */

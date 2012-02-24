@@ -10,6 +10,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 
@@ -28,5 +29,6 @@ public class SchemaTest {
 
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
+        System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
     }
 }

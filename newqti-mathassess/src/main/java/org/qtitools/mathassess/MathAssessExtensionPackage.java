@@ -33,8 +33,14 @@
  */
 package org.qtitools.mathassess;
 
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_DEFAULT_NAMESPACE_PREFIX;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
+import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_SCHEMA_LOCATION;
+
+import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
@@ -65,19 +71,25 @@ import org.slf4j.LoggerFactory;
 public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
 
     private static final Logger logger = LoggerFactory.getLogger(MathAssessExtensionPackage.class);
+    
+    public static final String DISPLAY_NAME = "MathAssess QTI Extensions";
 
+    private final Map<String, ExtensionNamespaceInfo> namespaceInfoMap;
     private final ThreadLocal<QTIMaximaSession> sessionThreadLocal;
-
-    private final Map<String, String> schemaInformation;
 
     private StylesheetCache stylesheetCache;
 
     private PooledQTIMaximaSessionManager pooledQTIMaximaSessionManager;
 
     public MathAssessExtensionPackage() {
+        /* Build up namespace info */
+        ExtensionNamespaceInfo extensionNamespaceInfo = new ExtensionNamespaceInfo(MATHASSESS_NAMESPACE_URI, MATHASSESS_SCHEMA_LOCATION, MATHASSESS_DEFAULT_NAMESPACE_PREFIX);
+        Map<String, ExtensionNamespaceInfo> namespaceInfoMapSource = new HashMap<String, ExtensionNamespaceInfo>();
+        namespaceInfoMapSource.put(extensionNamespaceInfo.getNamespaceUri(), extensionNamespaceInfo);
+        this.namespaceInfoMap = ObjectUtilities.unmodifiableMap(namespaceInfoMapSource);
+        
+        /* Create ThreadLocal for communicating with maxima */
         this.sessionThreadLocal = new ThreadLocal<QTIMaximaSession>();
-        this.schemaInformation = new HashMap<String, String>();
-        this.schemaInformation.put(MathAssessConstants.MATHASSESS_NAMESPACE_URI, MathAssessConstants.MATHASSESS_SCHEMA_LOCATION);
     }
 
     public StylesheetCache getStylesheetCache() {
@@ -113,10 +125,15 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
     }
 
     // ------------------------------------------------------------------------
+    
+    @Override
+    public String getDisplayName() {
+        return DISPLAY_NAME;
+    }
 
     @Override
-    public Map<String, String> getSchemaInformation() {
-        return schemaInformation;
+    public Map<String,ExtensionNamespaceInfo> getNamespaceInfoMap() {
+        return namespaceInfoMap;
     }
 
     @Override
@@ -142,6 +159,16 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
             return new MathEntryInteraction(this, parentObject);
         }
         return null;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(displayName=" + getDisplayName()
+                + ",stylesheetCache=" + stylesheetCache
+                + ",sessionThreadLocal=" + sessionThreadLocal
+                + ",pooledQTIMaximaSessionManager=" + pooledQTIMaximaSessionManager
+                + ")";
     }
 
     // ------------------------------------------------------------------------

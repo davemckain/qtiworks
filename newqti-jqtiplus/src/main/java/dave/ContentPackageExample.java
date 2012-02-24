@@ -7,8 +7,8 @@ package dave;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageSummary;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageSummary;
 
 import java.io.File;
 
