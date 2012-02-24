@@ -73,7 +73,7 @@ public final class QueryUtils {
      */
     public static Set<JqtiExtensionPackage> findExtensionsWithin(XmlNode node) {
         final Set<JqtiExtensionPackage> resultSet = new HashSet<JqtiExtensionPackage>();
-        walkTree(node, new NodeHandler() {
+        walkTree(node, new TreeWalkNodeHandler() {
             @Override
             public boolean handleNode(XmlNode node) {
                 if (node instanceof CustomOperator) {
@@ -90,7 +90,7 @@ public final class QueryUtils {
     
     public static Set<String> findForeignNamespaces(XmlNode node) {
         final Set<String> resultSet = new HashSet<String>();
-        walkTree(node, new NodeHandler() {
+        walkTree(node, new TreeWalkNodeHandler() {
             @Override
             public boolean handleNode(XmlNode node) {
                 if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
@@ -105,13 +105,13 @@ public final class QueryUtils {
         return resultSet;
     }
     
-    public static void walkTree(XmlNode startNode, NodeHandler handler) {
+    public static void walkTree(XmlNode startNode, TreeWalkNodeHandler handler) {
         ConstraintUtilities.ensureNotNull(startNode);
         ConstraintUtilities.ensureNotNull(handler);
         doWalkTree(startNode, handler);
     }
     
-    private static void doWalkTree(XmlNode currentNode, NodeHandler handler) {
+    private static void doWalkTree(XmlNode currentNode, TreeWalkNodeHandler handler) {
         boolean descend = handler.handleNode(currentNode);
         if (descend) {
             for (NodeGroup nodeGroup : currentNode.getNodeGroups()) {

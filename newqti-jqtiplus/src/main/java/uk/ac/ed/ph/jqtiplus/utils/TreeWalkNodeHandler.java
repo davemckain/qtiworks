@@ -36,12 +36,18 @@ package uk.ac.ed.ph.jqtiplus.utils;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
- * FIXME: Document this type
+ * Call-back interface to handle each Node when walking an {@link XmlNode}
+ * (sub)tree using {@link QueryUtils#walkTree(XmlNode, TreeWalkNodeHandler)}
  *
  * @author David McKain
  */
-public interface NodeHandler {
+public interface TreeWalkNodeHandler {
     
+    /**
+     * Callback to handle the given {@link XmlNode}.
+     * 
+     * Return true to continue descending the tree, false to terminate the process.
+     */
     boolean handleNode(XmlNode node);
 
 }
