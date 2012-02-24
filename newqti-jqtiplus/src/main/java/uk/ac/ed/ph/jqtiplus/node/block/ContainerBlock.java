@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.block;
 
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -61,11 +60,7 @@ public abstract class ContainerBlock extends AbstractNode {
     private final List<XmlNode> children;
 
     public ContainerBlock(XmlNode parent, String localName) {
-        this(parent, localName, QtiConstants.QTI_21_NAMESPACE_URI);
-    }
-    
-    public ContainerBlock(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+        super(parent, localName);
 
         children = new ArrayList<XmlNode>();
     }

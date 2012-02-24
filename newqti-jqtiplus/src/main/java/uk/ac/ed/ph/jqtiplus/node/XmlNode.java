@@ -41,16 +41,19 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import org.w3c.dom.Element;
 
 /**
- * Parent of all xml nodes.
+ * Base class for all QTI XML Nodes
  * 
  * @author Jiri Kajaba
+ * @author David McKain
  */
 public interface XmlNode extends Validatable {
 
     /** New line string. Depends on OS settings. */
+    @Deprecated
     static final String NEW_LINE = System.getProperty("line.separator");
 
     /** Default indent. */
+    @Deprecated
     static final String INDENT = "  ";
 
     XmlSourceLocationInformation getSourceLocation();
@@ -134,11 +137,6 @@ public interface XmlNode extends Validatable {
      * Gets the XML local name of this node.
      */
     String getLocalName();
-
-    /**
-     * Gets the XML namespace URI for this Node.
-     */
-    String getNamespaceUri();
 
     /**
      * Gets QTI class name of this node (as used in the specification).

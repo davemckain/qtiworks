@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
@@ -52,7 +51,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implements a QTI MathML block. Only supports children in the form of {@link ForeignBlock},
+ * Implements a QTI MathML island. Only supports children in the form of {@link ForeignBlock},
  * so validation of the content is left to the user. (Obviously xml schema validation
  * could help!)
  * 
@@ -68,13 +67,8 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     /** Children of this block. */
     private final List<XmlNode> children;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public Math(XmlNode parent) {
-        super(parent, QTI_CLASS_NAME, QtiConstants.MATHML_NAMESPACE_URI);
+        super(parent, QTI_CLASS_NAME);
         children = new ArrayList<XmlNode>();
     }
 

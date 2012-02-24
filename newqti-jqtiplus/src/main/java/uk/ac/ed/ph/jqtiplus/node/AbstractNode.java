@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
@@ -64,8 +63,6 @@ public abstract class AbstractNode implements XmlNode {
     
     private final String localName;
     
-    private final String namespaceUri;
-
     /** Attributes of this node. */
     private final AttributeList attributes;
 
@@ -76,13 +73,8 @@ public abstract class AbstractNode implements XmlNode {
     private XmlSourceLocationInformation sourceLocation;
 
     public AbstractNode(XmlNode parent, String localName) {
-        this(parent, localName, QtiConstants.QTI_21_NAMESPACE_URI);
-    }
-    
-    public AbstractNode(XmlNode parent, String localName, String namespaceUri) {
         this.parent = parent;
         this.localName = localName;
-        this.namespaceUri = namespaceUri;
         this.attributes = new AttributeList(this);
         this.groups = new NodeGroupList(this);
         this.sourceLocation = null;
@@ -96,11 +88,6 @@ public abstract class AbstractNode implements XmlNode {
     @Override
     public final String getLocalName() {
         return localName;
-    }
-    
-    @Override
-    public final String getNamespaceUri() {
-        return namespaceUri;
     }
     
     @Override

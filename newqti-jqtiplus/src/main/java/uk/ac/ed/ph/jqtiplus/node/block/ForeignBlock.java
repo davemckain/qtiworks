@@ -48,9 +48,16 @@ import org.w3c.dom.Node;
 public class ForeignBlock extends ContainerBlock {
 
     private static final long serialVersionUID = 474940437634236118L;
+    
+    private final String namespaceUri;
 
     public ForeignBlock(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+        super(parent, localName);
+        this.namespaceUri = namespaceUri;
+    }
+    
+    public final String getNamespaceUri() {
+        return namespaceUri;
     }
 
     @Override
