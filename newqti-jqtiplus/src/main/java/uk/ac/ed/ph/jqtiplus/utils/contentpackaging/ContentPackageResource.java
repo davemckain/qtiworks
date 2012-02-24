@@ -31,32 +31,51 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.utils;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.util.List;
 
 /**
- * Exception thrown when something unexpected happens when handling a Content Package.
- * 
+ * Encapsulates the key data within a <code>resource</code> element and child
+ * <code>file</code> elements in a Content Package.
+ *
  * @author David McKain
  */
-public class ContentPackageException extends QTIRuntimeException {
+public final class ContentPackageResource implements Serializable {
 
-    private static final long serialVersionUID = -8628944534184533327L;
+    private static final long serialVersionUID = 8850693671764183109L;
     
-    public ContentPackageException() {
-        super();
+    private final String type;
+    private final URI href;
+    private final List<URI> fileHrefs;
+    
+    public ContentPackageResource(String type, URI href, List<URI> fileHrefs) {
+        this.type = type;
+        this.href = href;
+        this.fileHrefs = fileHrefs;
     }
-
-    public ContentPackageException(String message) {
-        super(message);
+    
+    public String getType() {
+        return type;
     }
-
-    public ContentPackageException(Throwable cause) {
-        super(cause);
+    
+    public URI getHref() {
+        return href;
     }
-
-    public ContentPackageException(String message, Throwable cause) {
-        super(message, cause);
+    
+    public List<URI> getFileHrefs() {
+        return fileHrefs;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+               + "(type=" + type
+               + ",href=" + href
+               + ",fileHrefs=" + fileHrefs
+               + ")";
     }
 }

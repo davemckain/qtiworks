@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiengine.web.view;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.utils.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
 import java.net.URI;

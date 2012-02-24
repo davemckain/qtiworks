@@ -31,46 +31,62 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.utils;
+package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
-import java.net.URI;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
- * Thrown when an IMS manifest file cannot be understood
- *
+ * Encapsulates details of the contents of a Content Package that are of interest to QTI.
+ * 
+ * @see QtiContentPackageExtractor
+ * 
  * @author David McKain
  */
-public final class ImsManifestException extends BadResourceException {
+public final class QtiContentPackageSummary implements Serializable {
     
-    private static final long serialVersionUID = 5190957743384561923L;
+    private static final long serialVersionUID = 6791550769947268491L;
     
-    private final XmlParseResult xmlParseResult;
-    private final List<String> errorMessages;
+    private final ImsManifestReadResult packageManifestDetails;
+    private final Set<String> testResourceHrefs;
+    private final Set<String> itemResourceHrefs;
+    private final Set<String> fileHrefs;
     
-    ImsManifestException(String message, XmlParseResult xmlParseResult) {
-        this(message, xmlParseResult, null);
-    }
-    
-    ImsManifestException(String message, XmlParseResult xmlParseResult, List<String> errorMessages) {
-        super(message);
-        this.xmlParseResult = xmlParseResult;
-        this.errorMessages = ObjectUtilities.unmodifiableList(errorMessages);
-    }
-    
-    public URI getSystemId() {
-        return xmlParseResult.getSystemId();
+    public QtiContentPackageSummary(ImsManifestReadResult packageManifestDetails, Set<String> testResourceHrefs, Set<String> itemResourceHrefs, Set <String> fileHrefs) {
+        this.packageManifestDetails = packageManifestDetails;
+        this.testResourceHrefs = ObjectUtilities.unmodifiableSet(testResourceHrefs);
+        this.itemResourceHrefs = ObjectUtilities.unmodifiableSet(itemResourceHrefs);
+        this.fileHrefs = ObjectUtilities.unmodifiableSet(fileHrefs);
     }
 
-    public XmlParseResult getXmlParseResult() {
-        return xmlParseResult;
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public ImsManifestReadResult getPackageManifestDetails() {
+        return packageManifestDetails;
     }
     
-    public List<String> getErrorMessages() {
-        return errorMessages;
+    public Set<String> getTestResourceHrefs() {
+        return testResourceHrefs;
+    }
+    
+    public Set<String> getItemResourceHrefs() {
+        return itemResourceHrefs;
+    }
+    
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(packageManifestDetails=" + packageManifestDetails
+                + ",testResourceHrefs=" + testResourceHrefs
+                + ",itemResourceHrefs=" + itemResourceHrefs
+                + ",fileHrefs=" + fileHrefs
+                + ")";
     }
 }
