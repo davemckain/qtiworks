@@ -9,16 +9,17 @@ All Rights Reserved
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>NewQTI</name>
-  <groupId>uk.ac.ed.ph.newqti</groupId>
-  <artifactId>newqti</artifactId>
+  <name>QTIWorks</name>
+  <groupId>uk.ac.ed.ph.qtiworks</groupId>
+  <artifactId>qtiworks</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>newqti-jqtiplus</module>
-    <module>newqti-mathassess</module>
-    <module>newqti-unrefactored</module>
-    <module>newqti-engine</module>
+    <module>qtiworks-jqtiplus</module>
+    <module>qtiworks-mathassess</module>
+    <module>qtiworks-engine</module>
+    <!--<module>qtiworks-ltitest</module>-->
+    <module>qtiworks-unrefactored</module>
   </modules>
   <properties>
     <mathassess-tools.version>1.4-SNAPSHOT</mathassess-tools.version>
@@ -27,8 +28,10 @@ All Rights Reserved
     <log4j.version>1.2.16</log4j.version>
     <spring.version>3.1.1.RELEASE</spring.version>
     <cglib.version>2.2.2</cglib.version>
+    <commons-lang.version>2.1</commons-lang.version>
     <commons-io.version>2.1</commons-io.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
+    <oauth.version>20100601</oauth.version>
     <guava.version>11.0.1</guava.version>
     <maven.site.url>http://snuggletex.sourceforge.net/maven/</maven.site.url>
   </properties>
