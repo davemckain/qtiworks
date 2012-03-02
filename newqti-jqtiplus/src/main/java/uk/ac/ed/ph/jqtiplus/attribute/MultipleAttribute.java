@@ -36,8 +36,10 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -88,6 +90,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
         super(parent, localName, null, null, required);
 
+        /* BEHAVIOUR HAS CHANGED IN JQTI+ - REMOVE THIS OLD COMMENTED OUT CODE ONCE DEBUGGED!
         if (value != null) {
             this.value = value;
         }
@@ -104,24 +107,35 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
         else {
             this.defaultValue = new ArrayList<E>();
         }
+        */
     }
 
     /**
-     * Gets value of attribute.
+     * Returns a List representing the value of this attribute, returning an empty List
+     * for a null value.
+     * <p>
+     * Important Note: you cannot subsequently differentiate between a null and an empty value from
+     * the result of this method!
      * 
      * @return value of attribute
      */
-    public List<E> getValues() {
-        return getValue();
+    @SuppressWarnings("unchecked")
+    public List<E> getValueAsList() {
+        return value!=null ? value : (List<E>) Collections.emptyList();
     }
 
     /**
-     * Gets default value of attribute.
+     * Returns a List representing the default value of this attribute, returning an empty List
+     * for a null default value.
+     * <p>
+     * Important Note: you cannot subsequently differentiate between a null and an empty value from
+     * the result of this method!
      * 
-     * @return default value of attribute
+     * @return value of attribute
      */
-    public List<E> getDefaultValues() {
-        return defaultValue;
+    @SuppressWarnings("unchecked")
+    public List<E> getDefaultValueAsList() {
+        return defaultValue!=null ? defaultValue : (List<E>) Collections.emptyList();
     }
 
     @Override
@@ -130,22 +144,32 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     }
 
     @Override
-    public void load(Element owner, String value, LoadingContext context) {
-        if (value != null && value.length() != 0) {
+    public void load(Element owner, String stringValue, LoadingContext context) {
+        if (stringValue != null) {
             try {
-                this.value.clear();
-                final List<String> values = splitValue(value);
+                if (value!=null) {
+                    value.clear();
+                }
+                else {
+                    value = new ArrayList<E>();
+                }
+                final List<String> values = splitStringValue(stringValue);
                 for (final String string : values) {
-                    this.value.add(parseValue(string));
+                    value.add(parseValue(string));
                 }
             }
             catch (final QTIParseException ex) {
-                this.value.clear();
+                value.clear();
                 context.modelBuildingError(ex, owner);
             }
         }
         else {
-            this.value = new ArrayList<E>(defaultValue);
+            if (defaultValue!=null) {
+                value = new ArrayList<E>(defaultValue);
+            }
+            else {
+                value = null;
+            }
         }
     }
 
@@ -157,7 +181,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      * @param value multiple string value
      * @return split single string values
      */
-    private List<String> splitValue(String value) {
+    private List<String> splitStringValue(String value) {
         final List<String> result = new ArrayList<String>();
         final String[] values = value.split(FIELDS_SEPARATOR);
 
@@ -178,6 +202,8 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      */
     protected abstract E parseValue(String value);
 
+    @Deprecated
+    @ToRemove
     @Override
     public String valueToString() {
         return valueToXmlString(value);

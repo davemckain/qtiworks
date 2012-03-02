@@ -38,6 +38,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -54,17 +55,34 @@ public final class ObjectUtilities {
      * Trivial convenience extension around {@link Collections#unmodifiableList(List)}
      */
     public static <T> List<T> unmodifiableList(List<T> input) {
-        List<T> result = Collections.emptyList();
+        List<T> result;
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableList(input);
+        }
+        else {
+            result= Collections.emptyList();
         }
         return result;
     }
     
     public static <T> Set<T> unmodifiableSet(Set<T> input) {
-        Set<T> result = Collections.emptySet();
+        Set<T> result;
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableSet(input);
+        }
+        else {
+            result = Collections.emptySet();
+        }
+        return result;
+    }
+    
+    public static <K,V> Map<K,V> unmodifiableMap(Map<K,V> input) {
+        Map<K,V> result;
+        if (input!=null && !input.isEmpty()) {
+            result = Collections.unmodifiableMap(input);
+        }
+        else {
+            result = Collections.emptyMap();
         }
         return result;
     }

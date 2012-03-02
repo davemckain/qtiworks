@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.ArrayList;
@@ -45,8 +46,11 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
+ * FIXME: Clarify this Javadoc, cos this class doesn't do what it says!
+ * 
  * Container block. Contains other blocks and no text content (it can contain one or more TextBlocks).
  * 
  * @author Jonathon Hare
@@ -112,6 +116,13 @@ public abstract class ContainerBlock extends AbstractNode {
         }
 
         return builder.toString();
+    }
+    
+    @Override
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        for (final XmlNode childNode : children) {
+            childNode.fireSaxEvents(saxFiringContext);
+        }
     }
 
     @Override

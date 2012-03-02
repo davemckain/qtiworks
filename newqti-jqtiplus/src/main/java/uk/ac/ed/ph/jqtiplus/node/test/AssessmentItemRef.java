@@ -239,7 +239,7 @@ public class AssessmentItemRef extends SectionPart {
      * @return value of category attribute
      */
     public List<String> getCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getValues();
+        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getValueAsList();
     }
 
     /**

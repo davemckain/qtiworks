@@ -39,6 +39,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.SerializationOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
@@ -47,11 +49,17 @@ import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
+import java.io.StringWriter;
 import java.net.URI;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 public class MathAssessTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         final URI inputUri = URI.create("classpath:/MAD01-SRinCO-demo.xml");
 
         final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage();
@@ -67,6 +75,18 @@ public class MathAssessTest {
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
         System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
         System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful()));
+        
+        /* TODO: Bring some of the SnuggleTeX XML Utility classes in to make this easier */
+        SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+        TransformerHandler transformerHandler = saxTransformerFactory.newTransformerHandler();
+        transformerHandler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+        StringWriter s = new StringWriter();
+        transformerHandler.setResult(new StreamResult(s));
+        
+        SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
+        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful(), transformerHandler, new SerializationOptions());
+        
+        System.out.println(s);
 
 //        try {
 //            final AssessmentItemState itemState = new AssessmentItemState();

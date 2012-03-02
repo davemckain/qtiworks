@@ -173,7 +173,7 @@ public abstract class BodyElement extends AbstractNode {
      * @return value of class attribute
      */
     public List<String> getClassAttr() {
-        return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getValues();
+        return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getValueAsList();
     }
 
     /**

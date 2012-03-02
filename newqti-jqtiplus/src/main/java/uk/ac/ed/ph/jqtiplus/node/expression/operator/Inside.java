@@ -110,7 +110,7 @@ public class Inside extends AbstractExpression {
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getValues();
+        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getValueAsList();
     }
 
     @Override

@@ -82,13 +82,13 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
     }
 
     @Override
-    public List<String> getValues() {
-        return super.getValues();
+    public List<String> getValueAsList() {
+        return super.getValueAsList();
     }
 
     @Override
-    public List<String> getDefaultValues() {
-        return super.getDefaultValues();
+    public List<String> getDefaultValueAsList() {
+        return super.getDefaultValueAsList();
     }
 
     @Override

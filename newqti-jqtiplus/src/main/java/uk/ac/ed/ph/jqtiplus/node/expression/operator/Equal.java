@@ -147,7 +147,7 @@ public class Equal extends AbstractExpression {
      * @return value of tolerance attribute
      */
     public List<Double> getTolerances() {
-        return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getValues();
+        return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getValueAsList();
     }
 
     /**

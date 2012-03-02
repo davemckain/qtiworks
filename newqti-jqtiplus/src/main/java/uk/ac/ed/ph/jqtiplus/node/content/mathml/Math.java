@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Implements a QTI MathML island. Only supports children in the form of {@link ForeignBlock},
@@ -115,6 +117,13 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
         }
 
         return builder.toString();
+    }
+    
+    @Override
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        for (final XmlNode childNode : children) {
+            childNode.fireSaxEvents(saxFiringContext);
+        }
     }
 
     @Override

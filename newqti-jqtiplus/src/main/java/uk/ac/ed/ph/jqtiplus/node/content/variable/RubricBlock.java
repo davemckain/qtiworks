@@ -78,6 +78,6 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
      * @return value of view attribute
      */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValues();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValueAsList();
     }
 }

@@ -103,7 +103,7 @@ public class ResponseVariable extends ItemVariable {
      * @return value of choiceSequence attribute
      */
     public List<Identifier> getChoiceSequence() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getValues();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getValueAsList();
     }
 
     /**

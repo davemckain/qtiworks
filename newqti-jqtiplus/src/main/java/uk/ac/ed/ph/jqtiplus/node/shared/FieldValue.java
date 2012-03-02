@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * A class that can represent A single value of any baseType in variable declarations and result reports.
@@ -202,6 +204,11 @@ public class FieldValue extends AbstractNode {
     @Override
     protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
         return singleValue != null ? escapeForXmlString(singleValue.toString(), false) : "";
+    }
+    
+    @Override
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        saxFiringContext.fireText(singleValue.toString());
     }
 
     @Override

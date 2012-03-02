@@ -39,12 +39,14 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * The simplest expression returns a single value from the set defined by the given baseType.
@@ -142,6 +144,11 @@ public class BaseValue extends AbstractExpression {
     @Override
     protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
         return singleValue != null ? escapeForXmlString(singleValue.toString(), false) : "";
+    }
+    
+    @Override
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        saxFiringContext.fireText(singleValue.toString());
     }
 
     @Override

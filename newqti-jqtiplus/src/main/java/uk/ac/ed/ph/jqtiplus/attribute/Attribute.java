@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -87,13 +88,20 @@ public interface Attribute<V> extends Validatable {
     boolean isRequired();
     
     /**
-     * Gets value of attribute.
+     * Returns the default value of the attribute, which is the effective value used if the
+     * attribute has not been explicitly set.
+     */
+    V getDefaultValue();
+    
+    /**
+     * Gets current value of attribute.
+     * <p>
+     * In JQTI+, this will return null if the value has not been explicitly set. This is
+     * different from the original JQTI behaviour! 
      * 
      * @return value of attribute
      */
     V getValue();
-    
-    V getDefaultValue();
 
     /**
      * Loads attribute's value from given source node.
@@ -121,6 +129,8 @@ public interface Attribute<V> extends Validatable {
      *            default value is not printed
      * @return attribute converted to string (name="value")
      */
+    @Deprecated
+    @ToRemove
     String toXmlString(boolean printDefaultValue);
 
     /**

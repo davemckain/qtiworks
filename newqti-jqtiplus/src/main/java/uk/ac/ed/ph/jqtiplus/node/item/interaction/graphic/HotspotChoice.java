@@ -69,7 +69,7 @@ public class HotspotChoice extends Choice implements Hotspot {
 
     @Override
     public List<Integer> getCoords() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValues();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValueAsList();
     }
 
     @Override

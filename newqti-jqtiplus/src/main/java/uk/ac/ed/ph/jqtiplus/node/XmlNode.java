@@ -35,10 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Base class for all QTI XML Nodes
@@ -103,13 +106,14 @@ public interface XmlNode extends Validatable {
      */
     void load(Element sourceElement, LoadingContext context);
     
-//    /**
-//     * FIXME: Document this!
-//     * @param saxFiringContext
-//     * @throws SAXException
-//     */
-//    void fireSaxEvents(SaxFiringContext saxFiringContext)
-//            throws SAXException;
+    /**
+     * FIXME: Document this!
+     * 
+     * @param saxFiringContext
+     * @throws SAXException
+     */
+    void fireSaxEvents(SaxFiringContext saxFiringContext)
+            throws SAXException;
 
     /**
      * Prints this node and all its children into string.
@@ -166,6 +170,7 @@ public interface XmlNode extends Validatable {
      * 
      * @return true if the node has any children, false if the node has no children.
      */
+    @ToRefactor
     boolean hasChildNodes();
 
 }

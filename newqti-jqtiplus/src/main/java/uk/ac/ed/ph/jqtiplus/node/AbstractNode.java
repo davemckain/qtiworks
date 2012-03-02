@@ -39,14 +39,17 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Parent of all xml nodes.
@@ -67,7 +70,7 @@ public abstract class AbstractNode implements XmlNode {
     private final AttributeList attributes;
 
     /** Node groups of this node (contains all its children). */
-    private final NodeGroupList groups;
+    private final NodeGroupList nodeGroups;
 
     /** Information about the location of this Node in the original source XML, if loaded that way */
     private XmlSourceLocationInformation sourceLocation;
@@ -76,7 +79,7 @@ public abstract class AbstractNode implements XmlNode {
         this.parent = parent;
         this.localName = localName;
         this.attributes = new AttributeList(this);
-        this.groups = new NodeGroupList(this);
+        this.nodeGroups = new NodeGroupList(this);
         this.sourceLocation = null;
     }
 
@@ -105,7 +108,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     public NodeGroupList getGroups() {
-        return groups;
+        return nodeGroups;
     }
 
 
@@ -135,7 +138,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public NodeGroupList getNodeGroups() {
-        return groups;
+        return nodeGroups;
     }
 
     @Override
@@ -143,10 +146,10 @@ public abstract class AbstractNode implements XmlNode {
         /* Extract SAX Locator data stowed away by XmlResourceReader, if used */
         this.sourceLocation = XmlResourceReader.extractLocationInformation(sourceElement);
 
-        // 1) Read all attributes.
+        /* Load attributes */
         loadAttributes(sourceElement, context);
 
-        // 2) Read all children nodes and/or content.
+        /* Load children */
         loadChildren(sourceElement, context);
     }
 
@@ -167,15 +170,32 @@ public abstract class AbstractNode implements XmlNode {
      * @param element xml source
      */
     protected void loadChildren(Element element, LoadingContext context) {
-        groups.load(element, context);
+        nodeGroups.load(element, context);
+    }
+    
+    @Override
+    public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        saxFiringContext.startSupportedElement(this);
+        fireBodySaxEvents(saxFiringContext);
+        saxFiringContext.endSupportedElement(this);
+    }
+    
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        for (NodeGroup nodeGroup : nodeGroups) {
+            for (XmlNode childNode : nodeGroup.getChildren()) {
+                childNode.fireSaxEvents(saxFiringContext);
+            }
+        }       
     }
 
     @Override
+    @Deprecated
     public final String toXmlString() {
         return toXmlString(0, false);
     }
 
     @Override
+    @Deprecated
     public String toXmlString(int depth, boolean printDefaultAttributes) {
         final StringBuilder builder = new StringBuilder();
 
@@ -214,6 +234,7 @@ public abstract class AbstractNode implements XmlNode {
      * @param printDefaultAttributes whether print attributes with default values
      * @return xml string with printed attributes of this node
      */
+    @Deprecated
     protected String attrToXmlString(int depth, boolean printDefaultAttributes) {
         return getAttributes().toXmlString(depth, printDefaultAttributes);
     }
@@ -225,12 +246,10 @@ public abstract class AbstractNode implements XmlNode {
      * @param printDefaultAttributes whether print attributes with default values
      * @return xml string with printed body (children and/or text content) of this node
      */
+    @Deprecated
+    @ToRemove 
     protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
-        return groups.toXmlString(depth + 1, printDefaultAttributes);
-    }
-
-    public final String getSimpleName() {
-        return getClassTag();
+        return nodeGroups.toXmlString(depth + 1, printDefaultAttributes);
     }
 
     @Override
@@ -288,8 +307,8 @@ public abstract class AbstractNode implements XmlNode {
      * Validates children (body) of this node.
      */
     protected void validateChildren(ValidationContext context) {
-        for (int i = 0; i < groups.size(); i++) {
-            final NodeGroup node = groups.get(i);
+        for (int i = 0; i < nodeGroups.size(); i++) {
+            final NodeGroup node = nodeGroups.get(i);
             for (final XmlNode child : node.getChildren()) {
                 child.validate(context);
             }

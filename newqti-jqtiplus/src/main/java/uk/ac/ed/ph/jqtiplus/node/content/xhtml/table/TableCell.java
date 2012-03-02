@@ -107,7 +107,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of headers attribute
      */
     public List<Identifier> getHeaders() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getValues();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getValueAsList();
     }
 
     /**

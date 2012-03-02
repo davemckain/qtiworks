@@ -89,13 +89,13 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     }
 
     @Override
-    public List<Integer> getValues() {
-        return super.getValues();
+    public List<Integer> getValueAsList() {
+        return super.getValueAsList();
     }
 
     @Override
-    public List<Integer> getDefaultValues() {
-        return super.getDefaultValues();
+    public List<Integer> getDefaultValueAsList() {
+        return super.getDefaultValueAsList();
     }
 
     @Override

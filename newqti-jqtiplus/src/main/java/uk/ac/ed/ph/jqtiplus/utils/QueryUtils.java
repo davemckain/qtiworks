@@ -35,6 +35,8 @@ package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -82,27 +84,38 @@ public final class QueryUtils {
                 else if (node instanceof CustomInteraction) {
                     resultSet.add(((CustomInteraction) node).getJqtiExtensionPackage());
                 }
+                /* Keep descending */
                 return true;
             }
         });
         return resultSet;
     }
     
-    public static Set<String> findForeignNamespaces(XmlNode node) {
-        final Set<String> resultSet = new HashSet<String>();
+    public static ForeignNamespaceSummary findForeignNamespaces(XmlNode node) {
+        final Set<String> elementNamespaceUris = new HashSet<String>();
+        final Set<String> attributeNamespaceUris = new HashSet<String>();
         walkTree(node, new TreeWalkNodeHandler() {
             @Override
             public boolean handleNode(XmlNode node) {
+                /* Consider node itself */
                 if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
-                    resultSet.add(QtiConstants.MATHML_NAMESPACE_URI);
+                    elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
                 }
                 else if (node instanceof ForeignBlock) {
-                    resultSet.add(((ForeignBlock) node).getNamespaceUri());
+                    elementNamespaceUris.add(((ForeignBlock) node).getNamespaceUri());
                 }
+                /* Now do attributes */
+                for (Attribute<?> attribute : node.getAttributes()) {
+                    if (attribute instanceof ForeignAttribute) {
+                        attributeNamespaceUris.add(attribute.getNamespaceUri());
+                    }
+                }
+                
+                /* Keep descending */
                 return true;
             }
         });
-        return resultSet;
+        return new ForeignNamespaceSummary(elementNamespaceUris, attributeNamespaceUris);
     }
     
     public static void walkTree(XmlNode startNode, TreeWalkNodeHandler handler) {

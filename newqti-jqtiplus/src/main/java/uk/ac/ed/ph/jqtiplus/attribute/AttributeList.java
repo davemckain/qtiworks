@@ -322,6 +322,7 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
      * @return printed attributes
      */
     @ToRefactor
+    @Deprecated
     public String toXmlString(int depth, boolean printDefaultValues) {
         int length = 0;
 

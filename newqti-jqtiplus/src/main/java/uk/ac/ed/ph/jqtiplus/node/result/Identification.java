@@ -39,6 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.block.ContainerBlock;
  * Information used to identify the candidate.
  * The format is defined by the <A href="http://www.imsglobal.org/profiles/index.html">IMS LIP</A>.
  * 
+ * FIXME: This is currently out of sync with the final QTI 2.1 spec!
+ * 
  * @author Jiri Kajaba
  */
 public class Identification extends ContainerBlock {

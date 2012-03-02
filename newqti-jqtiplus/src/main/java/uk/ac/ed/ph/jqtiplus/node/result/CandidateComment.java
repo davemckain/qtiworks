@@ -35,8 +35,10 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * An optional comment supplied by the candidate (see allowComment).
@@ -101,5 +103,10 @@ public class CandidateComment extends AbstractNode {
     @Override
     protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
         return textContent != null ? escapeForXmlString(textContent, false) : "";
+    }
+    
+    @Override
+    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        saxFiringContext.fireText(textContent);
     }
 }

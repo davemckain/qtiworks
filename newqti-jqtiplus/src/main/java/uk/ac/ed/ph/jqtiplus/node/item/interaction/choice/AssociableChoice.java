@@ -73,6 +73,6 @@ public abstract class AssociableChoice extends Choice {
      * @return value of matchGroup attribute
      */
     public List<Identifier> getMatchGroup() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).getValues();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).getValueAsList();
     }
 }

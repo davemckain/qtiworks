@@ -31,69 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.attribute.value;
+package uk.ac.ed.ph.jqtiplus.serialization;
 
-import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * Attribute with float values.
- * 
- * @author Jiri Kajaba
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public class FloatMultipleAttribute extends MultipleAttribute<Double> {
+public class SerializationOptions implements Serializable {
 
-    private static final long serialVersionUID = 1429666396177699288L;
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
-    public FloatMultipleAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    private static final long serialVersionUID = -8150907872183994652L;
+    
+    private boolean omitSchemaLocations;
+    
+    public SerializationOptions() {
+        this.omitSchemaLocations = false;
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue) {
-        super(parent, localName, defaultValue);
+    
+    public boolean isOmitSchemaLocations() {
+        return omitSchemaLocations;
     }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> value, List<Double> defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    
+    public void setOmitSchemaLocations(boolean omitSchemaLocations) {
+        this.omitSchemaLocations = omitSchemaLocations;
     }
+    
 
     @Override
-    public List<Double> getValueAsList() {
-        return super.getValueAsList();
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 
-    @Override
-    public List<Double> getDefaultValueAsList() {
-        return super.getDefaultValueAsList();
-    }
-
-    @Override
-    protected Double parseValue(String value) {
-        return FloatValue.parseFloat(value);
-    }
 }

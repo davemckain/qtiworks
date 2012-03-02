@@ -84,7 +84,7 @@ public class RecordEx extends AbstractExpression {
      * @return value of identifiers attribute
      */
     public List<Identifier> getIdentifiers() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getValues();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getValueAsList();
     }
 
     /**

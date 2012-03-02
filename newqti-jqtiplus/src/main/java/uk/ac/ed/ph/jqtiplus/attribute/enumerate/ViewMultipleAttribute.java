@@ -83,13 +83,13 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> {
     }
 
     @Override
-    public List<View> getValues() {
-        return super.getValues();
+    public List<View> getValueAsList() {
+        return super.getValueAsList();
     }
 
     @Override
-    public List<View> getDefaultValues() {
-        return super.getDefaultValues();
+    public List<View> getDefaultValueAsList() {
+        return super.getDefaultValueAsList();
     }
 
     @Override

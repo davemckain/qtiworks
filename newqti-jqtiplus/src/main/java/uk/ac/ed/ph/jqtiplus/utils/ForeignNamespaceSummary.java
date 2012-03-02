@@ -31,39 +31,36 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.writing;
+package uk.ac.ed.ph.jqtiplus.utils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
- * TODO: Need to be able to specify how to output MathML elements, i.e. using a prefix, or by changing
- * the default namespace.
- * 
- * TODO: Do we really need to keep support for printing default values? It gets stupidly complicated in
- * classes like {@link ItemSessionControl} and I'm not sure I see the value in doing this.
- * 
- * FIXME: Document this type
+ * Result Object for {@link QueryUtils#findForeignNamespaces(XmlNode)}
  *
  * @author David McKain
  */
-public class SaxWriter {
+public final class ForeignNamespaceSummary implements Serializable {
     
-    public void fireSaxDocument(XmlNode node, ContentHandler target) throws SAXException {
-        target.startDocument();
-        
-        /* TODO: Fire off prefix mappings for extension namespaces, e.g. mathassess */
-        
-        /* TODO: Fire off schema namespace declarations */
-        
-        /* TODO: Fire document events now */
-        
-        /* TODO: End prefix mappings done above */
-        
-        target.endDocument();
-    }
+    private static final long serialVersionUID = 203033317863417550L;
+    
+    private final Set<String> elementNamespaceUris;
+    private final Set<String> attributeNamespaceUris;
 
-}
+    public ForeignNamespaceSummary(Set<String> elementNamespaceUris, Set<String> attributeNamespaceUris) {
+        this.elementNamespaceUris = ObjectUtilities.unmodifiableSet(elementNamespaceUris);
+        this.attributeNamespaceUris = ObjectUtilities.unmodifiableSet(attributeNamespaceUris);
+    }
+    
+    public Set<String> getElementNamespaceUris() {
+        return elementNamespaceUris;
+    }
+    
+    public Set<String> getAttributeNamespaceUris() {
+        return attributeNamespaceUris;
+    }
+} 

@@ -36,8 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.content.basic;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
 
 import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 /**
  * Text content block. Contains only text content and no children.
@@ -72,6 +74,11 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
     @Override
     public String toXmlString(int depth, boolean printDefaultAttributes) {
         return NEW_LINE + getIndent(depth) + escapeForXmlString(textContent, false);
+    }
+    
+    @Override
+    public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+        saxFiringContext.fireText(textContent);
     }
 
     public void load(Text sourceNode) {

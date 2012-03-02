@@ -164,7 +164,7 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
      * @return value of view attribute
      */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValues();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValueAsList();
     }
 
     /**

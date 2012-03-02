@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 /**
  * Node's attribute implementation.
@@ -132,7 +132,8 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
 
     @Override
-    @ToRefactor
+    @ToRemove
+    @Deprecated
     public final String toXmlString(boolean printDefaultValue) {
         final StringBuilder builder = new StringBuilder();
 
