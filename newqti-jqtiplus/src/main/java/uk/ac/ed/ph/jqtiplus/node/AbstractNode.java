@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -189,70 +189,6 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    @Deprecated
-    public final String toXmlString() {
-        return toXmlString(0, false);
-    }
-
-    @Override
-    @Deprecated
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-
-        if (depth > 0) {
-            builder.append(NEW_LINE);
-        }
-
-        builder.append(getIndent(depth) + "<" + getClassTag());
-
-        builder.append(attrToXmlString(depth, printDefaultAttributes));
-
-        final String body = bodyToXmlString(depth, printDefaultAttributes);
-
-        if (body.length() == 0) {
-            builder.append("/>");
-        }
-        else {
-            builder.append(">");
-
-            builder.append(body);
-
-            if (body.startsWith(NEW_LINE + getIndent(depth) + INDENT)) {
-                builder.append(NEW_LINE + getIndent(depth));
-            }
-
-            builder.append("</" + getClassTag() + ">");
-        }
-
-        return builder.toString();
-    }
-
-    /**
-     * Prints attributes of this node into xml string.
-     * 
-     * @param depth depth in xml tree (root = 0)
-     * @param printDefaultAttributes whether print attributes with default values
-     * @return xml string with printed attributes of this node
-     */
-    @Deprecated
-    protected String attrToXmlString(int depth, boolean printDefaultAttributes) {
-        return getAttributes().toXmlString(depth, printDefaultAttributes);
-    }
-
-    /**
-     * Prints body (children and/or text content) of this node into xml string.
-     * 
-     * @param depth depth in xml tree (root = 0)
-     * @param printDefaultAttributes whether print attributes with default values
-     * @return xml string with printed body (children and/or text content) of this node
-     */
-    @Deprecated
-    @ToRemove 
-    protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
-        return nodeGroups.toXmlString(depth + 1, printDefaultAttributes);
-    }
-
-    @Override
     public String computeXPathComponent() {
         final XmlNode parentNode = getParent();
         int position = 1;
@@ -371,7 +307,9 @@ public abstract class AbstractNode implements XmlNode {
         }
     }
 
-    public static String escapeForXmlString(String text, boolean asAttribute) {
+    /** (This used to be used to turn Nodes into XML, but it's now only required for generating pseudo XPaths */
+    @ToRefactor
+    protected static String escapeForXmlString(String text, boolean asAttribute) {
         final StringBuilder builder = new StringBuilder();
         for (final char c : text.toCharArray()) {
             switch (c) {

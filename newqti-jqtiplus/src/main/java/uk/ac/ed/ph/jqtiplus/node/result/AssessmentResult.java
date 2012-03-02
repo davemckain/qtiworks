@@ -159,17 +159,6 @@ public class AssessmentResult extends AbstractNode implements RootObject {
     }
 
     @Override
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(RootObject.XML);
-        builder.append(NEW_LINE);
-        builder.append(super.toXmlString(depth, printDefaultAttributes));
-
-        return builder.toString();
-    }
-
-    @Override
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId

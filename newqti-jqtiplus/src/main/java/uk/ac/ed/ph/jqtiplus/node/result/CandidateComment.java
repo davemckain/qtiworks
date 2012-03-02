@@ -101,11 +101,6 @@ public class CandidateComment extends AbstractNode {
     }
 
     @Override
-    protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
-        return textContent != null ? escapeForXmlString(textContent, false) : "";
-    }
-    
-    @Override
     protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(textContent);
     }

@@ -572,17 +572,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     @Override
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(XML);
-        builder.append(NEW_LINE);
-        builder.append(super.toXmlString(depth, printDefaultAttributes));
-
-        return builder.toString();
-    }
-
-    @Override
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId

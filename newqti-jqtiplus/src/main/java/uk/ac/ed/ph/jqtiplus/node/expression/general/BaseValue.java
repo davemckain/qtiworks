@@ -142,11 +142,6 @@ public class BaseValue extends AbstractExpression {
     }
 
     @Override
-    protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
-        return singleValue != null ? escapeForXmlString(singleValue.toString(), false) : "";
-    }
-    
-    @Override
     protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(singleValue.toString());
     }

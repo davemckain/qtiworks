@@ -89,25 +89,6 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      */
     public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
         super(parent, localName, null, null, required);
-
-        /* BEHAVIOUR HAS CHANGED IN JQTI+ - REMOVE THIS OLD COMMENTED OUT CODE ONCE DEBUGGED!
-        if (value != null) {
-            this.value = value;
-        }
-        else if (defaultValue != null) {
-            this.value = new ArrayList<E>(defaultValue);
-        }
-        else {
-            this.value = new ArrayList<E>();
-        }
-
-        if (defaultValue != null) {
-            this.defaultValue = defaultValue;
-        }
-        else {
-            this.defaultValue = new ArrayList<E>();
-        }
-        */
     }
 
     /**

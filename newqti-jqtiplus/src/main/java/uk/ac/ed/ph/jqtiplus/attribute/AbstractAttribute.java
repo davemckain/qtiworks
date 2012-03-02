@@ -34,11 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 /**
  * Node's attribute implementation.
@@ -129,27 +127,6 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + ",value=" + value
                 + ",defaultValue=" + defaultValue
                 + ")";
-    }
-
-    @Override
-    @ToRemove
-    @Deprecated
-    public final String toXmlString(boolean printDefaultValue) {
-        final StringBuilder builder = new StringBuilder();
-
-        final String value = valueToString();
-        // if (value.length() == 0 && getLoadedValue() != null)
-        // value = getLoadedValue();
-        final String defaultValue = defaultValueToString();
-
-        if (value.length() != 0 && (!value.equals(defaultValue) || required || printDefaultValue)) {
-            builder.append(localName);
-            builder.append("=\"");
-            builder.append(AbstractNode.escapeForXmlString(value, true));
-            builder.append("\"");
-        }
-
-        return builder.toString();
     }
 
     @Override

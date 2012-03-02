@@ -51,12 +51,8 @@ import org.xml.sax.SAXException;
  */
 public interface XmlNode extends Validatable {
 
-    /** New line string. Depends on OS settings. */
-    @Deprecated
-    static final String NEW_LINE = System.getProperty("line.separator");
-
     /** Default indent. */
-    @Deprecated
+    @ToRefactor
     static final String INDENT = "  ";
 
     XmlSourceLocationInformation getSourceLocation();
@@ -115,28 +111,6 @@ public interface XmlNode extends Validatable {
     void fireSaxEvents(SaxFiringContext saxFiringContext)
             throws SAXException;
 
-    /**
-     * Prints this node and all its children into string.
-     * <p>
-     * Calls toXmlString(0, false).
-     * 
-     * @return xml string of this node and all its children
-     * @see #toXmlString(int, boolean)
-     */
-    @Deprecated
-    String toXmlString();
-
-    /**
-     * Prints this node and all its children into string.
-     * 
-     * @param depth indent (0 = no indent)
-     * @param printDefaultAttributes whether print attribute's default values
-     * @return xml string of this node and all its children
-     * @see #toXmlString()
-     */
-    @Deprecated
-    String toXmlString(int depth, boolean printDefaultAttributes);
-    
     /**
      * Gets the XML local name of this node.
      */

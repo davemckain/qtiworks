@@ -109,17 +109,6 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected String bodyToXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-
-        for (final XmlNode child : children) {
-            builder.append(child.toXmlString(depth + 1, printDefaultAttributes));
-        }
-
-        return builder.toString();
-    }
-    
-    @Override
     protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
         for (final XmlNode childNode : children) {
             childNode.fireSaxEvents(saxFiringContext);

@@ -156,14 +156,4 @@ public interface NodeGroup extends Validatable, Serializable {
      * @throws QtiIllegalChildException if the given classTag is not appropriate
      */
     XmlNode create(String classTag);
-
-    /**
-     * Prints all children into string.
-     * 
-     * @param depth depth indent (0 = no indent)
-     * @param printDefaultAttributes whether print attribute's default values
-     * @return xml string of all children
-     */
-    @Deprecated
-    String toXmlString(int depth, boolean printDefaultAttributes);
 }

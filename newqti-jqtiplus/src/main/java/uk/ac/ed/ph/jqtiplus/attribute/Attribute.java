@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -118,20 +117,6 @@ public interface Attribute<V> extends Validatable {
      * @param value source string
      */
     void load(Element owner, String value, LoadingContext context);
-
-    /**
-     * Gets attribute converted to string (name="value").
-     * If value is not defined or is same as defaultValue (and printDefaultValue
-     * is false),
-     * returns empty (but not null) string.
-     * 
-     * @param printDefaultValue if true, default value is printed; otherwise
-     *            default value is not printed
-     * @return attribute converted to string (name="value")
-     */
-    @Deprecated
-    @ToRemove
-    String toXmlString(boolean printDefaultValue);
 
     /**
      * Gets attribute's value converted to string.

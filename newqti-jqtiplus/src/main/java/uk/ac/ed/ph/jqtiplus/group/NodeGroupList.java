@@ -351,23 +351,6 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
         throw ex;
     }
 
-    /**
-     * Prints groups into string.
-     * 
-     * @param depth left indent
-     * @param printDefaultAttributes if true, prints all attributes; if false, prints only attributes with not default values
-     * @return printed groups
-     */
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-
-        for (final NodeGroup child : groups) {
-            builder.append(child.toXmlString(depth, printDefaultAttributes));
-        }
-
-        return builder.toString();
-    }
-
     @Override
     public void validate(ValidationContext context) {
         for (final NodeGroup child : groups) {

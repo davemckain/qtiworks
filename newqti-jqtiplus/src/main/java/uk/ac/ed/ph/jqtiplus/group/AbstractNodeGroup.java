@@ -215,15 +215,6 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        final StringBuilder builder = new StringBuilder();
-        for (final XmlNode child : children) {
-            builder.append(child.toXmlString(depth, printDefaultAttributes));
-        }
-        return builder.toString();
-    }
-
-    @Override
     public void validate(ValidationContext context) {
         if (minimum != null && children.size() < minimum) {
             context.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));

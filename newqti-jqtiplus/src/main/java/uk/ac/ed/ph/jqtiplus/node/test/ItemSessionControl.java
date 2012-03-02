@@ -38,6 +38,9 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
 /**
+ * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
+ * the logic in here to make sure it's not doing something odd!
+ * 
  * When items are referenced as part of A test, the test may impose constraints on how many attempts
  * and which states are allowed. These constraints can be specified for individual items, for whole
  * sections, or for an entire testPart. By default, A setting at testPart level affects all items in
@@ -272,34 +275,6 @@ public class ItemSessionControl extends AbstractNode {
      */
     public void setValidateResponsesAttrValue(Boolean validateResponses) {
         getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setValue(validateResponses);
-    }
-
-    @Override
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        return attrToXmlString(depth, printDefaultAttributes).length() > 0 ? super.toXmlString(depth, printDefaultAttributes) : "";
-    }
-
-    @Override
-    protected String attrToXmlString(int depth, boolean printDefaultAttributes) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).setDefaultValue(getMaxAttemptsDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).setDefaultValue(getShowFeedbackDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).setDefaultValue(getAllowReviewDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).setDefaultValue(getShowSolutionDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).setDefaultValue(getAllowCommentDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).setDefaultValue(getAllowSkippingDefaultValue());
-        getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setDefaultValue(getValidateResponsesDefaultValue());
-
-        final String result = getAttributes().toXmlString(depth, printDefaultAttributes);
-
-        getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).setDefaultValue(ATTR_MAX_ATTEMPTS_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).setDefaultValue(ATTR_SHOW_FEEDBACK_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).setDefaultValue(ATTR_ALLOW_REVIEW_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).setDefaultValue(ATTR_SHOW_SOLUTION_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).setDefaultValue(ATTR_ALLOW_COMMENT_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).setDefaultValue(ATTR_ALLOW_SKIPPING_DEFAULT_VALUE);
-        getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setDefaultValue(ATTR_VALIDATE_RESPONSES_DEFAULT_VALUE);
-
-        return result;
     }
 
     /**

@@ -65,12 +65,10 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -311,45 +309,6 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
     @Override
     public Iterator<Attribute<?>> iterator() {
         return attributes.iterator();
-    }
-
-    /**
-     * Prints attributes into string.
-     * 
-     * @param depth left indent (used only if printed line is too long)
-     * @param printDefaultValues if true, prints all attributes; if false,
-     *            prints only attributes with not default values
-     * @return printed attributes
-     */
-    @ToRefactor
-    @Deprecated
-    public String toXmlString(int depth, boolean printDefaultValues) {
-        int length = 0;
-
-        final List<String> strings = new ArrayList<String>();
-
-        for (final Attribute<?> attribute : attributes) {
-            final String string = attribute.toXmlString(printDefaultValues);
-            if (string.length() > 0) {
-                length += string.length();
-                strings.add(string);
-            }
-        }
-
-        final StringBuilder builder = new StringBuilder();
-
-        for (final String string : strings) {
-            if (length < LINE_WRAP_LIMIT) {
-                builder.append(ATTRIBUTES_SEPARATOR);
-            }
-            else {
-                builder.append(XmlNode.NEW_LINE + AbstractNode.getIndent(depth) + XmlNode.INDENT);
-            }
-
-            builder.append(string);
-        }
-
-        return builder.toString();
     }
 
     @Override

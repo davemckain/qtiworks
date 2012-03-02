@@ -70,11 +70,6 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
     public String getTextContent() {
         return textContent;
     }
-
-    @Override
-    public String toXmlString(int depth, boolean printDefaultAttributes) {
-        return NEW_LINE + getIndent(depth) + escapeForXmlString(textContent, false);
-    }
     
     @Override
     public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
