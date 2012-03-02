@@ -4,7 +4,7 @@ package org.imsglobal.basiclti.consumersecret.api;
  * $Id$
  **********************************************************************************
  *
- * Copyright (c) 2011 IMS GLobal Learning Consortium
+ * Copyright (c) 2012 IMS GLobal Learning Consortium
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
