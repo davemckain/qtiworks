@@ -85,7 +85,6 @@ public class IdentifierValueRefuseTest {
      * 
      * @throws QTIParseException if test was successful
      */
-    @SuppressWarnings("unused")
     @Test(expected = QTIParseException.class)
     public void testParseIdentifier() throws QTIParseException {
         new IdentifierValue(string);

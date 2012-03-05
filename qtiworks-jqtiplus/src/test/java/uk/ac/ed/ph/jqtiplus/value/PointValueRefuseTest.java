@@ -81,7 +81,6 @@ public class PointValueRefuseTest {
      * 
      * @throws QTIParseException if test was successful
      */
-    @SuppressWarnings("unused")
     @Test(expected = QTIParseException.class)
     public void testParsePoint() throws QTIParseException {
         new PointValue(string);

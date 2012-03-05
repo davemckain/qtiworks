@@ -80,7 +80,6 @@ public class StringValueRefuseTest {
      * 
      * @throws QTIParseException if test was successful
      */
-    @SuppressWarnings("unused")
     @Test(expected = QTIParseException.class)
     public void testParseString() throws QTIParseException {
         new StringValue(string);

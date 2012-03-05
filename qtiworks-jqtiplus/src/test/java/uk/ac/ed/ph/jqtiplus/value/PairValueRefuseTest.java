@@ -80,7 +80,6 @@ public class PairValueRefuseTest {
      * 
      * @throws QTIParseException if test was successful
      */
-    @SuppressWarnings("unused")
     @Test(expected = QTIParseException.class)
     public void testParsePair() throws QTIParseException {
         new PairValue(string);

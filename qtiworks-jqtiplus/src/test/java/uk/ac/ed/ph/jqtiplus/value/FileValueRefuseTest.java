@@ -80,7 +80,6 @@ public class FileValueRefuseTest {
      * 
      * @throws QTIParseException if test was successful
      */
-    @SuppressWarnings("unused")
     @Test(expected = QTIParseException.class)
     public void testParseFile() throws QTIParseException {
         new FileValue(string);
