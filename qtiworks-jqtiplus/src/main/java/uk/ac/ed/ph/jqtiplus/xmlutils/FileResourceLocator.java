@@ -57,7 +57,7 @@ public class FileResourceLocator implements ResourceLocator {
                 return new FileInputStream(new File(systemId));
             }
             catch (final Exception e) {
-                logger.warn("File " + systemId + " does not exist");
+                logger.debug("File " + systemId + " does not exist");
                 return null;
             }
         }

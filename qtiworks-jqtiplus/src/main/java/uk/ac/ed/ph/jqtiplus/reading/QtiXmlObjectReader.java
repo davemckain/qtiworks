@@ -104,7 +104,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
     @Override
     public <E extends RootObject> QtiXmlObjectReadResult<E> lookupRootObject(URI systemId, ModelRichness requiredModelRichness, Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
-        logger.info("Attempting to read QTI Object at system ID {} for use {}, requiring result class {}", 
+        logger.debug("Attempting to read QTI Object at system ID {} for use {}, requiring result class {}", 
                 new Object[] { systemId, requiredModelRichness, requiredResultClass });
 
         /* We'll create a chained resource locator using the one used to locate parser resources first, as this
@@ -135,7 +135,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         /* Build QTI Object Model */
         final List<QtiModelBuildingError> qtiModelBuildingErrors = new ArrayList<QtiModelBuildingError>();
         final LoadingContext loadingContext = new LoadingContextImpl(qtiModelBuildingErrors);
-        logger.debug("Instantiating JQTI Object hierarchy from root Element {}");
+        logger.trace("Instantiating JQTI Object hierarchy from root Element {}");
         final Element rootElement = document.getDocumentElement();
         final RootObject rootObject;
         try {
@@ -143,7 +143,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         }
         catch (final IllegalArgumentException e) {
             /* Unsupported root Node type */
-            logger.warn("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
+            logger.debug("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
             throw new QtiXmlInterpretationException(UNSUPPORTED_ROOT_NODE, "XML parse succeeded but had an unsupported root Node {"
                     + rootElement.getNamespaceURI() + "}:" + rootElement.getLocalName(), 
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
@@ -154,14 +154,14 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         
         /* Make sure we got the right type of Object */
         if (!requiredResultClass.isInstance(rootObject)) {
-            logger.warn("QTI Object {} is not of the required type {}", rootObject, requiredResultClass);
+            logger.debug("QTI Object {} is not of the required type {}", rootObject, requiredResultClass);
             throw new QtiXmlInterpretationException(WRONG_RESULT_TYPE, "QTI Object Model was not of the required type " + requiredResultClass,
                     requiredModelRichness, requiredResultClass, xmlParseResult, rootObject, qtiModelBuildingErrors);
         }
         
         /* Make sure there were no model building errors */
         if (!qtiModelBuildingErrors.isEmpty()) {
-            logger.warn("QTI Object read of system ID {} resulting in {} model building error(s): {}",
+            logger.debug("QTI Object read of system ID {} resulting in {} model building error(s): {}",
                     new Object[] { systemId, qtiModelBuildingErrors.size(), qtiModelBuildingErrors });
             throw new QtiXmlInterpretationException(JQTI_MODEL_BUILD_FAILED, "XML parse succeeded but generated " + qtiModelBuildingErrors.size() + " model building error(s)",
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
@@ -170,7 +170,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         /* Success! */
         QtiXmlObjectReadResult<E> result = new QtiXmlObjectReadResult<E>(requiredResultClass,
                 requiredResultClass.cast(rootObject), xmlParseResult);
-        logger.info("Result of QTI Object read from system ID {} is {}", systemId, result);
+        logger.debug("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }
 

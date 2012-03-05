@@ -67,7 +67,7 @@ public final class NetworkHttpResourceLocator implements ResourceLocator {
         }
         catch (IOException e) {
             resourceStream = null;
-            logger.warn("Failed to open connection to HTTP resource with URI {}", systemId);
+            logger.debug("Failed to open connection to HTTP resource with URI {}", systemId);
         }
         return resourceStream;
     }

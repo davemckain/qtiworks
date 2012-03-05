@@ -230,7 +230,7 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
         final Source result = loadResourceAsSource(resolvedUri);
         if (result == null) {
             final String message = "resolve() could not resolve href=" + href + ", base=" + base + ", resolved=" + resolvedUri;
-            logger.warn(message);
+            logger.debug(message);
             if (failOnMissedURIResolution) {
                 throw new TransformerException(message);
             }
@@ -303,7 +303,7 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
     }
 
     private static void maybeFail(boolean shouldFail, String message) {
-        logger.warn(message);
+        logger.debug(message);
         if (shouldFail) {
             throw new XmlResourceReaderException(message);
         }

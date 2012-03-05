@@ -93,7 +93,7 @@ public final class ClassPathHttpResourceLocator implements ResourceLocator {
             logger.debug("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemId, resourcePath);
         }
         else {
-            logger.warn("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
+            logger.debug("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
         }
         return resourceStream;
     }

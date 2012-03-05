@@ -90,7 +90,7 @@ public final class ClassPathResourceLocator implements ResourceLocator {
                 result = loadResource(systemId, resultingPath);
             }
             else {
-                logger.warn("ClassPath URI must be of the form " + CLASSPATH_SCHEME_NAME + ":/path");
+                logger.debug("ClassPath URI must be of the form " + CLASSPATH_SCHEME_NAME + ":/path");
             }
         }
         return result;
@@ -102,7 +102,7 @@ public final class ClassPathResourceLocator implements ResourceLocator {
             logger.debug("Successful locate of ClassPath resource with URI {}  in ClassPath at {}", systemIdUri, resourcePath);
         }
         else {
-            logger.warn("Failed to locate ClassPath resource with URI {} in ClassPath at {}", systemIdUri, resourcePath);
+            logger.debug("Failed to locate ClassPath resource with URI {} in ClassPath at {}", systemIdUri, resourcePath);
         }
         return resourceStream;
     }

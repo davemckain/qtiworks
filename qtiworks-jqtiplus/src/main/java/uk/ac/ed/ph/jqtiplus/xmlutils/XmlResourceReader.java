@@ -191,17 +191,17 @@ public final class XmlResourceReader {
         ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
 
         try {
-            logger.info("read({}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, schemaValidating });
+            logger.debug("read({}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, schemaValidating });
             final XmlReadResult result = doRead(systemId, inputResourceLocator, schemaValidating);
-            logger.info("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, result });
+            logger.debug("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, result });
             return result;
         }
         catch (final XmlResourceNotFoundException e) {
-            logger.info("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
+            logger.debug("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
             throw e;
         }
         catch (final Exception e) {
-            logger.info("read({}, {}, {}) => UNEXPECTED EXCEPTION {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
+            logger.debug("read({}, {}, {}) => UNEXPECTED EXCEPTION {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
             if (e instanceof XmlResourceReaderException) {
                 throw (XmlResourceReaderException) e;
             }
@@ -243,7 +243,7 @@ public final class XmlResourceReader {
         xmlReader.setErrorHandler(inputErrorHandler);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
-        logger.debug("XML parse of {} starting", systemIdString);
+        logger.trace("XML parse of {} starting", systemIdString);
         final InputSource inputSource = new InputSource();
         inputSource.setByteStream(ensureLocateInput(systemId, inputResourceLocator));
         inputSource.setSystemId(systemIdString);
@@ -262,7 +262,7 @@ public final class XmlResourceReader {
 
         if (parsed && schemaValidating) {
             /* Work out which schema(s) to use */
-            logger.debug("XML parse of {} completed successfully - deciding which schemas to use", systemIdString);
+            logger.trace("XML parse of {} completed successfully - deciding which schemas to use", systemIdString);
             final Element rootElement = document.getDocumentElement();
             final String schemaLocation = rootElement.getAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
             final List<String> schemaUris = new ArrayList<String>();
@@ -277,7 +277,7 @@ public final class XmlResourceReader {
                         schemaUris.add(schemaUri);
                     }
                     else {
-                        logger.error("Schema with namespace " + schemaNamespaceUri + " declared in schemaLocation is not registered with this reader");
+                        logger.trace("Schema with namespace " + schemaNamespaceUri + " declared in schemaLocation is not registered with this reader");
                         unsupportedSchemaNamespaces.add(schemaNamespaceUri);
                     }
                 }
@@ -291,14 +291,14 @@ public final class XmlResourceReader {
                     schemaUris.add(schemaUri);
                 }
                 else {
-                    logger.error("Schema with namespace " + schemaNamespaceUri + " inferred from that of document element is not registered with this reader");
+                    logger.trace("Schema with namespace " + schemaNamespaceUri + " inferred from that of document element is not registered with this reader");
                     unsupportedSchemaNamespaces.add(schemaNamespaceUri);
                 }
             }
 
             /* Validate (if at least supported schemas was used and no unsupported schemas) */
             if (!schemaUris.isEmpty() && unsupportedSchemaNamespaces.isEmpty()) {
-                logger.info("Will validate {} against schemas {}", systemIdString, schemaUris);
+                logger.trace("Will validate {} against schemas {}", systemIdString, schemaUris);
                 final Schema schema = getSchema(schemaUris);
 
                 /* Now validate. Note that we read in the input again, as this will let the parser provide source
@@ -315,7 +315,7 @@ public final class XmlResourceReader {
                 logger.debug("Schema validation of {} finished", systemIdString);
             }
             else {
-                logger.warn("No schema validation was performed as {} supported and {} unsupported schemas were detected",
+                logger.debug("No schema validation was performed as {} supported and {} unsupported schemas were detected",
                         schemaUris.size(), unsupportedSchemaNamespaces.size());
             }
         }
@@ -364,7 +364,7 @@ public final class XmlResourceReader {
             final Source schemaSource = resourceResolver.loadResourceAsSource(schemaUris.get(i));
             if (schemaSource == null) {
                 final String message = "parserResourceLocator failed to locate schema with URI " + schemaUris.get(i);
-                logger.error(message);
+                logger.debug(message);
                 throw new XmlResourceReaderException(message);
             }
             schemaSources[i] = schemaSource;
@@ -451,10 +451,10 @@ public final class XmlResourceReader {
 
     private static InputStream ensureLocateInput(URI systemId, ResourceLocator inputResourceLocator)
             throws XmlResourceNotFoundException {
-        logger.debug("Attempting to locate XML resource at {} using locator {}", systemId, inputResourceLocator);
+        logger.trace("Attempting to locate XML resource at {} using locator {}", systemId, inputResourceLocator);
         final InputStream inputStream = inputResourceLocator.findResource(systemId);
         if (inputStream == null) {
-            logger.warn("Could not locate and open XML at system ID {} using locator {}", systemId, inputResourceLocator);
+            logger.debug("Could not locate and open XML at system ID {} using locator {}", systemId, inputResourceLocator);
             throw new XmlResourceNotFoundException(inputResourceLocator, systemId);
         }
         return inputStream;
