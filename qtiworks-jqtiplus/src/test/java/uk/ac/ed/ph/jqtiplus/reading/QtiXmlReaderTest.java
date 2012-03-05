@@ -55,6 +55,16 @@ import org.junit.Test;
  * @author David McKain
  */
 public class QtiXmlReaderTest {
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testReadNullUri() throws Exception {
+        new QtiXmlReader().read(null, new ClassPathResourceLocator(), false);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testReadNullLocator() throws Exception {
+        new QtiXmlReader().read(makeSystemId("choice.xml"), null, false);
+    }
 
     @Test(expected = XmlResourceNotFoundException.class)
     public void testReadNotFound() throws Exception {
