@@ -9,7 +9,7 @@ All Rights Reserved
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>QTI Works MathAssess QTI Extensions</name>
+  <name>QTIWorks MathAssess QTI Extensions</name>
   <artifactId>qtiworks-mathassess</artifactId>
   <packaging>jar</packaging>
   <parent>
