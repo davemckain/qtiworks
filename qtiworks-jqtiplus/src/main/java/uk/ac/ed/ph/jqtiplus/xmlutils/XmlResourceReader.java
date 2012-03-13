@@ -96,7 +96,7 @@ public final class XmlResourceReader {
     /**
      * Base path within ClassPath to search in when using the default {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
      */
-    public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus";
+    public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus/xml-catalog";
 
     /**
      * Default {@link ResourceLocator} that will be used to locate schemas (and DTDs). This searches within
