@@ -31,28 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
-import java.io.InputStream;
-import java.net.URI;
+import javax.xml.transform.Templates;
 
 /**
- * This interface is used by {@link UnifiedXmlResourceResolver} to actually
- * <strong>locate</strong> the resulting XML resources.
- * <p>
- * Implementations of the interface MUST be be reusable and safe for concurrent use.
+ * (Ported from SnuggleTeX)
  * 
- * @author David McKain
+ * Encapsulates a simple cache for the internal XSLT stylesheets used by SnuggleTeX.
+ * This can be used if you want SnuggleTeX to integrate with some kind of XSLT caching mechanism
+ * (e.g. your own).
+ * <p>
+ * A {@link SnuggleEngine} creates a default implementation of this that caches stylesheets
+ * over the lifetime of the {@link SnuggleEngine} Object, which is reasonable. If you want
+ * to change this, create your own implementation and attach it to your {@link SnuggleEngine}.
+ * <p>
+ * You can use the {@link SimpleStylesheetCache} in your own applications if you want to.
+ * 
+ * <h2>Internal Note</h2>
+ * 
+ * (I'm not currently enforcing that implementations of this should be thread-safe. Therefore, make
+ * sure that you synchronise correctly when accessing an instance of this cache. You would normally
+ * just use a {@link XsltStylesheetManager} instance to do this safely.)
+ * 
+ * @see SimpleStylesheetCache
+ *
+ * @author  David McKain
+ * @version $Revision: 662 $
  */
-public interface ResourceLocator {
-
+public interface XsltStylesheetCache {
+   
     /**
-     * Implementations should return an {@link InputStream} corresponding to the
-     * XML resource having the given System ID (passed as a URI), or null if they
-     * can't locate the required resource or won't handle the given URI.
-     * 
-     * @param systemId
+     * Tries to retrieve an XSLT stylesheet from the cache having the given key.
+     * <p>
+     * Return a previously cached {@link Templates} or null if your cache doesn't want to cache
+     * this or if it does not contain the required result.
      */
-    InputStream findResource(final URI systemId);
+    Templates getStylesheet(String key);
+    
+    /**
+     * Instructs the cache that it might want to store the given XSLT stylesheet corresponding
+     * to the given key.
+     * <p>
+     * Implementations can safely choose to do absolutely nothing here if they want.
+     */
+    void putStylesheet(String key, Templates stylesheet);
 
 }

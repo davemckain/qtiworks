@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SerializationOptions;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
@@ -84,7 +84,7 @@ public class MathAssessTest {
         transformerHandler.setResult(new StreamResult(s));
         
         SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful(), transformerHandler, new SerializationOptions());
+        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful(), transformerHandler, new SaxSerializationOptions());
         
         System.out.println(s);
 

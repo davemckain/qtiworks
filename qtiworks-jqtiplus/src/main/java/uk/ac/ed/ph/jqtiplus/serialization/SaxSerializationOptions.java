@@ -38,17 +38,17 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import java.io.Serializable;
 
 /**
- * FIXME: Document this type
+ * Encapsulates options for serializing JQTI objects as SAX events.
  *
  * @author David McKain
  */
-public class SerializationOptions implements Serializable {
+public class SaxSerializationOptions implements Serializable {
 
     private static final long serialVersionUID = -8150907872183994652L;
     
     private boolean omitSchemaLocations;
     
-    public SerializationOptions() {
+    public SaxSerializationOptions() {
         this.omitSchemaLocations = false;
     }
 
@@ -66,5 +66,4 @@ public class SerializationOptions implements Serializable {
     public String toString() {
         return ObjectUtilities.beanToString(this);
     }
-
 }

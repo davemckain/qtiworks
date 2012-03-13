@@ -70,7 +70,7 @@ public final class SaxEventFirer {
         this.jqtiExtensionManager = jqtiExtensionManager;
     }
     
-    public void fireSaxDocument(XmlNode node, ContentHandler targetHandler, SerializationOptions serializationOptions) throws SAXException {
+    public void fireSaxDocument(XmlNode node, ContentHandler targetHandler, SaxSerializationOptions serializationOptions) throws SAXException {
         /* Choose global NS prefix mappings */
         NamespacePrefixMappings namespacePrefixMappings = new NamespacePrefixMappings();
         

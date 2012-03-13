@@ -48,9 +48,6 @@ import java.util.Set;
  */
 public final class ObjectUtilities {
 
-    /** Shared instance of an empty array of Objects, which is sometimes useful! */
-    public final static Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    
     /**
      * Trivial convenience extension around {@link Collections#unmodifiableList(List)}
      */

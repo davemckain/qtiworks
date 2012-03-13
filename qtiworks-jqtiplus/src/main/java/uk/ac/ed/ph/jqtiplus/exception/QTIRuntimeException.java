@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
 /**
  * Superclass of all unchecked exceptions.
  * <p>
@@ -73,6 +75,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * 
  * @author Jiri Kajaba
  */
+@ToRefactor
 public abstract class QTIRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -3977994907885787808L;

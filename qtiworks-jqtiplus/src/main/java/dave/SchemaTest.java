@@ -13,16 +13,16 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SerializationOptions;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.StringWriter;
 import java.net.URI;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
@@ -45,14 +45,17 @@ public class SchemaTest {
         System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(item));
         
         /* TODO: Bring some of the SnuggleTeX XML Utility classes in to make this easier */
-        SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-        TransformerHandler transformerHandler = saxTransformerFactory.newTransformerHandler();
-        transformerHandler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+        XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+        serializationOptions.setIndenting(true);
+        
+        XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
+        TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
+        
         StringWriter s = new StringWriter();
-        transformerHandler.setResult(new StreamResult(s));
+        serializerHandler.setResult(new StreamResult(s));
         
         SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(item.getItemLookup().extractEnsuringSuccessful(), transformerHandler, new SerializationOptions());
+        saxEventFirer.fireSaxDocument(item.getItemLookup().extractEnsuringSuccessful(), serializerHandler, new SaxSerializationOptions());
         
         System.out.println(s);
         

@@ -31,28 +31,33 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
-
-import java.io.InputStream;
-import java.net.URI;
+package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
 /**
- * This interface is used by {@link UnifiedXmlResourceResolver} to actually
- * <strong>locate</strong> the resulting XML resources.
- * <p>
- * Implementations of the interface MUST be be reusable and safe for concurrent use.
+ * Enumerates the serialization methods defined by XSLT 1.0 (and XSLT 2.0)
  * 
- * @author David McKain
+ * @author  David McKain
  */
-public interface ResourceLocator {
+public enum XsltSerializationMethod {
+    
+    /** XML Serialization method */
+    XML("xml"),
+    
+    /** XHTML Serialization method (XSLT 2.0 only) */
+    XHTML("xhtml"),
+    
+    /** HTML Serialization method */
+    HTML("html"),
+    
+    ;
+    
+    private final String name;
+    
+    private XsltSerializationMethod(final String name) {
+        this.name = name;
+    }
 
-    /**
-     * Implementations should return an {@link InputStream} corresponding to the
-     * XML resource having the given System ID (passed as a URI), or null if they
-     * can't locate the required resource or won't handle the given URI.
-     * 
-     * @param systemId
-     */
-    InputStream findResource(final URI systemId);
-
+    public String getName() {
+        return name;
+    }
 }

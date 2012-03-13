@@ -57,11 +57,11 @@ public class SaxFiringContext {
     
     private final Set<JqtiExtensionPackage> usedExtensionPackages;
     private final ContentHandler targetHandler;
-    private final SerializationOptions serializationOptions;
+    private final SaxSerializationOptions serializationOptions;
     private final NamespacePrefixMappings namespacePrefixMappings;
     private boolean doneStartDocumentNode;
     
-    SaxFiringContext(ContentHandler targetHandler, SerializationOptions serializationOptions, 
+    SaxFiringContext(ContentHandler targetHandler, SaxSerializationOptions serializationOptions, 
             Set<JqtiExtensionPackage> usedExtensionPackages, NamespacePrefixMappings namespacePrefixMappings) {
         this.targetHandler = targetHandler;
         this.serializationOptions = serializationOptions;
