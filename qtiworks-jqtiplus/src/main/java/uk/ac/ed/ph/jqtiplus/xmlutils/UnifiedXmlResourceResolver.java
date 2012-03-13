@@ -132,28 +132,22 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
 
     @Override
     public InputSource resolveEntity(String publicId, String systemId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("resolveEntity(publicId={}, systemId={})", publicId, systemId);
-        }
+        logger.debug("resolveEntity(publicId={}, systemId={})", publicId, systemId);
+        
         final URI systemIdUri = makeURI(systemId, "Bad systemId URI {}");
         if (systemIdUri == null) {
             return null;
         }
-        InputSource result = null;
         final InputStream stream = resourceLocator.findResource(systemIdUri);
-        if (stream != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
-            }
-            result = new InputSource(stream);
-            result.setPublicId(publicId);
-            result.setSystemId(systemId);
-
-        }
-        else {
+        if (stream==null) {
             maybeFail(failOnMissedEntityResolution, "resolveEntity() could not resolve publicId=" + publicId + ", systemId=" + systemId);
             return null;
         }
+        
+        logger.debug("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
+        InputSource result = new InputSource(stream);
+        result.setPublicId(publicId);
+        result.setSystemId(systemId);
         return result;
     }
 
@@ -227,7 +221,7 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
         final URI resolvedUri = baseUri.resolve(href);
 
         /* Now load resource */
-        final Source result = loadResourceAsSource(resolvedUri);
+        final Source result = doLoadResourceAsSource(resolvedUri);
         if (result == null) {
             final String message = "resolve() could not resolve href=" + href + ", base=" + base + ", resolved=" + resolvedUri;
             logger.debug(message);
@@ -235,9 +229,8 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
                 throw new TransformerException(message);
             }
         }
-        else if (logger.isDebugEnabled()) {
-            logger.debug("resolve() successfully located resolved resource at {}", resolvedUri);
-        }
+        
+        logger.debug("resolve() successfully located resolved resource at {}", resolvedUri);
         return result;
     }
 
@@ -262,32 +255,59 @@ public final class UnifiedXmlResourceResolver implements EntityResolver, URIReso
         return result;
     }
 
-    public Source loadResourceAsSource(String systemId) {
-        logger.debug("loadResourceAsSource(systemId={})", systemId);
+    public InputStream loadResourceAsStream(URI systemId) {
+        logger.debug("loadResourceAsStream(systemId={})", systemId);
 
-        final URI systemIdUri = makeURI(systemId, "Bad systemId URI {}");
-        if (systemIdUri == null) {
-            return null;
-        }
-
-        final Source result = loadResourceAsSource(systemIdUri);
-        if (result == null) {
-            maybeFail(failOnMissedLoad, "loadResourceAsSource() could not load resource at systemId=" + systemId);
+        final InputStream result = resourceLocator.findResource(systemId);
+        if (result==null) {
+            maybeFail(failOnMissedLoad, "loadResourceAsStream() could not load resource at systemId=" + systemId);
             return null;
         }
         else if (logger.isDebugEnabled()) {
-            logger.debug("loadResourceAsSource() successful on systemId={}", systemId);
+            logger.debug("loadResourceAsStream() successful on systemId={}", systemId);
         }
         return result;
     }
 
-    private Source loadResourceAsSource(final URI systemIdUri) {
-        Source result = null;
-        final InputStream resourceStream = resourceLocator.findResource(systemIdUri);
-        if (resourceStream != null) {
-            result = new StreamSource(resourceStream, systemIdUri.toString());
+    //-------------------------------------------
+
+    public Source loadResourceAsSource(String systemId) {
+        logger.debug("loadResourceAsSource(systemId={})", systemId);
+
+        final URI systemIdUri = makeURI(systemId, "Bad systemId URI {}");
+        if (systemIdUri==null) {
+            return null;
         }
+        
+        Source result = doLoadResourceAsSource(systemIdUri);
+        if (result==null) {
+            maybeFail(failOnMissedLoad, "loadResourceAsSource() could not load resource at systemId=" + systemId);
+            return null;
+        }
+        
+        logger.debug("loadResourceAsSource() successful on systemId={}", systemId);
         return result;
+    }
+
+    public Source loadResourceAsSource(final URI systemId) {
+        logger.debug("loadResourceAsSource(systemId={})", systemId);
+        
+        Source result = doLoadResourceAsSource(systemId);
+        if (result==null) {
+            maybeFail(failOnMissedLoad, "loadResourceAsSource() could not load resource at systemId=" + systemId);
+            return null;
+        }
+        
+        logger.debug("loadResourceAsSource() successful on systemId={}", systemId);
+        return result;
+    }
+    
+    private Source doLoadResourceAsSource(final URI systemId) {
+        final InputStream resourceStream = resourceLocator.findResource(systemId);
+        if (resourceStream==null) {
+            return null;
+        }
+        return new StreamSource(resourceStream, systemId.toString());
     }
 
     //-------------------------------------------
