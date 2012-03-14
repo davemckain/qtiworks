@@ -58,6 +58,7 @@ public class QtiSampleResource implements Serializable {
     public static enum Feature {
         /* Add things here as required */
         NOT_SCHEMA_VALID, /* Example is not schema valid, but kept for historic purposes */
+        NOT_FULLY_VALID,  /* Example isn't fully valid (according to our validation process) */
     }
     
     private Type type;
