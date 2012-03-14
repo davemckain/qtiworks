@@ -31,7 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
+
+import uk.ac.ed.ph.jqtiplus.xmlutils.LSInputImpl;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -39,27 +41,26 @@ import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 
 /**
- * Adaptor implementation of {@link EntityResolver} that uses a {@link ResourceLocator} to
- * locate entities.
- * <p>
- * Override the {@link #onMiss(String, String)} method if you'd like to do custom handling
- * if an entity cannot be resolved.
- *
+ * Adapter implementation of {@link LSResourceResolver} that uses a {@link ResourceLocator}
+ * to locate the required resources.
+ * 
  * @see ResourceLocator
  * @author David McKain
  */
-public class EntityResourceResolver implements EntityResolver {
+public final class LoadSaveResourceResolver implements LSResourceResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(EntityResourceResolver.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(LoadSaveResourceResolver.class);
+
     private final ResourceLocator resourceLocator;
-    
-    public EntityResourceResolver(ResourceLocator resourceLocator) {
-        this.resourceLocator = resourceLocator;
+
+    //-------------------------------------------
+
+    public LoadSaveResourceResolver(ResourceLocator resoureLocator) {
+        this.resourceLocator = resoureLocator;
     }
 
     public ResourceLocator getResourceLocator() {
@@ -67,35 +68,60 @@ public class EntityResourceResolver implements EntityResolver {
     }
 
     //-------------------------------------------
-    
+
     @Override
-    public InputSource resolveEntity(String publicId, String systemId) {
-        logger.trace("resolveEntity(publicId={}, systemId={})", publicId, systemId);
+    public LSInput resolveResource(String type, String namespaceUri, String publicId,
+            String systemId, String baseUriString) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("resolveResouce(type={}, nsUri={}, publicId={}, systemId={}, baseUri={}",
+                    new Object[] { type, namespaceUri, publicId, systemId, baseUriString });
+        }
+        if (systemId==null) {
+            return null;
+        }
         
-        URI systemIdUri;
+        URI resolvedUri;
         try {
-            systemIdUri = new URI(systemId);
+            resolvedUri = new URI(systemId);
         }
         catch (URISyntaxException e) {
-            logger.trace("System ID {} could not be parsed as a URI", systemId);
-            return onMiss(publicId, systemId);
+            logger.trace("systemId {} is not a valid URI - returning null", systemId);
+            return null;
+        }
+        if (baseUriString != null) {
+            URI baseUri;
+            try {
+                baseUri = new URI(baseUriString);
+            }
+            catch (URISyntaxException e) {
+                logger.trace("baseUri {} is not a valida URI - returning null", baseUriString);
+                return null;
+            }
+            resolvedUri = baseUri.resolve(resolvedUri);
         }
         
-        final InputStream stream = resourceLocator.findResource(systemIdUri);
+        LSInputImpl result = null;
+        final InputStream stream = resourceLocator.findResource(resolvedUri);
         if (stream==null) {
-            return onMiss(publicId, systemId);
+            /* Not found */
+            if (logger.isTraceEnabled()) {
+                logger.trace("resolveResource() did not resolve publicId={}, systemId={}, baseUri={}",
+                        new Object[] { publicId, systemId, baseUriString });
+            }
+            return null;
         }
         
-        logger.trace("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
-        InputSource result = new InputSource(stream);
+        /* Success */
+        if (logger.isTraceEnabled()) {
+            logger.trace("resolveResource() succeeded for publicId={}, systemId={}, baseUri={}",
+                    new Object[] { publicId, systemId, baseUriString });
+        }
+        result = new LSInputImpl();
+        result.setByteStream(stream);
         result.setPublicId(publicId);
         result.setSystemId(systemId);
+        result.setBaseURI(baseUriString);
         return result;
-    }
-    
-    @SuppressWarnings("unused")
-    public InputSource onMiss(String publicId, String systemId) {
-        return null;
     }
     
     @Override

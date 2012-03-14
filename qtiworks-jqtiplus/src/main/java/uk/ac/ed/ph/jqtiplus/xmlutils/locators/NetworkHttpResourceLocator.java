@@ -31,8 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -40,68 +41,39 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ResourceLocator} that looks for HTTP or HTTPS resources
- * in the ClassPath using a simple naming mechanism as follows:
- * <p>
- * A resource with URL <tt>http(s)://server/path</tt>
- * is mapped to a resource <tt>[basePath]/server/path</tt>, 
- * which is then looked up within the ClassPath.
- * <p>
- * This can be used to load "provided" or bundled resources, such as schemas, DTDs, standard resource processing templates etc.
+ * Implementation of {@link ResourceLocator} that loads HTTP
+ * resources directly over the network.
  * 
  * @author David McKain
  */
-public final class ClassPathHttpResourceLocator implements ResourceLocator {
+public final class NetworkHttpResourceLocator implements ResourceLocator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClassPathHttpResourceLocator.class);
-
-    /** basePath to search in. null is treated as blank */
-    private String basePath;
-
-    public ClassPathHttpResourceLocator() {
-        this(null);
-    }
-
-    public ClassPathHttpResourceLocator(String basePath) {
-        this.basePath = basePath;
-    }
-
-    public String getBasePath() {
-        return basePath;
-    }
-
-    public void setBasePath(String basePath) {
-        this.basePath = basePath;
-    }
-
-    // -------------------------------------------
+    private static final Logger logger = LoggerFactory.getLogger(NetworkHttpResourceLocator.class);
 
     @Override
     public InputStream findResource(final URI systemId) {
         final String scheme = systemId.getScheme();
-        if ("http".equals(scheme) || "https".equals(scheme)) {
-            final String relativeSystemId = systemId.getSchemeSpecificPart().substring(2); // Get bit after http:// or https://
-            final String resultingPath = basePath != null ? basePath + "/" + relativeSystemId : relativeSystemId;
-            return loadResource(systemId, resultingPath);
+        if ("http".equals(scheme)) {
+            return loadHttpResource(systemId);
         }
         return null;
     }
 
-    private InputStream loadResource(final URI systemId, final String resourcePath) {
-        final InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
-        if (resourceStream != null) {
-            logger.trace("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemId, resourcePath);
+    private InputStream loadHttpResource(final URI systemId) {
+        InputStream resourceStream;
+        try {
+            resourceStream = systemId.toURL().openConnection().getInputStream();
+            logger.trace("Successful connection to HTTP resource with URI {}", systemId);
         }
-        else {
-            logger.trace("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
+        catch (IOException e) {
+            resourceStream = null;
+            logger.trace("Failed to open connection to HTTP resource with URI {}", systemId);
         }
         return resourceStream;
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
-                + "(basePath=" + basePath
-                + ")";
+        return getClass().getSimpleName() + "@" + hashCode();
     }
 }

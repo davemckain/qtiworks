@@ -31,49 +31,77 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
- * Implementation of {@link ResourceLocator} that loads HTTP
- * resources directly over the network.
- * 
+ * Adaptor implementation of {@link EntityResolver} that uses a {@link ResourceLocator} to
+ * locate entities.
+ * <p>
+ * Override the {@link #onMiss(String, String)} method if you'd like to do custom handling
+ * if an entity cannot be resolved.
+ *
+ * @see ResourceLocator
  * @author David McKain
  */
-public final class NetworkHttpResourceLocator implements ResourceLocator {
+public class EntityResourceResolver implements EntityResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetworkHttpResourceLocator.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityResourceResolver.class);
+    
+    private final ResourceLocator resourceLocator;
+    
+    public EntityResourceResolver(ResourceLocator resourceLocator) {
+        this.resourceLocator = resourceLocator;
+    }
 
+    public ResourceLocator getResourceLocator() {
+        return resourceLocator;
+    }
+
+    //-------------------------------------------
+    
     @Override
-    public InputStream findResource(final URI systemId) {
-        final String scheme = systemId.getScheme();
-        if ("http".equals(scheme)) {
-            return loadHttpResource(systemId);
+    public InputSource resolveEntity(String publicId, String systemId) {
+        logger.trace("resolveEntity(publicId={}, systemId={})", publicId, systemId);
+        
+        URI systemIdUri;
+        try {
+            systemIdUri = new URI(systemId);
         }
+        catch (URISyntaxException e) {
+            logger.trace("System ID {} could not be parsed as a URI", systemId);
+            return onMiss(publicId, systemId);
+        }
+        
+        final InputStream stream = resourceLocator.findResource(systemIdUri);
+        if (stream==null) {
+            return onMiss(publicId, systemId);
+        }
+        
+        logger.trace("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
+        InputSource result = new InputSource(stream);
+        result.setPublicId(publicId);
+        result.setSystemId(systemId);
+        return result;
+    }
+    
+    @SuppressWarnings("unused")
+    public InputSource onMiss(String publicId, String systemId) {
         return null;
     }
-
-    private InputStream loadHttpResource(final URI systemId) {
-        InputStream resourceStream;
-        try {
-            resourceStream = systemId.toURL().openConnection().getInputStream();
-            logger.trace("Successful connection to HTTP resource with URI {}", systemId);
-        }
-        catch (IOException e) {
-            resourceStream = null;
-            logger.trace("Failed to open connection to HTTP resource with URI {}", systemId);
-        }
-        return resourceStream;
-    }
-
+    
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode();
+        return getClass().getSimpleName() + "@" + hashCode()
+            + "(resourceLocator=" + resourceLocator
+            + ")";
     }
 }

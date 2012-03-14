@@ -36,11 +36,11 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.HashMap;

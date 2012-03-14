@@ -34,6 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathHttpResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.EntityResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.LoadSaveResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.IOException;
 import java.io.InputStream;

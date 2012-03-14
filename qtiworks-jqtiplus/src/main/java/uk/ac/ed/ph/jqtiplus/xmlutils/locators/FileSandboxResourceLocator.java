@@ -31,9 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils;
+package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
 import java.io.File;
 import java.io.FileInputStream;

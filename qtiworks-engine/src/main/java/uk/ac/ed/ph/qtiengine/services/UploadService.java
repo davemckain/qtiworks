@@ -43,13 +43,13 @@ import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageSummary;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.NetworkHttpResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import uk.ac.ed.ph.qtiengine.EngineException;
 import uk.ac.ed.ph.qtiengine.UploadException;

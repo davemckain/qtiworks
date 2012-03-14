@@ -15,7 +15,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
 

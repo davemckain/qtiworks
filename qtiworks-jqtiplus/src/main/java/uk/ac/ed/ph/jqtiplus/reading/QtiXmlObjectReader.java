@@ -48,13 +48,13 @@ import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.node.RootObjectTypes;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 import java.util.ArrayList;

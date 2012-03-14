@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import org.qtitools.mathassess.MathAssessExtensionPackage;
 

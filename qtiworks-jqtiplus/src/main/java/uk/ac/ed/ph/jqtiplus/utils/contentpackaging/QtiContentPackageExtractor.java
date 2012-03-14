@@ -35,11 +35,11 @@ package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 
 import java.io.File;
 import java.net.URI;

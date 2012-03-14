@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.provision.ResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 

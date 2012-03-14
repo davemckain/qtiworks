@@ -35,10 +35,10 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XsltResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 
 import java.io.InputStream;
 import java.io.StringReader;

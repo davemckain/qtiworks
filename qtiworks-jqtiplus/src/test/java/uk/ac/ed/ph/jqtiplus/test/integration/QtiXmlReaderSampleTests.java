@@ -41,9 +41,9 @@ import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.util.Collection;
 

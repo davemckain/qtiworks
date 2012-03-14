@@ -11,7 +11,7 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
 

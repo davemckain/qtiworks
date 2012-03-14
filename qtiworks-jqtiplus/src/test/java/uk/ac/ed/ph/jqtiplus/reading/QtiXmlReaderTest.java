@@ -39,12 +39,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.InputStream;
 import java.net.URI;
