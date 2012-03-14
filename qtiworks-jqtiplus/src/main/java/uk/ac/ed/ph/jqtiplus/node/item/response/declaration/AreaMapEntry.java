@@ -92,7 +92,7 @@ public class AreaMapEntry extends AbstractNode {
      * @see #setShape
      */
     public Shape getShape() {
-        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getValue();
+        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
     /**
@@ -121,7 +121,7 @@ public class AreaMapEntry extends AbstractNode {
      * @see #setMappedValue
      */
     public Double getMappedValue() {
-        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedValue();
     }
 
     /**

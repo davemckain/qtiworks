@@ -68,7 +68,7 @@ public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
      * @see #setCite
      */
     public URI getCite() {
-        return getAttributes().getUriAttribute(ATTR_CITE_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_CITE_NAME).getComputedValue();
     }
 
     /**

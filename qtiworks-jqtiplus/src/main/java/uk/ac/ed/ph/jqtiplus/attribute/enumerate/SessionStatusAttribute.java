@@ -47,38 +47,12 @@ public class SessionStatusAttribute extends SingleAttribute<SessionStatus> imple
 
     private static final long serialVersionUID = 8759133738524182291L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public SessionStatusAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public SessionStatusAttribute(XmlNode parent, String localName, SessionStatus defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public SessionStatusAttribute(XmlNode parent, String localName, SessionStatus value, SessionStatus defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

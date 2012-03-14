@@ -50,42 +50,20 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     /** Supported values. */
     private static final Boolean[] values = new Boolean[] { Boolean.TRUE, Boolean.FALSE };
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public BooleanAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public BooleanAttribute(XmlNode parent, String localName, Boolean value, Boolean defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue, Boolean value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
-    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean value, Boolean defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, value, defaultValue, required);
+    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, Boolean value, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, value, required);
     }
 
     @Override

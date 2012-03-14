@@ -84,7 +84,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      */
     public SyntaxType getSyntax() {
         return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**

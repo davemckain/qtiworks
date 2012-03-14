@@ -75,7 +75,7 @@ public class Col extends BodyElement {
      * @see #setSpan
      */
     public Integer getSpan() {
-        return getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).getComputedValue();
     }
 
     /**

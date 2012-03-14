@@ -77,7 +77,7 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

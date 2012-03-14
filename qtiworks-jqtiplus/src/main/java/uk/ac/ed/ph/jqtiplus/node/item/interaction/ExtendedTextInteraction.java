@@ -154,7 +154,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
      * @see #setMaxStrings
      */
     public Integer getMaxStrings() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).getComputedValue();
     }
 
     /**
@@ -174,7 +174,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
      * @see #setMinStrings
      */
     public Integer getMinStrings() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getComputedValue();
     }
 
     /**
@@ -194,7 +194,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
      * @see #setExpectedLines
      */
     public Integer getExpectedLines() {
-        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).getComputedValue();
     }
 
     /**
@@ -214,32 +214,32 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
      * @see #setFormat
      */
     public TextFormat getFormat() {
-        return getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).getValue();
+        return getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).getComputedValue();
     }
 
     @Override
     public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
     }
 
     @Override
     public Integer getExpectedLength() {
-        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
     }
 
     @Override
     public String getPatternMask() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
     }
 
     @Override
     public String getPlaceholderText() {
-        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
     }
 
     @Override
     public Identifier getStringIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
     }
 
     @Override

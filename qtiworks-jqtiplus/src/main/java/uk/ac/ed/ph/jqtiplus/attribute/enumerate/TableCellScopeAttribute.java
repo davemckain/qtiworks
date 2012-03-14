@@ -47,38 +47,16 @@ public class TableCellScopeAttribute extends SingleAttribute<TableCellScope> imp
 
     private static final long serialVersionUID = -5619179078436198190L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public TableCellScopeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope value, TableCellScope defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope defaultValue, TableCellScope value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
     @Override

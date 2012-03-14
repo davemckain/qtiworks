@@ -47,37 +47,15 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
 
     private static final long serialVersionUID = -867950733254443208L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public StringMultipleAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public StringMultipleAttribute(XmlNode parent, String localName, List<String> value, List<String> defaultValue, boolean required) {
+    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue, List<String> value, boolean required) {
         super(parent, localName, value, defaultValue, required);
     }
 
@@ -92,7 +70,7 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
     }
 
     @Override
-    protected String parseValue(String value) {
+    protected String parseSingleValue(String value) {
         return value;
     }
 }

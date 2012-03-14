@@ -47,38 +47,16 @@ public class BaseTypeAttribute extends SingleAttribute<BaseType> implements Enum
 
     private static final long serialVersionUID = 5731708928910577525L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public BaseTypeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public BaseTypeAttribute(XmlNode parent, String localName, BaseType defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public BaseTypeAttribute(XmlNode parent, String localName, BaseType value, BaseType defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public BaseTypeAttribute(XmlNode parent, String localName, BaseType defaultValue, BaseType value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override

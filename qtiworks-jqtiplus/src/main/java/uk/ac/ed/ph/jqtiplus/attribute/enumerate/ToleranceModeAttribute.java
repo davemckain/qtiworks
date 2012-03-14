@@ -47,38 +47,12 @@ public class ToleranceModeAttribute extends SingleAttribute<ToleranceMode> imple
 
     private static final long serialVersionUID = 1737056425484603310L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public ToleranceModeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public ToleranceModeAttribute(XmlNode parent, String localName, ToleranceMode defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public ToleranceModeAttribute(XmlNode parent, String localName, ToleranceMode value, ToleranceMode defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

@@ -95,7 +95,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -115,7 +115,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
      * @see #setFormat
      */
     public String getFormat() {
-        return getAttributes().getStringAttribute(ATTR_FORMAT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_FORMAT_NAME).getComputedValue();
     }
 
     /**
@@ -135,7 +135,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
      * @see #setBase
      */
     public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
     }
 
     /**

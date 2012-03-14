@@ -71,7 +71,7 @@ public class Ordering extends AbstractNode {
      * @see #setShuffle
      */
     public Boolean getShuffle() {
-        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedValue();
     }
 
     /**

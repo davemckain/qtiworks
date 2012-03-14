@@ -91,7 +91,7 @@ public abstract class Interaction extends BodyElement {
      * @see #setResponseIdentifier
      */
     public Identifier getResponseIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

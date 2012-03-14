@@ -144,7 +144,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setMaxAttemptsAttrValue
      */
     public Integer getMaxAttemptsAttrValue() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).getComputedValue();
     }
 
     /**
@@ -164,7 +164,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setShowFeedbackAttrValue
      */
     public Boolean getShowFeedbackAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).getComputedValue();
     }
 
     /**
@@ -184,7 +184,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setAllowReviewAttrValue
      */
     public Boolean getAllowReviewAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).getComputedValue();
     }
 
     /**
@@ -204,7 +204,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setShowSolutionAttrValue
      */
     public Boolean getShowSolutionAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).getComputedValue();
     }
 
     /**
@@ -224,7 +224,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setAllowCommentAttrValue
      */
     public Boolean getAllowCommentAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).getComputedValue();
     }
 
     /**
@@ -244,7 +244,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setAllowSkippingAttrValue
      */
     public Boolean getAllowSkippingAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).getComputedValue();
     }
 
     /**
@@ -264,7 +264,7 @@ public class ItemSessionControl extends AbstractNode {
      * @see #setValidateResponsesAttrValue
      */
     public Boolean getValidateResponsesAttrValue() {
-        return getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).getComputedValue();
     }
 
     /**

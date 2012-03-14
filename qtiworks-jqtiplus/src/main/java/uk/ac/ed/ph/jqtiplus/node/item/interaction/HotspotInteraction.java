@@ -146,7 +146,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @see #setMaxChoices
      */
     public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
     }
 
     /**
@@ -166,7 +166,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @see #setMinChoices
      */
     public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
     }
 
     /**

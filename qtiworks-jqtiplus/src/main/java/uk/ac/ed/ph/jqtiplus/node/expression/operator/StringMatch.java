@@ -92,7 +92,7 @@ public class StringMatch extends AbstractExpression {
      * @see #setCaseSensitive
      */
     public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedValue();
     }
 
     /**
@@ -112,7 +112,7 @@ public class StringMatch extends AbstractExpression {
      * @see #setSubString
      */
     public Boolean getSubString() {
-        return getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).getComputedValue();
     }
 
     /**

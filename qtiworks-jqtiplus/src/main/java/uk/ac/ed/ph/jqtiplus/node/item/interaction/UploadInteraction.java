@@ -75,7 +75,7 @@ public class UploadInteraction extends BlockInteraction {
      * @see #setType
      */
     public String getType() {
-        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
     /**

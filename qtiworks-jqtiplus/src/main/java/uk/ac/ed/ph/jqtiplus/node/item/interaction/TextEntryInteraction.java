@@ -90,27 +90,27 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
 
     @Override
     public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
     }
 
     @Override
     public Integer getExpectedLength() {
-        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
     }
 
     @Override
     public String getPatternMask() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
     }
 
     @Override
     public String getPlaceholderText() {
-        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
     }
 
     @Override
     public Identifier getStringIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
     }
 
     @Override

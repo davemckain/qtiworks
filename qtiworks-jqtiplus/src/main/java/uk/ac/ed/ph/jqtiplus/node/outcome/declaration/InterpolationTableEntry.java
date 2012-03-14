@@ -72,7 +72,7 @@ public class InterpolationTableEntry extends LookupTableEntry {
      */
     @Override
     public Double getSourceValue() {
-        return getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).getComputedValue();
     }
 
     /**
@@ -92,7 +92,7 @@ public class InterpolationTableEntry extends LookupTableEntry {
      * @see #setIncludeBoundary
      */
     public Boolean getIncludeBoundary() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).getComputedValue();
     }
 
     /**

@@ -64,11 +64,11 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     /** Attribute default value (may be null) */
     protected V defaultValue;
 
-    public AbstractAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required) {
-        this(owner, localName, "", value, defaultValue, required);
+    public AbstractAttribute(XmlNode owner, String localName, V defaultValue, V value, boolean required) {
+        this(owner, localName, "", defaultValue, value, required);
     }
 
-    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V value, V defaultValue, boolean required) {
+    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue, V value, boolean required) {
         ConstraintUtilities.ensureNotNull(owner, "owner");
         ConstraintUtilities.ensureNotNull(localName, "localName");
         ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
@@ -81,41 +81,51 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
 
     @Override
-    public XmlNode getOwner() {
+    public final XmlNode getOwner() {
         return owner;
     }
 
     @Override
-    public String getLocalName() {
+    public final String getLocalName() {
         return localName;
     }
     
     @Override
-    public String getNamespaceUri() {
+    public final String getNamespaceUri() {
         return namespaceUri;
+    }
+
+    @Override
+    public final boolean isRequired() {
+        return required;
     }
     
     @Override
-    public V getDefaultValue() {
+    public final boolean isSet() {
+        return value!=null;
+    }
+    
+    @Override
+    public final V getDefaultValue() {
         return defaultValue;
     }
     
     @Override
-    public V getValue() {
+    public final V getValue() {
         return value;
     }
     
     @Override
-    public String computeXPath() {
+    public final V getComputedValue() {
+        return value!=null ? value : defaultValue;
+    }
+
+    @Override
+    public final String computeXPath() {
         return (owner != null ? owner.computeXPath() + "/" : "") 
                 + "@"
                 + (!namespaceUri.isEmpty() ? "{" + namespaceUri + "}" : "")
                 + localName;
-    }
-
-    @Override
-    public boolean isRequired() {
-        return required;
     }
 
     @Override
@@ -124,15 +134,15 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + "(localName=" + localName
                 + ",namespaceUri=" + namespaceUri
                 + ",required=" + required
-                + ",value=" + value
                 + ",defaultValue=" + defaultValue
+                + ",value=" + value
                 + ")";
     }
 
     @Override
     public void validate(ValidationContext context) {
         if (required && value==null) {
-            context.add(new AttributeValidationError(this, "Required attribute is not defined: " + localName));
+            context.add(new AttributeValidationError(this, "Required attribute has not been assigned a value: " + localName));
         }
     }
 }

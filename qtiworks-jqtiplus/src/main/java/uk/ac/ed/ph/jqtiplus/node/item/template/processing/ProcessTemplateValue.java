@@ -76,7 +76,7 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

@@ -85,7 +85,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

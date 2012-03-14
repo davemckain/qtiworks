@@ -47,38 +47,12 @@ public class SubmissionModeAttribute extends SingleAttribute<SubmissionMode> imp
 
     private static final long serialVersionUID = -1875382709228264679L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public SubmissionModeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public SubmissionModeAttribute(XmlNode parent, String localName, SubmissionMode defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public SubmissionModeAttribute(XmlNode parent, String localName, SubmissionMode value, SubmissionMode defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

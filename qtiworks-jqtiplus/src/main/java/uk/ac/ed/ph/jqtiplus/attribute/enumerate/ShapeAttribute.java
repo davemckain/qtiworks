@@ -47,38 +47,12 @@ public class ShapeAttribute extends SingleAttribute<Shape> implements EnumerateA
 
     private static final long serialVersionUID = -5369017290814290862L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public ShapeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public ShapeAttribute(XmlNode parent, String localName, Shape defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public ShapeAttribute(XmlNode parent, String localName, Shape value, Shape defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

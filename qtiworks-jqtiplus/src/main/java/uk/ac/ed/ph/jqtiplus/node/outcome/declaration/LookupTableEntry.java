@@ -81,7 +81,7 @@ public abstract class LookupTableEntry extends AbstractNode {
      * @see #setTargetValue
      */
     public SingleValue getTargetValue() {
-        return getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).getValue();
+        return getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).getComputedValue();
     }
 
     /**

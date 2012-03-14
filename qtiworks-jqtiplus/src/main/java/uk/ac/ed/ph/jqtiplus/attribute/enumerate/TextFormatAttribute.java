@@ -47,38 +47,16 @@ public class TextFormatAttribute extends SingleAttribute<TextFormat> implements 
 
     private static final long serialVersionUID = -4365578230488574089L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public TextFormatAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public TextFormatAttribute(XmlNode parent, String localName, TextFormat value, TextFormat defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue, TextFormat value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override

@@ -186,6 +186,7 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
      * @param element source node
      */
     public void load(Element element, LoadingContext context) {
+        /* First clear existing attributes */
         for (int i = 0; i < attributes.size(); i++) {
             final Attribute<?> attribute = attributes.get(i);
             if (attribute instanceof ForeignAttribute) {
@@ -198,6 +199,7 @@ public class AttributeList implements Validatable, Iterable<Attribute<?>> {
             }
         }
 
+        /* Set set values from element */
         for (int i = 0; i < element.getAttributes().getLength(); i++) {
             Node attributeNode = element.getAttributes().item(i);
             String localName = attributeNode.getLocalName();

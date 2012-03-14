@@ -64,7 +64,7 @@ public class MatchTableEntry extends LookupTableEntry {
      */
     @Override
     public Integer getSourceValue() {
-        return getAttributes().getIntegerAttribute(ATTR_SOURCE_VALUE_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_SOURCE_VALUE_NAME).getComputedValue();
     }
 
     /**

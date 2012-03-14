@@ -107,7 +107,7 @@ public class ModalFeedback extends AbstractNode {
      * @see #setVisibilityMode
      */
     public VisibilityMode getVisibilityMode() {
-        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getValue();
+        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -127,7 +127,7 @@ public class ModalFeedback extends AbstractNode {
      * @see #setOutcomeIdentifier
      */
     public Identifier getOutcomeIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -146,7 +146,7 @@ public class ModalFeedback extends AbstractNode {
      * @return value of identifier attribute
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

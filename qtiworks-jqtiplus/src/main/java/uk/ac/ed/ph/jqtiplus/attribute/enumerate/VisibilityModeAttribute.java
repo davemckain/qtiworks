@@ -47,38 +47,16 @@ public class VisibilityModeAttribute extends SingleAttribute<VisibilityMode> imp
 
     private static final long serialVersionUID = 6524337813805169272L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public VisibilityModeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode value, VisibilityMode defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, VisibilityMode value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
     @Override

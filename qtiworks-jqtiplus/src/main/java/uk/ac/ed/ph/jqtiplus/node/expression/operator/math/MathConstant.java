@@ -69,7 +69,7 @@ public class MathConstant extends AbstractExpression {
     }
 
     public MathConstantTarget getConstant() {
-        return ((MathConstantNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getValue();
+        return ((MathConstantNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
     public void setConstant(MathConstantTarget roundingMode) {

@@ -70,7 +70,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
      */
     @Override
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

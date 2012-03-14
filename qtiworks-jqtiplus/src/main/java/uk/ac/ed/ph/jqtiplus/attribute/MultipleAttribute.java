@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,38 +56,16 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     /** Values separator. */
     public String FIELDS_SEPARATOR = " ";
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public MultipleAttribute(XmlNode parent, String localName) {
         this(parent, localName, null, null, true);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public MultipleAttribute(XmlNode parent, String localName, List<E> defaultValue) {
-        this(parent, localName, defaultValue, defaultValue, false);
+        this(parent, localName, null, defaultValue, false);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
     public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
-        super(parent, localName, null, null, required);
+        super(parent, localName, defaultValue, value, required);
     }
 
     /**
@@ -120,37 +97,23 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     }
 
     @Override
-    public void load(Element owner, Node node, LoadingContext context) {
+    public final void load(Element owner, Node node, LoadingContext context) {
         load(owner, node.getNodeValue(), context);
     }
 
     @Override
-    public void load(Element owner, String stringValue, LoadingContext context) {
+    public final void load(Element owner, String stringValue, LoadingContext context) {
         if (stringValue != null) {
             try {
-                if (value!=null) {
-                    value.clear();
-                }
-                else {
-                    value = new ArrayList<E>();
-                }
-                final List<String> values = splitStringValue(stringValue);
-                for (final String string : values) {
-                    value.add(parseValue(string));
-                }
+                value = parseStringValue(stringValue);
             }
             catch (final QTIParseException ex) {
-                value.clear();
+                value = null;
                 context.modelBuildingError(ex, owner);
             }
         }
         else {
-            if (defaultValue!=null) {
-                value = new ArrayList<E>(defaultValue);
-            }
-            else {
-                value = null;
-            }
+            value = null;
         }
     }
 
@@ -159,12 +122,12 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      * For example attr="1 2 3". Multiple value is "1 2 3" and result is list
      * with single values "1", "2" and "3".
      * 
-     * @param value multiple string value
+     * @param stringValue multiple string value
      * @return split single string values
      */
-    private List<String> splitStringValue(String value) {
+    private List<String> splitStringValue(String stringValue) {
         final List<String> result = new ArrayList<String>();
-        final String[] values = value.split(FIELDS_SEPARATOR);
+        final String[] values = stringValue.split(FIELDS_SEPARATOR);
 
         for (int i = 0; i < values.length; i++) {
             if (values[i].length() != 0) {
@@ -174,6 +137,15 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
         return result;
     }
+    
+    private List<E> parseStringValue(String stringValue) {
+        final List<String> values = splitStringValue(stringValue);
+        final List<E> result = new ArrayList<E>(values.size());
+        for (final String string : values) {
+            result.add(parseSingleValue(string));
+        }
+        return result;
+    }
 
     /**
      * Parses value from given string.
@@ -181,17 +153,15 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      * @param value string value
      * @return parsed value
      */
-    protected abstract E parseValue(String value);
+    protected abstract E parseSingleValue(String value);
 
-    @Deprecated
-    @ToRemove
     @Override
-    public String valueToString() {
+    public final String valueToString() {
         return valueToXmlString(value);
     }
 
     @Override
-    public String defaultValueToString() {
+    public final String defaultValueToString() {
         return valueToXmlString(defaultValue);
     }
 
@@ -203,15 +173,12 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      */
     private String valueToXmlString(List<E> value) {
         final StringBuilder builder = new StringBuilder();
-
         for (int i = 0; i < value.size(); i++) {
             builder.append(value.get(i));
-
             if (i < value.size() - 1) {
                 builder.append(FIELDS_SEPARATOR);
             }
         }
-
         return builder.toString();
     }
 }

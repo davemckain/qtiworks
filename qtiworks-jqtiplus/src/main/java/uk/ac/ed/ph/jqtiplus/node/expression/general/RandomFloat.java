@@ -83,7 +83,7 @@ public class RandomFloat extends RandomExpression {
      * @see #setMinimum
      */
     public Double getMinimum() {
-        return getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -103,7 +103,7 @@ public class RandomFloat extends RandomExpression {
      * @see #setMaximum
      */
     public Double getMaximum() {
-        return getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
     }
 
     /**

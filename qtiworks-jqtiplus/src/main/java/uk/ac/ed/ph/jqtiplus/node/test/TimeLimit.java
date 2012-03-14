@@ -83,7 +83,7 @@ public class TimeLimit extends AbstractNode {
      * @see #setMinimum
      */
     public Double getMinimum() {
-        return getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).getValue();
+        return getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -116,7 +116,7 @@ public class TimeLimit extends AbstractNode {
      * @see #setMaximum
      */
     public Double getMaximum() {
-        return getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).getValue();
+        return getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
     }
 
     /**

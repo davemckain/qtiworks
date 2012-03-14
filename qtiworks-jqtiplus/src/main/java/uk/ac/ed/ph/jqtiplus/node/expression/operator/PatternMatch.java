@@ -79,7 +79,7 @@ public class PatternMatch extends AbstractExpression {
      * @see #setPattern
      */
     public String getPattern() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_PATTERN_NAME).getComputedValue();
     }
 
     /**

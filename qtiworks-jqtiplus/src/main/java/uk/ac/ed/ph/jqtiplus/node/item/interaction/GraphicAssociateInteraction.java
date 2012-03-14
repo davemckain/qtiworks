@@ -123,7 +123,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
      * @see #setMaxAssociations
      */
     public Integer getMaxAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedValue();
     }
 
     /**

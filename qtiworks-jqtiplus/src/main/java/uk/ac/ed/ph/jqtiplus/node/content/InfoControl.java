@@ -63,7 +63,7 @@ public class InfoControl extends BodyElement implements Block {
     }
 
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     public void setTitle(String title) {

@@ -98,7 +98,7 @@ public class TestVariables extends ItemSubset {
      * @see #setVariableIdentifier
      */
     public Identifier getVariableIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_VARIABLE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_VARIABLE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -118,7 +118,7 @@ public class TestVariables extends ItemSubset {
      * @see #setBaseTypeAttrValue
      */
     public BaseType getBaseTypeAttrValue() {
-        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getValue();
+        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
     /**
@@ -138,7 +138,7 @@ public class TestVariables extends ItemSubset {
      * @see #setWeightIdentifier
      */
     public Identifier getWeightIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

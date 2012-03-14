@@ -50,16 +50,16 @@ public class StringAttribute extends SingleAttribute<String> {
     }
 
     public StringAttribute(XmlNode parent, String localName, String defaultValue) {
-        super(parent, localName, null, defaultValue, false);
+        super(parent, localName, defaultValue, null, false);
     }
 
-    public StringAttribute(XmlNode parent, String localName, String value, String defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public StringAttribute(XmlNode parent, String localName, String defaultValue, String value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
     public StringAttribute(XmlNode parent, String localName, String namespaceUri, 
-            String value, String defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, value, defaultValue, required);
+            String defaultValue, String value, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, value, required);
     }
     
     @Override

@@ -94,7 +94,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
      * @see #setData
      */
     public String getData() {
-        return getAttributes().getStringAttribute(ATTR_DATA_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_DATA_NAME).getComputedValue();
     }
 
     /**
@@ -114,7 +114,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
      * @see #setType
      */
     public String getType() {
-        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
     /**
@@ -134,7 +134,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
      * @see #setWidth
      */
     public String getWidth() {
-        return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getComputedValue();
     }
 
     /**
@@ -154,7 +154,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
      * @see #setHeight
      */
     public String getHeight() {
-        return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getComputedValue();
     }
 
     /**

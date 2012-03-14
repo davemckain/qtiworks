@@ -54,38 +54,16 @@ public class DateAttribute extends SingleAttribute<Date> {
     /** Date formatting pattern. */
     private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public DateAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public DateAttribute(XmlNode parent, String localName, Date defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public DateAttribute(XmlNode parent, String localName, Date value, Date defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public DateAttribute(XmlNode parent, String localName, Date defaultValue, Date value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override
@@ -104,7 +82,7 @@ public class DateAttribute extends SingleAttribute<Date> {
 
     @Override
     public String valueToString() {
-        return getValue() != null ? format.format(getValue()) : "";
+        return getComputedValue() != null ? format.format(getComputedValue()) : "";
     }
 
     @Override

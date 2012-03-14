@@ -51,39 +51,17 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     /** Values separator. */
     public static String FIELDS_SEPARATOR = ",";
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public CoordsAttribute(XmlNode parent, String localName) {
         super(parent, localName);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue) {
         super(parent, localName, defaultValue);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public CoordsAttribute(XmlNode parent, String localName, List<Integer> value, List<Integer> defaultValue, boolean required) {
+    public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue, List<Integer> value, boolean required) {
         super(parent, localName, value, defaultValue, required);
         super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
     }
@@ -99,7 +77,7 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     }
 
     @Override
-    protected Integer parseValue(String value) {
+    protected Integer parseSingleValue(String value) {
         return IntegerValue.parseInteger(value);
     }
 }

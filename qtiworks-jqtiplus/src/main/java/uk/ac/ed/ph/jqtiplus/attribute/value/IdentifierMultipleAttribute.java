@@ -48,42 +48,20 @@ public class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
 
     private static final long serialVersionUID = -4902112764512399666L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public IdentifierMultipleAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> value, List<Identifier> defaultValue, boolean required) {
+    public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue, List<Identifier> value, boolean required) {
         super(parent, localName, value, defaultValue, required);
     }
 
     @Override
-    protected Identifier parseValue(String value) {
+    protected Identifier parseSingleValue(String value) {
         return new Identifier(value);
     }
 }

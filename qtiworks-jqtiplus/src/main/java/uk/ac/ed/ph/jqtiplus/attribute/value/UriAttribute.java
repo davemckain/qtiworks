@@ -48,38 +48,16 @@ public class UriAttribute extends SingleAttribute<URI> {
 
     private static final long serialVersionUID = -4951687349594320740L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public UriAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public UriAttribute(XmlNode parent, String localName, URI defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public UriAttribute(XmlNode parent, String localName, URI value, URI defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public UriAttribute(XmlNode parent, String localName, URI defaultValue, URI value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override

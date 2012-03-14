@@ -103,7 +103,7 @@ public class Variable extends LookupExpression {
      * @see #setWeightIdentifier
      */
     public Identifier getWeightIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

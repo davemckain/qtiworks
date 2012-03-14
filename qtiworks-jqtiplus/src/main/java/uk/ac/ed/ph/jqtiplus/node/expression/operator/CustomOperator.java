@@ -88,7 +88,7 @@ public abstract class CustomOperator extends AbstractExpression {
      * @return value of class attribute
      */
     public String getClassAttr() {
-        return getAttributes().getStringAttribute(ATTR_CLASS_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_CLASS_NAME).getComputedValue();
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class CustomOperator extends AbstractExpression {
      * @return value of definition attribute
      */
     public URI getDefinition() {
-        return getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).getComputedValue();
     }
 
     /**

@@ -46,42 +46,20 @@ public class IntegerAttribute extends SingleAttribute<Integer> {
 
     private static final long serialVersionUID = 6169314176032331265L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public IntegerAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public IntegerAttribute(XmlNode parent, String localName, Integer value, Integer defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue, Integer value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
-    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer value, Integer defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, value, defaultValue, required);
+    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer defaultValue, Integer value, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, value, required);
     }
 
     @Override

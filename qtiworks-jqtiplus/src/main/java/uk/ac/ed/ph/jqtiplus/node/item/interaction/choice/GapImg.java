@@ -73,7 +73,7 @@ public class GapImg extends GapChoice {
      * @see #setObjectLabel
      */
     public String getObjectLabel() {
-        return getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).getComputedValue();
     }
 
     /**

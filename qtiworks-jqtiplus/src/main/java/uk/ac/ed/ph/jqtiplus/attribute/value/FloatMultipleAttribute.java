@@ -48,37 +48,15 @@ public class FloatMultipleAttribute extends MultipleAttribute<Double> {
 
     private static final long serialVersionUID = 1429666396177699288L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public FloatMultipleAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> value, List<Double> defaultValue, boolean required) {
+    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue, List<Double> value, boolean required) {
         super(parent, localName, value, defaultValue, required);
     }
 
@@ -93,7 +71,7 @@ public class FloatMultipleAttribute extends MultipleAttribute<Double> {
     }
 
     @Override
-    protected Double parseValue(String value) {
+    protected Double parseSingleValue(String value) {
         return FloatValue.parseFloat(value);
     }
 }

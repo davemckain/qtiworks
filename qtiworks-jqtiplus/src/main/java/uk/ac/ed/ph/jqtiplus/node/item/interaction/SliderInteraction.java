@@ -137,7 +137,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setLowerBound
      */
     public Double getLowerBound() {
-        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedValue();
     }
 
     /**
@@ -157,7 +157,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setUpperBound
      */
     public Double getUpperBound() {
-        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedValue();
     }
 
     /**
@@ -177,7 +177,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setStep
      */
     public Integer getStep() {
-        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedValue();
     }
 
     /**
@@ -197,7 +197,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setStepLabel
      */
     public Boolean getStepLabel() {
-        return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getComputedValue();
     }
 
     /**
@@ -217,7 +217,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setOrientation
      */
     public Orientation getOrientation() {
-        return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getValue();
+        return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getComputedValue();
     }
 
     /**
@@ -237,7 +237,7 @@ public class SliderInteraction extends BlockInteraction {
      * @see #setReverse
      */
     public Boolean getReverse() {
-        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getComputedValue();
     }
 
     @Override

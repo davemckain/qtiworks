@@ -87,7 +87,7 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
      * @see #setTemplateIdentifier
      */
     public Identifier getTemplateIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

@@ -71,7 +71,7 @@ public class VariableMapping extends AbstractNode {
      * @see #setSourceIdentifier
      */
     public Identifier getSourceIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_SOURCE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_SOURCE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -91,7 +91,7 @@ public class VariableMapping extends AbstractNode {
      * @see #setTargetIdentifier
      */
     public Identifier getTargetIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_TARGET_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_TARGET_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

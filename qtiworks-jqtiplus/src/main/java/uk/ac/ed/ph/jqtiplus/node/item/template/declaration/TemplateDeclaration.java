@@ -87,7 +87,7 @@ public class TemplateDeclaration extends VariableDeclaration {
      * @see #setParamVariable
      */
     public Boolean getParamVariable() {
-        return getAttributes().getBooleanAttribute(ATTR_PARAM_VARIABLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_PARAM_VARIABLE_NAME).getComputedValue();
     }
 
     /**
@@ -107,7 +107,7 @@ public class TemplateDeclaration extends VariableDeclaration {
      * @see #setMathVariable
      */
     public Boolean getMathVariable() {
-        return getAttributes().getBooleanAttribute(ATTR_MATH_VARIABLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_MATH_VARIABLE_NAME).getComputedValue();
     }
 
     /**

@@ -53,43 +53,16 @@ public class SingleValueAttribute extends SingleAttribute<SingleValue> {
     /** BaseType of attribute. */
     private BaseType baseType;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param baseType attribute's baseType
-     */
     public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType) {
         this(parent, localName, baseType, null, null, true);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param baseType attribute's baseType
-     * @param defaultValue attribute's default value
-     */
     public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType, SingleValue defaultValue) {
-        this(parent, localName, baseType, null, defaultValue, false);
+        this(parent, localName, baseType, defaultValue, null, false);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param baseType attribute's baseType
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public SingleValueAttribute(
-            XmlNode parent, String localName, BaseType baseType, SingleValue value, SingleValue defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
-
+    public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType, SingleValue defaultValue, SingleValue value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
         this.baseType = baseType;
     }
 
@@ -122,12 +95,12 @@ public class SingleValueAttribute extends SingleAttribute<SingleValue> {
     public void validate(ValidationContext context) {
         super.validate(context);
 
-        if (getValue() != null && getValue().getBaseType() != baseType) {
+        if (getComputedValue() != null && getComputedValue().getBaseType() != baseType) {
             context.add(new AttributeValidationError(this, "BaseType of " + getLocalName()
                     + " attribute does not match. Expected:  "
                     + baseType
                     + ", but found: "
-                    + getValue().getBaseType()));
+                    + getComputedValue().getBaseType()));
         }
     }
 }

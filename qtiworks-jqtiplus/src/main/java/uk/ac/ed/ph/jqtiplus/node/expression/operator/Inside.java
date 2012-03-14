@@ -91,7 +91,7 @@ public class Inside extends AbstractExpression {
      * @see #setShape
      */
     public Shape getShape() {
-        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getValue();
+        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
     /**

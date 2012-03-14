@@ -46,38 +46,12 @@ public class LongAttribute extends SingleAttribute<Long> {
 
     private static final long serialVersionUID = 1138880928751132617L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public LongAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public LongAttribute(XmlNode parent, String localName, Long value, Long defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

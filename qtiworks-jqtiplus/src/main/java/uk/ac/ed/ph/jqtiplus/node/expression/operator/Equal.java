@@ -128,7 +128,7 @@ public class Equal extends AbstractExpression {
      * @see #setToleranceMode
      */
     public ToleranceMode getToleranceMode() {
-        return getAttributes().getToleranceModeAttribute(ATTR_TOLERANCE_MODE_NAME).getValue();
+        return getAttributes().getToleranceModeAttribute(ATTR_TOLERANCE_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -175,7 +175,7 @@ public class Equal extends AbstractExpression {
      * @see #setIncludeLowerBound
      */
     public Boolean getIncludeLowerBound() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).getComputedValue();
     }
 
     /**
@@ -195,7 +195,7 @@ public class Equal extends AbstractExpression {
      * @see #setIncludeUpperBound
      */
     public Boolean getIncludeUpperBound() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).getComputedValue();
     }
 
     /**

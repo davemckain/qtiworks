@@ -150,7 +150,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      */
     @Override
     public Boolean getShuffle() {
-        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedValue();
     }
 
     /**
@@ -170,7 +170,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @see #setMaxAssociations
      */
     public Integer getMaxAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedValue();
     }
 
     /**
@@ -190,7 +190,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @see #setMinAssociations
      */
     public Integer getMinAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedValue();
     }
 
     /**

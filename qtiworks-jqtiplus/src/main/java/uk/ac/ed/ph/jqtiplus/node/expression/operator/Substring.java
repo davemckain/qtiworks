@@ -76,7 +76,7 @@ public class Substring extends AbstractExpression {
      * @see #setCaseSensitive
      */
     public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedValue();
     }
 
     /**

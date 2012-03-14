@@ -95,7 +95,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      */
     public SyntaxType getSyntax() {
         return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**
@@ -115,7 +115,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      */
     public Identifier getPrintIdentifier() {
         return ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**

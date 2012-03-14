@@ -136,7 +136,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
      * @see #setMaxChoices
      */
     public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
     }
 
     /**
@@ -156,7 +156,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
      * @see #setMinChoices
      */
     public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
     }
 
     /**

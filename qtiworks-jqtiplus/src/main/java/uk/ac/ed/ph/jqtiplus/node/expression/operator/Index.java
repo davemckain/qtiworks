@@ -80,7 +80,7 @@ public class Index extends AbstractExpression {
      * @see #setIndex
      */
     public Integer getIndex() {
-        return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getComputedValue();
     }
 
     /**

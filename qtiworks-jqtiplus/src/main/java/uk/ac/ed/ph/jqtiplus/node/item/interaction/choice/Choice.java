@@ -116,7 +116,7 @@ public abstract class Choice extends BodyElement {
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -136,7 +136,7 @@ public abstract class Choice extends BodyElement {
      * @see #setFixed
      */
     public Boolean getFixed() {
-        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getComputedValue();
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class Choice extends BodyElement {
      * @see #setVisibilityMode
      */
     public VisibilityMode getVisibilityMode() {
-        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getValue();
+        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -176,7 +176,7 @@ public abstract class Choice extends BodyElement {
      * @see #setTemplateIdentifier
      */
     public Identifier getTemplateIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

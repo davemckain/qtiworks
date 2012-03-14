@@ -81,7 +81,7 @@ public class EqualRounded extends AbstractExpression {
      * @see #setRoundingMode
      */
     public RoundingMode getRoundingMode() {
-        return getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).getValue();
+        return getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -101,7 +101,7 @@ public class EqualRounded extends AbstractExpression {
      * @see #setFigures
      */
     public Integer getFigures() {
-        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedValue();
     }
 
     /**

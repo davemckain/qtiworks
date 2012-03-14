@@ -48,37 +48,15 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> {
 
     private static final long serialVersionUID = -2076945522660615196L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public ViewMultipleAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public ViewMultipleAttribute(XmlNode parent, String localName, List<View> value, List<View> defaultValue, boolean required) {
+    public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue, List<View> value, boolean required) {
         super(parent, localName, value, defaultValue, required);
     }
 
@@ -93,7 +71,7 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> {
     }
 
     @Override
-    protected View parseValue(String value) {
+    protected View parseSingleValue(String value) {
         return View.parseView(value);
     }
 }

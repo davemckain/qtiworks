@@ -91,7 +91,7 @@ public class CasProcess extends MathAssessOperator {
      */
     public ReturnType getReturnType() {
         return ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**
@@ -113,7 +113,7 @@ public class CasProcess extends MathAssessOperator {
      */
     public Boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**

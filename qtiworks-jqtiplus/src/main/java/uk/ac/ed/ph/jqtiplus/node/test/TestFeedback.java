@@ -104,7 +104,7 @@ public class TestFeedback extends AbstractNode {
      * @see #setTestFeedbackAccess
      */
     public TestFeedbackAccess getTestFeedbackAccess() {
-        return getAttributes().getTestFeedbackAttribute(ATTR_ACCESS_NAME).getValue();
+        return getAttributes().getTestFeedbackAttribute(ATTR_ACCESS_NAME).getComputedValue();
     }
 
     /**
@@ -124,7 +124,7 @@ public class TestFeedback extends AbstractNode {
      * @see #setVisibilityMode
      */
     public VisibilityMode getVisibilityMode() {
-        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getValue();
+        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -144,7 +144,7 @@ public class TestFeedback extends AbstractNode {
      * @see #setOutcomeIdentifier
      */
     public Identifier getOutcomeIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -164,7 +164,7 @@ public class TestFeedback extends AbstractNode {
      * @see #setOutcomeValue
      */
     public Identifier getOutcomeValue() {
-        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_VALUE_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_VALUE_NAME).getComputedValue();
     }
 
     /**
@@ -184,7 +184,7 @@ public class TestFeedback extends AbstractNode {
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     /**

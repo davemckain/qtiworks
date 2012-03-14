@@ -86,7 +86,7 @@ public class CasCondition extends MathAssessOperator {
      */
     public String getCode() {
         return ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**
@@ -108,7 +108,7 @@ public class CasCondition extends MathAssessOperator {
      */
     public Boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getValue();
+                .getComputedValue();
     }
 
     /**

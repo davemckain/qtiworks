@@ -89,7 +89,7 @@ public class RandomInteger extends RandomExpression {
      * @see #setMinimum
      */
     public Integer getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -109,7 +109,7 @@ public class RandomInteger extends RandomExpression {
      * @see #setMaximum
      */
     public Integer getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -129,7 +129,7 @@ public class RandomInteger extends RandomExpression {
      * @see #setStep
      */
     public Integer getStep() {
-        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedValue();
     }
 
     /**

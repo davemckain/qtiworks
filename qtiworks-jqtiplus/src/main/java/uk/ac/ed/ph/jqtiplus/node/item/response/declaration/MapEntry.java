@@ -77,7 +77,7 @@ public class MapEntry extends AbstractNode {
      * @see #setMapKey
      */
     public SingleValue getMapKey() {
-        return getAttributes().getSingleValueAttribute(ATTR_MAP_KEY_NAME).getValue();
+        return getAttributes().getSingleValueAttribute(ATTR_MAP_KEY_NAME).getComputedValue();
     }
 
     /**
@@ -97,7 +97,7 @@ public class MapEntry extends AbstractNode {
      * @see #setMappedValue
      */
     public Double getMappedValue() {
-        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedValue();
     }
 
     /**
@@ -112,7 +112,7 @@ public class MapEntry extends AbstractNode {
 
 
     public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).getComputedValue();
     }
 
     public void setCaseSensitive(Boolean caseSensitive) {

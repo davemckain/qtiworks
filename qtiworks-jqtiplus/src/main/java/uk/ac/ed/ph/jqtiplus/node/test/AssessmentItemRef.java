@@ -171,7 +171,7 @@ public class AssessmentItemRef extends SectionPart {
      * @see #setHref
      */
     public URI getHref() {
-        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getComputedValue();
     }
 
     /**

@@ -154,7 +154,7 @@ public abstract class BodyElement extends AbstractNode {
      * @see #setId
      */
     public Identifier getId() {
-        return getAttributes().getIdentifierAttribute(ATTR_ID_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_ID_NAME).getComputedValue();
     }
 
     /**
@@ -183,7 +183,7 @@ public abstract class BodyElement extends AbstractNode {
      * @see #setLang
      */
     public String getLang() {
-        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
     }
 
     /**
@@ -203,7 +203,7 @@ public abstract class BodyElement extends AbstractNode {
      * @see #setLabel
      */
     public String getLabel() {
-        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
     }
 
     /**

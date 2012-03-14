@@ -47,12 +47,6 @@ public class MathConstantNameAttribute extends SingleAttribute<MathConstantTarge
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param name attribute's name
-     */
     public MathConstantNameAttribute(XmlNode parent, String name) {
         super(parent, name);
     }

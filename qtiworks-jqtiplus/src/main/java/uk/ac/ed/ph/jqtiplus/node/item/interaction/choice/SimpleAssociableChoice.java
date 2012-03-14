@@ -86,7 +86,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
      * @see #setMatchMax
      */
     public Integer getMatchMax() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedValue();
     }
 
     /**
@@ -106,7 +106,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
      * @see #setMatchMin
      */
     public Integer getMatchMin() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedValue();
     }
 
     /**

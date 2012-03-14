@@ -84,7 +84,7 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
      */
     @Override
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -105,7 +105,7 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
      * @see #setValue
      */
     public Double getValue() {
-        return getAttributes().getFloatAttribute(ATTR_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_VALUE_NAME).getComputedValue();
     }
 
     /**

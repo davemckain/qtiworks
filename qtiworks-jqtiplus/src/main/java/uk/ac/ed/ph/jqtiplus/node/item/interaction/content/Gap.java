@@ -90,7 +90,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
      * @see #setRequired
      */
     public Boolean getRequired() {
-        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedValue();
     }
 
     @Override

@@ -96,7 +96,7 @@ public class BaseValue extends AbstractExpression {
      * @see #setBaseTypeAttrValue
      */
     public BaseType getBaseTypeAttrValue() {
-        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getValue();
+        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
     /**

@@ -47,38 +47,16 @@ public class OrientationAttribute extends SingleAttribute<Orientation> implement
 
     private static final long serialVersionUID = 5170134258927740739L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public OrientationAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public OrientationAttribute(XmlNode parent, String localName, Orientation defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public OrientationAttribute(XmlNode parent, String localName, Orientation value, Orientation defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public OrientationAttribute(XmlNode parent, String localName, Orientation defaultValue, Orientation value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class AnyN extends AbstractExpression {
      * @see #setMinimum
      */
     public Integer getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -111,7 +111,7 @@ public class AnyN extends AbstractExpression {
      * @see #setMaximum
      */
     public Integer getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
     }
 
     /**

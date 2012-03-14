@@ -90,7 +90,7 @@ public abstract class LookupExpression extends AbstractExpression {
      * @see #setIdentifier
      */
     public VariableReferenceIdentifier getIdentifier() {
-        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

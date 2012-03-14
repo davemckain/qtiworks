@@ -163,7 +163,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      */
     @Override
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -189,7 +189,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     /**
@@ -209,7 +209,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @see #setToolName
      */
     public String getToolName() {
-        return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getComputedValue();
     }
 
     /**
@@ -229,7 +229,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @see #setToolVersion
      */
     public String getToolVersion() {
-        return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getComputedValue();
     }
 
     /**

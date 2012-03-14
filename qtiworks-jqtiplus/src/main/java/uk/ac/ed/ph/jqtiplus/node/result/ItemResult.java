@@ -75,7 +75,7 @@ public class ItemResult extends AbstractResult {
      * @see #setSequenceIndex
      */
     public Integer getSequenceIndex() {
-        return getAttributes().getIntegerAttribute(ATTR_SEQUENCE_INDEX_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_SEQUENCE_INDEX_NAME).getComputedValue();
     }
 
     /**
@@ -95,7 +95,7 @@ public class ItemResult extends AbstractResult {
      * @see #setSessionStatus
      */
     public SessionStatus getSessionStatus() {
-        return getAttributes().getSessionStatusAttribute(ATTR_SESSION_STATUS_NAME).getValue();
+        return getAttributes().getSessionStatusAttribute(ATTR_SESSION_STATUS_NAME).getComputedValue();
     }
 
     /**

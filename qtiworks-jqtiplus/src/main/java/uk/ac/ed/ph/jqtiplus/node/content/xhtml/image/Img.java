@@ -95,7 +95,7 @@ public class Img extends BodyElement implements AtomicInline {
      * @see #setSrc
      */
     public URI getSrc() {
-        return getAttributes().getUriAttribute(ATTR_SRC_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_SRC_NAME).getComputedValue();
     }
 
     /**
@@ -115,7 +115,7 @@ public class Img extends BodyElement implements AtomicInline {
      * @see #setAlt
      */
     public String getAlt() {
-        return getAttributes().getStringAttribute(ATTR_ALT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_ALT_NAME).getComputedValue();
     }
 
     /**
@@ -135,7 +135,7 @@ public class Img extends BodyElement implements AtomicInline {
      * @see #setLongdesc
      */
     public URI getLongdesc() {
-        return getAttributes().getUriAttribute(ATTR_LONGDESC_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_LONGDESC_NAME).getComputedValue();
     }
 
     /**
@@ -155,7 +155,7 @@ public class Img extends BodyElement implements AtomicInline {
      * @see #setHeight
      */
     public String getHeight() {
-        return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getComputedValue();
     }
 
     /**
@@ -175,7 +175,7 @@ public class Img extends BodyElement implements AtomicInline {
      * @see #setWidth
      */
     public String getWidth() {
-        return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getComputedValue();
     }
 
     /**

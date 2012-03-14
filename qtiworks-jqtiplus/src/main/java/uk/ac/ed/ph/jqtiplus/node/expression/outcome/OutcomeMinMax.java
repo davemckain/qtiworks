@@ -73,7 +73,7 @@ public abstract class OutcomeMinMax extends ItemSubset {
      * @see #setOutcomeIdentifier
      */
     public Identifier getOutcomeIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class OutcomeMinMax extends ItemSubset {
      * @see #setWeightIdentifier
      */
     public Identifier getWeightIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

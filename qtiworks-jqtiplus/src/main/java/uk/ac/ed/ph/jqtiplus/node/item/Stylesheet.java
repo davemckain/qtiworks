@@ -80,7 +80,7 @@ public class Stylesheet extends AbstractNode {
      * @see #setHref
      */
     public URI getHref() {
-        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getComputedValue();
     }
 
     /**
@@ -100,7 +100,7 @@ public class Stylesheet extends AbstractNode {
      * @see #setType
      */
     public String getType() {
-        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
     /**
@@ -120,7 +120,7 @@ public class Stylesheet extends AbstractNode {
      * @see #setMedia
      */
     public String getMedia() {
-        return getAttributes().getStringAttribute(ATTR_MEDIA_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_MEDIA_NAME).getComputedValue();
     }
 
     /**
@@ -140,7 +140,7 @@ public class Stylesheet extends AbstractNode {
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     /**

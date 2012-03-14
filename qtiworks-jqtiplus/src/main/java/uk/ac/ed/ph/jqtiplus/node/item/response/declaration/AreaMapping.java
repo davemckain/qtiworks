@@ -107,7 +107,7 @@ public class AreaMapping extends AbstractNode {
      * @see #setDefaultValue
      */
     public Double getDefaultValue() {
-        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedValue();
     }
 
     /**
@@ -127,7 +127,7 @@ public class AreaMapping extends AbstractNode {
      * @see #setLowerBound
      */
     public Double getLowerBound() {
-        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedValue();
     }
 
     /**
@@ -147,7 +147,7 @@ public class AreaMapping extends AbstractNode {
      * @see #setUpperBound
      */
     public Double getUpperBound() {
-        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedValue();
     }
 
     /**

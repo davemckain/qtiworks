@@ -46,38 +46,12 @@ public class DurationAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -2706570073349757182L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public DurationAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
+    
     public DurationAttribute(XmlNode parent, String localName, Double defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public DurationAttribute(XmlNode parent, String localName, Double value, Double defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

@@ -79,7 +79,7 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
      */
     @Override
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
      * @see #setDateStamp
      */
     public Date getDateStamp() {
-        return getAttributes().getDateAttribute(ATTR_DATE_STAMP_NAME).getValue();
+        return getAttributes().getDateAttribute(ATTR_DATE_STAMP_NAME).getComputedValue();
     }
 
     /**

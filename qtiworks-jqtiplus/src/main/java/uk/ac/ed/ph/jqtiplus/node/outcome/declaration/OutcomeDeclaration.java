@@ -144,7 +144,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @see #setInterpretation
      */
     public String getInterpretation() {
-        return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getComputedValue();
     }
 
     /**
@@ -164,7 +164,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @see #setLongInterpretation
      */
     public URI getLongInterpretation() {
-        return getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).getValue();
+        return getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).getComputedValue();
     }
 
     /**
@@ -184,7 +184,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @see #setNormalMaximum
      */
     public Double getNormalMaximum() {
-        return getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -204,7 +204,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @see #setNormalMinimum
      */
     public Double getNormalMinimum() {
-        return getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).getComputedValue();
     }
 
     /**
@@ -224,7 +224,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @see #setMasteryValue
      */
     public Double getMasteryValue() {
-        return getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).getValue();
+        return getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).getComputedValue();
     }
 
     /**

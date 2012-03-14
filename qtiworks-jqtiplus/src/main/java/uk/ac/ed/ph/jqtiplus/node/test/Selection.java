@@ -80,7 +80,7 @@ public class Selection extends AbstractNode {
      * @see #setSelect
      */
     public Integer getSelect() {
-        return getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).getComputedValue();
     }
 
     /**
@@ -100,7 +100,7 @@ public class Selection extends AbstractNode {
      * @see #setWithReplacement
      */
     public Boolean getWithReplacement() {
-        return getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).getComputedValue();
     }
 
     /**

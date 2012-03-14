@@ -94,7 +94,7 @@ public class BranchRule extends AbstractJump {
      * @see #setTarget
      */
     public Identifier getTarget() {
-        return getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).getComputedValue();
     }
 
     /**

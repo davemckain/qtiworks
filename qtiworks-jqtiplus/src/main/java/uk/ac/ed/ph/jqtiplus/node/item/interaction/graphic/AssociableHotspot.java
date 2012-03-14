@@ -94,7 +94,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
      * @see #setMatchMax
      */
     public Integer getMatchMax() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedValue();
     }
 
     /**
@@ -114,7 +114,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
      * @see #setMatchMin
      */
     public Integer getMatchMin() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedValue();
     }
 
     /**
@@ -139,12 +139,12 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
 
     @Override
     public String getHotspotLabel() {
-        return getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).getComputedValue();
     }
 
     @Override
     public Shape getShape() {
-        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getValue();
+        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
     @Override

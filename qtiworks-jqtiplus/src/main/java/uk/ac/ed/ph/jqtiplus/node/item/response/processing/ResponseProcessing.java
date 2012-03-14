@@ -125,7 +125,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
      * @return Value of the template attribute
      */
     public URI getTemplate() {
-        return getAttributes().getUriAttribute(ATTR_TEMPLATE_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_TEMPLATE_NAME).getComputedValue();
     }
 
     /**
@@ -134,7 +134,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
      * @return Value of the templateLocation attribute
      */
     public URI getTemplateLocation() {
-        return getAttributes().getUriAttribute(ATTR_TEMPLATE_LOCATION_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_TEMPLATE_LOCATION_NAME).getComputedValue();
     }
 
     @Override

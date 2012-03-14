@@ -73,7 +73,7 @@ public class StatsOperator extends AbstractExpression {
     }
 
     public StatsOperatorTarget getTarget() {
-        return ((StatsOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getValue();
+        return ((StatsOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
     public void setTarget(StatsOperatorTarget target) {

@@ -103,7 +103,7 @@ public abstract class LookupTable extends AbstractNode {
      * @see #setDefaultValue
      */
     public SingleValue getDefaultValue() {
-        return getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).getValue();
+        return getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedValue();
     }
 
     /**

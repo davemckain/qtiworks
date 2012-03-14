@@ -98,7 +98,7 @@ public class AssessmentSection extends SectionPart {
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     /**
@@ -118,7 +118,7 @@ public class AssessmentSection extends SectionPart {
      * @see #setVisible
      */
     public Boolean getVisible() {
-        return getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).getComputedValue();
     }
 
     /**
@@ -138,7 +138,7 @@ public class AssessmentSection extends SectionPart {
      * @see #setKeepTogether
      */
     public Boolean getKeepTogether() {
-        return getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).getComputedValue();
     }
 
     /**

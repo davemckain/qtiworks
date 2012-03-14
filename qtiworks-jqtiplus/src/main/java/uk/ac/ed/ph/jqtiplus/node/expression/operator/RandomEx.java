@@ -64,7 +64,7 @@ public class RandomEx extends Random {
 
     @Override
     public Long getSeedAttributeValue() {
-        return getAttributes().getLongAttribute(ATTR_SEED_NAME).getValue();
+        return getAttributes().getLongAttribute(ATTR_SEED_NAME).getComputedValue();
     }
 
     /**

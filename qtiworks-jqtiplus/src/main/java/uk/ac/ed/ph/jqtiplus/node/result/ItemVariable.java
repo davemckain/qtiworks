@@ -80,7 +80,7 @@ public abstract class ItemVariable extends AbstractNode {
      * @see #setIdentifier
      */
     public VariableReferenceIdentifier getIdentifier() {
-        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class ItemVariable extends AbstractNode {
      * @see #setCardinality
      */
     public Cardinality getCardinality() {
-        return getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).getValue();
+        return getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).getComputedValue();
     }
 
     /**
@@ -120,7 +120,7 @@ public abstract class ItemVariable extends AbstractNode {
      * @see #setBaseType
      */
     public BaseType getBaseType() {
-        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getValue();
+        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
     /**

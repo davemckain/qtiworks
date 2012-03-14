@@ -117,7 +117,7 @@ public abstract class TableCell extends BodyElement {
      * @see #setScope
      */
     public TableCellScope getScope() {
-        return getAttributes().getTableCellScopeAttribute(ATTR_SCOPE_NAME).getValue();
+        return getAttributes().getTableCellScopeAttribute(ATTR_SCOPE_NAME).getComputedValue();
     }
 
     /**
@@ -137,7 +137,7 @@ public abstract class TableCell extends BodyElement {
      * @see #setAbbr
      */
     public String getAbbr() {
-        return getAttributes().getStringAttribute(ATTR_ABBR_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_ABBR_NAME).getComputedValue();
     }
 
     /**
@@ -157,7 +157,7 @@ public abstract class TableCell extends BodyElement {
      * @see #setAxis
      */
     public String getAxis() {
-        return getAttributes().getStringAttribute(ATTR_AXIS_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_AXIS_NAME).getComputedValue();
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class TableCell extends BodyElement {
      * @see #setRowspan
      */
     public Integer getRowspan() {
-        return getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).getComputedValue();
     }
 
     /**
@@ -197,7 +197,7 @@ public abstract class TableCell extends BodyElement {
      * @see #setColspan
      */
     public Integer getColspan() {
-        return getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).getComputedValue();
     }
 
     /**

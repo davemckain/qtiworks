@@ -47,38 +47,12 @@ public class ParamTypeAttribute extends SingleAttribute<ParamType> implements En
 
     private static final long serialVersionUID = 1206043208733719873L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public ParamTypeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public ParamTypeAttribute(XmlNode parent, String localName, ParamType defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public ParamTypeAttribute(XmlNode parent, String localName, ParamType value, ParamType defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

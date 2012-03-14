@@ -93,7 +93,7 @@ public abstract class FeedbackElement extends BodyElement {
      * @see #setVisibilityMode
      */
     public VisibilityMode getVisibilityMode() {
-        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getValue();
+        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class FeedbackElement extends BodyElement {
      * @see #setOutcomeIdentifier
      */
     public Identifier getOutcomeIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class FeedbackElement extends BodyElement {
      * @return value of identifier attribute
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

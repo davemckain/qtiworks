@@ -193,7 +193,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
      * @see #setSummary
      */
     public String getSummary() {
-        return getAttributes().getStringAttribute(ATTR_SUMMARY_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_SUMMARY_NAME).getComputedValue();
     }
 
     /**

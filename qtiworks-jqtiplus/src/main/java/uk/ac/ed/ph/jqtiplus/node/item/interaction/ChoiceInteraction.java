@@ -145,7 +145,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      */
     @Override
     public Boolean getShuffle() {
-        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedValue();
     }
 
     /**
@@ -165,7 +165,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @see #setMaxChoices
      */
     public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
     }
 
     /**
@@ -185,7 +185,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @see #setMinChoices
      */
     public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getValue();
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
     }
 
     /**

@@ -91,7 +91,7 @@ public class TestPart extends AbstractPart {
      * @see #setNavigationMode
      */
     public NavigationMode getNavigationMode() {
-        return getAttributes().getNavigationModeAttribute(ATTR_NAVIGATION_MODE_NAME).getValue();
+        return getAttributes().getNavigationModeAttribute(ATTR_NAVIGATION_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -111,7 +111,7 @@ public class TestPart extends AbstractPart {
      * @see #setSubmissionMode
      */
     public SubmissionMode getSubmissionMode() {
-        return getAttributes().getSubmissionModeAttribuye(ATTR_SUBMISSION_MODE_NAME).getValue();
+        return getAttributes().getSubmissionModeAttribuye(ATTR_SUBMISSION_MODE_NAME).getComputedValue();
     }
 
     /**

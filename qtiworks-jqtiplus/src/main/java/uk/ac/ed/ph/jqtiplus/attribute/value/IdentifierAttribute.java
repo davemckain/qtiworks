@@ -46,42 +46,20 @@ public class IdentifierAttribute extends SingleAttribute<Identifier> {
 
     private static final long serialVersionUID = -2194882443131770832L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public IdentifierAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public IdentifierAttribute(XmlNode parent, String localName, Identifier defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public IdentifierAttribute(XmlNode parent, String localName, Identifier value, Identifier defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public IdentifierAttribute(XmlNode parent, String localName, Identifier defaultValue, Identifier value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
-    public IdentifierAttribute(XmlNode parent, String localName, String namespaceUri, Identifier value, Identifier defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, value, defaultValue, required);
+    public IdentifierAttribute(XmlNode parent, String localName, String namespaceUri, Identifier defaultValue, Identifier value, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, value, required);
     }
 
     @Override

@@ -47,38 +47,12 @@ public class NavigationModeAttribute extends SingleAttribute<NavigationMode> imp
 
     private static final long serialVersionUID = -8896482192798423143L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public NavigationModeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public NavigationModeAttribute(XmlNode parent, String localName, NavigationMode defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public NavigationModeAttribute(XmlNode parent, String localName, NavigationMode value, NavigationMode defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

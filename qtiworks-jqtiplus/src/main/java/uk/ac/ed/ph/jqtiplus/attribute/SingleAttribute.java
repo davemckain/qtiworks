@@ -61,12 +61,12 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
         this(owner, localName, defaultValue, defaultValue, false);
     }
 
-    public SingleAttribute(XmlNode owner, String localName, V value, V defaultValue, boolean required) {
-        super(owner, localName, value, defaultValue, required);
+    public SingleAttribute(XmlNode owner, String localName, V defaultValue, V value, boolean required) {
+        super(owner, localName, defaultValue, value, required);
     }
     
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V value,  V defaultValue, boolean required) {
-        super(owner, localName, namespaceUri, value, defaultValue, required);
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue,  V value, boolean required) {
+        super(owner, localName, namespaceUri, defaultValue, value, required);
     }
     
     /**
@@ -106,7 +106,7 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
             }
         }
         else {
-            this.value = defaultValue;
+            this.value = null;
         }
     }
 

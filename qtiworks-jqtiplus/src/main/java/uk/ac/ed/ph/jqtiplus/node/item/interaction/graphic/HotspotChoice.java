@@ -74,12 +74,12 @@ public class HotspotChoice extends Choice implements Hotspot {
 
     @Override
     public String getHotspotLabel() {
-        return getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).getComputedValue();
     }
 
     @Override
     public Shape getShape() {
-        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getValue();
+        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
     @Override

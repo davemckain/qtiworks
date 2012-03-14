@@ -47,38 +47,12 @@ public class RoundingModeAttribute extends SingleAttribute<RoundingMode> impleme
 
     private static final long serialVersionUID = 7527369761752182141L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public RoundingModeAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public RoundingModeAttribute(XmlNode parent, String localName, RoundingMode defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public RoundingModeAttribute(XmlNode parent, String localName, RoundingMode value, RoundingMode defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override

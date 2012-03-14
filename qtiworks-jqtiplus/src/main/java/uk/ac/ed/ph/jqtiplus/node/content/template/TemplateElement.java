@@ -88,7 +88,7 @@ public abstract class TemplateElement extends BodyElement {
      * @see #setVisibilityMode
      */
     public VisibilityMode getVisibilityMode() {
-        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getValue();
+        return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class TemplateElement extends BodyElement {
      * @see #setTemplateIdentifier
      */
     public Identifier getTemplateIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class TemplateElement extends BodyElement {
      * @see #setIdentifier(Identifier)
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

@@ -102,7 +102,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
      * @see #setInterpretation
      */
     public String getInterpretation() {
-        return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getComputedValue();
     }
 
     /**

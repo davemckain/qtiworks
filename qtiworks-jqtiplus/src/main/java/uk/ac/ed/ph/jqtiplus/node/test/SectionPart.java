@@ -92,7 +92,7 @@ public abstract class SectionPart extends AbstractPart {
      * @see #setRequired
      */
     public Boolean getRequired() {
-        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedValue();
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class SectionPart extends AbstractPart {
      * @see #setFixed
      */
     public Boolean getFixed() {
-        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getComputedValue();
     }
 
     /**

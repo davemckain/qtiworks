@@ -47,38 +47,16 @@ public class TestFeedbackAccessAttribute extends SingleAttribute<TestFeedbackAcc
 
     private static final long serialVersionUID = 3074149624431788342L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public TestFeedbackAccessAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess value, TestFeedbackAccess defaultValue, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess defaultValue, TestFeedbackAccess value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
 
     @Override

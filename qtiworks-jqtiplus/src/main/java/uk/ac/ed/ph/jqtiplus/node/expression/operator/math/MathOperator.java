@@ -73,7 +73,7 @@ public class MathOperator extends AbstractExpression {
     }
 
     public MathOperatorTarget getTarget() {
-        return ((MathOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getValue();
+        return ((MathOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
     public void setTarget(MathOperatorTarget target) {

@@ -73,7 +73,7 @@ public class SessionIdentifier extends AbstractNode {
      * @see #setSourceId
      */
     public URI getSourceId() {
-        return getAttributes().getUriAttribute(ATTR_SOURCE_ID_NAME).getValue();
+        return getAttributes().getUriAttribute(ATTR_SOURCE_ID_NAME).getComputedValue();
     }
 
     /**
@@ -93,7 +93,7 @@ public class SessionIdentifier extends AbstractNode {
      * @see #setIdentifier
      */
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**

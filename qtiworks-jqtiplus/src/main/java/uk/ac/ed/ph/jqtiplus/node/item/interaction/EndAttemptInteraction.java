@@ -115,7 +115,7 @@ public class EndAttemptInteraction extends InlineInteraction {
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
 
@@ -124,7 +124,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     }
 
     public Boolean getCountAttempt() {
-        return getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).getComputedValue();
     }
 
 

@@ -115,7 +115,7 @@ public class FieldValue extends AbstractNode {
      * @see #setIdentifier
      */
     public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -135,7 +135,7 @@ public class FieldValue extends AbstractNode {
      * @see #setBaseTypeAttrValue
      */
     public BaseType getBaseTypeAttrValue() {
-        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getValue();
+        return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
     /**

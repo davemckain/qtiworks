@@ -103,7 +103,7 @@ public class Param extends AbstractNode implements ObjectFlow {
      * @see #setName
      */
     public String getName() {
-        return getAttributes().getStringAttribute(ATTR_NAME_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_NAME_NAME).getComputedValue();
     }
 
     /**
@@ -123,7 +123,7 @@ public class Param extends AbstractNode implements ObjectFlow {
      * @see #setValue
      */
     public String getValue() {
-        return getAttributes().getStringAttribute(ATTR_VALUE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_VALUE_NAME).getComputedValue();
     }
 
     /**
@@ -143,7 +143,7 @@ public class Param extends AbstractNode implements ObjectFlow {
      * @see #setValuetype
      */
     public ParamType getValuetype() {
-        return getAttributes().getParamTypeAttribute(ATTR_VALUETYPE_NAME).getValue();
+        return getAttributes().getParamTypeAttribute(ATTR_VALUETYPE_NAME).getComputedValue();
     }
 
     /**
@@ -163,7 +163,7 @@ public class Param extends AbstractNode implements ObjectFlow {
      * @see #setType
      */
     public String getType() {
-        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
     /**

@@ -44,20 +44,20 @@ public class SchemaTest {
         ResolvedAssessmentItem item = result.getResolvedAssessmentItem();
         System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(item));
         
-        /* TODO: Bring some of the SnuggleTeX XML Utility classes in to make this easier */
         XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
         serializationOptions.setIndenting(true);
         
         XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
         TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
         
-        StringWriter s = new StringWriter();
-        serializerHandler.setResult(new StreamResult(s));
+        StringWriter serializedXmlWriter = new StringWriter();
+        serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         
         SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
         saxEventFirer.fireSaxDocument(item.getItemLookup().extractEnsuringSuccessful(), serializerHandler, new SaxSerializationOptions());
+        String serializedXml = serializedXmlWriter.toString();
         
-        System.out.println(s);
+        System.out.println(serializedXml);
         
         
     }

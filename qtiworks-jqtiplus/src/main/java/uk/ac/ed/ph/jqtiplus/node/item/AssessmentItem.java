@@ -219,7 +219,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      */
     @Override
     public String getIdentifier() {
-        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getValue();
+        return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -240,7 +240,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setTitle
      */
     public String getTitle() {
-        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
     /**
@@ -260,7 +260,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setLabel
      */
     public String getLabel() {
-        return getAttributes().getStringAttribute(ATTR_LABEL_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_LABEL_NAME).getComputedValue();
     }
 
     /**
@@ -280,7 +280,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setLang
      */
     public String getLang() {
-        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
     }
 
     /**
@@ -300,7 +300,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setAdaptive
      */
     public Boolean getAdaptive() {
-        return getAttributes().getBooleanAttribute(ATTR_ADAPTIVE_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_ADAPTIVE_NAME).getComputedValue();
     }
 
     /**
@@ -320,7 +320,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setTimeDependent
      */
     public Boolean getTimeDependent() {
-        return getAttributes().getBooleanAttribute(ATTR_TIME_DEPENDENT_NAME).getValue();
+        return getAttributes().getBooleanAttribute(ATTR_TIME_DEPENDENT_NAME).getComputedValue();
     }
 
     /**
@@ -340,7 +340,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setToolName
      */
     public String getToolName() {
-        return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getComputedValue();
     }
 
     /**
@@ -360,7 +360,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @see #setToolVersion
      */
     public String getToolVersion() {
-        return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getValue();
+        return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getComputedValue();
     }
 
     /**

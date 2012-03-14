@@ -46,39 +46,12 @@ public class VariableReferenceIdentifierAttribute extends SingleAttribute<Variab
 
     private static final long serialVersionUID = 797959114072746763L;
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     */
     public VariableReferenceIdentifierAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param defaultValue attribute's default value
-     */
     public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, VariableReferenceIdentifier defaultValue) {
         super(parent, localName, defaultValue);
-    }
-
-    /**
-     * Constructs attribute.
-     * 
-     * @param parent attribute's parent
-     * @param localName attribute's localName
-     * @param value attribute's value
-     * @param defaultValue attribute's default value
-     * @param required is this attribute required
-     */
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, VariableReferenceIdentifier value, VariableReferenceIdentifier defaultValue,
-            boolean required) {
-        super(parent, localName, value, defaultValue, required);
     }
 
     @Override
