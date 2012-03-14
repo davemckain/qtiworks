@@ -9,10 +9,10 @@
 			<value>EDI B</value>
 			<value>MAN C</value>
 		</correctResponse>
-		<mapping lowerBound="0" defaultValue="-1">
-			<mapEntry mapKey="GLA A" mappedValue="1"/>
-			<mapEntry mapKey="EDI B" mappedValue="1"/>
-			<mapEntry mapKey="MAN C" mappedValue="1"/>
+		<mapping lowerBound="0.0" defaultValue="-1.0">
+			<mapEntry mapKey="GLA A" mappedValue="1.0"/>
+			<mapEntry mapKey="EDI B" mappedValue="1.0"/>
+			<mapEntry mapKey="MAN C" mappedValue="1.0"/>
 		</mapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

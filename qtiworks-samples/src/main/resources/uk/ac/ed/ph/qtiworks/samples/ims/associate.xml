@@ -9,10 +9,10 @@
 			<value>C M</value>
 			<value>D L</value>
 		</correctResponse>
-		<mapping defaultValue="0">
-			<mapEntry mapKey="A P" mappedValue="2"/>
-			<mapEntry mapKey="C M" mappedValue="1"/>
-			<mapEntry mapKey="D L" mappedValue="1"/>
+		<mapping defaultValue="0.0">
+			<mapEntry mapKey="A P" mappedValue="2.0"/>
+			<mapEntry mapKey="C M" mappedValue="1.0"/>
+			<mapEntry mapKey="D L" mappedValue="1.0"/>
 		</mapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

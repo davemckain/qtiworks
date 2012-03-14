@@ -8,10 +8,10 @@
 			<value>H</value>
 			<value>O</value>
 		</correctResponse>
-		<mapping lowerBound="0" upperBound="2" defaultValue="-2">
-			<mapEntry mapKey="H" mappedValue="1"/>
-			<mapEntry mapKey="O" mappedValue="1"/>
-			<mapEntry mapKey="Cl" mappedValue="-1"/>
+		<mapping lowerBound="0.0" upperBound="2.0" defaultValue="-2.0">
+			<mapEntry mapKey="H" mappedValue="1.0"/>
+			<mapEntry mapKey="O" mappedValue="1.0"/>
+			<mapEntry mapKey="Cl" mappedValue="-1.0"/>
 		</mapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

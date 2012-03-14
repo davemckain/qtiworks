@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.samples;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 
+
 /**
  * Sample set based on the IMS samples
  *
@@ -72,9 +73,9 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/order.xml"),
             new QtiSampleResource(Type.ITEM, "ims/position_object.xml"),
             new QtiSampleResource(Type.ITEM, "ims/select_point.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/shufflechoice.xml", Feature.NOT_FULLY_VALID),
+            new QtiSampleResource(Type.ITEM, "ims/shufflechoice.xml"),
             new QtiSampleResource(Type.ITEM, "ims/shufflegap_match.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/shuffleinline_choice.xml", Feature.NOT_FULLY_VALID),
+            new QtiSampleResource(Type.ITEM, "ims/shuffleinline_choice.xml"),
             new QtiSampleResource(Type.ITEM, "ims/slider.xml"),
             new QtiSampleResource(Type.ITEM, "ims/template_image.xml"),
             new QtiSampleResource(Type.ITEM, "ims/template.xml"),

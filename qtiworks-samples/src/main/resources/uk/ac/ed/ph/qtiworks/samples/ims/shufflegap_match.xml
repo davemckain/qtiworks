@@ -8,9 +8,9 @@
 			<value>W G1</value>
 			<value>Su G2</value>
 		</correctResponse>
-		<mapping defaultValue="-1" lowerBound="0">
-			<mapEntry mapKey="W G1" mappedValue="1"/>
-			<mapEntry mapKey="Su G2" mappedValue="2"/>
+		<mapping defaultValue="-1.0" lowerBound="0.0">
+			<mapEntry mapKey="W G1" mappedValue="1.0"/>
+			<mapEntry mapKey="Su G2" mappedValue="2.0"/>
 		</mapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

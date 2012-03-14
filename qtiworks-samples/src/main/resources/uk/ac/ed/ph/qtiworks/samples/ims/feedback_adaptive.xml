@@ -90,7 +90,7 @@
 				</match>
 				<setOutcomeValue identifier="SCORE">
 
-					<baseValue baseType="float">1</baseValue>
+					<baseValue baseType="float">1.0</baseValue>
 				</setOutcomeValue>
 				<setOutcomeValue identifier="completionStatus">
 					<baseValue baseType="identifier">completed</baseValue>
@@ -104,7 +104,7 @@
 			</responseIf>
 			<responseElse>
 				<setOutcomeValue identifier="SCORE">
-					<baseValue baseType="float">0</baseValue>
+					<baseValue baseType="float">0.0</baseValue>
 				</setOutcomeValue>
 				<setOutcomeValue identifier="FEEDBACK">
 

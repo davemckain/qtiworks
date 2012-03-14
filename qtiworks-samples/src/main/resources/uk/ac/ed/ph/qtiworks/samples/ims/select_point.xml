@@ -7,8 +7,8 @@
 		<correctResponse>
 			<value>102 113</value>
 		</correctResponse>
-		<areaMapping defaultValue="0">
-			<areaMapEntry shape="circle" coords="102,113,16" mappedValue="1"/>
+		<areaMapping defaultValue="0.0">
+			<areaMapEntry shape="circle" coords="102,113,16" mappedValue="1.0"/>
 		</areaMapping>
 	</responseDeclaration>
     <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

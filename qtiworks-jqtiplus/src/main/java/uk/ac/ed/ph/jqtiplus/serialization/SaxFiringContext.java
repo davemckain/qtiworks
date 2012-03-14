@@ -40,6 +40,8 @@ import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
@@ -61,6 +63,15 @@ public class SaxFiringContext {
     private final NamespacePrefixMappings namespacePrefixMappings;
     private boolean doneStartDocumentNode;
     
+    /** 
+     * Tracks changes in the default namespace.
+     * 
+     * Key is {@link AbstractNode} where the default namespace change occurs
+     * Value is the *previous* namespace URI (which is null before the first element is fired)
+     */
+    private final Map<AbstractNode, String> defaultNamespaceChangeMap;
+    private String currentDefaultNamespaceUri;
+    
     SaxFiringContext(ContentHandler targetHandler, SaxSerializationOptions serializationOptions, 
             Set<JqtiExtensionPackage> usedExtensionPackages, NamespacePrefixMappings namespacePrefixMappings) {
         this.targetHandler = targetHandler;
@@ -68,12 +79,24 @@ public class SaxFiringContext {
         this.usedExtensionPackages = usedExtensionPackages;
         this.namespacePrefixMappings = namespacePrefixMappings;
         this.doneStartDocumentNode = false;
+        this.defaultNamespaceChangeMap = new HashMap<AbstractNode, String>();
+        this.currentDefaultNamespaceUri = null;
     }
     
     //-----------------------------------------------
     // Callbacks
     
     public void startSupportedElement(AbstractNode node) throws SAXException {
+        /* Work out if we need to change the default namespace */
+        String elementNamespaceUri = getNodeNamespaceUri(node);
+        if (currentDefaultNamespaceUri==null || !currentDefaultNamespaceUri.equals(elementNamespaceUri)) {
+            /* We're changing the default namespace, so register a prefix mapping and keep track
+             * of this Node so we know to end the mapping later */
+            targetHandler.startPrefixMapping("", elementNamespaceUri);
+            defaultNamespaceChangeMap.put(node, currentDefaultNamespaceUri);
+            currentDefaultNamespaceUri = elementNamespaceUri;
+        }
+        
         /* Build up attributes */
         AttributesImpl xmlAttributes = new AttributesImpl();
         if (!doneStartDocumentNode) {
@@ -92,14 +115,22 @@ public class SaxFiringContext {
                         "CDATA", attribute.valueToString());
             }
         }
-
+        
         /* Start element */
-        targetHandler.startElement(getNodeNamespaceUri(node), node.getLocalName(), node.getLocalName(), xmlAttributes);
+        targetHandler.startElement(elementNamespaceUri, node.getLocalName(), node.getLocalName(), xmlAttributes);
         doneStartDocumentNode = true;
     }
     
     public void endSupportedElement(AbstractNode node) throws SAXException {
+        /* End element */
         targetHandler.endElement(getNodeNamespaceUri(node), node.getLocalName(), node.getLocalName());
+        
+        /* See if we're ending a default namespace change */
+        if (defaultNamespaceChangeMap.containsKey(node)) {
+            targetHandler.endPrefixMapping("");
+            currentDefaultNamespaceUri = defaultNamespaceChangeMap.get(node);
+            defaultNamespaceChangeMap.remove(node);
+        }
     }
     
     private String getNodeNamespaceUri(AbstractNode node) {

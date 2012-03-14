@@ -43,6 +43,30 @@ All Rights Reserved
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>${xmlunit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>${xerces.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon9</artifactId>
+      <version>${saxon9.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon9-dom</artifactId>
+      <version>${saxon9.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>qtiworks-samples</artifactId>
       <version>${project.version}</version>

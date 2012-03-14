@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.test.integration;
 
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -81,7 +82,7 @@ public class SerializationSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance());
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID));
     }
     
     public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
@@ -112,12 +113,14 @@ public class SerializationSampleTests {
         InputStream originalXmlStream = sampleResourceLocator.findResource(sampleResourceUri);
         
         XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreComments(true);
         Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
         if (!diff.identical()) {
+            System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
             System.out.println("\n\nOriginal XML: " + IOUtilities.readUnicodeStream(sampleResourceLocator.findResource(sampleResourceUri)));
             System.out.println("\n\nSerialized XML: " + serializedXml);
-            Assert.fail("XML differences found: " + diff);
+            Assert.fail("XML differences found: " + diff.toString());
         }
     }
 }
