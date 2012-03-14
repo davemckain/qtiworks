@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsddraft/imsqti_v2p1.xsd"
+	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
 	identifier="adaptive" title="Monty Hall (Take 1)" adaptive="true" timeDependent="false">
 	<responseDeclaration identifier="DOOR" cardinality="single" baseType="identifier"/>
 	<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">

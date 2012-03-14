@@ -8,7 +8,7 @@
 			<value>Y</value>
 		</correctResponse>
 	</responseDeclaration>
-	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer"/>
+	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
 	<itemBody>
 		<p>Identify the missing word in this famous quote from Shakespeare's Richard III.</p>
 		<blockquote>
