@@ -111,7 +111,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
          * allows us to resolve things like response processing templates and anything else that might be pre-loaded
          * this way.
          */
-        final ChainedResourceLocator resourceLocator = new ChainedResourceLocator(qtiXmlReader.getParserResourceLocator(), inputResourceLocator);
+        final ChainedResourceLocator resourceLocator = new ChainedResourceLocator(QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
         
         /* We will only schema validate the XML if we are going to be validating this resource */
         boolean schemaValidating = requiredModelRichness==ModelRichness.FOR_VALIDATION;

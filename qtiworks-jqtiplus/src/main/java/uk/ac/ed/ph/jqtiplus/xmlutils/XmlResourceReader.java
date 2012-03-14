@@ -34,8 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.EntityResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.LoadSaveResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
@@ -72,23 +70,22 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 /**
- * Helper class that makes it easy to parse XML and optionally schema validate
- * it against a set of prescribed schemas.
- * <p>
- * Schemas are *always* loaded via the prescribed
- * {@link #getParserResourceLocator()}, so the use of this class must ensure
- * they are made available for loading in this way. Suggested usage is to make a
- * local cache of the schemas and use a {@link ClassPathHttpResourceLocator} or
- * similar to load them. A default implementation called
- * {@link #DEFAULT_PARSER_RESOURCE_LOCATOR} is provided that uses
- * {@link ClassPathHttpResourceLocator} to search under the path
- * <code>uk/ac/ed/ph/jqtiplus</code>.
- * <p>
+ * Helper class that makes it easy to parse XML into a DOM and optionally schema validate
+ * it against a set of prescribed schemas. This supports:
+ * <ul>
+ *   <li>Specifying a set of supported schema</li>
+ *   <li>Using a {@link ResourceLocator} to locate schemas</li>
+ *   <li>Using a {@link ResourceLocator} to locate DTD entity files</li>
+ *   <li>Using a {@link ResourceLocator} to locate your XML source files</li>
+ *   <li>Optional caching of schemas</li>
+ *   <li>DOM is enriched with location information via a user Object</li>
+ * </ul>
+ * 
+ * <h2>Implementation notes</h2>
+ * 
  * The XML parsing process performs a SAX parse followed by a DOM tree build,
  * filling the resulting tree with SAX {@link Locator} information, which makes
  * later error reporting richer.
- * <p>
- * This class is not intended to support any XML that uses DTDs.
  * 
  * @see XmlReadResult
  * @author David McKain
@@ -100,42 +97,32 @@ public final class XmlResourceReader {
     /** Name of the DOM "user object" where SAX {@link Locator} information will be stowed while parsing */
     public static final String LOCATION_INFORMATION_NAME = "locationInformation";
 
-    /**
-     * Base path within ClassPath to search in when using the default {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
-     */
-    public static final String DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus/xml-catalog";
-
-    /**
-     * Default {@link ResourceLocator} that will be used to locate schemas (and DTDs). This searches within
-     * the ClassPath under {@link #DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH}.
-     */
-    public static final ResourceLocator DEFAULT_PARSER_RESOURCE_LOCATOR = new ClassPathHttpResourceLocator(DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
-
     //--------------------------------------------------    
 
     /**
-     * {@link ResourceLocator} used to locate schema files (and DTD-related entities if used).
-     * Default is {@link #DEFAULT_PARSER_RESOURCE_LOCATOR}
+     * {@link ResourceLocator} used to locate schema resources. 
+     * <p>
+     * Must not be null.
      */
-    private final ResourceLocator parserResourceLocator;
+    public final ResourceLocator schemaResourceLocator;
 
     /**
-     * Map containing details of each schema registered with this reader. Keys are namespace URI, value is schema URI.
+     * Map containing details of each schema registered with this reader.
+     * Keys are namespace URI, value is schema URI.
      * <p>
-     * This may be null or empty, to indicate that there are no registered schemas (and therefore schema validation won't work!).
+     * This may be null or empty, to indicate that there are no registered schemas
+     * (and therefore schema validation won't work!).
      * <p>
      * The default is null,
      */
     private final Map<String, String> registeredSchemaMap;
     
     /**
-     * Optional Map that will be used to cache compiled schemas. If set, the Map will be used
-     * to obtain and store compiled schemas, and it will be used in a thread-safe way, hence any
-     * of the standard Java {@link Map} implementations may be used safely.
+     * Optional {@link SchemaCache} that will be used to cache compiled schemas.
      * <p>
-     * A convenience {@link LruHashMap} is provided, which may prove useful.
+     * This may be null, which will prevent any caching from happening.
      */
-    private final Map<String, Schema> schemaCacheMap;
+    private final SchemaCache schemaCache;
     
     /**
      * Resolver used to look up schema resources
@@ -143,38 +130,31 @@ public final class XmlResourceReader {
     private final LoadSaveResourceResolver schemaResourceResolver;
 
 
-    public XmlResourceReader() {
-        this(null, null, null);
+    public XmlResourceReader(ResourceLocator schemaResourceLocator) {
+        this(schemaResourceLocator, null, null);
     }
 
-    public XmlResourceReader(ResourceLocator parserResourceLocator) {
-        this(parserResourceLocator, null, null);
-    }
-
-    public XmlResourceReader(Map<String, String> registeredSchemaMapTemplate, Map<String, Schema> schemaCacheMap) {
-        this(null, registeredSchemaMapTemplate, schemaCacheMap);
-    }
-
-    public XmlResourceReader(ResourceLocator parserResourceLocator, Map<String, String> registeredSchemaMapTemplate,
-            Map<String, Schema> schemaCacheMap) {
-        this.parserResourceLocator = parserResourceLocator != null ? parserResourceLocator : DEFAULT_PARSER_RESOURCE_LOCATOR;
+    public XmlResourceReader(ResourceLocator schemaResourceLocator, Map<String, String> registeredSchemaMapTemplate,
+            SchemaCache schemaCache) {
+        ConstraintUtilities.ensureNotNull(schemaResourceLocator, "schemaResourceLocator");
+        this.schemaResourceLocator = schemaResourceLocator;
         this.registeredSchemaMap = registeredSchemaMapTemplate != null ? Collections.unmodifiableMap(registeredSchemaMapTemplate) : null;
-        this.schemaCacheMap = schemaCacheMap;
+        this.schemaCache = schemaCache;
 
-        /* Set up special resource resolver based on parserResourceLocator */
-        this.schemaResourceResolver = new LoadSaveResourceResolver(this.parserResourceLocator);
+        /* Set up special resource resolver based on schemaResourceLocator */
+        this.schemaResourceResolver = new LoadSaveResourceResolver(schemaResourceLocator);
     }
 
     public ResourceLocator getParserResourceLocator() {
-        return parserResourceLocator;
+        return schemaResourceLocator;
     }
 
     public Map<String, String> getRegisteredSchemaMap() {
         return registeredSchemaMap;
     }
     
-    public Map<String, Schema> getSchemaCacheMap() {
-        return schemaCacheMap;
+    public SchemaCache getSchemaCache() {
+        return schemaCache;
     }
     
     //--------------------------------------------------
@@ -182,30 +162,38 @@ public final class XmlResourceReader {
     /**
      * FIXME: This currently calls the {@link ResourceLocator} to read the input *twice*. I may
      * want to save the initial input to a temp file if the stream is not something that can be
-     * quickly re-read (e.g. HTTP!)  
+     * quickly re-read (e.g. HTTP!) 
+     * 
+     * @param systemId system ID of the XML resource to read
+     * @param inputResourceLocator resource locator that will find the XML to be read
+     * @param entityResourceLocator resource locator that will load in any entities/DTD stuff
+     *   encountered
+     * @param schemaValidating whether to perform schema validation or not.
      * 
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator, boolean schemaValidating)
+    public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator, 
+            ResourceLocator entityResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException {
-        ConstraintUtilities.ensureNotNull(systemId, "systemIdUri");
+        ConstraintUtilities.ensureNotNull(systemId, "systemId");
         ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
-
+        ConstraintUtilities.ensureNotNull(entityResourceLocator, "entityResourceLocator");
+        
         try {
-            logger.debug("read({}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, schemaValidating });
-            final XmlReadResult result = doRead(systemId, inputResourceLocator, schemaValidating);
-            logger.debug("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, result });
+            logger.debug("read({}, {}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating });
+            final XmlReadResult result = doRead(systemId, inputResourceLocator, entityResourceLocator, schemaValidating);
+            logger.debug("read({}, {}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating, result });
             return result;
         }
         catch (final XmlResourceNotFoundException e) {
-            logger.debug("read({}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
+            logger.debug("read({}, {}, {}, {}) => {}", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating, e });
             throw e;
         }
         catch (final Exception e) {
-            logger.debug("read({}, {}, {}) => UNEXPECTED EXCEPTION {}", new Object[] { systemId, inputResourceLocator, schemaValidating, e });
+            logger.debug("read({}, {}, {}, {}) => UNEXPECTED EXCEPTION {}", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating, e });
             if (e instanceof XmlResourceReaderException) {
                 throw (XmlResourceReaderException) e;
             }
@@ -213,7 +201,8 @@ public final class XmlResourceReader {
         }
     }
 
-    private XmlReadResult doRead(URI systemId, ResourceLocator inputResourceLocator, boolean schemaValidating)
+    private XmlReadResult doRead(URI systemId, ResourceLocator inputResourceLocator,
+            ResourceLocator entityResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException, ParserConfigurationException, SAXException, IOException {
         final String systemIdString = systemId.toString();
         boolean parsed = false;
@@ -229,6 +218,17 @@ public final class XmlResourceReader {
         final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
         documentBuilder.setErrorHandler(inputErrorHandler);
         final Document document = documentBuilder.newDocument();
+        
+        /* Set up SAX EntityResolver, which will record locator failures appropriately */
+        final EntityResourceResolver entityResolver = new EntityResourceResolver(entityResourceLocator) {
+            @Override
+            public InputSource onMiss(String publicId, String systemId) {
+                unresolvedEntitySystemIds.add(systemId);
+                InputSource emptyStringSource = new InputSource(new StringReader(""));
+                emptyStringSource.setSystemId(systemId);
+                return emptyStringSource;
+            }
+        };
 
         /* Create and configure SAX parser */
         final SAXParserFactory spFactory = SAXParserFactory.newInstance();
@@ -241,18 +241,6 @@ public final class XmlResourceReader {
         spFactory.setFeature("http://xml.org/sax/features/lexical-handler/parameter-entities", false);
         final XMLReader xmlReader = spFactory.newSAXParser().getXMLReader();
         xmlReader.setErrorHandler(inputErrorHandler);
-        
-        /* We'll let the parser look for DTD entities via only the input & parser locators. */
-        ChainedResourceLocator dtdResourceLoader = new ChainedResourceLocator(inputResourceLocator, parserResourceLocator);
-        final EntityResourceResolver entityResolver = new EntityResourceResolver(dtdResourceLoader) {
-            @Override
-            public InputSource onMiss(String publicId, String systemId) {
-                unresolvedEntitySystemIds.add(systemId);
-                InputSource emptyStringSource = new InputSource(new StringReader(""));
-                emptyStringSource.setSystemId(systemId);
-                return emptyStringSource;
-            }
-        };
         xmlReader.setEntityResolver(entityResolver);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
@@ -350,15 +338,15 @@ public final class XmlResourceReader {
     private Schema getSchema(List<String> schemaUris) {
         Schema result = null;
         String key = schemaUris.toString();
-        if (schemaCacheMap!=null) {
-            synchronized (schemaCacheMap) {
-                result = schemaCacheMap.get(key);
+        if (schemaCache!=null) {
+            synchronized (schemaCache) {
+                result = schemaCache.getSchema(key);
                 if (result!=null) {
                     logger.debug("Schema cache hit for URIs {} yielded {}", key, result);
                 }
                 else {
                     result = compileSchema(schemaUris);
-                    schemaCacheMap.put(key, result);
+                    schemaCache.putSchema(key, result);
                     logger.debug("Schema cache miss for URIs {} stored {}", key, result);
                 }
             }
@@ -378,9 +366,9 @@ public final class XmlResourceReader {
         final Source[] schemaSources = new Source[schemaUris.size()];
         for (int i = 0; i < schemaSources.length; i++) {
             final String schemaSystemId = schemaUris.get(i);
-            final InputStream schemaStream = parserResourceLocator.findResource(URI.create(schemaSystemId));
+            final InputStream schemaStream = schemaResourceLocator.findResource(URI.create(schemaSystemId));
             if (schemaStream==null) {
-                final String message = "parserResourceLocator failed to locate schema with system ID " + schemaSystemId;
+                final String message = "schemaResourceLocator failed to locate schema with system ID " + schemaSystemId;
                 logger.debug(message);
                 throw new XmlResourceReaderException(message);
             }
@@ -493,9 +481,9 @@ public final class XmlResourceReader {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(parserResourceLocator=" + parserResourceLocator
+                + "(schemaResourceLocator=" + schemaResourceLocator
                 + ",registeredSchemaMap=" + registeredSchemaMap
-                + ",schemaCacheMap=" + schemaCacheMap
+                + ",schemaCache=" + schemaCache
                 + ")";
     }
 }

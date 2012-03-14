@@ -36,10 +36,13 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
@@ -47,15 +50,40 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.validation.Schema;
-
 /**
- * Wraps around {@link XmlResourceReader} to provide specific support for QTI 2.1
- * and optional extensions.
+ * Wraps around {@link XmlResourceReader} to provide unified JQTI+ reader for QTI (and
+ * some related IMS) resources.
+ * <p>
+ * It uses the following conventions:
+ * 
+ * <ul>
+ *   <li>
+ *     Schema resources are loaded using {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR}.
+ *     Extensions can make schemas available by adding them to the ClassPath in the appropriate
+ *     place.
+ *   </li>
+ *   <li>
+ *     Entities and DTD resources are loaded by first trying {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR},
+ *     then the supplied XML input {@link ResourceLocator}. (This allows certain core DTD files
+ *     to be maintained internally for performance reasons, before using the standard input locator.
+ *   </li>
+ * </ul>
  * 
  * @author David McKain
  */
 public final class QtiXmlReader {
+    
+    /**
+     * Base path within ClassPath to search in for schema and
+     * {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
+     */
+    public static final String JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH = "uk/ac/ed/ph/jqtiplus/xml-catalog";
+
+    /**
+     * Default {@link ResourceLocator} that will be used to locate schemas (and DTDs). This searches within
+     * the ClassPath under {@link DEFAULT_PARSER_RESOURCE_CLASSPATH_BASE_PATH}.
+     */
+    public static final ResourceLocator JQTIPLUS_PARSER_RESOURCE_LOCATOR = new ClassPathHttpResourceLocator(JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
 
     private final JqtiExtensionManager jqtiExtensionManager;
     
@@ -63,28 +91,15 @@ public final class QtiXmlReader {
     private final XmlResourceReader xmlResourceReader;
     
     public QtiXmlReader() {
-        this(null, null, null);
+        this(null, null);
     }
     
     public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager) {
-        this(jqtiExtensionManager, null, null);
+        this(jqtiExtensionManager, null);
     }
     
-    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator) {
-        this(jqtiExtensionManager, parserResourceLocator, null);
-    }
-    
-    public QtiXmlReader(ResourceLocator parserResourceLocator) {
-        this(null, parserResourceLocator, null);
-    }
-    
-    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, Map<String, Schema> schemaCacheMap) {
-        this(jqtiExtensionManager, null, schemaCacheMap);
-    }
-
-    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, ResourceLocator parserResourceLocator,
-            Map<String, Schema> schemaCacheMap) {
-        /* Merge extension schema with QTI 2.1 schema */
+    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, SchemaCache schemaCache) {
+        /* Merge extension schemas with core QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
         if (jqtiExtensionManager!=null) {
             for (Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
@@ -94,19 +109,15 @@ public final class QtiXmlReader {
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.xmlResourceReader = new XmlResourceReader(parserResourceLocator, resultingSchemaMapTemplate, schemaCacheMap);
+        this.xmlResourceReader = new XmlResourceReader(JQTIPLUS_PARSER_RESOURCE_LOCATOR, resultingSchemaMapTemplate, schemaCache);
     }
     
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }
 
-    public ResourceLocator getParserResourceLocator() {
-        return xmlResourceReader.getParserResourceLocator();
-    }
-
-    public Map<String, Schema> getSchemaCacheMap() {
-        return xmlResourceReader.getSchemaCacheMap();
+    public SchemaCache getSchemaCacheMap() {
+        return xmlResourceReader.getSchemaCache();
     }
 
     //--------------------------------------------------
@@ -119,7 +130,8 @@ public final class QtiXmlReader {
      */
     public XmlReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException {
-        return xmlResourceReader.read(systemIdUri, inputResourceLocator, schemaValidating);
+        ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
+        return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, schemaValidating);
     }
     
     /**
@@ -135,9 +147,8 @@ public final class QtiXmlReader {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(parserResourceLocator=" + getParserResourceLocator()
-                + ",jqtiExtensionManager=" + jqtiExtensionManager
-                + ",schemaCacheMap=" + getSchemaCacheMap()
+                + "(jqtiExtensionManager=" + jqtiExtensionManager
+                + ",schemaCache=" + getSchemaCacheMap()
                 + ")";
     }
 }

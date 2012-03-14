@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NullResourceLocator;
 
 import java.io.File;
 import java.net.URI;
@@ -92,7 +93,7 @@ public final class QtiContentPackageExtractor {
     
     public QtiContentPackageExtractor(File packageSandboxDirectory) {
         ConstraintUtilities.ensureNotNull(packageSandboxDirectory);
-        this.xmlResourceReader = new XmlResourceReader(); /* (Not doing schema validation so no XSDs to register) */
+        this.xmlResourceReader = new XmlResourceReader(new NullResourceLocator()); /* (Not doing schema validation so no XSDs to register) */
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }
     
@@ -156,7 +157,7 @@ public final class QtiContentPackageExtractor {
         /* Attempt to parse the manifest XML */
         URI manifestSystemId = PACKAGE_URI_SCHEME.pathToUri(manifestHref);
         logger.info("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
-        XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, false);
+        XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, packageResourceLocator, false);
         XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
         
         /* If successful, extract information from the DOM */

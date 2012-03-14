@@ -42,11 +42,9 @@ import static org.junit.Assert.assertTrue;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReaderException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.io.InputStream;
 import java.net.URI;
 
 import org.junit.Test;
@@ -177,22 +175,7 @@ public class QtiXmlReaderTest {
         assertEquals(1, parseResult.getUnsupportedSchemaNamespaces().size()); /* (Unsupported) */
     }
 
-    @Test(expected = XmlResourceReaderException.class)
-    public void testBadSchemaClassPath() throws Exception {
-        final QtiXmlReader reader = new QtiXmlReader(new NoResourceLocator());
-        final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
-        reader.read(makeSystemId("choice.xml"), inputResourceLocator, true);
-    }
-
     //-------------------------------
-
-    static class NoResourceLocator implements ResourceLocator {
-
-        @Override
-        public InputStream findResource(URI systemIdUri) {
-            return null;
-        }
-    }
 
     private XmlReadResult readTestFile(String testFileName, boolean schemaValiadating) throws XmlResourceNotFoundException {
         final QtiXmlReader reader = new QtiXmlReader();

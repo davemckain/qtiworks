@@ -31,34 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
+package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import javax.xml.transform.Templates;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.validation.Schema;
 
 /**
- * Interface for a simple XSLT stylesheet cache.
+ * Trivial implementation of {@link SchemaCache} that simply uses a {@link HashMap}.
  * <p>
- * All use of this cache within this application is done in a thread-safe manner, so
- * implementations need not be thread-safe.
+ * (This is probably a good fit for QTI systems, as they'll support a small and known set of
+ * schemas.)
  *
- * @author  David McKain
+ * @author David McKain
  */
-public interface XsltStylesheetCache {
-   
-    /**
-     * Tries to retrieve an XSLT stylesheet from the cache having the given key.
-     * <p>
-     * Return a previously cached {@link Templates} or null if your cache doesn't want to cache
-     * this or if it does not contain the required result.
-     */
-    Templates getStylesheet(String key);
+public class SimpleSchemaCache implements SchemaCache {
     
-    /**
-     * Instructs the cache that it might want to store the given XSLT stylesheet corresponding
-     * to the given key.
-     * <p>
-     * Implementations can safely choose to do absolutely nothing here if they want.
-     */
-    void putStylesheet(String key, Templates stylesheet);
-
+    private final Map<String, Schema> cacheData;
+    
+    public SimpleSchemaCache() {
+        this.cacheData = new HashMap<String, Schema>();
+    }
+    
+    @Override
+    public Schema getSchema(String key) {
+        return cacheData.get(key);
+    }
+    
+    @Override
+    public void putSchema(String key, Schema schema) {
+        cacheData.put(key, schema);
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(" + cacheData + ")";
+    }
 }

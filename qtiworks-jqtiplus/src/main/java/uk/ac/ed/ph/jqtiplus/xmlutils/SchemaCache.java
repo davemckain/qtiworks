@@ -31,34 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
+package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import javax.xml.transform.Templates;
+import javax.xml.validation.Schema;
 
 /**
- * Interface for a simple XSLT stylesheet cache.
+ * Interface for a simple schema cache.
  * <p>
  * All use of this cache within this application is done in a thread-safe manner, so
  * implementations need not be thread-safe.
  *
- * @author  David McKain
+ * @author David McKain
  */
-public interface XsltStylesheetCache {
+public interface SchemaCache {
    
     /**
-     * Tries to retrieve an XSLT stylesheet from the cache having the given key.
+     * Tries to retrieve a schema from the cache having the given key.
      * <p>
-     * Return a previously cached {@link Templates} or null if your cache doesn't want to cache
+     * Return a previously cached {@link Schema} or null if your cache doesn't want to cache
      * this or if it does not contain the required result.
      */
-    Templates getStylesheet(String key);
+    Schema getSchema(String key);
     
     /**
-     * Instructs the cache that it might want to store the given XSLT stylesheet corresponding
+     * Instructs the cache that it might want to store the given schema corresponding
      * to the given key.
      * <p>
      * Implementations can safely choose to do absolutely nothing here if they want.
      */
-    void putStylesheet(String key, Templates stylesheet);
+    void putSchema(String key, Schema schema);
 
 }

@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
@@ -264,7 +263,7 @@ public class UploadService {
         CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         ChainedResourceLocator result = new ChainedResourceLocator(
                 new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
-                XmlResourceReader.DEFAULT_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
+                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
                 new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
         );
         return result;

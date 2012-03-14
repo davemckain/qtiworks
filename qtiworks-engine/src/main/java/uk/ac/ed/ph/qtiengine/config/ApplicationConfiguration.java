@@ -35,11 +35,10 @@ package uk.ac.ed.ph.qtiengine.config;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.LruHashMap;
-
-import javax.xml.validation.Schema;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 
 import org.qtitools.mathassess.MathAssessExtensionPackage;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -54,7 +53,7 @@ public class ApplicationConfiguration {
     public ApplicationConfiguration() {
         jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
         
-        LruHashMap<String, Schema> schemaCache = new LruHashMap<String, Schema>(5);
+        SimpleSchemaCache schemaCache = new SimpleSchemaCache();
         qtiXmlReader = new QtiXmlReader(jqtiExtensionManager, schemaCache);
     }
     
