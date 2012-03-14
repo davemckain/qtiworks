@@ -61,6 +61,8 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import java.net.URI;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+
 /**
  * AssessmentItem encompasses the information that is presented to A candidate and information about how to score the item.
  * Scoring takes place when candidate responses are transformed into outcomes by response processing rules. It is sometimes
@@ -83,14 +85,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_LABEL_NAME = "label";
 
-    /** Default value of label attribute. */
-    public static final String ATTR_LABEL_DEFAULT_VALUE = null;
-
     /** Name of lang attribute in xml schema. */
     public static final String ATTR_LANG_NAME = "lang";
-
-    /** Default value of lang attribute. */
-    public static final String ATTR_LANG_DEFAULT_VALUE = null;
 
     /** Name of adaptive attribute in xml schema. */
     public static final String ATTR_ADAPTIVE_NAME = "adaptive";
@@ -101,14 +97,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of toolName attribute in xml schema. */
     public static final String ATTR_TOOL_NAME_NAME = "toolName";
 
-    /** Default value of toolName attribute. */
-    public static final String ATTR_TOOL_NAME_DEFAULT_VALUE = null;
-
     /** Name of toolVersion attribute in xml schema. */
     public static final String ATTR_TOOL_VERSION_NAME = "toolVersion";
-
-    /** Default value of toolVersion attribute. */
-    public static final String ATTR_TOOL_VERSION_DEFAULT_VALUE = null;
 
     /** Name of completion status built-in variable. */
     public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
@@ -153,12 +143,12 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, ATTR_LABEL_DEFAULT_VALUE));
-        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, ATTR_LANG_DEFAULT_VALUE));
+        getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, null, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_ADAPTIVE_NAME));
         getAttributes().add(new BooleanAttribute(this, ATTR_TIME_DEPENDENT_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, ATTR_TOOL_NAME_DEFAULT_VALUE));
-        getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, ATTR_TOOL_VERSION_DEFAULT_VALUE));
+        getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, false));
 
         getNodeGroups().add(new ResponseDeclarationGroup(this));
         getNodeGroups().add(new OutcomeDeclarationGroup(this));

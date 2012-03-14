@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
+
 /**
  * Keeps track of the namespace prefix mappings for attributes.
  * <p>
@@ -110,9 +112,16 @@ public final class NamespacePrefixMappings implements Serializable {
         if (namespaceUri.isEmpty()) {
             return localName;
         }
-        String prefix = getPrefix(namespaceUri);
-        if (prefix==null) {
-            throw new IllegalArgumentException("Unregistered namespace URI " + namespaceUri);
+        String prefix;
+        if (XMLConstants.XML_NS_URI.equals(namespaceUri)) {
+            /* The xml: prefix mapping is implicit */
+            prefix = XMLConstants.XML_NS_PREFIX;
+        }
+        else {
+            prefix = getPrefix(namespaceUri);
+            if (prefix==null) {
+                throw new IllegalArgumentException("Unregistered namespace URI " + namespaceUri);
+            }
         }
         return prefix + ":" + localName;
     }
@@ -122,5 +131,4 @@ public final class NamespacePrefixMappings implements Serializable {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(" + namespaceUriToPrefixMap.toString() + ")";
     }
-
 }

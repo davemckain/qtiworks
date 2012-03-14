@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+
 /**
  * The root class of all content objects in the item content model is the
  * bodyElement. It defines A number of attributes that are common to all
@@ -94,7 +96,7 @@ public abstract class BodyElement extends AbstractNode {
         super(parent, localName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, null, null, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, null, null, false));
     }
 

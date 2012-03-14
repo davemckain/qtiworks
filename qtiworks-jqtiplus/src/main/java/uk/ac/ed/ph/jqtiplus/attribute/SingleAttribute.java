@@ -52,6 +52,10 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
     public SingleAttribute(XmlNode owner, String localName) {
         this(owner, localName, null, null, true);
     }
+    
+    public SingleAttribute(XmlNode owner, String localName, boolean required) {
+        this(owner, localName, null, null, required);
+    }
 
     public SingleAttribute(XmlNode owner, String localName, String namespaceUri) {
         this(owner, localName, namespaceUri, null, null, true);

@@ -53,7 +53,7 @@ public class Prompt extends BodyElement {
 
     public Prompt(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-
+        
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
