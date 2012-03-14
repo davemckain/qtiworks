@@ -62,12 +62,16 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
+import org.custommonkey.xmlunit.DifferenceConstants;
+import org.custommonkey.xmlunit.DifferenceListener;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
@@ -115,6 +119,22 @@ public class SerializationSampleTests {
         XMLUnit.setIgnoreWhitespace(true);
         XMLUnit.setIgnoreComments(true);
         Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
+        
+        /* (We need to tell xmlunit to allow differences in namespace prefixes) */
+        diff.overrideDifferenceListener(new DifferenceListener() {
+            @Override
+            public void skippedComparison(Node arg0, Node arg1) {
+                /* No change */
+            }
+            
+            @Override
+            public int differenceFound(Difference difference) {
+                return difference.getId()==DifferenceConstants.NAMESPACE_PREFIX_ID ?
+                        DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL :
+                            DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
+            }
+        });
+        
         if (!diff.identical()) {
             System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
