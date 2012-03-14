@@ -10,7 +10,7 @@
             <value>E</value>
         </correctResponse>
     </responseDeclaration>
-    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
     <itemBody>
         <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
             <prompt>Which famous scientist is popularly associated with the equation <m:math>
