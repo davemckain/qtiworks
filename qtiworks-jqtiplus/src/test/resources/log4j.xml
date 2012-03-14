@@ -13,14 +13,14 @@ $Id: log4j.xml 2742 2011-07-05 10:01:32Z davemckain $
       <param name="ConversionPattern" value="%-5p [%d{ISO8601}] (%t) [%c{1}/%L#%M()] - %m%n"/>
     </layout>
     <filter class="org.apache.log4j.varia.LevelRangeFilter">
-      <param name="LevelMin" value="DEBUG"/>
+      <param name="LevelMin" value="TRACE"/>
       <param name="LevelMax" value="FATAL"/>
     </filter>
   </appender>
 
   <!-- Root logger -->
   <root>
-    <level value="INFO"/>
+    <level value="WARN"/>
     <appender-ref ref="STDOUT"/>
   </root>
 

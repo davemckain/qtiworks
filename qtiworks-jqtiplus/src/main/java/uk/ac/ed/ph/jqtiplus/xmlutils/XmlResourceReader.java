@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,8 +68,7 @@ import org.xml.sax.XMLReader;
 
 /**
  * Helper class that makes it easy to parse XML and optionally schema validate
- * it against
- * a set of prescribed schemas.
+ * it against a set of prescribed schemas.
  * <p>
  * Schemas are *always* loaded via the prescribed
  * {@link #getParserResourceLocator()}, so the use of this class must ensure
@@ -82,6 +82,8 @@ import org.xml.sax.XMLReader;
  * The XML parsing process performs a SAX parse followed by a DOM tree build,
  * filling the resulting tree with SAX {@link Locator} information, which makes
  * later error reporting richer.
+ * <p>
+ * This class is not intended to support any XML that uses DTDs.
  * 
  * @see XmlReadResult
  * @author David McKain
@@ -131,9 +133,9 @@ public final class XmlResourceReader {
     private final Map<String, Schema> schemaCacheMap;
     
     /**
-     * Resolver used to look up parser-related resources, such as schema and DTD files.
+     * Resolver used to look up schema resources
      */
-    private final UnifiedXmlResourceResolver resourceResolver;
+    private final LoadSaveResourceResolver schemaResourceResolver;
 
 
     public XmlResourceReader() {
@@ -155,10 +157,7 @@ public final class XmlResourceReader {
         this.schemaCacheMap = schemaCacheMap;
 
         /* Set up special resource resolver based on parserResourceLocator */
-        this.resourceResolver = new UnifiedXmlResourceResolver();
-        resourceResolver.setResourceLocator(this.parserResourceLocator);
-        resourceResolver.setFailOnMissedEntityResolution(false);
-        resourceResolver.setFailOnMissedLRResourceResolution(true);
+        this.schemaResourceResolver = new LoadSaveResourceResolver(this.parserResourceLocator);
     }
 
     public ResourceLocator getParserResourceLocator() {
@@ -216,20 +215,17 @@ public final class XmlResourceReader {
         boolean validated = false;
         final List<String> supportedSchemaNamespaces = new ArrayList<String>();
         final List<String> unsupportedSchemaNamespaces = new ArrayList<String>();
+        final List<String> unresolvedEntitySystemIds = new ArrayList<String>();
         final InputErrorHandler inputErrorHandler = new InputErrorHandler();
 
-
-        /* Create DOM Document. (We'll wire this up for parsing, even though we're now doing a SAX parse) */
+        /* Create the DOM Document that will be built up here */
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         dbFactory.setNamespaceAware(true);
-        dbFactory.setXIncludeAware(true);
-        dbFactory.setExpandEntityReferences(true);
         final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
-        documentBuilder.setEntityResolver(resourceResolver);
         documentBuilder.setErrorHandler(inputErrorHandler);
         final Document document = documentBuilder.newDocument();
 
-        /* Configure SAX parser */
+        /* Create and configure SAX parser */
         final SAXParserFactory spFactory = SAXParserFactory.newInstance();
         spFactory.setNamespaceAware(true);
         spFactory.setValidating(false);
@@ -239,8 +235,20 @@ public final class XmlResourceReader {
         spFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
         spFactory.setFeature("http://xml.org/sax/features/lexical-handler/parameter-entities", false);
         final XMLReader xmlReader = spFactory.newSAXParser().getXMLReader();
-        xmlReader.setEntityResolver(resourceResolver);
         xmlReader.setErrorHandler(inputErrorHandler);
+        
+        /* We'll let the parser look for DTD entities via only the input & parser locators. */
+        ChainedResourceLocator dtdResourceLoader = new ChainedResourceLocator(inputResourceLocator, parserResourceLocator);
+        final EntityResourceResolver entityResolver = new EntityResourceResolver(dtdResourceLoader) {
+            @Override
+            public InputSource onMiss(String publicId, String systemId) {
+                unresolvedEntitySystemIds.add(systemId);
+                InputSource emptyStringSource = new InputSource(new StringReader(""));
+                emptyStringSource.setSystemId(systemId);
+                return emptyStringSource;
+            }
+        };
+        xmlReader.setEntityResolver(entityResolver);
 
         /* Parse input and convert to a DOM containing SAX Locator information */
         logger.trace("XML parse of {} starting", systemIdString);
@@ -256,13 +264,16 @@ public final class XmlResourceReader {
         catch (final SAXParseException e) {
             /* Fatal parsing error */
         }
-        /* We'll consider successful parsing to be no errors or fatal errors */
-        parsed = inputErrorHandler.fatalErrors.isEmpty() && inputErrorHandler.errors.isEmpty();
-        logger.debug("XML parse of {} success? ", parsed);
+        
+        /* We'll consider successful parsing to be no errors or fatal errors, and no unresolved
+         * entities */
+        parsed = inputErrorHandler.fatalErrors.isEmpty() && inputErrorHandler.errors.isEmpty()
+                && unresolvedEntitySystemIds.isEmpty();
+        logger.debug("XML parse of {} success? {}", systemIdString, parsed);
 
         if (parsed && schemaValidating) {
             /* Work out which schema(s) to use */
-            logger.trace("XML parse of {} completed successfully - deciding which schemas to use", systemIdString);
+            logger.trace("Deciding which schemas to use to validate {}", systemIdString);
             final Element rootElement = document.getDocumentElement();
             final String schemaLocation = rootElement.getAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
             final List<String> schemaUris = new ArrayList<String>();
@@ -305,10 +316,10 @@ public final class XmlResourceReader {
                  * information to the schema validator. (I couldn't work out a way of passing source information
                  * when validating from a DOM.)
                  */
-                logger.debug("Schema validaton of {} starting", systemIdString);
+                logger.trace("Schema validaton of {} starting", systemIdString);
                 final StreamSource input = new StreamSource(ensureLocateInput(systemId, inputResourceLocator), systemIdString);
                 final Validator validator = schema.newValidator();
-                validator.setResourceResolver(resourceResolver);
+                validator.setResourceResolver(schemaResourceResolver);
                 validator.setErrorHandler(inputErrorHandler);
                 validator.validate(input);
                 validated = true;
@@ -323,7 +334,7 @@ public final class XmlResourceReader {
         /* Build up result */
         XmlParseResult xmlParseResult = new XmlParseResult(systemId, parsed, validated,
                 inputErrorHandler.warnings, inputErrorHandler.errors, inputErrorHandler.fatalErrors,
-                supportedSchemaNamespaces, unsupportedSchemaNamespaces);
+                unresolvedEntitySystemIds, supportedSchemaNamespaces, unsupportedSchemaNamespaces);
         return new XmlReadResult(parsed ? document : null, xmlParseResult);
     }
     
@@ -333,8 +344,8 @@ public final class XmlResourceReader {
      */
     private Schema getSchema(List<String> schemaUris) {
         Schema result = null;
+        String key = schemaUris.toString();
         if (schemaCacheMap!=null) {
-            String key = schemaUris.toString();
             synchronized (schemaCacheMap) {
                 result = schemaCacheMap.get(key);
                 if (result!=null) {
@@ -348,7 +359,7 @@ public final class XmlResourceReader {
             }
         }
         else {
-            logger.debug("No schema caching confiured, so compiling new schema");
+            logger.debug("No schema caching configured, so compiling new schema for {}", key);
             result = compileSchema(schemaUris);
         }
         return result;
@@ -358,19 +369,20 @@ public final class XmlResourceReader {
      * Compiles a schema from the given list of URIs.
      */
     private Schema compileSchema(List<String> schemaUris) {
-        logger.debug("Compiling schema(s) with URI(s) {}", schemaUris);
+        logger.trace("Compiling schema(s) with URI(s) {}", schemaUris);
         final Source[] schemaSources = new Source[schemaUris.size()];
         for (int i = 0; i < schemaSources.length; i++) {
-            final Source schemaSource = resourceResolver.loadResourceAsSource(schemaUris.get(i));
-            if (schemaSource == null) {
-                final String message = "parserResourceLocator failed to locate schema with URI " + schemaUris.get(i);
+            final String schemaSystemId = schemaUris.get(i);
+            final InputStream schemaStream = parserResourceLocator.findResource(URI.create(schemaSystemId));
+            if (schemaStream==null) {
+                final String message = "parserResourceLocator failed to locate schema with system ID " + schemaSystemId;
                 logger.debug(message);
                 throw new XmlResourceReaderException(message);
             }
-            schemaSources[i] = schemaSource;
+            schemaSources[i] = new StreamSource(schemaStream, schemaSystemId);
         }
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        sf.setResourceResolver(resourceResolver);
+        sf.setResourceResolver(schemaResourceResolver);
         sf.setErrorHandler(new SchemaParsingErrorHandler(schemaUris));
         try {
             return sf.newSchema(schemaSources);

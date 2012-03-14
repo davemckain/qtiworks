@@ -90,10 +90,10 @@ public final class ClassPathHttpResourceLocator implements ResourceLocator {
     private InputStream loadResource(final URI systemId, final String resourcePath) {
         final InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
         if (resourceStream != null) {
-            logger.debug("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemId, resourcePath);
+            logger.trace("Successful locate of HTTP resource with URI {}  in ClassPath at {}", systemId, resourcePath);
         }
         else {
-            logger.debug("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
+            logger.trace("Failed to locate HTTP resource with URI {} in ClassPath at {}", systemId, resourcePath);
         }
         return resourceStream;
     }

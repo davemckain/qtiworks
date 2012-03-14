@@ -31,14 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.reading;
+package uk.ac.ed.ph.jqtiplus.test.integration;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
@@ -52,8 +53,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Runs {@link QtiXmlReader} on each IMS sample checking the validity of each one that's
- * supposed to be valid.
+ * Integration test that runs {@link QtiXmlReader} on each IMS sample checking the validity
+ * of each one that's supposed to be valid.
  *
  * @author David McKain
  */
@@ -64,7 +65,7 @@ public class QtiXmlReaderSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.INVALID));
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance());
     }
     
     public QtiXmlReaderSampleTests(QtiSampleResource qtiSampleResource) {
@@ -77,6 +78,6 @@ public class QtiXmlReaderSampleTests {
         final QtiXmlReader reader = new QtiXmlReader();
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         XmlReadResult xmlReadResult = reader.read(qtiSampleResource.toClassPathUri(), sampleResourceLocator, true);
-        assertTrue(xmlReadResult.isSchemaValid());
+        assertEquals(!qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
     }
 }

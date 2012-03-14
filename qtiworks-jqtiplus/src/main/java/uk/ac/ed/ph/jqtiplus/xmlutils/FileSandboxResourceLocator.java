@@ -82,17 +82,17 @@ public class FileSandboxResourceLocator implements ResourceLocator {
             if (normalizedPath!=null) {
                 if (normalizedPath.startsWith("..")) {
                     /* This is trying to go outside the package, so we'll return null here */
-                    logger.debug("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
+                    logger.trace("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
                     return null;
                 }
                 final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
                 FileInputStream result = null;
                 try {
                     result = new FileInputStream(resultingFile);
-                    logger.debug("URI {} successfully mapped to file {}", systemIdUri, resultingFile);
+                    logger.trace("URI {} successfully mapped to file {}", systemIdUri, resultingFile);
                 }
                 catch (FileNotFoundException e) {
-                    logger.debug("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
+                    logger.trace("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
                 }
                 return result;
             }

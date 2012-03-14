@@ -57,7 +57,7 @@ public class QtiSampleResource implements Serializable {
     
     public static enum Feature {
         /* Add things here as required */
-        INVALID, /* Invalid example, but kept for historic purposes */
+        NOT_SCHEMA_VALID, /* Example is not schema valid, but kept for historic purposes */
     }
     
     private Type type;
@@ -92,6 +92,11 @@ public class QtiSampleResource implements Serializable {
     public Set<Feature> getFeatures() {
         return features;
     }
+    
+    public boolean hasFeature(Feature feature) {
+        return features.contains(feature);
+    }
+    
     
     public URI toClassPathUri() {
         return URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/" + relativePath);

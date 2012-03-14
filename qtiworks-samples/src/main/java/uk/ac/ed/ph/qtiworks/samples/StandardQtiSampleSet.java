@@ -47,7 +47,7 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/adaptive_template.xml"),
             new QtiSampleResource(Type.ITEM, "ims/adaptive.xml"),
             new QtiSampleResource(Type.ITEM, "ims/associate.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/choice_doctype.xml", Feature.INVALID),
+            new QtiSampleResource(Type.ITEM, "ims/choice_doctype.xml", Feature.NOT_SCHEMA_VALID),
             new QtiSampleResource(Type.ITEM, "ims/choice_fixed.xml"),
             new QtiSampleResource(Type.ITEM, "ims/choice_multiple_chocolade.xml"),
             new QtiSampleResource(Type.ITEM, "ims/choice_multiple.xml"),
@@ -81,7 +81,7 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/text_entry1.xml"),
             new QtiSampleResource(Type.ITEM, "ims/text_entry2.xml"),
             new QtiSampleResource(Type.ITEM, "ims/text_entry.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/towns.xml", Feature.INVALID),
+            new QtiSampleResource(Type.ITEM, "ims/towns.xml", Feature.NOT_SCHEMA_VALID),
             new QtiSampleResource(Type.ITEM, "ims/upload_composite.xml"),
             new QtiSampleResource(Type.ITEM, "ims/upload.xml")
     );

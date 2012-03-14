@@ -61,13 +61,13 @@ public final class ChainedResourceLocator implements ResourceLocator {
     @Override
     public InputStream findResource(URI systemId) {
         for (final ResourceLocator resourceLocator : resourceLocators) {
-            logger.debug("Trying {} using ResourceLocator {}", systemId, resourceLocator);
+            logger.trace("Trying {} using ResourceLocator {}", systemId, resourceLocator);
             final InputStream result = resourceLocator.findResource(systemId);
             if (result != null) {
-                logger.debug("Success with ResourceLocator {}", resourceLocator);
+                logger.trace("Success with ResourceLocator {}", resourceLocator);
                 return result;
             }
-            logger.debug("No success with ResourceLocator {}", resourceLocator);
+            logger.trace("No success with ResourceLocator {}", resourceLocator);
         }
         return null;
     }

@@ -90,7 +90,7 @@ public final class ClassPathResourceLocator implements ResourceLocator {
                 result = loadResource(systemId, resultingPath);
             }
             else {
-                logger.debug("ClassPath URI must be of the form " + CLASSPATH_SCHEME_NAME + ":/path");
+                logger.trace("ClassPath URI must be of the form {}:/path", CLASSPATH_SCHEME_NAME);
             }
         }
         return result;
@@ -99,10 +99,10 @@ public final class ClassPathResourceLocator implements ResourceLocator {
     private InputStream loadResource(final URI systemIdUri, final String resourcePath) {
         final InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
         if (resourceStream != null) {
-            logger.debug("Successful locate of ClassPath resource with URI {}  in ClassPath at {}", systemIdUri, resourcePath);
+            logger.trace("Successful locate of ClassPath resource with URI {}  in ClassPath at {}", systemIdUri, resourcePath);
         }
         else {
-            logger.debug("Failed to locate ClassPath resource with URI {} in ClassPath at {}", systemIdUri, resourcePath);
+            logger.trace("Failed to locate ClassPath resource with URI {} in ClassPath at {}", systemIdUri, resourcePath);
         }
         return resourceStream;
     }

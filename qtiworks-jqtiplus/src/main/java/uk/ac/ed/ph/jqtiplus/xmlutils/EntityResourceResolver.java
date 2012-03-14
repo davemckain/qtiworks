@@ -33,34 +33,75 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
- * Loads resources having a <tt>file:</tt> URI
- * 
+ * Adaptor implementation of {@link EntityResolver} that uses a {@link ResourceLocator} to
+ * locate entities.
+ * <p>
+ * Override the {@link #onMiss(String, String)} method if you'd like to do custom handling
+ * if an entity cannot be resolved.
+ *
+ * @see ResourceLocator
  * @author David McKain
  */
-public class FileResourceLocator implements ResourceLocator {
+public class EntityResourceResolver implements EntityResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileResourceLocator.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityResourceResolver.class);
+    
+    private final ResourceLocator resourceLocator;
+    
+    public EntityResourceResolver(ResourceLocator resourceLocator) {
+        this.resourceLocator = resourceLocator;
+    }
 
+    public ResourceLocator getResourceLocator() {
+        return resourceLocator;
+    }
+
+    //-------------------------------------------
+    
     @Override
-    public InputStream findResource(URI systemId) {
-        if ("file".equals(systemId.getScheme())) {
-            try {
-                return new FileInputStream(new File(systemId));
-            }
-            catch (final Exception e) {
-                logger.trace("File {} does not exist", systemId);
-                return null;
-            }
+    public InputSource resolveEntity(String publicId, String systemId) {
+        logger.trace("resolveEntity(publicId={}, systemId={})", publicId, systemId);
+        
+        URI systemIdUri;
+        try {
+            systemIdUri = new URI(systemId);
         }
+        catch (URISyntaxException e) {
+            logger.trace("System ID {} could not be parsed as a URI", systemId);
+            return onMiss(publicId, systemId);
+        }
+        
+        final InputStream stream = resourceLocator.findResource(systemIdUri);
+        if (stream==null) {
+            return onMiss(publicId, systemId);
+        }
+        
+        logger.trace("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
+        InputSource result = new InputSource(stream);
+        result.setPublicId(publicId);
+        result.setSystemId(systemId);
+        return result;
+    }
+    
+    @SuppressWarnings("unused")
+    public InputSource onMiss(String publicId, String systemId) {
         return null;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+            + "(resourceLocator=" + resourceLocator
+            + ")";
     }
 }

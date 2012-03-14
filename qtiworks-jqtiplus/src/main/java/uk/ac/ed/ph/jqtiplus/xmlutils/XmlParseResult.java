@@ -56,12 +56,13 @@ public final class XmlParseResult implements Serializable {
     private final List<SAXParseException> warnings;
     private final List<SAXParseException> errors;
     private final List<SAXParseException> fatalErrors;
+    private final List<String> unresolvedEntitySystemIds;
     private final List<String> supportedSchemaNamespaces;
     private final List<String> unsupportedSchemaNamespaces;
 
     public XmlParseResult(URI systemId, boolean parsed, boolean validated,
             List<SAXParseException> warnings, List<SAXParseException> errors,
-            List<SAXParseException> fatalErrors, 
+            List<SAXParseException> fatalErrors, List<String> unresolvedEntitySystemIds,
             List<String> supportedSchemaNamespaces, List<String> unsupportedSchemaNamespaces) {
         this.systemId = systemId;
         this.parsed = parsed;
@@ -69,6 +70,7 @@ public final class XmlParseResult implements Serializable {
         this.warnings = ObjectUtilities.unmodifiableList(warnings);
         this.errors = ObjectUtilities.unmodifiableList(errors);
         this.fatalErrors = ObjectUtilities.unmodifiableList(fatalErrors);
+        this.unresolvedEntitySystemIds = ObjectUtilities.unmodifiableList(unresolvedEntitySystemIds);
         this.supportedSchemaNamespaces = ObjectUtilities.unmodifiableList(supportedSchemaNamespaces);
         this.unsupportedSchemaNamespaces = ObjectUtilities.unmodifiableList(unsupportedSchemaNamespaces);
     }
@@ -97,6 +99,10 @@ public final class XmlParseResult implements Serializable {
     public List<SAXParseException> getFatalErrors() {
         return fatalErrors;
     }
+    
+    public List<String> getUnresolvedEntitySystemIds() {
+        return unresolvedEntitySystemIds;
+    }
 
     public List<String> getSupportedSchemaNamespaces() {
         return supportedSchemaNamespaces;
@@ -111,6 +117,7 @@ public final class XmlParseResult implements Serializable {
                 && fatalErrors.isEmpty()
                 && errors.isEmpty()
                 && warnings.isEmpty()
+                && unresolvedEntitySystemIds.isEmpty()
                 && unsupportedSchemaNamespaces.isEmpty();
     }
 
@@ -126,6 +133,7 @@ public final class XmlParseResult implements Serializable {
                 + ",warnings=" + warnings
                 + ",errors=" + errors
                 + ",fatalErrors=" + fatalErrors
+                + ",unresolvedEntitySystemIds=" + unresolvedEntitySystemIds
                 + ",supportedSchemaNamespaces=" + supportedSchemaNamespaces
                 + ",unsupportedSchemaNamespaces=" + unsupportedSchemaNamespaces
                 + ")";

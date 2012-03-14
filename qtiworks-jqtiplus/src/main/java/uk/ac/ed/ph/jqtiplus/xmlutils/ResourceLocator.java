@@ -37,8 +37,10 @@ import java.io.InputStream;
 import java.net.URI;
 
 /**
- * This interface is used by {@link UnifiedXmlResourceResolver} to actually
- * <strong>locate</strong> the resulting XML resources.
+ * Callback interface for "locating" (i.e. finding) the various types of resources required
+ * during XML processing.
+ * <p>
+ * A number of useful implementations have been provided.
  * <p>
  * Implementations of the interface MUST be be reusable and safe for concurrent use.
  * 

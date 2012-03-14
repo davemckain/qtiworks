@@ -38,8 +38,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.UnifiedXmlResourceResolver;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XsltResourceResolver;
 
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.List;
@@ -65,7 +66,8 @@ public final class XsltStylesheetManager {
     
     private final XsltStylesheetCache stylesheetCache;
     private final ResourceLocator customXsltResourceLocator;
-    private final UnifiedXmlResourceResolver resourceResolver;
+    private final ResourceLocator xsltResourceLocator;
+    private final XsltResourceResolver xsltResourceResolver;
     
     /**
      * Creates a new {@link XsltStylesheetManager} with no {@link XsltStylesheetCache} and no custom
@@ -91,10 +93,8 @@ public final class XsltStylesheetManager {
         else {
             resultingXsltResourceLocator = customXsltResourceLocator;
         }
-        this.resourceResolver = new UnifiedXmlResourceResolver(resultingXsltResourceLocator);
-        resourceResolver.setFailOnMissedEntityResolution(true);
-        resourceResolver.setFailOnMissedLRResourceResolution(true);
-        resourceResolver.setFailOnMissedURIResolution(true);
+        this.xsltResourceLocator = resultingXsltResourceLocator;
+        this.xsltResourceResolver = new XsltResourceResolver(resultingXsltResourceLocator);
     }
     
     //----------------------------------------------------------
@@ -147,10 +147,11 @@ public final class XsltStylesheetManager {
         TransformerFactory transformerFactory = getTransformerFactory();
         Source resolved;
         try {
-            resolved = resourceResolver.loadResourceAsSource(xsltUri);
-            if (resolved==null) {
+            InputStream resolvedStream = xsltResourceLocator.findResource(xsltUri);
+            if (resolvedStream==null) {
                 throw new QtiSerializationException("Could not locate XSLT resource at system ID " + xsltUri);
             }
+            resolved = new StreamSource(resolvedStream, xsltUri.toString());
             return transformerFactory.newTemplates(resolved);
         }
         catch (TransformerConfigurationException e) {
@@ -323,7 +324,7 @@ public final class XsltStylesheetManager {
         TransformerFactory transformerFactory = XsltFactoryUtilities.createJAXPTransformerFactory();
         
         /* Configure URIResolver */
-        transformerFactory.setURIResolver(resourceResolver);
+        transformerFactory.setURIResolver(xsltResourceResolver);
         return transformerFactory;
     }
     
@@ -333,7 +334,7 @@ public final class XsltStylesheetManager {
         XsltFactoryUtilities.requireFeature(transformerFactory, SAXTransformerFactory.FEATURE);
         
         /* Configure URIResolver */
-        transformerFactory.setURIResolver(resourceResolver);
+        transformerFactory.setURIResolver(xsltResourceResolver);
         return (SAXTransformerFactory) transformerFactory;
     }
     

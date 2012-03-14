@@ -63,11 +63,11 @@ public final class NetworkHttpResourceLocator implements ResourceLocator {
         InputStream resourceStream;
         try {
             resourceStream = systemId.toURL().openConnection().getInputStream();
-            logger.debug("Successful connection to HTTP resource with URI {}", systemId);
+            logger.trace("Successful connection to HTTP resource with URI {}", systemId);
         }
         catch (IOException e) {
             resourceStream = null;
-            logger.debug("Failed to open connection to HTTP resource with URI {}", systemId);
+            logger.trace("Failed to open connection to HTTP resource with URI {}", systemId);
         }
         return resourceStream;
     }
