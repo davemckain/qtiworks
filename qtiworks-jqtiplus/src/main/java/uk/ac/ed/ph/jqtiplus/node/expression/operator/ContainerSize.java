@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * The containerSize operator takes A sub-expression with any base-type and either multiple or ordered
@@ -67,13 +68,12 @@ public class ContainerSize extends AbstractExpression {
     }
 
     @Override
-    protected IntegerValue evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return new IntegerValue(0);
         }
 
-        final int size = ((ListValue) getFirstChild().getValue(context)).size();
-
+        final int size = ((ListValue) childValues[0]).size();
         return new IntegerValue(size);
     }
 }

@@ -50,12 +50,9 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
-
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,8 +125,7 @@ public class CasCondition extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context) throws MaximaTimeoutException {
-        final List<Value> childValues = getChildValues(context);
+    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException {
         final boolean simplify = getSimplify().booleanValue();
         final String code = getCode().trim();
 
@@ -138,12 +134,13 @@ public class CasCondition extends MathAssessOperator {
                     new Object[] { code, simplify, childValues });
         }
 
-        final List<Value> values = new ArrayList<Value>();
-        for (final Value v : childValues) {
+        final Value[] values = new Value[childValues.length];
+        for (int i=0; i<childValues.length; i++) {
+            Value v = childValues[i];
             if (CasTypeGlue.isMathsContentRecord(v) && ((RecordValue) v).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
                 return NullValue.INSTANCE;
             }
-            values.add(v);
+            values[i] = v;
         }
 
         final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();

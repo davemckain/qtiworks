@@ -93,13 +93,12 @@ public class PatternMatch extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = ((StringValue) getFirstChild().getValue(context)).stringValue().matches(getPattern());
-
+        final boolean result = ((StringValue) childValues[0]).stringValue().matches(getPattern());
         return BooleanValue.valueOf(result);
     }
 }

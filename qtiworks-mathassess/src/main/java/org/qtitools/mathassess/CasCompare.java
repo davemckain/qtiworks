@@ -52,14 +52,13 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
+
 import org.qtitools.mathassess.attribute.ActionTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 import org.qtitools.mathassess.type.ActionType;
 
-import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -186,10 +185,9 @@ public class CasCompare extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context) throws MaximaTimeoutException {
-        final List<Value> childValues = getChildValues(context);
-        final Value v1 = childValues.get(0);
-        final Value v2 = childValues.get(1);
+    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException {
+        final Value v1 = childValues[0];
+        final Value v2 = childValues[1];
 
         final boolean simplify = getSimplify().booleanValue();
         String code = getCode();

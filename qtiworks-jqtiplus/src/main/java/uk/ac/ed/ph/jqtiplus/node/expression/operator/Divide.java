@@ -65,18 +65,17 @@ public class Divide extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final double firstNumber = ((NumberValue) getFirstChild().getValue(context)).doubleValue();
-        final double secondNumber = ((NumberValue) getSecondChild().getValue(context)).doubleValue();
+        final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
+        final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
         if (secondNumber == 0) {
             return NullValue.INSTANCE;
         }
-
         return new FloatValue(firstNumber / secondNumber);
     }
 }

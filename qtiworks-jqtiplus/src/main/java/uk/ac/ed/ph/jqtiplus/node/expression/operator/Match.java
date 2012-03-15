@@ -96,13 +96,13 @@ public class Match extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final Value firstValue = getFirstChild().getValue(context);
-        final Value secondValue = getSecondChild().getValue(context);
+        final Value firstValue = childValues[0];
+        final Value secondValue = childValues[1];
 
         return BooleanValue.valueOf(firstValue.equals(secondValue));
     }

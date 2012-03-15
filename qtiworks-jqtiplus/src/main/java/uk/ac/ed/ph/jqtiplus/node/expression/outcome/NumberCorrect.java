@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class NumberCorrect extends ItemSubset {
     }
 
     @Override
-    protected IntegerValue evaluateSelf(ProcessingContext context, int depth) {
+    protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 

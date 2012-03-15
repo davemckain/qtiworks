@@ -91,11 +91,6 @@ public class Variable extends LookupExpression {
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
     }
 
-    @Override
-    public boolean isVariable() {
-        return true;
-    }
-
     /**
      * Gets value of weightIdentifier attribute.
      * 

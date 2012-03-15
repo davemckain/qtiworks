@@ -61,12 +61,12 @@ public class Not extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = !((BooleanValue) getFirstChild().getValue(context)).booleanValue();
+        final boolean result = !((BooleanValue) childValues[0]).booleanValue();
 
         return BooleanValue.valueOf(result);
     }

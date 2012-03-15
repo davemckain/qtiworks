@@ -71,16 +71,16 @@ public class Subtract extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final NumberValue firstNumber = (NumberValue) getFirstChild().getValue(context);
-        final NumberValue secondNumber = (NumberValue) getSecondChild().getValue(context);
+        final NumberValue firstNumber = (NumberValue) childValues[0];
+        final NumberValue secondNumber = (NumberValue) childValues[1];
 
         Value result;
-        if (getFirstChild().getBaseType(context).isInteger() && getSecondChild().getBaseType(context).isInteger()) {
+        if (firstNumber.getBaseType().isInteger() && secondNumber.getBaseType().isInteger()) {
             result = new IntegerValue(firstNumber.intValue() - secondNumber.intValue());
         }
         else {

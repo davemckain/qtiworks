@@ -126,16 +126,16 @@ public class Index extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        if (getIndex() > ((OrderedValue) getFirstChild().getValue(context)).size()) {
+        if (getIndex() > ((OrderedValue) childValues[0]).size()) {
             return NullValue.INSTANCE;
         }
 
-        final Value value = ((ListValue) getFirstChild().getValue(context)).get(getIndex() - 1);
+        final Value value = ((ListValue) childValues[0]).get(getIndex() - 1);
 
         if (value == null || value.isNull()) {
             return NullValue.INSTANCE;

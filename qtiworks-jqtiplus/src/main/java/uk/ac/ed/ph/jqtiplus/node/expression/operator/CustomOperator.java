@@ -113,9 +113,4 @@ public abstract class CustomOperator extends AbstractExpression {
     public void setDefinition(URI name) {
         getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).setValue(name);
     }
-
-    @Override
-    public boolean isVariable() {
-        return true;
-    }
 }

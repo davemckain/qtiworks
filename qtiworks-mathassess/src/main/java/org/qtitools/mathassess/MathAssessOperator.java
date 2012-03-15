@@ -50,12 +50,12 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
+import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
+
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
 import org.qtitools.mathassess.type.SyntaxType;
-
-import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
-import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +98,13 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, int depth) {
+    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         switch (getSyntax()) {
             case MAXIMA:
                 try {
                     /* FIXME: These operators are legal in test contexts too. We
                      * need to support this eventually. */
-                    return maximaEvaluate((ItemProcessingContext) context);
+                    return maximaEvaluate((ItemProcessingContext) context, childValues);
                 }
                 catch (final MaximaProcessTerminatedException e) {
                     throw new QtiEvaluationException("Maxima process was terminated earlier while processing this item", e);
@@ -124,7 +124,7 @@ public abstract class MathAssessOperator extends CustomOperator {
         }
     }
 
-    protected abstract Value maximaEvaluate(ItemProcessingContext context)
+    protected abstract Value maximaEvaluate(ItemProcessingContext context, Value[] childValues)
             throws MaximaTimeoutException, MathsContentTooComplexException;
 
     /**

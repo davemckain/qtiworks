@@ -87,15 +87,15 @@ public class Random extends RandomExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
         final java.util.Random randomGenerator = getRandomGenerator(depth);
-        final int randomIndex = randomGenerator.nextInt(((ListValue) getFirstChild().getValue(context)).size());
+        final int randomIndex = randomGenerator.nextInt(((ListValue) childValues[0]).size());
 
-        final Value value = ((ListValue) getFirstChild().getValue(context)).get(randomIndex);
+        final Value value = ((ListValue) childValues[0]).get(randomIndex);
 
         if (value == null || value.isNull()) {
             return NullValue.INSTANCE;

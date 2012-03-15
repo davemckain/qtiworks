@@ -81,8 +81,8 @@ public class StatsOperator extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, int depth) {
-        final ListValue containerValue = (ListValue) getFirstChild().getValue(context);
+    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        final ListValue containerValue = (ListValue) childValues[0];
         if (containerValue.isNull()) {
             return NullValue.INSTANCE;
         }

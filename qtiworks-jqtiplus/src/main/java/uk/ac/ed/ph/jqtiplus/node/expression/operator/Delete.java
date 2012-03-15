@@ -107,18 +107,17 @@ public class Delete extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final ListValue value = (ListValue) ((ListValue) getSecondChild().getValue(context)).clone();
-        value.removeAll((SingleValue) getFirstChild().getValue(context));
+        final ListValue value = (ListValue) ((ListValue) childValues[1]).clone();
+        value.removeAll((SingleValue) childValues[0]);
 
         if (value.isNull()) {
             return NullValue.INSTANCE;
         }
-
         return value;
     }
 }

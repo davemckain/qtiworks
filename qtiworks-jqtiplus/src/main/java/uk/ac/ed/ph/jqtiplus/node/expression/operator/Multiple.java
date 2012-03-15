@@ -99,28 +99,23 @@ public class Multiple extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final MultipleValue container = new MultipleValue();
 
-        for (final Expression subExpression : getChildren()) {
-            final Value value = subExpression.getValue(context);
-            if (!value.isNull()) {
-                if (value.getCardinality() == Cardinality.SINGLE) {
-                    container.add((SingleValue) value);
+        for (Value childValue : childValues) {
+            if (!childValue.isNull()) {
+                if (childValue.getCardinality() == Cardinality.SINGLE) {
+                    container.add((SingleValue) childValue);
                 }
-                else if (value.getCardinality() == Cardinality.MULTIPLE) {
-                    container.add((MultipleValue) value);
+                else if (childValue.getCardinality() == Cardinality.MULTIPLE) {
+                    container.add((MultipleValue) childValue);
                 }
                 else {
-                    throw new QtiLogicException("Invalid cardinality: " + value.getCardinality());
+                    throw new QtiLogicException("Invalid cardinality: " + childValue.getCardinality());
                 }
             }
         }
 
-        if (container.isNull()) {
-            return NullValue.INSTANCE;
-        }
-
-        return container;
+        return container.isNull() ? NullValue.INSTANCE: container;
     }
 }

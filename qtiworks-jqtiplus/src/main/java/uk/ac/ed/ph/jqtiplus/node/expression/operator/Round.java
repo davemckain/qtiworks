@@ -64,13 +64,12 @@ public class Round extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final double number = ((FloatValue) getFirstChild().getValue(context)).doubleValue();
-
+        final double number = ((FloatValue) childValues[0]).doubleValue();
         return new IntegerValue((int) Math.round(number));
     }
 }

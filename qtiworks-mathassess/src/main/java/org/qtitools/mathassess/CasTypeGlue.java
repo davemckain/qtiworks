@@ -63,8 +63,6 @@ import org.qtitools.mathassess.tools.qticasbridge.types.OrderedValueWrapper;
 import org.qtitools.mathassess.tools.qticasbridge.types.SingleValueWrapper;
 import org.qtitools.mathassess.tools.qticasbridge.types.ValueWrapper;
 
-import java.util.List;
-
 /**
  * Provides the required static methods for mapping between JQTI {@link Value}s
  * and the
@@ -313,12 +311,11 @@ public final class CasTypeGlue {
         }
         return wrapper;
     }
-
-    public static ValueWrapper[] convertFromJQTI(List<Value> values) {
-        final ValueWrapper[] output = new ValueWrapper[values.size()];
-
-        for (int i = 0; i < values.size(); i++) {
-            output[i] = convertFromJQTI(values.get(i));
+    
+    public static ValueWrapper[] convertFromJQTI(Value[] values) {
+        final ValueWrapper[] output = new ValueWrapper[values.length];
+        for (int i = 0; i < values.length; i++) {
+            output[i] = convertFromJQTI(values[i]);
         }
         return output;
     }

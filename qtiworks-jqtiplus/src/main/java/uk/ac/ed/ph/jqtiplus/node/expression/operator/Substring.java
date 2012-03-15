@@ -90,13 +90,13 @@ public class Substring extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        String firstString = ((StringValue) getFirstChild().getValue(context)).stringValue();
-        String secondString = ((StringValue) getSecondChild().getValue(context)).stringValue();
+        String firstString = ((StringValue) childValues[0]).stringValue();
+        String secondString = ((StringValue) childValues[1]).stringValue();
 
         if (!getCaseSensitive()) {
             firstString = firstString.toLowerCase();

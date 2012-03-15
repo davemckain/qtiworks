@@ -481,7 +481,7 @@ public final class ItemSessionState implements Serializable {
         if (variableDeclaration instanceof TemplateDeclaration) {
             templateValues.put(identifier, value);
         }
-        if (variableDeclaration instanceof ResponseDeclaration) {
+        else if (variableDeclaration instanceof ResponseDeclaration) {
             responseValues.put(identifier, value);
         }
         else if (variableDeclaration instanceof OutcomeDeclaration) {

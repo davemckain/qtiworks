@@ -49,7 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,17 +88,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     @Override
     public ExpressionType getType() {
         return ExpressionType.getType(getClassTag());
-    }
-
-    @Override
-    public boolean isVariable() {
-        for (final Expression child : getChildren()) {
-            if (child.isVariable()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -320,33 +308,14 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /**
-     * Gets the evaluated values of all the child expressions.
-     * 
-     * @return list of values from children
-     */
-    public final List<Value> getChildValues(ProcessingContext context) {
-        final List<Value> values = new ArrayList<Value>();
-
-        for (final Expression expression : getChildren()) {
-            values.add(expression.getValue(context));
-        }
-
-        return values;
-    }
-
-    /**
      * Returns true if any subexpression is NULL; false otherwise.
-     * 
-     * @param context TODO
-     * @return true if any subexpression is NULL; false otherwise
      */
-    protected boolean isAnyChildNull(ProcessingContext context) {
-        for (final Expression child : getChildren()) {
-            if (child.isNull(context)) {
+    protected boolean isAnyChildNull(Value[] childValues) {
+        for (Value childValue : childValues) {
+            if (childValue.isNull()) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -400,53 +369,45 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }
 
-        Value value = context.getExpressionValue(this);
-        if (value == null || isVariable()) {
-            // 1) Evaluates all children.
-            for (final Expression child : getChildren()) {
-                if (child instanceof AbstractExpression) {
-                    ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
+        // (1) Evaluates all children (recursively)
+        List<Expression> children = getChildren();
+        Value[] childValues = new Value[children.size()];
+        for (int i=0; i<children.size(); i++) {
+            Expression child = children.get(i);
+            Value childValue = NullValue.INSTANCE;
+            if (child instanceof AbstractExpression) {
+                childValue = ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
+            }
+            else {
+                /* (This only happens if an extension implements Expression directly) */
+                try {
+                    childValue = child.evaluate(context);
                 }
-                else {
-                    /* (This only happens if an extension implements Expression directly) */
-                    try {
-                        child.evaluate(context);
-                    }
-                    catch (final RuntimeValidationException e) {
-                        runtimeValidationResult.addAll(e.getValidationResult().getAllItems());
-                    }
+                catch (final RuntimeValidationException e) {
+                    runtimeValidationResult.addAll(e.getValidationResult().getAllItems());
                 }
             }
+            childValues[i] = childValue;
+        }
 
 // DM: I think we should be able to catch all validation errors before runtime now, but haven't implemented this yet.
 // I have commented out the check here as the context interfaces aren't linked like they used to be.
-//            // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-//            validateThisOnly(context);
+//      // 2) Validates this expression (but not its children, since they will have been done in 1 above).
+//      validateThisOnly(context);
 
-            // 3) Evaluates this expression.
-            value = evaluateSelf(context, depth);
-        }
-        else {
-            logger.debug("{}Value of {} was already evaluated.", formatIndent(depth), getClass().getSimpleName());
-        }
-
-        if (value == null) {
-            value = NullValue.INSTANCE;
-        }
+        // 3) Evaluates this expression.
+        Value value = evaluateSelf(context, childValues, depth);
 
         // Logs result of evaluation.
         final String format = "{}{} -> {}({})";
         final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), value.getBaseType(), value };
-
         if (!(getParent() instanceof Expression)) {
-            logger.info(format, arguments);
-        }
-        else {
             logger.debug(format, arguments);
         }
+        else {
+            logger.trace(format, arguments);
+        }
 
-        /* Save value back into context */
-        context.setExpressionValue(this, value);
         return value;
     }
 
@@ -455,35 +416,12 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /**
-     * Evaluates this expression. All children must be already evaluated. Contains no checks.
+     * Evaluates this expression.
      * 
+     * @param childValues
      * @param depth depth of this expression in expression tree (root's depth = 0)
-     * @return result of evaluation
+     * 
+     * @return result of evaluation, which must not be null
      */
-    protected abstract Value evaluateSelf(ProcessingContext context, int depth);
-
-    @Override
-    public boolean isNull(ProcessingContext context) {
-        return getValue(context).isNull();
-    }
-
-    @Override
-    public Cardinality getCardinality(ProcessingContext context) {
-        return getValue(context).getCardinality();
-    }
-
-    @Override
-    public BaseType getBaseType(ProcessingContext context) {
-        return getValue(context).getBaseType();
-    }
-
-    @Override
-    public final Value getValue(ProcessingContext context) {
-        Value result = context.getExpressionValue(this);
-        if (result == null) {
-            logger.error("Value for expression " + getClass().getSimpleName() + " is not set; returning NULL");
-            result = NullValue.INSTANCE;
-        }
-        return result;
-    }
+    protected abstract Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth);
 }

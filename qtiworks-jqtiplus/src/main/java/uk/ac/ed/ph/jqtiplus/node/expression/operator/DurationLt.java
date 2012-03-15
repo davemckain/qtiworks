@@ -63,13 +63,13 @@ public class DurationLt extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final double firstNumber = ((DurationValue) getFirstChild().getValue(context)).doubleValue();
-        final double secondNumber = ((DurationValue) getSecondChild().getValue(context)).doubleValue();
+        final double firstNumber = ((DurationValue) childValues[0]).doubleValue();
+        final double secondNumber = ((DurationValue) childValues[1]).doubleValue();
 
         return BooleanValue.valueOf(firstNumber < secondNumber);
     }

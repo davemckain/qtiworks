@@ -70,15 +70,6 @@ public interface Expression extends ExpressionParent {
     public ExpressionType getType();
 
     /**
-     * Returns true if value of evaluation can change every evaluation call; false otherwise.
-     * It checks this expression and all of its children (if any child is variable, this expression becomes variable too).
-     * Example of variable expressions: variable and outcome expressions.
-     * 
-     * @return true if value of evaluation can change every evaluation call; false otherwise
-     */
-    public boolean isVariable();
-
-    /**
      * Gets list of all possible produced cardinalities after evaluation (possible cardinalities of evaluated result).
      * Result of this method can change in time.
      * <p>
@@ -117,13 +108,6 @@ public interface Expression extends ExpressionParent {
      */
     public List<Expression> getChildren();
 
-    // FIXME: Make sure this can now be deleted
-    //    /**
-    //     * Resets this expression and all its children state (set same state like before first evaluation).
-    //     * @param context TODO
-    //     */
-    //    public void reset(ProcessingContext context);
-
     /**
      * Evaluates this expression.
      * <ol>
@@ -132,44 +116,9 @@ public interface Expression extends ExpressionParent {
      * <li>evaluates this expression (calls <code>evaluateSelf</code> method)
      * </ol>
      * 
-     * @param context TODO
+     * @param context
      * @return result of evaluation
      * @throws RuntimeValidationException
      */
     public Value evaluate(ProcessingContext context) throws RuntimeValidationException;
-
-    /**
-     * Returns true if evaluated result of this expression is NULL; false otherwise.
-     * 
-     * @param context TODO
-     * @return true if evaluated result of this expression is NULL; false otherwise
-     * @throws NullPointerException if this expression is not evaluated yet
-     */
-    public boolean isNull(ProcessingContext context) throws NullPointerException;
-
-    /**
-     * Gets cardinality of evaluated result.
-     * 
-     * @param context TODO
-     * @return cardinality of evaluated result
-     * @throws NullPointerException if this expression is not evaluated yet
-     */
-    public Cardinality getCardinality(ProcessingContext context) throws NullPointerException;
-
-    /**
-     * Gets baseType of evaluated result.
-     * 
-     * @param context TODO
-     * @return baseType of evaluated result
-     * @throws NullPointerException if this expression is not evaluated yet
-     */
-    public BaseType getBaseType(ProcessingContext context) throws NullPointerException;
-
-    /**
-     * Gets evaluated result or null if this expression is not evaluated yet.
-     * 
-     * @param context TODO
-     * @return evaluated result or null if this expression is not evaluated yet
-     */
-    public Value getValue(ProcessingContext context);
 }

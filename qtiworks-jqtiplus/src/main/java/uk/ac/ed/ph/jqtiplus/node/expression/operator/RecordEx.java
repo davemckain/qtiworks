@@ -133,23 +133,17 @@ public class RecordEx extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final RecordValue container = new RecordValue();
 
-        int index = 0;
-
-        for (final Expression subExpression : getChildren()) {
-            final Identifier identifier = getIdentifiers().get(index++);
-            final Value value = subExpression.getValue(context);
+        for (int i=0; i<childValues.length; i++) {
+            final Identifier identifier = getIdentifiers().get(i++);
+            final Value value = childValues[i];
             if (!value.isNull()) {
                 container.add(identifier, (SingleValue) value);
             }
         }
 
-        if (container.isNull()) {
-            return NullValue.INSTANCE;
-        }
-
-        return container;
+        return container.isNull() ? NullValue.INSTANCE : container;
     }
 }

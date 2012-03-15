@@ -75,14 +75,12 @@ public class Member extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = ((ListValue) getSecondChild().getValue(context)).contains(
-                (SingleValue) getFirstChild().getValue(context));
-
+        final boolean result = ((ListValue) childValues[1]).contains((SingleValue) childValues[0]);
         return BooleanValue.valueOf(result);
     }
 }

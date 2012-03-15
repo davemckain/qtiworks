@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
-import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -65,24 +64,15 @@ public class Or extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        boolean containsNulls = false;
-
-        for (final Expression subExpression : getChildren()) {
-            final Value value = subExpression.getValue(context);
-
-            if (value.isNull()) {
-                containsNulls = true;
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        for (Value childValue : childValues) {
+            if (childValue.isNull()) {
+                return NullValue.INSTANCE;
             }
-            else if (((BooleanValue) value).booleanValue()) {
+            else if (((BooleanValue) childValue).booleanValue()) {
                 return BooleanValue.TRUE;
             }
         }
-
-        if (containsNulls) {
-            return NullValue.INSTANCE;
-        }
-
         return BooleanValue.FALSE;
     }
 }

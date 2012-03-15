@@ -43,8 +43,6 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.List;
-
 /**
  * Implementation of <tt>mathOperator</tt>
  * 
@@ -81,16 +79,15 @@ public class MathOperator extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
         /* Convert each argument value to double, short-circuiting if any argument is null */
-        final List<Value> childValues = getChildValues(context);
-        final double[] arguments = new double[childValues.size()];
-        for (int i = 0; i < childValues.size(); i++) {
-            final Value childValue = childValues.get(i);
+        final double[] arguments = new double[childValues.length];
+        for (int i = 0; i < childValues.length; i++) {
+            final Value childValue = childValues[i];
             if (childValue.isNull() || !childValue.getBaseType().isNumeric()) {
                 return NullValue.INSTANCE;
             }

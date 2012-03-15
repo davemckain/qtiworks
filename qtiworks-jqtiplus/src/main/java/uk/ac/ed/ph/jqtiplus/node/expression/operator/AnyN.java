@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
-import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -139,15 +138,15 @@ public class AnyN extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         int numberOfNull = 0;
         int numberOfTrue = 0;
-
-        for (final Expression subExpression : getChildren()) {
-            if (subExpression.isNull(context)) {
+        
+        for (Value childValue : childValues) {
+            if (childValue.isNull()) {
                 numberOfNull++;
             }
-            else if (((BooleanValue) subExpression.getValue(context)).booleanValue()) {
+            else if (((BooleanValue) childValue).booleanValue()) {
                 numberOfTrue++;
             }
         }

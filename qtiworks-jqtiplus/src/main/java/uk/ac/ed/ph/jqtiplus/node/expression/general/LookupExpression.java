@@ -106,11 +106,6 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    public boolean isVariable() {
-        return true;
-    }
-
-    @Override
     protected final void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
         
@@ -168,7 +163,7 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected final Value evaluateSelf(ProcessingContext context, int depth) {
+    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getClassTag(), getIdentifier() });
 
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();

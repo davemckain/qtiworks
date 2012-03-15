@@ -162,7 +162,7 @@ public class TestVariables extends ItemSubset {
 
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 

@@ -63,13 +63,13 @@ public class IntegerModulus extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final int firstNumber = ((IntegerValue) getFirstChild().getValue(context)).intValue();
-        final int secondNumber = ((IntegerValue) getSecondChild().getValue(context)).intValue();
+        final int firstNumber = ((IntegerValue) childValues[0]).intValue();
+        final int secondNumber = ((IntegerValue) childValues[1]).intValue();
 
         if (secondNumber == 0) {
             return NullValue.INSTANCE;

@@ -77,7 +77,7 @@ public class MathConstant extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, int depth) {
+    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final MathConstantTarget constant = getConstant();
         return constant != null ? new FloatValue(getConstant().getValue()) : NullValue.INSTANCE;
     }

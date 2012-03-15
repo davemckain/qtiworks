@@ -124,8 +124,8 @@ public class Inside extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
@@ -133,12 +133,12 @@ public class Inside extends AbstractExpression {
 
         final int[] coords = convertCoordinates(getCoordinates());
 
-        if (getFirstChild().getCardinality(context).isSingle()) {
-            final PointValue point = (PointValue) getFirstChild().getValue(context);
+        if (childValues[0].getCardinality().isSingle()) {
+            final PointValue point = (PointValue) childValues[0];
             result = getShape().isInside(coords, point);
         }
         else {
-            final ListValue list = (ListValue) getFirstChild().getValue(context);
+            final ListValue list = (ListValue) childValues[0];
             for (int i = 0; i < list.size(); i++) {
                 final PointValue point = (PointValue) list.get(i);
                 if (getShape().isInside(coords, point)) {

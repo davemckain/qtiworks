@@ -95,16 +95,15 @@ public class Contains extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final Value firstValue = getFirstChild().getValue(context);
-        final Value secondValue = getSecondChild().getValue(context);
+        final Value firstValue = childValues[0];
+        final Value secondValue = childValues[1];
 
         Boolean result = null;
-
         switch (firstValue.getCardinality()) {
             case MULTIPLE:
                 result = ((MultipleValue) firstValue).contains((MultipleValue) secondValue);
@@ -117,8 +116,6 @@ public class Contains extends AbstractExpression {
             default:
                 throw new QtiLogicException("Invalid cardinality: " + firstValue.getCardinality());
         }
-
-        assert result != null;
 
         return BooleanValue.valueOf(result);
     }

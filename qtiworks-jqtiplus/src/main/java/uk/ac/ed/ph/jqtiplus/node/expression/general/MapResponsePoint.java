@@ -106,16 +106,11 @@ public class MapResponsePoint extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         final Value responseValue = itemContext.lookupVariable(getIdentifier());
 
         return responseDeclaration.getAreaMapping().getTargetValue(responseValue);
-    }
-
-    @Override
-    public boolean isVariable() {
-        return true;
     }
 }

@@ -62,13 +62,12 @@ public class IntegerToFloat extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final double value = ((NumberValue) getFirstChild().getValue(context)).doubleValue();
-
+        final double value = ((NumberValue) childValues[0]).doubleValue();
         return new FloatValue(value);
     }
 }

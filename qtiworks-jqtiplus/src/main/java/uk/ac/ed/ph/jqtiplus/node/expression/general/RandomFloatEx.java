@@ -76,9 +76,4 @@ public class RandomFloatEx extends RandomFloat {
     public void setSeedAttributeValue(Long seed) {
         getAttributes().getLongAttribute(ATTR_SEED_NAME).setValue(seed);
     }
-
-    @Override
-    public boolean isVariable() {
-        return true;
-    }
 }

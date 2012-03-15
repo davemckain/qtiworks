@@ -90,11 +90,6 @@ public abstract class ItemSubset extends AbstractExpression {
         getAttributes().add(new StringMultipleAttribute(this, ATTR_EXCLUDE_CATEGORIES_NAME, ATTR_EXCLUDE_CATEGORIES_DEFAULT_VALUE));
     }
 
-    @Override
-    public boolean isVariable() {
-        return true;
-    }
-
     /**
      * Gets value of identifier attribute.
      * 

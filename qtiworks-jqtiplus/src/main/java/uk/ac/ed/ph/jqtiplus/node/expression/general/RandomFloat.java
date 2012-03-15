@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
 
@@ -132,16 +133,11 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected FloatValue evaluateSelf(ProcessingContext context, int depth) {
+    protected FloatValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final Random randomGenerator = getRandomGenerator(depth);
         final double randomNumber = randomGenerator.nextDouble();
         final double randomFloat = getMinimum() + (getMaximum() - getMinimum()) * randomNumber;
 
         return new FloatValue(randomFloat);
-    }
-
-    @Override
-    public boolean isVariable() {
-        return true;
     }
 }

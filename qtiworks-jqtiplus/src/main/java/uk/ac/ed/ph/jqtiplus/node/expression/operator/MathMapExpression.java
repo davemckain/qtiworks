@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
-import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -64,23 +63,23 @@ public abstract class MathMapExpression extends AbstractExpression {
     }
 
     @Override
-    protected final Value evaluateSelf(ProcessingContext context, int depth) {
+    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         BaseType baseType = BaseType.INTEGER;
         double running = initialValue();
 
-        for (final Expression subExpression : getChildren()) {
-            if (subExpression.isNull(context)) {
+        for (Value childValue : childValues) {
+            if (childValue.isNull()) {
                 return NullValue.INSTANCE;
             }
 
-            if (!subExpression.getBaseType(context).isInteger()) {
+            if (!childValue.getBaseType().isInteger()) {
                 baseType = BaseType.FLOAT;
             }
-            if (subExpression.getCardinality(context).isSingle()) {
-                running = foldr(running, ((NumberValue) subExpression.getValue(context)).doubleValue());
+            if (childValue.getCardinality().isSingle()) {
+                running = foldr(running, ((NumberValue) childValue).doubleValue());
             }
             else {
-                final ListValue container = (ListValue) subExpression.getValue(context);
+                final ListValue container = (ListValue) childValue;
                 for (int i = 0; i < container.size(); i++) {
                     running = foldr(running, ((NumberValue) container.get(i)).doubleValue());
                 }

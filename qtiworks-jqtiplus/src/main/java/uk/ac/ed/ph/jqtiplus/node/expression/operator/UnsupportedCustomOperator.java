@@ -64,7 +64,7 @@ public final class UnsupportedCustomOperator extends CustomOperator {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         logger.warn("customOperator with class attribute {} is not supported - returning NULL", getClassAttr());
         return NullValue.INSTANCE;
     }

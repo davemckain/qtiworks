@@ -63,24 +63,20 @@ public class Truncate extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final double number = ((FloatValue) getFirstChild().getValue(context)).doubleValue();
+        final double number = ((FloatValue) childValues[0]).doubleValue();
 
         Integer result = null;
-
         if (number >= 0) {
             result = (int) Math.floor(number);
         }
         else {
             result = (int) Math.ceil(number);
         }
-
-        assert result != null;
-
         return new IntegerValue(result);
     }
 }

@@ -44,19 +44,18 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
 import org.qtitools.mathassess.attribute.ReturnTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 import org.qtitools.mathassess.tools.qticasbridge.types.ValueWrapper;
 import org.qtitools.mathassess.type.ReturnType;
-
-import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,9 +132,9 @@ public class CasProcess extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context) throws MaximaTimeoutException, MathsContentTooComplexException {
+    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
         final boolean simplify = getSimplify().booleanValue();
-        final String code = getChildValues(context).get(0).toString().trim();
+        final String code = childValues[0].toString().trim();
 
         logger.info("Performing casProcess: code={}, simplify={}", code, simplify);
 
@@ -154,14 +153,9 @@ public class CasProcess extends MathAssessOperator {
 
         /* Run Maxima code and return result */
         logger.debug("Running code to determine result of casProcess");
-        final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(getBaseType(context), getCardinality(context));
+        final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(getBaseType(), getCardinality());
         final ValueWrapper result = qtiMaximaSession.executeCasProcess(code, simplify, resultClass);
         return CasTypeGlue.convertToJQTI(result);
-    }
-
-    @Override
-    public BaseType getBaseType(ProcessingContext context) {
-        return getBaseType();
     }
 
     private BaseType getBaseType() {
@@ -196,11 +190,6 @@ public class CasProcess extends MathAssessOperator {
             return type != null ? new BaseType[] { type } : BaseType.values();
         }
         return super.getProducedBaseTypes(context);
-    }
-
-    @Override
-    public Cardinality getCardinality(ProcessingContext context) {
-        return getCardinality();
     }
 
     private Cardinality getCardinality() {

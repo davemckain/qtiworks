@@ -100,11 +100,11 @@ public class Ordered extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final OrderedValue container = new OrderedValue();
-
-        for (final Expression subExpression : getChildren()) {
-            final Value value = subExpression.getValue(context);
+        
+        for (int i=0; i<childValues.length; i++) {
+            final Value value = childValues[i];
             if (!value.isNull()) {
                 if (value.getCardinality() == Cardinality.SINGLE) {
                     container.add((SingleValue) value);
@@ -118,10 +118,6 @@ public class Ordered extends AbstractExpression {
             }
         }
 
-        if (container.isNull()) {
-            return NullValue.INSTANCE;
-        }
-
-        return container;
+        return container.isNull() ? NullValue.INSTANCE : container;
     }
 }

@@ -125,18 +125,17 @@ public class FieldValue extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, int depth) {
-        if (isAnyChildNull(context)) {
+    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final RecordValue record = (RecordValue) getFirstChild().getValue(context);
+        final RecordValue record = (RecordValue) childValues[0];
         final Value value = record.get(getIdentifier());
 
         if (value == null || value.isNull()) {
             return NullValue.INSTANCE;
         }
-
         return value;
     }
 }
