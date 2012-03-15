@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.text.DateFormat;
@@ -69,14 +69,14 @@ public class DateAttribute extends SingleAttribute<Date> {
     @Override
     protected Date parseValue(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid datetime '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid datetime '" + value + "'. Length is not valid.");
         }
 
         try {
             return format.parse(value);
         }
         catch (final ParseException ex) {
-            throw new QTIParseException("Invalid datetime '" + value + "'.", ex);
+            throw new QtiParseException("Invalid datetime '" + value + "'.", ex);
         }
     }
 

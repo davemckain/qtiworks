@@ -39,7 +39,7 @@ import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_U
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -227,7 +227,7 @@ public class CasProcess extends MathAssessOperator {
                 return Cardinality.ORDERED;
 
             default:
-                throw new QTIEvaluationException("Error: Unsupported return type " + getReturnType()
+                throw new QtiEvaluationException("Error: Unsupported return type " + getReturnType()
                         + " (unable to determine cardinality)");
         }
     }

@@ -33,7 +33,7 @@
  */
 package org.qtitools.mathassess.type;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +75,7 @@ public enum ReturnType {
         final ReturnType result = returnTypes.get(returnType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + returnType + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + returnType + "'.");
         }
 
         return result;

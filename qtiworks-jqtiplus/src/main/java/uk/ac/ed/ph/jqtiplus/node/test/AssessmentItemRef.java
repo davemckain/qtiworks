@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
@@ -195,7 +195,7 @@ public class AssessmentItemRef extends SectionPart {
             setHref(new URI(href));
         }
         catch (final URISyntaxException ex) {
-            throw new QTIEvaluationException(ex);
+            throw new QtiEvaluationException(ex);
         }
     }
 

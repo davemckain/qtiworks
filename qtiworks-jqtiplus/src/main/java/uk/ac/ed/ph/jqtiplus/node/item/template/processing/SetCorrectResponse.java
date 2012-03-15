@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -90,7 +90,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
 
         final ResponseDeclaration declaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (declaration == null) {
-            throw new QTIEvaluationException("Cannot find " + ResponseDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
+            throw new QtiEvaluationException("Cannot find " + ResponseDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
         ((ItemProcessingContext) context).setOverriddenCorrectResponseValue(declaration, value);

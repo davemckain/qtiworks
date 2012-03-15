@@ -35,7 +35,7 @@ package org.qtitools.qti.node.test.flow;
 
 import static org.junit.Assert.fail;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
@@ -259,8 +259,8 @@ public class ItemFlowJumpTest {
 
         if (expectedErrorsCount == 1) {
             final QTIRuntimeException exception = result.getErrors().get(0).createException();
-            if (!exception.getClass().equals(QTIItemFlowException.class)) {
-                fail("Unexpected exception, expected<" + QTIItemFlowException.class.getName() +
+            if (!exception.getClass().equals(QtiItemFlowException.class)) {
+                fail("Unexpected exception, expected<" + QtiItemFlowException.class.getName() +
                         "> but was<" + exception.getClass().getName() + "> with message: " + exception.getMessage());
             }
         }

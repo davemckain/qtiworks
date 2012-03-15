@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -131,13 +131,13 @@ public enum TextFormat {
      * 
      * @param textFormat <code>String</code> representation of <code>TextFormat</code>
      * @return parsed <code>TextFormat</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>TextFormat</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>TextFormat</code>
      */
     public static TextFormat parseTextFormat(String textFormat) {
         final TextFormat result = formats.get(textFormat);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + textFormat + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + textFormat + "'.");
         }
 
         return result;

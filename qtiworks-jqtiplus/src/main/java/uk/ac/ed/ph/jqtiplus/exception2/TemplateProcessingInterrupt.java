@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.ExitTemplate;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
 
@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
  * 
  * @author David McKain
  */
-public final class TemplateProcessingInterrupt extends QTIProcessingInterrupt {
+public final class TemplateProcessingInterrupt extends QtiProcessingInterrupt {
 
     private static final long serialVersionUID = -5065976029182961590L;
 

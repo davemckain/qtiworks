@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,13 +104,13 @@ public enum SessionStatus {
      * 
      * @param sessionStatus <code>String</code> representation of <code>SessionStatus</code>
      * @return parsed <code>SessionStatus</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>SessionStatus</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>SessionStatus</code>
      */
     public static SessionStatus parseSessionStatus(String sessionStatus) {
         final SessionStatus result = sessionStatuses.get(sessionStatus);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + sessionStatus + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + sessionStatus + "'.");
         }
 
         return result;

@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,49 +82,49 @@ public class AndRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<and>" +
                         "<baseValue baseType='identifier'>true</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // boolean + integer
                 { "<and>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // integer
                 { "<and>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // float
                 { "<and>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // string
                 { "<and>" +
                         "<baseValue baseType='string'>true</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // point
                 { "<and>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // pair
                 { "<and>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // directedPair
                 { "<and>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // duration
                 { "<and>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // file
                 { "<and>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
                 // uri
                 { "<and>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</and>", QTIBaseTypeException.class },
+                        "</and>", QtiBaseTypeException.class },
         });
     }
 

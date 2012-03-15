@@ -33,7 +33,7 @@
  */
 package org.qtitools.mathassess.type;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +68,7 @@ public enum ActionType {
         final ActionType result = actionTypes.get(actionType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + actionType + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + actionType + "'.");
         }
 
         return result;

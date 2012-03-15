@@ -33,24 +33,83 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
-import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
-
 /**
- * This exception is used for reporting inconsistent use of {@link NodeGroup}s
+ * Superclass of all checked exceptions (currently not used anywhere).
+ * <p>
+ * It is abstract class because you should <em>never</em> use this class directly. For example:
+ * </p>
  * 
+ * <pre>
+ * throw new QTIException()
+ * </pre>
+ * 
+ * (this is not possible anyway)
+ * <p>
+ * And you should <em>never</em> use this class in method header also. For example:
+ * </p>
+ * 
+ * <pre>
+ * void someMethod() throws QTIException
+ * </pre>
+ * <p>
+ * Only two legal usages are as superclass of all checked exceptions and in catch block, when you don't need to distinguish between different exceptions types.
+ * For example:
+ * </p>
+ * 
+ * <pre>
+ * try
+ * {
+ *   ... some code here ...
+ * }
+ * catch (QTIException ex)
+ * {
+ *   ... some code here ...
+ * }
+ * </pre>
+ * <p>
+ * Checked exceptions are reserved for special purposes. In general case you should use unchecked exception instead.
+ * </p>
+ * 
+ * @see uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException
  * @author Jiri Kajaba
  */
-public final class QTINodeGroupException extends QtiModelException {
+public abstract class QtiException extends Exception {
 
-    private static final long serialVersionUID = -1425955381105959375L;
+    private static final long serialVersionUID = 4870005618050972243L;
+
+    /**
+     * Constructs A new <code>QTIException</code> with <code>null</code> as its detailed message.
+     */
+    public QtiException() {
+        super();
+    }
 
     /**
      * Constructs A new exception with the specified detailed message.
      * 
      * @param message the detail message
      */
-    public QTINodeGroupException(String message) {
+    public QtiException(String message) {
         super(message);
+    }
+
+    /**
+     * Constructs A new exception with the specified detailed message and cause.
+     * 
+     * @param message the detail message
+     * @param cause the cause
+     */
+    public QtiException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructs A new exception with the specified cause.
+     * If cause is not <code>null</code> detailed message is set from this cause.
+     * 
+     * @param cause the cause
+     */
+    public QtiException(Throwable cause) {
+        super(cause);
     }
 }

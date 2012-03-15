@@ -33,51 +33,24 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 
 /**
- * This exception is used for propagating errors when parsing/converting literal Strings
- * into QTI types, allowed attribute valuess etc.
+ * This exception is used for marking not implemented parts of code.
+ * It is much more easier to find usage of this exception than some text or general exception.
+ * In ideal case this exception should not be present in code on delivery.
  * 
  * @author Jiri Kajaba
  */
-public final class QTIParseException extends QtiModelException {
+public class QtiNotImplementedException extends QtiLogicException {
 
-    private static final long serialVersionUID = -696709617768595326L;
-
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
-    protected QTIParseException() {
-        super();
-    }
+    private static final long serialVersionUID = 138099554893518574L;
 
     /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
+     * Constructs A new <code>QTINotImplementedException</code> with "Not implemented." text
+     * as its detailed message.
      */
-    public QTIParseException(String message) {
-        super(message);
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QTIParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QTIParseException(Throwable cause) {
-        super(cause);
+    public QtiNotImplementedException() {
+        super("Not implemented.");
     }
 }

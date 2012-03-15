@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,43 +82,43 @@ public class IntegerToFloatRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<integerToFloat>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // boolean
                 { "<integerToFloat>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // float
                 { "<integerToFloat>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // string
                 { "<integerToFloat>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // point
                 { "<integerToFloat>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // pair
                 { "<integerToFloat>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // directedPair
                 { "<integerToFloat>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // duration
                 { "<integerToFloat>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // file
                 { "<integerToFloat>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
                 // uri
                 { "<integerToFloat>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</integerToFloat>", QTIBaseTypeException.class },
+                        "</integerToFloat>", QtiBaseTypeException.class },
         });
     }
 

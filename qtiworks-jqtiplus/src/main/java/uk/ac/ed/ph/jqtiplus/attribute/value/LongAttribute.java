@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
@@ -57,7 +57,7 @@ public class LongAttribute extends SingleAttribute<Long> {
     @Override
     protected Long parseValue(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid long '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
         }
 
         final String originalValue = value;
@@ -66,7 +66,7 @@ public class LongAttribute extends SingleAttribute<Long> {
         if (value.startsWith("+")) {
             value = value.substring(1);
             if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QTIParseException("Invalid long '" + originalValue + "'.");
+                throw new QtiParseException("Invalid long '" + originalValue + "'.");
             }
         }
 
@@ -74,7 +74,7 @@ public class LongAttribute extends SingleAttribute<Long> {
             return Long.parseLong(value);
         }
         catch (final NumberFormatException ex) {
-            throw new QTIParseException("Invalid long '" + originalValue + "'.", ex);
+            throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
         }
     }
 }

@@ -39,7 +39,7 @@ import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_SCHEMA_LOCA
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -204,7 +204,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
                 sessionThreadLocal.set(maximaSession);
             }
             else {
-                throw new QTIEvaluationException(
+                throw new QtiEvaluationException(
                         "The MathAssess extensions package could not be configured to communicate with Maxima. This package should not have been used in this case");
             }
         }

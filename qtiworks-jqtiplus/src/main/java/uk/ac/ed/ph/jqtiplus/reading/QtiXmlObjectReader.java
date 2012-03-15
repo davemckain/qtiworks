@@ -40,7 +40,7 @@ import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.Interpr
 import static uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException.InterpretationFailureReason.XML_SCHEMA_VALIDATION_FAILED;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -148,7 +148,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
                     + rootElement.getNamespaceURI() + "}:" + rootElement.getLocalName(), 
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
-        catch (final QTIParseException e) {
+        catch (final QtiParseException e) {
             throw new QtiLogicException("All QTIParseExceptions should have been caught before this point!", e);
         }
         

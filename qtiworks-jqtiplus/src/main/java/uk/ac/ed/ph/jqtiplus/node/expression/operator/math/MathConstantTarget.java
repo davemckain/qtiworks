@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ enum MathConstantTarget {
     public static MathConstantTarget parseConstant(String name) {
         final MathConstantTarget result = constants.get(name);
         if (result == null) {
-            throw new QTIParseException("Invalid mathConstant " + name);
+            throw new QtiParseException("Invalid mathConstant " + name);
         }
         return result;
     }

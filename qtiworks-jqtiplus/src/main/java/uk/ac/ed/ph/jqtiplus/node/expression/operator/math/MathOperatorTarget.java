@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -186,7 +186,7 @@ enum MathOperatorTarget {
     public static MathOperatorTarget parseOperation(String name) {
         final MathOperatorTarget result = operations.get(name);
         if (result == null) {
-            throw new QTIParseException("Invalid mathOperator " + name);
+            throw new QtiParseException("Invalid mathOperator " + name);
         }
         return result;
     }

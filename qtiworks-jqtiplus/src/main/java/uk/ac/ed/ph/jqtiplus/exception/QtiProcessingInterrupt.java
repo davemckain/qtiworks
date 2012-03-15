@@ -34,48 +34,17 @@
 package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * This exception is used for propagating errors during execution of assessment.
- * Preferred way is to use more concrete exception (see sub-classes of this exception).
+ * This exception is thrown if something requires any processing
+ * (template, response, outcome) needs to be immediately stopped
+ * for any reason.
+ * Whilst normally it would be bad to use an exception for flow
+ * control, this particular use is quite exceptional, and would
+ * be very difficult to achieve in any other manner.
  * 
- * @author Jiri Kajaba
+ * @author Jonathon Hare
  */
-public class QTIEvaluationException extends QTIRuntimeException {
+public class QtiProcessingInterrupt extends QtiException {
 
-    private static final long serialVersionUID = 2827334569953049498L;
+    private static final long serialVersionUID = -3235593970976829701L;
 
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
-    protected QTIEvaluationException() {
-        super();
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QTIEvaluationException(String message) {
-        super(message);
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QTIEvaluationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QTIEvaluationException(Throwable cause) {
-        super(cause);
-    }
 }

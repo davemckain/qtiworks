@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
 import java.util.Arrays;
@@ -65,17 +65,17 @@ public class ItemFlowTPTest extends ItemFlowTest {
                 { "ItemFlow-jump-01.xml", null, null, new String[][] { { "I01" }, { "I03" }, { "I04" }, { "I05" } } },
                 { "ItemFlow-jump-02.xml", null, null, new String[][] { { "I01" }, { "I05" } } },
                 { "ItemFlow-jump-03.xml", null, null, new String[][] { { "I01" }, { "I03" }, { "I04" }, { "I05" } } },
-                { "ItemFlow-jump-back-01.xml", null, QTIItemFlowException.class, new String[][] { { "I01" }, { "I03" } } },
-                { "ItemFlow-jump-back-02.xml", null, QTIItemFlowException.class, new String[][] { { "I01" }, { "I03" } } },
-                { "ItemFlow-jump-back-03.xml", null, QTIItemFlowException.class, new String[][] { { "I01" }, { "I03" }, { "I05" } } },
-                { "ItemFlow-jump-back-04.xml", null, QTIItemFlowException.class, new String[][] { { "I01" }, { "I03" }, { "I05" } } },
-                { "ItemFlow-jump-error-01.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
-                { "ItemFlow-jump-error-02.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
-                { "ItemFlow-jump-error-03.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
-                { "ItemFlow-jump-error-04.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-back-01.xml", null, QtiItemFlowException.class, new String[][] { { "I01" }, { "I03" } } },
+                { "ItemFlow-jump-back-02.xml", null, QtiItemFlowException.class, new String[][] { { "I01" }, { "I03" } } },
+                { "ItemFlow-jump-back-03.xml", null, QtiItemFlowException.class, new String[][] { { "I01" }, { "I03" }, { "I05" } } },
+                { "ItemFlow-jump-back-04.xml", null, QtiItemFlowException.class, new String[][] { { "I01" }, { "I03" }, { "I05" } } },
+                { "ItemFlow-jump-error-01.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-error-02.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-error-03.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-error-04.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
                 { "ItemFlow-jump-special-01.xml", null, null, new String[][] { { "I01" } } },
-                { "ItemFlow-jump-special-02.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
-                { "ItemFlow-jump-special-03.xml", null, QTIItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-special-02.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
+                { "ItemFlow-jump-special-03.xml", null, QtiItemFlowException.class, new String[][] { { "I01" } } },
                 { "ItemFlow-jump-special-04.xml", null, null, new String[][] { { "I01" }, { "I03" }, { "I05" } } },
                 // preCondition + branchRule
                 { "ItemFlow-full-01.xml", null, null, new String[][] { { "I02" }, { "I04" }, { "I08" }, { "I09" } } },

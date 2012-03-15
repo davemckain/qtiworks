@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 
 /**
  * Exception thrown when a response cannot be bound to an interaction
  */
-public final class ResponseBindingException extends QTIException {
+public final class ResponseBindingException extends QtiException {
 
     private static final long serialVersionUID = 1727673548938417208L;
 

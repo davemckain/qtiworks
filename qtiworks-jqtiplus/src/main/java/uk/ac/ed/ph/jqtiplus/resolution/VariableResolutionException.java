@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
  *
  * @author David McKain
  */
-public final class VariableResolutionException extends QTIException {
+public final class VariableResolutionException extends QtiException {
 
     private static final long serialVersionUID = -6987026133309921007L;
     

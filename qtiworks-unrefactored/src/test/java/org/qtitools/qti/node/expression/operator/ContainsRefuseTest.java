@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -155,14 +155,14 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</multiple>" +
-                        "</contains>", QTIBaseTypeException.class }, { "<contains>" +
+                        "</contains>", QtiBaseTypeException.class }, { "<contains>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<ordered>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</ordered>" +
-                        "</contains>", QTIBaseTypeException.class },
+                        "</contains>", QtiBaseTypeException.class },
                 // duration
                 { "<contains>" +
                         "<multiple>" +
@@ -171,14 +171,14 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
-                        "</contains>", QTIBaseTypeException.class }, { "<contains>" +
+                        "</contains>", QtiBaseTypeException.class }, { "<contains>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
-                        "</contains>", QTIBaseTypeException.class },
+                        "</contains>", QtiBaseTypeException.class },
         });
     }
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.control;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
@@ -296,7 +296,7 @@ public final class AssessmentTestAttemptController {
      * never used anywhere, and I can't work out why this was happening!
      * 
      * @param outcomes new outcomes to be submitted
-     * @throws QTIItemFlowException if this item reference is already finished
+     * @throws QtiItemFlowException if this item reference is already finished
      * @see #getOutcomes
      */
     @ToRefactor
@@ -306,7 +306,7 @@ public final class AssessmentTestAttemptController {
         final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.get(itemRefState);
 
         if (itemRefState.isFinished()) {
-            throw new QTIItemFlowException(this, "Item reference is already finished.");
+            throw new QtiItemFlowException(this, "Item reference is already finished.");
         }
 
         itemRefController.submit(timer.getCurrentTime());

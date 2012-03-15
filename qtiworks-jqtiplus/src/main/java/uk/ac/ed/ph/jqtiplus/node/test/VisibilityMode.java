@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,13 +87,13 @@ public enum VisibilityMode {
      * 
      * @param visibilityMode <code>String</code> representation of <code>VisibilityMode</code>
      * @return parsed <code>VisibilityMode</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>VisibilityMode</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>VisibilityMode</code>
      */
     public static VisibilityMode parseVisibilityMode(String visibilityMode) {
         final VisibilityMode result = visibilityModes.get(visibilityMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + visibilityMode + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + visibilityMode + "'.");
         }
 
         return result;

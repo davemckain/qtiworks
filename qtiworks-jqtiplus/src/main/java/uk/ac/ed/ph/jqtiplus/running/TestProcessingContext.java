@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -61,7 +61,7 @@ public interface TestProcessingContext extends ProcessingContext {
 
     List<AssessmentItemRefState> lookupItemRefStates();
 
-    /** Called during outcome processing when there's a {@link QTIProcessingInterrupt} */
+    /** Called during outcome processing when there's a {@link QtiProcessingInterrupt} */
     void terminate();
 
 }

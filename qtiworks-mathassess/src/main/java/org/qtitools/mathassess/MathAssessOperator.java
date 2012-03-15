@@ -37,7 +37,7 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -107,20 +107,20 @@ public abstract class MathAssessOperator extends CustomOperator {
                     return maximaEvaluate((ItemProcessingContext) context);
                 }
                 catch (final MaximaProcessTerminatedException e) {
-                    throw new QTIEvaluationException("Maxima process was terminated earlier while processing this item", e);
+                    throw new QtiEvaluationException("Maxima process was terminated earlier while processing this item", e);
                 }
                 catch (final MaximaTimeoutException e) {
-                    throw new QTIEvaluationException("Maxima call timed out", e);
+                    throw new QtiEvaluationException("Maxima call timed out", e);
                 }
                 catch (final MathsContentTooComplexException e) {
-                    throw new QTIEvaluationException("Math content is too complex for current implementation", e);
+                    throw new QtiEvaluationException("Math content is too complex for current implementation", e);
                 }
                 catch (final RuntimeException e) {
-                    throw new QTIEvaluationException("Unexpected Exception communicating with Maxima", e);
+                    throw new QtiEvaluationException("Unexpected Exception communicating with Maxima", e);
                 }
 
             default:
-                throw new QTIEvaluationException("Unsupported syntax type: " + getSyntax());
+                throw new QtiEvaluationException("Unsupported syntax type: " + getSyntax());
         }
     }
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,13 +105,13 @@ public enum Orientation {
      * 
      * @param orientation <code>String</code> representation of <code>Orientation</code>
      * @return parsed <code>Orientation</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>Orientation</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>Orientation</code>
      */
     public static Orientation parseOrientation(String orientation) {
         final Orientation result = orientations.get(orientation);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + orientation + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + orientation + "'.");
         }
 
         return result;

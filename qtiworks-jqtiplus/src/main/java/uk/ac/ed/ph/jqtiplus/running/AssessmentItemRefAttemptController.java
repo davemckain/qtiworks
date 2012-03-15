@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
@@ -131,16 +131,16 @@ public final class AssessmentItemRefAttemptController {
     /**
      * Skips this item reference and sets state to finished.
      * 
-     * @throws QTIItemFlowException if this item reference if already finished or skipping is not allowed
+     * @throws QtiItemFlowException if this item reference if already finished or skipping is not allowed
      * @see #isSkipped
      */
     @ToRefactor
     public void skip() {
         if (isFinished()) {
-            throw new QTIItemFlowException(this, "Item reference is already finished.");
+            throw new QtiItemFlowException(this, "Item reference is already finished.");
         }
         if (!itemRef.getItemSessionControl().getAllowSkipping()) {
-            throw new QTIItemFlowException(this, "It is not allowed to skip this item: ");
+            throw new QtiItemFlowException(this, "It is not allowed to skip this item: ");
         }
         skip(testAttemptController.getTimer().getCurrentTime());
         itemRefState.setSkipped(true);
@@ -152,13 +152,13 @@ public final class AssessmentItemRefAttemptController {
      * <p>
      * This method should be called when user submits answer but time was already out.
      * 
-     * @throws QTIItemFlowException if this item reference is already finished
+     * @throws QtiItemFlowException if this item reference is already finished
      * @see AssessmentItemRefState#isTimedOut()
      */
     @ToRefactor
     public void timeOut() {
         if (isFinished()) {
-            throw new QTIItemFlowException(this, "Item reference is already finished.");
+            throw new QtiItemFlowException(this, "Item reference is already finished.");
         }
         setTimeOutTime(testAttemptController.getTimer().getCurrentTime());
         itemRefState.setTimedOut(true);

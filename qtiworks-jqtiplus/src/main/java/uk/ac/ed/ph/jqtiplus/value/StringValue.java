@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> string value.
@@ -58,11 +58,11 @@ public class StringValue extends SingleValue {
      * Constructs <code>StringValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>StringValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>StringValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>StringValue</code> is not valid
      */
     public StringValue(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid string '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid string '" + value + "'. Length is not valid.");
         }
 
         this.stringValue = value;

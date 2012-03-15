@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
@@ -182,7 +182,7 @@ public enum RoundingMode {
         final RoundingMode result = roundingModes.get(roundingMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + roundingMode + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + roundingMode + "'.");
         }
 
         return result;

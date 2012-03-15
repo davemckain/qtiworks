@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -63,7 +63,7 @@ public class IdentifierValue extends SingleValue {
      * Constructs <code>IdentifierValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>IdentifierValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>IdentifierValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>IdentifierValue</code> is not valid
      */
     public IdentifierValue(String value) {
         this(new Identifier(value));

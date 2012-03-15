@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,13 +87,13 @@ public enum NavigationMode {
      * 
      * @param navigationMode <code>String</code> representation of <code>NavigationMode</code>
      * @return parsed <code>NavigationMode</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>NavigationMode</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>NavigationMode</code>
      */
     public static NavigationMode parseNavigationMode(String navigationMode) {
         final NavigationMode result = navigationModes.get(navigationMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + navigationMode + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + navigationMode + "'.");
         }
 
         return result;

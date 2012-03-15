@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Arrays;
@@ -215,7 +215,7 @@ public class RecordValue implements MultiValue {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object clone() throws QTIEvaluationException {
+    public Object clone() throws QtiEvaluationException {
         try {
             final RecordValue value = (RecordValue) super.clone();
 
@@ -226,7 +226,7 @@ public class RecordValue implements MultiValue {
             return value;
         }
         catch (final CloneNotSupportedException ex) {
-            throw new QTIEvaluationException("Cannot clone container.", ex);
+            throw new QtiEvaluationException("Cannot clone container.", ex);
         }
     }
 

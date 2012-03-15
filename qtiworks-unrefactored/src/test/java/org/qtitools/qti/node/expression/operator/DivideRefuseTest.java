@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -101,74 +101,74 @@ public class DivideRefuseTest extends ExpressionRefuseTest {
                 { "<divide>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // boolean
                 { "<divide>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // string
                 { "<divide>" +
                         "<baseValue baseType='string'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // point
                 { "<divide>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // pair
                 { "<divide>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // directedPair
                 { "<divide>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // duration
                 { "<divide>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // file
                 { "<divide>" +
                         "<baseValue baseType='file'>file</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
                 // uri
                 { "<divide>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class }, { "<divide>" +
+                        "</divide>", QtiBaseTypeException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</divide>", QTIBaseTypeException.class },
+                        "</divide>", QtiBaseTypeException.class },
         });
     }
 

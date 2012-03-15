@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.provision;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 
 /**
  * Thrown by {@link RootObjectProvider} when no resource "exists" at the given System ID.
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QTIException;
  * 
  * @author David McKain
  */
-public class ResourceNotFoundException extends QTIException {
+public class ResourceNotFoundException extends QtiException {
 
     private static final long serialVersionUID = 5015807009543618270L;
     

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 
@@ -54,7 +54,7 @@ public class ExitTest extends OutcomeRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt {
-        throw new QTIProcessingInterrupt();
+    public void evaluate(ProcessingContext context) throws QtiProcessingInterrupt {
+        throw new QtiProcessingInterrupt();
     }
 }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -260,7 +260,7 @@ public final class AssessmentItemAttemptController {
         ConstraintUtilities.ensureNotNull(identifier);
         final VariableDeclaration result = item.getVariableDeclaration(identifier);
         if (result == null) {
-            throw new QTIEvaluationException("Item variable with identifier " + identifier + " is not defined");
+            throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
         }
         return result;
     }
@@ -269,7 +269,7 @@ public final class AssessmentItemAttemptController {
         ConstraintUtilities.ensureNotNull(responseIdentifier);
         final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
         if (result == null) {
-            throw new QTIEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
+            throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
         }
         return result;
     }

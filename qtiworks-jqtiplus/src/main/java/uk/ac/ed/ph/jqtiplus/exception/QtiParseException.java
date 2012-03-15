@@ -33,54 +33,22 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+
 /**
- * Superclass of all checked exceptions (currently not used anywhere).
- * <p>
- * It is abstract class because you should <em>never</em> use this class directly. For example:
- * </p>
+ * This exception is used for propagating errors when parsing/converting literal Strings
+ * into QTI types, allowed attribute valuess etc.
  * 
- * <pre>
- * throw new QTIException()
- * </pre>
- * 
- * (this is not possible anyway)
- * <p>
- * And you should <em>never</em> use this class in method header also. For example:
- * </p>
- * 
- * <pre>
- * void someMethod() throws QTIException
- * </pre>
- * <p>
- * Only two legal usages are as superclass of all checked exceptions and in catch block, when you don't need to distinguish between different exceptions types.
- * For example:
- * </p>
- * 
- * <pre>
- * try
- * {
- *   ... some code here ...
- * }
- * catch (QTIException ex)
- * {
- *   ... some code here ...
- * }
- * </pre>
- * <p>
- * Checked exceptions are reserved for special purposes. In general case you should use unchecked exception instead.
- * </p>
- * 
- * @see uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException
  * @author Jiri Kajaba
  */
-public abstract class QTIException extends Exception {
+public final class QtiParseException extends QtiModelException {
 
-    private static final long serialVersionUID = 4870005618050972243L;
+    private static final long serialVersionUID = -696709617768595326L;
 
     /**
-     * Constructs A new <code>QTIException</code> with <code>null</code> as its detailed message.
+     * Constructs A new exception with <code>null</code> as its detailed message.
      */
-    public QTIException() {
+    protected QtiParseException() {
         super();
     }
 
@@ -89,7 +57,7 @@ public abstract class QTIException extends Exception {
      * 
      * @param message the detail message
      */
-    public QTIException(String message) {
+    public QtiParseException(String message) {
         super(message);
     }
 
@@ -99,7 +67,7 @@ public abstract class QTIException extends Exception {
      * @param message the detail message
      * @param cause the cause
      */
-    public QTIException(String message, Throwable cause) {
+    public QtiParseException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -109,7 +77,7 @@ public abstract class QTIException extends Exception {
      * 
      * @param cause the cause
      */
-    public QTIException(Throwable cause) {
+    public QtiParseException(Throwable cause) {
         super(cause);
     }
 }

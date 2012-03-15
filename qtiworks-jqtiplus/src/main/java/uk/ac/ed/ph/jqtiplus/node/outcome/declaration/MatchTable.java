@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.MatchTableEntryGroup;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -77,7 +77,7 @@ public class MatchTable extends LookupTable {
     public SingleValue getTargetValue(NumberValue sourceValue) {
         if (sourceValue != null) {
             if (!(sourceValue instanceof IntegerValue)) {
-                throw new QTIBaseTypeException(computeXPath() + " Invalid baseType: " + sourceValue.getBaseType());
+                throw new QtiBaseTypeException(computeXPath() + " Invalid baseType: " + sourceValue.getBaseType());
             }
 
             for (final MatchTableEntry entry : getMatchEntries()) {

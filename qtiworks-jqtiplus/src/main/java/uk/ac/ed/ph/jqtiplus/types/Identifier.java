@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 
 /**
@@ -51,14 +51,14 @@ public final class Identifier implements Comparable<Identifier> {
     private final String value;
 
     /**
-     * @throws QTIParseException if value is not a valid identifier
+     * @throws QtiParseException if value is not a valid identifier
      */
     public Identifier(String value) {
         this(value, true);
     }
 
     /**
-     * @throws QTIParseException if value is not a valid identifier
+     * @throws QtiParseException if value is not a valid identifier
      */
     public Identifier(String value, boolean verify) {
         if (verify) {
@@ -96,7 +96,7 @@ public final class Identifier implements Comparable<Identifier> {
     }
 
     /**
-     * @throws QTIParseException if <code>String</code> representation of <code>identifier</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>identifier</code> is not valid
      */
     private static void verifyIdentifier(String value) {
         if (value != null) {
@@ -104,21 +104,21 @@ public final class Identifier implements Comparable<Identifier> {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid identifier '" + value + "'. Must not be null or blank.");
+            throw new QtiParseException("Invalid identifier '" + value + "'. Must not be null or blank.");
         }
 
         /* First character. */
         if (!Character.isLetter(value.codePointAt(0)) && value.charAt(0) != '_') {
-            throw new QTIParseException("Invalid identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
+            throw new QtiParseException("Invalid identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
         }
 
         /* Rest of characters. */
         for (int i = 1; i < value.length(); i++) {
             if (value.charAt(i) == '.') {
-                throw new QTIParseException("Invalid identifier '" + value + "'. JQTI does not permit period (.) characters in this identifier.");
+                throw new QtiParseException("Invalid identifier '" + value + "'. JQTI does not permit period (.) characters in this identifier.");
             }
             if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-') {
-                throw new QTIParseException("Invalid identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid.");
+                throw new QtiParseException("Invalid identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid.");
             }
         }
     }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,13 +91,13 @@ public enum View {
      * 
      * @param view <code>String</code> representation of <code>View</code>
      * @return parsed <code>View</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>View</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>View</code>
      */
     public static View parseView(String view) {
         final View result = views.get(view);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + view + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + view + "'.");
         }
 
         return result;

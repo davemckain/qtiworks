@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIItemFlowException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -389,7 +389,7 @@ public class DefaultItemFlow implements ItemFlow {
                     && testPart.getSubmissionMode() == SubmissionMode.INDIVIDUAL) {
                 logger.error("Cannot leave unfinished item ref {} in node {}.",
                         itemRef.getIdentifier(), current.getIndex());
-                throw new QTIItemFlowException(itemRef, "Cannot leave unfinished item.");
+                throw new QtiItemFlowException(itemRef, "Cannot leave unfinished item.");
             }
         }
     }

@@ -33,7 +33,7 @@
  */
 package org.qtitools.mathassess;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -146,7 +146,7 @@ public final class CasTypeGlue {
                 return convertToJQTI((MathsContentValueWrapper) value);
 
             default:
-                throw new QTIEvaluationException("Converting type " + value.getCardinality()
+                throw new QtiEvaluationException("Converting type " + value.getCardinality()
                         + " is not supported.");
         }
     }
@@ -163,7 +163,7 @@ public final class CasTypeGlue {
                 return convertToJQTI((FloatValueWrapper) value);
 
             default:
-                throw new QTIEvaluationException("Converting type " + value.getBaseType()
+                throw new QtiEvaluationException("Converting type " + value.getBaseType()
                         + " is not supported.");
         }
     }
@@ -210,12 +210,12 @@ public final class CasTypeGlue {
             case RECORD:
                 final RecordValue recordValue = (RecordValue) value;
                 if (!isMathsContentRecord(recordValue)) {
-                    throw new QTIEvaluationException("RecordValue " + recordValue + " does not appear to hold MathsContent");
+                    throw new QtiEvaluationException("RecordValue " + recordValue + " does not appear to hold MathsContent");
                 }
                 return convertFromJQTI(recordValue);
 
             default:
-                throw new QTIEvaluationException("Unexpected switch case");
+                throw new QtiEvaluationException("Unexpected switch case");
 
         }
     }
@@ -230,7 +230,7 @@ public final class CasTypeGlue {
         else if (value.getBaseType().isFloat()) {
             return convertFromJQTI((FloatValue) value);
         }
-        throw new QTIEvaluationException("Converting type " + value.getBaseType()
+        throw new QtiEvaluationException("Converting type " + value.getBaseType()
                 + " is not supported.");
     }
 
@@ -248,7 +248,7 @@ public final class CasTypeGlue {
             wrapper = new FloatOrderedValueWrapper();
         }
         else {
-            throw new QTIEvaluationException("Converting type " + value.getBaseType()
+            throw new QtiEvaluationException("Converting type " + value.getBaseType()
                     + " is not supported.");
         }
 
@@ -272,7 +272,7 @@ public final class CasTypeGlue {
             wrapper = new FloatMultipleValueWrapper();
         }
         else {
-            throw new QTIEvaluationException("Converting type " + value.getBaseType()
+            throw new QtiEvaluationException("Converting type " + value.getBaseType()
                     + " is not supported.");
         }
 

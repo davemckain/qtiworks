@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,13 +82,13 @@ public enum TestFeedbackAccess {
      * 
      * @param testFeedbackAccess <code>String</code> representation of <code>TestFeedbackAccess</code>
      * @return parsed <code>TestFeedbackAccess</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>TestFeedbackAccess</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>TestFeedbackAccess</code>
      */
     public static TestFeedbackAccess parseTestFeedbackAccess(String testFeedbackAccess) {
         final TestFeedbackAccess result = testFeedbackAccesses.get(testFeedbackAccess);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + testFeedbackAccess + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + testFeedbackAccess + "'.");
         }
 
         return result;

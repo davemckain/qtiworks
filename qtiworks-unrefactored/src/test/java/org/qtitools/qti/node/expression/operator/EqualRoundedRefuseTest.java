@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -117,47 +117,47 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // boolean
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // string
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // point
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // pair
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // directedPair
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // duration
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // file
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // uri
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</equalRounded>", QTIBaseTypeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
         });
     }
 

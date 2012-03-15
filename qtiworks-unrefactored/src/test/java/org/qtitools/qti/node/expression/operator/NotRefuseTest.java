@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,43 +82,43 @@ public class NotRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<not>" +
                         "<baseValue baseType='identifier'>true</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // integer
                 { "<not>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // float
                 { "<not>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // string
                 { "<not>" +
                         "<baseValue baseType='string'>true</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // point
                 { "<not>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // pair
                 { "<not>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // directedPair
                 { "<not>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // duration
                 { "<not>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // file
                 { "<not>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
                 // uri
                 { "<not>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</not>", QTIBaseTypeException.class },
+                        "</not>", QtiBaseTypeException.class },
         });
     }
 

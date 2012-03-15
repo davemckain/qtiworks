@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -176,15 +176,15 @@ public abstract class ListValue implements Cloneable, MultiValue, Iterable<Singl
      * 
      * @param value added <code>SingleValue</code>
      * @return true if value was added; false otherwise
-     * @throws QTIBaseTypeException if <code>BaseType</code> is not same
+     * @throws QtiBaseTypeException if <code>BaseType</code> is not same
      */
-    public boolean add(SingleValue value) throws QTIBaseTypeException {
+    public boolean add(SingleValue value) throws QtiBaseTypeException {
         if (value == null || value.isNull()) {
             return false;
         }
 
         if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QTIBaseTypeException("Invalid baseType: " + value.getBaseType());
+            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
         }
 
         return container.add(value);
@@ -208,7 +208,7 @@ public abstract class ListValue implements Cloneable, MultiValue, Iterable<Singl
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object clone() throws QTIEvaluationException {
+    public Object clone() throws QtiEvaluationException {
         try {
             final ListValue value = (ListValue) super.clone();
 
@@ -219,7 +219,7 @@ public abstract class ListValue implements Cloneable, MultiValue, Iterable<Singl
             return value;
         }
         catch (final CloneNotSupportedException ex) {
-            throw new QTIEvaluationException("Cannot clone container.", ex);
+            throw new QtiEvaluationException("Cannot clone container.", ex);
         }
     }
 

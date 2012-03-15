@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -71,7 +71,7 @@ final class ReflectionEvaluator implements MathOperatorEvaluator {
             return wantInteger ? new IntegerValue((int) result) : new FloatValue(result);
         }
         catch (final Exception e) {
-            throw new QTIEvaluationException("Unexpected error evaluating math operator", e);
+            throw new QtiEvaluationException("Unexpected error evaluating math operator", e);
         }
     }
 }

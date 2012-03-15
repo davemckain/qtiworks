@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -100,19 +100,19 @@ public class MemberRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</multiple>" +
-                        "</member>", QTIBaseTypeException.class },
+                        "</member>", QtiBaseTypeException.class },
                 // duration
                 { "<member>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
-                        "</member>", QTIBaseTypeException.class }, { "<member>" +
+                        "</member>", QtiBaseTypeException.class }, { "<member>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
-                        "</member>", QTIBaseTypeException.class },
+                        "</member>", QtiBaseTypeException.class },
         });
     }
 

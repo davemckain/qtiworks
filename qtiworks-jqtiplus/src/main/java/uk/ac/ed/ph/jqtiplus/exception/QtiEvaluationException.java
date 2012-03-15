@@ -33,24 +33,49 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-
 /**
- * This exception is used for marking not implemented parts of code.
- * It is much more easier to find usage of this exception than some text or general exception.
- * In ideal case this exception should not be present in code on delivery.
+ * This exception is used for propagating errors during execution of assessment.
+ * Preferred way is to use more concrete exception (see sub-classes of this exception).
  * 
  * @author Jiri Kajaba
  */
-public class QTINotImplementedException extends QtiLogicException {
+public class QtiEvaluationException extends QTIRuntimeException {
 
-    private static final long serialVersionUID = 138099554893518574L;
+    private static final long serialVersionUID = 2827334569953049498L;
 
     /**
-     * Constructs A new <code>QTINotImplementedException</code> with "Not implemented." text
-     * as its detailed message.
+     * Constructs A new exception with <code>null</code> as its detailed message.
      */
-    public QTINotImplementedException() {
-        super("Not implemented.");
+    protected QtiEvaluationException() {
+        super();
+    }
+
+    /**
+     * Constructs A new exception with the specified detailed message.
+     * 
+     * @param message the detail message
+     */
+    public QtiEvaluationException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructs A new exception with the specified detailed message and cause.
+     * 
+     * @param message the detail message
+     * @param cause the cause
+     */
+    public QtiEvaluationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructs A new exception with the specified cause.
+     * If cause is not <code>null</code> detailed message is set from this cause.
+     * 
+     * @param cause the cause
+     */
+    public QtiEvaluationException(Throwable cause) {
+        super(cause);
     }
 }

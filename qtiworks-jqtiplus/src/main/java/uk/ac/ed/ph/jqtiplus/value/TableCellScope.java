@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,13 +138,13 @@ public enum TableCellScope {
      * 
      * @param tableCellScope <code>String</code> representation of <code>TableCellScopeType</code>
      * @return parsed <code>TableCellScopeType</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>TableCellScopeType</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>TableCellScopeType</code>
      */
     public static TableCellScope parseTableCellScope(String tableCellScope) {
         final TableCellScope result = types.get(tableCellScope);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + tableCellScope + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + tableCellScope + "'.");
         }
 
         return result;

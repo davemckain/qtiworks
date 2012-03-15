@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -101,74 +101,74 @@ public class GtRefuseTest extends ExpressionRefuseTest {
                 { "<gt>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // boolean
                 { "<gt>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // string
                 { "<gt>" +
                         "<baseValue baseType='string'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // point
                 { "<gt>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // pair
                 { "<gt>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // directedPair
                 { "<gt>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // duration
                 { "<gt>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // file
                 { "<gt>" +
                         "<baseValue baseType='file'>file</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
                 // uri
                 { "<gt>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class }, { "<gt>" +
+                        "</gt>", QtiBaseTypeException.class }, { "<gt>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</gt>", QTIBaseTypeException.class },
+                        "</gt>", QtiBaseTypeException.class },
         });
     }
 

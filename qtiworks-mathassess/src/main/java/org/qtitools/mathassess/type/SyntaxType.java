@@ -33,7 +33,7 @@
  */
 package org.qtitools.mathassess.type;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +66,7 @@ public enum SyntaxType {
         final SyntaxType result = syntaxTypes.get(syntaxType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
         }
 
         return result;

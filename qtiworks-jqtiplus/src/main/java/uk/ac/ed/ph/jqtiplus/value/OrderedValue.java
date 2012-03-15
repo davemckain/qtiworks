@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 
 /**
  * Implementation of "sequence-type" container.
@@ -151,15 +151,15 @@ public class OrderedValue extends ListValue {
      * 
      * @param value added <code>OrderedValue</code>
      * @return true if value was added; false otherwise
-     * @throws QTIBaseTypeException if <code>BaseType</code> is not same
+     * @throws QtiBaseTypeException if <code>BaseType</code> is not same
      */
-    public boolean add(OrderedValue value) throws QTIBaseTypeException {
+    public boolean add(OrderedValue value) throws QtiBaseTypeException {
         if (value.isNull()) {
             return false;
         }
 
         if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QTIBaseTypeException("Invalid baseType: " + value.getBaseType());
+            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
         }
 
         return container.addAll(value.container);

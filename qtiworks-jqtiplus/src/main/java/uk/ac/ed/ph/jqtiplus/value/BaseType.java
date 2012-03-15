@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -338,7 +338,7 @@ public enum BaseType {
      * 
      * @param singleValue <code>String</code> representation of <code>SingleValue</code>
      * @return parsed <code>SingleValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
      */
     public abstract SingleValue parseSingleValue(String singleValue);
 
@@ -352,13 +352,13 @@ public enum BaseType {
      * 
      * @param baseType <code>String</code> representation of <code>BaseType</code>
      * @return parsed <code>BaseType</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>BaseType</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>BaseType</code>
      */
     public static BaseType parseBaseType(String baseType) {
         final BaseType result = baseTypes.get(baseType);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
         }
 
         return result;

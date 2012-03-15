@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,43 +82,43 @@ public class RoundRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<round>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // boolean
                 { "<round>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // integer
                 { "<round>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // string
                 { "<round>" +
                         "<baseValue baseType='string'>1.0</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // point
                 { "<round>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // pair
                 { "<round>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // directedPair
                 { "<round>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // duration
                 { "<round>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // file
                 { "<round>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
                 // uri
                 { "<round>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</round>", QTIBaseTypeException.class },
+                        "</round>", QtiBaseTypeException.class },
         });
     }
 

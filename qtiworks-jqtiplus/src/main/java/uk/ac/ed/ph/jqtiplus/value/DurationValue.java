@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> duration value.
@@ -73,18 +73,18 @@ public class DurationValue extends SingleValue {
      * Constructs <code>DurationValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>DurationValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>DurationValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>DurationValue</code> is not valid
      */
     public DurationValue(String value) {
         try {
             this.doubleValue = FloatValue.parseFloat(value);
 
             if (doubleValue < 0) {
-                throw new QTIParseException("Invalid duration '" + value + "'. Duration cannot be negative.");
+                throw new QtiParseException("Invalid duration '" + value + "'. Duration cannot be negative.");
             }
         }
-        catch (final QTIParseException ex) {
-            throw new QTIParseException("Invalid duration '" + value + "'.", ex);
+        catch (final QtiParseException ex) {
+            throw new QtiParseException("Invalid duration '" + value + "'.", ex);
         }
     }
 

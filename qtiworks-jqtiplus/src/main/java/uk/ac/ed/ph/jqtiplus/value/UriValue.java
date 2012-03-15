@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -75,7 +75,7 @@ public class UriValue extends SingleValue {
      * Constructs <code>UriValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>UriValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>UriValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>UriValue</code> is not valid
      */
     public UriValue(String value) {
         this.uriValue = parseUri(value);
@@ -121,18 +121,18 @@ public class UriValue extends SingleValue {
      * 
      * @param value <code>String</code> representation of <code>URI</code>
      * @return parsed <code>URI</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>URI</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>URI</code> is not valid
      */
     public static URI parseUri(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid uri '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid uri '" + value + "'. Length is not valid.");
         }
 
         try {
             return new URI(value);
         }
         catch (final URISyntaxException ex) {
-            throw new QTIParseException("Invalid uri '" + value + "'.", ex);
+            throw new QtiParseException("Invalid uri '" + value + "'.", ex);
         }
     }
 }

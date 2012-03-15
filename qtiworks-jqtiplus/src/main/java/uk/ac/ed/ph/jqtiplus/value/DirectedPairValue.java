@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -74,7 +74,7 @@ public class DirectedPairValue extends AbstractPairValue {
      * Constructs <code>DirectedPairValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>DirectedPairValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>DirectedPairValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>DirectedPairValue</code> is not valid
      */
     public DirectedPairValue(String value) {
         super(value);

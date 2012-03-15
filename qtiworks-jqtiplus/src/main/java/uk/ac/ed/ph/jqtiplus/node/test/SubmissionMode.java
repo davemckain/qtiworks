@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,13 +87,13 @@ public enum SubmissionMode {
      * 
      * @param submissionMode <code>String</code> representation of <code>SubmissionMode</code>
      * @return parsed <code>SubmissionMode</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>SubmissionMode</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>SubmissionMode</code>
      */
     public static SubmissionMode parseSubmissionMode(String submissionMode) {
         final SubmissionMode result = submissionModes.get(submissionMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + submissionMode + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + submissionMode + "'.");
         }
 
         return result;

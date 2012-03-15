@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> file value.
@@ -90,11 +90,11 @@ public class FileValue extends SingleValue {
      * Constructs <code>FileValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>FileValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>FileValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>FileValue</code> is not valid
      */
     public FileValue(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid file '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid file '" + value + "'. Length is not valid.");
         }
 
         this.stringValue = value;

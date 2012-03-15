@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -85,13 +85,13 @@ public class MultipleRefuseTest extends ExpressionRefuseTest {
                 { "<multiple>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</multiple>", QTIBaseTypeException.class }, { "<multiple>" +
+                        "</multiple>", QtiBaseTypeException.class }, { "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='float'>2</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
-                        "</multiple>", QTIBaseTypeException.class },
+                        "</multiple>", QtiBaseTypeException.class },
         });
     }
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,10 +80,10 @@ public class UriValueRefuseTest {
     /**
      * Tests parsing value from <code>String</code> representation.
      * 
-     * @throws QTIParseException if test was successful
+     * @throws QtiParseException if test was successful
      */
-    @Test(expected = QTIParseException.class)
-    public void testParseUri() throws QTIParseException {
+    @Test(expected = QtiParseException.class)
+    public void testParseUri() throws QtiParseException {
         UriValue.parseUri(string);
     }
 }

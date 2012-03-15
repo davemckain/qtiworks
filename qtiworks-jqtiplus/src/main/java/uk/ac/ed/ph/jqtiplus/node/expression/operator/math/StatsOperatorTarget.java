@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +116,7 @@ enum StatsOperatorTarget {
     public static StatsOperatorTarget parseOperation(String name) {
         final StatsOperatorTarget result = operations.get(name);
         if (result == null) {
-            throw new QTIParseException("Invalid statsOperator " + name);
+            throw new QtiParseException("Invalid statsOperator " + name);
         }
         return result;
     }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.shared;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -195,7 +195,7 @@ public class FieldValue extends AbstractNode {
             try {
                 singleValue = getBaseType().parseSingleValue(element.getTextContent());
             }
-            catch (final QTIParseException e) {
+            catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
             }
         }

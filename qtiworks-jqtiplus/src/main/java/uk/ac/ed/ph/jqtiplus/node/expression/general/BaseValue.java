@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -135,7 +135,7 @@ public class BaseValue extends AbstractExpression {
             try {
                 singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent());
             }
-            catch (final QTIParseException e) {
+            catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
             }
         }

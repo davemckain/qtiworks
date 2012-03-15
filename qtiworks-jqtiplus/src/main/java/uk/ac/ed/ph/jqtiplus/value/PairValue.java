@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -74,7 +74,7 @@ public class PairValue extends AbstractPairValue {
      * Constructs <code>PairValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>PairValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>PairValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>PairValue</code> is not valid
      */
     public PairValue(String value) {
         super(value);

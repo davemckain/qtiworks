@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -100,19 +100,19 @@ public class DeleteRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</multiple>" +
-                        "</delete>", QTIBaseTypeException.class },
+                        "</delete>", QtiBaseTypeException.class },
                 // duration
                 { "<delete>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
-                        "</delete>", QTIBaseTypeException.class }, { "<delete>" +
+                        "</delete>", QtiBaseTypeException.class }, { "<delete>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
-                        "</delete>", QTIBaseTypeException.class },
+                        "</delete>", QtiBaseTypeException.class },
         });
     }
 

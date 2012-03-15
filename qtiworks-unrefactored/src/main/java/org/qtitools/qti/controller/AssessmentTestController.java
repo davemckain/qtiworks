@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.controller;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -177,7 +177,7 @@ public class AssessmentTestController implements Serializable {
         return air.getIdentifier();
     }
 
-    public String getCurrentItemHREF() throws QTIException {
+    public String getCurrentItemHREF() throws QtiException {
         final AssessmentItemRef air = getCurrentItemRef();
         if (air == null) {
             return null;
@@ -185,7 +185,7 @@ public class AssessmentTestController implements Serializable {
         return air.getHref().toString();
     }
 
-    public String getNextItemHREF(boolean includeFinished) throws QTIException {
+    public String getNextItemHREF(boolean includeFinished) throws QtiException {
         final AssessmentItemRef air = getNextItem(includeFinished);
         if (air == null) {
             return null;
@@ -193,7 +193,7 @@ public class AssessmentTestController implements Serializable {
         return air.getHref().toString();
     }
 
-    public String getPrevItemHREF(boolean includeFinished) throws QTIException {
+    public String getPrevItemHREF(boolean includeFinished) throws QtiException {
         final AssessmentItemRef air = getPreviousItem(includeFinished);
         if (air == null) {
             return null;
@@ -208,7 +208,7 @@ public class AssessmentTestController implements Serializable {
         return null;
     }
 
-    public void setCurrentItemResponses(Map<String, List<String>> responses) throws QTIException {
+    public void setCurrentItemResponses(Map<String, List<String>> responses) throws QtiException {
         // set and process responses at the item level
         getCurrentItemRef().getItem().setResponses(responses);
         getCurrentItemRef().getItem().processResponses();

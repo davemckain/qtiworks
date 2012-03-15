@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -85,10 +85,10 @@ public abstract class OutcomeConditionChild extends AbstractNode {
      * Evaluates all child outcomeRules and returns true.
      * 
      * @return true
-     * @throws QTIProcessingInterrupt
+     * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeRule outcomeRule : getOutcomeRules()) {
             outcomeRule.evaluate(context);
         }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> boolean value.
@@ -79,7 +79,7 @@ public class BooleanValue extends SingleValue {
      * Constructs <code>BooleanValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>BooleanValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>BooleanValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>BooleanValue</code> is not valid
      */
     private BooleanValue(String value) {
         this.booleanValue = parseBoolean(value);
@@ -125,7 +125,7 @@ public class BooleanValue extends SingleValue {
      * 
      * @param value <code>String</code> representation of <code>boolean</code>
      * @return parsed <code>boolean</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>boolean</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>boolean</code> is not valid
      */
     public static boolean parseBoolean(String value) {
         if (value != null) {
@@ -133,7 +133,7 @@ public class BooleanValue extends SingleValue {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid boolean '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid boolean '" + value + "'. Length is not valid.");
         }
 
         if (value.equals("true") || value.equals("1")) {
@@ -143,7 +143,7 @@ public class BooleanValue extends SingleValue {
             return false;
         }
         else {
-            throw new QTIParseException("Invalid boolean '" + value + "'.");
+            throw new QtiParseException("Invalid boolean '" + value + "'.");
         }
     }
 }

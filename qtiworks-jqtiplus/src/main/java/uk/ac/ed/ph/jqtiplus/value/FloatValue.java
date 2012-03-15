@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> float value.
@@ -71,7 +71,7 @@ public class FloatValue extends NumberValue {
      * Constructs <code>FloatValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>FloatValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>FloatValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>FloatValue</code> is not valid
      */
     public FloatValue(String value) {
         this.doubleValue = parseFloat(value);
@@ -118,7 +118,7 @@ public class FloatValue extends NumberValue {
      * 
      * @param value <code>String</code> representation of <code>double</code>
      * @return parsed <code>double</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>double</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>double</code> is not valid
      */
     public static double parseFloat(String value) {
         if (value != null) {
@@ -126,7 +126,7 @@ public class FloatValue extends NumberValue {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid float '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid float '" + value + "'. Length is not valid.");
         }
 
         double result;
@@ -144,7 +144,7 @@ public class FloatValue extends NumberValue {
                 result = Double.parseDouble(value);
             }
             catch (final NumberFormatException ex) {
-                throw new QTIParseException("Invalid float '" + value + "'.", ex);
+                throw new QtiParseException("Invalid float '" + value + "'.", ex);
             }
         }
         return result;

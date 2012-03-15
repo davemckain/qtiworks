@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -141,43 +141,43 @@ public class InsideRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<inside shape='default'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // boolean
                 { "<inside shape='default'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // integer
                 { "<inside shape='default'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // float
                 { "<inside shape='default'>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // string
                 { "<inside shape='default'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // pair
                 { "<inside shape='default'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // directedPair
                 { "<inside shape='default'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // duration
                 { "<inside shape='default'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // file
                 { "<inside shape='default'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // uri
                 { "<inside shape='default'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</inside>", QTIBaseTypeException.class },
+                        "</inside>", QtiBaseTypeException.class },
         });
     }
 

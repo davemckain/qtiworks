@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
  * 
  * @author Jiri Kajaba
  */
-public class RuntimeValidationException extends QTIException {
+public class RuntimeValidationException extends QtiException {
 
     private static final long serialVersionUID = 1114808435234903326L;
 

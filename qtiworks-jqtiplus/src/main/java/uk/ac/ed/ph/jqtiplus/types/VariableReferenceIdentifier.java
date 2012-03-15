@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Encapsulates the special case of QTI "identifiers" that may contain a single
@@ -54,7 +54,7 @@ public final class VariableReferenceIdentifier {
     private final Identifier assessmentItemItemVariableIdentifier;
 
     /**
-     * @throws QTIParseException if value is not a valid identifier (definition)
+     * @throws QtiParseException if value is not a valid identifier (definition)
      */
     public VariableReferenceIdentifier(String value) {
         if (value != null) {
@@ -62,12 +62,12 @@ public final class VariableReferenceIdentifier {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid reference identifier '" + value + "'. Must not be empty or blank.");
+            throw new QtiParseException("Invalid reference identifier '" + value + "'. Must not be empty or blank.");
         }
 
         /* First character. */
         if (!Character.isLetter(value.codePointAt(0)) && value.charAt(0) != '_') {
-            throw new QTIParseException("Invalid reference identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
+            throw new QtiParseException("Invalid reference identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
         }
 
         /* Rest of characters. */
@@ -75,12 +75,12 @@ public final class VariableReferenceIdentifier {
         for (int i = 1; i < value.length(); i++) {
             if (value.charAt(i) == '.') {
                 if (dotPos != -1) {
-                    throw new QTIParseException("Invalid reference identifier '" + value + "'. Only one period (.) character is allowed in this identifier.");
+                    throw new QtiParseException("Invalid reference identifier '" + value + "'. Only one period (.) character is allowed in this identifier.");
                 }
                 dotPos = i;
             }
             else if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-') {
-                throw new QTIParseException("Invalid reference identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1)
+                throw new QtiParseException("Invalid reference identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1)
                         + " is not valid.");
             }
         }

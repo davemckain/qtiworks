@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.controller;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -158,14 +158,14 @@ public class TestCoordinator {
         return getTestController().getItemFlow();
     }
 
-    public String getRenderableContent() throws QTIException {
+    public String getRenderableContent() throws QtiException {
         if (testCoordinatorState.getCachedRenderedContent() == null) {
             getCurrentQuestion();
         }
         return testCoordinatorState.getCachedRenderedContent();
     }
 
-    public String flashMessage(String message) throws QTIException {
+    public String flashMessage(String message) throws QtiException {
         testCoordinatorState.setFlash(message);
         testCoordinatorState.setCachedRenderedContent(null);
         final String content = getRenderableContent();
@@ -174,21 +174,21 @@ public class TestCoordinator {
         return content;
     }
 
-    public void getNextQuestion(boolean includeFinished) throws QTIException {
+    public void getNextQuestion(boolean includeFinished) throws QtiException {
         getTestController().getNextItemHREF(includeFinished);
 
         // invalidate renderedContent
         testCoordinatorState.setCachedRenderedContent(null);
     }
 
-    public void getPreviousQuestion(boolean includeFinished) throws QTIException {
+    public void getPreviousQuestion(boolean includeFinished) throws QtiException {
         getTestController().getPrevItemHREF(includeFinished);
 
         // invalidate renderedContent
         testCoordinatorState.setCachedRenderedContent(null);
     }
 
-    public void getCurrentQuestion() throws QTIException {
+    public void getCurrentQuestion() throws QtiException {
         final AssessmentTestController testController = testCoordinatorState.getTestController();
 
         logger.info("getCurrentQuestion() - " + testController.getCurrentItem());
@@ -319,13 +319,13 @@ public class TestCoordinator {
         return testController.getCurrentItemRef().getIdentifier();
     }
 
-    public void skipCurrentQuestion() throws QTIException {
+    public void skipCurrentQuestion() throws QtiException {
         getTestController().skipCurrentItem();
         getNextQuestion(false);
     }
 
     public void setCurrentResponse(Map<String, List<String>> responses) throws FileNotFoundException, URISyntaxException,
-            QTIException {
+            QtiException {
         final AssessmentTestController testController = testCoordinatorState.getTestController();
         final Map<AssessmentItemRef, Map<String, Value>> testPartItems = testCoordinatorState.getTestPartItems();
 

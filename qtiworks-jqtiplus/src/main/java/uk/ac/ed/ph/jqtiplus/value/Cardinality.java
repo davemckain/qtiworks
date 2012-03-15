@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,13 +150,13 @@ public enum Cardinality {
      * 
      * @param cardinality <code>String</code> representation of <code>Cardinality</code>
      * @return parsed <code>Cardinality</code> from given <code>String</code>
-     * @throws QTIParseException if given <code>String</code> is not valid <code>Cardinality</code>
+     * @throws QtiParseException if given <code>String</code> is not valid <code>Cardinality</code>
      */
     public static Cardinality parseCardinality(String cardinality) {
         final Cardinality result = cardinalities.get(cardinality);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + cardinality + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + cardinality + "'.");
         }
 
         return result;

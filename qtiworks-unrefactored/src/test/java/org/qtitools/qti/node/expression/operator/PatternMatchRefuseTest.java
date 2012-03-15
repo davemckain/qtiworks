@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,43 +82,43 @@ public class PatternMatchRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // boolean
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // integer
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // float
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // point
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // pair
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // directedPair
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // duration
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // file
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
                 // uri
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</patternMatch>", QTIBaseTypeException.class },
+                        "</patternMatch>", QtiBaseTypeException.class },
         });
     }
 

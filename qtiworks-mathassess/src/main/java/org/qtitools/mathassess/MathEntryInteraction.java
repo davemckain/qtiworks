@@ -41,8 +41,8 @@ import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_U
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -170,7 +170,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     @Override
     public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList) {
         if (responseList.size() != 1) {
-            throw new QTIEvaluationException("Error: Expected one value to be returned from interaction.");
+            throw new QtiEvaluationException("Error: Expected one value to be returned from interaction.");
         }
 
         /* Parse the raw ASCIIMath input */
@@ -187,7 +187,7 @@ public final class MathEntryInteraction extends CustomInteraction {
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
             if (upConversionFailures != null && !upConversionFailures.isEmpty()) {
                 logger.warn("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
-                throw new QTIParseException("Error: Math content is too complex for current implementation");
+                throw new QtiParseException("Error: Math content is too complex for current implementation");
             }
             responseValue = CasTypeGlue.convertToJQTI(resultWrapper);
             printResponseValue = new StringValue(resultWrapper.getPMathML());

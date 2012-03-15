@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -162,47 +162,47 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // boolean
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // string
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // point
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // pair
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // directedPair
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // duration
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // file
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
                 // uri
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</equal>", QTIBaseTypeException.class },
+                        "</equal>", QtiBaseTypeException.class },
         });
     }
 

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -172,10 +172,10 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
         final Identifier identifier = getIdentifier();
         final Value value = context.lookupVariable(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
         if (value == null) {
-            throw new QTIEvaluationException("Outcome or template variable doesn't exist " + identifier);
+            throw new QtiEvaluationException("Outcome or template variable doesn't exist " + identifier);
         }
         if (!value.isNull() && !(value.getCardinality() == Cardinality.SINGLE && value.getCardinality() == Cardinality.RECORD)) {
-            throw new QTIEvaluationException("Outcome or response variable is wrong cardinality: " +
+            throw new QtiEvaluationException("Outcome or response variable is wrong cardinality: " +
                     value.getCardinality() + " Expected: " + Cardinality.SINGLE);
         }
 

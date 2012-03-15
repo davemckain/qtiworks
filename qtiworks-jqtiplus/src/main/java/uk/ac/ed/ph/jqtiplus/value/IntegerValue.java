@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> integer value.
@@ -69,7 +69,7 @@ public class IntegerValue extends NumberValue {
      * Constructs <code>IntegerValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>IntegerValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
      */
     public IntegerValue(String value) {
         this.intValue = parseInteger(value);
@@ -80,7 +80,7 @@ public class IntegerValue extends NumberValue {
      * 
      * @param value <code>String</code> representation of <code>IntegerValue</code>
      * @param radix Radix or base to use when interpreting value
-     * @throws QTIParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
      */
     public IntegerValue(String value, Integer radix) {
         this.intValue = parseInteger(value, radix);
@@ -127,7 +127,7 @@ public class IntegerValue extends NumberValue {
      * 
      * @param value <code>String</code> representation of <code>int</code>
      * @return parsed <code>int</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>int</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>int</code> is not valid
      */
     public static int parseInteger(String value) {
         return parseInteger(value, 10);
@@ -139,7 +139,7 @@ public class IntegerValue extends NumberValue {
      * @param value <code>String</code> representation of <code>int</code>
      * @param radix base to use in conversion
      * @return parsed <code>int</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>int</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>int</code> is not valid
      */
     public static int parseInteger(String value, int radix) {
         if (value != null) {
@@ -147,7 +147,7 @@ public class IntegerValue extends NumberValue {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid integer '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid integer '" + value + "'. Length is not valid.");
         }
 
         final String originalValue = value;
@@ -156,7 +156,7 @@ public class IntegerValue extends NumberValue {
         if (value.startsWith("+")) {
             value = value.substring(1);
             if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QTIParseException("Invalid integer '" + originalValue + "'.");
+                throw new QtiParseException("Invalid integer '" + originalValue + "'.");
             }
         }
 
@@ -164,7 +164,7 @@ public class IntegerValue extends NumberValue {
             return Integer.parseInt(value, radix);
         }
         catch (final NumberFormatException ex) {
-            throw new QTIParseException("Invalid integer '" + originalValue + "'.", ex);
+            throw new QtiParseException("Invalid integer '" + originalValue + "'.", ex);
         }
     }
 }

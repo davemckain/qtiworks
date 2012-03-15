@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class QTIItemFlowException extends QTIRuntimeException {
+public class QtiItemFlowException extends QTIRuntimeException {
 
     private static final long serialVersionUID = -5609897195533003863L;
 
@@ -50,11 +50,11 @@ public class QTIItemFlowException extends QTIRuntimeException {
      * @param source source of this exception
      * @param message the detail message
      */
-    public QTIItemFlowException(XmlNode source, String message) {
+    public QtiItemFlowException(XmlNode source, String message) {
         super(message + " (" + source.computeXPath() + ")");
     }
 
-    public QTIItemFlowException(Object source, String message) {
+    public QtiItemFlowException(Object source, String message) {
         super(message + " (" + source.toString() + ")");
     }
 }

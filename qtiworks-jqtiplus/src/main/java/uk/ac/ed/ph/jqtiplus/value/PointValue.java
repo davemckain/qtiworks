@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 /**
  * Implementation of <code>BaseType</code> point value.
@@ -74,28 +74,28 @@ public class PointValue extends SingleValue {
      * Constructs <code>PointValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>PointValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>PointValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>PointValue</code> is not valid
      */
     public PointValue(String value) {
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid point '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid point '" + value + "'. Length is not valid.");
         }
 
         if (!value.equals(value.trim())) {
-            throw new QTIParseException("Invalid point '" + value + "'.");
+            throw new QtiParseException("Invalid point '" + value + "'.");
         }
 
         final String[] parts = value.split(" ");
         if (parts.length != 2) {
-            throw new QTIParseException("Invalid point '" + value + "'. Number of parts is not valid.");
+            throw new QtiParseException("Invalid point '" + value + "'. Number of parts is not valid.");
         }
 
         try {
             this.horizontalValue = IntegerValue.parseInteger(parts[0]);
             this.verticalValue = IntegerValue.parseInteger(parts[1]);
         }
-        catch (final QTIParseException ex) {
-            throw new QTIParseException("Invalid point '" + value + "'.", ex);
+        catch (final QtiParseException ex) {
+            throw new QtiParseException("Invalid point '" + value + "'.", ex);
         }
     }
 

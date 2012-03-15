@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -165,7 +165,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
                 responseRule.evaluate(context);
             }
         }
-        catch (final QTIProcessingInterrupt interrupt) {
+        catch (final QtiProcessingInterrupt interrupt) {
             //do nothing
         }
     }

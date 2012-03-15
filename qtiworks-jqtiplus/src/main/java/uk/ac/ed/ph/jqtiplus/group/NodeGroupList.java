@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception.QTINodeGroupException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiNodeGroupException;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
@@ -273,12 +273,12 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Checks duplicities in group's names.
      * 
      * @param group given group
-     * @throws QTINodeGroupException if container already contains group with same name
+     * @throws QtiNodeGroupException if container already contains group with same name
      */
     public void add(NodeGroup group) {
         for (final NodeGroup child : groups) {
             if (child.getName().equals(group.getName())) {
-                final QTINodeGroupException ex = new QTINodeGroupException("Duplicate node group name: " + group.computeXPath());
+                final QtiNodeGroupException ex = new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
                 logger.error(ex.getMessage());
                 throw ex;
             }
@@ -293,7 +293,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * 
      * @param index position
      * @param group given group
-     * @throws QTIEvaluationException if container already contains group with same name
+     * @throws QtiEvaluationException if container already contains group with same name
      */
     public void add(int index, NodeGroup group) {
         groups.add(index, group);
@@ -337,7 +337,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * 
      * @param name name of requested group
      * @return group with given name
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public NodeGroup get(String name) {
         for (final NodeGroup child : groups) {
@@ -346,7 +346,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
             }
         }
 
-        final QTINodeGroupException ex = new QTINodeGroupException("Cannot find node group: " + name);
+        final QtiNodeGroupException ex = new QtiNodeGroupException("Cannot find node group: " + name);
         logger.error(ex.getMessage());
         throw ex;
     }
@@ -362,7 +362,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets expression group.
      * 
      * @return expression group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ExpressionGroup getExpressionGroup() {
         return (ExpressionGroup) get(Expression.DISPLAY_NAME);
@@ -372,7 +372,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets correctResponse group.
      * 
      * @return correctResponse group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public CorrectResponseGroup getCorrectResponseGroup() {
         return (CorrectResponseGroup) get(CorrectResponse.QTI_CLASS_NAME);
@@ -382,7 +382,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseDeclaration group.
      * 
      * @return responseDeclaration group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseDeclarationGroup getResponseDeclarationGroup() {
         return (ResponseDeclarationGroup) get(ResponseDeclaration.QTI_CLASS_NAME);
@@ -392,7 +392,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateDeclaration group.
      * 
      * @return templateDeclaration group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateDeclarationGroup getTemplateDeclarationGroup() {
         return (TemplateDeclarationGroup) get(TemplateDeclaration.QTI_CLASS_NAME);
@@ -402,7 +402,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets defaultValue group.
      * 
      * @return defaultValue group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public DefaultValueGroup getDefaultValueGroup() {
         return (DefaultValueGroup) get(DefaultValue.QTI_CLASS_NAME);
@@ -412,7 +412,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets interpolationTableEntry group.
      * 
      * @return interpolationTableEntry group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public InterpolationTableEntryGroup getInterpolationTableEntryGroup() {
         return (InterpolationTableEntryGroup) get(InterpolationTableEntry.QTI_CLASS_NAME);
@@ -422,7 +422,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets lookupTable group.
      * 
      * @return lookupTable group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public LookupTableGroup getLookupTableGroup() {
         return (LookupTableGroup) get(LookupTable.DISPLAY_NAME);
@@ -432,7 +432,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets matchTableEntry group.
      * 
      * @return matchTableEntry group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public MatchTableEntryGroup getMatchTableEntryGroup() {
         return (MatchTableEntryGroup) get(MatchTableEntry.QTI_CLASS_NAME);
@@ -442,7 +442,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeDeclaration group.
      * 
      * @return outcomeDeclaration group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeDeclarationGroup getOutcomeDeclarationGroup() {
         return (OutcomeDeclarationGroup) get(OutcomeDeclaration.QTI_CLASS_NAME);
@@ -452,7 +452,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeElse group.
      * 
      * @return outcomeElse group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeElseGroup getOutcomeElseGroup() {
         return (OutcomeElseGroup) get(OutcomeElse.QTI_CLASS_NAME);
@@ -462,7 +462,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeElseIf group.
      * 
      * @return outcomeElseIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeElseIfGroup getOutcomeElseIfGroup() {
         return (OutcomeElseIfGroup) get(OutcomeElseIf.QTI_CLASS_NAME);
@@ -472,7 +472,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeIf group.
      * 
      * @return outcomeIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeIfGroup getOutcomeIfGroup() {
         return (OutcomeIfGroup) get(OutcomeIf.QTI_CLASS_NAME);
@@ -482,7 +482,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeProcessing group.
      * 
      * @return outcomeProcessing group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeProcessingGroup getOutcomeProcessingGroup() {
         return (OutcomeProcessingGroup) get(OutcomeProcessing.QTI_CLASS_NAME);
@@ -492,7 +492,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets outcomeRule group.
      * 
      * @return outcomeRule group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OutcomeRuleGroup getOutcomeRuleGroup() {
         return (OutcomeRuleGroup) get(OutcomeRule.DISPLAY_NAME);
@@ -502,7 +502,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets candidateComment group.
      * 
      * @return candidateComment group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public CandidateCommentGroup getCandidateCommentGroup() {
         return (CandidateCommentGroup) get(CandidateComment.QTI_CLASS_NAME);
@@ -512,7 +512,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets context group.
      * 
      * @return context group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ContextGroup getContextGroup() {
         return (ContextGroup) get(Context.QTI_CLASS_NAME);
@@ -522,7 +522,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets identification group.
      * 
      * @return identification group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public IdentificationGroup getIdentificationGroup() {
         return (IdentificationGroup) get(Identification.QTI_CLASS_NAME);
@@ -532,7 +532,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets itemResult group.
      * 
      * @return itemResult group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ItemResultGroup getItemResultGroup() {
         return (ItemResultGroup) get(ItemResult.QTI_CLASS_NAME);
@@ -542,7 +542,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets itemVariable group.
      * 
      * @return itemVariable group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ItemVariableGroup getItemVariableGroup() {
         return (ItemVariableGroup) get(ItemVariable.DISPLAY_NAME);
@@ -552,7 +552,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets sessionIdentifier group.
      * 
      * @return sessionIdentifier group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SessionIdentifierGroup getSessionIdentifierGroup() {
         return (SessionIdentifierGroup) get(SessionIdentifier.QTI_CLASS_NAME);
@@ -562,7 +562,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets testResult group.
      * 
      * @return testResult group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TestResultGroup getTestResultGroup() {
         return (TestResultGroup) get(TestResult.QTI_CLASS_NAME);
@@ -572,7 +572,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets fieldValue group.
      * 
      * @return fieldValue group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public FieldValueGroup getFieldValueGroup() {
         return (FieldValueGroup) get(FieldValue.QTI_CLASS_NAME);
@@ -582,7 +582,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets assessmentSection group.
      * 
      * @return assessmentSection group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public AssessmentSectionGroup getAssessmentSectionGroup() {
         return (AssessmentSectionGroup) get(AssessmentSection.QTI_CLASS_NAME);
@@ -592,7 +592,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets branchRule group.
      * 
      * @return branchRule group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public BranchRuleGroup getBranchRuleGroup() {
         return (BranchRuleGroup) get(BranchRule.QTI_CLASS_NAME);
@@ -602,7 +602,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets itemSessionControl group.
      * 
      * @return itemSessionControl group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ItemSessionControlGroup getItemSessionControlGroup() {
         return (ItemSessionControlGroup) get(ItemSessionControl.QTI_CLASS_NAME);
@@ -612,7 +612,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets ordering group.
      * 
      * @return ordering group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public OrderingGroup getOrderingGroup() {
         return (OrderingGroup) get(Ordering.QTI_CLASS_NAME);
@@ -622,7 +622,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets preCondition group.
      * 
      * @return preCondition group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public PreConditionGroup getPreConditionGroup() {
         return (PreConditionGroup) get(PreCondition.QTI_CLASS_NAME);
@@ -632,7 +632,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets rubricBlock group.
      * 
      * @return rubricBlock group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public RubricBlockGroup getRubricBlockGroup() {
         return (RubricBlockGroup) get(RubricBlock.QTI_CLASS_NAME);
@@ -642,7 +642,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets sectionPart group.
      * 
      * @return sectionPart group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SectionPartGroup getSectionPartGroup() {
         return (SectionPartGroup) get(SectionPart.DISPLAY_NAME);
@@ -652,7 +652,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets selection group.
      * 
      * @return selection group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SelectionGroup getSelectionGroup() {
         return (SelectionGroup) get(Selection.QTI_CLASS_NAME);
@@ -662,7 +662,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateDefault group.
      * 
      * @return templateDefault group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateDefaultGroup getTemplateDefaultGroup() {
         return (TemplateDefaultGroup) get(TemplateDefault.QTI_CLASS_NAME);
@@ -672,7 +672,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets testFeedback group.
      * 
      * @return testFeedback group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TestFeedbackGroup getTestFeedbackGroup() {
         return (TestFeedbackGroup) get(TestFeedback.QTI_CLASS_NAME);
@@ -682,7 +682,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets testPart group.
      * 
      * @return testPart group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TestPartGroup getTestPartGroup() {
         return (TestPartGroup) get(TestPart.QTI_CLASS_NAME);
@@ -692,7 +692,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets timeLimit group.
      * 
      * @return timeLimit group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TimeLimitGroup getTimeLimitGroup() {
         return (TimeLimitGroup) get(TimeLimit.QTI_CLASS_NAME);
@@ -702,7 +702,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets variableMapping group.
      * 
      * @return variableMapping group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public VariableMappingGroup getVariableMappingGroup() {
         return (VariableMappingGroup) get(VariableMapping.QTI_CLASS_NAME);
@@ -712,7 +712,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets weight group.
      * 
      * @return weight group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public WeightGroup getWeightGroup() {
         return (WeightGroup) get(Weight.QTI_CLASS_NAME);
@@ -723,7 +723,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateElse group.
      * 
      * @return templateElse group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateElseGroup getTemplateElseGroup() {
         return (TemplateElseGroup) get(TemplateElse.QTI_CLASS_NAME);
@@ -733,7 +733,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateElseIf group.
      * 
      * @return templateElseIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateElseIfGroup getTemplateElseIfGroup() {
         return (TemplateElseIfGroup) get(TemplateElseIf.QTI_CLASS_NAME);
@@ -743,7 +743,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateIf group.
      * 
      * @return templateIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateIfGroup getTemplateIfGroup() {
         return (TemplateIfGroup) get(TemplateIf.QTI_CLASS_NAME);
@@ -753,7 +753,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateProcessing group.
      * 
      * @return templateProcessing group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateProcessingGroup getTemplateProcessingGroup() {
         return (TemplateProcessingGroup) get(TemplateProcessing.QTI_CLASS_NAME);
@@ -763,7 +763,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateProcessingRule group.
      * 
      * @return templateProcessing group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateProcessingRuleGroup getTemplateProcessingRuleGroup() {
         return (TemplateProcessingRuleGroup) get(TemplateProcessingRule.DISPLAY_NAME);
@@ -773,7 +773,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets templateRule group.
      * 
      * @return templateRule group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TemplateRuleGroup getTemplateRuleGroup() {
         return (TemplateRuleGroup) get(TemplateRule.DISPLAY_NAME);
@@ -783,7 +783,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseRule group.
      * 
      * @return responseRule group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseRuleGroup getResponseRuleGroup() {
         return (ResponseRuleGroup) get(ResponseRule.DISPLAY_NAME);
@@ -793,7 +793,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets itemBody group.
      * 
      * @return itemBody group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ItemBodyGroup getItemBodyGroup() {
         return (ItemBodyGroup) get(ItemBody.QTI_CLASS_NAME);
@@ -803,7 +803,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseElse group.
      * 
      * @return responseElse group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseElseGroup getResponseElseGroup() {
         return (ResponseElseGroup) get(ResponseElse.QTI_CLASS_NAME);
@@ -813,7 +813,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseElseIf group.
      * 
      * @return responseElseIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseElseIfGroup getResponseElseIfGroup() {
         return (ResponseElseIfGroup) get(ResponseElseIf.QTI_CLASS_NAME);
@@ -823,7 +823,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseIf group.
      * 
      * @return responseIf group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseIfGroup getResponseIfGroup() {
         return (ResponseIfGroup) get(ResponseIf.QTI_CLASS_NAME);
@@ -833,7 +833,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets responseProcessing group.
      * 
      * @return responseProcessing group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ResponseProcessingGroup getResponseProcessingGroup() {
         return (ResponseProcessingGroup) get(ResponseProcessing.QTI_CLASS_NAME);
@@ -843,7 +843,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets mapping group.
      * 
      * @return mapping group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public MappingGroup getMappingGroup() {
         return (MappingGroup) get(Mapping.QTI_CLASS_NAME);
@@ -853,7 +853,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets mapEntry group.
      * 
      * @return mapEntry group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public MapEntryGroup getMapEntryGroup() {
         return (MapEntryGroup) get(MapEntry.QTI_CLASS_NAME);
@@ -863,7 +863,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets areaMapping group.
      * 
      * @return areaMapping group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public AreaMappingGroup getAreaMappingGroup() {
         return (AreaMappingGroup) get(AreaMapping.QTI_CLASS_NAME);
@@ -873,7 +873,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets areaMapEntry group.
      * 
      * @return areaMapEntry group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public AreaMapEntryGroup getAreaMapEntryGroup() {
         return (AreaMapEntryGroup) get(AreaMapEntry.QTI_CLASS_NAME);
@@ -884,7 +884,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets prompt group.
      * 
      * @return prompt group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public PromptGroup getPromptGroup() {
         return (PromptGroup) get(Prompt.QTI_CLASS_NAME);
@@ -894,7 +894,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets simpleChoice group.
      * 
      * @return simpleChoice group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SimpleChoiceGroup getSimpleChoiceGroup() {
         return (SimpleChoiceGroup) get(SimpleChoice.QTI_CLASS_NAME);
@@ -904,7 +904,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets interaction group.
      * 
      * @return interaction group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public InteractionGroup getInteractionGroup() {
         return (InteractionGroup) get(Interaction.DISPLAY_NAME);
@@ -914,7 +914,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets inlineChoice group.
      * 
      * @return inlineChoice group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public InlineChoiceGroup getInlineChoiceGroup() {
         return (InlineChoiceGroup) get(InlineChoice.QTI_CLASS_NAME);
@@ -924,7 +924,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets inline group.
      * 
      * @return inline group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public InlineGroup getInlineGroup() {
         return (InlineGroup) get(Inline.DISPLAY_NAME);
@@ -934,7 +934,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets block group.
      * 
      * @return block group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public BlockGroup getBlockGroup() {
         return (BlockGroup) get(Block.DISPLAY_NAME);
@@ -944,7 +944,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets li group.
      * 
      * @return li group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public LiGroup getLiGroup() {
         return (LiGroup) get(Li.QTI_CLASS_NAME);
@@ -954,7 +954,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets dlElement group.
      * 
      * @return dlElement group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public DlElementGroup getDlElementGroup() {
         return (DlElementGroup) get(BodyElement.DISPLAY_NAME);
@@ -964,7 +964,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets flow group.
      * 
      * @return flow group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public FlowGroup getFlowGroup() {
         return (FlowGroup) get(Flow.DISPLAY_NAME);
@@ -974,7 +974,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets objectFlow group.
      * 
      * @return objectFlow group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ObjectFlowGroup getObjectFlowGroup() {
         return (ObjectFlowGroup) get(ObjectFlow.DISPLAY_NAME);
@@ -984,7 +984,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Col group.
      * 
      * @return Col group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ColGroup getColGroup() {
         return (ColGroup) get(Col.QTI_CLASS_NAME);
@@ -994,7 +994,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Colgroup group.
      * 
      * @return Colgroup group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ColgroupGroup getColgroupGroup() {
         return (ColgroupGroup) get(Colgroup.QTI_CLASS_NAME);
@@ -1004,7 +1004,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Caption group.
      * 
      * @return Caption group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public CaptionGroup getCaptionGroup() {
         return (CaptionGroup) get(Caption.QTI_CLASS_NAME);
@@ -1014,7 +1014,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Tbody group.
      * 
      * @return Tbody group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TbodyGroup getTbodyGroup() {
         return (TbodyGroup) get(Tbody.QTI_CLASS_NAME);
@@ -1024,7 +1024,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Tfoot group.
      * 
      * @return Tfoot group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TfootGroup getTfootGroup() {
         return (TfootGroup) get(Tfoot.QTI_CLASS_NAME);
@@ -1034,7 +1034,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Thead group.
      * 
      * @return Thead group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TheadGroup getTheadGroup() {
         return (TheadGroup) get(Thead.QTI_CLASS_NAME);
@@ -1044,7 +1044,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets Tr group.
      * 
      * @return Tr group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TrGroup getTrGroup() {
         return (TrGroup) get(Tr.QTI_CLASS_NAME);
@@ -1054,7 +1054,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets TableCell group.
      * 
      * @return TableCell group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TableCellGroup getTableCellGroup() {
         return (TableCellGroup) get(TableCell.DISPLAY_NAME);
@@ -1064,7 +1064,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets inlineStatic group.
      * 
      * @return inlineStatic group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public InlineStaticGroup getInlineStaticGroup() {
         return (InlineStaticGroup) get(InlineStatic.DISPLAY_NAME);
@@ -1074,7 +1074,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets flowStatic group.
      * 
      * @return flowStatic group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public FlowStaticGroup getFlowStaticGroup() {
         return (FlowStaticGroup) get(FlowStatic.DISPLAY_NAME);
@@ -1084,7 +1084,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets textOrVariable group.
      * 
      * @return textOrVariable group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public TextOrVariableGroup getTextOrVariableGroup() {
         return (TextOrVariableGroup) get(TextOrVariable.DISPLAY_NAME);
@@ -1094,7 +1094,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets blockStatic group.
      * 
      * @return textOrVariable group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public BlockStaticGroup getBlockStaticGroup() {
         return (BlockStaticGroup) get(BlockStatic.DISPLAY_NAME);
@@ -1104,7 +1104,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets simpleAssociableChoice group.
      * 
      * @return simpleAssociableChoice group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SimpleAssociableChoiceGroup getSimpleAssociableChoiceGroup() {
         return (SimpleAssociableChoiceGroup) get(SimpleAssociableChoice.QTI_CLASS_NAME);
@@ -1114,7 +1114,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets object group.
      * 
      * @return object group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ObjectGroup getObjectGroup() {
         return (ObjectGroup) get(Object.QTI_CLASS_NAME);
@@ -1124,7 +1124,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets gapChoice group.
      * 
      * @return gapChoice group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public GapChoiceGroup getGapChoiceGroup() {
         return (GapChoiceGroup) get(GapChoice.DISPLAY_NAME);
@@ -1134,7 +1134,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets associableHotspot group.
      * 
      * @return associableHotspot group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public AssociableHotspotGroup getAssociableHotspotGroup() {
         return (AssociableHotspotGroup) get(AssociableHotspot.QTI_CLASS_NAME);
@@ -1144,7 +1144,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets gapImg group.
      * 
      * @return gapImg group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public GapImgGroup getGapImgGroup() {
         return (GapImgGroup) get(GapImg.QTI_CLASS_NAME);
@@ -1154,7 +1154,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets hotspotChoice group.
      * 
      * @return hotspotChoice group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public HotspotChoiceGroup getHotspotChoiceGroup() {
         return (HotspotChoiceGroup) get(HotspotChoice.QTI_CLASS_NAME);
@@ -1164,7 +1164,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets simpleMatchSet group.
      * 
      * @return simpleMatchSet group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public SimpleMatchSetGroup getSimpleMatchSetGroup() {
         return (SimpleMatchSetGroup) get(SimpleMatchSet.QTI_CLASS_NAME);
@@ -1174,7 +1174,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets positionObjectInteraction group.
      * 
      * @return positionObjectInteraction group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public PositionObjectInteractionGroup getPositionObjectInteractionGroup() {
         return (PositionObjectInteractionGroup) get(PositionObjectInteraction.QTI_CLASS_NAME);
@@ -1184,7 +1184,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets candidateResponse group.
      * 
      * @return candidateResponse group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public CandidateResponseGroup getCandidateResponseGroup() {
         return (CandidateResponseGroup) get(CandidateResponse.QTI_CLASS_NAME);
@@ -1194,7 +1194,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets stylesheet group.
      * 
      * @return stylesheet group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public StylesheetGroup getStylesheetGroup() {
         return (StylesheetGroup) get(Stylesheet.QTI_CLASS_NAME);
@@ -1204,7 +1204,7 @@ public class NodeGroupList implements Validatable, Iterable<NodeGroup> {
      * Gets modalFeedback group.
      * 
      * @return modalFeedback group
-     * @throws QTINodeGroupException if group is not found
+     * @throws QtiNodeGroupException if group is not found
      */
     public ModalFeedbackGroup getModalFeedbackGroup() {
         return (ModalFeedbackGroup) get(ModalFeedback.QTI_CLASS_NAME);

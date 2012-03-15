@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -182,7 +182,7 @@ public enum ToleranceMode {
         final ToleranceMode result = toleranceModes.get(toleranceMode);
 
         if (result == null) {
-            throw new QTIParseException("Invalid " + QTI_CLASS_NAME + " '" + toleranceMode + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + toleranceMode + "'.");
         }
 
         return result;

@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -113,82 +113,82 @@ public class StringMatchRefuseTest extends ExpressionRefuseTest {
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
                         "<baseValue baseType='string'>identifier</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>identifier</baseValue>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // boolean
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "<baseValue baseType='string'>true</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>true</baseValue>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // integer
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // float
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>1</baseValue>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // point
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "<baseValue baseType='string'>1 1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>1 1</baseValue>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // pair
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // directedPair
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>identifier_1 identifier_2</baseValue>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // duration
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>1</baseValue>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // file
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
                         "<baseValue baseType='string'>file</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>file</baseValue>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // uri
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
                         "<baseValue baseType='string'>uri</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>uri</baseValue>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</stringMatch>", QTIBaseTypeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
         });
     }
 

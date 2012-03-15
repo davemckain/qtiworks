@@ -34,17 +34,20 @@
 package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * This exception is thrown if something requires any processing
- * (template, response, outcome) needs to be immediately stopped
- * for any reason.
- * Whilst normally it would be bad to use an exception for flow
- * control, this particular use is quite exceptional, and would
- * be very difficult to achieve in any other manner.
+ * This exception is used for reporting problems with baseType.
  * 
- * @author Jonathon Hare
+ * @author Jiri Kajaba
  */
-public class QTIProcessingInterrupt extends QTIException {
+public class QtiBaseTypeException extends QtiEvaluationException {
 
-    private static final long serialVersionUID = -3235593970976829701L;
+    private static final long serialVersionUID = 543586953995447052L;
 
+    /**
+     * Constructs A new exception with the specified detailed message.
+     * 
+     * @param message the detail message
+     */
+    public QtiBaseTypeException(String message) {
+        super(message);
+    }
 }

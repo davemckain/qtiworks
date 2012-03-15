@@ -71,7 +71,7 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
  * <p>
  * We have decided to use only unchecked exceptions in JQTI library. There is big discussion on Internet about checked/unchecked exceptions (see Google).
  * 
- * @see QTIException
+ * @see QtiException
  * 
  * @author Jiri Kajaba
  */

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -83,10 +83,10 @@ public class IdentifierValueRefuseTest {
     /**
      * Tests parsing value from <code>String</code> representation.
      * 
-     * @throws QTIParseException if test was successful
+     * @throws QtiParseException if test was successful
      */
-    @Test(expected = QTIParseException.class)
-    public void testParseIdentifier() throws QTIParseException {
+    @Test(expected = QtiParseException.class)
+    public void testParseIdentifier() throws QtiParseException {
         new IdentifierValue(string);
     }
 }

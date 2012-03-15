@@ -33,21 +33,24 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
+
 /**
- * This exception is used for reporting problems with baseType.
+ * This exception is used for reporting inconsistent use of {@link NodeGroup}s
  * 
  * @author Jiri Kajaba
  */
-public class QTIBaseTypeException extends QTIEvaluationException {
+public final class QtiNodeGroupException extends QtiModelException {
 
-    private static final long serialVersionUID = 543586953995447052L;
+    private static final long serialVersionUID = -1425955381105959375L;
 
     /**
      * Constructs A new exception with the specified detailed message.
      * 
      * @param message the detail message
      */
-    public QTIBaseTypeException(String message) {
+    public QtiNodeGroupException(String message) {
         super(message);
     }
 }

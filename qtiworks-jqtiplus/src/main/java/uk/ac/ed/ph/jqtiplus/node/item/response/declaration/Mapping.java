@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTINotImplementedException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiNotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
@@ -225,7 +225,7 @@ public class Mapping extends AbstractNode {
             }
             else {
                 if (!(sourceValue instanceof ListValue)) {
-                    throw new QTINotImplementedException();                   
+                    throw new QtiNotImplementedException();                   
                 }
                 double sum = 0.0;
                 final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());

@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -82,51 +82,51 @@ public class ProductRefuseTest extends ExpressionRefuseTest {
                 // identifier
                 { "<product>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // boolean
                 { "<product>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // integer
                 { "<product>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // float
                 { "<product>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // string
                 { "<product>" +
                         "<baseValue baseType='string'>1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // point
                 { "<product>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // pair
                 { "<product>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // directedPair
                 { "<product>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // duration
                 { "<product>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // file
                 { "<product>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
                 // uri
                 { "<product>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</product>", QTIBaseTypeException.class },
+                        "</product>", QtiBaseTypeException.class },
         });
     }
 

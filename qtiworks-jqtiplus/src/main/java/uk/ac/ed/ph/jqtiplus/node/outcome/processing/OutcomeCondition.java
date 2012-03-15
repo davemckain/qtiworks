@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseIfGroup;
@@ -137,7 +137,7 @@ public class OutcomeCondition extends OutcomeRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

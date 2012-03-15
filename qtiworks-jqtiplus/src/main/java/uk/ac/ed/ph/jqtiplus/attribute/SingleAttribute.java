@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
@@ -104,7 +104,7 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
             try {
                 this.value = parseValue(value);
             }
-            catch (final QTIParseException ex) {
+            catch (final QtiParseException ex) {
                 this.value = null;
                 context.modelBuildingError(ex, owner);
             }

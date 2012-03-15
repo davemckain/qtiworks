@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -102,7 +102,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
                 itemContext.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
             }
             else {
-                throw new QTIEvaluationException("Cannot find response or outcome declaration " + getIdentifier());
+                throw new QtiEvaluationException("Cannot find response or outcome declaration " + getIdentifier());
             }
         }
     }

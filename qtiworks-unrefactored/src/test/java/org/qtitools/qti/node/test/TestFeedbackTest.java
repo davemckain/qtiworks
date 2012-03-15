@@ -35,7 +35,7 @@ package org.qtitools.qti.node.test;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
@@ -103,7 +103,7 @@ public class TestFeedbackTest {
         }
 
         if (feedbacks == null) {
-            throw new QTIEvaluationException("Cannot find: " + identifier);
+            throw new QtiEvaluationException("Cannot find: " + identifier);
         }
 
         for (final TestFeedback feedback : feedbacks) {

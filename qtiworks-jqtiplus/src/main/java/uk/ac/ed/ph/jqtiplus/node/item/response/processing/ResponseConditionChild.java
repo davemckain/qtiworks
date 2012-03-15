@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -80,10 +80,10 @@ public abstract class ResponseConditionChild extends AbstractNode {
      * Evaluates all child responseRules and returns true.
      * 
      * @return true
-     * @throws QTIProcessingInterrupt
+     * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
@@ -97,7 +97,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
 
         final TemplateDeclaration declaration = itemContext.getSubjectItem().getTemplateDeclaration(getIdentifier());
         if (declaration == null) {
-            throw new QTIEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
+            throw new QtiEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
         ((ItemProcessingContext) context).setTemplateValue(declaration, value);

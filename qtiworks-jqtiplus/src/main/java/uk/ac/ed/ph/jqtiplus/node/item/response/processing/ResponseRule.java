@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -63,8 +63,8 @@ public abstract class ResponseRule extends AbstractNode {
     /**
      * Evaluates this rule and all its children.
      * 
-     * @throws QTIProcessingInterrupt
+     * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public abstract void evaluate(ProcessingContext context) throws QTIProcessingInterrupt, RuntimeValidationException;
+    public abstract void evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException;
 }

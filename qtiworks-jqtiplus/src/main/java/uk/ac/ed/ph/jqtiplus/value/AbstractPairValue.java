@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -70,7 +70,7 @@ public abstract class AbstractPairValue extends SingleValue {
     }
 
     /**
-     * @throws QTIParseException if either value is not a valid identifier
+     * @throws QtiParseException if either value is not a valid identifier
      */
     public AbstractPairValue(String sourceValue, String destValue) {
         this.sourceValue = new Identifier(sourceValue);
@@ -81,7 +81,7 @@ public abstract class AbstractPairValue extends SingleValue {
      * Constructs <code>AbstractPairValue</code> from given <code>String</code> representation.
      * 
      * @param value <code>String</code> representation of <code>AbstractPairValue</code>
-     * @throws QTIParseException if <code>String</code> representation of <code>AbstractPairValue</code> is not valid
+     * @throws QtiParseException if <code>String</code> representation of <code>AbstractPairValue</code> is not valid
      */
     public AbstractPairValue(String value) {
         if (value != null) {
@@ -89,24 +89,24 @@ public abstract class AbstractPairValue extends SingleValue {
         }
 
         if (value == null || value.length() == 0) {
-            throw new QTIParseException("Invalid pair '" + value + "'. Length is not valid.");
+            throw new QtiParseException("Invalid pair '" + value + "'. Length is not valid.");
         }
 
         if (!value.equals(value.trim())) {
-            throw new QTIParseException("Invalid pair '" + value + "'.");
+            throw new QtiParseException("Invalid pair '" + value + "'.");
         }
 
         final String[] parts = value.split(" ");
         if (parts.length != 2) {
-            throw new QTIParseException("Invalid pair '" + value + "'. Number of parts is not valid.");
+            throw new QtiParseException("Invalid pair '" + value + "'. Number of parts is not valid.");
         }
 
         try {
             this.sourceValue = new Identifier(parts[0]);
             this.destValue = new Identifier(parts[1]);
         }
-        catch (final QTIParseException ex) {
-            throw new QTIParseException("Invalid pair '" + value + "'.", ex);
+        catch (final QtiParseException ex) {
+            throw new QtiParseException("Invalid pair '" + value + "'.", ex);
         }
     }
 

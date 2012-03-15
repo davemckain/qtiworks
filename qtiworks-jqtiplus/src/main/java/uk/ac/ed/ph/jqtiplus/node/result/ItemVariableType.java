@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIParseException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +115,7 @@ public enum ItemVariableType {
         final ItemVariableType itemVariableType = itemVariableTypes.get(classTag);
 
         if (itemVariableType == null) {
-            throw new QTIParseException("Unsupported itemVariable: " + classTag);
+            throw new QtiParseException("Unsupported itemVariable: " + classTag);
         }
 
         return itemVariableType.create(parent);
