@@ -34,9 +34,8 @@
 package org.qtitools.qti.attribute;
 
 import uk.ac.ed.ph.jqtiplus.control.AssessmentTestAttemptController;
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationType;
 
 import java.util.Arrays;
@@ -70,7 +69,7 @@ public class AttributeRefuseTest {
         this.validationType = validationType;
     }
 
-    @Test(expected = QTIAttributeException.class)
+    @Test(expected = QtiAttributeException.class)
     public void test() {
         final AssessmentTestAttemptController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
         final ValidationResult result = testController.validate();
@@ -78,14 +77,14 @@ public class AttributeRefuseTest {
         switch (validationType) {
             case ERROR:
                 if (result.getErrors().size() == 1) {
-                    throw new QTIAttributeException("Validation failed: " + validationType);
+                    throw new QtiAttributeException("Validation failed: " + validationType);
                 }
 
             case WARNING:
                 // assertTrue(result.toString(), 0, result.getErrors().size());
 
                 if (result.getWarnings().size() > 1) {
-                    throw new QTIAttributeException("Validation failed: " + validationType);
+                    throw new QtiAttributeException("Validation failed: " + validationType);
                 }
         }
     }

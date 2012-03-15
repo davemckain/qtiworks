@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
@@ -66,13 +66,13 @@ public class SubstringRefuseTest extends ExpressionRefuseTest {
                 { "<substring caseSensitive='True'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTIAttributeException.class }, { "<substring caseSensitive='TRUE'>" +
+                        "</substring>", QtiAttributeException.class }, { "<substring caseSensitive='TRUE'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTIAttributeException.class }, { "<substring caseSensitive='1.0'>" +
+                        "</substring>", QtiAttributeException.class }, { "<substring caseSensitive='1.0'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTIAttributeException.class },
+                        "</substring>", QtiAttributeException.class },
                 // multiple
                 { "<substring caseSensitive='true'>" +
                         "<multiple>" +

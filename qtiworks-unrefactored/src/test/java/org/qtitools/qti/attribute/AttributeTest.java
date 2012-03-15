@@ -35,13 +35,13 @@ package org.qtitools.qti.attribute;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 
 import org.junit.Test;
 
 public class AttributeTest {
 
-    @Test(expected = QTIAttributeException.class)
+    @Test(expected = QtiAttributeException.class)
     public void add() {
         final AttributeList list = new AttributeList(null);
 
@@ -49,7 +49,7 @@ public class AttributeTest {
         list.add(new IntegerAttribute(null, "ATTR_1"));
     }
 
-    @Test(expected = QTIAttributeException.class)
+    @Test(expected = QtiAttributeException.class)
     public void get() {
         final AttributeList list = new AttributeList(null);
 

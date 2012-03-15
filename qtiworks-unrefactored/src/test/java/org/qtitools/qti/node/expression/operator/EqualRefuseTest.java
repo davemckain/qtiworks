@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
@@ -66,71 +66,71 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
                 { "<equal>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode=''>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode=''>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='unknown'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='unknown'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class },
+                        "</equal>", QtiAttributeException.class },
                 // attributes - absolute
                 { "<equal toleranceMode='absolute'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance=''>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance=''>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 2 3'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 2 3'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 A'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 A'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='-1 1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='-1 1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 -1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 -1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='-1 -1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='-1 -1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 1' includeLowerBound='True'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 1' includeLowerBound='True'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 1' includeUpperBound='TRUE'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='absolute' tolerance='1 1' includeUpperBound='TRUE'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class },
+                        "</equal>", QtiAttributeException.class },
                 // attributes - relative
                 { "<equal toleranceMode='relative'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance=''>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance=''>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 2 3'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 2 3'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 A'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 A'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='-1 1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='-1 1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 -1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 -1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='-1 -1'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='-1 -1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 1' includeLowerBound='True'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 1' includeLowerBound='True'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 1' includeUpperBound='TRUE'>" +
+                        "</equal>", QtiAttributeException.class }, { "<equal toleranceMode='relative' tolerance='1 1' includeUpperBound='TRUE'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equal>", QTIAttributeException.class },
+                        "</equal>", QtiAttributeException.class },
                 // multiple
                 { "<equal toleranceMode='exact'>" +
                         "<multiple>" +

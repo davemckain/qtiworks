@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
 
@@ -64,11 +64,11 @@ public class IndexRefuseTest extends ExpressionRefuseTest {
                 // index < 1
                 { "<index n='-3'>" +
                         "<null/>" +
-                        "</index>", QTIAttributeException.class }, { "<index n='-1'>" +
+                        "</index>", QtiAttributeException.class }, { "<index n='-1'>" +
                         "<null/>" +
-                        "</index>", QTIAttributeException.class }, { "<index n='0'>" +
+                        "</index>", QtiAttributeException.class }, { "<index n='0'>" +
                         "<null/>" +
-                        "</index>", QTIAttributeException.class },
+                        "</index>", QtiAttributeException.class },
                 // single
                 { "<index n='1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +

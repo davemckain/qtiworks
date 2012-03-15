@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
@@ -65,16 +65,16 @@ public class AnyNRefuseTest extends ExpressionRefuseTest {
                 // attributes
                 { "<anyN min='1' max='A'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</anyN>", QTIAttributeException.class }, { "<anyN min='1.0' max='1'>" +
+                        "</anyN>", QtiAttributeException.class }, { "<anyN min='1.0' max='1'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</anyN>", QTIAttributeException.class },
+                        "</anyN>", QtiAttributeException.class },
                 // condition: 0 <= min <= max
                 /* {"<anyN min='-1' max='1'>" +
                  * "<baseValue baseType='boolean'>true</baseValue>" +
-                 * "</anyN>", QTIAttributeException.class},
+                 * "</anyN>", QtiAttributeException.class},
                  * {"<anyN min='2' max='1'>" +
                  * "<baseValue baseType='boolean'>true</baseValue>" +
-                 * "</anyN>", QTIAttributeException.class}, */
+                 * "</anyN>", QtiAttributeException.class}, */
                 // multiple
                 { "<anyN min='1' max='1'>" +
                         "<multiple>" +
