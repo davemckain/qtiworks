@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -46,8 +45,6 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
-import java.util.Map;
 
 /**
  * FIXME: This needs refactored!
@@ -87,13 +84,4 @@ public interface ProcessingContext {
     void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value);
 
     void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value);
-
-    /** NB: Returns null if expression is not found or if value has not been set */
-    Value getExpressionValue(Expression expression);
-
-    Map<String, Value> exportExpressionValues();
-
-    void setExpressionValue(Expression expression, Value value);
-
-
 }

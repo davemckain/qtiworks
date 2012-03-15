@@ -48,11 +48,11 @@ import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
+
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 import org.qtitools.mathassess.tools.qticasbridge.types.ValueWrapper;
-
-import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
 import java.util.List;
 
@@ -111,7 +111,7 @@ public final class ScriptRule extends MathAssessOperator {
             throws MaximaTimeoutException, MathsContentTooComplexException {
         final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
-        final String code = context.getExpressionValue(getFirstChild()).toString().trim();
+        final String code = childValues[0].toString().trim();
         final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();
         final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         final boolean simplify = getSimplify().booleanValue();

@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
-import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
@@ -82,7 +81,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -648,7 +646,7 @@ public final class ItemSessionController {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(itemManager=" + resolvedAssessmentItem
+                + "(resolvedAssessmentItem=" + resolvedAssessmentItem
                 + ",itemState=" + itemState
                 + ")";
     }
@@ -660,10 +658,7 @@ public final class ItemSessionController {
      */
     protected class ItemProcessingContextImpl implements ItemProcessingContext {
 
-        private final Map<String, Value> expressionValues;
-
         public ItemProcessingContextImpl() {
-            this.expressionValues = new TreeMap<String, Value>();
         }
         
         @Override
@@ -704,21 +699,6 @@ public final class ItemSessionController {
         @Override
         public AssessmentItem getSubjectItem() {
             return item;
-        }
-
-        @Override
-        public Value getExpressionValue(Expression expression) {
-            return expressionValues.get(expression.computeXPath());
-        }
-
-        @Override
-        public Map<String, Value> exportExpressionValues() {
-            return Collections.unmodifiableMap(expressionValues);
-        }
-
-        @Override
-        public void setExpressionValue(Expression expression, Value value) {
-            expressionValues.put(expression.computeXPath(), value);
         }
 
         @Override
@@ -805,7 +785,6 @@ public final class ItemSessionController {
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()
                     + "(controller=" + ItemSessionController.this
-                    + ",expressionValues=" + expressionValues
                     + ")";
         }
     }
