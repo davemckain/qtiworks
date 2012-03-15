@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -244,13 +244,13 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     }
 
     @Override
-    public void initialize(AssessmentItemAttemptController itemController) {
+    public void initialize(ItemSessionController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getSimpleAssociableChoices());
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Extract response values */
         final List<PairValue> responseAssociations = new ArrayList<PairValue>();
         if (responseValue.isNull()) {

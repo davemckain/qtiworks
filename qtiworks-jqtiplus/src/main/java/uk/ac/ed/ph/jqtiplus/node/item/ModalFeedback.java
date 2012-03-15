@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -198,10 +198,10 @@ public class ModalFeedback extends AbstractNode {
      * 
      * @return true if this feedback can be displayed; false otherwise
      */
-    public boolean isVisible(AssessmentItemAttemptController itemController) {
+    public boolean isVisible(ItemSessionController itemController) {
 
         /* FIXME: This way of accessing outcome values looks old... probably needs refactored! */
-        final AssessmentItemState itemState = itemController.getItemState();
+        final ItemSessionState itemState = itemController.getItemState();
         final Value outcomeValue = itemState.getOutcomeValue(getOutcomeIdentifier());
         boolean identifierCheck;
         if (outcomeValue.getCardinality() == Cardinality.SINGLE) {

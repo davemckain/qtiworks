@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class TimeRecord implements Serializable, ItemTimeRecord {
+public class TimeRecord implements Serializable {
 
     private static final long serialVersionUID = 5242908459013903094L;
 
@@ -188,7 +188,6 @@ public class TimeRecord implements Serializable, ItemTimeRecord {
         this.total += addition;
     }
 
-    @Override
     public long getDuration() {
         return duration;
     }

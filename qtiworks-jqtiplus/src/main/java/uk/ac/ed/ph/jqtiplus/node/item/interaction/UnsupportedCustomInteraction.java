@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -59,7 +59,7 @@ public final class UnsupportedCustomInteraction extends CustomInteraction {
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         return false;
     }
 }

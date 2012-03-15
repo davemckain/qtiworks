@@ -114,6 +114,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /** Value of completion status built-in variable. */
     public static final String VALUE_ITEM_IS_COMPLETED = "completed";
+    
+    /** Value of completion status built-in variable. */
+    public static final String VALUE_ITEM_IS_INCOMPLETE = "incomplete";
 
     /** Name of number of attempts built-in variable. */
     public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";

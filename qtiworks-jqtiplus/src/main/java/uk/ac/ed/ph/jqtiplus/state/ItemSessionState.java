@@ -44,9 +44,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -59,45 +58,34 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An instance of this is not safe for use by multiple threads.
- * TODO: Document this!
- * TODO: Shuffle orders need integrated into the XSLT since we're no longer
- * explicitly reordering the elements.
+ * Encapsulates the current state of a candidate's item session.
+ * <p>
+ * An instance of this class is mutable, but you must let JQTI+ perform all
+ * mutation operations for you.
+ * <p>
+ * An instance of this class is NOT safe for use by multiple threads.
  * 
  * @author David McKain
- * @author Jonathon Hare
- * @author Jiri Kajaba
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class AssessmentItemState implements Serializable {
+public final class ItemSessionState implements Serializable {
 
     private static final long serialVersionUID = -7586529679289092485L;
+    
+    private boolean isInitialized;
+    private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
     private final Map<Identifier, Value> overriddenTemplateDefaultValues;
-
     private final Map<Identifier, Value> overriddenResponseDefaultValues;
-
     private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
-
     private final Map<Identifier, Value> overriddenCorrectResponseValues;
 
     private final Map<Identifier, Value> templateValues;
-
     private final Map<Identifier, Value> responseValues;
-
     private final Map<Identifier, Value> outcomeValues;
 
-    private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
-
-    private boolean isInitialized;
-
-    private ItemTimeRecord timeRecord;
-
-    /**
-     * Constructs assessmentItem.
-     */
-    public AssessmentItemState() {
-        this.timeRecord = null;
+    public ItemSessionState() {
+        this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
         this.isInitialized = false;
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenResponseDefaultValues = new HashMap<Identifier, Value>();
@@ -106,30 +94,15 @@ public final class AssessmentItemState implements Serializable {
         this.templateValues = new HashMap<Identifier, Value>();
         this.responseValues = new HashMap<Identifier, Value>();
         this.outcomeValues = new HashMap<Identifier, Value>();
-        this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
+        
+        /* Set built-in variables */
+        setDuration(0);
+        setNumAttempts(0);
+        setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
     }
-
-    public ItemTimeRecord getTimeRecord() {
-        return timeRecord;
-    }
-
-    public void setTimeRecord(ItemTimeRecord timeRecord) {
-        this.timeRecord = timeRecord;
-    }
-
+    
     //----------------------------------------------------------------
-
-    public void reset() {
-        isInitialized = false;
-        overriddenTemplateDefaultValues.clear();
-        overriddenResponseDefaultValues.clear();
-        overriddenOutcomeDefaultValues.clear();
-        overriddenCorrectResponseValues.clear();
-        templateValues.clear();
-        responseValues.clear();
-        outcomeValues.clear();
-        shuffledInteractionChoiceOrders.clear();
-    }
+    // Initialisation-related mutators
 
     public boolean isInitialized() {
         return isInitialized;
@@ -139,7 +112,34 @@ public final class AssessmentItemState implements Serializable {
         this.isInitialized = isInitialized;
     }
 
-    //----------------------------------------------------------------
+    public Map<Identifier, List<Identifier>> getShuffledInteractionChoiceOrders() {
+        return Collections.unmodifiableMap(shuffledInteractionChoiceOrders);
+    }
+
+    public List<Identifier> getShuffledInteractionChoiceOrder(Identifier responseIdentifier) {
+        ConstraintUtilities.ensureNotNull(responseIdentifier);
+        return shuffledInteractionChoiceOrders.get(responseIdentifier);
+    }
+
+    public List<Identifier> getShuffledInteractionChoiceOrder(Interaction interaction) {
+        ConstraintUtilities.ensureNotNull(interaction);
+        return getShuffledInteractionChoiceOrder(interaction.getResponseIdentifier());
+    }
+
+    public void setShuffledInteractionChoiceOrder(Identifier responseIdentifier, List<Identifier> shuffleOrders) {
+        ConstraintUtilities.ensureNotNull(responseIdentifier);
+        if (shuffleOrders == null || shuffleOrders.isEmpty()) {
+            shuffledInteractionChoiceOrders.remove(responseIdentifier);
+        }
+        else {
+            shuffledInteractionChoiceOrders.put(responseIdentifier, shuffleOrders);
+        }
+    }
+
+    public void setShuffledInteractionChoiceOrder(Interaction interaction, List<Identifier> shuffleOrders) {
+        ConstraintUtilities.ensureNotNull(interaction);
+        setShuffledInteractionChoiceOrder(interaction.getResponseIdentifier(), shuffleOrders);
+    }
 
     public Value getOverriddenDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
@@ -158,6 +158,70 @@ public final class AssessmentItemState implements Serializable {
     }
 
     //----------------------------------------------------------------
+    // Built-in variable manipulation
+    
+    public FloatValue getDurationValue() {
+        return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER);
+    }
+    
+    public void setDurationValue(FloatValue value) {
+        ConstraintUtilities.ensureNotNull(value);
+        responseValues.put(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER, value);
+    }
+    
+    public double getDuration() {
+        return getDurationValue().doubleValue();
+    }
+    
+    public void setDuration(double duration) {
+        setDurationValue(new FloatValue(duration));
+    }
+    
+    
+    public IntegerValue getNumAttemptsValue() {
+        return (IntegerValue) responseValues.get(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
+    }
+    
+    public void setNumAttemptsValue(IntegerValue value) {
+        ConstraintUtilities.ensureNotNull(value);
+        responseValues.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, value);
+    }
+    
+    public int getNumAttempts() {
+        return getNumAttemptsValue().intValue();
+    }
+    
+    public void setNumAttempts(int numAttempts) {
+        setNumAttemptsValue(new IntegerValue(numAttempts));
+    }
+    
+    
+    public IdentifierValue getCompletionStatusValue() {
+        return (IdentifierValue) outcomeValues.get(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
+    }
+    
+    public void setCompletionStatusValue(IdentifierValue value) {
+        ConstraintUtilities.ensureNotNull(value);
+        String status = value.stringValue();
+        if (!AssessmentItem.VALUE_ITEM_IS_UNKNOWN.equals(status)
+                && !AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED.equals(status)
+                && !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(status)
+                && !AssessmentItem.VALUE_ITEM_IS_INCOMPLETE.equals(status)) {
+            throw new QtiLogicException("Value " + status + " is not an acceptable completionStatus");
+        }
+        outcomeValues.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, value);
+    }
+    
+    public String getCompletionStatus() {
+        return getCompletionStatusValue().stringValue();
+    }
+    
+    public void setCompletionStatus(String completionStatus) {
+        ConstraintUtilities.ensureNotNull(completionStatus);
+        setCompletionStatusValue(new IdentifierValue(completionStatus));
+    }
+
+    //----------------------------------------------------------------
 
     public Value getOverriddenTemplateDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
@@ -165,16 +229,23 @@ public final class AssessmentItemState implements Serializable {
     }
 
     public Value getOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration) {
+        ConstraintUtilities.ensureNotNull(templateDeclaration);
         return getOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier());
     }
 
     public void setOverriddenTemplateDefaultValue(Identifier identifier, Value value) {
         ConstraintUtilities.ensureNotNull(identifier);
+        ConstraintUtilities.ensureNotNull(value);
         overriddenTemplateDefaultValues.put(identifier, value);
     }
 
     public void setOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration, Value value) {
+        ConstraintUtilities.ensureNotNull(templateDeclaration);
         setOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier(), value);
+    }
+    
+    public Map<Identifier, Value> getOverriddenTemplateDefaultValues() {
+        return Collections.unmodifiableMap(overriddenTemplateDefaultValues);
     }
 
     //----------------------------------------------------------------
@@ -197,8 +268,38 @@ public final class AssessmentItemState implements Serializable {
 
     public void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
         setOverriddenResponseDefaultValue(responseDeclaration.getIdentifier(), value);
+    }
+    
+    public Map<Identifier, Value> getOverriddenResponseDefaultValues() {
+        return Collections.unmodifiableMap(overriddenResponseDefaultValues);
+    }
+
+    //----------------------------------------------------------------
+    
+    public Value getOverriddenOutcomeDefaultValue(Identifier identifier) {
+        ConstraintUtilities.ensureNotNull(identifier);
+        return overriddenOutcomeDefaultValues.get(identifier);
+    }
+
+    public Value getOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration) {
+        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
+        return getOverriddenOutcomeDefaultValue(outcomeDeclaration.getIdentifier());
+    }
+
+    public void setOverriddenOutcomeDefaultValue(Identifier identifier, Value value) {
+        ConstraintUtilities.ensureNotNull(identifier);
+        ConstraintUtilities.ensureNotNull(value);
+        overriddenOutcomeDefaultValues.put(identifier, value);
+    }
+
+    public void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value) {
+        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
+        setOverriddenResponseDefaultValue(outcomeDeclaration.getIdentifier(), value);
+    }
+    
+    public Map<Identifier, Value> getOverriddenOutcomeDefaultValues() {
+        return Collections.unmodifiableMap(overriddenOutcomeDefaultValues);
     }
 
     //----------------------------------------------------------------
@@ -221,104 +322,15 @@ public final class AssessmentItemState implements Serializable {
 
     public void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
         setOverriddenCorrectResponseValue(responseDeclaration.getIdentifier(), value);
     }
-
+    
+    public Map<Identifier, Value> getOverriddenCorrectResponseValues() {
+        return Collections.unmodifiableMap(overriddenCorrectResponseValues);
+    }
+    
     //----------------------------------------------------------------
 
-    public Value getOverriddenOutcomeDefaultValue(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        return overriddenOutcomeDefaultValues.get(identifier);
-    }
-
-    public Value getOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration) {
-        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-        return getOverriddenOutcomeDefaultValue(outcomeDeclaration.getIdentifier());
-    }
-
-    public void setOverriddenOutcomeDefaultValue(Identifier identifier, Value value) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        ConstraintUtilities.ensureNotNull(value);
-        overriddenOutcomeDefaultValues.put(identifier, value);
-    }
-
-    public void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value) {
-        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
-        setOverriddenResponseDefaultValue(outcomeDeclaration.getIdentifier(), value);
-    }
-
-    //----------------------------------------------------------------
-
-    public Value getDurationValue() {
-        if (timeRecord == null) {
-            return NullValue.INSTANCE;
-        }
-        /* Return duration as supplied by timeRecord */
-        return new FloatValue(timeRecord.getDuration() / 1000.0);
-    }
-
-    /**
-     * Gets A response variable with given identifier or null
-     * 
-     * @param identifier
-     *            given identifier
-     * @return value of responseDeclaration with given identifier or null
-     */
-    public Value getResponseValue(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        if (identifier.equals(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER)) {
-            /* Return duration as supplied by timeRecord */
-            return getDurationValue();
-        }
-        return responseValues.get(identifier);
-    }
-
-    public Value getResponseValue(ResponseDeclaration responseDeclaration) {
-        ConstraintUtilities.ensureNotNull(responseDeclaration);
-        return getResponseValue(responseDeclaration.getIdentifier());
-    }
-
-    public Value getResponseValue(Interaction interaction) {
-        ConstraintUtilities.ensureNotNull(interaction);
-        return getResponseValue(interaction.getResponseIdentifier());
-    }
-
-    public void setResponseValue(Identifier identifier, Value value) {
-        if (identifier.equals(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER)) {
-            throw new QtiLogicException("duration variable should not be explicitly set");
-        }
-        responseValues.put(identifier, value);
-    }
-
-    public void setResponseValue(ResponseDeclaration responseDeclaration, Value value) {
-        ConstraintUtilities.ensureNotNull(responseDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
-        setResponseValue(responseDeclaration.getIdentifier(), value);
-    }
-
-    public void setResponseValue(Interaction interaction, Value value) {
-        ConstraintUtilities.ensureNotNull(interaction);
-        ConstraintUtilities.ensureNotNull(value);
-        setResponseValue(interaction.getResponseIdentifier(), value);
-    }
-
-    public Map<Identifier, Value> getResponseValues() {
-        final Map<Identifier, Value> result = new HashMap<Identifier, Value>(responseValues);
-        result.put(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER, getDurationValue());
-        return Collections.unmodifiableMap(result);
-    }
-
-    //----------------------------------------------------------------
-
-    /**
-     * Gets value of templateDeclaration with given identifier or null.
-     * 
-     * @param identifier
-     *            given identifier
-     * @return value of templateDeclaration with given identifier or null
-     */
     public Value getTemplateValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return templateValues.get(identifier);
@@ -337,7 +349,6 @@ public final class AssessmentItemState implements Serializable {
 
     public void setTemplateValue(TemplateDeclaration templateDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
         setTemplateValue(templateDeclaration.getIdentifier(), value);
     }
 
@@ -345,7 +356,52 @@ public final class AssessmentItemState implements Serializable {
         return Collections.unmodifiableMap(templateValues);
     }
 
-    //---------------------------------------------------------------
+    //----------------------------------------------------------------
+
+    public Value getResponseValue(Identifier identifier) {
+        ConstraintUtilities.ensureNotNull(identifier);
+        return responseValues.get(identifier);
+    }
+
+    public Value getResponseValue(ResponseDeclaration responseDeclaration) {
+        ConstraintUtilities.ensureNotNull(responseDeclaration);
+        return getResponseValue(responseDeclaration.getIdentifier());
+    }
+
+    public Value getResponseValue(Interaction interaction) {
+        ConstraintUtilities.ensureNotNull(interaction);
+        return getResponseValue(interaction.getResponseIdentifier());
+    }
+
+    public void setResponseValue(Identifier identifier, Value value) {
+        ConstraintUtilities.ensureNotNull(identifier);
+        ConstraintUtilities.ensureNotNull(value);
+        if (identifier.equals(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER)) {
+            throw new QtiLogicException("duration variable should not be set via setResponseValue()");
+        }
+        if (identifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+            throw new QtiLogicException("numAttempts variable should not be set via setResponseValue()");
+        }
+        responseValues.put(identifier, value);
+    }
+
+    public void setResponseValue(ResponseDeclaration responseDeclaration, Value value) {
+        ConstraintUtilities.ensureNotNull(responseDeclaration);
+        ConstraintUtilities.ensureNotNull(value);
+        setResponseValue(responseDeclaration.getIdentifier(), value);
+    }
+
+    public void setResponseValue(Interaction interaction, Value value) {
+        ConstraintUtilities.ensureNotNull(interaction);
+        ConstraintUtilities.ensureNotNull(value);
+        setResponseValue(interaction.getResponseIdentifier(), value);
+    }
+
+    public Map<Identifier, Value> getResponseValues() {
+        return Collections.unmodifiableMap(responseValues);
+    }
+
+    //----------------------------------------------------------------
 
     public Value getOutcomeValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
@@ -358,6 +414,7 @@ public final class AssessmentItemState implements Serializable {
     }
 
     public void setOutcomeValue(Identifier identifier, Value value) {
+        /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         outcomeValues.put(identifier, value);
@@ -365,7 +422,6 @@ public final class AssessmentItemState implements Serializable {
 
     public void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
     }
 
@@ -404,7 +460,6 @@ public final class AssessmentItemState implements Serializable {
         return result;
     }
 
-    /* (NEW!) */
     public Value getValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value result = getResponseValue(identifier);
@@ -423,14 +478,14 @@ public final class AssessmentItemState implements Serializable {
         ConstraintUtilities.ensureNotNull(variableDeclaration);
         ConstraintUtilities.ensureNotNull(value);
         final Identifier identifier = variableDeclaration.getIdentifier();
+        if (variableDeclaration instanceof TemplateDeclaration) {
+            templateValues.put(identifier, value);
+        }
         if (variableDeclaration instanceof ResponseDeclaration) {
             responseValues.put(identifier, value);
         }
         else if (variableDeclaration instanceof OutcomeDeclaration) {
             outcomeValues.put(identifier, value);
-        }
-        else if (variableDeclaration instanceof TemplateDeclaration) {
-            templateValues.put(identifier, value);
         }
         else {
             throw new QtiLogicException("Unexpected logic branch");
@@ -439,63 +494,18 @@ public final class AssessmentItemState implements Serializable {
 
     //----------------------------------------------------------------
 
-    public Map<Identifier, List<Identifier>> getShuffledInteractionChoiceOrders() {
-        return Collections.unmodifiableMap(shuffledInteractionChoiceOrders);
-    }
-
-    public List<Identifier> getShuffledInteractionChoiceOrder(Identifier responseIdentifier) {
-        ConstraintUtilities.ensureNotNull(responseIdentifier);
-        return shuffledInteractionChoiceOrders.get(responseIdentifier);
-    }
-
-    public List<Identifier> getShuffledInteractionChoiceOrder(Interaction interaction) {
-        ConstraintUtilities.ensureNotNull(interaction);
-        return getShuffledInteractionChoiceOrder(interaction.getResponseIdentifier());
-    }
-
-    public void setShuffledInteractionChoiceOrder(Identifier responseIdentifier, List<Identifier> shuffleOrders) {
-        ConstraintUtilities.ensureNotNull(responseIdentifier);
-        if (shuffleOrders == null || shuffleOrders.isEmpty()) {
-            shuffledInteractionChoiceOrders.remove(responseIdentifier);
-        }
-        else {
-            shuffledInteractionChoiceOrders.put(responseIdentifier, shuffleOrders);
-        }
-    }
-
-    public void setShuffledInteractionChoiceOrder(Interaction interaction, List<Identifier> shuffleOrders) {
-        ConstraintUtilities.ensureNotNull(interaction);
-        setShuffledInteractionChoiceOrder(interaction.getResponseIdentifier(), shuffleOrders);
-    }
-
-
-    //----------------------------------------------------------------
-    /* (New convenience methods) */
-
-    public int getNumAttempts() {
-        final Value value = getResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
-        int result = -1;
-        if (value != null && value.getBaseType() == BaseType.INTEGER && value.getCardinality() == Cardinality.SINGLE) {
-            result = ((IntegerValue) value).intValue();
-        }
-        return result;
-    }
-
-    //----------------------------------------------------------------
-
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
+                + "(initialized=" + isInitialized
+                + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
+                + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues
                 + ",overriddenOutcomeDefaultValues=" + overriddenOutcomeDefaultValues
                 + ",overriddenCorrectResponseValues=" + overriddenCorrectResponseValues
                 + ",templateValues=" + templateValues
                 + ",responseValues=" + responseValues
                 + ",outcomesValues=" + outcomeValues
-                + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
-                + ",initialized=" + isInitialized
-                + ",timeRecord=" + timeRecord
                 + ")";
     }
 }

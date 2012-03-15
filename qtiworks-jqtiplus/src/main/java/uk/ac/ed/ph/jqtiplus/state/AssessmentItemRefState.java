@@ -51,7 +51,7 @@ public final class AssessmentItemRefState extends SectionPartState {
 
     private static final long serialVersionUID = -1407010070268750764L;
 
-    private final AssessmentItemState itemState;
+    private final ItemSessionState itemState;
 
     private boolean presented;
 
@@ -67,14 +67,14 @@ public final class AssessmentItemRefState extends SectionPartState {
 
     private final TimeRecord timeRecord;
 
-    public AssessmentItemRefState(AssessmentTestState testState, Identifier identifier, int siblingIndex, AssessmentItemState itemState) {
+    public AssessmentItemRefState(AssessmentTestState testState, Identifier identifier, int siblingIndex, ItemSessionState itemState) {
         super(testState, identifier, siblingIndex, Collections.<SectionPartState> emptyList());
         this.itemState = itemState;
         this.sessionStatus = SessionStatus.INITIAL;
         this.timeRecord = new TimeRecord(this);
     }
 
-    public AssessmentItemState getItemState() {
+    public ItemSessionState getItemState() {
         return itemState;
     }
 

@@ -12,8 +12,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -34,8 +34,8 @@ public class TemplateConstraintTest {
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
         
-        AssessmentItemState itemState = new AssessmentItemState();
-        AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(jqtiExtensionManager, result.getResolvedAssessmentItem(), itemState);
+        ItemSessionState itemState = new ItemSessionState();
+        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, result.getResolvedAssessmentItem(), itemState);
         
         System.out.println("\nInitialising");
         itemController.initialize(null);

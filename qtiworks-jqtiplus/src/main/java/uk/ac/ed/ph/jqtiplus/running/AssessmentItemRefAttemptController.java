@@ -52,7 +52,7 @@ import java.util.Date;
 public final class AssessmentItemRefAttemptController {
 
     private final AssessmentTestAttemptController testAttemptController;
-    private final AssessmentItemAttemptController itemAttemptController;
+    private final ItemSessionController itemAttemptController;
     private final AssessmentItemRef itemRef;
     private final AssessmentItemRefState itemRefState;
 
@@ -64,7 +64,7 @@ public final class AssessmentItemRefAttemptController {
         ConstraintUtilities.ensureNotNull(itemRef, "itemRef");
         ConstraintUtilities.ensureNotNull(itemRefState, "assessmentItemRefState");
         this.testAttemptController = testAttemptController;
-        this.itemAttemptController = new AssessmentItemAttemptController(testAttemptController.getJqtiExtensionManager(),
+        this.itemAttemptController = new ItemSessionController(testAttemptController.getJqtiExtensionManager(),
                 resolvedAssessmentItem, itemRefState.getItemState());
         this.itemRef = itemRef;
         this.itemRefState = itemRefState;
@@ -74,7 +74,7 @@ public final class AssessmentItemRefAttemptController {
         return testAttemptController;
     }
 
-    public AssessmentItemAttemptController getItemController() {
+    public ItemSessionController getItemController() {
         return itemAttemptController;
     }
 

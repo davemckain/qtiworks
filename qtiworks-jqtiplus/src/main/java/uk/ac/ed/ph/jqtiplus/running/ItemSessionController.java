@@ -69,11 +69,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
-import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -96,9 +94,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author David McKain
  */
-public final class AssessmentItemAttemptController {
+public final class ItemSessionController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentItemAttemptController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     /** TODO: Make this settable! */
     public static int MAX_TEMPLATE_PROCESSING_TRIES = 100;
@@ -106,9 +104,9 @@ public final class AssessmentItemAttemptController {
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
-    private final AssessmentItemState itemState;
+    private final ItemSessionState itemState;
 
-    public AssessmentItemAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemState assessmentItemState) {
+    public ItemSessionController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
         ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
@@ -126,7 +124,7 @@ public final class AssessmentItemAttemptController {
         return item;
     }
 
-    public AssessmentItemState getItemState() {
+    public ItemSessionState getItemState() {
         return itemState;
     }
 
@@ -210,15 +208,6 @@ public final class AssessmentItemAttemptController {
             }
         }
         return value;
-    }
-
-    /**
-     * Set the completionStatus to the given value.
-     * 
-     * @param completionStatus value to set
-     */
-    public void setCompletionStatus(String completionStatus) {
-        itemState.setOutcomeValue(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, new IdentifierValue(completionStatus));
     }
 
     private void initValue(VariableDeclaration declaration) {
@@ -328,27 +317,18 @@ public final class AssessmentItemAttemptController {
      *             processing.
      */
     public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
-        // DM: Changed behaviour here in order to suit MathAssess project better. We now only
-        // initialise an item once. The previous JQTI behaviour allowed items to be reinitialised,
-        // which had the effect of rebuilding template variables, which caused randomised questions
-        // in tests to re-randomise during navigation, which was deemed to be very confusing to students.
-        // I have left the existing logic intact below.
-        //
-        // FIXME-DM: Maybe we should dump this flag completely and only initialise items when it actually makes sense?
+        /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemState.isInitialized()) {
-            return;
+            throw new QtiLogicException("Item state has already been initialized");
         }
 
         final ItemProcessingContext context = new ItemProcessingContextImpl();
 
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
-            /* Reset state */
-            itemState.reset();
-
             /* Set up built-in variables */
-            setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
-            itemState.setResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, new IntegerValue(0));
+            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            itemState.setNumAttempts(0);
 
             /* Perform template processing as many times as required. */
             int templateProcessingAttemptNumber = 0;
@@ -368,7 +348,7 @@ public final class AssessmentItemAttemptController {
             }
 
             /* Set the completion status to unknown */
-            setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
+            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
             /* Initialize all interactions in the itemBody */
             for (final Interaction interaction : item.getItemBody().getInteractions()) {
@@ -500,8 +480,8 @@ public final class AssessmentItemAttemptController {
                 }
             }
             if (countAttempt) {
-                final int oldAttempts = ((IntegerValue) itemState.getResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)).intValue();
-                itemState.setResponseValue(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, new IntegerValue(oldAttempts + 1));
+                final int oldAttempts = itemState.getNumAttempts();
+                itemState.setNumAttempts(oldAttempts + 1);
             }
 
             if (!item.getAdaptive()) {
@@ -792,46 +772,41 @@ public final class AssessmentItemAttemptController {
 
         @Override
         public Value lookupVariable(VariableDeclaration variableDeclaration) {
-            return AssessmentItemAttemptController.this.lookupVariable(variableDeclaration);
+            return ItemSessionController.this.lookupVariable(variableDeclaration);
         }
 
         @Override
         public Value lookupVariable(Identifier identifier) {
-            return AssessmentItemAttemptController.this.lookupVariable(identifier);
+            return ItemSessionController.this.lookupVariable(identifier);
         }
 
         @Override
         public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
-            return AssessmentItemAttemptController.this.lookupVariable(identifier, permittedTypes);
+            return ItemSessionController.this.lookupVariable(identifier, permittedTypes);
         }
 
         /* DM: This copes with defaults and overridden values */
         @Override
         public Value computeDefaultValue(Identifier identifier) {
-            return AssessmentItemAttemptController.this.computeDefaultValue(identifier);
+            return ItemSessionController.this.computeDefaultValue(identifier);
         }
 
         public Value computeDefaultValue(VariableDeclaration declaration) {
-            return AssessmentItemAttemptController.this.computeDefaultValue(declaration);
+            return ItemSessionController.this.computeDefaultValue(declaration);
         }
 
         @Override
         public Value computeCorrectReponse(Identifier responseIdentifier) {
             ConstraintUtilities.ensureNotNull(responseIdentifier);
-            return AssessmentItemAttemptController.this.computeCorrectResponse(ensureResponseDeclaration(responseIdentifier));
+            return ItemSessionController.this.computeCorrectResponse(ensureResponseDeclaration(responseIdentifier));
         }
 
         @Override
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()
-                    + "(controller=" + AssessmentItemAttemptController.this
+                    + "(controller=" + ItemSessionController.this
                     + ",expressionValues=" + expressionValues
                     + ")";
         }
-
-
-
-
-
     }
 }

@@ -47,8 +47,8 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -168,7 +168,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList) {
+    public void bindResponse(ItemSessionController itemController, List<String> responseList) {
         if (responseList.size() != 1) {
             throw new QtiEvaluationException("Error: Expected one value to be returned from interaction.");
         }
@@ -200,7 +200,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
 
         /* Now bind the variables */
-        final AssessmentItemState itemState = itemController.getItemState();
+        final ItemSessionState itemState = itemController.getItemState();
         itemState.setResponseValue(getResponseDeclaration(), responseValue);
         if (getPrintIdentifier() != null) {
             /* handle stringIdentifier binding if required */
@@ -209,7 +209,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Currently, a successful binding is considered the same as a response
          * being valid */
         return true;

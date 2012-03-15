@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -328,7 +328,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
 
     @Override
-    public void bindResponse(AssessmentItemAttemptController itemController, List<String> responseList) throws ResponseBindingException {
+    public void bindResponse(ItemSessionController itemController, List<String> responseList) throws ResponseBindingException {
         super.bindResponse(itemController, responseList);
 
         /* Also handle stringIdentifier binding if required */
@@ -379,7 +379,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Gather up the values */
         final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {

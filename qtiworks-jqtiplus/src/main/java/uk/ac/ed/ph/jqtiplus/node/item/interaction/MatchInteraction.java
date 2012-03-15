@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSet;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSetContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -232,7 +232,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public void initialize(AssessmentItemAttemptController itemController) {
+    public void initialize(ItemSessionController itemController) {
         super.initialize(itemController);
 
         final List<SimpleMatchSet> simpleMatchSets = getSimpleMatchSets();
@@ -244,7 +244,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

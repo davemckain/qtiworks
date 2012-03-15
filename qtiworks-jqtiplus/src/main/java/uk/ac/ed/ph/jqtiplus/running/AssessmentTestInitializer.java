@@ -43,9 +43,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionState;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.SectionPartState;
 import uk.ac.ed.ph.jqtiplus.state.SectionPartStateKey;
 import uk.ac.ed.ph.jqtiplus.state.TestPartState;
@@ -366,9 +366,10 @@ final class AssessmentTestInitializer {
         else if (sectionPart instanceof AssessmentItemRef) {
             final AssessmentItemRef itemRef = (AssessmentItemRef) sectionPart;
 
-            final AssessmentItemState itemState = new AssessmentItemState();
+            final ItemSessionState itemState = new ItemSessionState();
             final AssessmentItemRefState itemRefState = new AssessmentItemRefState(testState, itemRef.getIdentifier(), siblingIndex, itemState);
-            itemState.setTimeRecord(itemRefState.getTimeRecord());
+// FIXME: Need to set item's duration to the correct value here. We used to have an ItemTimeRecord but this has been removed
+//            itemState.setTimeRecord(itemRefState.getTimeRecord());
             result = itemRefState;
         }
         else {

@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentItemAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -276,13 +276,13 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     }
 
     @Override
-    public void initialize(AssessmentItemAttemptController itemController) {
+    public void initialize(ItemSessionController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(AssessmentItemAttemptController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {
