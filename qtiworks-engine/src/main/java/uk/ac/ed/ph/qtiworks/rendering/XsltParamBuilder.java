@@ -33,14 +33,19 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
+
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -53,7 +58,6 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +71,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * This little helper class converts various types of JQTIPlus Objects into DOM elements.
@@ -212,18 +217,19 @@ public final class XsltParamBuilder {
         return result;
     }
     
-    public List<Node> choiceOrdersToElements(List<Interaction> interactions) {
+    public List<Node> choiceOrdersToElements(final ItemSessionState itemSessionState, final List<Interaction> interactions) {
         List<Node> result = new ArrayList<Node>();
         Document doc = documentBuilder.newDocument();
         for (Interaction interaction : interactions) {
             if (interaction instanceof Shuffleable) {
                 Shuffleable shuffleable = (Shuffleable) interaction;
                 if (shuffleable.getShuffle().booleanValue()) {
+                    List<Identifier> shuffledInteractionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
                     Element container = doc.createElementNS(QTIWORKS_NAMESPACE, "shuffledChoiceOrder");
                     container.setAttribute("responseIdentifier", interaction.getResponseIdentifier().toString());
-                    for (String choiceIdentifier : shuffleable.getShuffledChoiceOrder()) {
+                    for (Identifier choiceIdentifier : shuffledInteractionChoiceOrder) {
                         Element choice = doc.createElementNS(QTIWORKS_NAMESPACE, "choice");
-                        choice.setAttribute("identifier", choiceIdentifier);
+                        choice.setAttribute("identifier", choiceIdentifier.toString());
                         container.appendChild(choice);
                     }
                     result.add(container);
@@ -233,84 +239,52 @@ public final class XsltParamBuilder {
         return result;
     }
     
-    public List<Node> convertRubric(List<List<RubricBlock>> values) {
-        ArrayList<Node> result = new ArrayList<Node>();
-        if (values == null || values.size() == 0) {
-            return result;
-        }
-        
-        /* FIXME: Is the following original logic still wanted? */
-        int count = 0;
-        for (List<RubricBlock> v : values) {
-            count += v.size();
-        }
-        if (count==0) {
-            return result;
-        }
-        
-        Document doc = documentBuilder.newDocument();
-        for (List<RubricBlock> section : values) {
-            Element sectionContainer = doc.createElementNS(QTIWORKS_NAMESPACE, "section");
+    public NodeList rubricsToNodeList(final List<List<RubricBlock>> values) {
+        return new XsltParamDocumentBuilder(new SaxFirerCallback() {
             
-            Element tmp = doc.createElementNS(QTIConstants.QTI_21_NAMESPACE, "tmp");
-            sectionContainer.appendChild(tmp);
-
-            for (RubricBlock block : section) {
-                /* (We have to clone these as we're building a new tree up) */
-                Node blockNode = buildNode(block);
-                Node adopted = doc.adoptNode(blockNode);
-                sectionContainer.appendChild(adopted);
+            @Override
+            public XmlNode[] getQtiNodes() {
+                final List<RubricBlock> allBlocks = new ArrayList<RubricBlock>();
+                for (List<RubricBlock> section : values) {
+                    allBlocks.addAll(section);
+                }
+                return allBlocks.toArray(new XmlNode[allBlocks.size()]);
             }
-            result.add(sectionContainer);
-        }
-        return result;
+            
+            @Override
+            public void fireSaxEvents(SaxEventFirer saxEventFirer, QtiSaxFiringContext qtiSaxFiringContext) throws SAXException {
+                for (List<RubricBlock> section : values) {
+                    saxEventFirer.fireStartElement(section, "section", QTIWORKS_NAMESPACE, new AttributesImpl());
+                    for (RubricBlock block : section) {
+                        block.fireSaxEvents(qtiSaxFiringContext);
+                    }
+                    saxEventFirer.fireEndElement(section, "section", QTIWORKS_NAMESPACE);
+                }
+            }
+        }).buildDocument().getDocumentElement().getChildNodes();
     }
 
-    public NodeList convertFeedback(List<TestFeedback> values) {
+    public NodeList testFeedbacksToNodeList(List<TestFeedback> values) {
         return buildNodeList(values);
     }
     
-    public NodeList convertOutcomeDeclarations(List<OutcomeDeclaration> values) {
+    public NodeList outcomeDeclarationsToNodeList(List<OutcomeDeclaration> values) {
         return buildNodeList(values);
     }
     
-    private Node buildNode(AbstractNode value) {
-        if (value == null) {
-            return null;
-        }
-        StringBuilder xmlBuilder = new StringBuilder("<wrapper xmlns='")
-            .append(QTIConstants.QTI_21_NAMESPACE)
-            .append("'>")
-            .append(value.toXmlString())
-            .append("</wrapper>");
-        Document document;
-        try {
-            document = documentBuilder.parse(new InputSource(new StringReader(xmlBuilder.toString())));
-        }
-        catch (Exception e) {
-            throw new QtiRenderingException("Unexpected Exception reparsing value");
-        }
-        return document.getDocumentElement().getChildNodes().item(0);
-    }
-    
-    private NodeList buildNodeList(List<? extends AbstractNode> values) {
-        if (values == null || values.size() == 0) {
-            return null;
-        }
-        StringBuilder xmlBuilder = new StringBuilder("<wrapper xmlns='")
-            .append(AssessmentItem.ATTR_DEFAULT_NAME_SPACE_NAME)
-            .append("'>");
-        for (AbstractNode node : values) {
-            xmlBuilder.append(node.toXmlString());
-        }
-        xmlBuilder.append("</wrapper>");
-        Document document;
-        try {
-            document = documentBuilder.parse(new InputSource(new StringReader(xmlBuilder.toString())));
-        }
-        catch (Exception e) {
-            throw new QtiRenderingException("Unexpected Exception reparsing values subtree");
-        }
-        return document.getDocumentElement().getChildNodes();
+    private NodeList buildNodeList(final List<? extends AbstractNode> values) {
+        return new XsltParamDocumentBuilder(new SaxFirerCallback() {
+            @Override
+            public XmlNode[] getQtiNodes() {
+                return values.toArray(new XmlNode[values.size()]);
+            }
+            
+            @Override
+            public void fireSaxEvents(SaxEventFirer saxEventFirer, QtiSaxFiringContext qtiSaxFiringContext) throws SAXException {
+                for (AbstractNode node : values) {
+                    node.fireSaxEvents(qtiSaxFiringContext);
+                }
+            }
+        }).buildDocument().getDocumentElement().getChildNodes();
     }
 }

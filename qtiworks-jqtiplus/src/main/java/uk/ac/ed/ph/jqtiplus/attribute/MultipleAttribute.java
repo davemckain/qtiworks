@@ -173,10 +173,12 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      */
     private String valueToXmlString(List<E> value) {
         final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < value.size(); i++) {
-            builder.append(value.get(i));
-            if (i < value.size() - 1) {
-                builder.append(FIELDS_SEPARATOR);
+        if (value!=null) {
+            for (int i = 0; i < value.size(); i++) {
+                builder.append(value.get(i));
+                if (i < value.size() - 1) {
+                    builder.append(FIELDS_SEPARATOR);
+                }
             }
         }
         return builder.toString();

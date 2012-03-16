@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
@@ -108,7 +108,7 @@ public interface XmlNode extends Validatable {
      * @param saxFiringContext
      * @throws SAXException
      */
-    void fireSaxEvents(SaxFiringContext saxFiringContext)
+    void fireSaxEvents(QtiSaxFiringContext saxFiringContext)
             throws SAXException;
 
     /**

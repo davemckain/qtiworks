@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -143,7 +143,7 @@ public class BaseValue extends AbstractExpression {
     }
 
     @Override
-    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(singleValue.toString());
     }
 

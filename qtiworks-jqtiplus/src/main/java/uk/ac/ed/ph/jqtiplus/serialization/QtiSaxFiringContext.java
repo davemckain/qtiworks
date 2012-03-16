@@ -46,12 +46,12 @@ import org.xml.sax.helpers.AttributesImpl;
  *
  * @author David McKain
  */
-public final class SaxFiringContext {
+public final class QtiSaxFiringContext {
     
     private final SaxEventFirer saxEventFirer;
     private final NamespacePrefixMappings attributeNamespacePrefixMappings;
     
-    SaxFiringContext(SaxEventFirer saxEventFirer, NamespacePrefixMappings attributeNamespacePrefixMappings) {
+    public QtiSaxFiringContext(SaxEventFirer saxEventFirer, NamespacePrefixMappings attributeNamespacePrefixMappings) {
         this.saxEventFirer = saxEventFirer;
         this.attributeNamespacePrefixMappings = attributeNamespacePrefixMappings;
     }

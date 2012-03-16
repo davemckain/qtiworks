@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -202,7 +202,7 @@ public class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(singleValue.toString());
     }
 

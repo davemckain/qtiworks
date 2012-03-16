@@ -94,7 +94,7 @@ public final class SaxEventFirer {
     
     //-------------------------------------------------------------------------------
     
-    protected void fireStartDocumentAndPrefixMappings() throws SAXException {
+    public void fireStartDocumentAndPrefixMappings() throws SAXException {
         targetHandler.startDocument();
         
         /* Put namespace prefixes in scope */
@@ -107,7 +107,7 @@ public final class SaxEventFirer {
         }
     }
     
-    protected void fireEndDocumentAndPrefixMappings() throws SAXException {
+    public void fireEndDocumentAndPrefixMappings() throws SAXException {
         /* Remove namespace prefixes from scope */
         for (Entry<String, String> entry : namespacePrefixMappings.entrySet()) {
             String prefix = entry.getKey();

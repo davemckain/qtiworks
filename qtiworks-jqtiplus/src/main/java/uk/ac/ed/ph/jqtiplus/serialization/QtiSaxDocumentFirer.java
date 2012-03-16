@@ -83,23 +83,17 @@ public final class QtiSaxDocumentFirer {
         SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
                 createSchemaLocationMap(usedExtensionPackages), targetHandler, saxFiringOptions);
         
-        /* Fire off the start of the document */
-        targetHandler.startDocument();
-        
-        /* Put namespace prefixes in scope */
+        /* Put namespace prefixes in scope and fire start of document */
         saxEventFirer.fireStartDocumentAndPrefixMappings();
 
         /* Create callback for nodes */
-        SaxFiringContext saxFiringContext = new SaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
+        QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
         
         /* Get document Node to fire itself off */
         node.fireSaxEvents(saxFiringContext);
         
-        /* Remove namespace prefixes from scope */
+        /* Remove namespace prefixes from scope and end document */
         saxEventFirer.fireEndDocumentAndPrefixMappings();
-        
-        /* Finish off the document */
-        targetHandler.endDocument();
     }
     
     public static Map<String, String> createSchemaLocationMap(Set<JqtiExtensionPackage> usedExtensionPackages) {

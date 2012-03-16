@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -174,13 +174,13 @@ public abstract class AbstractNode implements XmlNode {
     }
     
     @Override
-    public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    public void fireSaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireStartQtiElement(this);
         fireBodySaxEvents(saxFiringContext);
         saxFiringContext.fireEndQtiElement(this);
     }
     
-    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         for (NodeGroup nodeGroup : nodeGroups) {
             for (XmlNode childNode : nodeGroup.getChildren()) {
                 childNode.fireSaxEvents(saxFiringContext);

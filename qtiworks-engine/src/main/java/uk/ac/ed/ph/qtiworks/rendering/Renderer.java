@@ -189,7 +189,7 @@ public final class Renderer {
         xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToNodes(responses));
         xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToNodes(assessmentItem.getOutcomeValues()));
         xsltParameters.put("testOutcomeValues", xsltParamBuilder.outcomeValuesToNodes(assessmentTest.getOutcomeValues()));
-        xsltParameters.put("testOutcomeDeclarations", xsltParamBuilder.convertOutcomeDeclarations(assessmentTest.getOutcomeDeclarations()));
+        xsltParameters.put("testOutcomeDeclarations", xsltParamBuilder.outcomeDeclarationsToNodeList(assessmentTest.getOutcomeDeclarations()));
         
         /* Pass interaction choice orders as parameters (if really rendering an item which == having an itemBody here) */
         ItemBody itemBody = assessmentItem.getItemBody();

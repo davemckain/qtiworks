@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         for (final XmlNode childNode : children) {
             childNode.fireSaxEvents(saxFiringContext);
         }

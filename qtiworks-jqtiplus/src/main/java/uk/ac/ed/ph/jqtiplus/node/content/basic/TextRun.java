@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.basic;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
@@ -72,7 +72,7 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
     }
     
     @Override
-    public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    public void fireSaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(textContent);
     }
 

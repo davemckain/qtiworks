@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -101,7 +101,7 @@ public class CandidateComment extends AbstractNode {
     }
 
     @Override
-    protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(textContent);
     }
 }
