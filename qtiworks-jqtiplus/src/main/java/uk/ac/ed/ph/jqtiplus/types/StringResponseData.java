@@ -31,51 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
+package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
-import java.util.List;
+import java.io.Serializable;
 
 /**
- * Base interface for assessmentItem and assessmentTest Objects.
- * <p>
- * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
- * rather than an identifier!
- * 
- * @see AssessmentItem
- * @see AssessmentTest
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
+public final class StringResponseData implements ResponseData, Serializable {
     
-    AssessmentObjectType getType();
+    private static final long serialVersionUID = -3969978393997321192L;
     
-    String getTitle();
+    private String[] responseData;
     
-    void setTitle(String title);
+    public StringResponseData(String[] responseData) {
+        this.responseData = responseData;
+    }
     
-    String getToolName();
+    @Override
+    public ResponseDataType getType() {
+        return ResponseDataType.STRING;
+    }
 
-    void setToolName(String toolName);
-
-    String getToolVersion();
-
-    void setToolVersion(String toolVersion);
-
-    List<OutcomeDeclaration> getOutcomeDeclarations();
-
-    OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
-
-    /**
-     * Convenience method to return the appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}
-     */
-    VariableDeclaration getVariableDeclaration(Identifier identifier);
-
+    public String[] getResponseData() {
+        return responseData;
+    }
+    
+    public void setResponseData(String[] responseData) {
+        this.responseData = responseData;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(responseData=" + responseData + ")";
+    }
 }

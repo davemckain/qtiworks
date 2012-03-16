@@ -31,51 +31,72 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
+package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
-import java.util.List;
+import java.io.File;
+import java.io.Serializable;
 
 /**
- * Base interface for assessmentItem and assessmentTest Objects.
- * <p>
- * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
- * rather than an identifier!
- * 
- * @see AssessmentItem
- * @see AssessmentTest
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
+public final class FileResponseData implements ResponseData, Serializable {
     
-    AssessmentObjectType getType();
+    private static final long serialVersionUID = -7780168487104250697L;
     
-    String getTitle();
+    private File file;
+    private String contentType;
+    private String fileName;
     
-    void setTitle(String title);
+    public FileResponseData(File file, String contentType) {
+        this(file, contentType, null);
+    }
     
-    String getToolName();
+    public FileResponseData(File file, String contentType, String fileName) {
+        this.file = file;
+        this.contentType = contentType;
+        this.fileName = fileName;
+    }
+    
+    @Override
+    public ResponseDataType getType() {
+        return ResponseDataType.FILE;
+    }
 
-    void setToolName(String toolName);
+    public File getFile() {
+        return file;
+    }
 
-    String getToolVersion();
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-    void setToolVersion(String toolVersion);
+    
+    public String getContentType() {
+        return contentType;
+    }
+    
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-    List<OutcomeDeclaration> getOutcomeDeclarations();
-
-    OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
-
-    /**
-     * Convenience method to return the appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}
-     */
-    VariableDeclaration getVariableDeclaration(Identifier identifier);
-
+    
+    public String getFileName() {
+        return fileName;
+    }
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(file=" + file
+                + ",contentType=" + contentType
+                + ",fileName=" + fileName
+                + ")";
+    }
 }

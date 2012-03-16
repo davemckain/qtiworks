@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -144,8 +145,8 @@ public class EndAttemptInteraction extends InlineInteraction {
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) {
-        return BooleanValue.valueOf(responseList != null && !responseList.isEmpty());
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) {
+        return BooleanValue.TRUE;
     }
 
     @Override

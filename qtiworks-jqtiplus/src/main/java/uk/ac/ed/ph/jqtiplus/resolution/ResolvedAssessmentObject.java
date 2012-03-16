@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -67,6 +68,8 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
         this.rootObjectLookup = rootObjectLookup;
         this.modelRichness = modelRichness;
     }
+    
+    public abstract AssessmentObjectType getType();
     
     @ObjectDumperOptions(DumpMode.IGNORE)
     public RootObjectLookup<E> getRootObjectLookup() {

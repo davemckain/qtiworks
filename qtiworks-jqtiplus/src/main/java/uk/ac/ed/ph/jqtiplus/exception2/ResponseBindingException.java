@@ -42,39 +42,7 @@ public final class ResponseBindingException extends QtiException {
 
     private static final long serialVersionUID = 1727673548938417208L;
 
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
-    protected ResponseBindingException() {
-        super();
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
     public ResponseBindingException(String message) {
         super(message);
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public ResponseBindingException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public ResponseBindingException(Throwable cause) {
-        super(cause);
     }
 }

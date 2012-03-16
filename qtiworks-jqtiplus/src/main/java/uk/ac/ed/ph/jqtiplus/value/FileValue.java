@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
+
 import java.io.File;
 
 /**
@@ -62,6 +64,12 @@ public final class FileValue extends SingleValue {
         this.fileName = fileName;
     }
     
+    public FileValue(FileResponseData fileResponseData) {
+        this.file = fileResponseData.getFile();
+        this.contentType = fileResponseData.getContentType();
+        this.fileName = fileResponseData.getFileName();
+    }
+
     @Override
     public BaseType getBaseType() {
         return BaseType.FILE;

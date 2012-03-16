@@ -31,51 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
+package uk.ac.ed.ph.qtiworks.domain;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
+import java.net.URI;
 import java.util.List;
 
 /**
- * Base interface for assessmentItem and assessmentTest Objects.
- * <p>
- * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
- * rather than an identifier!
- * 
- * @see AssessmentItem
- * @see AssessmentTest
- * 
+ * Represents each {@link AssessmentItem} or {@link AssessmentTest} handled by the system
+ *
  * @author David McKain
  */
-public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
+public class AssessmentEntity {
     
-    AssessmentObjectType getType();
+    private Long id;
+    private AssessmentObjectType assessmentType;
+    private URI packageBaseUri;
+    private String objectHref;
     
-    String getTitle();
+    private boolean valid; /* (This should be set each time a create/modify operation is performed) */
     
-    void setTitle(String title);
+    private String title; /* (Would take this from QTI) */
     
-    String getToolName();
-
-    void setToolName(String toolName);
-
-    String getToolVersion();
-
-    void setToolVersion(String toolVersion);
-
-    List<OutcomeDeclaration> getOutcomeDeclarations();
-
-    OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
-
-    /**
-     * Convenience method to return the appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}
-     */
-    VariableDeclaration getVariableDeclaration(Identifier identifier);
+    /* TODO: May make sense to cache a resolved copy of the entity to make lookups quicker */
+    
+    
+    private List<AssessmentDelivery> deliveries;
 
 }

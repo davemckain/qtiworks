@@ -43,9 +43,13 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -328,40 +332,47 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
 
     @Override
-    public void bindResponse(ItemSessionController itemController, List<String> responseList) throws ResponseBindingException {
-        super.bindResponse(itemController, responseList);
+    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(itemController, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
-            final Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseList);
+            final Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseData);
             itemController.getItemState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
         }
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) throws ResponseBindingException {
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+        if (responseData.getType()!=ResponseDataType.STRING) {
+            throw new ResponseBindingException("extendedTextInteraction must be bound to string response data");
+        }
+        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        Cardinality responseCardinality = responseDeclaration.getCardinality();
+        BaseType responseBaseType = responseDeclaration.getBaseType();
+        
         //handle record special case
         Value result;
-        if (responseDeclaration.getCardinality().isRecord()) {
+        if (responseCardinality.isRecord()) {
             String responseString = null;
-            if (responseList != null) {
-                if (responseList.size() > 1) {
+            if (stringResponseData != null) {
+                if (stringResponseData.length > 1) {
                     throw new ResponseBindingException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
-                responseString = responseList.get(0);
+                responseString = stringResponseData[0];
             }
 
             result = TextEntryInteraction.bindRecordValueResponse(responseString, getBase());
         }
-        else if (responseDeclaration.getBaseType().isInteger()) {
-            if (responseDeclaration.getCardinality().isList()) {
-                final IntegerValue[] values = new IntegerValue[responseList.size()];
+        else if (responseBaseType.isInteger()) {
+            if (responseCardinality.isList()) {
+                final IntegerValue[] values = new IntegerValue[stringResponseData.length];
 
-                for (int i = 0; i < responseList.size(); i++) {
-                    values[i] = new IntegerValue(responseList.get(i), getBase());
+                for (int i = 0; i < stringResponseData.length; i++) {
+                    values[i] = new IntegerValue(stringResponseData[i], getBase());
                 }
 
-                if (responseDeclaration.getCardinality() == Cardinality.MULTIPLE) {
+                if (responseCardinality == Cardinality.MULTIPLE) {
                     result = new MultipleValue(values);
                 }
                 else {
@@ -369,11 +380,11 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 }
             }
             else {
-                result = new IntegerValue(responseList.get(0), getBase());
+                result = new IntegerValue(stringResponseData[0], getBase());
             }
         }
         else {
-            result = super.bindResponse(responseDeclaration, responseList);
+            result = super.bindResponse(responseDeclaration, responseData);
         }
         return result;
     }

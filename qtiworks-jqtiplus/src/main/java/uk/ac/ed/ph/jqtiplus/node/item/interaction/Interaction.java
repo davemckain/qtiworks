@@ -35,22 +35,28 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.FileValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.List;
 
 /**
  * Interactions allow the candidate to interact with the item.
@@ -137,60 +143,78 @@ public abstract class Interaction extends BodyElement {
      * Given the user response to the interaction in the form of a
      * List of Strings, set the appropriate response variables.
      * <p>
-     * This default implementation calls up {@link #bindResponse(ResponseDeclaration, List)}. and sets the value of the appropriate response declaration. You'll
-     * need to override this for things that might do more, such as string interactions that might bind two variables.
+     * This default implementation calls up {@link #bindResponse(ResponseDeclaration, ResponseData)}
+     * and sets the value of the appropriate response declaration. You'll need to override this
+     * for things that might do more, such as string interactions that might bind two variables.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
      * 
-     * @param responseList Response to process
+     * @param responseData Response to process, which must not be null
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(ItemSessionController itemController, List<String> responseList)
+    public void bindResponse(ItemSessionController itemController, ResponseData responseData)
             throws ResponseBindingException {
+        ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
-        final Value value = bindResponse(responseDeclaration, responseList);
+        final Value value = bindResponse(responseDeclaration, responseData);
         itemController.getItemState().setResponseValue(this, value);
     }
 
     /**
      * Binds the raw user response to the interaction to an appropriate {@link Value}.
      * <p>
-     * This default implementation is sufficient in many cases, but may need overridden for certain types of Interactions.
+     * This default implementation is sufficient in many cases,
+     * but may need overridden for certain types of Interactions.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
      * 
-     * @param responseList Response to process
+     * @param responseData Response to process, which must not be null
      * @param resposneDeclaration underlying response declaration
-     * @see #bindResponse(ItemSessionController, List)
+     * @see #bindResponse(ItemSessionController, ResponseData)
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
     @SuppressWarnings("static-method")
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList)
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData)
             throws ResponseBindingException {
         Value value = null;
-
-        if (responseDeclaration.getCardinality() == Cardinality.SINGLE) {
-            if (responseList == null || responseList.size() == 0 || responseList.get(0).trim().length() == 0) {
-                value = NullValue.INSTANCE;
+        BaseType responseBaseType = responseDeclaration.getBaseType();
+        Cardinality responseCardinality = responseDeclaration.getCardinality();
+        
+        if (responseBaseType==BaseType.FILE) {
+            if (responseData.getType()!=ResponseDataType.FILE) {
+                throw new ResponseBindingException("Attempted to bind non-file response data to a file response");
             }
-            else {
-                value = responseDeclaration.getBaseType().parseSingleValue(responseList.get(0));
-            }
+            FileResponseData fileResponseData = (FileResponseData) responseData;
+            value = new FileValue(fileResponseData);
         }
-        else if (!(responseDeclaration.getCardinality() == Cardinality.RECORD)) {
-            final SingleValue[] values = new SingleValue[responseList.size()];
-
-            for (int i = 0; i < responseList.size(); i++) {
-                values[i] = responseDeclaration.getBaseType().parseSingleValue(responseList.get(i));
+        else {
+            if (responseData.getType()!=ResponseDataType.STRING) {
+                throw new ResponseBindingException("Attempted to bind non-string response data to response with baseType " + responseBaseType);
             }
-
-            if (responseDeclaration.getCardinality() == Cardinality.MULTIPLE) {
-                value = new MultipleValue(values);
+            String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+            if (responseCardinality == Cardinality.SINGLE) {
+                if (stringResponseData.length == 0 || stringResponseData[0].trim().length() == 0) {
+                    value = NullValue.INSTANCE;
+                }
+                else {
+                    value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData[0]);
+                }
             }
-            else {
-                value = new OrderedValue(values);
+            else if (!(responseCardinality == Cardinality.RECORD)) {
+                final SingleValue[] values = new SingleValue[stringResponseData.length];
+
+                for (int i = 0; i < stringResponseData.length; i++) {
+                    values[i] = responseBaseType.parseSingleValue(stringResponseData[i]);
+                }
+
+                if (responseCardinality == Cardinality.MULTIPLE) {
+                    value = new MultipleValue(values);
+                }
+                else {
+                    value = new OrderedValue(values);
+                }
             }
         }
         return value;
@@ -198,7 +222,7 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Validate the response associated with this interaction.
-     * This is called after {@link #bindResponse(ItemSessionController, List)}
+     * This is called after {@link #bindResponse(ItemSessionController, ResponseData)}
      * 
      * @return true if the response is valid, false otherwise
      */

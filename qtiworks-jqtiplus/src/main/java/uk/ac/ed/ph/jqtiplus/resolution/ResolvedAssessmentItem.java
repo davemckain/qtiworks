@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -63,6 +64,11 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
         super(modelRichness, itemLookup);
         this.itemLookup = itemLookup;
         this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
+    }
+    
+    @Override
+    public AssessmentObjectType getType() {
+        return AssessmentObjectType.ASSESSMENT_ITEM;
     }
     
     public RootObjectLookup<AssessmentItem> getItemLookup() {

@@ -42,10 +42,14 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
@@ -178,33 +182,37 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public void bindResponse(ItemSessionController itemController, List<String> responseList) throws ResponseBindingException {
-        super.bindResponse(itemController, responseList);
+    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(itemController, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
-            final Value value = bindResponse(stringIdentifierResponseDeclaration, responseList);
+            final Value value = bindResponse(stringIdentifierResponseDeclaration, responseData);
             itemController.getItemState().setResponseValue(this, value);
         }
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, List<String> responseList) throws ResponseBindingException {
-        String responseString = null;
-        if (responseList != null) {
-            if (responseList.size() > 1) {
-                throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
-            }
-            responseString = responseList.get(0);
+    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+        if (responseData.getType()!=ResponseDataType.STRING) {
+            throw new ResponseBindingException("textInteraction must be bound to string response data");
         }
+        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        Cardinality responseCardinality = responseDeclaration.getCardinality();
+        BaseType responseBaseType = responseDeclaration.getBaseType();
+        
+        if (stringResponseData.length > 1) {
+            throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
+        }
+        String responseString = stringResponseData[0];
 
         //handle record special case
         Value result;
-        if (responseDeclaration.getCardinality().isRecord()) {
+        if (responseCardinality.isRecord()) {
             result = bindRecordValueResponse(responseString, getBase());
         }
-        else if (responseDeclaration.getBaseType().isInteger()) {
+        else if (responseBaseType.isInteger()) {
             if (responseString == null || responseString.trim().length() == 0) {
                 result = NullValue.INSTANCE;
             }
@@ -213,7 +221,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             }
         }
         else {
-            result = super.bindResponse(responseDeclaration, responseList);
+            result = super.bindResponse(responseDeclaration, responseData);
         }
         return result;
     }

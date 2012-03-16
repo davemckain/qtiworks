@@ -31,51 +31,28 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
-
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.domain;
 
 /**
- * Base interface for assessmentItem and assessmentTest Objects.
- * <p>
- * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
- * rather than an identifier!
- * 
- * @see AssessmentItem
- * @see AssessmentTest
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
+public class CandidateItemResponse {
     
-    AssessmentObjectType getType();
+    private Long id;
+    private CandidateItemAttempt attempt;
     
-    String getTitle();
+    private String responseIdentifier;
     
-    void setTitle(String title);
+    /* (For string response... probably have to denormalise this) */
+    private String[] responseStrings;
     
-    String getToolName();
-
-    void setToolName(String toolName);
-
-    String getToolVersion();
-
-    void setToolVersion(String toolVersion);
-
-    List<OutcomeDeclaration> getOutcomeDeclarations();
-
-    OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
-
-    /**
-     * Convenience method to return the appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}
-     */
-    VariableDeclaration getVariableDeclaration(Identifier identifier);
+    /* (For file response) */
+    private String filePath;
+    private String fileContentType;
+    private String fileName;
+    
+    
 
 }

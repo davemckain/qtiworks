@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 
@@ -53,11 +52,6 @@ import java.net.URI;
  * @author David McKain
  */
 public interface RootObject extends XmlNode {
-
-    /** Header of xml file. */
-    @ToRefactor
-    @Deprecated
-    public static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
     /** Returns the systemId of this tree, if loaded from a URI, null otherwise */
     URI getSystemId();

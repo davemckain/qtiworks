@@ -41,8 +41,8 @@ import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_U
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -50,18 +50,21 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
+
 import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
 import org.qtitools.mathassess.tools.qticasbridge.types.MathsContentInputValueWrapper;
 import org.qtitools.mathassess.type.SyntaxType;
-
-import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
 
 import java.util.List;
 
@@ -168,13 +171,17 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void bindResponse(ItemSessionController itemController, List<String> responseList) {
-        if (responseList.size() != 1) {
-            throw new QtiEvaluationException("Error: Expected one value to be returned from interaction.");
+    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+        if (responseData.getType()!=ResponseDataType.STRING) {
+            throw new ResponseBindingException("mathEntryInteraction must be bound to string response data");
+        }
+        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        if (stringResponseData.length != 1) {
+            throw new ResponseBindingException("Expected one string value to be bound to this response.");
         }
 
         /* Parse the raw ASCIIMath input */
-        final String asciiMathInput = responseList.get(0).trim();
+        final String asciiMathInput = stringResponseData[0].trim();
         Value responseValue;
         Value printResponseValue;
         logger.info("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);

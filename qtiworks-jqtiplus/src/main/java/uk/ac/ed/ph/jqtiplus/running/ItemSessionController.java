@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -70,6 +71,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -126,7 +128,176 @@ public final class ItemSessionController {
     }
 
     //-------------------------------------------------------------------
-    // Shuffle helpers
+    // Initialization & template processing
+    
+    public void initialize() throws RuntimeValidationException {
+        initialize(null);
+    }
+
+    /**
+     * Initialise the item by setting the template defaults, resetting variables,
+     * and performing templateProcessing.
+     * An item should only be initialised if it is going to be rendered/presented
+     * 
+     * @param templateDefaults given templateDefaults values
+     * @throws RuntimeValidationException if a runtime validation error is detected during template
+     *             processing.
+     */
+    public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
+        /* (We only allow initialization once. This contrasts with the original JQTI.) */
+        if (itemState.isInitialized()) {
+            throw new QtiLogicException("Item state has already been initialized");
+        }
+
+        final ItemProcessingContext context = new ItemProcessingContextImpl();
+
+        fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
+        try {
+            /* Set up built-in variables */
+            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            itemState.setNumAttempts(0);
+
+            /* Perform template processing as many times as required. */
+            int templateProcessingAttemptNumber = 0;
+            boolean templateProcessingCompleted = false;
+            while (!templateProcessingCompleted) {
+                templateProcessingCompleted = doTemplateProcessing(context, templateDefaults, ++templateProcessingAttemptNumber);
+            }
+
+            /* Initialises outcomeDeclaration's values. */
+            for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+                initValue(outcomeDeclaration);
+            }
+
+            /* Initialises responseDeclaration's values. */
+            for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+                initValue(responseDeclaration);
+            }
+
+            /* Set the completion status to unknown */
+            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
+
+            /* Initialize all interactions in the itemBody */
+            for (final Interaction interaction : item.getItemBody().getInteractions()) {
+                interaction.initialize(this);
+            }
+
+            itemState.setInitialized(true);
+        }
+        finally {
+            fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
+        }
+    }
+
+    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
+            throws RuntimeValidationException {
+        logger.info("Template Processing attempt #{} starting", attemptNumber);
+
+        /* Initialise template defaults with any externally provided defaults */
+        if (templateDefaults != null) {
+            logger.debug("Setting template default values");
+            for (final TemplateDefault templateDefault : templateDefaults) {
+                final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
+                if (declaration != null) {
+                    final Value defaultValue = templateDefault.evaluate(context);
+                    itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                }
+            }
+        }
+
+        /* Initialise template values. */
+        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+            initValue(templateDeclaration);
+        }
+
+        if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
+            logger.warn("Exceeded maxmimum number of template processing retries - leaving variables at default values");
+            return true;
+        }
+
+        /* Perform templateProcessing. */
+        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
+        if (templateProcessing != null) {
+            logger.debug("Evaluating template processing rules");
+            try {
+                for (final TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
+                    templateProcessingRule.evaluate(context);
+                }
+            }
+            catch (final TemplateProcessingInterrupt e) {
+                switch (e.getInterruptType()) {
+                    case EXIT_TEMPLATE:
+                        /* Exit template processing */
+                        logger.info("Template processing interrupted by exitTemplate");
+                        return true;
+
+                    case TEMPLATE_CONSTRAINT_FAILURE:
+                        /* Failed templateCondition, so try again. */
+                        logger.info("Template processing interrupted by failed templateConstraint");
+                        return false;
+
+                    default:
+                        break;
+                }
+            }
+        }
+        return true;
+    }
+
+    //-------------------------------------------------------------------
+    // Response processing
+
+    /**
+     * Set the responses for this assessmentItem.
+     * The provided responses must be in the form responseIdentifier -> List of responses.
+     * If A given response is A singleValue, then the list will only have one element.
+     * Record cardinality responses are not supported!
+     * 
+     * @return a List of identifiers corresponding to responses which could not be successfully
+     *         parsed. (E.g. expected a float but got a String)
+     * @param responseMap Responses to set.
+     * 
+     * @throws QtiParseException if one of the response identifiers is not a valid identifier
+     */
+    public List<Identifier> bindResponses(Map<String, ResponseData> responseMap) {
+        logger.debug("Binding responses {}", responseMap);
+        
+        /* First set all responses bound to <endAttemptInteractions> to false initially.
+         * These may be overridden for responses to the presented interactions below.
+         * 
+         * (The spec seems to indicate that ALL responses bound to these interactions
+         * should be set, which is why we have this special code here.)
+         */
+        final ItemBody itemBody = item.getItemBody();
+        for (final EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
+            itemState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
+        }
+
+        /* Now bind response values for each incoming response. (Note that this may be a subset
+         * of all responses, since adaptive items will only present certain interactions at certain
+         * times.) */
+        final List<Identifier> badResponses = new ArrayList<Identifier>();
+        for (final String responseIdentifierString : responseMap.keySet()) {
+            Identifier responseIdentifier = new Identifier(responseIdentifierString);
+            try {
+                final Interaction interaction = itemBody.getInteraction(responseIdentifier);
+                if (interaction != null) {
+                    interaction.bindResponse(this, responseMap.get(responseIdentifier));
+                }
+                else {
+                    logger.warn("setResponses couldn't find interaction for identifier " + responseIdentifier);
+                }
+            }
+            catch (final ResponseBindingException e) {
+                badResponses.add(responseIdentifier);
+            }
+        }
+        return badResponses;
+    }
+
+
+    //-------------------------------------------------------------------
+    // Shuffle callbacks (from interactions)
 
     public <C extends Choice> void shuffleInteractionChoiceOrder(final Interaction interaction, final List<C> choiceList) {
         final List<List<C>> choiceLists = new ArrayList<List<C>>();
@@ -304,159 +475,6 @@ public final class ItemSessionController {
         }
     }
 
-    /**
-     * Initialise the item by setting the template defaults, resetting variables,
-     * and performing templateProcessing.
-     * An item should only be initialised if it is going to be rendered/presented
-     * 
-     * @param templateDefaults given templateDefaults values
-     * @throws RuntimeValidationException if a runtime validation error is detected during template
-     *             processing.
-     */
-    public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
-        /* (We only allow initialization once. This contrasts with the original JQTI.) */
-        if (itemState.isInitialized()) {
-            throw new QtiLogicException("Item state has already been initialized");
-        }
-
-        final ItemProcessingContext context = new ItemProcessingContextImpl();
-
-        fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
-        try {
-            /* Set up built-in variables */
-            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
-            itemState.setNumAttempts(0);
-
-            /* Perform template processing as many times as required. */
-            int templateProcessingAttemptNumber = 0;
-            boolean templateProcessingCompleted = false;
-            while (!templateProcessingCompleted) {
-                templateProcessingCompleted = doTemplateProcessing(context, templateDefaults, ++templateProcessingAttemptNumber);
-            }
-
-            /* Initialises outcomeDeclaration's values. */
-            for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
-                initValue(outcomeDeclaration);
-            }
-
-            /* Initialises responseDeclaration's values. */
-            for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-                initValue(responseDeclaration);
-            }
-
-            /* Set the completion status to unknown */
-            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
-
-            /* Initialize all interactions in the itemBody */
-            for (final Interaction interaction : item.getItemBody().getInteractions()) {
-                interaction.initialize(this);
-            }
-
-            itemState.setInitialized(true);
-        }
-        finally {
-            fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
-        }
-    }
-
-
-    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
-            throws RuntimeValidationException {
-        logger.info("Template Processing attempt #{} starting", attemptNumber);
-
-        /* Initialise template defaults with any externally provided defaults */
-        if (templateDefaults != null) {
-            logger.debug("Setting template default values");
-            for (final TemplateDefault templateDefault : templateDefaults) {
-                final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
-                if (declaration != null) {
-                    final Value defaultValue = templateDefault.evaluate(context);
-                    itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
-                }
-            }
-        }
-
-        /* Initialise template values. */
-        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
-            initValue(templateDeclaration);
-        }
-
-        if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
-            logger.warn("Exceeded maxmimum number of template processing retries - leaving variables at default values");
-            return true;
-        }
-
-        /* Perform templateProcessing. */
-        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
-        if (templateProcessing != null) {
-            logger.debug("Evaluating template processing rules");
-            try {
-                for (final TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
-                    templateProcessingRule.evaluate(context);
-                }
-            }
-            catch (final TemplateProcessingInterrupt e) {
-                switch (e.getInterruptType()) {
-                    case EXIT_TEMPLATE:
-                        /* Exit template processing */
-                        logger.info("Template processing interrupted by exitTemplate");
-                        return true;
-
-                    case TEMPLATE_CONSTRAINT_FAILURE:
-                        /* Failed templateCondition, so try again. */
-                        logger.info("Template processing interrupted by failed templateConstraint");
-                        return false;
-
-                    default:
-                        break;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Set the responses for this assessmentItem.
-     * The provided responses must be in the form responseIdentifier -> List of responses.
-     * If A given response is A singleValue, then the list will only have one element.
-     * Record cardinality responses are not supported!
-     * 
-     * @return a List of identifiers corresponding to responses which could not be successfully
-     *         parsed. (E.g. expected a float but got a String)
-     * @param responses Responses to set.
-     */
-    public List<String> setResponses(Map<String, List<String>> responses) {
-        /* First set all responses bound to <endAttemptInteractions> to false initially.
-         * These may be overridden for responses to the presented interactions below.
-         * 
-         * (The spec seems to indicate that ALL responses bound to these interactions
-         * should be set, which is why we have this special code here.)
-         */
-        final ItemBody itemBody = item.getItemBody();
-        for (final EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
-            itemState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
-        }
-
-        /* Now bind response values for each incoming response. (Note that this may be a subset
-         * of all responses, since adaptive items will only present certain interactions at certain
-         * times.) */
-        final List<String> badResponses = new ArrayList<String>();
-        for (final String responseIdentifier : responses.keySet()) {
-            try {
-                final Interaction interaction = itemBody.getInteraction(new Identifier(responseIdentifier));
-                if (interaction != null) {
-                    interaction.bindResponse(this, responses.get(responseIdentifier));
-                }
-                else {
-                    logger.warn("setResponses couldn't find interaction for identifier " + responseIdentifier);
-                }
-            }
-            catch (final ResponseBindingException e) {
-                badResponses.add(responseIdentifier);
-            }
-        }
-        return badResponses;
-    }
 
     public void processResponses() throws RuntimeValidationException {
         final ItemProcessingContext processingContext = new ItemProcessingContextImpl();

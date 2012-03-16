@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -90,6 +91,11 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         this.systemIdByItemRefMap = Collections.unmodifiableMap(systemIdByItemRefMap);
         this.itemRefsBySystemIdMap = Collections.unmodifiableMap(itemRefsBySystemIdMap);
         this.resolvedAssessmentItemMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
+    }
+    
+    @Override
+    public AssessmentObjectType getType() {
+        return AssessmentObjectType.ASSESSMENT_TEST;
     }
     
     public RootObjectLookup<AssessmentTest> getTestLookup() {

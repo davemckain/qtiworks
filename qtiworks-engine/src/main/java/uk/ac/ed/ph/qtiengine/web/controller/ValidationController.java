@@ -108,7 +108,6 @@ public class ValidationController {
      * @return
      * @throws IOException
      */
-    @SuppressWarnings("null")
     @RequestMapping(value="/validator", method=RequestMethod.POST)
     public String handleValidatorForm(Model model, @ModelAttribute ValidateCommand command, BindingResult errors)
             throws IOException {

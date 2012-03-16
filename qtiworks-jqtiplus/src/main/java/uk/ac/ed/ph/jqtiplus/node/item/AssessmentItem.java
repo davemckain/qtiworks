@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingGro
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
@@ -180,6 +181,11 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_NAME_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
+    }
+    
+    @Override
+    public AssessmentObjectType getType() {
+        return AssessmentObjectType.ASSESSMENT_ITEM;
     }
 
     @Override

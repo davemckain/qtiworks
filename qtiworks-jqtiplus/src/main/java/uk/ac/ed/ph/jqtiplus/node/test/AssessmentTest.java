@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -132,6 +133,11 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
 
         setToolName(JqtiPlus.TOOL_NAME);
         setToolVersion(JqtiPlus.TOOL_VERSION);
+    }
+    
+    @Override
+    public AssessmentObjectType getType() {
+        return AssessmentObjectType.ASSESSMENT_TEST;
     }
 
     @Override
