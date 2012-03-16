@@ -320,26 +320,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /**
-     * Returns first subexpression. This is convenient method only.
-     * Use this method instead of <code>getChildren().get(0)</code>.
-     * 
-     * @return first subexpression
-     */
-    protected Expression getFirstChild() {
-        return getChildren().get(0);
-    }
-
-    /**
-     * Returns second subexpression. This is convenient method only.
-     * Use this method instead of <code>getChildren().get(1)</code>.
-     * 
-     * @return second subexpression
-     */
-    protected Expression getSecondChild() {
-        return getChildren().get(1);
-    }
-
-    /**
      * Evaluates this Expression.
      * <p>
      * Note that this may result in a {@link RuntimeValidationException} triggered by run-time errors that are not detected using the "static" validation
