@@ -31,40 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.config;
+package uk.ac.ed.ph.qtiworks;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
+/**
+ * Used to propagate unexpected/logic/unexpected errors.
+ *
+ * @author David McKain
+ */
+public final class EngineException extends RuntimeException {
 
-import org.qtitools.mathassess.MathAssessExtensionPackage;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.services"})
-public class ApplicationConfiguration {
+    private static final long serialVersionUID = 2526848963219875046L;
     
-    private final JqtiExtensionManager jqtiExtensionManager;
-    private final QtiXmlReader qtiXmlReader;
-    
-    public ApplicationConfiguration() {
-        jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
-        
-        SimpleSchemaCache schemaCache = new SimpleSchemaCache();
-        qtiXmlReader = new QtiXmlReader(jqtiExtensionManager, schemaCache);
-    }
-    
-    @Bean
-    JqtiExtensionManager jqtiExtensionManager() {
-        return jqtiExtensionManager;
-    }
-    
-    @Bean
-    QtiXmlReader qtiXmlReader() {
-        return qtiXmlReader;
+    public static EngineException unexpectedException(Throwable cause) {
+        return new EngineException("Unexpected Exception", cause);
     }
 
+    public EngineException() {
+        super();
+    }
+
+    public EngineException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EngineException(String message) {
+        super(message);
+    }
+
+    public EngineException(Throwable cause) {
+        super(cause);
+    }
 }

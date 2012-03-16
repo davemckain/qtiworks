@@ -31,79 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.domain;
+package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 
-import java.io.Serializable;
-import java.util.Set;
+import org.qtitools.mathassess.MathAssessExtensionPackage;
 
-/**
- * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
- * 
- * TODO: This will eventually become a persisted Object so needs to stick to convention.
- *
- * @author David McKain
- */
-public class AssessmentPackage implements Serializable {
-    
-    private static final long serialVersionUID = -8906026282623891941L;
-    
-    public static enum AssessmentType {
-        ITEM,
-        TEST,
-        ;
-    }
-    
-    private AssessmentType assessmentType;
-    private String sandboxPath;
-    private String assessmentObjectHref;
-    private Set<String> fileHrefs;
-    
-    public AssessmentPackage() {
-    }
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.services"})
+public class ApplicationConfiguration {
     
-    public AssessmentType getAssessmentType() {
-        return assessmentType;
+    private final JqtiExtensionManager jqtiExtensionManager;
+    private final QtiXmlReader qtiXmlReader;
+    
+    public ApplicationConfiguration() {
+        jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
+        
+        SimpleSchemaCache schemaCache = new SimpleSchemaCache();
+        qtiXmlReader = new QtiXmlReader(jqtiExtensionManager, schemaCache);
     }
     
-    public void setAssessmentType(AssessmentType assessmentType) {
-        this.assessmentType = assessmentType;
+    @Bean
+    JqtiExtensionManager jqtiExtensionManager() {
+        return jqtiExtensionManager;
     }
     
-    
-    public String getSandboxPath() {
-        return sandboxPath;
-    }
-    
-    public void setSandboxPath(String sandboxPath) {
-        this.sandboxPath = sandboxPath;
-    }
-
-    
-    public String getAssessmentObjectHref() {
-        return assessmentObjectHref;
-    }
-
-    public void setAssessmentObjectHref(String assessmentObjectHref) {
-        this.assessmentObjectHref = assessmentObjectHref;
-    }
-
-    
-    public Set<String> getFileHrefs() {
-        return fileHrefs;
-    }
-
-    public void setFileHrefs(Set<String> fileHrefs) {
-        this.fileHrefs = fileHrefs;
-    }
-    
-    
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    @Bean
+    QtiXmlReader qtiXmlReader() {
+        return qtiXmlReader;
     }
 
 }

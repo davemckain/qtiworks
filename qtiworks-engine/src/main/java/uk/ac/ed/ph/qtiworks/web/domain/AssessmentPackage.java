@@ -31,39 +31,79 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.view;
+package uk.ac.ed.ph.qtiworks.web.domain;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+
+import java.io.Serializable;
+import java.util.Set;
 
 /**
- * Allows parameters to be specified for {@link UrlTag} and {@link RedirectUrlTag}.
+ * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
  * 
- * @see UrlTag
- * @see RedirectUrlTag
- * 
+ * TODO: This will eventually become a persisted Object so needs to stick to convention.
+ *
  * @author David McKain
  */
-public final class ParamTag extends SimpleTagSupport {
+public class AssessmentPackage implements Serializable {
     
-    private String name;
-    private String value;
+    private static final long serialVersionUID = -8906026282623891941L;
     
-    public void setName(String name) {
-        this.name = name;
+    public static enum AssessmentType {
+        ITEM,
+        TEST,
+        ;
     }
     
-    public void setValue(String value) {
-        this.value = value;
+    private AssessmentType assessmentType;
+    private String sandboxPath;
+    private String assessmentObjectHref;
+    private Set<String> fileHrefs;
+    
+    public AssessmentPackage() {
     }
+
+    
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+    
+    public void setAssessmentType(AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
+    }
+    
+    
+    public String getSandboxPath() {
+        return sandboxPath;
+    }
+    
+    public void setSandboxPath(String sandboxPath) {
+        this.sandboxPath = sandboxPath;
+    }
+
+    
+    public String getAssessmentObjectHref() {
+        return assessmentObjectHref;
+    }
+
+    public void setAssessmentObjectHref(String assessmentObjectHref) {
+        this.assessmentObjectHref = assessmentObjectHref;
+    }
+
+    
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
+    }
+
+    public void setFileHrefs(Set<String> fileHrefs) {
+        this.fileHrefs = fileHrefs;
+    }
+    
     
     @Override
-    public void doTag() throws JspException {
-        AbstractUrlTag parent = (AbstractUrlTag) findAncestorWithClass(this, AbstractUrlTag.class);
-        if (parent==null) {
-            throw new JspTagException("The <param/> action must occur inside a <url/> or <redirectUrl/> action");
-        }
-        parent.addParam(name, value);
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
+
 }

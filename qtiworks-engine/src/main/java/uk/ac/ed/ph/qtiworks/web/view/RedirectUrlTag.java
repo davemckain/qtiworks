@@ -30,33 +30,27 @@
  * This software is derived from (and contains code from) QTItools and MathAssessEngine.
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
- *//* $Id: CSTPage.java 1083 2010-12-15 14:21:21Z dmckain $
+ */
+/* $Id: RedirectUrlTag.java 990 2010-10-12 16:01:57Z dmckain $
  *
- * Copyright (c) 2012, The University of Edinburgh.
+ * Copyright (c) 2010, The University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.qtiengine.web.view;
+package uk.ac.ed.ph.qtiworks.web.view;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Enumeration of all of the pages within the app, making it "easy" to construct URL
- * references to them.
+ * Version of {@link UrlTag} that creates something suitable for passing to
+ * Spring's "redirect:..." view. (I.e. it does not include the context path).
  * 
  * @author David McKain
  */
-public enum Page {
+public final class RedirectUrlTag extends AbstractUrlTag {
     
-    HOME("/"),
-    ;
-    
-    //--------------------------------------------------------------
-    
-    private final String withinContextUrl;
-    
-    private Page(String withinContextUrl) {
-        this.withinContextUrl = withinContextUrl;
-    }
-
-    public String getWithinContextUrl() {
-        return this.withinContextUrl;
+    @Override
+    protected final String createUrl(final HttpServletRequest request, Page page,
+            final String pathInfo, final String fragment, final Object[] params) {
+        return ELFunctions.escapeLink(ViewUtilities.createRedirectLink(request, page, pathInfo, fragment, params));
     }
 }

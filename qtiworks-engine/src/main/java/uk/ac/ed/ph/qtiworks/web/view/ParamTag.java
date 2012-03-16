@@ -31,48 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.config;
+package uk.ac.ed.ph.qtiworks.web.view;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-@EnableWebMvc
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.web"})
-public class MvcConfiguration {
+/**
+ * Allows parameters to be specified for {@link UrlTag} and {@link RedirectUrlTag}.
+ * 
+ * @see UrlTag
+ * @see RedirectUrlTag
+ * 
+ * @author David McKain
+ */
+public final class ParamTag extends SimpleTagSupport {
     
-    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+    private String name;
+    private String value;
     
-    @Bean
-    MultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
-        return resolver;
+    public void setName(String name) {
+        this.name = name;
     }
     
-    @Bean
-    ViewResolver viewResolver() {
-        UrlBasedViewResolver result = new UrlBasedViewResolver();
-        result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
-        result.setSuffix(".jsp");
-        return result;
+    public void setValue(String value) {
+        this.value = value;
     }
     
-    @Bean
-    MessageSource messageSource() {
-        ResourceBundleMessageSource result = new ResourceBundleMessageSource();
-        result.setBasename("messages");
-        return result;
+    @Override
+    public void doTag() throws JspException {
+        AbstractUrlTag parent = (AbstractUrlTag) findAncestorWithClass(this, AbstractUrlTag.class);
+        if (parent==null) {
+            throw new JspTagException("The <param/> action must occur inside a <url/> or <redirectUrl/> action");
+        }
+        parent.addParam(name, value);
     }
-
 }

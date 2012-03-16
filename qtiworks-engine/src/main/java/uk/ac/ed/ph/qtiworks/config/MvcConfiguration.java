@@ -31,44 +31,48 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.view;
+package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-import java.net.URI;
+@EnableWebMvc
+@Configuration
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.web"})
+public class MvcConfiguration {
+    
+    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+    
+    @Bean
+    MultipartResolver multipartResolver() {
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
+        return resolver;
+    }
+    
+    @Bean
+    ViewResolver viewResolver() {
+        UrlBasedViewResolver result = new UrlBasedViewResolver();
+        result.setViewClass(JstlView.class);
+        result.setPrefix("/WEB-INF/jsp/views/");
+        result.setSuffix(".jsp");
+        return result;
+    }
+    
+    @Bean
+    MessageSource messageSource() {
+        ResourceBundleMessageSource result = new ResourceBundleMessageSource();
+        result.setBasename("messages");
+        return result;
+    }
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
-
-/**
- * Some convenience EL functions for the view/JSP layer.
- *
- * @author David McKain
- */
-public final class ELFunctions {
-    
-    public static String extractContentPackagePath(URI uri) {
-        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        return packageUriScheme.uriToPath(uri);
-    }
-    
-    public static String encodePageLink(PageContext pageContext, String pageName) {
-        return escapeLink(ViewUtilities.createPageLink(getRequest(pageContext),
-                ViewUtilities.decodePathName(pageName), null, null));
-    }
-    
-    static String escapeLink(String link) {
-        return link.replace("&", "&amp;");
-    }
-    
-    public static String dumpObject(Object object) {
-        return ObjectDumper.dumpObject(object, DumpMode.DEEP);
-    }
-    
-    private static HttpServletRequest getRequest(PageContext pageContext) {
-        return (HttpServletRequest) pageContext.getRequest();
-    }
 }

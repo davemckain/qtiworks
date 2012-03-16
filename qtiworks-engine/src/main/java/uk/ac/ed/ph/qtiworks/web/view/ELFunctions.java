@@ -31,42 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.domain;
+package uk.ac.ed.ph.qtiworks.web.view;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.net.URI;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 
 /**
- * FIXME: Document this type
+ * Some convenience EL functions for the view/JSP layer.
  *
  * @author David McKain
  */
-public final class ValidateCommand {
+public final class ELFunctions {
     
-    MultipartFile uploadFile;
-    String reportType;
-    
-    public MultipartFile getUploadFile() {
-        return uploadFile;
+    public static String extractContentPackagePath(URI uri) {
+        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        return packageUriScheme.uriToPath(uri);
     }
     
-    public void setUploadFile(MultipartFile uploadFile) {
-        this.uploadFile = uploadFile;
+    public static String encodePageLink(PageContext pageContext, String pageName) {
+        return escapeLink(ViewUtilities.createPageLink(getRequest(pageContext),
+                ViewUtilities.decodePathName(pageName), null, null));
     }
     
-    
-    public String getReportType() {
-        return reportType;
+    static String escapeLink(String link) {
+        return link.replace("&", "&amp;");
     }
     
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
+    public static String dumpObject(Object object) {
+        return ObjectDumper.dumpObject(object, DumpMode.DEEP);
     }
     
-    
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    private static HttpServletRequest getRequest(PageContext pageContext) {
+        return (HttpServletRequest) pageContext.getRequest();
     }
 }

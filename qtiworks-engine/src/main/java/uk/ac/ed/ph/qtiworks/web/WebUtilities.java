@@ -31,9 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web;
+package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiengine.EngineException;
+import uk.ac.ed.ph.qtiworks.EngineException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

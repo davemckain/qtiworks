@@ -31,34 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine;
+/* $Id: UrlTag.java 990 2010-10-12 16:01:57Z dmckain $
+ *
+ * Copyright (c) 2010, The University of Edinburgh.
+ * All Rights Reserved
+ */
+package uk.ac.ed.ph.qtiworks.web.view;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Used to propagate unexpected/logic/unexpected errors.
- *
+ * Slightly different version of the JSTL c:url tag that behaves slightly nicer.
+ * 
  * @author David McKain
  */
-public final class EngineException extends RuntimeException {
-
-    private static final long serialVersionUID = 2526848963219875046L;
+public final class UrlTag extends AbstractUrlTag {
     
-    public static EngineException unexpectedException(Throwable cause) {
-        return new EngineException("Unexpected Exception", cause);
-    }
-
-    public EngineException() {
-        super();
-    }
-
-    public EngineException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public EngineException(String message) {
-        super(message);
-    }
-
-    public EngineException(Throwable cause) {
-        super(cause);
+    @Override
+    protected final String createUrl(final HttpServletRequest request, Page page,
+            final String pathInfo, final String fragment, final Object[] params) {
+        return ELFunctions.escapeLink(ViewUtilities.createPageLink(request, page, pathInfo, fragment, params));
     }
 }

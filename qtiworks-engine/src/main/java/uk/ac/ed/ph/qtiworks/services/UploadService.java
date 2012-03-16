@@ -31,7 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.services;
+package uk.ac.ed.ph.qtiworks.services;
+
+import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.UploadException;
+import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage.AssessmentType;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload.UploadType;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -50,13 +58,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import uk.ac.ed.ph.qtiengine.EngineException;
-import uk.ac.ed.ph.qtiengine.UploadException;
-import uk.ac.ed.ph.qtiengine.UploadException.UploadFailureReason;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage.AssessmentType;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentUpload;
-import uk.ac.ed.ph.qtiengine.web.domain.AssessmentUpload.UploadType;
 
 import java.io.File;
 import java.io.FileOutputStream;

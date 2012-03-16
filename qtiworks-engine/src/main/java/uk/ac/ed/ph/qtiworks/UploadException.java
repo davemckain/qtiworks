@@ -31,52 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiengine.web.view;
-
-import uk.ac.ed.ph.qtiengine.EngineException;
-import uk.ac.ed.ph.qtiengine.web.WebUtilities;
-
-import java.util.Map;
-
-import javax.servlet.jsp.JspContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+package uk.ac.ed.ph.qtiworks;
 
 /**
- * Exposes the static fields of the Class having the given name into the JSP context
- * using the given target attribute name.
- * <p>
- * NOTE: This is does work if there is no attribute with the given target name already
- * set, allowing the tag to be used multiple times in one JSP without wasting time recalculating
- * details.
+ * FIXME: Document this!
  *
  * @author David McKain
  */
-public final class ExposeStaticFieldsTag extends SimpleTagSupport {
+public class UploadException extends Exception {
     
-    private String className;
-    private String targetName;
+    private static final long serialVersionUID = -699513250898841731L;
+
+    public static enum UploadFailureReason {
+        NOT_XML_OR_ZIP,
+        BAD_ZIP,
+        NOT_CONTENT_PACKAGE,
+        BAD_IMS_MANIFEST,
+        UNSUPPORTED_PACKAGE_CONTENTS,
+        ;
+    }
     
-    @Override
-    public void doTag() {
-        JspContext jspContext = getJspContext();
-        if (jspContext.getAttribute(targetName)==null) {
-            Class<?> globalClass;
-            try {
-                globalClass = Class.forName(className);
-            }
-            catch (ClassNotFoundException e) {
-                throw new EngineException("Could not find class " + className, e);
-            }
-            Map<String, Object> staticFields = WebUtilities.exposeStaticFields(globalClass);
-            jspContext.setAttribute(targetName, staticFields);
-        }
+    private final UploadFailureReason reason;
+    
+    public UploadException(UploadFailureReason reason) {
+        super("Unsupported upload " + reason);
+        this.reason = reason;
+    }
+    
+    public UploadException(UploadFailureReason reason, Throwable cause) {
+        super("Unsupported upload " + reason, cause);
+        this.reason = reason;
+    }
+    
+    public UploadFailureReason getReason() {
+        return reason;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
 }

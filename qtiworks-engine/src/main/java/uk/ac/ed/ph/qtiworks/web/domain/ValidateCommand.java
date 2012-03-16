@@ -31,26 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-/* $Id: RedirectUrlTag.java 990 2010-10-12 16:01:57Z dmckain $
- *
- * Copyright (c) 2010, The University of Edinburgh.
- * All Rights Reserved
- */
-package uk.ac.ed.ph.qtiengine.web.view;
+package uk.ac.ed.ph.qtiworks.web.domain;
 
-import javax.servlet.http.HttpServletRequest;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Version of {@link UrlTag} that creates something suitable for passing to
- * Spring's "redirect:..." view. (I.e. it does not include the context path).
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-public final class RedirectUrlTag extends AbstractUrlTag {
+public final class ValidateCommand {
+    
+    MultipartFile uploadFile;
+    String reportType;
+    
+    public MultipartFile getUploadFile() {
+        return uploadFile;
+    }
+    
+    public void setUploadFile(MultipartFile uploadFile) {
+        this.uploadFile = uploadFile;
+    }
+    
+    
+    public String getReportType() {
+        return reportType;
+    }
+    
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+    
     
     @Override
-    protected final String createUrl(final HttpServletRequest request, Page page,
-            final String pathInfo, final String fragment, final Object[] params) {
-        return ELFunctions.escapeLink(ViewUtilities.createRedirectLink(request, page, pathInfo, fragment, params));
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }
