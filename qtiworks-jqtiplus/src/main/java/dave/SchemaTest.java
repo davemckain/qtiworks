@@ -54,7 +54,7 @@ public class SchemaTest {
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         
         SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(item.getItemLookup().extractEnsuringSuccessful(), serializerHandler, new SaxSerializationOptions());
+        saxEventFirer.fireSaxDocument(item.getItemLookup().extractAssumingSuccessful(), serializerHandler, new SaxSerializationOptions());
         String serializedXml = serializedXmlWriter.toString();
         
         System.out.println(serializedXml);

@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-
 /**
  * Superclass of all unchecked exceptions.
  * <p>
@@ -75,44 +73,23 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
  * 
  * @author Jiri Kajaba
  */
-@ToRefactor
-public abstract class QTIRuntimeException extends RuntimeException {
+public abstract class QtiRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -3977994907885787808L;
 
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
-    public QTIRuntimeException() {
+    public QtiRuntimeException() {
         super();
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QTIRuntimeException(String message) {
+    public QtiRuntimeException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QTIRuntimeException(String message, Throwable cause) {
+    public QtiRuntimeException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QTIRuntimeException(Throwable cause) {
+    public QtiRuntimeException(Throwable cause) {
         super(cause);
     }
 }

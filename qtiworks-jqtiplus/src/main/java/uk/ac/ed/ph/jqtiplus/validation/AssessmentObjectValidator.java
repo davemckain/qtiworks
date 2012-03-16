@@ -159,7 +159,7 @@ public final class AssessmentObjectValidator {
         AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
             this.validationResult = validationResult;
             this.resolvedAssessmentObject = resolvedAssessmentObject;
-            this.subject = resolvedAssessmentObject.getRootObjectLookup().extractEnsuringSuccessful();
+            this.subject = resolvedAssessmentObject.getRootObjectLookup().extractAssumingSuccessful();
         }
         
         @Override

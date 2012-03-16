@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
  * Base class for {@link Exception}s related to the JQTI Object model.
  * 
  * @author David McKain
  */
-public abstract class QtiModelException extends QTIRuntimeException {
+public abstract class QtiModelException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -357903886560490898L;
 

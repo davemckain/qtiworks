@@ -111,7 +111,7 @@ public final class ItemSessionController {
         ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
-        this.item = resolvedAssessmentItem.getItemLookup().extractEnsuringSuccessful();
+        this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemState = assessmentItemState;
     }
 
@@ -146,7 +146,7 @@ public final class ItemSessionController {
     public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemState.isInitialized()) {
-            throw new QtiLogicException("Item state has already been initialized");
+            throw new IllegalStateException("Item state has already been initialized");
         }
 
         final ItemProcessingContext context = new ItemProcessingContextImpl();
@@ -248,18 +248,21 @@ public final class ItemSessionController {
     // Response processing
 
     /**
-     * Set the responses for this assessmentItem.
-     * The provided responses must be in the form responseIdentifier -> List of responses.
-     * If A given response is A singleValue, then the list will only have one element.
-     * Record cardinality responses are not supported!
+     * Binds response variables for this assessmentItem, returning a List of response
+     * variable identifiers for whom the given data could not be successfully bound.
+     * <p>
+     * This will modify {@link #itemState}
      * 
-     * @return a List of identifiers corresponding to responses which could not be successfully
-     *         parsed. (E.g. expected a float but got a String)
-     * @param responseMap Responses to set.
+     * @return a List of identifiers corresponding to response variables which could not be
+     *         successfully bound from the provided data. (E.g. expected a float but got a String)
+     * @param responseMap Map of responses to set, keyed on response variable identifier
      * 
      * @throws QtiParseException if one of the response identifiers is not a valid identifier
+     * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
+     *   any key fails to map to an interaction
      */
     public List<Identifier> bindResponses(Map<String, ResponseData> responseMap) {
+        ConstraintUtilities.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         
         /* First set all responses bound to <endAttemptInteractions> to false initially.
@@ -279,13 +282,15 @@ public final class ItemSessionController {
         final List<Identifier> badResponses = new ArrayList<Identifier>();
         for (final String responseIdentifierString : responseMap.keySet()) {
             Identifier responseIdentifier = new Identifier(responseIdentifierString);
+            ResponseData responseData = responseMap.get(responseIdentifier);
+            ConstraintUtilities.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
                 final Interaction interaction = itemBody.getInteraction(responseIdentifier);
                 if (interaction != null) {
-                    interaction.bindResponse(this, responseMap.get(responseIdentifier));
+                    interaction.bindResponse(this, responseData);
                 }
                 else {
-                    logger.warn("setResponses couldn't find interaction for identifier " + responseIdentifier);
+                    throw new IllegalArgumentException("No interaction found for response identifier " + responseIdentifier);
                 }
             }
             catch (final ResponseBindingException e) {
@@ -293,6 +298,68 @@ public final class ItemSessionController {
             }
         }
         return badResponses;
+    }
+    
+    /**
+     * Validates the currently-bound responses for each of the interactions
+     * 
+     * @return a List of identifiers corresponding to invalid responses. The List will be
+     *         empty if all responses were valid.
+     */
+    public List<Identifier> validateResponses() {
+        final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
+        for (final Interaction interaction : item.getItemBody().getInteractions()) {
+            final Value responseValue = itemState.getResponseValue(interaction);
+            if (!interaction.validateResponse(this, responseValue)) {
+                invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
+            }
+        }
+        return invalidResponseIdentifiers;
+    }
+    
+    /**
+     * Runs response processing on the currently bound responses, changing {@link #itemState}
+     * as appropriate.
+     * 
+     * @throws RuntimeValidationException
+     */
+    public void processResponses() throws RuntimeValidationException {
+        final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
+        fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
+        try {
+            /* We always count the attempt, unless the response was to an endAttemptInteraction
+             * with countAttempt set to false.
+             */
+            boolean countAttempt = true;
+            for (final Interaction interaction : item.getItemBody().getInteractions()) {
+                if (interaction instanceof EndAttemptInteraction) {
+                    final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
+                    final BooleanValue value = (BooleanValue) itemState.getResponseValue(interaction);
+                    if (value != null && value.booleanValue() == true) {
+                        countAttempt = !Boolean.FALSE.equals(endAttemptInteraction.getCountAttempt());
+                        break;
+                    }
+                }
+            }
+            if (countAttempt) {
+                final int oldAttempts = itemState.getNumAttempts();
+                itemState.setNumAttempts(oldAttempts + 1);
+            }
+
+            if (!item.getAdaptive()) {
+                for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+                    initValue(outcomeDeclaration);
+                }
+            }
+
+            final ResponseProcessing responseProcessing = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup().extractAssumingSuccessful();
+            if (responseProcessing != null) {
+                responseProcessing.evaluate(processingContext);
+            }
+        }
+        finally {
+            fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
+        }
     }
 
 
@@ -467,69 +534,11 @@ public final class ItemSessionController {
     }
 
     //-------------------------------------------------------------------
-    // Workflow methods
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
         for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
             extensionPackage.lifecycleEvent(this, eventType);
         }
-    }
-
-
-    public void processResponses() throws RuntimeValidationException {
-        final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
-        fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
-        try {
-            /* We always count the attempt, unless the response was to an endAttemptInteraction
-             * with countAttempt set to false.
-             */
-            boolean countAttempt = true;
-            for (final Interaction interaction : item.getItemBody().getInteractions()) {
-                if (interaction instanceof EndAttemptInteraction) {
-                    final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
-                    final BooleanValue value = (BooleanValue) itemState.getResponseValue(interaction);
-                    if (value != null && value.booleanValue() == true) {
-                        countAttempt = !Boolean.FALSE.equals(endAttemptInteraction.getCountAttempt());
-                        break;
-                    }
-                }
-            }
-            if (countAttempt) {
-                final int oldAttempts = itemState.getNumAttempts();
-                itemState.setNumAttempts(oldAttempts + 1);
-            }
-
-            if (!item.getAdaptive()) {
-                for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
-                    initValue(outcomeDeclaration);
-                }
-            }
-
-            final ResponseProcessing responseProcessing = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup().extractEnsuringSuccessful();
-            if (responseProcessing != null) {
-                responseProcessing.evaluate(processingContext);
-            }
-        }
-        finally {
-            fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
-        }
-    }
-
-    /**
-     * Validate the responses set for each of the interactions
-     * 
-     * @return a List of identifiers corresponding to invalid responses. The List will be
-     *         empty if all responses were valid.
-     */
-    public List<Identifier> validateResponses() {
-        final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
-        for (final Interaction interaction : item.getItemBody().getInteractions()) {
-            final Value responseValue = itemState.getResponseValue(interaction);
-            if (!interaction.validateResponse(this, responseValue)) {
-                invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
-            }
-        }
-        return invalidResponseIdentifiers;
     }
 
     //-------------------------------------------------------------------

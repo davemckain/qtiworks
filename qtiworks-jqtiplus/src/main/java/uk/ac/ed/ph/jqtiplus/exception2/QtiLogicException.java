@@ -33,9 +33,16 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
-public class QtiLogicException extends QTIRuntimeException {
+/**
+ * Exception used to denote a logic failure or unexpected internal condition.
+ * <p>
+ * This should NOT be used for an error with bad client data.
+ *
+ * @author David McKain
+ */
+public class QtiLogicException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -6501850546437845744L;
 

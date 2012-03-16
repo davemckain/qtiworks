@@ -46,11 +46,7 @@ public class QtiNotImplementedException extends QtiLogicException {
 
     private static final long serialVersionUID = 138099554893518574L;
 
-    /**
-     * Constructs A new <code>QTINotImplementedException</code> with "Not implemented." text
-     * as its detailed message.
-     */
     public QtiNotImplementedException() {
-        super("Not implemented.");
+        super("Not implemented");
     }
 }

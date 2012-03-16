@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -190,7 +189,7 @@ public enum BaseType {
 
         @Override
         public SingleValue parseSingleValue(String singleValue) {
-            throw new QtiLogicException("Values of baseType file cannot be instantiated from a string");
+            throw new IllegalStateException("Values of baseType file cannot be instantiated from a string");
         }
     },
 

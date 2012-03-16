@@ -63,7 +63,7 @@ public class AssessmentTestAttemptController {
         ConstraintUtilities.ensureNotNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
-        this.test = resolvedAssessmentTest.getTestLookup().extractEnsuringSuccessful();
+        this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
         this.testState = assessmentTestState;
         this.timer = timer;
     }

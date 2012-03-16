@@ -70,7 +70,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * Checked exceptions are reserved for special purposes. In general case you should use unchecked exception instead.
  * </p>
  * 
- * @see uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException
+ * @see uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException
  * @author Jiri Kajaba
  */
 public abstract class QtiException extends Exception {

@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class QtiItemFlowException extends QTIRuntimeException {
+public class QtiItemFlowException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -5609897195533003863L;
 

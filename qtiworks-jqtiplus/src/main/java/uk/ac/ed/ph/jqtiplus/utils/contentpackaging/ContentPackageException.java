@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
  * Exception thrown when something unexpected happens when handling a Content Package.
  * 
  * @author David McKain
  */
-public class ContentPackageException extends QTIRuntimeException {
+public class ContentPackageException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -8628944534184533327L;
     

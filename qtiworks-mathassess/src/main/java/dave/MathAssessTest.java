@@ -74,7 +74,7 @@ public class MathAssessTest {
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
         System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
-        System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful()));
+        System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful()));
         
         /* TODO: Bring some of the SnuggleTeX XML Utility classes in to make this easier */
         SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
@@ -84,7 +84,7 @@ public class MathAssessTest {
         transformerHandler.setResult(new StreamResult(s));
         
         SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractEnsuringSuccessful(), transformerHandler, new SaxSerializationOptions());
+        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful(), transformerHandler, new SaxSerializationOptions());
         
         System.out.println(s);
 

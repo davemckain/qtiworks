@@ -59,10 +59,10 @@ import java.util.Set;
 public final class QueryUtils {
     
     public static Set<JqtiExtensionPackage> findExtensionsUsed(ResolvedAssessmentItem resolvedItem) {
-        Set<JqtiExtensionPackage> resultSet = findExtensionsWithin(resolvedItem.getItemLookup().extractEnsuringSuccessful());
+        Set<JqtiExtensionPackage> resultSet = findExtensionsWithin(resolvedItem.getItemLookup().extractAssumingSuccessful());
         RootObjectLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
         if (rpTemplateLookup!=null) {
-            resultSet.addAll(findExtensionsWithin(rpTemplateLookup.extractEnsuringSuccessful()));
+            resultSet.addAll(findExtensionsWithin(rpTemplateLookup.extractAssumingSuccessful()));
         }
         return resultSet;        
     }

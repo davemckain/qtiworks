@@ -142,9 +142,9 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
         return rootObjectHolder!=null ? rootObjectHolder.getRootObject() : null;
     }
     
-    public E extractEnsuringSuccessful() {
+    public E extractAssumingSuccessful() {
         if (rootObjectHolder==null) {
-            throw new QtiLogicException("Lookup " + this + " was expected to have been successful");
+            throw new IllegalStateException("Lookup " + this + " was expected to have been successful");
         }
         return rootObjectHolder.getRootObject();
     }

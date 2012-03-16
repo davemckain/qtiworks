@@ -149,7 +149,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
         catch (final QtiParseException e) {
-            throw new QtiLogicException("All QTIParseExceptions should have been caught before this point!", e);
+            throw new QtiLogicException("All QtiParseExceptions should have been caught before this point!", e);
         }
         
         /* Make sure we got the right type of Object */

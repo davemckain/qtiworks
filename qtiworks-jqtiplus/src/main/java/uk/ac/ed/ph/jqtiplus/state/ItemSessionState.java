@@ -210,7 +210,7 @@ public final class ItemSessionState implements Serializable {
                 && !AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED.equals(status)
                 && !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(status)
                 && !AssessmentItem.VALUE_ITEM_IS_INCOMPLETE.equals(status)) {
-            throw new QtiLogicException("Value " + status + " is not an acceptable completionStatus");
+            throw new IllegalArgumentException("Value " + status + " is not an acceptable completionStatus");
         }
         outcomeValues.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, value);
     }
@@ -380,10 +380,10 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         if (identifier.equals(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER)) {
-            throw new QtiLogicException("duration variable should not be set via setResponseValue()");
+            throw new IllegalArgumentException("duration variable should not be set via setResponseValue()");
         }
         if (identifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
-            throw new QtiLogicException("numAttempts variable should not be set via setResponseValue()");
+            throw new IllegalArgumentException("numAttempts variable should not be set via setResponseValue()");
         }
         responseValues.put(identifier, value);
     }

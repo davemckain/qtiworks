@@ -39,7 +39,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * 
  * @author Jiri Kajaba
  */
-public class QtiEvaluationException extends QTIRuntimeException {
+public class QtiEvaluationException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 
