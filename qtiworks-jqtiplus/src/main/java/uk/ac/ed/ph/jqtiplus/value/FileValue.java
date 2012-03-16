@@ -33,105 +33,83 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import java.io.File;
 
 /**
  * Implementation of <code>BaseType</code> file value.
  * <p>
- * Files are represented using MIME message streams, including the specification of headers for providing information about content type and encoding. For more
- * information see [RFC2045].
- * <p>
- * There are not implemented any checks right now. Valid file value is any non empty string!
- * <p>
- * Example value:
- * 
- * <pre>
- * Content-Type: image/gif; name="works.gif" ; x-mac-type="47494666"
- * ; x-mac-creator="4A565752"
- * Content-Disposition: attachment; filename="works.gif"
- * Content-Transfer-Encoding: base64
- *
- * R0lGODlhGgAXAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z
- * //+ZzP+Zmf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8z
- * AP8A//8AzP8Amf8AZv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszM
- * M8zMAMyZ/8yZzMyZmcyZZsyZM8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwz
- * ZswzM8wzAMwA/8wAzMwAmcwAZswAM8wAAJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnM
- * mZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm/5lmzJlmmZlmZplmM5lmAJkz/5kz
- * zJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/zGb/mWb/Zmb/M2b/AGbM
- * /2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZmmWZmZmZmM2Zm
- * AGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/ZjP/
- * MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNm
- * ZjNmMzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/
- * mQD/ZgD/MwD/AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBm
- * zABmmQBmZgBmMwBmAAAz/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAM+4AAN0A
- * ALsAAKoAAIgAAHcAAFUAAEQAACIAABEAAADuAADdAAC7AACqAACIAAB3AABVAABEAAAi
- * AAARAAAA7gAA3QAAuwAAqgAAiAAAdwAAVQAARAAAIgAAEe7u7t3d3bu7u6qqqoiIiHd3
- * d1VVVURERCIiIhEREQAAACH5BAEAAAEALAAAAAAaABcABwigAAMIHEgwwL+D/woqXEjw
- * HzZsCRlKHOjwIcSJEys+jIhRYUUAADZ29PgQpMiRFEuCDHkR5ceVJlt2/OivZkyOGVXW
- * 9LfyZE5sIHf2lMnw5UqbN3/CBCCUJc6CRoPu5Om06EOqTKdS9dnwqlapWLka9Dr1aNOq
- * KbFppWoTKdqxatdKnZsU7tq2bMNe1Gixr9+/Fg8CHkwYoeHDiBMfBAggIAA7
- * </pre>
- * <p>
- * This class is not mutable and cannot contain NULL value.
- * <p>
- * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always file.
+ * This is a completely different implementation from JQTI, which stored files as a big String!
  * 
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public class FileValue extends SingleValue {
+public final class FileValue extends SingleValue {
 
     private static final long serialVersionUID = 7627842431496721671L;
-
-    private final String stringValue;
-
-    /**
-     * Constructs <code>FileValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>FileValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>FileValue</code> is not valid
-     */
-    public FileValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid file '" + value + "'. Length is not valid.");
-        }
-
-        this.stringValue = value;
+    
+    private File file;
+    private String contentType;
+    private String fileName;
+    
+    public FileValue(File file, String contentType) {
+        this(file, contentType, null);
     }
-
+    
+    public FileValue(File file, String contentType, String fileName) {
+        this.file = file;
+        this.contentType = contentType;
+        this.fileName = fileName;
+    }
+    
     @Override
     public BaseType getBaseType() {
         return BaseType.FILE;
     }
+    
+    public File getFile() {
+        return file;
+    }
+    
+    public void setFile(File file) {
+        this.file = file;
+    }
+    
+    public String getContentType() {
+        return contentType;
+    }
 
-    /**
-     * Returns the value of this <code>FileValue</code> as A <code>String</code>.
-     * 
-     * @return the value of this <code>FileValue</code> as A <code>String</code>
-     */
-    public String stringValue() {
-        return stringValue;
+    
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    
+    public String getFileName() {
+        return fileName;
+    }
+
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof FileValue)) {
             return false;
         }
-
-        final FileValue value = (FileValue) object;
-
-        return stringValue.equals(value.stringValue);
+        FileValue other = (FileValue) object;
+        return file.equals(other.file);
     }
 
     @Override
     public int hashCode() {
-        return stringValue.hashCode();
+        return file.hashCode();
     }
 
     @Override
     public String toString() {
-        return stringValue;
+        return file.getPath();
     }
 }
