@@ -175,9 +175,9 @@ public abstract class AbstractNode implements XmlNode {
     
     @Override
     public void fireSaxEvents(SaxFiringContext saxFiringContext) throws SAXException {
-        saxFiringContext.startSupportedElement(this);
+        saxFiringContext.fireStartQtiElement(this);
         fireBodySaxEvents(saxFiringContext);
-        saxFiringContext.endSupportedElement(this);
+        saxFiringContext.fireEndQtiElement(this);
     }
     
     protected void fireBodySaxEvents(SaxFiringContext saxFiringContext) throws SAXException {

@@ -33,104 +33,58 @@
  */
 package uk.ac.ed.ph.jqtiplus.serialization;
 
-import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.XMLConstants;
-
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * FIXME: Document this type
+ * Callback interface used by {@link AbstractNode}s to fire off their SAX events.
  *
  * @author David McKain
  */
-public class SaxFiringContext {
+public final class SaxFiringContext {
     
-    private final Set<JqtiExtensionPackage> usedExtensionPackages;
-    private final ContentHandler targetHandler;
-    private final SaxSerializationOptions serializationOptions;
-    private final NamespacePrefixMappings namespacePrefixMappings;
-    private boolean doneStartDocumentNode;
+    private final SaxEventFirer saxEventFirer;
+    private final NamespacePrefixMappings attributeNamespacePrefixMappings;
     
-    /** 
-     * Tracks changes in the default namespace.
-     * 
-     * Key is {@link AbstractNode} where the default namespace change occurs
-     * Value is the *previous* namespace URI (which is null before the first element is fired)
-     */
-    private final Map<AbstractNode, String> defaultNamespaceChangeMap;
-    private String currentDefaultNamespaceUri;
-    
-    SaxFiringContext(ContentHandler targetHandler, SaxSerializationOptions serializationOptions, 
-            Set<JqtiExtensionPackage> usedExtensionPackages, NamespacePrefixMappings namespacePrefixMappings) {
-        this.targetHandler = targetHandler;
-        this.serializationOptions = serializationOptions;
-        this.usedExtensionPackages = usedExtensionPackages;
-        this.namespacePrefixMappings = namespacePrefixMappings;
-        this.doneStartDocumentNode = false;
-        this.defaultNamespaceChangeMap = new HashMap<AbstractNode, String>();
-        this.currentDefaultNamespaceUri = null;
+    SaxFiringContext(SaxEventFirer saxEventFirer, NamespacePrefixMappings attributeNamespacePrefixMappings) {
+        this.saxEventFirer = saxEventFirer;
+        this.attributeNamespacePrefixMappings = attributeNamespacePrefixMappings;
     }
     
     //-----------------------------------------------
     // Callbacks
     
-    public void startSupportedElement(AbstractNode node) throws SAXException {
-        /* Work out if we need to change the default namespace */
-        String elementNamespaceUri = getNodeNamespaceUri(node);
-        if (currentDefaultNamespaceUri==null || !currentDefaultNamespaceUri.equals(elementNamespaceUri)) {
-            /* We're changing the default namespace, so register a prefix mapping and keep track
-             * of this Node so we know to end the mapping later */
-            targetHandler.startPrefixMapping("", elementNamespaceUri);
-            defaultNamespaceChangeMap.put(node, currentDefaultNamespaceUri);
-            currentDefaultNamespaceUri = elementNamespaceUri;
-        }
-        
+    public void fireStartQtiElement(AbstractNode node) throws SAXException {
         /* Build up attributes */
         AttributesImpl xmlAttributes = new AttributesImpl();
-        if (!doneStartDocumentNode) {
-            if (!serializationOptions.isOmitSchemaLocations()) {
-                xmlAttributes.addAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation", 
-                        namespacePrefixMappings.getQName(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"),
-                        "CDATA", createSchemaLocationAttributeValue());
-            }
-        }
         for (Attribute<?> attribute : node.getAttributes()) {
             if (attribute.isRequired() || attribute.getValue()!=null) {
                 String localName = attribute.getLocalName();
                 String namespaceUri = attribute.getNamespaceUri();
-                String qName = namespacePrefixMappings.getQName(namespaceUri, localName);
+                String qName = attributeNamespacePrefixMappings.getQName(namespaceUri, localName);
                 xmlAttributes.addAttribute(namespaceUri, localName, qName,
                         "CDATA", attribute.valueToString());
             }
         }
-        
-        /* Start element */
-        targetHandler.startElement(elementNamespaceUri, node.getLocalName(), node.getLocalName(), xmlAttributes);
-        doneStartDocumentNode = true;
+
+        /* Decide on element Name */
+        String elementNamespaceUri = getNodeNamespaceUri(node);
+
+        /* Fire element */
+        saxEventFirer.fireStartElement(node, node.getLocalName(), elementNamespaceUri, xmlAttributes);
+    }
+
+    public void fireText(String string) throws SAXException {
+        saxEventFirer.fireText(string);
     }
     
-    public void endSupportedElement(AbstractNode node) throws SAXException {
-        /* End element */
-        targetHandler.endElement(getNodeNamespaceUri(node), node.getLocalName(), node.getLocalName());
-        
-        /* See if we're ending a default namespace change */
-        if (defaultNamespaceChangeMap.containsKey(node)) {
-            targetHandler.endPrefixMapping("");
-            currentDefaultNamespaceUri = defaultNamespaceChangeMap.get(node);
-            defaultNamespaceChangeMap.remove(node);
-        }
+    public void fireEndQtiElement(AbstractNode node) throws SAXException {
+        saxEventFirer.fireEndElement(node, node.getLocalName(), getNodeNamespaceUri(node));
     }
     
     private String getNodeNamespaceUri(AbstractNode node) {
@@ -149,31 +103,4 @@ public class SaxFiringContext {
         }
         return namespaceUri;
     }
-    
-    private String createSchemaLocationAttributeValue() {
-        StringBuilder resultBuilder = new StringBuilder();
-        
-        /* First do QTI 2.1 namespace */
-        /* TODO: If we add support for APIP, we'll need to change namespace here */
-        resultBuilder.append(QtiConstants.QTI_21_NAMESPACE_URI)
-            .append(' ')
-            .append(QtiConstants.QTI_21_SCHEMA_LOCATION);
-        
-        /* Then do each extension */
-        for (JqtiExtensionPackage jqtiExtensionPackage : usedExtensionPackages) {
-            for (ExtensionNamespaceInfo extensionNamespaceInfo : jqtiExtensionPackage.getNamespaceInfoMap().values()) {
-                resultBuilder.append(' ')
-                    .append(extensionNamespaceInfo.getNamespaceUri())
-                    .append(' ')
-                    .append(extensionNamespaceInfo.getSchemaUri());
-            }
-        }
-        
-        return resultBuilder.toString();
-    }
-
-    public void fireText(String string) throws SAXException {
-        targetHandler.characters(string.toCharArray(), 0, string.length());
-    }
-    
 }

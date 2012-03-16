@@ -33,6 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.serialization;
 
+import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.utils.ForeignNamespaceSummary;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,14 +50,17 @@ import javax.xml.XMLConstants;
 /**
  * Keeps track of the namespace prefix mappings for attributes.
  * <p>
- * For simplicity, the current XML writing API requires unique prefixes
+ * For simplicity, the current SAX firing API requires unique prefixes
  * for unique namespaces, even though XML can easily cope with non-uniqueness.
- * Mad people who want such a thing can always add their own filters and/or
+ * Mad people who really want such a thing can always add their own filters and/or
  * stylesheets to change these things.
  *
  * @author David McKain
  */
 public final class NamespacePrefixMappings implements Serializable {
+    
+    /** Default XML schema instance NS prefix */
+    public static final String DEFAULT_XSI_PREFIX = "xsi";
     
     private static final long serialVersionUID = -1652757838448828206L;
     
@@ -92,6 +101,50 @@ public final class NamespacePrefixMappings implements Serializable {
         }
         namespaceUriToPrefixMap.put(namespaceUri, prefix);
         prefixToNamespaceUriMap.put(prefix, namespaceUri);
+    }
+    
+    /**
+     * Convenience method to register the XML schema location, bound to the default 'xsi:' prefix
+     */
+    public void registerSchemaInstanceMapping() {
+        register(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, DEFAULT_XSI_PREFIX);
+    }
+    
+    /** 
+     * Registers prefix mappings for all of the extensions used by the given {@link XmlNode}s
+     * and their descendents.
+     */
+    public void registerExtensionPrefixMappings(XmlNode... nodes) {
+        Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(nodes);
+        registerExtensionPrefixMappings(usedExtensionPackages);
+    }
+    
+    /** 
+     * Registers prefix mappings for all of the given extensions
+     */
+    public void registerExtensionPrefixMappings(Set<JqtiExtensionPackage> qtiExtensionPackages) {
+        for (JqtiExtensionPackage jqtiExtensionPackage : qtiExtensionPackages) {
+            for (Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionPackage.getNamespaceInfoMap().entrySet()) {
+                String namespaceUri = entry.getKey();
+                ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
+                String defaultPrefix = extensionNamespaceInfo.getDefaultPrefix();
+                String actualPrefix = makeUniquePrefix(defaultPrefix);
+                register(namespaceUri, actualPrefix);
+            }
+        }
+    }
+    
+    /**
+     * Registers prefix mappings for all namespaced foreign attributes used by the given
+     * {@link XmlNode}s and their descendents.
+     */
+    public void registerForeignAttributeNamespaces(XmlNode... nodes) {
+        ForeignNamespaceSummary foreignNamespaces = QueryUtils.findForeignNamespaces(nodes);
+        for (String attributeNamespaceUri : foreignNamespaces.getAttributeNamespaceUris()) {
+            /* TODO-LATER: Maybe allow some more control over this choice of prefix? */
+            String resultingPrefix = makeUniquePrefix("ns");
+            register(attributeNamespaceUri, resultingPrefix);
+        }
     }
     
     public String makeUniquePrefix(String requestedPrefix) {

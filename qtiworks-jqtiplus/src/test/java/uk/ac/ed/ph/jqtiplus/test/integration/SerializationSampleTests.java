@@ -44,8 +44,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
@@ -110,8 +110,8 @@ public class SerializationSampleTests {
         StringWriter serializedXmlWriter = new StringWriter();
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         
-        SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(item, serializerHandler, new SaxSerializationOptions());
+        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+        saxEventFirer.fireSaxDocument(item);
         String serializedXml = serializedXmlWriter.toString();
         
         InputStream originalXmlStream = sampleResourceLocator.findResource(sampleResourceUri);

@@ -12,8 +12,8 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -33,7 +33,7 @@ public class SchemaTest {
         
         System.out.println("Reading and validating");
         JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        QtiXmlReader qtiXmlReader = new QtiXmlReader();
+        QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
         QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
         
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
@@ -53,8 +53,8 @@ public class SchemaTest {
         StringWriter serializedXmlWriter = new StringWriter();
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         
-        SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(item.getItemLookup().extractAssumingSuccessful(), serializerHandler, new SaxSerializationOptions());
+        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+        saxEventFirer.fireSaxDocument(item.getItemLookup().extractAssumingSuccessful());
         String serializedXml = serializedXmlWriter.toString();
         
         System.out.println(serializedXml);

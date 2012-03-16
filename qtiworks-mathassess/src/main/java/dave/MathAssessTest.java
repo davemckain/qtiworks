@@ -39,21 +39,21 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
-
-import org.qtitools.mathassess.MathAssessExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
+
+import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import java.io.StringWriter;
 import java.net.URI;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
@@ -76,17 +76,19 @@ public class MathAssessTest {
         System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
         System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful()));
         
-        /* TODO: Bring some of the SnuggleTeX XML Utility classes in to make this easier */
-        SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-        TransformerHandler transformerHandler = saxTransformerFactory.newTransformerHandler();
-        transformerHandler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
-        StringWriter s = new StringWriter();
-        transformerHandler.setResult(new StreamResult(s));
+        XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+        serializationOptions.setIndenting(true);
         
-        SaxEventFirer saxEventFirer = new SaxEventFirer(jqtiExtensionManager);
-        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful(), transformerHandler, new SaxSerializationOptions());
+        XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
+        TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
         
-        System.out.println(s);
+        StringWriter serializedXmlWriter = new StringWriter();
+        serializerHandler.setResult(new StreamResult(serializedXmlWriter));
+        
+        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful());
+        
+        System.out.println(serializedXmlWriter.toString());
 
 //        try {
 //            final AssessmentItemState itemState = new AssessmentItemState();

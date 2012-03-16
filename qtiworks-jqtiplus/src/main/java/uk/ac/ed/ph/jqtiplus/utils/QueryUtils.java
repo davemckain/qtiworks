@@ -68,53 +68,57 @@ public final class QueryUtils {
     }
     
     /**
-     * Finds all {@link JqtiExtensionPackage}s used by this {@link XmlNode} and its
+     * Finds all {@link JqtiExtensionPackage}s used by the given {@link XmlNode}s and their
      * child Nodes.
      * 
      * @param node
      */
-    public static Set<JqtiExtensionPackage> findExtensionsWithin(XmlNode node) {
+    public static Set<JqtiExtensionPackage> findExtensionsWithin(XmlNode... nodes) {
         final Set<JqtiExtensionPackage> resultSet = new HashSet<JqtiExtensionPackage>();
-        walkTree(node, new TreeWalkNodeHandler() {
-            @Override
-            public boolean handleNode(XmlNode node) {
-                if (node instanceof CustomOperator) {
-                    resultSet.add(((CustomOperator) node).getJqtiExtensionPackage());
+        for (XmlNode node : nodes) {
+            walkTree(node, new TreeWalkNodeHandler() {
+                @Override
+                public boolean handleNode(XmlNode node) {
+                    if (node instanceof CustomOperator) {
+                        resultSet.add(((CustomOperator) node).getJqtiExtensionPackage());
+                    }
+                    else if (node instanceof CustomInteraction) {
+                        resultSet.add(((CustomInteraction) node).getJqtiExtensionPackage());
+                    }
+                    /* Keep descending */
+                    return true;
                 }
-                else if (node instanceof CustomInteraction) {
-                    resultSet.add(((CustomInteraction) node).getJqtiExtensionPackage());
-                }
-                /* Keep descending */
-                return true;
-            }
-        });
+            });
+        }
         return resultSet;
     }
     
-    public static ForeignNamespaceSummary findForeignNamespaces(XmlNode node) {
+    public static ForeignNamespaceSummary findForeignNamespaces(XmlNode... nodes) {
         final Set<String> elementNamespaceUris = new HashSet<String>();
         final Set<String> attributeNamespaceUris = new HashSet<String>();
-        walkTree(node, new TreeWalkNodeHandler() {
-            @Override
-            public boolean handleNode(XmlNode node) {
-                /* Consider node itself */
-                if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
-                    elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
-                }
-                else if (node instanceof ForeignBlock) {
-                    elementNamespaceUris.add(((ForeignBlock) node).getNamespaceUri());
-                }
-                /* Now do attributes */
-                for (Attribute<?> attribute : node.getAttributes()) {
-                    if (attribute instanceof ForeignAttribute) {
-                        attributeNamespaceUris.add(attribute.getNamespaceUri());
+        for (XmlNode node : nodes) {
+            walkTree(node, new TreeWalkNodeHandler() {
+                @Override
+                public boolean handleNode(XmlNode node) {
+                    /* Consider node itself */
+                    if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
+                        elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
                     }
+                    else if (node instanceof ForeignBlock) {
+                        elementNamespaceUris.add(((ForeignBlock) node).getNamespaceUri());
+                    }
+                    /* Now do attributes */
+                    for (Attribute<?> attribute : node.getAttributes()) {
+                        if (attribute instanceof ForeignAttribute) {
+                            attributeNamespaceUris.add(attribute.getNamespaceUri());
+                        }
+                    }
+                    
+                    /* Keep descending */
+                    return true;
                 }
-                
-                /* Keep descending */
-                return true;
-            }
-        });
+            });
+        }
         return new ForeignNamespaceSummary(elementNamespaceUris, attributeNamespaceUris);
     }
     

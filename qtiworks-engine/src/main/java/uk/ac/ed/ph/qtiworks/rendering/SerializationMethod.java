@@ -31,39 +31,60 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.serialization;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-
-import java.io.Serializable;
+package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * Encapsulates options for serializing JQTI objects as SAX events.
- *
- * @author David McKain
+ * Encapsulates the supported ways of serializing the results obtained
+ * from {@link Renderer}.
+ * 
+ * @author  David McKain
+ * @version $Revision: 2596 $
  */
-public class SaxSerializationOptions implements Serializable {
-
-    private static final long serialVersionUID = -8150907872183994652L;
+public enum SerializationMethod {
     
-    private boolean omitSchemaLocations;
+    /** 
+     * XHTML + MathML, mis-delivered as text/html, using MathJax to display
+     * any MathML that is present.
+     */
+    XHTML_MATHJAX("text/html", "xhtml"),
     
-    public SaxSerializationOptions() {
-        this.omitSchemaLocations = false;
+    /** 
+     * HTML5 + MathML, using MathJax to display any MathML that is present.
+     */
+    HTML5_MATHJAX("text/html", "html"),
+    
+    /** 
+     * XHTML + MathML delivered as application/xhtml+xml.
+     * Perfect for MathML items on Mozilla.
+     */
+    MOZILLA_MATHML("application/xhtml+xml", "xhtml"),
+    
+    /**
+     * XHTML mis-delivered as text/html containing gubbins to invoke MathPlayer
+     */
+    IE_MATHPLAYER("text/html", "html"),
+    
+    /** 
+     * XHTML traditionally mis-delivered as text/html.
+     * Perfect for non-MathML items, useless otherwise.
+     */
+    TRADITIONAL_XHTML("text/html", "xhtml"),
+    
+    ;
+    
+    private final String contentType;
+    private final String method;
+    
+    private SerializationMethod(final String contentType, final String method) {
+        this.contentType = contentType;
+        this.method = method;
     }
 
-    
-    public boolean isOmitSchemaLocations() {
-        return omitSchemaLocations;
+    public String getContentType() {
+        return contentType;
     }
-    
-    public void setOmitSchemaLocations(boolean omitSchemaLocations) {
-        this.omitSchemaLocations = omitSchemaLocations;
-    }
-    
 
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    public String getMethod() {
+        return method;
     }
 }
