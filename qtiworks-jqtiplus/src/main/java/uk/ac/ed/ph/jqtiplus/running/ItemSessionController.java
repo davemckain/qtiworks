@@ -88,7 +88,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Usage: one-shot, not thread safe.
  * FIXME: Document this!
- * FIXME: This now includes runtime context information, so is no longer stateless. Need to fix that!
  * 
  * @author David McKain
  */
@@ -765,7 +764,6 @@ public final class ItemSessionController {
             return ItemSessionController.this.lookupVariable(identifier, permittedTypes);
         }
 
-        /* DM: This copes with defaults and overridden values */
         @Override
         public Value computeDefaultValue(Identifier identifier) {
             return ItemSessionController.this.computeDefaultValue(identifier);

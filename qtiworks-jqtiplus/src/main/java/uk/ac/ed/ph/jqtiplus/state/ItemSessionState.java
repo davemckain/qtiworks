@@ -160,6 +160,7 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
     // Built-in variable manipulation
     
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public FloatValue getDurationValue() {
         return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER);
     }
@@ -178,6 +179,7 @@ public final class ItemSessionState implements Serializable {
     }
     
     
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public IntegerValue getNumAttemptsValue() {
         return (IntegerValue) responseValues.get(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
     }
@@ -196,6 +198,7 @@ public final class ItemSessionState implements Serializable {
     }
     
     
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public IdentifierValue getCompletionStatusValue() {
         return (IdentifierValue) outcomeValues.get(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
     }

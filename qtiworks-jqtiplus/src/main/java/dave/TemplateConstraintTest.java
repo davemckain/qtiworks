@@ -39,7 +39,7 @@ public class TemplateConstraintTest {
         
         System.out.println("\nInitialising");
         itemController.initialize(null);
-        System.out.println("Template Values: " + itemState.getTemplateValues());
+        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
     }
 
 }
