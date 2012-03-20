@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd
+ http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
+    xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="false"
+    identifier="MAA01a" timeDependent="false"
+    title="Expand brackets in a(x+b)+cx and simplify - choice">
+    <!--
+        no template processing, choice interaction and basic response
+        processing
+    -->
+    <responseDeclaration identifier="TEST" cardinality="single" baseType="integer">
+      <defaultValue>
+        <value>4</value>
+      </defaultValue>
+    </responseDeclaration>
+    <responseDeclaration identifier="RESPONSE"
+        cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+        </correctResponse>
+    </responseDeclaration>
+    <responseDeclaration baseType="boolean"
+        cardinality="single" identifier="HINTREQUEST" />
+    <responseDeclaration baseType="boolean"
+        cardinality="single" identifier="SOLREQUEST" />
+    <outcomeDeclaration identifier="SCORE" cardinality="single"
+        baseType="float">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK"
+        cardinality="single" baseType="identifier" />
+    <outcomeDeclaration identifier="seenSolution" cardinality="single" baseType="boolean">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="seenHint" cardinality="single" baseType="boolean">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <!-- no template -->
+    <itemBody><!-- contains MathML -->
+        <p>
+            Expand the brackets in &#160;&#160;
+                <m:math display="block">
+                    <m:semantics>
+                        <m:mrow>
+                            <m:mn>2</m:mn>
+                            <m:mo>(</m:mo>
+                            <m:mi>x</m:mi>
+                            <m:mo>-</m:mo>
+                            <m:mn>5</m:mn>
+                            <m:mo>)</m:mo>
+                            <m:mo>+</m:mo>
+                            <m:mn>4</m:mn>
+                            <m:mi>x</m:mi>
+                        </m:mrow>
+                        <m:annotation encoding='LaTeX'>\[ 2(x-5)+4x\]</m:annotation>
+                    </m:semantics>
+                </m:math> &#160;&#160;and simplify the result.
+        </p>
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+                                <!--<prompt>Select one of these options:</prompt>-->
+                                <simpleChoice identifier="ChoiceA">
+                                    <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mn>6</m:mn>
+                                                <m:mi>x</m:mi>
+                                                <m:mo>-</m:mo>
+                                                <m:mn>10</m:mn>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[6x-10\]</m:annotation>
+                                        </m:semantics>
+                                    </m:math>
+                                    <feedbackInline outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="show">&#160;&#160;&#160;&#160;Well done - you got the correct answer.</feedbackInline>
+                                </simpleChoice>
+                                <simpleChoice identifier="ChoiceB">
+                                    <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mn>6</m:mn>
+                                                <m:mi>x</m:mi>
+                                                <m:mo>-</m:mo>
+                                                <m:mn>5</m:mn>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[6x-5\]</m:annotation>
+                                        </m:semantics>
+                                    </m:math>
+                                    <feedbackInline outcomeIdentifier="FEEDBACK" identifier="ChoiceB" showHide="show">&#160;&#160;&#160;&#160;Remember that, when expanding brackets, all terms inside must be multiplied by whatever is outside. However, you got one term in the answer correct.</feedbackInline>
+                                </simpleChoice>
+                                <simpleChoice identifier="ChoiceC">
+                                    <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mn>6</m:mn>
+                                                <m:mi>x</m:mi>
+                                                <m:mo>+</m:mo>
+                                                <m:mn>10</m:mn>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[6x+10\]</m:annotation>
+                                        </m:semantics>
+                                    </m:math>
+                                    <feedbackInline outcomeIdentifier="FEEDBACK" identifier="ChoiceC" showHide="show">&#160;&#160;&#160;&#160;When expanding the bracket the product of 2 and -5 is -10. However, you got one term in the answer correct.</feedbackInline>
+                                </simpleChoice>
+                                <simpleChoice identifier="ChoiceD">
+                                    <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mn>2</m:mn>
+                                                <m:mi>x</m:mi>
+                                                <m:mo>-</m:mo>
+                                                <m:mn>10</m:mn>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[2x-10\]</m:annotation>
+                                        </m:semantics>
+                                    </m:math>
+                                    <feedbackInline outcomeIdentifier="FEEDBACK" identifier="ChoiceD" showHide="show">&#160;&#160;&#160;&#160;Remember to include both of the terms in <m:math><m:mi>x</m:mi></m:math>. However, you got one term in the answer correct.</feedbackInline>
+                                </simpleChoice>
+                                <simpleChoice identifier="ChoiceE">
+                                    <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mn>2</m:mn>
+                                                <m:mi>x</m:mi>
+                                                <m:mo>-</m:mo>
+                                                <m:mn>5</m:mn>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[2x-5\]</m:annotation>
+                                        </m:semantics>
+                                    </m:math>
+                                    <feedbackInline outcomeIdentifier="FEEDBACK" identifier="ChoiceE" showHide="show">&#160;&#160;&#160;&#160;You should ask for tutor help on this question.</feedbackInline>
+                                </simpleChoice>
+                            </choiceInteraction>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+            <div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <m:math display="block">
+                                    <m:semantics>
+                                        <m:mrow>
+                                            <m:mi>2</m:mi>
+                                            <m:mo>(</m:mo>
+                                            <m:mi>x</m:mi>
+                                            <m:mo>-</m:mo>
+                                            <m:mi>5</m:mi>
+                                            <m:mo>)</m:mo>
+                                            <m:mo>+</m:mo>
+                                            <m:mi>4</m:mi>
+                                            <m:mi>x</m:mi>
+                                        </m:mrow>
+                                        <m:annotation encoding='LaTeX'>\[2(x-5)+4x\]</m:annotation>
+                                    </m:semantics>
+                                </m:math>
+                            </td>
+                            <td>
+                                <m:math display="block">
+                                        <m:semantics>
+                                            <m:mrow>
+                                                <m:mo>&#160;=&#160;</m:mo>
+                                                <m:mrow>
+                                                    <m:mi>2</m:mi>
+                                                    <m:mo>&#xd7;</m:mo>
+                                                    <m:mi>x</m:mi>
+                                                </m:mrow>
+                                                <m:mo>-</m:mo>
+                                                <m:mrow>
+                                                    <m:mi>2</m:mi>
+                                                    <m:mo>&#xd7;</m:mo>
+                                                    <m:mi>5</m:mi>
+                                                </m:mrow>
+                                                <m:mo>+</m:mo>
+                                                <m:mrow>
+                                                    <m:mi>4</m:mi>
+                                                    <m:mi>x</m:mi>
+                                                </m:mrow>
+                                            </m:mrow>
+                                            <m:annotation encoding='LaTeX'>\[ = 2 \times x - 2 \times 5) + 4 \times\ x\]</m:annotation>
+                                        </m:semantics>
+                                </m:math>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&#160;</td>
+                            <td>
+                                <m:math display="block">
+                                    <m:semantics>
+                                        <m:mrow>
+                                            <m:mo>&#160;=&#160;</m:mo>
+                                            <m:mi>6</m:mi>
+                                            <m:mi>x</m:mi>
+                                            <m:mo>-</m:mo>
+                                            <m:mi>10</m:mi>
+                                        </m:mrow>
+                                        <m:annotation encoding='LaTeX'>\[ = 6x - 10\]</m:annotation>
+                                    </m:semantics>
+                                </m:math>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </feedbackBlock>
+        <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" >
+            <p>Expand the bracket and collect like terms.</p>
+        </feedbackBlock>
+        <p>
+            <endAttemptInteraction responseIdentifier="HINTREQUEST" title="Show Hint" />
+            <endAttemptInteraction responseIdentifier="SOLREQUEST" title="Show Solution" />
+        </p>
+    </itemBody>
+    <responseProcessing><!-- basic match, includes feedback on specific errors -->
+        <responseCondition>
+            <responseIf>
+                <variable identifier="HINTREQUEST"/>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">HINT</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="seenHint">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <variable identifier="SOLREQUEST"/>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">SOLUTION</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="seenSolution">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">completed</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <responseCondition>
+                    <responseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <correct identifier="RESPONSE"/>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">2</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceB</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceC</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceD</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElse>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0</baseValue>
+                        </setOutcomeValue>
+                    </responseElse>
+                </responseCondition>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <variable identifier="RESPONSE"/>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <variable identifier="seenSolution"/>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <variable identifier="seenHint"/>
+                <setOutcomeValue identifier="SCORE">
+                    <divide>
+                        <variable identifier="SCORE"/>
+                        <baseValue baseType="float">2.0</baseValue>
+                    </divide>
+                </setOutcomeValue>
+            </responseElseIf>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>

@@ -31,10 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.testutils;
+package uk.ac.ed.ph.qtiworks.test.utils;
 
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+
+import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +58,16 @@ public class TestUtils {
             result.add(new Object[] { qtiSampleResource });
         }
         return result;
+    }
+    
+    public static QtiXmlReader getQtiXmlReader() {
+        JqtiExtensionManager jqtiExtensionManager = getJqtiExtensionManager();
+        return new QtiXmlReader(jqtiExtensionManager);
+        
+    }
+    
+    public static JqtiExtensionManager getJqtiExtensionManager() {
+        return new JqtiExtensionManager(new MathAssessExtensionPackage());
     }
 
 }

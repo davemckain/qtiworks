@@ -31,57 +31,22 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.test.integration;
+package uk.ac.ed.ph.qtiworks.samples;
 
-import static org.junit.Assert.assertEquals;
-
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
-import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-
-import java.net.URI;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 
 /**
- * Integration test that runs {@link QtiXmlReader} on each IMS sample checking the validity
- * of each one that's supposed to be valid.
+ * Sample set containing examples of the MathAssess extensions
  *
  * @author David McKain
  */
-@RunWith(Parameterized.class)
-public class QtiXmlReaderSampleTests {
+public final class MathAssessSampleSet {
     
-    private QtiSampleResource qtiSampleResource;
+    private static final QtiSampleSet instance = new QtiSampleSet(
+            new QtiSampleResource(Type.ITEM, "mathassess/MAA01a.xml")
+    );
     
-    @Parameters
-    public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance());
-    }
-    
-    public QtiXmlReaderSampleTests(QtiSampleResource qtiSampleResource) {
-        this.qtiSampleResource = qtiSampleResource;
-        
-    }
-    
-    @Test
-    public void test() throws Exception {
-        final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
-        final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
-        
-        final QtiXmlReader qtoXmlReader = new QtiXmlReader();
-        XmlReadResult xmlReadResult = qtoXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
-        
-        assertEquals(!qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
+    public static QtiSampleSet instance() {
+        return instance;
     }
 }

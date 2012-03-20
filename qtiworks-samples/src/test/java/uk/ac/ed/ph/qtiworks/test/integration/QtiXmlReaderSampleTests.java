@@ -31,21 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.test.integration;
+package uk.ac.ed.ph.qtiworks.test.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
@@ -58,23 +55,25 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Integration test that runs our validation process on each IMS sample checking the validity
+ * Integration test that runs {@link QtiXmlReader} on each IMS sample checking the validity
  * of each one that's supposed to be valid.
  *
  * @author David McKain
  */
 @RunWith(Parameterized.class)
-public class ValidationSampleTests {
+public class QtiXmlReaderSampleTests {
     
     private QtiSampleResource qtiSampleResource;
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance());
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance()
+                .union(MathAssessSampleSet.instance()));
     }
     
-    public ValidationSampleTests(QtiSampleResource qtiSampleResource) {
+    public QtiXmlReaderSampleTests(QtiSampleResource qtiSampleResource) {
         this.qtiSampleResource = qtiSampleResource;
+        
     }
     
     @Test
@@ -82,16 +81,9 @@ public class ValidationSampleTests {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
         
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader();
-        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        ItemValidationResult validationResult = objectManager.resolveAndValidateItem(sampleResourceUri);
+        final QtiXmlReader qtoXmlReader = TestUtils.getQtiXmlReader();
+        XmlReadResult xmlReadResult = qtoXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
         
-        boolean expectedValid = !qtiSampleResource.hasFeature(Feature.NOT_FULLY_VALID);
-        if (expectedValid != validationResult.isValid()) {
-            System.out.println("Expected validity: " + expectedValid);
-            System.out.println("Actual validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));
-        }
-        assertEquals(expectedValid, validationResult.isValid());
+        assertEquals(!qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
     }
 }

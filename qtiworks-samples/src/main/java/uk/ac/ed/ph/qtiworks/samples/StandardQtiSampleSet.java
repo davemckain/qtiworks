@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.samples;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 
-
 /**
  * Sample set based on the IMS samples
  *
@@ -90,5 +89,4 @@ public final class StandardQtiSampleSet {
     public static QtiSampleSet instance() {
         return instance;
     }
-
 }

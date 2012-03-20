@@ -31,13 +31,14 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.test.integration;
+package uk.ac.ed.ph.qtiworks.test.integration;
 
+import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -46,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
-import uk.ac.ed.ph.jqtiplus.testutils.TestUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
@@ -86,7 +86,8 @@ public class SerializationSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID));
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+                .union(MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)));
     }
     
     public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
@@ -98,8 +99,7 @@ public class SerializationSampleTests {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
         
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        final QtiXmlReader qtiXmlReader = TestUtils.getQtiXmlReader();
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
         QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
         AssessmentItem item = itemReadResult.getRootObject();

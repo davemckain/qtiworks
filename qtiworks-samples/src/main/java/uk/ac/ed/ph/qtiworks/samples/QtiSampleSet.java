@@ -90,5 +90,11 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
         }
         return new QtiSampleSet(filtered);
     }
+    
+    public QtiSampleSet union(QtiSampleSet other) {
+        List<QtiSampleResource> mergedResources = new ArrayList<QtiSampleResource>(resources);
+        mergedResources.addAll(other.resources);
+        return new QtiSampleSet(mergedResources);
+    }
 
 }
