@@ -33,34 +33,33 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
-import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
@@ -79,23 +78,21 @@ public final class Renderer {
     private static final Logger logger = LoggerFactory.getLogger(Renderer.class);
     
     private final XsltStylesheetManager stylesheetManager;
-    private final UnifiedXMLResourceResolver xmlResourceResolver;
     private final String engineBasePath;
     private final String appletCodebase;
-    private final String standaloneItemStylesheetUri;
-    private final String testItemStylesheetUri;
+    private final URI standaloneItemStylesheetUri;
+    private final URI testItemStylesheetUri;
     private final String mathJaxUrl;
     private final String mathJaxConfig;
     
-    public Renderer(String engineBasePath, String appletCodebase, String standaloneItemStylesheetUri, String testItemStylesheetUri,
-            UnifiedXMLResourceResolver xmlResourceResolver, XsltStylesheetCache stylesheetCache,
+    public Renderer(String engineBasePath, String appletCodebase, URI standaloneItemStylesheetUri, URI testItemStylesheetUri,
+            XsltStylesheetCache stylesheetCache,
             String mathJaxUrl, String mathJaxConfig) {
         this.engineBasePath = engineBasePath;
         this.appletCodebase = appletCodebase;
-        this.xmlResourceResolver = xmlResourceResolver;
         this.standaloneItemStylesheetUri = standaloneItemStylesheetUri;
         this.testItemStylesheetUri = testItemStylesheetUri;
-        this.stylesheetManager = new XsltStylesheetManager(xmlResourceResolver, stylesheetCache);
+        this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), stylesheetCache);
         this.mathJaxUrl = mathJaxUrl;
         this.mathJaxConfig = mathJaxConfig;
     }
@@ -104,16 +101,17 @@ public final class Renderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
      * fashion, and not part of an assessment.
      */
-    public String renderStandaloneItem(AssessmentItem assessmentItem, 
+    public String renderStandaloneItem(AssessmentItem item,
+            ItemSessionState itemSessionState,
             String resourceBasePath, String itemHref, boolean isResponded,
             Map<String, ResponseData> responseInputs,
             List<String> badResponseIdentifiers, List<String> invalidResponseIdentifiers,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
             SerializationMethod serializationMethod) {
-        logger.info("renderStandaloneItem(item={}, resourceBasePath={}, itemHref={}, isResponded={}, "
+        logger.debug("renderStandaloneItem(item={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
                 + "responseInputs={}, badResponseIdentifiers={}, invalidResponseIdentifiers={}, "
                 + "itemParameters={}, renderingParameters={} serializationMethod={}",
-                new Object[] { assessmentItem.getIdentifier(), resourceBasePath, itemHref, isResponded,
+                new Object[] { item, itemSessionState, resourceBasePath, itemHref, isResponded,
                         responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                         itemParameters, renderingParameters, serializationMethod
                 });
@@ -139,29 +137,30 @@ public final class Renderer {
         
         /* Convert template, response and outcome values into parameters */
         XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
-        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToNodes(assessmentItem.getTemplateValues()));
-        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToNodes(assessmentItem.getResponseValues()));
+        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToElements(itemSessionState.getTemplateValues()));
+        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(itemSessionState.getResponseValues()));
         xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
-        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToNodes(assessmentItem.getOutcomeValues()));
+        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToElements(itemSessionState.getOutcomeValues()));
         
         /* Pass interaction choice orders as parameters */
-        List<Interaction> interactions = assessmentItem.getItemBody().search(Interaction.class);
-        xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(interactions));
+        xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
         
-        return doTransform(assessmentItem.toXmlString(), standaloneItemStylesheetUri, xsltParameters, serializationMethod);
+        return doTransform(item, standaloneItemStylesheetUri, xsltParameters, serializationMethod);
     }
     
     /**
+     * FIXME: This has not been completely refactored yet!
+     * 
      * This is possibly temporary. It renders an {@link AssessmentItem} as part
      * of an {@link AssessmentTest}
      */
-    public String renderTestItem(AssessmentTest assessmentTest, AssessmentItem assessmentItem,
-            String resourceBasePath, String itemHref, boolean isResponded,
+    public String renderTestItem(AssessmentTest test, AssessmentItem item,
+            ItemSessionState itemSessionState, String resourceBasePath, String itemHref, boolean isResponded,
             Map<String, Value> responses, Map<String, Object> testParameters,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
-        logger.info("renderTestItem(test={}, item={}, resourceBasePath={}, itemHref={}, isResponded={}, "
+        logger.debug("renderTestItem(test={}, item={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
                 + "responses={}, testParameters={}, itemParameters={}, renderingParameters={}, serializationMethod={}",
-                new Object[] { assessmentTest.getIdentifier(), assessmentItem.getIdentifier(),
+                new Object[] { test, item, itemSessionState,
                         resourceBasePath, itemHref, isResponded, responses,
                         testParameters, itemParameters, renderingParameters, serializationMethod
                 });
@@ -184,21 +183,20 @@ public final class Renderer {
         xsltParameters.put("isResponded", isResponded);
         
         /* Convert template, response, item outcome and test outcome values into parameters */
-        XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
-        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToNodes(assessmentItem.getTemplateValues()));
-        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToNodes(responses));
-        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToNodes(assessmentItem.getOutcomeValues()));
-        xsltParameters.put("testOutcomeValues", xsltParamBuilder.outcomeValuesToNodes(assessmentTest.getOutcomeValues()));
-        xsltParameters.put("testOutcomeDeclarations", xsltParamBuilder.outcomeDeclarationsToNodeList(assessmentTest.getOutcomeDeclarations()));
-        
-        /* Pass interaction choice orders as parameters (if really rendering an item which == having an itemBody here) */
-        ItemBody itemBody = assessmentItem.getItemBody();
-        if (itemBody!=null) {
-            List<Interaction> interactions = assessmentItem.getItemBody().search(Interaction.class);
-            xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(interactions));
-        }
+//        XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
+//        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToElements(itemSessionState.getTemplateValues()));
+//        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(responses));
+//        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToElements(itemSessionState.getOutcomeValues()));
+//        xsltParameters.put("testOutcomeValues", xsltParamBuilder.outcomeValuesToElements(testSessionState.getOutcomeValues()));
+//        xsltParameters.put("testOutcomeDeclarations", xsltParamBuilder.outcomeDeclarationsToElements(testSessionState.getOutcomeDeclarations()));
+//        
+//        /* Pass interaction choice orders as parameters (if really rendering an item which == having an itemBody here) */
+//        ItemBody itemBody = item.getItemBody();
+//        if (itemBody!=null) {
+//            xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
+//        }
 
-        return doTransform(assessmentItem.toXmlString(), testItemStylesheetUri, xsltParameters, serializationMethod);
+        return doTransform(item, testItemStylesheetUri, xsltParameters, serializationMethod);
     }
     
     /**
@@ -220,10 +218,11 @@ public final class Renderer {
         return value;
     }
     
-    private String doTransform(String xmlSourceString, String stylesheetUri, 
+    private String doTransform(AssessmentObject assessmentObject, URI stylesheetUri, 
             Map<String, Object> parameters, SerializationMethod serializationMethod) {
         /* Compile stylesheet (or reuse compiled stylesheet from cache) */
-        Transformer transformer = stylesheetManager.getStylesheet(stylesheetUri);
+        TransformerHandler transformerHandler = stylesheetManager.getCompiledStylesheetHandler(stylesheetUri);
+        Transformer transformer = transformerHandler.getTransformer();
         transformer.clearParameters();
         for (String name : parameters.keySet()) {
             transformer.setParameter(name, parameters.get(name));
@@ -249,23 +248,19 @@ public final class Renderer {
             resultWriter.append("<!DOCTYPE html>\n");
         }
         
-        /* Then set up source/result and apply stylesheet */
-        XMLReader xmlReader;
+        /* Set up Result */
+        StreamResult result = new StreamResult(resultWriter);
+        transformerHandler.setResult(result);
+        
+        /* Finally fire the QTI Object at the XSLT handler */
+        XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+        serializationOptions.setIndenting(true);
+        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(transformerHandler, new SaxFiringOptions());
         try {
-            xmlReader = XMLReaderFactory.createXMLReader();
+            saxEventFirer.fireSaxDocument(assessmentObject);
         }
         catch (SAXException e) {
-            throw new QtiRenderingException("Could not create XMLReaderFactory");
-        }
-        xmlReader.setEntityResolver(xmlResourceResolver);
-        
-        Source source = new SAXSource(xmlReader, new InputSource(new StringReader(xmlSourceString)));
-        StreamResult result = new StreamResult(resultWriter);
-        try {
-            transformer.transform(source, result);
-        }
-        catch (TransformerException e) {
-            throw new QtiRenderingException("XSLT Transformation using stylesheet " + stylesheetUri + " failed", e);
+            throw new QtiRenderingException("Unexpected Exception firing QTI Object SAX events at rendering stylesheet");
         }
         return resultWriter.toString();
     }

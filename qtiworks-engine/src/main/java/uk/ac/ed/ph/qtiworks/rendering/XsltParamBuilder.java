@@ -39,8 +39,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
@@ -217,24 +215,21 @@ public final class XsltParamBuilder {
         return result;
     }
     
-    public List<Node> choiceOrdersToElements(final ItemSessionState itemSessionState, final List<Interaction> interactions) {
+    public List<Node> choiceOrdersToElements(final ItemSessionState itemSessionState) {
         List<Node> result = new ArrayList<Node>();
         Document doc = documentBuilder.newDocument();
-        for (Interaction interaction : interactions) {
-            if (interaction instanceof Shuffleable) {
-                Shuffleable shuffleable = (Shuffleable) interaction;
-                if (shuffleable.getShuffle().booleanValue()) {
-                    List<Identifier> shuffledInteractionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
-                    Element container = doc.createElementNS(QTIWORKS_NAMESPACE, "shuffledChoiceOrder");
-                    container.setAttribute("responseIdentifier", interaction.getResponseIdentifier().toString());
-                    for (Identifier choiceIdentifier : shuffledInteractionChoiceOrder) {
-                        Element choice = doc.createElementNS(QTIWORKS_NAMESPACE, "choice");
-                        choice.setAttribute("identifier", choiceIdentifier.toString());
-                        container.appendChild(choice);
-                    }
-                    result.add(container);
-                }
+        
+        for (Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
+            Identifier responseIdentifier = entry.getKey();
+            List<Identifier> shuffledInteractionChoiceOrder = entry.getValue();
+            Element container = doc.createElementNS(QTIWORKS_NAMESPACE, "shuffledChoiceOrder");
+            container.setAttribute("responseIdentifier", responseIdentifier.toString());
+            for (Identifier choiceIdentifier : shuffledInteractionChoiceOrder) {
+                Element choice = doc.createElementNS(QTIWORKS_NAMESPACE, "choice");
+                choice.setAttribute("identifier", choiceIdentifier.toString());
+                container.appendChild(choice);
             }
+            result.add(container);           
         }
         return result;
     }

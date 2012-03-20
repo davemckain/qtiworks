@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -73,6 +74,11 @@ public final class ItemSessionState implements Serializable {
     private static final long serialVersionUID = -7586529679289092485L;
     
     private boolean isInitialized;
+    
+    /**
+     * Map of interaction choice orders, for all {@link Shuffleable} interactions.
+     * This is keyed on the interaction's responseIdentifier.
+     */
     private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
     private final Map<Identifier, Value> overriddenTemplateDefaultValues;
