@@ -1,0 +1,257 @@
+/* (This provides basic styling for the rendered content of items) */
+
+.mathassessengine div.badResponse,
+.mathassessengine span.badResponse {
+  color: red;
+  font-weight: bold;
+}
+
+.mathassessengine input.badResponse {
+  border: 1px solid red;
+}
+
+.mathassessengine div.controls {
+  margin: 0.5em 0;
+}
+
+.mathassessengine .validation,
+.mathassessengine .flash {
+  font-weight: bold;
+  color: red;
+  background-color: inherit;
+}
+
+.mathassessengine .box-title {
+  display:none;
+}
+
+/************************************************************/
+
+.mathassessengine .infoControl input {
+  margin-right: 0.5em;
+}
+
+.mathassessengine .infoControl .infoControlContent {
+  display: none;
+}
+
+/************************************************************/
+
+.mathassessengine .sliderInteraction {
+  margin: 1em;
+}
+
+.mathassessengine .sliderInteraction .sliderVertical {
+}
+
+.mathassessengine .sliderInteraction .sliderVertical .sliderValue {
+  margin: 1em 0;
+}
+
+.mathassessengine .sliderInteraction .sliderVertical .sliderWidget {
+  height: 200px;
+}
+
+.mathassessengine .sliderInteraction .sliderHorizontal .sliderValue {
+  text-align: center;
+}
+
+/************************************************************/
+
+.mathassessengine div.orderInteraction div.highlight {
+  border: 1px solid red;
+}
+
+.mathassessengine div.orderInteraction div.box {
+  background-color: #eeeeee;
+}
+
+.mathassessengine div.orderInteraction div.box span.info {
+  margin-left: 1em;
+  color: #666666;
+  font-style: italic;
+  font-size: smaller;
+}
+
+.mathassessengine div.orderInteraction div.box.horizontal {
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+.mathassessengine div.orderInteraction ul.horizontal {
+  float: left;
+  margin: 0 1em;
+  padding: 1em 0;
+  width: 100%;
+}
+
+.mathassessengine div.orderInteraction div.box.vertical {
+  margin: 1em 0;
+  width: 49%;
+}
+
+.mathassessengine div.orderInteraction div.box.vertical.source {
+  float: left;
+}
+
+.mathassessengine div.orderInteraction div.box.vertical.target {
+  float: right;
+}
+
+.mathassessengine div.orderInteraction ul.vertical {
+  margin: 0 1em;
+  padding: 1em 0;
+  width: auto;
+}
+
+.mathassessengine div.orderInteraction ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 60%;
+}
+
+.mathassessengine div.orderInteraction ul li {
+  margin: 0 3px 3px 3px;
+  padding: 0.4em;
+  padding-left: 1.5em;
+  font-size: 1em;
+}
+
+.mathassessengine div.orderInteraction ul li span {
+  position: absolute;
+  margin-left: -1.3em;
+}
+
+.mathassessengine div.orderInteraction ul.horizontal li {
+  float: left;
+  width: auto;
+}
+
+.mathassessengine div.orderInteraction br {
+  clear: both;
+}
+
+/************************************************************/
+
+.mathassessengine .hottext {
+  font-weight: bold;
+}
+
+.mathassessengine .gap {
+  font-weight: bold;
+  border: 1px dashed #000;
+}
+
+/************************************************************/
+
+/* MathEntryInteraction styling for MathAssess */
+.mathassessengine .mathEntryInteraction {
+  border: 1px solid #eeeeee;
+  background-color: #f7faf7;
+  -moz-border-radius: 0.4em;
+  padding: 1em;
+  margin: 0.5em 0;
+  min-height: 5em;
+  width: 40em;
+}
+
+.mathassessengine .mathEntryInteraction .inputPanel {
+  width: 45%;
+  float: left;
+  line-height: 1em;
+  margin: 2em 0;
+  text-align: left;
+}
+
+.mathassessengine .mathEntryInteraction .inputPanel a {
+  display: block;
+  float: left;
+  padding: 0;
+  margin: 2px 0;
+  height: 1em;
+  width: 18px;
+  background: url(../images/help.png) center no-repeat;
+}
+
+.mathassessengine .mathEntryInteraction .inputPanel a:hover {
+  cursor: help;
+  background-color: transparent !important;
+}
+
+.mathassessengine .mathEntryInteraction .inputPanel input {
+  margin: 0;
+  padding: 0;
+  x-height: 1em;
+  x-margin: 2em 0;
+  x-vertical-align: middle;
+}
+
+.mathassessengine .mathEntryInteraction .previewPanel {
+  margin-left: 40%;
+  width: 50%;
+  text-align: center;
+}
+
+.mathassessengine div.upConversionAJAXControlMessage {
+  width: auto;
+  text-align: center;
+  display: inline;
+  padding: 0.5em 0 0.5em 20px;
+}
+
+.mathassessengine div.waiting {
+  background: url(../images/spinner.gif) no-repeat center left;
+}
+
+.mathassessengine div.success {
+  background: url(../images/accept.png) no-repeat center left;
+}
+
+.mathassessengine div.failure {
+  background: url(../images/cancel.png) no-repeat center left;
+}
+
+.mathassessengine div.error {
+  background: url(../images/exclamation.png) no-repeat center left;
+}
+
+.mathassessengine div.upConversionAJAXControlError {
+}
+
+.mathassessengine div.upConversionAJAXControlPreview {
+  margin: 0.5em 0;
+  font-size: 110%;
+}
+
+/************************************************************/
+/* Help for Math Input */
+
+table.inputHelp {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 90%;
+}
+
+table.inputHelp th {
+  border: 1px solid #999999;
+  padding: 0.2em 0.5em;
+  background-color: #cad8e5;
+}
+
+table.inputHelp td {
+  color: #999999;
+  border: 1px solid #999999;
+  padding: 0.2em 0.5em;
+}
+
+table.inputHelp kbd {
+  color: black;
+  font-size: 100%;
+  line-height: 100%;
+}
+
+table.inputHelp .longComma {
+  margin-right: 0.5em;
+}
+

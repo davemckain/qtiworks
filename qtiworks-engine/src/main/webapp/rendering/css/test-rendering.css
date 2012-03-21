@@ -1,0 +1,78 @@
+/* (This provides full rendering of tests) */
+
+.mathassessengine.test {
+    font-family: verdana, sans-serif;
+    font-size: small;
+    text-align: center;
+    width:100%;
+    padding:0px;
+    margin:0px;
+}
+
+.mathassessengine.test #body-container {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.mathassessengine.test .outer-box {
+    border: thin solid #A9A9A9;
+    text-align: left;
+}
+.mathassessengine.test .box-title {
+    display:inline;
+    font-size: xx-small;
+    color: #A9A9A9;
+    padding:10px;
+    background-color:inherit
+}
+.mathassessengine.test .inner-box {
+    border: thin dashed #A9A9A9;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 5px
+}
+.mathassessengine.test .feedback_assessmentTest {
+}
+.mathassessengine.test .feedback_mathassessengine.testPart {
+    font-style: italic;
+}
+.mathassessengine.test .feedback_title {
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+.mathassessengine.test .validation,
+.mathassessengine.test .flash {
+    font-weight: bold;
+    color: red;
+    background-color:inherit;
+}
+
+.mathassessengine.test img, .mathassessengine.test applet {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: none;
+}
+
+.mathassessengine.test h1 {
+    font-size: large;
+}
+
+.mathassessengine.test h2 {
+    display: block;
+    color: white;
+    font-size: medium;
+    background-color: #535C75;
+}
+.mathassessengine.test #controls {
+    height: 50px;
+    float: right;
+}
+.mathassessengine.test .spacer {
+    height: 5px;
+    clear:both;
+}

@@ -44,11 +44,9 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:param name="allowCandidateComment" select="false()" as="xs:boolean"/>
   <xsl:param name="view" select="false()" as="xs:boolean"/> <!-- view mode (unset shows everthing) -->
   <xsl:param name="flash" as="xs:string?"/>
-  <xsl:param name="validation" select="()" as="xs:string?"/> <!-- validation report, if required -->
 
   <xsl:param name="displayTitle" select="true()" as="xs:boolean"/>
   <xsl:param name="displayControls" select="true()" as="xs:boolean"/>
-  <xsl:param name="embedded" select="false()" as="xs:boolean"/>
   <xsl:param name="exitButton" select="true()" as="xs:boolean"/>
   <xsl:param name="reportButton" select="true()" as="xs:boolean"/>
 
@@ -109,37 +107,15 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         <link rel="stylesheet" href="{$engineBasePath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
 
         <!-- Stylesheet(s) for this item -->
-        <link rel="stylesheet" href="{$engineBasePath}/css/item.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$engineBasePath}/css/item-rendering.css" type="text/css" media="screen"/>
         <xsl:apply-templates select="qti:stylesheet"/>
 
         <!-- Test styling -->
-        <link rel="stylesheet" href="{$engineBasePath}/css/test.css" type="text/css" media="screen"/>
-
-        <!-- MathAssessEngine template styling -->
-        <xsl:if test="not($embedded)">
-          <link rel="stylesheet" href="{$engineBasePath}/css/item-layout.css" type="text/css" media="screen"/>
-        </xsl:if>
+        <link rel="stylesheet" href="{$engineBasePath}/css/test-rendering.css" type="text/css" media="screen"/>
       </head>
-      <body class="mathassessengine qtiengine">
-        <xsl:if test="not($embedded)">
-          <div class="logo">
-            <img src="{$engineBasePath}/images/mathassessengine.png" alt="MathAssessEngine"/>
-          </div>
-          <div class="nav">
-            <span class="menuButton"><a class="home" href="{$engineBasePath}">Home</a></span>
-            <span class="menuButton"><a class="list" href="{$engineBasePath}/article/list">Item &amp; Test list</a></span>
-            <span class="menuButton"><a class="reset" href="{$engineBasePath}/article/reset/{$articleId}{if ($queryString) then concat('?', $queryString) else ''}">Reset and replay</a></span>
-            <span class="menuButton"><a class="source" href="{$engineBasePath}/article/source/{$articleId}">View source XML</a></span>
-          </div>
-        </xsl:if>
-        <div class="renderingBody">
-          <div class="qtiengine mathassessengine test">
-            <xsl:if test="exists($validation)">
-              <pre class="validation">
-                <xsl:value-of select="$validation"/>
-              </pre>
-            </xsl:if>
-
+      <body>
+        <div class="qtiworksRendering">
+          <div class="assessmentTest">
             <!-- TODO: Not sure this is the optimal place for this now? -->
             <xsl:if test="$displayTitle">
               <h1 title="{$itemHref}">
@@ -229,7 +205,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
           </div>
         </div>
         <!-- Optional debugging information -->
-        <xsl:if test="not($embedded) and $showInternalState">
+        <xsl:if test="$showInternalState">
           <div id="debug_panel">
             <xsl:call-template name="internalState"/>
           </div>
