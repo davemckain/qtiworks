@@ -3,14 +3,14 @@
 <xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="qti jqti">
+  exclude-result-prefixes="qti qw">
 
   <xsl:template match="qti:choiceInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
-      <xsl:if test="jqti:is-invalid-response(@responseIdentifier)">
+      <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
         <div class="badResponse">
           You must select
           <xsl:if test="@minChoices &gt; 0">
@@ -41,7 +41,7 @@
             </td>
           </tr>
         </xsl:if>
-        <xsl:apply-templates select="jqti:get-visible-ordered-choices(., qti:simpleChoice)"/>
+        <xsl:apply-templates select="qw:get-visible-ordered-choices(., qti:simpleChoice)"/>
       </table>
     </div>
   </xsl:template>
@@ -54,8 +54,8 @@
         </td>
       </xsl:if>
       <td class="control">
-        <input name="jqtiresponse_{../@responseIdentifier}" value="{@identifier}" type="{if (../@maxChoices=1) then 'radio' else 'checkbox'}">
-          <xsl:if test="jqti:value-contains(jqti:get-response-value(../@responseIdentifier), @identifier)">
+        <input name="qwresponse_{../@responseIdentifier}" value="{@identifier}" type="{if (../@maxChoices=1) then 'radio' else 'checkbox'}">
+          <xsl:if test="qw:value-contains(qw:get-response-value(../@responseIdentifier), @identifier)">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>
         </input>

@@ -8,11 +8,11 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns:m="http://www.w3.org/1998/Math/MathML"
   xmlns="http://www.w3.org/1999/xhtml"
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="xs qti jqti m">
+  exclude-result-prefixes="xs qti qw m">
 
   <xsl:import href="qti-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
@@ -31,7 +31,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <!-- (These are set in qti.controller.TestCoordinator) -->
   <xsl:param name="questionId" select="'1'" as="xs:string"/>
   <xsl:param name="sectionTitles" as="xs:string*"/> <!-- sequence of section titles -->
-  <xsl:param name="rubric" as="element(jqti:section)*"/> <!-- sequence of grouped rubric blocks -->
+  <xsl:param name="rubric" as="element(qw:section)*"/> <!-- sequence of grouped rubric blocks -->
   <xsl:param name="assessmentFeedback" as="element(qti:testFeedback)*"/> <!-- feedback as qti dom trees -->
   <xsl:param name="testPartFeedback" as="element(qti:testFeedback)*"/> <!-- feedback as qti dom trees -->
 
@@ -76,7 +76,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
       <head>
         <title><xsl:value-of select="concat($title, ' :: ', @title)"/></title>
 
-        <script src="{$engineBasePath}/rendering/javascript/JQTIItemRendering.js" type="text/javascript"/>
+        <script src="{$engineBasePath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions and time limits -->
         <script src="{$engineBasePath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
         <script src="{$engineBasePath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
@@ -243,8 +243,8 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post"
-        onsubmit="return JQTIItemRendering.submit()" enctype="multipart/form-data"
-        onreset="JQTIItemRendering.reset()" autocomplete="off">
+        onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
+        onreset="QtiWorks.reset()" autocomplete="off">
         <div class="outer-box">
           <input type="hidden" name="questionId" value="{$questionId}"/>
           <span class="box-title">Question</span>

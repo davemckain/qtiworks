@@ -52,7 +52,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * FIXME: Document this type
+ * Helper to build DOM Documents containing a mixture of JQTI elements and
+ * custom stuff.
  *
  * @author David McKain
  */
@@ -88,7 +89,7 @@ public class XsltParamDocumentBuilder {
             attrNamespacePrefixMappings.registerSchemaInstanceMapping();
 
             /* Register namespace for parameter XML */
-            attrNamespacePrefixMappings.register(XsltParamBuilder.QTIWORKS_NAMESPACE, "qw");
+            attrNamespacePrefixMappings.register(XsltParamBuilder.QTIWORKS_NAMESPACE, XsltParamBuilder.QTIWORKS_NAMESPACE_PREFIX);
             
             /* Next let each extension package that has been used have a shot */
             XmlNode[] qtiNodes = saxFirerCallback.getQtiNodes();

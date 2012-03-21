@@ -7,9 +7,9 @@
   exclude-result-prefixes="qti">
 
   <xsl:template match="qti:endAttemptInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
-      <input type="submit" name="jqtiresponse_{@responseIdentifier}" value="{@title}"/>
+      <input type="submit" name="qwresponse_{@responseIdentifier}" value="{@title}"/>
     </span>
   </xsl:template>
 

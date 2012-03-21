@@ -4,13 +4,13 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="xs qti jqti">
+  exclude-result-prefixes="xs qti qw">
 
   <xsl:template match="qti:positionObjectStage">
     <xsl:for-each select="qti:positionObjectInteraction">
-      <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+      <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     </xsl:for-each>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
@@ -20,8 +20,8 @@
       </xsl:if>
       <!-- TODO: This probably looks awful! -->
       <xsl:for-each select="qti:positionObjectInteraction">
-        <xsl:if test="jqti:is-invalid-response(@responseIdentifier)">
-          <xsl:call-template name="jqti:generic-bad-response-message"/>
+        <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
+          <xsl:call-template name="qw:generic-bad-response-message"/>
         </xsl:if>
       </xsl:for-each>
 
@@ -32,8 +32,8 @@
           <param name="code" value="rhotspotV2"/>
           <param name="codebase" value="{$appletCodebase}"/>
           <param name="NoOfMainImages" value="1"/>
-          <param name="background_image" value="{jqti:convert-link($object/@data)}"/>
-          <param name="Mainimageno1" value="{jqti:convert-link($object/@data)}::0::0::{$object/@width}::{$object/@height}"/>
+          <param name="background_image" value="{qw:convert-link($object/@data)}"/>
+          <param name="Mainimageno1" value="{qw:convert-link($object/@data)}::0::0::{$object/@width}::{$object/@height}"/>
           <param name="baseType" value="point"/>
           <param name="noOfTargets" value="0"/>
           <param name="identifiedTargets" value="FALSE"/>
@@ -44,16 +44,16 @@
             <param name="maxChoices:{@responseIdentifier}" value="{@maxChoices}"/>
             <xsl:for-each select="1 to @maxChoices">
               <param name="labelNo{.}:{$interaction/@responseIdentifier}"
-                value="::{$interaction/qti:object/@type}::{jqti:convert-link($interaction/qti:object/@data)}::{$interaction/qti:object/@width}::{$interaction/qti:object/@height}::{$interaction/@maxChoices}"/>
+                value="::{$interaction/qti:object/@type}::{qw:convert-link($interaction/qti:object/@data)}::{$interaction/qti:object/@width}::{$interaction/qti:object/@height}::{$interaction/@maxChoices}"/>
             </xsl:for-each>
 
-            <xsl:variable name="responseValue" select="jqti:get-response-value(@responseIdentifier)" as="element(jqti:response)?"/>
+            <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
             <param name="feedbackState:{@responseIdentifier}">
               <xsl:attribute name="value">
                 <xsl:choose>
-                  <xsl:when test="jqti:is-not-null-value($responseValue)">
+                  <xsl:when test="qw:is-not-null-value($responseValue)">
                     <xsl:text>Yes:</xsl:text>
-                    <xsl:value-of select="$responseValue/jqti:value" separator=":"/>
+                    <xsl:value-of select="$responseValue/qw:value" separator=":"/>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:text>No</xsl:text>
@@ -70,9 +70,9 @@
         </object>
         <script type="text/javascript">
           $(document).ready(function() {
-            JQTIItemRendering.registerAppletBasedInteractionContainer('<xsl:value-of
+            QtiWorks.registerAppletBasedInteractionContainer('<xsl:value-of
               select="$appletContainerId"/>', [<xsl:value-of
-              select="jqti:to-javascript-arguments(for $i in qti:positionObjectInteraction return $i/@responseIdentifier)"/>]);
+              select="qw:to-javascript-arguments(for $i in qti:positionObjectInteraction return $i/@responseIdentifier)"/>]);
           });
         </script>
       </div>

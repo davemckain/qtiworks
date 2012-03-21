@@ -4,18 +4,18 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="qti jqti xs">
+  exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:matchInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
-    <xsl:variable name="orderedSet1" select="jqti:get-visible-ordered-choices(., qti:simpleMatchSet[1]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
-    <xsl:variable name="orderedSet2" select="jqti:get-visible-ordered-choices(., qti:simpleMatchSet[2]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <xsl:variable name="orderedSet1" select="qw:get-visible-ordered-choices(., qti:simpleMatchSet[1]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
+    <xsl:variable name="orderedSet2" select="qw:get-visible-ordered-choices(., qti:simpleMatchSet[2]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
     <div class="{local-name()}">
       <xsl:variable name="responseIdentifier" select="@responseIdentifier" as="xs:string"/>
-      <xsl:if test="jqti:is-invalid-response(@responseIdentifier)">
-        <xsl:call-template name="jqti:generic-bad-response-message"/>
+      <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
+        <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
 
       <table>
@@ -38,8 +38,8 @@
             <xsl:for-each select="$orderedSet1">
               <td align="center">
                 <xsl:variable name="responseValue" select="concat(@identifier, ' ', $choiceIdentifier)" as="xs:string"/>
-                <input type="checkbox" name="jqtiresponse_{$responseIdentifier}" value="{$responseValue}">
-                  <xsl:if test="jqti:value-contains(jqti:get-response-value($responseIdentifier), $responseValue)">
+                <input type="checkbox" name="qwresponse_{$responseIdentifier}" value="{$responseValue}">
+                  <xsl:if test="qw:value-contains(qw:get-response-value($responseIdentifier), $responseValue)">
                     <xsl:attribute name="checked" select="'checked'"/>
                   </xsl:if>
                 </input>
@@ -49,7 +49,7 @@
         </xsl:for-each>
       </table>
       <script type='text/javascript'>
-        JQTIItemRendering.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
+        QtiWorks.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
           <xsl:value-of select="@maxAssociations"/>,
           {<xsl:for-each select="$orderedSet1">
             <xsl:if test="position() > 1">,</xsl:if>

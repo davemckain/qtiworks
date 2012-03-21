@@ -13,9 +13,9 @@ hence slightly easier to debug.
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:m="http://www.w3.org/1998/Math/MathML"
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="xs xhtml m jqti">
+  exclude-result-prefixes="xs xhtml m qw">
 
   <xsl:param name="serializationMethod" as="xs:string"/>
   <xsl:param name="contentType" as="xs:string"/>
@@ -121,7 +121,7 @@ hence slightly easier to debug.
     </xsl:copy>
   </xsl:template>
 
-  <xsl:function name="jqti:is-xhtml-block-element" as="xs:boolean">
+  <xsl:function name="qw:is-xhtml-block-element" as="xs:boolean">
     <xsl:param name="element" as="node()?"/>
     <xsl:sequence select="boolean($element[self::xhtml:* and local-name()=('p','table','div','tbody','tr','td','form','ul','li')])"/>
   </xsl:function>
@@ -133,7 +133,7 @@ hence slightly easier to debug.
   <xsl:template match="text()" mode="serialize">
     <xsl:variable name="trimmed" as="xs:string">
       <xsl:choose>
-        <xsl:when test="normalize-space(.)='' and (jqti:is-xhtml-block-element(following-sibling::node()[1]) or jqti:is-xhtml-block-element(preceding-sibling::node()[1]))">
+        <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">
           <!-- Whitespace Nodes before/after block elements are ignorable -->
           <xsl:sequence select="''"/>
         </xsl:when>

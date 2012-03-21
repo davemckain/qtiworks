@@ -4,20 +4,20 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="qti jqti xs">
+  exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:graphicGapMatchInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
           <xsl:apply-templates select="qti:prompt"/>
         </div>
       </xsl:if>
-      <xsl:if test="jqti:is-invalid-response(@responseIdentifier)">
-        <xsl:call-template name="jqti:generic-bad-response-message"/>
+      <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
+        <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
 
       <xsl:variable name="object" select="qti:object" as="element(qti:object)"/>
@@ -30,33 +30,33 @@
           <param name="baseType" value="directedPair"/>
           <param name="operation_mode" value="gap_match_interaction"/>
           <param name="number_of_responses" value="{count(qti:associableHotspot)}"/>
-          <param name="background_image" value="{jqti:convert-link($object/@data)}"/>
-          <xsl:variable name="hotspots" select="jqti:filter-visible(qti:associableHotspot)" as="element(qti:associableHotspot)*"/>
+          <param name="background_image" value="{qw:convert-link($object/@data)}"/>
+          <xsl:variable name="hotspots" select="qw:filter-visible(qti:associableHotspot)" as="element(qti:associableHotspot)*"/>
           <param name="hotspot_count" value="{count($hotspots)}"/>
           <xsl:for-each select="$hotspots">
             <param name="hotspot{position()-1}">
               <xsl:attribute name="value"><xsl:value-of select="@identifier"/>::::<xsl:value-of select="@shape"/>::<xsl:value-of select="@coords"/><xsl:if test="@label">::hotSpotLabel:<xsl:value-of select="@label"/></xsl:if><xsl:if test="@matchGroup">::<xsl:value-of select="translate(normalize-space(@matchGroup), ' ', '::')"/></xsl:if><xsl:if test="@matchMax">::maxAssociations:<xsl:value-of select="@matchMax"/></xsl:if></xsl:attribute>
             </param>
           </xsl:for-each>
-          <xsl:variable name="gapImgs" select="jqti:filter-visible(qti:gapImg)" as="element(qti:gapImg)*"/>
+          <xsl:variable name="gapImgs" select="qw:filter-visible(qti:gapImg)" as="element(qti:gapImg)*"/>
           <param name="movable_element_count" value="{$gapImgs}"/>
           <xsl:for-each select="$gapImgs">
             <param name="movable_object{position()-1}">
-              <xsl:attribute name="value"><xsl:value-of select="@identifier"/>::<xsl:value-of select="jqti:convert-link(qti:object/@data)"/>::<xsl:if test="@label">::hotSpotLabel:<xsl:value-of select="@label"/></xsl:if><xsl:if test="@matchGroup">::<xsl:value-of select="translate(normalize-space(@matchGroup), ' ', '::')"/></xsl:if><xsl:if test="@matchMax">::maxAssociations:<xsl:value-of select="@matchMax"/></xsl:if></xsl:attribute>
+              <xsl:attribute name="value"><xsl:value-of select="@identifier"/>::<xsl:value-of select="qw:convert-link(qti:object/@data)"/>::<xsl:if test="@label">::hotSpotLabel:<xsl:value-of select="@label"/></xsl:if><xsl:if test="@matchGroup">::<xsl:value-of select="translate(normalize-space(@matchGroup), ' ', '::')"/></xsl:if><xsl:if test="@matchMax">::maxAssociations:<xsl:value-of select="@matchMax"/></xsl:if></xsl:attribute>
             </param>
           </xsl:for-each>
-          <xsl:variable name="responseValue" select="jqti:get-response-value(@responseIdentifier)" as="element(jqti:response)?"/>
-          <xsl:if test="jqti:is-not-null-value($responseValue)">
+          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+          <xsl:if test="qw:is-not-null-value($responseValue)">
             <param name="feedback">
               <xsl:attribute name="value">
-                <xsl:value-of select="$responseValue/jqti:value" separator=","/>
+                <xsl:value-of select="$responseValue/qw:value" separator=","/>
               </xsl:attribute>
             </param>
           </xsl:if>
         </object>
         <script type="text/javascript">
           $(document).ready(function() {
-            JQTIItemRendering.registerAppletBasedInteractionContainer('<xsl:value-of
+            QtiWorks.registerAppletBasedInteractionContainer('<xsl:value-of
               select="$appletContainerId"/>', ['<xsl:value-of select="@responseIdentifier"/>']);
           });
         </script>

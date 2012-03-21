@@ -8,17 +8,17 @@ DM: I don't have anything to test this out with!
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="qti jqti xs">
+  exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:extendedTextInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
-      <xsl:variable name="responseDeclaration" select="jqti:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
-      <xsl:variable name="responseValue" select="jqti:get-response-value(@responseIdentifier)" as="element(jqti:response)?"/>
-      <xsl:variable name="responseInput" select="jqti:get-response-input(@responseIdentifier)" as="element(jqti:responseInput)?"/>
-      <xsl:variable name="rawInput" select="jqti:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
+      <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
+      <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+      <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
+      <xsl:variable name="rawInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
 
       <!-- Create JavaScript to check each field -->
       <xsl:variable name="checks" as="xs:string*">
@@ -31,8 +31,8 @@ DM: I don't have anything to test this out with!
         </xsl:if>
       </xsl:variable>
       <xsl:variable name="checkJavaScript" select="if (exists($checks))
-        then concat('JQTIItemRendering.validateInput(this, ',
-          jqti:to-javascript-arguments($checks), ')')
+        then concat('QtiWorks.validateInput(this, ',
+          qw:to-javascript-arguments($checks), ')')
         else ()" as="xs:string?"/>
 
       <xsl:if test="qti:prompt">
@@ -40,7 +40,7 @@ DM: I don't have anything to test this out with!
           <xsl:apply-templates select="qti:prompt"/>
         </div>
       </xsl:if>
-      <xsl:if test="jqti:is-invalid-response(@responseIdentifier)">
+      <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
         <div class="badResponse">
           <!-- This will happen if either a pattern is wrong or the wrong number of choices
           were made -->
@@ -82,7 +82,7 @@ DM: I don't have anything to test this out with!
                   <xsl:call-template name="multibox">
                     <xsl:with-param name="checkJavaScript" select="$checkJavaScript"/>
                     <xsl:with-param name="responseInput" select="$responseInput"/>
-                    <xsl:with-param name="stringsCount" select="if (exists($responseValue)) then max((xs:integer(@minStrings), jqti:get-cardinality-size($responseValue))) else xs:integer(@minStrings)"/>
+                    <xsl:with-param name="stringsCount" select="if (exists($responseValue)) then max((xs:integer(@minStrings), qw:get-cardinality-size($responseValue))) else xs:integer(@minStrings)"/>
                     <xsl:with-param name="allowCreate" select="true()"/>
                   </xsl:call-template>
                 </xsl:when>
@@ -90,7 +90,7 @@ DM: I don't have anything to test this out with!
                   <xsl:call-template name="multibox">
                     <xsl:with-param name="responseInput" select="$responseInput"/>
                     <xsl:with-param name="checkJavaScript" select="$checkJavaScript"/>
-                    <xsl:with-param name="stringsCount" select="if (exists($responseValue)) then jqti:get-cardinality-size($responseValue) else 1"/>
+                    <xsl:with-param name="stringsCount" select="if (exists($responseValue)) then qw:get-cardinality-size($responseValue) else 1"/>
                     <xsl:with-param name="allowCreate" select="true()"/>
                   </xsl:call-template>
                 </xsl:otherwise>
@@ -103,10 +103,10 @@ DM: I don't have anything to test this out with!
   </xsl:template>
 
   <xsl:template name="singlebox">
-    <xsl:param name="responseInput" as="element(jqti:responseInput)?"/>
+    <xsl:param name="responseInput" as="element(qw:responseInput)?"/>
     <xsl:param name="checkJavaScript" as="xs:string?"/>
-    <xsl:variable name="responseInputString" select="jqti:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
-    <textarea cols="40" rows="6" name="jqtiresponse_{@responseIdentifier}">
+    <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
+    <textarea cols="40" rows="6" name="qwresponse_{@responseIdentifier}">
       <xsl:if test="@expectedLines">
         <xsl:attribute name="rows" select="@expectedLines"/>
       </xsl:if>
@@ -121,15 +121,15 @@ DM: I don't have anything to test this out with!
   </xsl:template>
 
   <xsl:template name="multibox">
-    <xsl:param name="responseInput" as="element(jqti:responseInput)?"/>
+    <xsl:param name="responseInput" as="element(qw:responseInput)?"/>
     <xsl:param name="checkJavaScript" as="xs:string?"/>
     <xsl:param name="stringsCount" as="xs:integer"/>
     <xsl:param name="allowCreate" select="false()" as="xs:boolean"/>
     <xsl:variable name="interaction" select="." as="element(qti:extendedTextInteraction)"/>
     <xsl:for-each select="1 to $stringsCount">
       <xsl:variable name="i" select="." as="xs:integer"/>
-      <xsl:variable name="responseInputString" select="$responseInput/jqti:value[position()=$i]" as="xs:string?"/>
-      <input type="text" name="jqtiresponse_{$interaction/@responseIdentifier}">
+      <xsl:variable name="responseInputString" select="$responseInput/qw:value[position()=$i]" as="xs:string?"/>
+      <input type="text" name="qwresponse_{$interaction/@responseIdentifier}">
         <xsl:if test="$interaction/@expectedLength">
           <xsl:attribute name="size" select="$interaction/@expectedLength"/>
         </xsl:if>
@@ -140,7 +140,7 @@ DM: I don't have anything to test this out with!
           <xsl:attribute name="onchange" select="$checkJavaScript"/>
         </xsl:if>
         <xsl:if test="$allowCreate and $i=$stringsCount">
-          <xsl:attribute name="onkeyup" select="'JQTIItemRendering.addNewTextBox(this)'"/>
+          <xsl:attribute name="onkeyup" select="'QtiWorks.addNewTextBox(this)'"/>
         </xsl:if>
       </input>
       <br/>

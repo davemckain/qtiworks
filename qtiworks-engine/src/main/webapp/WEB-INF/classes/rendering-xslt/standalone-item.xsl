@@ -9,10 +9,10 @@ Renders a standalone assessmentItem
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
   xmlns:m="http://www.w3.org/1998/Math/MathML"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="xs qti jqti m">
+  exclude-result-prefixes="xs qti qw m">
 
   <xsl:import href="qti-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
@@ -52,7 +52,7 @@ Renders a standalone assessmentItem
       <head>
         <title><xsl:value-of select="@title"/></title>
 
-        <script src="{$engineBasePath}/rendering/javascript/JQTIItemRendering.js" type="text/javascript"/>
+        <script src="{$engineBasePath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions, as well as the debugging panel. -->
         <script src="{$engineBasePath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
         <script src="{$engineBasePath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
@@ -150,8 +150,8 @@ Renders a standalone assessmentItem
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post"
-        onsubmit="return JQTIItemRendering.submit()" enctype="multipart/form-data"
-        onreset="JQTIItemRendering.reset()" autocomplete="off">
+        onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
+        onreset="QtiWorks.reset()" autocomplete="off">
         <xsl:apply-templates/>
         <xsl:if test="$displayControls">
           <div class="controls">

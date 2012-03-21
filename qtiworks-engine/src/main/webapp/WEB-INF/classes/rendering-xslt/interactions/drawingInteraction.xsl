@@ -7,7 +7,7 @@
   exclude-result-prefixes="qti">
 
   <xsl:template match="qti:drawingInteraction">
-    <input name="jqtipresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <div class="flash">
         Rendering of the QTI <tt>drawingInteraction</tt> isn't currently supported!

@@ -7,7 +7,7 @@
  *
  * Author: David McKain
  *
- * $Id: JQTIItemRendering.js 2707 2011-05-17 11:14:08Z davemckain $
+ * $Id: QtiWorks.js 2707 2011-05-17 11:14:08Z davemckain $
  *
  * Copyright (c) 2010-2011, The University of Edinburgh
  * All Rights Reserved
@@ -15,7 +15,7 @@
 
 /************************************************************/
 
-var JQTIItemRendering = (function() {
+var QtiWorks = (function() {
 
     var submitCallbacks = [];
     var resetCallbacks = [];

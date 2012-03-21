@@ -8,10 +8,10 @@ Rendering utility templates
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:jqti="http://jqti.qtitools.org"
+  xmlns:qw="http://www.ph.ed.ac.uk/qtiworks"
   xmlns="http://www.w3.org/1999/xhtml"
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="xs qti jqti">
+  exclude-result-prefixes="xs qti qw">
 
   <!-- Extra Debugging Params -->
   <xsl:param name="showInternalState" select="false()" as="xs:boolean"/>
@@ -20,21 +20,21 @@ Rendering utility templates
 
   <!-- ************************************************************ -->
 
-  <xsl:function name="jqti:escape-for-javascript-string" as="xs:string">
+  <xsl:function name="qw:escape-for-javascript-string" as="xs:string">
     <xsl:param name="input" as="xs:string"/>
     <xsl:sequence select="replace(replace($input, '[&#x0d;&#x0a;]', ''), '($apos)', '\\$1')"/>
   </xsl:function>
 
-  <xsl:function name="jqti:to-javascript-string" as="xs:string">
+  <xsl:function name="qw:to-javascript-string" as="xs:string">
     <xsl:param name="input" as="xs:string"/>
     <xsl:sequence select="concat($apos,
       replace(replace($input, '[&#x0d;&#x0a;]', ''), '($apos)', '\\$1'),
       $apos)"/>
   </xsl:function>
 
-  <xsl:function name="jqti:to-javascript-arguments" as="xs:string">
+  <xsl:function name="qw:to-javascript-arguments" as="xs:string">
     <xsl:param name="inputs" as="xs:string*"/>
-    <xsl:sequence select="string-join(for $string in $inputs return jqti:to-javascript-string($string), ', ')"/>
+    <xsl:sequence select="string-join(for $string in $inputs return qw:to-javascript-string($string), ', ')"/>
   </xsl:function>
 
   <!-- ************************************************************ -->
@@ -91,10 +91,10 @@ Rendering utility templates
         <xsl:when test="not(*)">
           <xsl:text>NULL</xsl:text>
         </xsl:when>
-        <xsl:when test="jqti:is-maths-content-value($valueHolder)">
+        <xsl:when test="qw:is-maths-content-value($valueHolder)">
           <!-- We'll handle MathsContent variables specially to help question authors -->
           <span class="type">MathsContent :: </span>
-          <xsl:copy-of select="jqti:extract-maths-content-pmathml($valueHolder)"/>
+          <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
 
           <!-- Make the raw record fields available via a toggle -->
           <xsl:text> </xsl:text>
@@ -102,7 +102,7 @@ Rendering utility templates
             href="javascript:void(0)">Toggle Details</a>
           <div id="qtiid_debug_maths_content_{@identifier}" class="debug_maths_content">
             <xsl:call-template name="dump-values">
-              <xsl:with-param name="valueHolders" select="$valueHolder/jqti:value"/>
+              <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
             </xsl:call-template>
           </div>
           <script type="text/javascript">
@@ -120,7 +120,7 @@ Rendering utility templates
           </span>
           <xsl:choose>
             <xsl:when test="@cardinality='single'">
-              <xsl:variable name="text" select="$valueHolder/jqti:value" as="xs:string"/>
+              <xsl:variable name="text" select="$valueHolder/qw:value" as="xs:string"/>
               <xsl:choose>
                 <xsl:when test="contains($text, '&#x0a;')">
                   <pre><xsl:value-of select="$text"/></pre>
@@ -132,18 +132,18 @@ Rendering utility templates
             </xsl:when>
             <xsl:when test="@cardinality='multiple'">
               <xsl:text>{</xsl:text>
-              <xsl:value-of select="$valueHolder/jqti:value" separator=", "/>
+              <xsl:value-of select="$valueHolder/qw:value" separator=", "/>
               <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:when test="@cardinality='ordered'">
               <xsl:text>[</xsl:text>
-              <xsl:value-of select="$valueHolder/jqti:value" separator=", "/>
+              <xsl:value-of select="$valueHolder/qw:value" separator=", "/>
               <xsl:text>]</xsl:text>
             </xsl:when>
             <xsl:when test="@cardinality='record'">
               <xsl:text>(</xsl:text>
               <xsl:call-template name="dump-values">
-                <xsl:with-param name="valueHolders" select="$valueHolder/jqti:value"/>
+                <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
               </xsl:call-template>
               <xsl:text>)</xsl:text>
             </xsl:when>
