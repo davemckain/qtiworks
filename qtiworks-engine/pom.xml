@@ -95,19 +95,19 @@ All Rights Reserved
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>${xerces.version}</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon9</artifactId>
       <version>${saxon9.version}</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon9-dom</artifactId>
       <version>${saxon9.version}</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>

@@ -191,11 +191,11 @@ public final class ItemSessionController {
 
     private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
             throws RuntimeValidationException {
-        logger.info("Template Processing attempt #{} starting", attemptNumber);
+        logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
         /* Initialise template defaults with any externally provided defaults */
         if (templateDefaults != null) {
-            logger.debug("Setting template default values");
+            logger.trace("Setting template default values");
             for (final TemplateDefault templateDefault : templateDefaults) {
                 final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
                 if (declaration != null) {
@@ -211,14 +211,14 @@ public final class ItemSessionController {
         }
 
         if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
-            logger.warn("Exceeded maxmimum number of template processing retries - leaving variables at default values");
+            logger.debug("Exceeded maxmimum number of template processing retries - leaving variables at default values");
             return true;
         }
 
         /* Perform templateProcessing. */
         final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         if (templateProcessing != null) {
-            logger.debug("Evaluating template processing rules");
+            logger.trace("Evaluating template processing rules");
             try {
                 for (final TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
                     templateProcessingRule.evaluate(context);
@@ -228,12 +228,12 @@ public final class ItemSessionController {
                 switch (e.getInterruptType()) {
                     case EXIT_TEMPLATE:
                         /* Exit template processing */
-                        logger.info("Template processing interrupted by exitTemplate");
+                        logger.trace("Template processing interrupted by exitTemplate");
                         return true;
 
                     case TEMPLATE_CONSTRAINT_FAILURE:
                         /* Failed templateCondition, so try again. */
-                        logger.info("Template processing interrupted by failed templateConstraint");
+                        logger.trace("Template processing interrupted by failed templateConstraint");
                         return false;
 
                     default:

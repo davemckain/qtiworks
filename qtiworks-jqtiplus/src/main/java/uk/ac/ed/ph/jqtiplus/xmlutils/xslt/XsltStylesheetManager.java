@@ -166,7 +166,7 @@ public final class XsltStylesheetManager {
             return transformerFactory.newTemplates(resolved);
         }
         catch (TransformerConfigurationException e) {
-            throw new QtiSerializationException("Could not compile internal stylesheet at " + xsltUri, e);
+            throw new QtiSerializationException("Could not compile stylesheet at " + xsltUri, e);
         }
     }
     

@@ -77,24 +77,15 @@ public final class Renderer {
     
     private static final Logger logger = LoggerFactory.getLogger(Renderer.class);
     
-    private final XsltStylesheetManager stylesheetManager;
-    private final String engineBasePath;
-    private final String appletCodebase;
-    private final URI standaloneItemStylesheetUri;
-    private final URI testItemStylesheetUri;
-    private final String mathJaxUrl;
-    private final String mathJaxConfig;
+    private static final URI standaloneItemXsltUri = URI.create("classpath:/rendering-xslt/standalone-item.xsl");
+    private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     
-    public Renderer(String engineBasePath, String appletCodebase, URI standaloneItemStylesheetUri, URI testItemStylesheetUri,
-            XsltStylesheetCache stylesheetCache,
-            String mathJaxUrl, String mathJaxConfig) {
-        this.engineBasePath = engineBasePath;
-        this.appletCodebase = appletCodebase;
-        this.standaloneItemStylesheetUri = standaloneItemStylesheetUri;
-        this.testItemStylesheetUri = testItemStylesheetUri;
+    private final XsltStylesheetManager stylesheetManager;
+    private final String webappContextPath;
+    
+    public Renderer(String webappContextPath, XsltStylesheetCache stylesheetCache) {
+        this.webappContextPath = webappContextPath;
         this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), stylesheetCache);
-        this.mathJaxUrl = mathJaxUrl;
-        this.mathJaxConfig = mathJaxConfig;
     }
     
     /**
@@ -124,8 +115,7 @@ public final class Renderer {
         }
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", engineBasePath));
-        xsltParameters.put("appletCodebase", extractPathOverride(renderingParameters, "appletCodebase", appletCodebase));
+        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", webappContextPath));
         xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
@@ -145,7 +135,7 @@ public final class Renderer {
         /* Pass interaction choice orders as parameters */
         xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
         
-        return doTransform(item, standaloneItemStylesheetUri, xsltParameters, serializationMethod);
+        return doTransform(item, standaloneItemXsltUri, xsltParameters, serializationMethod);
     }
     
     /**
@@ -174,8 +164,7 @@ public final class Renderer {
         }
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", engineBasePath));
-        xsltParameters.put("appletCodebase", extractPathOverride(renderingParameters, "appletCodebase", appletCodebase));
+        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", webappContextPath));
         xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
@@ -196,7 +185,7 @@ public final class Renderer {
 //            xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
 //        }
 
-        return doTransform(item, testItemStylesheetUri, xsltParameters, serializationMethod);
+        return doTransform(item, testItemXsltUri, xsltParameters, serializationMethod);
     }
     
     /**
@@ -232,8 +221,6 @@ public final class Renderer {
         transformer.setParameter("serializationMethod", serializationMethod.toString());
         transformer.setParameter("outputMethod", serializationMethod.getMethod());
         transformer.setParameter("contentType", serializationMethod.getContentType());
-        transformer.setParameter("mathJaxUrl", mathJaxUrl);
-        transformer.setParameter("mathJaxConfig", mathJaxConfig);
         
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");

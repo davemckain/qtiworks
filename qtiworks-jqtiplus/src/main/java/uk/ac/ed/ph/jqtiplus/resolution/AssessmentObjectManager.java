@@ -125,20 +125,20 @@ public final class AssessmentObjectManager {
                 }
                 if (templateSystemId!=null) {
                     /* If here, then a template should exist */
-                    logger.info("Resolving RP template at system ID {} " + templateSystemId);
+                    logger.debug("Resolving RP template at system ID {} " + templateSystemId);
                     result = cachedResourceProvider.getLookup(templateSystemId, ResponseProcessing.class);
                 }
                 else {
                     /* No template supplied */
-                    logger.warn("responseProcessing contains no rules and does not declare a template or templateLocation, so returning null template");
+                    logger.debug("responseProcessing contains no rules and does not declare a template or templateLocation, so returning null template");
                 }
             }
             else {
-                logger.info("AssessmentItem contains ResponseRules, so no template will be resolved");
+                logger.debug("AssessmentItem contains ResponseRules, so no template will be resolved");
             }
         }
         else {
-            logger.info("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
+            logger.debug("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
         }
         return result;
     }

@@ -80,7 +80,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public final class XsltParamBuilder {
     
     /** Internal namespace used in JQTI-Rendering XSLT that we'll use for custom elements */
-    public static final String QTIWORKS_NAMESPACE = "http://www.ph.ed.ac.uk/qtiworks";
+    public static final String QTIWORKS_NAMESPACE = "http://jqti.qtitools.org";
     
     private final DocumentBuilder documentBuilder;
     

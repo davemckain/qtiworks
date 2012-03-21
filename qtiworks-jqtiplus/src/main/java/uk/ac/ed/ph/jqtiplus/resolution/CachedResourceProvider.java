@@ -91,7 +91,7 @@ final class CachedResourceProvider implements Serializable {
         RootObjectLookup<E> frozenResult = (RootObjectLookup<E>) cacheData.get(systemId);
         if (frozenResult!=null) {
             /* Cache hit */
-            logger.info("Resource cache hit for key {} yielded {}", systemId, frozenResult);
+            logger.debug("Resource cache hit for key {} yielded {}", systemId, frozenResult);
         }
         else {
             /* Cache miss */
@@ -106,7 +106,7 @@ final class CachedResourceProvider implements Serializable {
                 frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
             }
             cacheData.put(systemId, frozenResult);
-            logger.info("Resource cache miss for key {} stored {}", systemId, frozenResult);
+            logger.debug("Resource cache miss for key {} stored {}", systemId, frozenResult);
         }
         return frozenResult;
     }

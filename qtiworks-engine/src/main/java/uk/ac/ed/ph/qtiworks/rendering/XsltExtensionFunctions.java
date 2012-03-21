@@ -34,56 +34,14 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * Encapsulates the supported ways of serializing the results obtained
- * from {@link Renderer}.
- * 
- * @author  David McKain
+ * Contains XSLT extension functions used by the rendering process
+ *
+ * @author David McKain
  */
-public enum SerializationMethod {
+public final class XsltExtensionFunctions {
     
-    /** 
-     * XHTML + MathML, mis-delivered as text/html, using MathJax to display
-     * any MathML that is present.
-     */
-    XHTML_MATHJAX("text/html", "xhtml"),
-    
-    /** 
-     * HTML5 + MathML, using MathJax to display any MathML that is present.
-     */
-    HTML5_MATHJAX("text/html", "html"),
-    
-    /** 
-     * XHTML + MathML delivered as application/xhtml+xml.
-     * Perfect for MathML items on Mozilla.
-     */
-    MOZILLA_MATHML("application/xhtml+xml", "xhtml"),
-    
-    /**
-     * XHTML mis-delivered as text/html containing gubbins to invoke MathPlayer
-     */
-    IE_MATHPLAYER("text/html", "html"),
-    
-    /** 
-     * XHTML traditionally mis-delivered as text/html.
-     * Perfect for non-MathML items, useless otherwise.
-     */
-    TRADITIONAL_XHTML("text/html", "xhtml"),
-    
-    ;
-    
-    private final String contentType;
-    private final String method;
-    
-    private SerializationMethod(final String contentType, final String method) {
-        this.contentType = contentType;
-        this.method = method;
+    public static String format(String format, Double arg) {
+        return String.format(format, arg);
     }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getMethod() {
-        return method;
-    }
+    
 }
