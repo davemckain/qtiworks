@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.types;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Encapsulates string-based response data, which is represented as an array
@@ -72,6 +73,6 @@ public final class StringResponseData implements ResponseData, Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(responseData=" + responseData + ")";
+                + "(" + Arrays.toString(responseData) + ")";
     }
 }
