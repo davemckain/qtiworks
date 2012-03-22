@@ -9,14 +9,14 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:uploadInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qwuploadpresented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
           <xsl:apply-templates select="qti:prompt"/>
         </div>
       </xsl:if>
-      <input type="file" name="qwresponse_{@responseIdentifier}"/>
+      <input type="file" name="qwuploadresponse_{@responseIdentifier}"/>
     </div>
   </xsl:template>
 

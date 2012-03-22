@@ -47,7 +47,8 @@ public class RenderingTest {
 
             System.out.println("\nRendering");
             Renderer renderer = new Renderer("/ENGINE", new SimpleXsltStylesheetCache());
-            String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState, "/RESOURCES", null, null, SerializationMethod.HTML5_MATHJAX);
+            String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState, 
+                    "/RESOURCES", null, SerializationMethod.HTML5_MATHJAX);
             System.out.println("Rendered page: " + rendered);
         }
         finally {

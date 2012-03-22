@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -41,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -96,17 +98,16 @@ public final class Renderer {
      */
     public String renderFreshStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
             ItemSessionState itemSessionState, String resourceBasePath, 
-            Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
-            SerializationMethod serializationMethod) {
+            Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
         logger.debug("renderFreshStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
-                + "resourceBasePath={}, itemParameters={}, renderingParameters={} serializationMethod={}",
+                + "resourceBasePath={}, renderingParameters={} serializationMethod={}",
                 new Object[] {
                         resolvedAssessmentItem, itemSessionState, resourceBasePath, 
-                        itemParameters, renderingParameters, serializationMethod
+                        renderingParameters, serializationMethod
                 });
         
         return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
-                null, null, null, itemParameters, renderingParameters, serializationMethod);
+                null, null, null, renderingParameters, serializationMethod);
     }
     
     /**
@@ -116,20 +117,19 @@ public final class Renderer {
     public String renderRespondedStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
             ItemSessionState itemSessionState, 
             String resourceBasePath, Map<String, ResponseData> responseInputs,
-            List<String> badResponseIdentifiers, List<String> invalidResponseIdentifiers,
-            Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
-            SerializationMethod serializationMethod) {
+            List<Identifier> badResponseIdentifiers, List<Identifier> invalidResponseIdentifiers,
+            Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
         logger.debug("renderStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
-                + "resourceBasePath={}, responseInputs={}, badResponseIdentifiers={}, "
-                + "invalidResponseIdentifiers={}, itemParameters={}, renderingParameters={} serializationMethod={}",
+                + "resourceBasePath={}, responseInputs={}, unboundResponseIdentifiers={}, "
+                + "invalidResponseIdentifiers={}, enderingParameters={} serializationMethod={}",
                 new Object[] { 
                         resolvedAssessmentItem, itemSessionState, resourceBasePath,
                         responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
-                        itemParameters, renderingParameters, serializationMethod
+                        renderingParameters, serializationMethod
                 });
         return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
                 responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
-                itemParameters, renderingParameters, serializationMethod);
+                renderingParameters, serializationMethod);
     }
     
     /**
@@ -139,13 +139,12 @@ public final class Renderer {
     private String doRenderStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
             ItemSessionState itemSessionState, 
             String resourceBasePath, Map<String, ResponseData> responseInputs,
-            List<String> badResponseIdentifiers, List<String> invalidResponseIdentifiers,
-            Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
+            List<Identifier> badResponseIdentifiers, List<Identifier> invalidResponseIdentifiers,
+            Map<String, Object> renderingParameters,
             SerializationMethod serializationMethod) {
         /* Set provided item & rendering parameters */
         Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        if (itemParameters!=null) {
-            xsltParameters.putAll(itemParameters);
+        if (renderingParameters!=null) {
             xsltParameters.putAll(renderingParameters);
         }
         
@@ -157,8 +156,8 @@ public final class Renderer {
         xsltParameters.put("serializationMethod", serializationMethod.toString());
         xsltParameters.put("itemSystemId", resolvedAssessmentItem.getItemLookup().getSystemId());
         xsltParameters.put("isResponded", responseInputs!=null);
-        xsltParameters.put("badResponseIdentifiers", badResponseIdentifiers);
-        xsltParameters.put("invalidResponseIdentifiers", invalidResponseIdentifiers);
+        xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(badResponseIdentifiers));
+        xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(invalidResponseIdentifiers));
         
         /* Convert template, response and outcome values into parameters */
         XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
@@ -179,13 +178,13 @@ public final class Renderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} as part
      * of an {@link AssessmentTest}
      */
-    public String renderTestItem(ResolvedAssessmentTest resolvedAssessmnetTest, ResolvedAssessmentItem resolvedAssessmentItem,
+    public String renderTestItem(ResolvedAssessmentTest resolvedAssessmentTest, ResolvedAssessmentItem resolvedAssessmentItem,
             ItemSessionState itemSessionState, String resourceBasePath, String itemHref, boolean isResponded,
             Map<String, Value> responses, Map<String, Object> testParameters,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
         logger.debug("renderTestItem(resolvedAssessmentTest={}, resolvedAssessmentItem={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
                 + "responses={}, testParameters={}, itemParameters={}, renderingParameters={}, serializationMethod={}",
-                new Object[] { resolvedAssessmnetTest, resolvedAssessmentItem, itemSessionState,
+                new Object[] { resolvedAssessmentTest, resolvedAssessmentItem, itemSessionState,
                         resourceBasePath, itemHref, isResponded, responses,
                         testParameters, itemParameters, renderingParameters, serializationMethod
                 });

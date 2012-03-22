@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.samples.AllSampleSets;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.services.CandidateUploadService;
 import uk.ac.ed.ph.qtiworks.web.exception.QtiSampleNotFoundException;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -50,6 +51,10 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
@@ -57,8 +62,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -68,6 +75,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * First stab at controller for doing candidate (item) sessions
@@ -84,6 +93,9 @@ public class CandidateController {
     
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
+    
+    @Resource
+    private CandidateUploadService candidateUploadService;
     
     @Resource
     private QtiXmlReader qtiXmlReader;
@@ -130,33 +142,106 @@ public class CandidateController {
     
     @RequestMapping(value="/itemSession", method={ RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
-    public String sampleItemSession(HttpSession httpSession) {
-        /* TEMP */
-        
+    public String sampleItemSession(HttpServletRequest request, HttpSession httpSession) {
         /* TEMP: Extract current item & state from HTTP session */
         ResolvedAssessmentItem resolvedAssessmentItem = (ResolvedAssessmentItem) httpSession.getAttribute(CURRENT_ITEM);
         ItemSessionState itemSessionState = (ItemSessionState) httpSession.getAttribute(CURRENT_ITEM_SESSION_STATE);
         
+        String pageContent = null;
         try {
             if (!itemSessionState.isInitialized()) {
                 /* Session hasn't been initialized yet */
-                return initializeItemSession(resolvedAssessmentItem, itemSessionState);
+                pageContent = serveFreshItem(resolvedAssessmentItem, itemSessionState);
+            }
+            else {
+                /* Session initialised, so handle responses */
+                pageContent = handleResponseSubmission(request, resolvedAssessmentItem, itemSessionState);
             }
         }
         catch (RuntimeValidationException e) {
             throw new QtiLogicException("Unexpected RuntimeValidationException encountered", e);
         }
-
-        return null;
+        return pageContent;
     }
     
-    private String initializeItemSession(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) throws RuntimeValidationException {
+    private String serveFreshItem(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState)
+            throws RuntimeValidationException {
         ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         itemController.initialize();
         
-        Map<String, Object> itemParameters = new HashMap<String, Object>();
-        Map<String, Object> renderingParameters = new HashMap<String, Object>();
+        Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
-                "/RESOURCES-TODO", itemParameters, renderingParameters, SerializationMethod.HTML5_MATHJAX);
+                "/RESOURCES-TODO", renderingParameters, SerializationMethod.HTML5_MATHJAX);
+    }
+    
+    private String handleResponseSubmission(HttpServletRequest request, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState)
+            throws RuntimeValidationException {
+        /* First need to extract responses */
+        Map<String, ResponseData> responseMap = new HashMap<String, ResponseData>();
+        extractStringResponseData(request, responseMap);
+        if (request instanceof MultipartHttpServletRequest) {
+            extractFileResponseData((MultipartHttpServletRequest) request, responseMap);
+        }
+
+        /* Bind responses */
+        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        List<Identifier> invalidResponseIdentifiers = null;
+        List<Identifier> badResponseIdentifiers = itemController.bindResponses(responseMap);
+        if (badResponseIdentifiers.isEmpty()) {
+            logger.info("Responses bound successfully, so continuing to response validation step");
+            invalidResponseIdentifiers = itemController.validateResponses();
+            if (invalidResponseIdentifiers.isEmpty()) {
+                logger.info("Responses validated successfully, so invoking response processing");
+                itemController.processResponses();
+            }
+            else {
+                logger.info("Invalid responses submitted to {}, not invoking response processing", invalidResponseIdentifiers);
+            }
+        }
+        else {
+            logger.info("Bad responses submitted to {}, so no response processing invoked", badResponseIdentifiers);
+        }
+        
+        Map<String, Object> renderingParameters = createRenderingParameters();
+        return renderer.renderRespondedStandaloneItem(resolvedAssessmentItem, itemSessionState,
+                "/RESOURCES-TODO", responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
+                renderingParameters, SerializationMethod.HTML5_MATHJAX);
+    }
+    
+    private Map<String, Object> createRenderingParameters() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("showInternalState", Boolean.TRUE);
+        result.put("displayTitle", Boolean.TRUE);
+        result.put("displayControls", Boolean.TRUE);
+        return result;
+    }
+    
+    public void extractFileResponseData(MultipartHttpServletRequest multipartRequest, Map<String, ResponseData> responseMap) {
+        @SuppressWarnings("unchecked")
+        Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
+        for (String name : parameterNames) {
+            if (name.startsWith("qwuploadpresented_")) {
+                String responseIdentifier = name.substring("qwuploadpresented_".length());
+                FileResponseData fileResponseData = null;
+                MultipartFile multipartFile = multipartRequest.getFile("qwuploadresponse_" + responseIdentifier);
+                if (multipartFile!=null) {
+                    fileResponseData = candidateUploadService.importData(multipartFile);
+                }
+                responseMap.put(responseIdentifier, fileResponseData);
+            }
+        }
+    }
+    
+    public void extractStringResponseData(HttpServletRequest request, Map<String, ResponseData> responseMap) {
+        @SuppressWarnings("unchecked")
+        Set<String> parameterNames = request.getParameterMap().keySet();
+        for (String name : parameterNames) {
+            if (name.startsWith("qwpresented_")) {
+                String responseIdentifier = name.substring("qwpresented_".length());
+                String[] responseValues = request.getParameterValues("qwresponse_" + responseIdentifier);
+                StringResponseData stringResponseData = new StringResponseData(responseValues);
+                responseMap.put(responseIdentifier, stringResponseData);
+            }
+        }
     }
 }
