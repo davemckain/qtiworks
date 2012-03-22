@@ -31,42 +31,17 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import org.qtitools.mathassess.MathAssessExtensionPackage;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Helper utilities for integration tests
- *
+ * Interface for classes that want to hear about lifecycle events.
+ * 
+ * @see LifecycleEventType
+ * 
  * @author David McKain
  */
-public class TestUtils {
-    
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet qtiSampleSet) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-            result.add(new Object[] { qtiSampleResource });
-        }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
+public interface LifecycleListener {
+
+    void lifecycleEvent(Object source, LifecycleEventType eventType);
 
 }

@@ -148,7 +148,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
             ResolvedAssessmentItem resolvedAssessmentItem = context.getResolvedAssessmentItem();
             RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
-            if (resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
+            if (resolvedResponseProcessingTemplateLookup!=null && resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
                 resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context);
             }
         }

@@ -39,21 +39,21 @@ import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_SCHEMA_LOCA
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
-import uk.ac.ed.ph.jqtiplus.running.LifecycleEventType;
-
-import org.qtitools.mathassess.tools.glue.extras.pooling.PooledQTIMaximaSessionManager;
-import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 
 import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
 import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
+
+import org.qtitools.mathassess.tools.glue.extras.pooling.PooledQTIMaximaSessionManager;
+import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the {@link CustomOperator}s and {@link CustomInteraction}s that make
- * up
- * the package of MathAssess QTI extensions.
+ * up the package of MathAssess QTI extensions.
+ * <p>
+ * Note the lifecycle {@link #startMaximaPool()} and {@link #shutdown()} methods here.
  * 
  * @author David McKain
  */
@@ -76,12 +77,13 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
 
     private final Map<String, ExtensionNamespaceInfo> namespaceInfoMap;
     private final ThreadLocal<QTIMaximaSession> sessionThreadLocal;
-
-    private StylesheetCache stylesheetCache;
+    private final StylesheetCache stylesheetCache;
 
     private PooledQTIMaximaSessionManager pooledQTIMaximaSessionManager;
 
-    public MathAssessExtensionPackage() {
+    public MathAssessExtensionPackage(StylesheetCache stylesheetCache) {
+        this.stylesheetCache = stylesheetCache;
+        
         /* Build up namespace info */
         ExtensionNamespaceInfo extensionNamespaceInfo = new ExtensionNamespaceInfo(MATHASSESS_NAMESPACE_URI, MATHASSESS_SCHEMA_LOCATION, MATHASSESS_DEFAULT_NAMESPACE_PREFIX);
         Map<String, ExtensionNamespaceInfo> namespaceInfoMapSource = new HashMap<String, ExtensionNamespaceInfo>();
@@ -91,40 +93,10 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
         /* Create ThreadLocal for communicating with maxima */
         this.sessionThreadLocal = new ThreadLocal<QTIMaximaSession>();
     }
-
+    
     public StylesheetCache getStylesheetCache() {
         return stylesheetCache;
     }
-
-    public void setStylesheetCache(StylesheetCache stylesheetCache) {
-        this.stylesheetCache = stylesheetCache;
-    }
-
-    public void init() {
-        try {
-            final MaximaConfiguration maximaConfiguration = JacomaxSimpleConfigurator.configure();
-
-            pooledQTIMaximaSessionManager = new PooledQTIMaximaSessionManager();
-            pooledQTIMaximaSessionManager.setMaximaConfiguration(maximaConfiguration);
-            pooledQTIMaximaSessionManager.setStylesheetCache(stylesheetCache);
-            pooledQTIMaximaSessionManager.init();
-
-            logger.info("Created {} to handle communication with Maxima for MathAssess extensions", PooledQTIMaximaSessionManager.class.getSimpleName());
-        }
-        catch (final JacomaxConfigurationException e) {
-            pooledQTIMaximaSessionManager = null;
-            logger.warn("Failed to obtain a MaximaConfiguration and/or {}. MathAssess extensions will not work and this package should NOT be used",
-                    PooledQTIMaximaSessionManager.class.getSimpleName());
-        }
-    }
-
-    public void shutdown() {
-        if (pooledQTIMaximaSessionManager != null) {
-            pooledQTIMaximaSessionManager.shutdown();
-        }
-    }
-
-    // ------------------------------------------------------------------------
     
     @Override
     public String getDisplayName() {
@@ -160,23 +132,22 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
         }
         return null;
     }
-    
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
-                + "(displayName=" + getDisplayName()
-                + ",stylesheetCache=" + stylesheetCache
-                + ",sessionThreadLocal=" + sessionThreadLocal
-                + ",pooledQTIMaximaSessionManager=" + pooledQTIMaximaSessionManager
-                + ")";
-    }
+
 
     // ------------------------------------------------------------------------
 
     @Override
-    public void lifecycleEvent(Object controller, LifecycleEventType eventType) {
-        logger.info("Received lifecycle event " + eventType);
+    public void lifecycleEvent(Object source, LifecycleEventType eventType) {
+        logger.trace("Received lifecycle event {}", eventType);
         switch (eventType) {
+            case MANAGER_INITIALISED:
+                startMaximaPool();
+                break;
+                
+            case MANAGER_DESTROYED:
+                closeMaximaPool();
+                break;
+                
             case ITEM_INITIALISATION_STARTING:
             case ITEM_RESPONSE_PROCESSING_STARTING:
                 /* Rather than creating a Maxima session at this point that may
@@ -193,6 +164,33 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
                 break;
         }
     }
+    
+    private void startMaximaPool() {
+        try {
+            final MaximaConfiguration maximaConfiguration = JacomaxSimpleConfigurator.configure();
+
+            pooledQTIMaximaSessionManager = new PooledQTIMaximaSessionManager();
+            pooledQTIMaximaSessionManager.setMaximaConfiguration(maximaConfiguration);
+            pooledQTIMaximaSessionManager.setStylesheetCache(stylesheetCache);
+            pooledQTIMaximaSessionManager.init();
+
+            logger.info("MathAssessExtensionPackage successfully initiated using {} to handle communication with Maxima for MathAssess extensions", PooledQTIMaximaSessionManager.class.getSimpleName());
+        }
+        catch (final JacomaxConfigurationException e) {
+            pooledQTIMaximaSessionManager = null;
+            logger.warn("Failed to obtain a MaximaConfiguration and/or {}. MathAssess extensions will not work and this package should NOT be used",
+                    PooledQTIMaximaSessionManager.class.getSimpleName());
+        }
+    }
+
+    private void closeMaximaPool() {
+        if (pooledQTIMaximaSessionManager != null) {
+            logger.info("Closing {}", pooledQTIMaximaSessionManager);
+            pooledQTIMaximaSessionManager.shutdown();
+        }
+    }
+
+    // ------------------------------------------------------------------------
 
     public QTIMaximaSession obtainMaximaSessionForThread() {
         QTIMaximaSession maximaSession = sessionThreadLocal.get();
@@ -218,5 +216,17 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
             pooledQTIMaximaSessionManager.returnSession(maximaSession);
             sessionThreadLocal.set(null);
         }
+    }
+
+    // ------------------------------------------------------------------------
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(displayName=" + getDisplayName()
+                + ",stylesheetCache=" + stylesheetCache
+                + ",sessionThreadLocal=" + sessionThreadLocal
+                + ",pooledQTIMaximaSessionManager=" + pooledQTIMaximaSessionManager
+                + ")";
     }
 }

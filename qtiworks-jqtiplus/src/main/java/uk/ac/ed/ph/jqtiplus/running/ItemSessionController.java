@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -69,6 +70,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -104,15 +106,22 @@ public final class ItemSessionController {
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
     private final ItemSessionState itemState;
+    
+    public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
+        this(null, resolvedAssessmentItem, assessmentItemState);
+    }
 
     public ItemSessionController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
-        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemState = assessmentItemState;
+    }
+    
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
     }
 
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
@@ -280,9 +289,9 @@ public final class ItemSessionController {
          * of all responses, since adaptive items will only present certain interactions at certain
          * times.) */
         final List<Identifier> badResponses = new ArrayList<Identifier>();
-        for (final String responseIdentifierString : responseMap.keySet()) {
-            Identifier responseIdentifier = new Identifier(responseIdentifierString);
-            ResponseData responseData = responseMap.get(responseIdentifier);
+        for (final Entry<String, ResponseData> responseEntry : responseMap.entrySet()) {
+            Identifier responseIdentifier = new Identifier(responseEntry.getKey());
+            ResponseData responseData = responseEntry.getValue();
             ConstraintUtilities.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
                 final Interaction interaction = itemBody.getInteraction(responseIdentifier);
@@ -307,6 +316,7 @@ public final class ItemSessionController {
      *         empty if all responses were valid.
      */
     public List<Identifier> validateResponses() {
+        logger.debug("Validating responses");
         final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
         for (final Interaction interaction : item.getItemBody().getInteractions()) {
             final Value responseValue = itemState.getResponseValue(interaction);
@@ -325,6 +335,7 @@ public final class ItemSessionController {
      */
     public void processResponses() throws RuntimeValidationException {
         final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
+        logger.debug("Response processing starting");
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* We always count the attempt, unless the response was to an endAttemptInteraction
@@ -352,12 +363,24 @@ public final class ItemSessionController {
                 }
             }
 
-            final ResponseProcessing responseProcessing = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup().extractAssumingSuccessful();
+            ResponseProcessing responseProcessing = null;
+            final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            if (resolvedResponseProcessingTemplateLookup!=null) {
+                responseProcessing = resolvedResponseProcessingTemplateLookup.extractAssumingSuccessful();
+            }
+            else {
+                responseProcessing = item.getResponseProcessing();
+            }
+            
             if (responseProcessing != null) {
                 responseProcessing.evaluate(processingContext);
             }
+            else {
+                logger.debug("No responseProcessing rules or responseProcessing template exists, so no processing will be performed");
+            }
         }
         finally {
+            logger.debug("Response processing finished");
             fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
         }
     }
@@ -536,8 +559,10 @@ public final class ItemSessionController {
     //-------------------------------------------------------------------
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
-        for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
-            extensionPackage.lifecycleEvent(this, eventType);
+        if (jqtiExtensionManager!=null) {
+            for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+                extensionPackage.lifecycleEvent(this, eventType);
+            }
         }
     }
 

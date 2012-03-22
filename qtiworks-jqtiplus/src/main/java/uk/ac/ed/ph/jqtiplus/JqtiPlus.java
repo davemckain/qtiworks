@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Placeholder class for static JQTI information
+ * JQTI+ public definitions
  * 
  * @author David McKain
  * @author Jonathon Hare

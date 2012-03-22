@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -49,6 +50,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import java.net.URI;
 import java.util.Collection;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -65,6 +68,8 @@ public class QtiXmlReaderSampleTests {
     
     private QtiSampleResource qtiSampleResource;
     
+    private JqtiExtensionManager jqtiExtensionManager;
+    
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(StandardQtiSampleSet.instance()
@@ -76,13 +81,26 @@ public class QtiXmlReaderSampleTests {
         
     }
     
+    @Before
+    public void before() {
+        jqtiExtensionManager = TestUtils.getJqtiExtensionManager();
+        jqtiExtensionManager.init();
+    }
+    
+    @After
+    public void after() {
+        if (jqtiExtensionManager!=null) {
+            jqtiExtensionManager.destroy();
+        }
+    }
+    
     @Test
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
         
-        final QtiXmlReader qtoXmlReader = TestUtils.getQtiXmlReader();
-        XmlReadResult xmlReadResult = qtoXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
+        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        XmlReadResult xmlReadResult = qtiXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
         
         assertEquals(!qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
     }

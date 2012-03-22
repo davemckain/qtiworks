@@ -5,7 +5,6 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
@@ -25,21 +24,19 @@ public class TemplateConstraintTest {
         URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
         
         System.out.println("Reading and validating");
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        QtiXmlReader qtiXmlReader = new QtiXmlReader();
         QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
         
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-
+        
         ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
         
         ItemSessionState itemState = new ItemSessionState();
-        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, result.getResolvedAssessmentItem(), itemState);
+        ItemSessionController itemController = new ItemSessionController(result.getResolvedAssessmentItem(), itemState);
         
         System.out.println("\nInitialising");
         itemController.initialize();
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
     }
-
 }

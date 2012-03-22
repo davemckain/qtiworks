@@ -31,14 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.running;
+package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Enumerates the different types of lifecycle events fired off by the controllers
+ * Enumerates the different types of lifecycle events fired off
+ * during item & test processing
  * 
  * @author David McKain
  */
 public enum LifecycleEventType {
+    
+    MANAGER_INITIALISED,
+    MANAGER_DESTROYED,
 
     ITEM_INITIALISATION_STARTING,
     ITEM_INITIALISATION_FINISHED,

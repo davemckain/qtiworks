@@ -46,10 +46,10 @@ import java.util.List;
  */
 public final class QtiSampleSet implements Iterable<QtiSampleResource> {
     
-    private List<QtiSampleResource> resources;
+    private final List<QtiSampleResource> resources;
     
     public QtiSampleSet(QtiSampleResource... resources) {
-        this.resources = Arrays.asList(resources);
+        this(Arrays.asList(resources));
     }
     
     public QtiSampleSet(List<QtiSampleResource> resources) {
@@ -59,6 +59,19 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
     @Override
     public Iterator<QtiSampleResource> iterator() {
         return resources.iterator();
+    }
+    
+    public List<QtiSampleResource> getResources() {
+        return resources;
+    }
+    
+    public QtiSampleResource findByRelativePath(String relativePath) {
+        for (QtiSampleResource resource : resources) {
+            if (relativePath.equals(resource.getRelativePath())) {
+                return resource;
+            }
+        }
+        return null;
     }
     
     public QtiSampleSet havingType(QtiSampleResource.Type type) {
@@ -94,6 +107,14 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
     public QtiSampleSet union(QtiSampleSet other) {
         List<QtiSampleResource> mergedResources = new ArrayList<QtiSampleResource>(resources);
         mergedResources.addAll(other.resources);
+        return new QtiSampleSet(mergedResources);
+    }
+    
+    public static QtiSampleSet union(QtiSampleSet[] sets) {
+        List<QtiSampleResource> mergedResources = new ArrayList<QtiSampleResource>();
+        for (QtiSampleSet set : sets) {
+            mergedResources.addAll(set.resources);
+        }
         return new QtiSampleSet(mergedResources);
     }
 

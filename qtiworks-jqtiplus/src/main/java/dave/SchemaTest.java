@@ -5,7 +5,6 @@
  */
 package dave;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -32,8 +31,7 @@ public class SchemaTest {
         URI inputUri = URI.create("classpath:/mathextensions.xml");
         
         System.out.println("Reading and validating");
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+        QtiXmlReader qtiXmlReader = new QtiXmlReader();
         QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
         
         AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
@@ -58,7 +56,5 @@ public class SchemaTest {
         String serializedXml = serializedXmlWriter.toString();
         
         System.out.println(serializedXml);
-        
-        
     }
 }

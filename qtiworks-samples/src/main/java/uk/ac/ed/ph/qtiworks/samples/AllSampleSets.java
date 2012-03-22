@@ -31,31 +31,27 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-/**
- * Listener for lifecycle events. Used by MathAssess to hook into the processing lifecycle
- * without having to pollute this code too much.
- * 
- * @see LifecycleEventSource
- * 
- * @author David McKain
- */
-package uk.ac.ed.ph.jqtiplus.running;
+package uk.ac.ed.ph.qtiworks.samples;
 
 /**
- * Interface for classes that want to hear about Lifecycle events.
- * 
+ * Registry of all of our {@link QtiSampleSet}s
+ *
  * @author David McKain
- * @version $Revision: 2777 $
  */
-public interface LifecycleListener {
-
-    /**
-     * TODO: What superclass should we have for the controller?
-     * (This may be called from any Thread)
-     * 
-     * @param controller
-     * @param eventType
-     */
-    void lifecycleEvent(Object controller, LifecycleEventType eventType);
-
+public final class AllSampleSets {
+    
+    private static final QtiSampleSet[] allSets = new QtiSampleSet[] {
+        StandardQtiSampleSet.instance(),
+        MathAssessSampleSet.instance()
+    };
+    
+    private static final QtiSampleSet setUnion = QtiSampleSet.union(allSets);
+    
+    public static QtiSampleSet[] asArray() {
+        return allSets;
+    }
+    
+    public static QtiSampleSet asUnion() {
+        return setUnion;
+    }
 }

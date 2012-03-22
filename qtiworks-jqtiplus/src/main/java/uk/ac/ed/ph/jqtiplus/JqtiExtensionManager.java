@@ -103,6 +103,30 @@ public final class JqtiExtensionManager {
     }
 
     //---------------------------------------------------------------------
+    // Lifecycle methods
+    
+    public void init() {
+        logger.info("Initialising all registered JqtiExtensionPackages");
+        fireLifecycleEvent(this, LifecycleEventType.MANAGER_INITIALISED);
+    }
+    
+    public void destroy() {
+        logger.info("Destroying all registered JqtiExtensionPackages");
+        fireLifecycleEvent(this, LifecycleEventType.MANAGER_DESTROYED);
+    }
+    
+    /**
+     * Fires off a lifecycle event to all registered extension packages.
+     * <p>
+     * This should only be used INTERNALLY.
+     */
+    public void fireLifecycleEvent(Object source, LifecycleEventType eventType) {
+        for (final JqtiExtensionPackage extensionPackage : extensionPackages) {
+            extensionPackage.lifecycleEvent(source, eventType);
+        }
+    }
+
+    //---------------------------------------------------------------------
 
     public CustomInteraction createCustomInteraction(XmlNode parentObject, String interactionClass) {
         CustomInteraction result = null;
@@ -113,7 +137,7 @@ public final class JqtiExtensionManager {
                 return result;
             }
         }
-        logger.warn("customInteraction of class {} not supported by any registered package. Using placeholder", interactionClass);
+        logger.debug("customInteraction of class {} not supported by any registered package. Using placeholder", interactionClass);
         return new UnsupportedCustomInteraction(parentObject);
     }
 
@@ -126,7 +150,7 @@ public final class JqtiExtensionManager {
                 return result;
             }
         }
-        logger.warn("customOperator of class {} not supported by any registered package. Using placeholder", operatorClass);
+        logger.debug("customOperator of class {} not supported by any registered package. Using placeholder", operatorClass);
         return new UnsupportedCustomOperator(expressionParent);
     }
 

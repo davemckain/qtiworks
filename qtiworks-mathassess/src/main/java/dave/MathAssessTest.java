@@ -39,8 +39,14 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -53,69 +59,79 @@ import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+/**
+ * Developer test of MathAssess extensions
+ * FIXME: Document this type
+ *
+ * @author David McKain
+ */
 public class MathAssessTest {
 
     public static void main(String[] args) throws Exception {
         final URI inputUri = URI.create("classpath:/MAD01-SRinCO-demo.xml");
 
-        final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage();
-        mathAssessPackage.setStylesheetCache(new SimpleStylesheetCache());
-        mathAssessPackage.init();
-
+        final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage(new SimpleStylesheetCache());
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(mathAssessPackage);
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        
-        ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
-        System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
-        System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(result.getResolvedAssessmentItem()));
-        System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful()));
-        
-        XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
-        serializationOptions.setIndenting(true);
-        
-        XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
-        TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
-        
-        StringWriter serializedXmlWriter = new StringWriter();
-        serializerHandler.setResult(new StreamResult(serializedXmlWriter));
-        
-        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
-        saxEventFirer.fireSaxDocument(result.getResolvedAssessmentItem().getItemLookup().extractAssumingSuccessful());
-        
-        System.out.println(serializedXmlWriter.toString());
+        try {
+            jqtiExtensionManager.init();
+            
+            System.out.println("Reading " + inputUri);
+            final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+            final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+            AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+            
+            ItemValidationResult validationResult = objectManager.resolveAndValidateItem(inputUri);
+            ResolvedAssessmentItem resolvedAssessmentItem = validationResult.getResolvedAssessmentItem();
+            System.out.println("Validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));
+            System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(resolvedAssessmentItem));
+            System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful()));
+            
+            XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+            serializationOptions.setIndenting(true);
+            
+            XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
+            TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
+            
+            StringWriter serializedXmlWriter = new StringWriter();
+            serializerHandler.setResult(new StreamResult(serializedXmlWriter));
+            
+            QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+            saxEventFirer.fireSaxDocument(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful());
+            
+            System.out.println("\n\nSerailized XML:\n" + serializedXmlWriter.toString());
+            
+            final ItemSessionState itemSessionState = new ItemSessionState();
+            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
 
-//        try {
-//            final AssessmentItemState itemState = new AssessmentItemState();
-//            final AssessmentItemAttemptController itemController = new AssessmentItemAttemptController(itemManager, itemState);
-//
-//            System.out.println("\n\nInitialising");
-//            itemController.initialize(null);
-//            System.out.println("\nTemplate Values: " + itemState.getTemplateValues());
-//            System.out.println("\nResponse Values: " + itemState.getResponseValues());
-//            System.out.println("\nOutcome Values: " + itemState.getOutcomeValues());
-//
-//            System.out.println("\n\nSetting Math responses");
-//            final Map<String, List<String>> responses = new HashMap<String, List<String>>();
-//            responses.put("RESPONSE", Arrays.asList(new String[] { "1+x" }));
-//            itemController.setResponses(responses);
-//            System.out.println("Response Values: " + itemState.getResponseValues());
-//
-//            System.out.println("\n\nStarting response processiong");
-//            itemController.processResponses();
-//            System.out.println("Response processing finished");
-//            System.out.println("Outcome Values: " + itemState.getOutcomeValues());
-//
-//            System.out.println("\n\nResult XML");
-//            System.out.println(itemController.computeItemResult().toXmlString());
-//        }
-//        finally {
-//            mathAssessPackage.shutdown();
-//        }
+            System.out.println("\n\nInitialising");
+            itemController.initialize(null);
+            System.out.println("\nTemplate Values: " + itemSessionState.getTemplateValues());
+            System.out.println("\nResponse Values: " + itemSessionState.getResponseValues());
+            System.out.println("\nOutcome Values: " + itemSessionState.getOutcomeValues());
+
+            System.out.println("\n\nBinding Math responses");
+            final Map<String, ResponseData> responses = new HashMap<String, ResponseData>();
+            responses.put("RESPONSE", new StringResponseData("1+x"));
+            List<Identifier> badResponses = itemController.bindResponses(responses);
+            List<Identifier> invalidResponses = itemController.validateResponses();
+            System.out.println("Bad responses: " + badResponses);
+            System.out.println("Invalid response: " + invalidResponses);
+            System.out.println("Response Values: " + itemSessionState.getResponseValues());
+
+            System.out.println("\n\nStarting response processiong");
+            itemController.processResponses();
+            System.out.println("Response processing finished");
+            System.out.println("Outcome Values: " + itemSessionState.getOutcomeValues());
+        }
+        finally {
+            jqtiExtensionManager.destroy();
+        }
     }
 }
