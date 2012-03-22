@@ -36,6 +36,8 @@ package uk.ac.ed.ph.jqtiplus.types;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates a QTI "identifier" in its most common use cases.
  * <p>
@@ -46,8 +48,10 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
  * 
  * @author David McKain
  */
-public final class Identifier implements Comparable<Identifier> {
+public final class Identifier implements Serializable, Comparable<Identifier> {
 
+    private static final long serialVersionUID = 1842878881636384148L;
+    
     private final String value;
 
     /**

@@ -35,15 +35,18 @@ package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates the special case of QTI "identifiers" that may contain a single
  * period character within them, which is used in test outcome processing to
  * refer to variables within particular items.
  * 
- * @see VariableReferenceIdentifier
  * @author David McKain
  */
-public final class VariableReferenceIdentifier {
+public final class VariableReferenceIdentifier implements Serializable {
+
+    private static final long serialVersionUID = 7038955921323452832L;
 
     private final String value;
 
