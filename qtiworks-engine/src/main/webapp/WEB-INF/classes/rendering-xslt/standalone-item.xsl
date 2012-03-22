@@ -18,9 +18,6 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <xsl:param name="articleId" as="xs:string?"/>
-  <xsl:param name="queryString" as="xs:string?"/>
-
   <xsl:param name="displayTitle" select="true()" as="xs:boolean"/>
   <xsl:param name="displayControls" select="true()" as="xs:boolean"/>
 
@@ -61,7 +58,7 @@ Renders a standalone assessmentItem
           <script src="{$engineBasePath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
           <script src="{$engineBasePath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
           <script type="text/javascript">
-            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$engineBasePath"/>/input/verifyASCIIMath');
+            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$engineBasePath"/>/dispatcher/verifyAsciiMath');
             UpConversionAJAXController.setDelay(300);
           </script>
         </xsl:if>

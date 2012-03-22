@@ -23,12 +23,12 @@ rendering.
 
   <!-- Base path where resources for this item/test live. This should include
        the web application contextPath as well.  -->
-  <xsl:param name="resourceBasePath" select="'/MathAssessEngine/content/someitemfolder'" as="xs:string"/>
+  <xsl:param name="resourceBasePath" as="xs:string" required="yes"/>
 
-  <!-- Href of the Item XML being rendered, relative to the package/folder it lives in -->
-  <xsl:param name="itemHref" select="'someitem.xml'" as="xs:string"/>
+  <!-- URI of the Item being rendered -->
+  <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
-  <xsl:param name="isResponded" select="false()" as="xs:boolean"/>
+  <xsl:param name="isResponded" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
@@ -89,7 +89,7 @@ rendering.
         <xsl:sequence select="$uri"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="resolved" as="xs:string" select="string(resolve-uri($uri, $itemHref))"/>
+        <xsl:variable name="resolved" as="xs:string" select="string(resolve-uri($uri, $itemSystemId))"/>
         <xsl:sequence select="concat($resourceBasePath, '?path=', encode-for-uri($resolved))"/>
       </xsl:otherwise>
     </xsl:choose>

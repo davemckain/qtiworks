@@ -13,7 +13,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -32,23 +31,27 @@ public class RenderingTest {
         
         System.out.println("Reading");
         JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-        
-        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
-        AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
-        ItemSessionState itemSessionState = new ItemSessionState();
-        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-        
-        System.out.println("\nInitialising");
-        itemController.initialize();
-        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        jqtiExtensionManager.init();
+        try {
+            QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+            QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+            
+            AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+            ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
+            ItemSessionState itemSessionState = new ItemSessionState();
+            ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+            
+            System.out.println("\nInitialising");
+            itemController.initialize();
+            System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        System.out.println("\nRendering");
-        Renderer renderer = new Renderer("/ENGINE", new SimpleXsltStylesheetCache());
-        String rendered = renderer.renderStandaloneItem(item, itemSessionState, "/RESOURCES", "itemHref", false, null, null, null, null, null, SerializationMethod.HTML5_MATHJAX);
-        System.out.println("Rendered page: " + rendered);
+            System.out.println("\nRendering");
+            Renderer renderer = new Renderer("/ENGINE", new SimpleXsltStylesheetCache());
+            String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState, "/RESOURCES", null, null, SerializationMethod.HTML5_MATHJAX);
+            System.out.println("Rendered page: " + rendered);
+        }
+        finally {
+            jqtiExtensionManager.destroy();
+        }
     }
-
 }

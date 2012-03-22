@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -80,8 +82,8 @@ public final class Renderer {
     private static final URI standaloneItemXsltUri = URI.create("classpath:/rendering-xslt/standalone-item.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     
-    private final XsltStylesheetManager stylesheetManager;
     private final String webappContextPath;
+    private final XsltStylesheetManager stylesheetManager;
     
     public Renderer(String webappContextPath, XsltStylesheetCache stylesheetCache) {
         this.webappContextPath = webappContextPath;
@@ -92,21 +94,54 @@ public final class Renderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
      * fashion, and not part of an assessment.
      */
-    public String renderStandaloneItem(AssessmentItem item,
-            ItemSessionState itemSessionState,
-            String resourceBasePath, String itemHref, boolean isResponded,
-            Map<String, ResponseData> responseInputs,
+    public String renderFreshStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
+            ItemSessionState itemSessionState, String resourceBasePath, 
+            Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
+            SerializationMethod serializationMethod) {
+        logger.debug("renderFreshStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
+                + "resourceBasePath={}, itemParameters={}, renderingParameters={} serializationMethod={}",
+                new Object[] {
+                        resolvedAssessmentItem, itemSessionState, resourceBasePath, 
+                        itemParameters, renderingParameters, serializationMethod
+                });
+        
+        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
+                null, null, null, itemParameters, renderingParameters, serializationMethod);
+    }
+    
+    /**
+     * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
+     * fashion, and not part of an assessment.
+     */
+    public String renderRespondedStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
+            ItemSessionState itemSessionState, 
+            String resourceBasePath, Map<String, ResponseData> responseInputs,
             List<String> badResponseIdentifiers, List<String> invalidResponseIdentifiers,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
             SerializationMethod serializationMethod) {
-        logger.debug("renderStandaloneItem(item={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
-                + "responseInputs={}, badResponseIdentifiers={}, invalidResponseIdentifiers={}, "
-                + "itemParameters={}, renderingParameters={} serializationMethod={}",
-                new Object[] { item, itemSessionState, resourceBasePath, itemHref, isResponded,
+        logger.debug("renderStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
+                + "resourceBasePath={}, responseInputs={}, badResponseIdentifiers={}, "
+                + "invalidResponseIdentifiers={}, itemParameters={}, renderingParameters={} serializationMethod={}",
+                new Object[] { 
+                        resolvedAssessmentItem, itemSessionState, resourceBasePath,
                         responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                         itemParameters, renderingParameters, serializationMethod
                 });
-                
+        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
+                responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
+                itemParameters, renderingParameters, serializationMethod);
+    }
+    
+    /**
+     * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
+     * fashion, and not part of an assessment.
+     */
+    private String doRenderStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
+            ItemSessionState itemSessionState, 
+            String resourceBasePath, Map<String, ResponseData> responseInputs,
+            List<String> badResponseIdentifiers, List<String> invalidResponseIdentifiers,
+            Map<String, Object> itemParameters, Map<String, Object> renderingParameters,
+            SerializationMethod serializationMethod) {
         /* Set provided item & rendering parameters */
         Map<String, Object> xsltParameters = new HashMap<String, Object>();
         if (itemParameters!=null) {
@@ -120,8 +155,8 @@ public final class Renderer {
         
         /* Set other control parameters */
         xsltParameters.put("serializationMethod", serializationMethod.toString());
-        xsltParameters.put("itemHref", itemHref);
-        xsltParameters.put("isResponded", isResponded);
+        xsltParameters.put("itemSystemId", resolvedAssessmentItem.getItemLookup().getSystemId());
+        xsltParameters.put("isResponded", responseInputs!=null);
         xsltParameters.put("badResponseIdentifiers", badResponseIdentifiers);
         xsltParameters.put("invalidResponseIdentifiers", invalidResponseIdentifiers);
         
@@ -135,7 +170,7 @@ public final class Renderer {
         /* Pass interaction choice orders as parameters */
         xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
         
-        return doTransform(item, standaloneItemXsltUri, xsltParameters, serializationMethod);
+        return doTransform(resolvedAssessmentItem, standaloneItemXsltUri, xsltParameters, serializationMethod);
     }
     
     /**
@@ -144,13 +179,13 @@ public final class Renderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} as part
      * of an {@link AssessmentTest}
      */
-    public String renderTestItem(AssessmentTest test, AssessmentItem item,
+    public String renderTestItem(ResolvedAssessmentTest resolvedAssessmnetTest, ResolvedAssessmentItem resolvedAssessmentItem,
             ItemSessionState itemSessionState, String resourceBasePath, String itemHref, boolean isResponded,
             Map<String, Value> responses, Map<String, Object> testParameters,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
-        logger.debug("renderTestItem(test={}, item={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
+        logger.debug("renderTestItem(resolvedAssessmentTest={}, resolvedAssessmentItem={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
                 + "responses={}, testParameters={}, itemParameters={}, renderingParameters={}, serializationMethod={}",
-                new Object[] { test, item, itemSessionState,
+                new Object[] { resolvedAssessmnetTest, resolvedAssessmentItem, itemSessionState,
                         resourceBasePath, itemHref, isResponded, responses,
                         testParameters, itemParameters, renderingParameters, serializationMethod
                 });
@@ -185,7 +220,7 @@ public final class Renderer {
 //            xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
 //        }
 
-        return doTransform(item, testItemXsltUri, xsltParameters, serializationMethod);
+        return doTransform(resolvedAssessmentItem, testItemXsltUri, xsltParameters, serializationMethod);
     }
     
     /**
@@ -207,7 +242,7 @@ public final class Renderer {
         return value;
     }
     
-    private String doTransform(AssessmentObject assessmentObject, URI stylesheetUri, 
+    private String doTransform(ResolvedAssessmentObject<?> resolvedAssessmentObject, URI stylesheetUri, 
             Map<String, Object> parameters, SerializationMethod serializationMethod) {
         /* Compile stylesheet (or reuse compiled stylesheet from cache) */
         TransformerHandler transformerHandler = stylesheetManager.getCompiledStylesheetHandler(stylesheetUri);
@@ -244,7 +279,7 @@ public final class Renderer {
         serializationOptions.setIndenting(true);
         QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(transformerHandler, new SaxFiringOptions());
         try {
-            saxEventFirer.fireSaxDocument(assessmentObject);
+            saxEventFirer.fireSaxDocument(resolvedAssessmentObject.getRootObjectLookup().extractAssumingSuccessful());
         }
         catch (SAXException e) {
             throw new QtiRenderingException("Unexpected Exception firing QTI Object SAX events at rendering stylesheet");

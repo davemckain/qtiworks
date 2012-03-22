@@ -40,4 +40,6 @@ package uk.ac.ed.ph.qtiworks.domain;
  */
 public class User {
     
+    /* TODO */
+    
 }

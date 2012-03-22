@@ -8,7 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<utils:exposeStaticFields className="uk.ac.ed.ph.qtiengine.web.domain.AssessmentPackage$AssessmentType" targetName="AssessmentType" />
+<utils:exposeStaticFields className="uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage$AssessmentType" targetName="AssessmentType" />
 <%--
 
 Validator submission form

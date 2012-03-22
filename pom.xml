@@ -29,6 +29,7 @@ All Rights Reserved
     <saxon9.version>9.1.0.8</saxon9.version>
     <xerces.version>2.9.1</xerces.version>
     <spring.version>3.1.1.RELEASE</spring.version>
+    <jackson.version>1.9.4</jackson.version>
     <cglib.version>2.2.2</cglib.version>
     <commons-lang.version>2.1</commons-lang.version>
     <commons-io.version>2.1</commons-io.version>

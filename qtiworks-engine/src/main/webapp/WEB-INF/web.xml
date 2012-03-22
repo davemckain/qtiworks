@@ -24,7 +24,7 @@ All Rights Reserved
        specified for component-scanning -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>uk.ac.ed.ph.qtiengine.config.ApplicationConfiguration</param-value>
+    <param-value>uk.ac.ed.ph.qtiworks.config.ApplicationConfiguration</param-value>
   </context-param>
 
   <!-- Bootstrap the root application context as usual using ContextLoaderListener -->
@@ -45,7 +45,7 @@ All Rights Reserved
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>uk.ac.ed.ph.qtiengine.config.MvcConfiguration</param-value>
+      <param-value>uk.ac.ed.ph.qtiworks.config.MvcConfiguration</param-value>
     </init-param>
   </servlet>
 

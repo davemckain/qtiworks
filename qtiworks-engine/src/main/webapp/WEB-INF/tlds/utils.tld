@@ -21,7 +21,7 @@ All Rights Reserved.
 
   <tag>
     <name>url</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.UrlTag</tag-class>
+    <tag-class>uk.ac.ed.ph.qtiworks.web.view.UrlTag</tag-class>
     <body-content>scriptless</body-content>
     <attribute>
       <name>var</name>
@@ -44,7 +44,7 @@ All Rights Reserved.
   </tag>
   <tag>
     <name>redirectUrl</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.RedirectUrlTag</tag-class>
+    <tag-class>uk.ac.ed.ph.qtiworks.web.view.RedirectUrlTag</tag-class>
     <body-content>scriptless</body-content>
     <attribute>
       <name>var</name>
@@ -67,7 +67,7 @@ All Rights Reserved.
   </tag>
   <tag>
     <name>param</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.ParamTag</tag-class>
+    <tag-class>uk.ac.ed.ph.qtiworks.web.view.ParamTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>name</name>
@@ -82,7 +82,7 @@ All Rights Reserved.
   </tag>
   <tag>
     <name>exposeStaticFields</name>
-    <tag-class>uk.ac.ed.ph.qtiengine.web.view.ExposeStaticFieldsTag</tag-class>
+    <tag-class>uk.ac.ed.ph.qtiworks.web.view.ExposeStaticFieldsTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>className</name>
@@ -97,7 +97,7 @@ All Rights Reserved.
   <function>
     <description>Converts internal CP URI scheme to path</description>
     <name>extractContentPackagePath</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
     <function-signature>String extractContentPackagePath(
       java.net.URI
     )</function-signature>
@@ -105,7 +105,7 @@ All Rights Reserved.
   <function>
     <description>Object Dump</description>
     <name>dumpObject</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
     <function-signature>String dumpObject(
       java.lang.Object
     )</function-signature>
@@ -113,7 +113,7 @@ All Rights Reserved.
   <function>
     <description>Encodes a link to another CST page</description>
     <name>encodePageLink</name>
-    <function-class>uk.ac.ed.ph.qtiengine.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
     <function-signature>String encodePageLink(
       javax.servlet.jsp.PageContext,
       java.lang.String

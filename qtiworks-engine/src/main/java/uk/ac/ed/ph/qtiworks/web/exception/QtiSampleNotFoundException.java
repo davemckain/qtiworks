@@ -31,53 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.web.exception;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Defines beans for the MVC layer
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-@EnableWebMvc
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web"})
-public class MvcConfiguration {
-    
-    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
-    
-    @Bean
-    MultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
-        return resolver;
-    }
-    
-    @Bean
-    ViewResolver viewResolver() {
-        UrlBasedViewResolver result = new UrlBasedViewResolver();
-        result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
-        result.setSuffix(".jsp");
-        return result;
-    }
-    
-    @Bean
-    MessageSource messageSource() {
-        ResourceBundleMessageSource result = new ResourceBundleMessageSource();
-        result.setBasename("messages");
-        return result;
+@ResponseStatus(value=HttpStatus.BAD_REQUEST)
+public class QtiSampleNotFoundException extends RuntimeException {
+
+    private static final long serialVersionUID = -5477159206515058420L;
+
+    public QtiSampleNotFoundException() {
+        super();
     }
 
+    public QtiSampleNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public QtiSampleNotFoundException(String message) {
+        super(message);
+    }
+
+    public QtiSampleNotFoundException(Throwable cause) {
+        super(cause);
+    }
 }

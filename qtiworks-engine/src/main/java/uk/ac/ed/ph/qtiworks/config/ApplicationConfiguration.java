@@ -33,38 +33,66 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.rendering.Renderer;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
+
+import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
+import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
 import org.qtitools.mathassess.MathAssessExtensionPackage;
+
+import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.WebApplicationContext;
 
+/**
+ * Defines webapp-scoped beans
+ *
+ * @author David McKain
+ */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiengine.services"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.web"})
 public class ApplicationConfiguration {
     
-    private final JqtiExtensionManager jqtiExtensionManager;
-    private final QtiXmlReader qtiXmlReader;
+    @Resource
+    private WebApplicationContext webApplicationContext;
     
-    public ApplicationConfiguration() {
-        jqtiExtensionManager = new JqtiExtensionManager(new MathAssessExtensionPackage());
-        
+    @Bean
+    public String contextPath() {
+        return webApplicationContext.getServletContext().getContextPath();
+    }
+    
+    @Bean
+    public StylesheetCache stylesheetCache() {
+        return new SimpleStylesheetCache();
+    }
+    
+    @Bean
+    public MathAssessExtensionPackage mathAssessExtensionPackage() {
+        return new MathAssessExtensionPackage(stylesheetCache());
+    }
+    
+    @Bean(initMethod="init", destroyMethod="destroy")
+    public JqtiExtensionManager jqtiExtensionManager() {
+        return new JqtiExtensionManager(mathAssessExtensionPackage());
+    }
+    
+    @Bean
+    public QtiXmlReader qtiXmlReader() {
         SimpleSchemaCache schemaCache = new SimpleSchemaCache();
-        qtiXmlReader = new QtiXmlReader(jqtiExtensionManager, schemaCache);
+        return new QtiXmlReader(jqtiExtensionManager(), schemaCache);
     }
     
     @Bean
-    JqtiExtensionManager jqtiExtensionManager() {
-        return jqtiExtensionManager;
+    public Renderer renderer() {
+        SimpleXsltStylesheetCache xsltStylesheetCache = new SimpleXsltStylesheetCache();
+        return new Renderer(contextPath(), xsltStylesheetCache);
     }
-    
-    @Bean
-    QtiXmlReader qtiXmlReader() {
-        return qtiXmlReader;
-    }
-
 }

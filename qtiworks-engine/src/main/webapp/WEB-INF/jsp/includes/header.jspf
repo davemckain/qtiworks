@@ -31,7 +31,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
     <title>QTI - <c:out value="${title}" default="QTI Experimental"/></title>
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/webapp-base.css'/>">
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/content-styles.css'/>">
-    <link rel="stylesheet" type="text/css" href="<c:url value='/includes/qtiengine.css'/>">
+    <link rel="stylesheet" type="text/css" href="<c:url value='/includes/qtiworks.css'/>">
     <script type="text/javascript" src="<c:url value='/lib/jquery/jquery-1.4.4.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/includes/validation-toggler.js'/>"></script>
     <%-- Import jQuery UI if requested --%>
