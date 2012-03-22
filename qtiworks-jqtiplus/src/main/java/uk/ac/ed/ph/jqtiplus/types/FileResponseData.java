@@ -37,7 +37,7 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * FIXME: Document this type
+ * Encapsulates file-based response data
  *
  * @author David McKain
  */

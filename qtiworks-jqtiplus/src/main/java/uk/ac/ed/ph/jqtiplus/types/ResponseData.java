@@ -33,12 +33,17 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
+import java.io.Serializable;
+
 /**
- * FIXME: Document this type
+ * Encapsulates raw response data
+ * 
+ * @see StringResponseData
+ * @see FileResponseData
  *
  * @author David McKain
  */
-public interface ResponseData {
+public interface ResponseData extends Serializable {
     
     public static enum ResponseDataType {
         STRING,

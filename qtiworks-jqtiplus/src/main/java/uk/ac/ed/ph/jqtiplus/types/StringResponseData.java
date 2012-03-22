@@ -36,7 +36,8 @@ package uk.ac.ed.ph.jqtiplus.types;
 import java.io.Serializable;
 
 /**
- * FIXME: Document this type
+ * Encapsulates string-based response data, which is represented as an array
+ * of Strings.
  *
  * @author David McKain
  */
@@ -48,6 +49,10 @@ public final class StringResponseData implements ResponseData, Serializable {
     
     public StringResponseData(String[] responseData) {
         this.responseData = responseData;
+    }
+    
+    public StringResponseData(String singleResponse) {
+        this(new String[] { singleResponse });
     }
     
     @Override
