@@ -184,7 +184,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @param identifier given identifier
      * @return hotspotChoice with given identifier or null
      */
-    public HotspotChoice getHotspotChoice(String identifier) {
+    public HotspotChoice getHotspotChoice(Identifier identifier) {
         for (final HotspotChoice choice : getHotspotChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;

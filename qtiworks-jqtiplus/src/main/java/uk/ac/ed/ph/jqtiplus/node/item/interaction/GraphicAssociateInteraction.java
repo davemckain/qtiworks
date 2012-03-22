@@ -141,7 +141,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
      * @param identifier given identifier
      * @return associableHotspot with given identifier or null
      */
-    public AssociableHotspot getAssociableHotspot(String identifier) {
+    public AssociableHotspot getAssociableHotspot(Identifier identifier) {
         for (final AssociableHotspot choice : getAssociableHotspots()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;

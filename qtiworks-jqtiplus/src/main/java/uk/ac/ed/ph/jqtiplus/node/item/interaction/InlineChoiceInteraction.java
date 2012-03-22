@@ -159,13 +159,12 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public InlineChoice getInlineChoice(String identifier) {
+    public InlineChoice getInlineChoice(Identifier identifier) {
         for (final InlineChoice choice : getInlineChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
             }
         }
-
         return null;
     }
 

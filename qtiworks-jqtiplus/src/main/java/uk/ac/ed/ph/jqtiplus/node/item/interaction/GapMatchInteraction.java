@@ -171,7 +171,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
      * @param identifier given identifier
      * @return gapChoice with given identifier or null
      */
-    public GapChoice getGapChoice(String identifier) {
+    public GapChoice getGapChoice(Identifier identifier) {
         for (final GapChoice choice : getGapChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;

@@ -186,7 +186,6 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
         final Set<Identifier> associableHotspotIdentifiers = new HashSet<Identifier>();
         final Map<Identifier, Integer> responseAssociableHotspotCounts = new HashMap<Identifier, Integer>();
         final List<AssociableHotspot> associableHotspots = getAssociableHotspots();
-        getAssociableHotspots();
         for (final AssociableHotspot hotspot : associableHotspots) {
             final Identifier hotspotIdentifier = hotspot.getIdentifier();
             associableHotspotIdentifiers.add(hotspotIdentifier);

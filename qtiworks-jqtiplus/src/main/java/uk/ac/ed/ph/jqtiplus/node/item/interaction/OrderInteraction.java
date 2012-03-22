@@ -237,7 +237,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public SimpleChoice getSimpleChoice(String identifier) {
+    public SimpleChoice getSimpleChoice(Identifier identifier) {
         for (final SimpleChoice choice : getSimpleChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;

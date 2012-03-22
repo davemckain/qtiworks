@@ -174,7 +174,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
      * @param identifier given identifier
      * @return hotspotChoice with given identifier or null
      */
-    public HotspotChoice getHotspotChoice(String identifier) {
+    public HotspotChoice getHotspotChoice(Identifier identifier) {
         for (final HotspotChoice choice : getHotspotChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -216,19 +216,19 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     @Override
     public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Extract response values */
-        final Set<String> responseChoiceIdentifiers = new HashSet<String>();
+        final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
         else if (responseValue.getCardinality().isList()) {
             /* (Container response) */
             for (final SingleValue hotspotChoiceIdentifier : (ListValue) responseValue) {
-                responseChoiceIdentifiers.add(((IdentifierValue) hotspotChoiceIdentifier).toString());
+                responseChoiceIdentifiers.add(((IdentifierValue) hotspotChoiceIdentifier).identifierValue());
             }
         }
         else {
             /* (Single response - this won't actually happen) */
-            responseChoiceIdentifiers.add(((IdentifierValue) responseValue).toString());
+            responseChoiceIdentifiers.add(((IdentifierValue) responseValue).identifierValue());
         }
 
         /* Chheck min/max (if set) */
@@ -245,7 +245,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
         for (final HotspotChoice choice : getHotspotChoices()) {
             choiceIdentifiers.add(choice.getIdentifier());
         }
-        for (final String choiceIdentifier : responseChoiceIdentifiers) {
+        for (final Identifier choiceIdentifier : responseChoiceIdentifiers) {
             if (!choiceIdentifiers.contains(choiceIdentifier)) {
                 return false;
             }

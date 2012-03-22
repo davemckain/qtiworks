@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
+import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -203,13 +204,12 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public SimpleChoice getSimpleChoice(String identifier) {
+    public SimpleChoice getSimpleChoice(Identifier identifier) {
         for (final SimpleChoice choice : getSimpleChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
             }
         }
-
         return null;
     }
 
@@ -248,21 +248,21 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     @Override
     public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         /* Extract response values */
-        final Set<String> responseChoiceIdentifiers = new HashSet<String>();
+        final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {
             /* (Empty response) */
         }
         else if (responseValue.getCardinality().isList()) {
             /* (Container response) */
             for (final SingleValue value : (ListValue) responseValue) {
-                responseChoiceIdentifiers.add(value.toString());
+                responseChoiceIdentifiers.add(((IdentifierValue) value).identifierValue());
             }
         }
         else {
             /* (Single response) */
-            responseChoiceIdentifiers.add(responseValue.toString());
+            responseChoiceIdentifiers.add(((IdentifierValue) responseValue).identifierValue());
         }
-
+        
         /* Check the number of responses */
         final int minChoices = getMinChoices();
         final int maxChoices = getMaxChoices();
@@ -272,13 +272,14 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
         if (maxChoices != 0 && responseChoiceIdentifiers.size() > maxChoices) {
             return false;
         }
+        
 
         /* Make sure each choice is a valid identifier */
         final Set<Identifier> simpleChoiceIdentifiers = new HashSet<Identifier>();
         for (final SimpleChoice simpleChoice : getSimpleChoices()) {
             simpleChoiceIdentifiers.add(simpleChoice.getIdentifier());
         }
-        for (final String responseChoiceIdentifier : responseChoiceIdentifiers) {
+        for (final Identifier responseChoiceIdentifier : responseChoiceIdentifiers) {
             if (!simpleChoiceIdentifiers.contains(responseChoiceIdentifier)) {
                 return false;
             }
