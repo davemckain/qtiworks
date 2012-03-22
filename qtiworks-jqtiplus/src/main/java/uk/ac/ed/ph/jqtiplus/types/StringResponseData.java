@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -49,11 +51,11 @@ public final class StringResponseData implements ResponseData, Serializable {
     private String[] responseData;
     
     public StringResponseData(String[] responseData) {
-        this.responseData = responseData;
+        this.responseData = responseData!=null ? responseData : StringUtilities.EMPTY_STRING_ARRAY;
     }
     
     public StringResponseData(String singleResponse) {
-        this(new String[] { singleResponse });
+        this.responseData = responseData!=null ? new String[] { singleResponse } : StringUtilities.EMPTY_STRING_ARRAY;
     }
     
     @Override

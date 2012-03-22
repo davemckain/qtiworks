@@ -182,24 +182,25 @@ public class CandidateController {
         if (request instanceof MultipartHttpServletRequest) {
             extractFileResponseData((MultipartHttpServletRequest) request, responseMap);
         }
+        logger.debug("Extracted responses {}", responseMap);
 
         /* Bind responses */
         ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         List<Identifier> invalidResponseIdentifiers = null;
         List<Identifier> badResponseIdentifiers = itemController.bindResponses(responseMap);
         if (badResponseIdentifiers.isEmpty()) {
-            logger.info("Responses bound successfully, so continuing to response validation step");
+            logger.debug("Responses bound successfully, so continuing to response validation step");
             invalidResponseIdentifiers = itemController.validateResponses();
             if (invalidResponseIdentifiers.isEmpty()) {
-                logger.info("Responses validated successfully, so invoking response processing");
+                logger.debug("Responses validated successfully, so invoking response processing");
                 itemController.processResponses();
             }
             else {
-                logger.info("Invalid responses submitted to {}, not invoking response processing", invalidResponseIdentifiers);
+                logger.debug("Invalid responses submitted to {}, not invoking response processing", invalidResponseIdentifiers);
             }
         }
         else {
-            logger.info("Bad responses submitted to {}, so no response processing invoked", badResponseIdentifiers);
+            logger.debug("Bad responses submitted to {}, so no response processing invoked", badResponseIdentifiers);
         }
         
         Map<String, Object> renderingParameters = createRenderingParameters();

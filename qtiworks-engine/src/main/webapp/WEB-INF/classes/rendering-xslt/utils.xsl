@@ -41,7 +41,22 @@ Rendering utility templates
 
   <xsl:template name="internalState" as="element()+">
     <div id="debug_internal_state">
-      <h2>Internal State</h2>
+      <h2>Session State</h2>
+      <xsl:if test="exists($shuffledChoiceOrders)">
+        <h3>Shuffled choice orders</h3>
+        <ul>
+          <xsl:for-each select="$shuffledChoiceOrders">
+            <li>
+              <span class="variable_name">
+                <xsl:value-of select="@responseIdentifier"/>
+              </span>
+              <xsl:text> = [</xsl:text>
+              <xsl:value-of select="qw:choice/@identifier" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
       <xsl:if test="exists($templateValues)">
         <h3>Item Template vars</h3>
         <xsl:call-template name="dump-values">
