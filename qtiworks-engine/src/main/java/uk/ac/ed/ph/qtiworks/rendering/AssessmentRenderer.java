@@ -97,16 +97,16 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderFreshStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
-            ItemSessionState itemSessionState, String resourceBasePath, 
+            ItemSessionState itemSessionState,
             Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
         logger.debug("renderFreshStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
-                + "resourceBasePath={}, renderingParameters={} serializationMethod={}",
+                + "renderingParameters={} serializationMethod={}",
                 new Object[] {
-                        resolvedAssessmentItem, itemSessionState, resourceBasePath, 
+                        resolvedAssessmentItem, itemSessionState,
                         renderingParameters, serializationMethod
                 });
         
-        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
+        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState,
                 null, null, null, renderingParameters, serializationMethod);
     }
     
@@ -115,19 +115,18 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderRespondedStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
-            ItemSessionState itemSessionState, 
-            String resourceBasePath, Map<String, ResponseData> responseInputs,
+            ItemSessionState itemSessionState, Map<String, ResponseData> responseInputs,
             List<Identifier> badResponseIdentifiers, List<Identifier> invalidResponseIdentifiers,
             Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
         logger.debug("renderStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
-                + "resourceBasePath={}, responseInputs={}, unboundResponseIdentifiers={}, "
+                + "responseInputs={}, unboundResponseIdentifiers={}, "
                 + "invalidResponseIdentifiers={}, enderingParameters={} serializationMethod={}",
                 new Object[] { 
-                        resolvedAssessmentItem, itemSessionState, resourceBasePath,
+                        resolvedAssessmentItem, itemSessionState, 
                         responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                         renderingParameters, serializationMethod
                 });
-        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState, resourceBasePath,
+        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState,
                 responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, serializationMethod);
     }
@@ -137,8 +136,7 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     private String doRenderStandaloneItem(ResolvedAssessmentItem resolvedAssessmentItem,
-            ItemSessionState itemSessionState, 
-            String resourceBasePath, Map<String, ResponseData> responseInputs,
+            ItemSessionState itemSessionState, Map<String, ResponseData> responseInputs,
             List<Identifier> badResponseIdentifiers, List<Identifier> invalidResponseIdentifiers,
             Map<String, Object> renderingParameters,
             SerializationMethod serializationMethod) {
@@ -150,7 +148,6 @@ public final class AssessmentRenderer {
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
         xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
-        xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
         xsltParameters.put("serializationMethod", serializationMethod.toString());
@@ -179,13 +176,13 @@ public final class AssessmentRenderer {
      * of an {@link AssessmentTest}
      */
     public String renderTestItem(ResolvedAssessmentTest resolvedAssessmentTest, ResolvedAssessmentItem resolvedAssessmentItem,
-            ItemSessionState itemSessionState, String resourceBasePath, String itemHref, boolean isResponded,
+            ItemSessionState itemSessionState, String itemHref, boolean isResponded,
             Map<String, Value> responses, Map<String, Object> testParameters,
             Map<String, Object> itemParameters, Map<String, Object> renderingParameters, SerializationMethod serializationMethod) {
-        logger.debug("renderTestItem(resolvedAssessmentTest={}, resolvedAssessmentItem={}, itemSessionState={}, resourceBasePath={}, itemHref={}, isResponded={}, "
+        logger.debug("renderTestItem(resolvedAssessmentTest={}, resolvedAssessmentItem={}, itemSessionState={}, itemHref={}, isResponded={}, "
                 + "responses={}, testParameters={}, itemParameters={}, renderingParameters={}, serializationMethod={}",
                 new Object[] { resolvedAssessmentTest, resolvedAssessmentItem, itemSessionState,
-                        resourceBasePath, itemHref, isResponded, responses,
+                        itemHref, isResponded, responses,
                         testParameters, itemParameters, renderingParameters, serializationMethod
                 });
         
@@ -199,7 +196,6 @@ public final class AssessmentRenderer {
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
         xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
-        xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
         xsltParameters.put("itemHref", itemHref);

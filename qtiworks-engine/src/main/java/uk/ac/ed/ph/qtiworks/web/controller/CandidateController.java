@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.web.exception.QtiSampleNotFoundException;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
+import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -61,7 +62,10 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +73,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -78,6 +83,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -138,7 +144,7 @@ public class CandidateController {
         logger.info("Starting new session for {}", demoSampleResource);
 
         /* Load and resolve item */
-        final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
+        final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
         final URI sampleResourceUri = demoSampleResource.toClassPathUri();
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
@@ -153,6 +159,13 @@ public class CandidateController {
 
         /* Redirect to session handler */
         return "redirect:/dispatcher/itemSession";
+    }
+
+    /**
+     * FIXME: Might want to create a sandboxed version of this.
+     */
+    private ResourceLocator getSampleResourceLocator() {
+        return new ClassPathResourceLocator();
     }
     
     @RequestMapping(value="/itemSession", method={ RequestMethod.GET, RequestMethod.POST })
@@ -186,7 +199,7 @@ public class CandidateController {
         
         Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
-                "/RESOURCES-TODO", renderingParameters, SerializationMethod.HTML5_MATHJAX);
+                renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
     
     private String handleResponseSubmission(HttpServletRequest request, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState)
@@ -220,7 +233,7 @@ public class CandidateController {
         
         Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderRespondedStandaloneItem(resolvedAssessmentItem, itemSessionState,
-                "/RESOURCES-TODO", responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
+                responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
     
@@ -259,5 +272,26 @@ public class CandidateController {
                 responseMap.put(responseIdentifier, stringResponseData);
             }
         }
+    }
+    
+    /**
+     * FIXME: This currently can be used to serve up anything within the ClassPath.
+     * This needs to be integrated with a proper sandboxed URI.
+     */
+    @RequestMapping(value="/assessmentResource", method=RequestMethod.GET)
+    public void assessmentResource(@RequestParam("uri") URI uri, HttpServletResponse response) throws IOException {
+        ResourceLocator resourceLocator = getSampleResourceLocator();
+        InputStream resourceStream = resourceLocator.findResource(uri);
+        if (resourceStream==null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        String contentType = getResourceContentType(uri);
+        response.setContentType(contentType);
+        IOUtilities.transfer(resourceStream, response.getOutputStream(), false);
+    }
+    
+    private String getResourceContentType(URI uri) {
+        return URLConnection.getFileNameMap().getContentTypeFor(uri.toString());
     }
 }
