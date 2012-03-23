@@ -43,7 +43,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
  */
 public final class StandardQtiSampleSet {
     
-    private static final QtiSampleSet instance = new QtiSampleSet(
+    private static final QtiSampleSet instance = new QtiSampleSet("Standard QTI 2.1 reference examples",
             new QtiSampleResource(Type.ITEM, "ims/adaptive_template.xml"),
             new QtiSampleResource(Type.ITEM, "ims/adaptive.xml"),
             new QtiSampleResource(Type.ITEM, "ims/associate.xml"),
@@ -85,6 +85,10 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/upload_composite.xml"),
             new QtiSampleResource(Type.ITEM, "ims/upload.xml")
     );
+    
+    private StandardQtiSampleSet() {
+        /* No constructor */
+    }
     
     public static QtiSampleSet instance() {
         return instance;

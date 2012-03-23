@@ -33,25 +33,53 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 /**
- * Registry of all of our {@link QtiSampleSet}s
+ * Groups a number of {@link QtiSampleSet}s together
  *
  * @author David McKain
  */
-public final class AllSampleSets {
+public final class QtiSampleCollection implements Serializable, Iterable<QtiSampleSet> {
     
-    private static final QtiSampleSet[] allSets = new QtiSampleSet[] {
-        StandardQtiSampleSet.instance(),
-        MathAssessSampleSet.instance()
-    };
+    private static final long serialVersionUID = 2398153364030696697L;
     
-    private static final QtiSampleSet setUnion = QtiSampleSet.union(allSets);
+    private static final QtiSampleCollection fullCollectionInstance;
     
-    public static QtiSampleSet[] asArray() {
-        return allSets;
+    static {
+        fullCollectionInstance = new QtiSampleCollection(StandardQtiSampleSet.instance(), MathAssessSampleSet.instance());
     }
     
-    public static QtiSampleSet asUnion() {
-        return setUnion;
+    public static final QtiSampleCollection fullCollection() {
+        return fullCollectionInstance;
+    }
+    
+    private final List<QtiSampleSet> qtiSampleSets;
+    
+    public QtiSampleCollection(QtiSampleSet... qtiSampleSets) {
+        this(Arrays.asList(qtiSampleSets));
+    }
+    
+    public QtiSampleCollection(final List<QtiSampleSet> qtiSampleSets) {
+        this.qtiSampleSets = qtiSampleSets;
+    }
+   
+    @Override
+    public Iterator<QtiSampleSet> iterator() {
+        return qtiSampleSets.iterator();
+    }
+    
+    public List<QtiSampleSet> getQtiSampleSets() {
+        return qtiSampleSets;
+    }
+    
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

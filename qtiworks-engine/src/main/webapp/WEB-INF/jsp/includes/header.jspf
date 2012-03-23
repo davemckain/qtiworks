@@ -70,7 +70,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
       </div>
       <div id="sectionHeader">
         <div id="sectionHeaderTitle">
-           <a href="${utils:encodePageLink(pageContext, 'HOME')}">Son-of-MathAssessEngine</a>
+           <a href="${utils:encodePageLink(pageContext, 'HOME')}">QTIWorks</a>
         </div>
       </div>
       <div id="contentArea">

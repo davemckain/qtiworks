@@ -35,9 +35,12 @@ package uk.ac.ed.ph.qtiworks.web.controller;
 
 import uk.ac.ed.ph.qtiworks.rendering.Renderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.samples.AllSampleSets;
+import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.services.CandidateUploadService;
 import uk.ac.ed.ph.qtiworks.web.exception.QtiSampleNotFoundException;
 
@@ -71,6 +74,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -88,6 +92,11 @@ public class CandidateController {
     
     private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
     
+    public static final QtiSampleCollection demoSampleCollection = new QtiSampleCollection(
+            StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
+            MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
+    );
+    
     private static final String CURRENT_ITEM = "currentItem";
     private static final String CURRENT_ITEM_SESSION_STATE = "currentItemSessionState";
     
@@ -102,6 +111,12 @@ public class CandidateController {
     
     @Resource
     private Renderer renderer;
+    
+    @RequestMapping(value="/listSamples", method=RequestMethod.GET)
+    public String listSamples(Model model) {
+        model.addAttribute("demoSampleCollection", demoSampleCollection);
+        return "listSamples";
+    }
 
     /**
      * Starts a new item session using the sample resource with the given path
@@ -110,21 +125,21 @@ public class CandidateController {
     public String newSampleItemSession(HttpSession httpSession, @PathVariable int setIndex, @PathVariable int itemIndex) {
         logger.info("newSampleItemSession(setIndex={}, itemIndex={})", setIndex, itemIndex);
         
-        final QtiSampleSet[] allSampleSets = AllSampleSets.asArray();
-        if (setIndex < 0 || setIndex >= allSampleSets.length) {
-            throw new QtiSampleNotFoundException("Could not find sample set with index " + setIndex);
+        final List<QtiSampleSet> demoSampleSets = demoSampleCollection.getQtiSampleSets();
+        if (setIndex < 0 || setIndex >= demoSampleSets.size()) {
+            throw new QtiSampleNotFoundException("Could not find demo sample set with index " + setIndex);
         }
-        final QtiSampleSet qtiSampleSet = allSampleSets[setIndex];
-        final List<QtiSampleResource> qtiSampleResources = qtiSampleSet.getResources();
-        if (itemIndex <0 || itemIndex >= qtiSampleResources.size()) {
-            throw new QtiSampleNotFoundException("Could not find sample resource with index " + setIndex + " in set " + qtiSampleSet);
+        final QtiSampleSet demoSampleSet = demoSampleSets.get(setIndex);
+        final List<QtiSampleResource> demoSampleResources = demoSampleSet.getQtiSampleResources();
+        if (itemIndex <0 || itemIndex >= demoSampleResources.size()) {
+            throw new QtiSampleNotFoundException("Could not find demo sample resource with index " + setIndex + " in set " + demoSampleSet);
         }
-        final QtiSampleResource qtiSampleResource = qtiSampleResources.get(itemIndex);
-        logger.info("Starting new session for {}", qtiSampleResource);
+        final QtiSampleResource demoSampleResource = demoSampleResources.get(itemIndex);
+        logger.info("Starting new session for {}", demoSampleResource);
 
         /* Load and resolve item */
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
-        final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
+        final URI sampleResourceUri = demoSampleResource.toClassPathUri();
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);

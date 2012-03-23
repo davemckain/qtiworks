@@ -72,8 +72,8 @@ public class QtiXmlReaderSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance()
-                .union(MathAssessSampleSet.instance()));
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance(),
+                MathAssessSampleSet.instance());
     }
     
     public QtiXmlReaderSampleTests(QtiSampleResource qtiSampleResource) {

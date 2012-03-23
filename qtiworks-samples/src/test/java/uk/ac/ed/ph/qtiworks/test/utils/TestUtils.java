@@ -53,10 +53,12 @@ import java.util.List;
  */
 public class TestUtils {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet qtiSampleSet) {
+    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
         List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-            result.add(new Object[] { qtiSampleResource });
+        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
+            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
+                result.add(new Object[] { qtiSampleResource });
+            }
         }
         return result;
     }

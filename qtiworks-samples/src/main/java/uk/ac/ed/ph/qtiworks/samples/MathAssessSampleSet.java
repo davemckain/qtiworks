@@ -42,9 +42,13 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
  */
 public final class MathAssessSampleSet {
     
-    private static final QtiSampleSet instance = new QtiSampleSet(
+    private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
             new QtiSampleResource(Type.ITEM, "mathassess/MAA01a.xml")
     );
+    
+    private MathAssessSampleSet() {
+        /* No constructor */
+    }
     
     public static QtiSampleSet instance() {
         return instance;

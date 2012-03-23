@@ -20,7 +20,7 @@ JSP Page Footer
         <div id="footer-text">
           <%-- Usual Copyright stuff --%>
           <p>
-            QTI Experimental
+            QTIWorks
             <br />
             Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
             <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,

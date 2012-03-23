@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -44,16 +47,24 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class QtiSampleSet implements Iterable<QtiSampleResource> {
+public final class QtiSampleSet implements Serializable, Iterable<QtiSampleResource> {
     
+    private static final long serialVersionUID = 5889801740586064839L;
+    
+    private final String title;
     private final List<QtiSampleResource> resources;
     
-    public QtiSampleSet(QtiSampleResource... resources) {
-        this(Arrays.asList(resources));
+    public QtiSampleSet(String title, QtiSampleResource... resources) {
+        this(title, Arrays.asList(resources));
     }
     
-    public QtiSampleSet(List<QtiSampleResource> resources) {
+    public QtiSampleSet(String title, List<QtiSampleResource> resources) {
+        this.title = title;
         this.resources = resources;
+    }
+    
+    public String getTitle() {
+        return title;
     }
     
     @Override
@@ -61,17 +72,8 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
         return resources.iterator();
     }
     
-    public List<QtiSampleResource> getResources() {
+    public List<QtiSampleResource> getQtiSampleResources() {
         return resources;
-    }
-    
-    public QtiSampleResource findByRelativePath(String relativePath) {
-        for (QtiSampleResource resource : resources) {
-            if (relativePath.equals(resource.getRelativePath())) {
-                return resource;
-            }
-        }
-        return null;
     }
     
     public QtiSampleSet havingType(QtiSampleResource.Type type) {
@@ -81,7 +83,7 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(filtered);
+        return new QtiSampleSet(title, filtered);
     }
     
     public QtiSampleSet havingFeature(QtiSampleResource.Feature feature) {
@@ -91,7 +93,7 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(filtered);
+        return new QtiSampleSet(title, filtered);
     }
     
     public QtiSampleSet withoutFeature(QtiSampleResource.Feature feature) {
@@ -101,21 +103,11 @@ public final class QtiSampleSet implements Iterable<QtiSampleResource> {
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(filtered);
+        return new QtiSampleSet(title, filtered);
     }
     
-    public QtiSampleSet union(QtiSampleSet other) {
-        List<QtiSampleResource> mergedResources = new ArrayList<QtiSampleResource>(resources);
-        mergedResources.addAll(other.resources);
-        return new QtiSampleSet(mergedResources);
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
-    
-    public static QtiSampleSet union(QtiSampleSet[] sets) {
-        List<QtiSampleResource> mergedResources = new ArrayList<QtiSampleResource>();
-        for (QtiSampleSet set : sets) {
-            mergedResources.addAll(set.resources);
-        }
-        return new QtiSampleSet(mergedResources);
-    }
-
 }

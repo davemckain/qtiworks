@@ -90,8 +90,8 @@ public class SerializationSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
-                .union(MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)));
+        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID));
     }
     
     public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
