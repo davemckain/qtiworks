@@ -1,5 +1,10 @@
 /* (This provides basic styling for the rendered content of items) */
 
+.qtiworksRendering .assessmentItem {
+  padding: 0.5em 0.5em 3em 0.5em;
+  border-bottom: 1px solid #ccc;
+}
+
 .qtiworksRendering .assessmentItem div.badResponse,
 .qtiworksRendering .assessmentItem span.badResponse {
   color: red;
@@ -254,4 +259,3 @@
 .qtiworksRendering .assessmentItem table.inputHelp .longComma {
   margin-right: 0.5em;
 }
-

@@ -13,9 +13,6 @@ Rendering utility templates
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xs qti qw">
 
-  <!-- Extra Debugging Params -->
-  <xsl:param name="showInternalState" select="false()" as="xs:boolean"/>
-
   <xsl:variable name="apos" as="xs:string" select='"&apos;"'/>
 
   <!-- ************************************************************ -->
@@ -40,47 +37,49 @@ Rendering utility templates
   <!-- ************************************************************ -->
 
   <xsl:template name="internalState" as="element()+">
-    <div id="debug_internal_state">
-      <h2>Session State</h2>
-      <xsl:if test="exists($shuffledChoiceOrders)">
-        <h3>Shuffled choice orders</h3>
-        <ul>
-          <xsl:for-each select="$shuffledChoiceOrders">
-            <li>
-              <span class="variable_name">
-                <xsl:value-of select="@responseIdentifier"/>
-              </span>
-              <xsl:text> = [</xsl:text>
-              <xsl:value-of select="qw:choice/@identifier" separator=", "/>
-              <xsl:text>]</xsl:text>
-            </li>
-          </xsl:for-each>
-        </ul>
-      </xsl:if>
-      <xsl:if test="exists($templateValues)">
-        <h3>Item Template vars</h3>
-        <xsl:call-template name="dump-values">
-          <xsl:with-param name="valueHolders" select="$templateValues"/>
-        </xsl:call-template>
-      </xsl:if>
-      <xsl:if test="exists($responseValues)">
-        <h3>Item Response vars</h3>
-        <xsl:call-template name="dump-values">
-          <xsl:with-param name="valueHolders" select="$responseValues"/>
-        </xsl:call-template>
-      </xsl:if>
-      <xsl:if test="exists($outcomeValues)">
-        <h3>Item Outcome vars</h3>
-        <xsl:call-template name="dump-values">
-          <xsl:with-param name="valueHolders" select="$outcomeValues"/>
-        </xsl:call-template>
-      </xsl:if>
-      <xsl:if test="exists($testOutcomeValues)">
-        <h3>Test Outcome vars</h3>
-        <xsl:call-template name="dump-values">
-          <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
-        </xsl:call-template>
-      </xsl:if>
+    <div class="qtiworksDebugging">
+      <div class="internalState">
+        <h2>Session State</h2>
+        <xsl:if test="exists($shuffledChoiceOrders)">
+          <h3>Shuffled choice orders</h3>
+          <ul>
+            <xsl:for-each select="$shuffledChoiceOrders">
+              <li>
+                <span class="variableName">
+                  <xsl:value-of select="@responseIdentifier"/>
+                </span>
+                <xsl:text> = [</xsl:text>
+                <xsl:value-of select="qw:choice/@identifier" separator=", "/>
+                <xsl:text>]</xsl:text>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </xsl:if>
+        <xsl:if test="exists($templateValues)">
+          <h3>Item Template vars</h3>
+          <xsl:call-template name="dump-values">
+            <xsl:with-param name="valueHolders" select="$templateValues"/>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="exists($responseValues)">
+          <h3>Item Response vars</h3>
+          <xsl:call-template name="dump-values">
+            <xsl:with-param name="valueHolders" select="$responseValues"/>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="exists($outcomeValues)">
+          <h3>Item Outcome vars</h3>
+          <xsl:call-template name="dump-values">
+            <xsl:with-param name="valueHolders" select="$outcomeValues"/>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="exists($testOutcomeValues)">
+          <h3>Test Outcome vars</h3>
+          <xsl:call-template name="dump-values">
+            <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
+          </xsl:call-template>
+        </xsl:if>
+      </div>
     </div>
   </xsl:template>
 
@@ -98,7 +97,7 @@ Rendering utility templates
   <xsl:template name="dump-value" as="element(li)">
     <xsl:param name="valueHolder" as="element()"/>
     <li>
-      <span class="variable_name">
+      <span class="variableName">
         <xsl:value-of select="@identifier"/>
       </span>
       <xsl:text> = </xsl:text>
@@ -113,17 +112,17 @@ Rendering utility templates
 
           <!-- Make the raw record fields available via a toggle -->
           <xsl:text> </xsl:text>
-          <a id="qtiworks_id_toggle_debug_maths_content_{@identifier}" class="debug_button"
+          <a id="qtiworks_id_toggle_debugMathsContent_{@identifier}" class="debugButton"
             href="javascript:void(0)">Toggle Details</a>
-          <div id="qtiworks_id_debug_maths_content_{@identifier}" class="debug_maths_content">
+          <div id="qtiworks_id_debugMathsContent_{@identifier}" class="debugMathsContent">
             <xsl:call-template name="dump-values">
               <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
             </xsl:call-template>
           </div>
           <script type="text/javascript">
             $(document).ready(function() {
-              $('a#qtiworks_id_toggle_debug_maths_content_<xsl:value-of select="@identifier"/>').click(function() {
-                $('#qtiworks_id_debug_maths_content_<xsl:value-of select="@identifier"/>').toggle();
+              $('a#qtiworks_id_toggle_debugMathsContent_<xsl:value-of select="@identifier"/>').click(function() {
+                $('#qtiworks_id_debugMathsContent_<xsl:value-of select="@identifier"/>').toggle();
               })
             });
           </script>

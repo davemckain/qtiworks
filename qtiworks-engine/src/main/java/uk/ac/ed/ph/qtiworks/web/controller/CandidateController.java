@@ -90,6 +90,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * First stab at controller for doing candidate (item) sessions
+ * 
+ * FIXME: I've killed off most of the old rendering parameters. We'll need to create a better
+ * set once we work out exactly what variants need to be rendered.
  *
  * @author David McKain
  */
@@ -168,12 +171,35 @@ public class CandidateController {
         return new ClassPathResourceLocator();
     }
     
+    /** FIXME: This should be POST only */
+    @RequestMapping(value="/endItemSession", method={ RequestMethod.GET, RequestMethod.POST })
+    public String endItemSession(HttpSession httpSession) {
+        /* TEMP: Remove stuff stored in HttpSession */
+        httpSession.removeAttribute(CURRENT_ITEM);
+        httpSession.removeAttribute(CURRENT_ITEM_SESSION_STATE);
+        
+        /* TEMP: Go back to the listing */
+        return "redirect:/dispatcher/listSamples";
+    }
+    
+    /** FIXME: This should be POST only */
+    @RequestMapping(value="/resetItemSession", method={ RequestMethod.GET, RequestMethod.POST })
+    public String resetItemSession(HttpSession httpSession) {
+        /* TEMP: Reset state stored in HttpSession */
+        httpSession.setAttribute(CURRENT_ITEM_SESSION_STATE, new ItemSessionState());
+        
+        /* Redirect to session handler */
+        return "redirect:/dispatcher/itemSession";
+    }
+    
+    /** FIXME: Separate out GET and POST */
     @RequestMapping(value="/itemSession", method={ RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
     public String sampleItemSession(HttpServletRequest request, HttpSession httpSession) {
         /* TEMP: Extract current item & state from HTTP session */
         ResolvedAssessmentItem resolvedAssessmentItem = (ResolvedAssessmentItem) httpSession.getAttribute(CURRENT_ITEM);
         ItemSessionState itemSessionState = (ItemSessionState) httpSession.getAttribute(CURRENT_ITEM_SESSION_STATE);
+        /* FIXME: Handle nulls in the lines above! */
         
         String pageContent = null;
         try {
@@ -236,12 +262,9 @@ public class CandidateController {
                 responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
-    
+
     private Map<String, Object> createRenderingParameters() {
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("showInternalState", Boolean.TRUE);
-        result.put("displayTitle", Boolean.TRUE);
-        result.put("displayControls", Boolean.TRUE);
         return result;
     }
     
@@ -277,6 +300,8 @@ public class CandidateController {
     /**
      * FIXME: This currently can be used to serve up anything within the ClassPath.
      * This needs to be integrated with a proper sandboxed URI.
+     * 
+     * FIXME: Would be nice to allow this to be cached at some point.
      */
     @RequestMapping(value="/assessmentResource", method=RequestMethod.GET)
     public void assessmentResource(@RequestParam("uri") URI uri, HttpServletResponse response) throws IOException {

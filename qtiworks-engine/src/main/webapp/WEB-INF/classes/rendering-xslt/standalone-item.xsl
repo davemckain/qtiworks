@@ -18,9 +18,6 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <xsl:param name="displayTitle" select="true()" as="xs:boolean"/>
-  <xsl:param name="displayControls" select="true()" as="xs:boolean"/>
-
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -67,21 +64,21 @@ Renders a standalone assessmentItem
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
 
         <!-- QTIWorks Item styling -->
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/common-rendering.css" type="text/css" media="screen"/>
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item-rendering.css" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
         <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body>
-        <div class="qtiworksRendering">
-          <div class="assessmentItem">
-            <xsl:if test="$displayTitle">
+        <div class="qtiworks">
+          <div class="qtiworksRendering">
+            <div class="assessmentItem">
               <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
-            </xsl:if>
-            <div class="itemBody">
-              <!-- Descend into itemBody only -->
-              <xsl:apply-templates select="qti:itemBody"/>
-
+              <div class="itemBody">
+                <!-- Descend into itemBody only -->
+                <xsl:apply-templates select="qti:itemBody"/>
+              </div>
               <!-- Display active modal feedback (only after responseProcessing) -->
               <xsl:if test="$isResponded">
                 <xsl:variable name="modalFeedback" as="element()*">
@@ -90,7 +87,7 @@ Renders a standalone assessmentItem
                       <xsl:call-template name="feedback"/>
                     </xsl:variable>
                     <xsl:if test="$feedback">
-                      <div class="modalFeedback">
+                      <div class="modalFeedbackItem">
                         <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
                         <xsl:sequence select="$feedback"/>
                       </div>
@@ -98,19 +95,29 @@ Renders a standalone assessmentItem
                   </xsl:for-each>
                 </xsl:variable>
                 <xsl:if test="exists($modalFeedback)">
-                  <hr/>
-                  <h2>Feedback</h2>
-                  <xsl:sequence select="$modalFeedback"/>
+                  <div class="modalFeedback">
+                    <h2>Feedback</h2>
+                    <xsl:sequence select="$modalFeedback"/>
+                  </div>
                 </xsl:if>
               </xsl:if>
             </div>
           </div>
-          <!-- Optional debugging information -->
-          <xsl:if test="$showInternalState">
-            <div id="debug_panel">
-              <xsl:call-template name="internalState"/>
-            </div>
-          </xsl:if>
+          <!-- Author session contol -->
+          <div class="qtiworksAuthorControl">
+            <h2>Session control</h2>
+            <ul>
+              <li><a href="{$webappContextPath}/dispatcher/resetItemSession">Reset and replay</a></li>
+              <li><a href="{$webappContextPath}/dispatcher/endItemSession">Exit and return</a></li>
+            </ul>
+            <h2>Author tools</h2>
+            <ul>
+              <li>View item source (coming soon)</li>
+              <li>View item report (coming soon)</li>
+            </ul>
+          </div>
+          <!-- Author debugging information -->
+          <xsl:call-template name="internalState"/>
         </div>
        </body>
     </html>
@@ -124,12 +131,10 @@ Renders a standalone assessmentItem
         onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
         onreset="QtiWorks.reset()" autocomplete="off">
         <xsl:apply-templates/>
-        <xsl:if test="$displayControls">
-          <div class="controls">
-            <input type="reset" value="RESET"/>
-            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
-          </div>
-        </xsl:if>
+        <div class="controls">
+          <input type="reset" value="RESET"/>
+          <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+        </div>
       </form>
     </div>
   </xsl:template>

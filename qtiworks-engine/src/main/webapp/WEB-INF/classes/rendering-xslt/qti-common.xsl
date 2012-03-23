@@ -21,10 +21,6 @@ rendering.
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
-  <!-- Base path where resources for this item/test live. This should include
-       the web application contextPath as well.  -->
-  <xsl:param name="resourceBasePath" as="xs:string" required="yes"/>
-
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
@@ -55,6 +51,9 @@ rendering.
 
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
+
+  <!-- URI for MVC controller serving up within-package resources -->
+  <xsl:variable name="resourceControllerUri" select="concat($webappContextPath, '/dispatcher/assessmentResource')" as="xs:string"/>
 
   <!-- Include stylesheets handling each type of interaction -->
   <xsl:include href="interactions/associateInteraction.xsl"/>
@@ -90,7 +89,7 @@ rendering.
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="resolved" as="xs:string" select="string(resolve-uri($uri, $itemSystemId))"/>
-        <xsl:sequence select="concat($resourceBasePath, '?path=', encode-for-uri($resolved))"/>
+        <xsl:sequence select="concat($resourceControllerUri, '?uri=', encode-for-uri($resolved))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
