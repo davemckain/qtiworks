@@ -29,7 +29,7 @@ var QtiWorks = (function() {
     }
 
     var queryInputElements = function(responseIdentifier) {
-        return $('input[name=jqtiresponse_' + responseIdentifier + ']');
+        return $('input[name=qtiworks_response_' + responseIdentifier + ']');
     }
 
     /************************************************************/
@@ -37,9 +37,9 @@ var QtiWorks = (function() {
 
     var SliderInteraction = function(responseIdentifier, configData) {
         this.responseIdentifier = responseIdentifier;
-        this.sliderQuery = $('#jqtiid_slider_' + responseIdentifier);
-        this.feedbackQuery = $('#jqtiid_slidervalue_' + responseIdentifier);
-        this.inputElementQuery = $('input[name="jqtiresponse_' + responseIdentifier + '"]');
+        this.sliderQuery = $('#qtiworks_id_slider_' + responseIdentifier);
+        this.feedbackQuery = $('#qtiworks_id_slidervalue_' + responseIdentifier);
+        this.inputElementQuery = $('input[name="qtiworks_response_' + responseIdentifier + '"]');
         this.min = configData.min;
         this.max = configData.max;
         this.step = configData.step;
@@ -222,7 +222,7 @@ var QtiWorks = (function() {
         var interaction = this;
 
         for(var key in gapChoiceData){
-            var query = $('#jqtiid_' + this.responseIdentifier + '_' + key);
+            var query = $('#qtiworks_id_' + this.responseIdentifier + '_' + key);
             this.gapChoiceMap[key] = {
                 matchMax: gapChoiceData[key],
                 matchCount: 0,
@@ -231,7 +231,7 @@ var QtiWorks = (function() {
             };
         }
         for(var key in gapData){
-            var query = $('#jqtiid_' + this.responseIdentifier + '_' + key);
+            var query = $('#qtiworks_id_' + this.responseIdentifier + '_' + key);
             this.gapMap[key] = {
                 required: gapData[key], /* NB: This is not currently used in the JS */
                 matched: false,
@@ -346,11 +346,11 @@ var QtiWorks = (function() {
         this.initialTargetOrder = initialTargetOrder;
         this.minChoices = minChoices;
         this.maxChoices = maxChoices;
-        this.containerQuery = $('#jqtiresponse_' + responseIdentifier);
-        this.targetBox = $('#jqtiresponse_' + responseIdentifier + ' div.target');
-        this.sourceList = $('#jqtiresponse_' + responseIdentifier + ' div.source ul');
-        this.targetList = $('#jqtiresponse_' + responseIdentifier + ' div.target ul');
-        this.hiddenInputContainer = $('#jqtiresponse_' + responseIdentifier + ' div.hiddenInputContainer');
+        this.containerQuery = $('#qtiworks_response_' + responseIdentifier);
+        this.targetBox = $('#qtiworks_response_' + responseIdentifier + ' div.target');
+        this.sourceList = $('#qtiworks_response_' + responseIdentifier + ' div.source ul');
+        this.targetList = $('#qtiworks_response_' + responseIdentifier + ' div.target ul');
+        this.hiddenInputContainer = $('#qtiworks_response_' + responseIdentifier + ' div.hiddenInputContainer');
         var interaction = this;
 
         this.reset = function() {
@@ -371,11 +371,11 @@ var QtiWorks = (function() {
 
             /* Then re-add them in the initial order */
             $.each(interaction.initialSourceOrder, function(index, responseIdentifier) {
-                var item = itemsById['jqtiresponse_' + responseIdentifier];
+                var item = itemsById['qtiworks_response_' + responseIdentifier];
                 interaction.sourceList.append(item);
             });
             $.each(interaction.initialTargetOrder, function(index, responseIdentifier) {
-                var item = itemsById['jqtiresponse_' + responseIdentifier];
+                var item = itemsById['qtiworks_response_' + responseIdentifier];
                 interaction.targetList.append(item);
             });
         };
@@ -384,9 +384,9 @@ var QtiWorks = (function() {
             /* Store the current selected orders in the hidden inputs */
             interaction.hiddenInputContainer.empty();
             interaction.targetList.children('li').each(function(index) {
-                var choiceId = this.id.substring('jqtiresponse_'.length); // Trim leading 'jqtiresponse_'
+                var choiceId = this.id.substring('qtiworks_response_'.length); // Trim leading 'qtiworks_response_'
                 var inputElement = $('<input type="hidden">');
-                inputElement.attr('name', 'jqtiresponse_' + interaction.responseIdentifier);
+                inputElement.attr('name', 'qtiworks_response_' + interaction.responseIdentifier);
                 inputElement.attr('value', choiceId);
                 interaction.hiddenInputContainer.append(inputElement);
             });
@@ -398,7 +398,7 @@ var QtiWorks = (function() {
 
         this.init = function() {
             /* Add jQuery UI Sortable effect to sourceList */
-            var listSelector = '#jqtiresponse_' + this.responseIdentifier + ' ul';
+            var listSelector = '#qtiworks_response_' + this.responseIdentifier + ' ul';
             this.sourceList.sortable({
                 connectWith: listSelector
             });
@@ -486,7 +486,7 @@ var QtiWorks = (function() {
             this.divContainerQuery.find('input').remove();
             for (var i in values) {
                 var inputElement = $('<input type="hidden">');
-                inputElement.attr('name', 'jqtiresponse_' + responseIdentifier);
+                inputElement.attr('name', 'qtiworks_response_' + responseIdentifier);
                 inputElement.attr('value', values[i]);
                 this.divContainerQuery.append(inputElement);
             }

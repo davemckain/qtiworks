@@ -10,14 +10,14 @@
   exclude-result-prefixes="xs qti ma qw m">
 
   <xsl:template match="qti:customInteraction[@class='org.qtitools.mathassess.MathEntryInteraction']">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
     <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
     <xsl:variable name="asciiMathInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
     <div class="mathEntryInteraction">
       <div class="inputPanel">
-        <a href="{$engineBasePath}/rendering/mathEntryInteractionHelp.html" target="_blank" id="qwid_mathEntryHelp_{@responseIdentifier}"></a>
-        <input id="qwid_mathEntryInput_{@responseIdentifier}" name="qwresponse_{@responseIdentifier}" type="text"
+        <a href="{$engineBasePath}/rendering/mathEntryInteractionHelp.html" target="_blank" id="qtiworks_id_mathEntryHelp_{@responseIdentifier}"></a>
+        <input id="qtiworks_id_mathEntryInput_{@responseIdentifier}" name="qtiworks_response_{@responseIdentifier}" type="text"
             size="{if (exists(@ma:expectedLength)) then @ma:expectedLength else '10'}">
           <xsl:if test="exists($asciiMathInput)">
             <xsl:attribute name="value">
@@ -27,18 +27,18 @@
         </input>
       </div>
       <div class="previewPanel">
-        <div id="qwid_mathEntryMessages_{@responseIdentifier}"></div>
-        <div id="qwid_mathEntryPreview_{@responseIdentifier}">
+        <div id="qtiworks_id_mathEntryMessages_{@responseIdentifier}"></div>
+        <div id="qtiworks_id_mathEntryPreview_{@responseIdentifier}">
           <!-- Keep this in -->
           <math xmlns="http://www.w3.org/1998/Math/MathML"></math>
         </div>
       </div>
       <script type="text/javascript">
         QtiWorks.registerReadyCallback(function() {
-          var inputControlId = 'qwid_mathEntryInput_<xsl:value-of select="@responseIdentifier"/>';
-          var messageContainerId = 'qwid_mathEntryMessages_<xsl:value-of select="@responseIdentifier"/>';
-          var previewContainerId = 'qwid_mathEntryPreview_<xsl:value-of select="@responseIdentifier"/>';
-          var helpContainerId = 'qwid_mathEntryHelp_<xsl:value-of select="@responseIdentifier"/>';
+          var inputControlId = 'qtiworks_id_mathEntryInput_<xsl:value-of select="@responseIdentifier"/>';
+          var messageContainerId = 'qtiworks_id_mathEntryMessages_<xsl:value-of select="@responseIdentifier"/>';
+          var previewContainerId = 'qtiworks_id_mathEntryPreview_<xsl:value-of select="@responseIdentifier"/>';
+          var helpContainerId = 'qtiworks_id_mathEntryHelp_<xsl:value-of select="@responseIdentifier"/>';
 
           var upConversionAJAXControl = UpConversionAJAXController.createUpConversionAJAXControl(messageContainerId, previewContainerId);
           var widget = ASCIIMathInputController.bindInputWidget(inputControlId, upConversionAJAXControl);

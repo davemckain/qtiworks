@@ -9,14 +9,14 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:inlineChoiceInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
       <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
         <span class="badResponse">
           You must select one of the following options
         </span>
       </xsl:if>
-      <select name="qwresponse_{@responseIdentifier}">
+      <select name="qtiworks_response_{@responseIdentifier}">
         <option value="">(Select)</option>
         <xsl:apply-templates select="qw:get-visible-ordered-choices(., qti:inlineChoice)"/>
       </select>

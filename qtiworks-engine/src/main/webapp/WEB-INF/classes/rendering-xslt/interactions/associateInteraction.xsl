@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti xs qw">
 
   <xsl:template match="qti:associateInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
@@ -19,7 +19,7 @@
       <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
         <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
-      <xsl:variable name="appletContainerId" select="concat('qtiid_appletContainer_', @responseIdentifier)" as="xs:string"/>
+      <xsl:variable name="appletContainerId" select="concat('qtiworks_id_appletContainer_', @responseIdentifier)" as="xs:string"/>
       <div id="{$appletContainerId}" class="appletContainer">
         <object type="application/x-java-applet" height="360" width="360">
           <param name="code" value="BoundedGraphicalApplet"/>

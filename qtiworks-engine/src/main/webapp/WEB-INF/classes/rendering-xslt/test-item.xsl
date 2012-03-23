@@ -74,14 +74,14 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
       <head>
         <title><xsl:value-of select="concat($title, ' :: ', @title)"/></title>
 
-        <script src="{$engineBasePath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions and time limits -->
-        <script src="{$engineBasePath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
-        <script src="{$engineBasePath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
 
         <!-- Timer setup (requires controls to be displayed) -->
         <xsl:if test="$displayControls and $timeRemaining >= 0">
-          <script src="{$engineBasePath}/Jscript/TimeLimit.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/Jscript/TimeLimit.js" type="text/javascript"/>
           <script type="text/javascript">
             $(document).ready(function() {
               initTimer('<xsl:value-of select="$timeRemaining"/>');
@@ -95,23 +95,23 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$engineBasePath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
-          <script src="{$engineBasePath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
           <script type="text/javascript">
-            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$engineBasePath"/>/input/verifyASCIIMath');
+            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/input/verifyASCIIMath');
             UpConversionAJAXController.setDelay(300);
           </script>
         </xsl:if>
 
         <!-- Styling for JQuery dialog -->
-        <link rel="stylesheet" href="{$engineBasePath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
 
         <!-- Stylesheet(s) for this item -->
-        <link rel="stylesheet" href="{$engineBasePath}/css/item-rendering.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/css/item-rendering.css" type="text/css" media="screen"/>
         <xsl:apply-templates select="qti:stylesheet"/>
 
         <!-- Test styling -->
-        <link rel="stylesheet" href="{$engineBasePath}/css/test-rendering.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/css/test-rendering.css" type="text/css" media="screen"/>
       </head>
       <body>
         <div class="qtiworksRendering">

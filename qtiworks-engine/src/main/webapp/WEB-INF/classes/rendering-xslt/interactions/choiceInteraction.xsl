@@ -8,7 +8,7 @@
   exclude-result-prefixes="qti qw">
 
   <xsl:template match="qti:choiceInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
         <div class="badResponse">
@@ -54,7 +54,7 @@
         </td>
       </xsl:if>
       <td class="control">
-        <input name="qwresponse_{../@responseIdentifier}" value="{@identifier}" type="{if (../@maxChoices=1) then 'radio' else 'checkbox'}">
+        <input name="qtiworks_response_{../@responseIdentifier}" value="{@identifier}" type="{if (../@maxChoices=1) then 'radio' else 'checkbox'}">
           <xsl:if test="qw:value-contains(qw:get-response-value(../@responseIdentifier), @identifier)">
             <xsl:attribute name="checked">checked</xsl:attribute>
           </xsl:if>

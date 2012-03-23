@@ -7,7 +7,7 @@
   exclude-result-prefixes="qti">
 
   <xsl:template match="qti:mediaInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="flash">
       Rendering of the QTI <tt>mediaInteraction</tt> isn't currently supported!
     </div>

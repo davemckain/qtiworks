@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:orderInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
@@ -20,7 +20,7 @@
         <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
 
-      <div id="qwresponse_{@responseIdentifier}">
+      <div id="qtiworks_response_{@responseIdentifier}">
         <!-- Create holder for hidden form fields that will contain the actual data to pass back -->
         <div class="hiddenInputContainer"></div>
 
@@ -70,7 +70,7 @@
   </xsl:template>
 
   <xsl:template match="qti:orderInteraction/qti:simpleChoice">
-    <li id="qwresponse_{@identifier}" class="ui-state-default">
+    <li id="qtiworks_response_{@identifier}" class="ui-state-default">
       <span class="ui-icon ui-icon-arrowthick2-n-s"></span>
       <xsl:apply-templates/>
     </li>

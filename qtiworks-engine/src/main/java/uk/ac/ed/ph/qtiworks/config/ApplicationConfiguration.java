@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.rendering.Renderer;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -91,8 +91,8 @@ public class ApplicationConfiguration {
     }
     
     @Bean
-    public Renderer renderer() {
+    public AssessmentRenderer renderer() {
         SimpleXsltStylesheetCache xsltStylesheetCache = new SimpleXsltStylesheetCache();
-        return new Renderer(contextPath(), xsltStylesheetCache);
+        return new AssessmentRenderer(contextPath(), xsltStylesheetCache);
     }
 }

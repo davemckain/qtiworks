@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
  * Encapsulates the supported ways of serializing the results obtained
- * from {@link Renderer}.
+ * from {@link AssessmentRenderer}.
  * 
  * @author  David McKain
  */

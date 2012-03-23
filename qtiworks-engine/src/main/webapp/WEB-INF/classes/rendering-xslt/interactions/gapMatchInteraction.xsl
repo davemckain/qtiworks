@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:gapMatchInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <xsl:variable name="orderedVisibleGapTexts" select="qw:get-visible-ordered-choices(., qti:gapText)"/>
     <xsl:variable name="visibleGaps" select="qw:filter-visible(.//qti:gap)"/>
     <div class="{local-name()}">
@@ -26,7 +26,7 @@
         <tr>
           <td></td>
           <xsl:for-each select="$orderedVisibleGapTexts">
-            <td id="qwid_{../@responseIdentifier}_{@identifier}">
+            <td id="qtiworks_id_{../@responseIdentifier}_{@identifier}">
               <xsl:apply-templates/>
             </td>
           </xsl:for-each>
@@ -41,7 +41,7 @@
             <xsl:for-each select="$orderedVisibleGapTexts">
               <td>
                 <xsl:variable name="responseValue" select="concat(@identifier, ' ', $gapIdentifier)" as="xs:string"/>
-                <input type="checkbox" name="qwresponse_{$gmi/@responseIdentifier}" value="{$responseValue}">
+                <input type="checkbox" name="qtiworks_response_{$gmi/@responseIdentifier}" value="{$responseValue}">
                   <xsl:if test="qw:value-contains(qw:get-response-value($gmi/@responseIdentifier), $responseValue)">
                     <xsl:attribute name="checked" select="'checked'"/>
                   </xsl:if>
@@ -63,7 +63,7 @@
     <xsl:variable name="gmi" select="ancestor::qti:gapMatchInteraction" as="element(qti:gapMatchInteraction)"/>
     <xsl:variable name="gaps" select="$gmi//qti:gap" as="element(qti:gap)+"/>
     <xsl:variable name="thisGap" select="." as="element(qti:gap)"/>
-    <span class="gap" id="qwid_{$gmi/@responseIdentifier}_{@identifier}">
+    <span class="gap" id="qtiworks_id_{$gmi/@responseIdentifier}_{@identifier}">
       <!-- (Print index of this gap wrt all gaps in the interaction) -->
       GAP <xsl:value-of select="for $i in 1 to count($gaps) return
         if ($gaps[$i]/@identifier = $thisGap/@identifier) then $i else ()"/>

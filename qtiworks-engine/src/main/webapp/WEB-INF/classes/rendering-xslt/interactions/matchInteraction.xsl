@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:matchInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <xsl:variable name="orderedSet1" select="qw:get-visible-ordered-choices(., qti:simpleMatchSet[1]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
     <xsl:variable name="orderedSet2" select="qw:get-visible-ordered-choices(., qti:simpleMatchSet[2]/qti:simpleAssociableChoice)" as="element(qti:simpleAssociableChoice)*"/>
     <div class="{local-name()}">
@@ -38,7 +38,7 @@
             <xsl:for-each select="$orderedSet1">
               <td align="center">
                 <xsl:variable name="responseValue" select="concat(@identifier, ' ', $choiceIdentifier)" as="xs:string"/>
-                <input type="checkbox" name="qwresponse_{$responseIdentifier}" value="{$responseValue}">
+                <input type="checkbox" name="qtiworks_response_{$responseIdentifier}" value="{$responseValue}">
                   <xsl:if test="qw:value-contains(qw:get-response-value($responseIdentifier), $responseValue)">
                     <xsl:attribute name="checked" select="'checked'"/>
                   </xsl:if>

@@ -9,7 +9,7 @@
   exclude-result-prefixes="xs qti qw">
 
   <xsl:template match="qti:textEntryInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
       <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
@@ -27,7 +27,7 @@
         qw:to-javascript-arguments($checks),
         ')')" as="xs:string"/>
 
-      <input type="text" name="qwresponse_{@responseIdentifier}">
+      <input type="text" name="qtiworks_response_{@responseIdentifier}">
         <xsl:if test="qw:is-bad-response(@responseIdentifier) or qw:is-invalid-response(@responseIdentifier)">
           <xsl:attribute name="class" select="'badResponse'"/>
         </xsl:if>

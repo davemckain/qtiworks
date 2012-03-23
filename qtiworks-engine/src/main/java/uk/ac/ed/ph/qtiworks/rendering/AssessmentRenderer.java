@@ -77,9 +77,9 @@ import org.xml.sax.SAXException;
  * 
  * @author David McKain
  */
-public final class Renderer {
+public final class AssessmentRenderer {
     
-    private static final Logger logger = LoggerFactory.getLogger(Renderer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentRenderer.class);
     
     private static final URI standaloneItemXsltUri = URI.create("classpath:/rendering-xslt/standalone-item.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
@@ -87,7 +87,7 @@ public final class Renderer {
     private final String webappContextPath;
     private final XsltStylesheetManager stylesheetManager;
     
-    public Renderer(String webappContextPath, XsltStylesheetCache stylesheetCache) {
+    public AssessmentRenderer(String webappContextPath, XsltStylesheetCache stylesheetCache) {
         this.webappContextPath = webappContextPath;
         this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), stylesheetCache);
     }
@@ -149,7 +149,7 @@ public final class Renderer {
         }
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", webappContextPath));
+        xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
         xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
@@ -198,7 +198,7 @@ public final class Renderer {
         }
         
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("engineBasePath", extractPathOverride(renderingParameters, "engineBasePath", webappContextPath));
+        xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
         xsltParameters.put("resourceBasePath", extractPathOverride(renderingParameters, "resourceBasePath", resourceBasePath));
         
         /* Set other control parameters */
@@ -223,6 +223,8 @@ public final class Renderer {
     }
     
     /**
+     * FIXME: Will we still allow this?
+     * 
      * Looks in the given {@link Map} of renderingParameters for that having the give name. If found, and
      * its valued is deemed legal, then its value is returned. Otherwise, the provided default is returned.
      */

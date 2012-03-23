@@ -44,10 +44,10 @@ Renders a standalone assessmentItem
       <head>
         <title><xsl:value-of select="@title"/></title>
 
-        <script src="{$engineBasePath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions, as well as the debugging panel. -->
-        <script src="{$engineBasePath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
-        <script src="{$engineBasePath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
 
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
@@ -55,19 +55,19 @@ Renders a standalone assessmentItem
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$engineBasePath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
-          <script src="{$engineBasePath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
           <script type="text/javascript">
-            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$engineBasePath"/>/dispatcher/verifyAsciiMath');
+            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/dispatcher/verifyAsciiMath');
             UpConversionAJAXController.setDelay(300);
           </script>
         </xsl:if>
 
         <!-- Styling for JQuery -->
-        <link rel="stylesheet" href="{$engineBasePath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
 
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$engineBasePath}/rendering/css/item-rendering.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item-rendering.css" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
         <xsl:apply-templates select="qti:stylesheet"/>

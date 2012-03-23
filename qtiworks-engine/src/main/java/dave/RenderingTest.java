@@ -5,7 +5,7 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.rendering.Renderer;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -46,7 +46,7 @@ public class RenderingTest {
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-            Renderer renderer = new Renderer("/ENGINE", new SimpleXsltStylesheetCache());
+            AssessmentRenderer renderer = new AssessmentRenderer("/ENGINE", new SimpleXsltStylesheetCache());
             String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState, 
                     "/RESOURCES", null, SerializationMethod.HTML5_MATHJAX);
             System.out.println("Rendered page: " + rendered);

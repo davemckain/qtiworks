@@ -13,7 +13,7 @@ DM: I don't have anything to test this out with!
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:extendedTextInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
       <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
@@ -106,7 +106,7 @@ DM: I don't have anything to test this out with!
     <xsl:param name="responseInput" as="element(qw:responseInput)?"/>
     <xsl:param name="checkJavaScript" as="xs:string?"/>
     <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
-    <textarea cols="40" rows="6" name="qwresponse_{@responseIdentifier}">
+    <textarea cols="40" rows="6" name="qtiworks_response_{@responseIdentifier}">
       <xsl:if test="@expectedLines">
         <xsl:attribute name="rows" select="@expectedLines"/>
       </xsl:if>
@@ -129,7 +129,7 @@ DM: I don't have anything to test this out with!
     <xsl:for-each select="1 to $stringsCount">
       <xsl:variable name="i" select="." as="xs:integer"/>
       <xsl:variable name="responseInputString" select="$responseInput/qw:value[position()=$i]" as="xs:string?"/>
-      <input type="text" name="qwresponse_{$interaction/@responseIdentifier}">
+      <input type="text" name="qtiworks_response_{$interaction/@responseIdentifier}">
         <xsl:if test="$interaction/@expectedLength">
           <xsl:attribute name="size" select="$interaction/@expectedLength"/>
         </xsl:if>

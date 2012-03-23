@@ -10,7 +10,7 @@
 
   <xsl:template match="qti:positionObjectStage">
     <xsl:for-each select="qti:positionObjectInteraction">
-      <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+      <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     </xsl:for-each>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
@@ -26,7 +26,7 @@
       </xsl:for-each>
 
       <xsl:variable name="object" select="qti:object"/>
-      <xsl:variable name="appletContainerId" select="concat('qtiid_appletContainer_', qti:positionObjectInteraction[1]/@responseIdentifier)" as="xs:string"/>
+      <xsl:variable name="appletContainerId" select="concat('qtiworks_id_appletContainer_', qti:positionObjectInteraction[1]/@responseIdentifier)" as="xs:string"/>
       <div id="{$appletContainerId}" class="appletContainer">
         <object type="application/x-java-applet" height="{$object/@height + 40}" width="{$object/@width}">
           <param name="code" value="rhotspotV2"/>

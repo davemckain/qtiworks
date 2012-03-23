@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:hottextInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
@@ -39,7 +39,7 @@
       <xsl:variable name="responseIdentifier" select="$hottextInteraction/@responseIdentifier" as="xs:string"/>
       <span class="hottext">
         <input type="{if ($hottextInteraction/@maxChoices=1) then 'radio' else 'checkbox'}"
-             name="qwresponse_{$responseIdentifier}"
+             name="qtiworks_response_{$responseIdentifier}"
              value="{@identifier}">
            <xsl:if test="qw:value-contains(qw:get-response-value($responseIdentifier), @identifier)">
              <xsl:attribute name="checked" select="'checked'"/>

@@ -18,8 +18,8 @@ rendering.
 
   <!-- ************************************************************ -->
 
-  <!-- Engine base path, i.e. Web Application contextPath. Starts with a '/' -->
-  <xsl:param name="engineBasePath" as="xs:string" required="yes"/>
+  <!-- Web Application contextPath. Starts with a '/' -->
+  <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
   <!-- Base path where resources for this item/test live. This should include
        the web application contextPath as well.  -->
@@ -54,7 +54,7 @@ rendering.
   <xsl:param name="overrideTemplate" select="false()" as="xs:boolean"/> <!-- enable all templates -->
 
   <!-- Codebase URL for engine-provided applets -->
-  <xsl:variable name="appletCodebase" select="concat($engineBasePath, '/applets')" as="xs:string"/>
+  <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
   <!-- Include stylesheets handling each type of interaction -->
   <xsl:include href="interactions/associateInteraction.xsl"/>

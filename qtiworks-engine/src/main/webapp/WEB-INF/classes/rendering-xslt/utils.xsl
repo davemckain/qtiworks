@@ -113,17 +113,17 @@ Rendering utility templates
 
           <!-- Make the raw record fields available via a toggle -->
           <xsl:text> </xsl:text>
-          <a id="qtiid_toggle_debug_maths_content_{@identifier}" class="debug_button"
+          <a id="qtiworks_id_toggle_debug_maths_content_{@identifier}" class="debug_button"
             href="javascript:void(0)">Toggle Details</a>
-          <div id="qtiid_debug_maths_content_{@identifier}" class="debug_maths_content">
+          <div id="qtiworks_id_debug_maths_content_{@identifier}" class="debug_maths_content">
             <xsl:call-template name="dump-values">
               <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
             </xsl:call-template>
           </div>
           <script type="text/javascript">
             $(document).ready(function() {
-              $('a#qtiid_toggle_debug_maths_content_<xsl:value-of select="@identifier"/>').click(function() {
-                $('#qtiid_debug_maths_content_<xsl:value-of select="@identifier"/>').toggle();
+              $('a#qtiworks_id_toggle_debug_maths_content_<xsl:value-of select="@identifier"/>').click(function() {
+                $('#qtiworks_id_debug_maths_content_<xsl:value-of select="@identifier"/>').toggle();
               })
             });
           </script>

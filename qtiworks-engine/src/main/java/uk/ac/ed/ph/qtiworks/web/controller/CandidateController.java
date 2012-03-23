@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller;
 
-import uk.ac.ed.ph.qtiworks.rendering.Renderer;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
@@ -110,7 +110,7 @@ public class CandidateController {
     private QtiXmlReader qtiXmlReader;
     
     @Resource
-    private Renderer renderer;
+    private AssessmentRenderer renderer;
     
     @RequestMapping(value="/listSamples", method=RequestMethod.GET)
     public String listSamples(Model model) {
@@ -236,10 +236,10 @@ public class CandidateController {
         @SuppressWarnings("unchecked")
         Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
         for (String name : parameterNames) {
-            if (name.startsWith("qwuploadpresented_")) {
-                String responseIdentifier = name.substring("qwuploadpresented_".length());
+            if (name.startsWith("qtiworks_uploadpresented_")) {
+                String responseIdentifier = name.substring("qtiworks_uploadpresented_".length());
                 FileResponseData fileResponseData = null;
-                MultipartFile multipartFile = multipartRequest.getFile("qwuploadresponse_" + responseIdentifier);
+                MultipartFile multipartFile = multipartRequest.getFile("qtiworks_uploadresponse_" + responseIdentifier);
                 if (multipartFile!=null) {
                     fileResponseData = candidateUploadService.importData(multipartFile);
                 }
@@ -252,9 +252,9 @@ public class CandidateController {
         @SuppressWarnings("unchecked")
         Set<String> parameterNames = request.getParameterMap().keySet();
         for (String name : parameterNames) {
-            if (name.startsWith("qwpresented_")) {
-                String responseIdentifier = name.substring("qwpresented_".length());
-                String[] responseValues = request.getParameterValues("qwresponse_" + responseIdentifier);
+            if (name.startsWith("qtiworks_presented_")) {
+                String responseIdentifier = name.substring("qtiworks_presented_".length());
+                String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifier);
                 StringResponseData stringResponseData = new StringResponseData(responseValues);
                 responseMap.put(responseIdentifier, stringResponseData);
             }

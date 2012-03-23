@@ -9,7 +9,7 @@
   exclude-result-prefixes="qti qw xs">
 
   <xsl:template match="qti:sliderInteraction">
-    <input name="qwpresented_{@responseIdentifier}" type="hidden" value="1"/>
+    <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:if test="qti:prompt">
         <div class="prompt">
@@ -31,18 +31,18 @@
         <xsl:choose>
           <xsl:when test="$orientation='horizontal'">
             <div class="sliderHorizontal">
-              <div class="sliderWidget" id="qwid_slider_{@responseIdentifier}"></div>
-              <div class="sliderValue"><span id="qwid_slidervalue_{@responseIdentifier}"><xsl:value-of select="$value"/></span></div>
+              <div class="sliderWidget" id="qtiworks_id_slider_{@responseIdentifier}"></div>
+              <div class="sliderValue"><span id="qtiworks_id_slidervalue_{@responseIdentifier}"><xsl:value-of select="$value"/></span></div>
             </div>
           </xsl:when>
           <xsl:otherwise>
             <div class="sliderVertical">
-              <div class="sliderValue"><span id="qwid_slidervalue_{@responseIdentifier}"><xsl:value-of select="$value"/></span></div>
-              <div class="sliderWidget" id="qwid_slider_{@responseIdentifier}"></div>
+              <div class="sliderValue"><span id="qtiworks_id_slidervalue_{@responseIdentifier}"><xsl:value-of select="$value"/></span></div>
+              <div class="sliderWidget" id="qtiworks_id_slider_{@responseIdentifier}"></div>
             </div>
           </xsl:otherwise>
         </xsl:choose>
-        <input type="hidden" name="qwresponse_{@responseIdentifier}" value="{$value}"/>
+        <input type="hidden" name="qtiworks_response_{@responseIdentifier}" value="{$value}"/>
         <script type="text/javascript">
           $(document).ready(function() {
             QtiWorks.registerSliderInteraction('<xsl:value-of
