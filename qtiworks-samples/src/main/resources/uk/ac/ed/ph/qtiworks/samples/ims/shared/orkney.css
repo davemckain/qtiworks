@@ -1,0 +1,4 @@
+object { width: 100%; height: 100% }
+.leftpane {float:left; width:264px; border: 1px solid gray} /*{ position: fixed; top: 32px; left: 32px; width: 264px; }*/
+.rightpane {float:left; width:464px; border: 1px solid gray} /*{ position: fixed; top: 32px; left: 328px; width: 464px; }*/
+hr, table {clear:both}
