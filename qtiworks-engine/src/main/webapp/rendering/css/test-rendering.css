@@ -1,6 +1,6 @@
-/* (This provides full rendering of tests) */
+/* (This provides full rendering of assessmentTests) */
 
-.mathassessengine.test {
+.qtiworksRendering .assessmentTest {
     font-family: verdana, sans-serif;
     font-size: small;
     text-align: center;
@@ -9,47 +9,47 @@
     margin:0px;
 }
 
-.mathassessengine.test #body-container {
+.qtiworksRendering .assessmentTest #body-container {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
 }
-.mathassessengine.test .outer-box {
+.qtiworksRendering .assessmentTest .outer-box {
     border: thin solid #A9A9A9;
     text-align: left;
 }
-.mathassessengine.test .box-title {
+.qtiworksRendering .assessmentTest .box-title {
     display:inline;
     font-size: xx-small;
     color: #A9A9A9;
     padding:10px;
     background-color:inherit
 }
-.mathassessengine.test .inner-box {
+.qtiworksRendering .assessmentTest .inner-box {
     border: thin dashed #A9A9A9;
     margin-bottom: 10px;
     margin-left: 10px;
     margin-right: 10px;
     padding: 5px
 }
-.mathassessengine.test .feedback_assessmentTest {
+.qtiworksRendering .assessmentTest .feedback_assessmentTest {
 }
-.mathassessengine.test .feedback_mathassessengine.testPart {
+.qtiworksRendering .assessmentTest .feedback_qtiworksRendering .assessmentTestPart {
     font-style: italic;
 }
-.mathassessengine.test .feedback_title {
+.qtiworksRendering .assessmentTest .feedback_title {
     font-weight: bold;
     margin: 0;
     padding: 0;
 }
-.mathassessengine.test .validation,
-.mathassessengine.test .flash {
+.qtiworksRendering .assessmentTest .validation,
+.qtiworksRendering .assessmentTest .flash {
     font-weight: bold;
     color: red;
     background-color:inherit;
 }
 
-.mathassessengine.test img, .mathassessengine.test applet {
+.qtiworksRendering .assessmentTest img, .qtiworksRendering .assessmentTest applet {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -58,21 +58,21 @@
     border: none;
 }
 
-.mathassessengine.test h1 {
+.qtiworksRendering .assessmentTest h1 {
     font-size: large;
 }
 
-.mathassessengine.test h2 {
+.qtiworksRendering .assessmentTest h2 {
     display: block;
     color: white;
     font-size: medium;
     background-color: #535C75;
 }
-.mathassessengine.test #controls {
+.qtiworksRendering .assessmentTest #controls {
     height: 50px;
     float: right;
 }
-.mathassessengine.test .spacer {
+.qtiworksRendering .assessmentTest .spacer {
     height: 5px;
     clear:both;
 }

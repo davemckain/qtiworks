@@ -1,144 +1,144 @@
 /* (This provides basic styling for the rendered content of items) */
 
-.mathassessengine div.badResponse,
-.mathassessengine span.badResponse {
+.qtiworksRendering .assessmentItem div.badResponse,
+.qtiworksRendering .assessmentItem span.badResponse {
   color: red;
   font-weight: bold;
 }
 
-.mathassessengine input.badResponse {
+.qtiworksRendering .assessmentItem input.badResponse {
   border: 1px solid red;
 }
 
-.mathassessengine div.controls {
+.qtiworksRendering .assessmentItem div.controls {
   margin: 0.5em 0;
 }
 
-.mathassessengine .validation,
-.mathassessengine .flash {
+.qtiworksRendering .assessmentItem .validation,
+.qtiworksRendering .assessmentItem .flash {
   font-weight: bold;
   color: red;
   background-color: inherit;
 }
 
-.mathassessengine .box-title {
+.qtiworksRendering .assessmentItem .box-title {
   display:none;
 }
 
 /************************************************************/
 
-.mathassessengine .infoControl input {
+.qtiworksRendering .assessmentItem .infoControl input {
   margin-right: 0.5em;
 }
 
-.mathassessengine .infoControl .infoControlContent {
+.qtiworksRendering .assessmentItem .infoControl .infoControlContent {
   display: none;
 }
 
 /************************************************************/
 
-.mathassessengine .sliderInteraction {
+.qtiworksRendering .assessmentItem .sliderInteraction {
   margin: 1em;
 }
 
-.mathassessengine .sliderInteraction .sliderVertical {
+.qtiworksRendering .assessmentItem .sliderInteraction .sliderVertical {
 }
 
-.mathassessengine .sliderInteraction .sliderVertical .sliderValue {
+.qtiworksRendering .assessmentItem .sliderInteraction .sliderVertical .sliderValue {
   margin: 1em 0;
 }
 
-.mathassessengine .sliderInteraction .sliderVertical .sliderWidget {
+.qtiworksRendering .assessmentItem .sliderInteraction .sliderVertical .sliderWidget {
   height: 200px;
 }
 
-.mathassessengine .sliderInteraction .sliderHorizontal .sliderValue {
+.qtiworksRendering .assessmentItem .sliderInteraction .sliderHorizontal .sliderValue {
   text-align: center;
 }
 
 /************************************************************/
 
-.mathassessengine div.orderInteraction div.highlight {
+.qtiworksRendering .assessmentItem div.orderInteraction div.highlight {
   border: 1px solid red;
 }
 
-.mathassessengine div.orderInteraction div.box {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box {
   background-color: #eeeeee;
 }
 
-.mathassessengine div.orderInteraction div.box span.info {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box span.info {
   margin-left: 1em;
   color: #666666;
   font-style: italic;
   font-size: smaller;
 }
 
-.mathassessengine div.orderInteraction div.box.horizontal {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box.horizontal {
   margin: 0.5em 0;
   width: 100%;
 }
 
-.mathassessengine div.orderInteraction ul.horizontal {
+.qtiworksRendering .assessmentItem div.orderInteraction ul.horizontal {
   float: left;
   margin: 0 1em;
   padding: 1em 0;
   width: 100%;
 }
 
-.mathassessengine div.orderInteraction div.box.vertical {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box.vertical {
   margin: 1em 0;
   width: 49%;
 }
 
-.mathassessengine div.orderInteraction div.box.vertical.source {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box.vertical.source {
   float: left;
 }
 
-.mathassessengine div.orderInteraction div.box.vertical.target {
+.qtiworksRendering .assessmentItem div.orderInteraction div.box.vertical.target {
   float: right;
 }
 
-.mathassessengine div.orderInteraction ul.vertical {
+.qtiworksRendering .assessmentItem div.orderInteraction ul.vertical {
   margin: 0 1em;
   padding: 1em 0;
   width: auto;
 }
 
-.mathassessengine div.orderInteraction ul {
+.qtiworksRendering .assessmentItem div.orderInteraction ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   width: 60%;
 }
 
-.mathassessengine div.orderInteraction ul li {
+.qtiworksRendering .assessmentItem div.orderInteraction ul li {
   margin: 0 3px 3px 3px;
   padding: 0.4em;
   padding-left: 1.5em;
   font-size: 1em;
 }
 
-.mathassessengine div.orderInteraction ul li span {
+.qtiworksRendering .assessmentItem div.orderInteraction ul li span {
   position: absolute;
   margin-left: -1.3em;
 }
 
-.mathassessengine div.orderInteraction ul.horizontal li {
+.qtiworksRendering .assessmentItem div.orderInteraction ul.horizontal li {
   float: left;
   width: auto;
 }
 
-.mathassessengine div.orderInteraction br {
+.qtiworksRendering .assessmentItem div.orderInteraction br {
   clear: both;
 }
 
 /************************************************************/
 
-.mathassessengine .hottext {
+.qtiworksRendering .assessmentItem .hottext {
   font-weight: bold;
 }
 
-.mathassessengine .gap {
+.qtiworksRendering .assessmentItem .gap {
   font-weight: bold;
   border: 1px dashed #000;
 }
@@ -146,7 +146,7 @@
 /************************************************************/
 
 /* MathEntryInteraction styling for MathAssess */
-.mathassessengine .mathEntryInteraction {
+.qtiworksRendering .assessmentItem .mathEntryInteraction {
   border: 1px solid #eeeeee;
   background-color: #f7faf7;
   -moz-border-radius: 0.4em;
@@ -156,7 +156,7 @@
   width: 40em;
 }
 
-.mathassessengine .mathEntryInteraction .inputPanel {
+.qtiworksRendering .assessmentItem .mathEntryInteraction .inputPanel {
   width: 45%;
   float: left;
   line-height: 1em;
@@ -164,7 +164,7 @@
   text-align: left;
 }
 
-.mathassessengine .mathEntryInteraction .inputPanel a {
+.qtiworksRendering .assessmentItem .mathEntryInteraction .inputPanel a {
   display: block;
   float: left;
   padding: 0;
@@ -174,12 +174,12 @@
   background: url(../images/help.png) center no-repeat;
 }
 
-.mathassessengine .mathEntryInteraction .inputPanel a:hover {
+.qtiworksRendering .assessmentItem .mathEntryInteraction .inputPanel a:hover {
   cursor: help;
   background-color: transparent !important;
 }
 
-.mathassessengine .mathEntryInteraction .inputPanel input {
+.qtiworksRendering .assessmentItem .mathEntryInteraction .inputPanel input {
   margin: 0;
   padding: 0;
   x-height: 1em;
@@ -187,39 +187,39 @@
   x-vertical-align: middle;
 }
 
-.mathassessengine .mathEntryInteraction .previewPanel {
+.qtiworksRendering .assessmentItem .mathEntryInteraction .previewPanel {
   margin-left: 40%;
   width: 50%;
   text-align: center;
 }
 
-.mathassessengine div.upConversionAJAXControlMessage {
+.qtiworksRendering .assessmentItem div.upConversionAJAXControlMessage {
   width: auto;
   text-align: center;
   display: inline;
   padding: 0.5em 0 0.5em 20px;
 }
 
-.mathassessengine div.waiting {
+.qtiworksRendering .assessmentItem div.waiting {
   background: url(../images/spinner.gif) no-repeat center left;
 }
 
-.mathassessengine div.success {
+.qtiworksRendering .assessmentItem div.success {
   background: url(../images/accept.png) no-repeat center left;
 }
 
-.mathassessengine div.failure {
+.qtiworksRendering .assessmentItem div.failure {
   background: url(../images/cancel.png) no-repeat center left;
 }
 
-.mathassessengine div.error {
+.qtiworksRendering .assessmentItem div.error {
   background: url(../images/exclamation.png) no-repeat center left;
 }
 
-.mathassessengine div.upConversionAJAXControlError {
+.qtiworksRendering .assessmentItem div.upConversionAJAXControlError {
 }
 
-.mathassessengine div.upConversionAJAXControlPreview {
+.qtiworksRendering .assessmentItem div.upConversionAJAXControlPreview {
   margin: 0.5em 0;
   font-size: 110%;
 }
@@ -227,31 +227,31 @@
 /************************************************************/
 /* Help for Math Input */
 
-table.inputHelp {
+.qtiworksRendering .assessmentItem table.inputHelp {
   border-collapse: collapse;
   width: 100%;
   font-size: 90%;
 }
 
-table.inputHelp th {
+.qtiworksRendering .assessmentItem table.inputHelp th {
   border: 1px solid #999999;
   padding: 0.2em 0.5em;
   background-color: #cad8e5;
 }
 
-table.inputHelp td {
+.qtiworksRendering .assessmentItem table.inputHelp td {
   color: #999999;
   border: 1px solid #999999;
   padding: 0.2em 0.5em;
 }
 
-table.inputHelp kbd {
+.qtiworksRendering .assessmentItem table.inputHelp kbd {
   color: black;
   font-size: 100%;
   line-height: 100%;
 }
 
-table.inputHelp .longComma {
+.qtiworksRendering .assessmentItem table.inputHelp .longComma {
   margin-right: 0.5em;
 }
 
