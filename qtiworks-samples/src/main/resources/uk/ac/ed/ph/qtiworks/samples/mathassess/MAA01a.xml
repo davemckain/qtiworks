@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
-    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd
- http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
-    xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="false"
-    identifier="MAA01a" timeDependent="false"
-    title="Expand brackets in a(x+b)+cx and simplify - choice">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd" xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="false" identifier="MAA01a" timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify - choice">
     <!--
         no template processing, choice interaction and basic response
         processing

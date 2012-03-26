@@ -138,26 +138,72 @@ public class SerializationSampleTests {
         Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
         
         /* (We need to tell xmlunit to allow differences in namespace prefixes) */
-        diff.overrideDifferenceListener(new DifferenceListener() {
-            @Override
-            public void skippedComparison(Node arg0, Node arg1) {
-                /* No change */
-            }
-            
-            @Override
-            public int differenceFound(Difference difference) {
-                return difference.getId()==DifferenceConstants.NAMESPACE_PREFIX_ID ?
-                        DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL :
-                            DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
-            }
-        });
-        
+        diff.overrideDifferenceListener(new QtiDifferenceListener());
         if (!diff.identical()) {
             System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
             System.out.println("\n\nOriginal XML: " + IOUtilities.readUnicodeStream(sampleResourceLocator.findResource(sampleResourceUri)));
             System.out.println("\n\nSerialized XML: " + serializedXml);
             Assert.fail("XML differences found: " + diff.toString());
+        }
+    }
+    
+    /**
+     * Custom {@link DifferenceListener} to account for some differences we expect to
+     * find between reading and subsequently serializing.
+     *
+     * @author David McKain
+     */
+    protected static class QtiDifferenceListener implements DifferenceListener {
+        
+        @Override
+        public void skippedComparison(Node conotrl, Node test) {
+            /* No change */
+        }
+        
+        @Override
+        public int differenceFound(Difference difference) {
+            int differenceId = difference.getId();
+            switch (differenceId) {
+                case DifferenceConstants.NAMESPACE_PREFIX_ID:
+                    /* Don't worry about namespace prefixes */
+                    return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    
+                case DifferenceConstants.TEXT_VALUE_ID:
+                    /* Different values. */
+                    /* Let's test for equal floats */
+                    String controlValue = difference.getControlNodeDetail().getValue();
+                    String testValue = difference.getTestNodeDetail().getValue();
+                    if (isEqualFloat(controlValue, testValue)) {
+                        return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    }
+                    return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
+                    
+                default:
+                    /* Assume anything else is a valid difference */
+                    return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
+            }
+        }
+        
+        /**
+         * Tests whether two floats are exactly equal when parsed. This allows 2 and 2.0 to be considered
+         * equal, even though they're differet as Strings.
+         * 
+         * @param controlValue
+         * @param testValue
+         * @return
+         */
+        private boolean isEqualFloat(String controlValue, String testValue) {
+            float controlFloat;
+            float testFloat;
+            try {
+                controlFloat = Float.parseFloat(controlValue);
+                testFloat = Float.parseFloat(testValue);
+            }
+            catch (NumberFormatException e) {
+                return false;
+            }
+            return controlFloat==testFloat; /* Yes, really == here! */
         }
     }
 }
