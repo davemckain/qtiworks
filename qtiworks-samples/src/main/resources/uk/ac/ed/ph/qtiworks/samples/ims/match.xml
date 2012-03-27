@@ -10,11 +10,11 @@
 			<value>L M</value>
 			<value>P T</value>
 		</correctResponse>
-		<mapping defaultValue="0.0">
-			<mapEntry mapKey="C R" mappedValue="1.0"/>
+		<mapping defaultValue="0">
+			<mapEntry mapKey="C R" mappedValue="1"/>
 			<mapEntry mapKey="D M" mappedValue="0.5"/>
 			<mapEntry mapKey="L M" mappedValue="0.5"/>
-			<mapEntry mapKey="P T" mappedValue="1.0"/>
+			<mapEntry mapKey="P T" mappedValue="1"/>
 		</mapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

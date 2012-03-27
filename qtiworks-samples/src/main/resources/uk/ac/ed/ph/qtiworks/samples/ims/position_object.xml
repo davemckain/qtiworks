@@ -12,10 +12,10 @@
 			<!-- EDI -->
 			<value>96 114</value>
 		</correctResponse>
-		<areaMapping defaultValue="0.0">
-			<areaMapEntry shape="circle" coords="118,184,12" mappedValue="1.0"/>
-			<areaMapEntry shape="circle" coords="150,235,12" mappedValue="1.0"/>
-			<areaMapEntry shape="circle" coords="96,114,12" mappedValue="1.0"/>
+		<areaMapping defaultValue="0">
+			<areaMapEntry shape="circle" coords="118,184,12" mappedValue="1"/>
+			<areaMapEntry shape="circle" coords="150,235,12" mappedValue="1"/>
+			<areaMapEntry shape="circle" coords="96,114,12" mappedValue="1"/>
 		</areaMapping>
 	</responseDeclaration>
 	<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>

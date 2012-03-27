@@ -7,8 +7,8 @@
 		<correctResponse>
 			<value>York</value>
 		</correctResponse>
-		<mapping defaultValue="0.0">
-			<mapEntry mapKey="York" mappedValue="1.0"/>
+		<mapping defaultValue="0">
+			<mapEntry mapKey="York" mappedValue="1"/>
 			<mapEntry mapKey="york" mappedValue="0.5"/>
 		</mapping>
 	</responseDeclaration>

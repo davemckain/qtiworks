@@ -39,12 +39,12 @@
 					<correct identifier="RESPONSE"/>
 				</match>
 				<setOutcomeValue identifier="SCORE">
-					<baseValue baseType="float">1.0</baseValue>
+					<baseValue baseType="float">1</baseValue>
 				</setOutcomeValue>
 			</responseIf>
 			<responseElse>
 				<setOutcomeValue identifier="SCORE">
-					<baseValue baseType="float">0.0</baseValue>
+					<baseValue baseType="float">0</baseValue>
 				</setOutcomeValue>
 			</responseElse>
 		</responseCondition>

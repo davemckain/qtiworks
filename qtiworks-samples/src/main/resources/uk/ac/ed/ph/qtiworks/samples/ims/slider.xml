@@ -7,7 +7,7 @@
 		<correctResponse>
 			<value>16</value>
 		</correctResponse>
-		<mapping defaultValue="0.0">
+		<mapping defaultValue="0">
 			<mapEntry mapKey="12" mappedValue="0.5"/>
 			<mapEntry mapKey="13" mappedValue="0.5"/>
 			<mapEntry mapKey="14" mappedValue="1.0"/>
@@ -24,7 +24,7 @@
 		<p>Much to the dismay of Star Wars fans, the 2001 UK national census classified people who
 			identified themselves as <i>Jedi Knights</i> as having no religion. In fact, the
 			<i>Jedi</i> accounted for more than 4% of this group!</p>
-		<sliderInteraction responseIdentifier="RESPONSE" lowerBound="0.0" upperBound="100.0" step="1"
+		<sliderInteraction responseIdentifier="RESPONSE" lowerBound="0" upperBound="100" step="1"
 			stepLabel="false">
 			<prompt>In total, what percentage of the UK population do you think were eventually
 				classifed as having no religion?</prompt>

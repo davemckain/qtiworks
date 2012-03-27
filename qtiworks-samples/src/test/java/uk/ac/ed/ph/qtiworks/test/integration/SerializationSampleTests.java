@@ -164,6 +164,8 @@ public class SerializationSampleTests {
         @Override
         public int differenceFound(Difference difference) {
             int differenceId = difference.getId();
+            String controlValue = difference.getControlNodeDetail().getValue();
+            String testValue = difference.getTestNodeDetail().getValue();
             switch (differenceId) {
                 case DifferenceConstants.NAMESPACE_PREFIX_ID:
                     /* Don't worry about namespace prefixes */
@@ -171,9 +173,15 @@ public class SerializationSampleTests {
                     
                 case DifferenceConstants.TEXT_VALUE_ID:
                     /* Different values. */
-                    /* Let's test for equal floats */
-                    String controlValue = difference.getControlNodeDetail().getValue();
-                    String testValue = difference.getTestNodeDetail().getValue();
+                    /* Test for equal floats */
+                    if (isEqualFloat(controlValue, testValue)) {
+                        return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    }
+                    return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
+                    
+                case DifferenceConstants.ATTR_VALUE_ID:
+                    /* Different attribute values */
+                    /* Test for equal floats */
                     if (isEqualFloat(controlValue, testValue)) {
                         return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }

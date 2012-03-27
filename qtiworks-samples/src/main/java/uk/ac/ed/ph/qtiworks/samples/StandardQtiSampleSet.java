@@ -47,7 +47,6 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/adaptive_template.xml"),
             new QtiSampleResource(Type.ITEM, "ims/adaptive.xml"),
             new QtiSampleResource(Type.ITEM, "ims/associate.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/choice_doctype.xml", Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
             new QtiSampleResource(Type.ITEM, "ims/choice_fixed.xml"),
             new QtiSampleResource(Type.ITEM, "ims/choice_multiple_chocolade.xml"),
             new QtiSampleResource(Type.ITEM, "ims/choice_multiple.xml"),

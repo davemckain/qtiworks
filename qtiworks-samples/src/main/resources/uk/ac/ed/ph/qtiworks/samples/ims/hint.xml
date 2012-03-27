@@ -55,7 +55,7 @@
 							<correct identifier="RESPONSE"/>
 						</match>
 						<setOutcomeValue identifier="SCORE">
-							<baseValue baseType="float">1.0</baseValue>
+							<baseValue baseType="float">1</baseValue>
 						</setOutcomeValue>
 						<setOutcomeValue identifier="END_FEEDBACK">
 							<baseValue baseType="identifier">CORRECT</baseValue>
@@ -63,7 +63,7 @@
 					</responseIf>
 					<responseElse>
 						<setOutcomeValue identifier="SCORE">
-							<baseValue baseType="float">0.0</baseValue>
+							<baseValue baseType="float">0</baseValue>
 						</setOutcomeValue>
 						<setOutcomeValue identifier="END_FEEDBACK">
 							<baseValue baseType="identifier">INCORRECT</baseValue>
