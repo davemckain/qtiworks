@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -104,8 +104,8 @@ public final class QueryUtils {
                     if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
                         elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
                     }
-                    else if (node instanceof ForeignBlock) {
-                        elementNamespaceUris.add(((ForeignBlock) node).getNamespaceUri());
+                    else if (node instanceof ForeignElement) {
+                        elementNamespaceUris.add(((ForeignElement) node).getNamespaceUri());
                     }
                     /* Now do attributes */
                     for (Attribute<?> attribute : node.getAttributes()) {

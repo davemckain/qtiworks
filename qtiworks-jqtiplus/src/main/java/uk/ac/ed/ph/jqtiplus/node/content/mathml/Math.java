@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implements a QTI MathML island. Only supports children in the form of {@link ForeignBlock},
+ * Implements a QTI MathML island. Only supports children in the form of {@link ForeignElement},
  * so validation of the content is left to the user. (Obviously xml schema validation
  * could help!)
  * 
@@ -95,9 +95,9 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
 
     private void readChildNode(Node node, LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
-            final ForeignBlock foreignBlock = new ForeignBlock(this, node.getLocalName(), node.getNamespaceURI());
-            children.add(foreignBlock);
-            foreignBlock.load((Element) node, context);
+            final ForeignElement foreignElement = new ForeignElement(this, node.getLocalName(), node.getNamespaceURI());
+            children.add(foreignElement);
+            foreignElement.load((Element) node, context);
         }
         else if (node.getNodeType() == Node.TEXT_NODE) {
             final String textContent = node.getTextContent().trim();

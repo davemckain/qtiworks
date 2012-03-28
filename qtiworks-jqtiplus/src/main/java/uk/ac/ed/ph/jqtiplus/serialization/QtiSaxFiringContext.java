@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.serialization;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -89,8 +89,8 @@ public final class QtiSaxFiringContext {
     
     private String getNodeNamespaceUri(AbstractNode node) {
         String namespaceUri = "";
-        if (node instanceof ForeignBlock) {
-            namespaceUri = ((ForeignBlock) node).getNamespaceUri();
+        if (node instanceof ForeignElement) {
+            namespaceUri = ((ForeignElement) node).getNamespaceUri();
         }
         else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
             namespaceUri = QtiConstants.MATHML_NAMESPACE_URI;

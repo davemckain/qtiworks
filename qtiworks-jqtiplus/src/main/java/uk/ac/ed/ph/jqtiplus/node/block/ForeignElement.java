@@ -40,13 +40,13 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jonathon Hare
  */
-public final class ForeignBlock extends ContainerBlock {
+public final class ForeignElement extends ContainerBlock {
 
     private static final long serialVersionUID = 474940437634236118L;
     
     private final String namespaceUri;
 
-    public ForeignBlock(XmlNode parent, String localName, String namespaceUri) {
+    public ForeignElement(XmlNode parent, String localName, String namespaceUri) {
         super(parent, localName);
         this.namespaceUri = namespaceUri;
     }

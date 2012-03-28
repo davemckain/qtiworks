@@ -34,10 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ForeignBlock;
+import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 
 /**
- * An attribute for a {@link ForeignBlock}, or any other unkown attribute. 
+ * An attribute for a {@link ForeignElement}, or any other unkown attribute. 
  * These are simply wrapped up {@link String}s.
  * 
  * @author David McKain
