@@ -92,7 +92,7 @@ enum StatsOperatorTarget {
     static {
         operations = new HashMap<String, StatsOperatorTarget>();
         for (final StatsOperatorTarget operation : StatsOperatorTarget.values()) {
-            operations.put(operation.getName(), operation);
+            operations.put(operation.name, operation);
         }
     }
 
@@ -111,6 +111,11 @@ enum StatsOperatorTarget {
 
     public StatsOperatorEvaluator getEvaluator() {
         return evaluator;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static StatsOperatorTarget parseOperation(String name) {

@@ -155,7 +155,7 @@ enum MathOperatorTarget {
     static {
         operations = new HashMap<String, MathOperatorTarget>();
         for (final MathOperatorTarget operation : MathOperatorTarget.values()) {
-            operations.put(operation.getName(), operation);
+            operations.put(operation.name, operation);
         }
     }
 
@@ -181,6 +181,11 @@ enum MathOperatorTarget {
 
     public MathOperatorEvaluator getEvaluator() {
         return evaluator;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static MathOperatorTarget parseOperation(String name) {

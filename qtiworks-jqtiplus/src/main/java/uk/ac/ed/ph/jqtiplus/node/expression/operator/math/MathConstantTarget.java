@@ -55,12 +55,11 @@ enum MathConstantTarget {
     static {
         constants = new HashMap<String, MathConstantTarget>();
         for (final MathConstantTarget operation : MathConstantTarget.values()) {
-            constants.put(operation.getName(), operation);
+            constants.put(operation.name, operation);
         }
     }
 
     private final String name;
-
     private final double value;
 
     private MathConstantTarget(final String name, final double value) {
@@ -74,6 +73,11 @@ enum MathConstantTarget {
 
     public double getValue() {
         return value;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 
     public static MathConstantTarget parseConstant(String name) {
