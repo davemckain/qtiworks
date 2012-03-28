@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:m="http://www.w3.org/1998/Math/MathML" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd   http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd" adaptive="false" timeDependent="false" identifier="MAD01-newSRinRP" title="Rand-ScriptRule-MathEntry-CasCompare - Expand brackets in a(x+b)+cx and simplify">
+<!-- This is MAD01-SRinRPRealCode.xml -->
+<!-- 
+template processing with randomisation using ScriptRule, MathEntryInteraction and casCompare in response processing
+-->
+	<responseDeclaration identifier="RESPONSE" cardinality="record"/>
+	<responseDeclaration baseType="string" cardinality="single" identifier="printMath"/>
+	<responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
+	<responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
+	<outcomeDeclaration baseType="float" cardinality="single" identifier="fOut" normalMaximum="2.0" normalMinimum="0.0"/>
+	<outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0" normalMinimum="0.0">
+			<defaultValue>
+			<value>0.0</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+	<outcomeDeclaration identifier="EMPTY" cardinality="single" baseType="identifier"/>
+	<outcomeDeclaration identifier="seenSolution" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="seenHint" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKHINT" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>askhint</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKSOLUTION" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>asksolution</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="odummy" cardinality="single" baseType="boolean"/>
+    <outcomeDeclaration identifier="polyOK" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="isEquiv" cardinality="single" baseType="boolean"/>
+    <outcomeDeclaration identifier="termsOK" cardinality="single" baseType="boolean"/>
+    <outcomeDeclaration identifier="constOK" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="isEqual" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="isExpanded" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t1OK" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t2OK" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t1BadSign" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t2BadSign" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t1Zero" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t2Zero" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t1One" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="t2One" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="constOne" cardinality="single" baseType="boolean"/>
+	<!-- add template processing, using QTIv2.1 native elements -->
+	<templateDeclaration baseType="boolean" cardinality="single" identifier="keepRandomSeed" mathVariable="false" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iRandomSeed" mathVariable="false" paramVariable="false"/>
+	<templateDeclaration baseType="boolean" cardinality="single" identifier="dummy" mathVariable="false" paramVariable="false"/>
+	 <templateDeclaration baseType="identifier" cardinality="multiple" identifier="showSolParts" mathVariable="false" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true" paramVariable="false">
+		<defaultValue>
+				<value>0</value>
+		</defaultValue>
+	</templateDeclaration>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iAbsA" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iB" mathVariable="true" paramVariable="false">
+		<defaultValue>
+		<value>0</value>
+	</defaultValue>
+	</templateDeclaration>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iAbsB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="single" baseType="string" identifier="sSignB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iC" mathVariable="true" paramVariable="false">
+		<defaultValue>
+		 <value>0</value>
+		</defaultValue>
+	</templateDeclaration>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iAbsC" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="single" baseType="string" identifier="sSignC" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iAB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iAbsAB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="single" baseType="string" identifier="sSignAB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="single" baseType="string" identifier="sBadSignAB" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iApC" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="record" identifier="mX1" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="record" identifier="mX2" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="record" identifier="mQues" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration cardinality="record" identifier="mAns" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iBad3" mathVariable="false" paramVariable="false"/>
+	<templateDeclaration cardinality="record" identifier="mBad4" mathVariable="true" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iBad5" mathVariable="false" paramVariable="false"/>
+	<templateDeclaration baseType="integer" cardinality="ordered" identifier="iRandomState" mathVariable="false" paramVariable="false"/>
+	<templateProcessing>
+		<!-- now do the randomisation and mathematical calculations, using maxima -->
+		<setTemplateValue identifier="dummy">
+			<customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
+			  <baseValue baseType="string">
+			  <![CDATA[
+				simp:true;
+				choose(list) := list[1+random(length(list))];
+				s1 : make_random_state(true)$ set_random_state(s1);
+				for iI:1 step 1 unless (not(equal((iA+iC),0)) and not(equal(abs(iA+iC),1)) and gcd(iA*iB,iA+iC)=1) do block(
+				  iA: ev((random(9)+2)*(random(2)*2-1),simp),
+				  iB: ev((random(9)+1)*(random(2)*2-1),simp),
+				  iC: ev((random(9)+2)*(random(2)*2-1),simp));
+				iAbsA: ev(abs(iA),simp);
+				iAbsB: ev(abs(iB),simp);
+				iAbsC: ev(abs(iC),simp);
+				iAB: ev(iA*iB,simp);
+				iApC: ev(iA+iC,simp);
+				iAbsAB: ev(abs(iAB),simp);
+				 vars:[a,b,c,d,m,n,p,q,r,s,t,u,v,w,x,y,z];
+				 mX1:choose(vars);
+				 vars:delete(mX1,vars);
+				 mX2:choose(vars);
+				iBad3:iAB-iB;
+				mBad4:(iA-1)*mX1;
+				iBad5:2*iAB;
+				simp:false;
+				mQues:iA*(mX1+iB)+iC*mX1;
+				if iAB>0 then mAns:ev(iApC*mX1,simp)+iAB else mAns:ev(iApC*mX1,simp)-iAbsAB;
+				]]>
+			  </baseValue>
+			</customOperator>
+		</setTemplateValue>
+		<templateCondition>
+			<templateIf>
+				<gt>
+					<variable identifier="iB"/>
+					<baseValue baseType="integer">0</baseValue>
+				</gt>
+				<setTemplateValue identifier="sSignB">
+					<baseValue baseType="string">+</baseValue>
+				</setTemplateValue>
+			</templateIf>
+			<templateElse>
+				<setTemplateValue identifier="sSignB">
+					<baseValue baseType="string">-</baseValue>
+				</setTemplateValue>
+			</templateElse>
+		</templateCondition>
+		<templateCondition>
+			<templateIf>
+				<gt>
+					<variable identifier="iC"/>
+					<baseValue baseType="integer">0</baseValue>
+				</gt>
+				<setTemplateValue identifier="sSignC">
+					<baseValue baseType="string">+</baseValue>
+				</setTemplateValue>
+			</templateIf>
+			<templateElse>
+				<setTemplateValue identifier="sSignC">
+					<baseValue baseType="string">-</baseValue>
+				</setTemplateValue>
+			</templateElse>
+		</templateCondition>
+		<templateCondition>
+			<templateIf>
+				<gt>
+					<variable identifier="iAB"/>
+					<baseValue baseType="integer">0</baseValue>
+				</gt>
+				<setTemplateValue identifier="sSignAB">
+					<baseValue baseType="string">+</baseValue>
+				</setTemplateValue>
+				<setTemplateValue identifier="sBadSignAB">
+					<baseValue baseType="string">-</baseValue>
+				</setTemplateValue>
+			</templateIf>
+			<templateElse>
+				<setTemplateValue identifier="sSignAB">
+					<baseValue baseType="string">-</baseValue>
+				</setTemplateValue>
+				<setTemplateValue identifier="sBadSignAB">
+					<baseValue baseType="string">+</baseValue>
+				</setTemplateValue>
+			</templateElse>
+		</templateCondition>
+	</templateProcessing>
+	<itemBody>
+		<!-- templateVariables are used in the question statement, choices and feedback,
+		including some of type string with mathVariable set; printedVariable for these should produce MathML -->
+		<!--<p>This is a printedVariable element containing an undeclared variable (isquiv): <printedVariable identifier="isquiv"/>. It should be NULL until an input is submitted.</p>-->
+		<p>Expand the brackets in <m:math>
+					<m:semantics>
+						<m:mrow>
+							<m:mi>iA</m:mi>
+							<m:mo>(</m:mo>
+							<m:mi>mX1</m:mi>
+							<!-- Using variable substitution for our random letter (QTI extension) -->
+							<m:mi>sSignB</m:mi>
+							<!-- Using variable substitution in mo (QTI extension) -->
+							<m:mi>iAbsB</m:mi>
+							<m:mo>)</m:mo>
+							<m:mi>sSignC</m:mi>
+							<!-- Using variable substitution in mo (QTI extension) -->
+							<m:mi>iAbsC</m:mi>
+							<m:mi>mX1</m:mi>
+							<!-- Using variable substitution for our random letter (QTI extension) -->
+						</m:mrow>
+						<m:annotation encoding="LaTeX">\[\qv{iA}(\qv{mX1}\qv{sSignB}\qv{iAbsB})\qv{sSignC}\qv{iAbsC}\qv{mX1}\]</m:annotation>
+					</m:semantics>
+			</m:math> and simplify the result. </p>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<customInteraction class="org.qtitools.mathassess.MathEntryInteraction" responseIdentifier="RESPONSE" ma:syntax="text/x-maxima" ma:expectedLength="20" ma:printIdentifier="printMath"/>
+						</td>
+						<td> 
+							<feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								Correct
+							</feedbackInline>
+							
+							<feedbackInline identifier="CORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
+								That is the correct answer.
+							</feedbackInline>
+							
+							<feedbackInline identifier="CORRECT3" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is correct.
+							</feedbackInline>
+							
+							<feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is correct, so you gain two marks, but it would be more usual to write it in the form
+								<m:math display="block">
+										<m:semantics>
+											<m:mrow>
+												<m:mi>iApC</m:mi>
+												<m:mi>mX1</m:mi>
+												
+												<m:mi>sSignAB</m:mi>
+												<m:mi>iAbsAB</m:mi>
+											</m:mrow>
+											<m:annotation encoding="LaTeX">\[\qv{iApC}\qv{mX1}\qv{sSignAB}\qv{iAbsAB}\]</m:annotation>
+										</m:semantics>
+								</m:math>.
+							</feedbackInline>
+							
+							<feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK" showHide="show">
+								Remember that, when expanding brackets, all terms inside must be multiplied by whatever is outside. 
+								However, you got one term in the answer correct, so 1 mark.
+							</feedbackInline>
+							
+							<feedbackInline identifier="ORIG-EXPR" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your input is equivalent to the expression we started with!
+							</feedbackInline>
+							
+							<feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is not in simplified form.
+							</feedbackInline>
+							
+							<feedbackInline identifier="NOT-EXPANDED" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is not expanded.
+							</feedbackInline>
+							
+							<feedbackInline identifier="NOT-POLY" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is not of the expected form; check variable names.
+							</feedbackInline>
+							
+							<feedbackInline identifier="IS-POLY" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is a polynomial, as expected.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T1-OK" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your first term is OK.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T1-BADSIGN" outcomeIdentifier="FEEDBACK" showHide="show">
+								The sign of your first term is incorrect.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T1-ZERO" outcomeIdentifier="FEEDBACK" showHide="show">
+								The term in <printedVariable identifier="mX1"/> is missing or has the wrong power.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T1-ONE" outcomeIdentifier="FEEDBACK" showHide="show">
+								You did not multiply the term in <printedVariable identifier="mX1"/> by <printedVariable identifier="iA"/>; remember, everything inside the bracket must be multiplied by what is outside.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T1-BAD" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your first term is incorrect.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T2-OK" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your second term is OK.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T2-BADSIGN" outcomeIdentifier="FEEDBACK" showHide="show">
+								The sign of your second term is incorrect.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T2-ZERO" outcomeIdentifier="FEEDBACK" showHide="show">
+								The term in <printedVariable identifier="mX2"/> is missing.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T2-ONE" outcomeIdentifier="FEEDBACK" showHide="show">
+								You did not multiply the term in <printedVariable identifier="mX2"/> by <printedVariable identifier="iA"/>; remember, everything inside the bracket must be multiplied by what is outside.
+							</feedbackInline>
+							
+							<feedbackInline identifier="T2-BAD" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your second term is incorrect.
+							</feedbackInline>
+							
+							<feedbackInline identifier="CONST-ONE" outcomeIdentifier="FEEDBACK" showHide="show">
+								You did not multiply <printedVariable identifier="iB"/> by <printedVariable identifier="iA"/>; remember, everything inside the bracket must be multiplied by what is outside.
+							</feedbackInline>
+							
+							<feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								You should ask for tutor help on this question. 
+							</feedbackInline>
+							<!-- <feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								Correct
+							</feedbackInline>
+							<feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your answer is correct, but it would be more usual to write it in the form &#160;&#160;
+								<m:math display="block">
+										<m:semantics>
+											<m:mrow>
+												<m:mi>iApC</m:mi>
+												<m:mi>mX1</m:mi>
+												
+												<m:mi>sSignAB</m:mi>
+												<m:mi>iAbsAB</m:mi>
+											</m:mrow>
+											<m:annotation encoding='LaTeX'>\[\qv{iApC}\qv{mX1}\qv{sSignAB}\qv{iAbsAB}\]</m:annotation>
+										</m:semantics>
+								</m:math>.
+							</feedbackInline>
+							<feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK" showHide="show">
+								You have expanded the bracket correctly but failed to simplify as the question asks.
+							</feedbackInline>
+							<feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK" showHide="show">
+								Remember that, when expanding brackets, all terms inside must be multiplied by whatever is outside. 
+								However, you got one term in the answer correct.
+							</feedbackInline>
+							<feedbackInline identifier="WRONG-SIGN-CONSTANT" outcomeIdentifier="FEEDBACK" showHide="show">
+								When expanding the bracket the product of <printedVariable identifier="iA" /> and <printedVariable identifier="iB" /> is <printedVariable identifier="iAB" />. 
+								However, you got one term in the answer correct.
+							</feedbackInline>
+							<feedbackInline identifier="ORIG-EXPR" outcomeIdentifier="FEEDBACK" showHide="show">
+								Your input is equivalent to the expression we started with!
+							</feedbackInline>
+							<feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								You should ask for tutor help on this question.
+							</feedbackInline>-->
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		
+		<feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mi>iA</m:mi>
+											<m:mo>(</m:mo>
+											<m:mi>mX1</m:mi>
+											<!-- Using string variable substitution for our random letter (QTI extension) -->
+											<m:mi>sSignB</m:mi>
+											<!-- Using string variable substitution in mo (QTI extension) -->
+											<m:mi>iAbsB</m:mi>
+											<m:mo>)</m:mo>
+											<m:mi>sSignC</m:mi>
+											<!-- Using string variable substitution in mo (QTI extension) -->
+											<m:mi>iAbsC</m:mi>
+											<m:mi>mX1</m:mi>
+											<!-- Using string variable substitution for our random letter (QTI extension) -->
+										</m:mrow>
+										<m:annotation encoding="LaTeX">\[= \qv{iA}(\qv{mX1}\qv{sSignB}\qv{iAbsB})\qv{sSignC}\qv{iAbsC}\qv{mX1}\]</m:annotation>
+									</m:semantics>
+							</m:math>
+						</td>
+						<td>
+							<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mo>=</m:mo>
+											<m:mrow>
+												<m:mi>iA</m:mi>
+												<m:mo>×</m:mo>
+												<m:mi>mX1</m:mi>
+											</m:mrow>
+											<m:mi>sSignAB</m:mi>
+											<m:mrow>
+												<m:mi>iAbsA</m:mi>
+												<m:mo>×</m:mo>
+												<m:mi>iAbsB</m:mi>
+											</m:mrow>
+											<m:mi>sSignC</m:mi>
+											<m:mrow>
+												<m:mi>iAbsC</m:mi>
+												<m:mo>×</m:mo>
+												<m:mi>mX1</m:mi>
+											</m:mrow>
+										</m:mrow>
+										<m:annotation encoding="LaTeX">\[= \qv{iA} \times \qv{mX1} \qv{sSignAB} \qv{iAbsA} \times \qv{iAbsB} \qv{sSignC} \qv{iAbsC} \times \qv{mX1}\]</m:annotation>
+									</m:semantics>
+							</m:math>
+						</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td>
+							<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mo>=</m:mo>
+											<m:mi>iApC</m:mi>
+											<m:mi>mX1</m:mi>
+											<!-- Using string variable substitution for our random letter (QTI extension) -->
+											<m:mi>sSignAB</m:mi>
+											<!-- Using string variable substitution in mo (QTI extension) -->
+											<m:mi>iAbsAB</m:mi>
+										</m:mrow>
+										<m:annotation encoding="LaTeX">\[= \qv{iApC} \qv{mX1} \qv{sSignAB} \qv{iAbsAB}\]</m:annotation>
+									</m:semantics>
+							</m:math>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</feedbackBlock>
+		<feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
+			<p>Expand the bracket and collect like terms.</p>
+		</feedbackBlock>
+		<feedbackBlock outcomeIdentifier="ASKHINT" identifier="askhint" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST" title="Show Hint"/>
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+		<feedbackBlock outcomeIdentifier="ASKSOLUTION" identifier="asksolution" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST" title="Show Solution"/>  
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+	</itemBody>
+  <responseProcessing>
+        <setOutcomeValue identifier="FEEDBACK">
+            <multiple>
+                <variable identifier="EMPTY"/>
+            </multiple>
+        </setOutcomeValue>
+	    <responseCondition>
+	        <responseIf>
+	            <variable identifier="HINTREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+                <multiple>
+                    <baseValue baseType="identifier">HINT</baseValue>
+	                </multiple>
+	            </setOutcomeValue>
+	        	<setOutcomeValue identifier="fOut">
+	        		<baseValue baseType="float">0.2</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="seenHint">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        </responseIf>
+	        <responseElseIf>
+	            <variable identifier="SOLREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+                <multiple>
+                    <baseValue baseType="identifier">SOLUTION</baseValue>
+	                </multiple>
+	            </setOutcomeValue>
+				<setOutcomeValue identifier="seenSolution">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        	<setOutcomeValue identifier="completionStatus">
+	        		<baseValue baseType="identifier">completed</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKHINT">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKSOLUTION">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        </responseElseIf>
+            <responseElse>
+                <responseCondition>
+                    <responseIf>
+                        <isNull>
+                            <variable identifier="RESPONSE"/>
+                        </isNull>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                	<responseElse>
+                		<responseCondition>
+                			<responseIf>
+		                        <customOperator class="org.qtitools.mathassess.CasCompare" ma:action="syntequal" ma:simplify="false" ma:syntax="text/x-maxima">
+		                            <variable identifier="RESPONSE"/>
+		                            <variable identifier="mQues"/>
+		                        </customOperator>
+		                        <setOutcomeValue identifier="FEEDBACK">
+		                            <multiple>
+		                                <baseValue baseType="identifier">ORIG-EXPR</baseValue>
+		                            </multiple>
+		                        </setOutcomeValue>
+		                        <setOutcomeValue identifier="SCORE">
+		                            <baseValue baseType="float">0</baseValue>
+		                        </setOutcomeValue>
+		                    </responseIf>
+		                    <responseElseIf>
+		                        <customOperator class="org.qtitools.mathassess.CasCompare" ma:action="syntequal" ma:simplify="false" ma:syntax="text/x-maxima">
+		                            <variable identifier="RESPONSE"/>
+		                            <variable identifier="mAns"/>
+		                        </customOperator>
+		                        <setOutcomeValue identifier="FEEDBACK">
+		                            <multiple>
+		                                <baseValue baseType="identifier">CORRECT</baseValue>
+		                            </multiple>
+		                        </setOutcomeValue>
+		                        <setOutcomeValue identifier="SCORE">
+		                            <baseValue baseType="float">2</baseValue>
+		                        </setOutcomeValue>
+		                    </responseElseIf>
+		                    <responseElse>
+		                        <setOutcomeValue identifier="odummy">
+		                            <customOperator class="org.qtitools.mathassess.ScriptRule" ma:simplify="false" ma:syntax="text/x-maxima">
+		                                <baseValue baseType="string"><![CDATA[
+		
+		termsOK : true;
+		 polyOK: block([simp:true], if polynomialp(RESPONSE,listofvars(mAns))then true else false );
+		
+		 equalp(p,q):= block([simp:false], if p=q then return(true) else return(false) )$ isEqual: equalp(RESPONSE,mAns);
+		
+		 equivp(p,q):= block([simp:true], if is(equal(p,q))=true then return(true) else return(false) )$ isEquiv: equivp(RESPONSE,mAns);
+		
+		 expandp(q):= block([simp:true],
+		
+		 if q=expand(q) then true else false)$ isExpanded: expandp(RESPONSE);
+		 
+		 includesp(sub, term) :=
+		    if some(lambda([e],is(equal(ev(e - sub,simp),0))),makelist(part(term,i),i,1,length(term)))=true then true else false;
+		 
+		 termsOK:is(is(nterms(RESPONSE)=nterms(mAns))=true);
+		
+		 t1OK:includesp(first(RESPONSE),mAns);
+		
+		 t2OK:includesp(second(RESPONSE),mAns);
+		
+		 t1BadSign:includesp(-first(RESPONSE),mAns);
+		
+		 t2BadSign:includesp(-second(RESPONSE),mAns);
+		
+		 t1Zero:is(is(equal(first(RESPONSE),0))=true);
+		
+		 t2Zero:is((equal(second(RESPONSE),0))=true);
+		
+		 t1One:includesp(mX11,RESPONSE);
+		
+		 t2One:includesp(mX12,RESPONSE);
+		
+		 constOne:includesp(mConst,RESPONSE);
+		
+		 
+		]]></baseValue>
+		                            </customOperator>
+		                        </setOutcomeValue>
+		                        <responseCondition>
+		                            <responseIf>
+		                                <variable identifier="isEqual"/>
+		                            	<setOutcomeValue identifier="SCORE">
+		                            		<baseValue baseType="float">2</baseValue>
+		                            	</setOutcomeValue>
+		                            	<setOutcomeValue identifier="FEEDBACK">
+		                                    <multiple>
+		                                        <baseValue baseType="identifier">CORRECT2</baseValue>
+		                                    </multiple>
+		                                </setOutcomeValue>
+		                            </responseIf>
+		                            <responseElseIf>
+		                                <variable identifier="polyOK"/>
+		                                <responseCondition>
+		                                    <responseIf>
+		                                        <variable identifier="isEquiv"/>
+		                                        <responseCondition>
+		                                            <responseIf>
+		                                                <variable identifier="isExpanded"/>
+		                                                <responseCondition>
+		                                                    <responseIf>
+		                                                        <variable identifier="termsOK"/>
+		                                                        <setOutcomeValue identifier="SCORE">
+		                                                            <baseValue baseType="float">2</baseValue>
+		                                                        </setOutcomeValue>
+		                                                        <setOutcomeValue identifier="FEEDBACK">
+		                                                            <multiple>
+		                                                                <baseValue baseType="identifier">CORRECT3</baseValue>
+		                                                            </multiple>
+		                                                        </setOutcomeValue>
+		                                                    </responseIf>
+		                                                    <responseElse>
+		                                                        <setOutcomeValue identifier="FEEDBACK">
+		                                                            <multiple>
+		                                                                <baseValue baseType="identifier">NOT-SIMP</baseValue>
+		                                                            </multiple>
+		                                                        </setOutcomeValue>
+		                                                        <setOutcomeValue identifier="SCORE">
+		                                                            <baseValue baseType="float">1</baseValue>
+		                                                        </setOutcomeValue>
+		                                                    </responseElse>
+		                                                </responseCondition>
+		                                            </responseIf>
+		                                            <responseElse>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <baseValue baseType="identifier">NOT-EXPANDED</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                                <setOutcomeValue identifier="SCORE">
+		                                                    <baseValue baseType="float">0</baseValue>
+		                                                </setOutcomeValue>
+		                                            </responseElse>
+		                                        </responseCondition>
+		                                    </responseIf>
+		                                    <responseElse>
+		                                        <setOutcomeValue identifier="FEEDBACK">
+		                                            <multiple>
+		                                                <baseValue baseType="identifier">IS-POLY</baseValue>
+		                                            </multiple>
+		                                        </setOutcomeValue>
+		                                        <setOutcomeValue identifier="SCORE">
+		                                            <baseValue baseType="float">0</baseValue>
+		                                        </setOutcomeValue>
+		                                        <responseCondition>
+		                                            <responseIf>
+		                                                <variable identifier="t1OK"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T1-OK</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                                <setOutcomeValue identifier="SCORE">
+		                                                    <sum>
+		                                                        <variable identifier="SCORE"/>
+		                                                        <baseValue baseType="float">1</baseValue>
+		                                                    </sum>
+		                                                </setOutcomeValue>
+		                                            </responseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t1One"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T1-ONE</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t1BadSign"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T1-BADSIGN</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t1Zero"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T1-ZERO</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElse>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T1-BAD</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElse>
+		                                        </responseCondition>
+		                                        <responseCondition>
+		                                            <responseIf>
+		                                                <variable identifier="t2OK"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T2-OK</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                                <setOutcomeValue identifier="SCORE">
+		                                                    <sum>
+		                                                        <variable identifier="SCORE"/>
+		                                                        <baseValue baseType="float">1</baseValue>
+		                                                    </sum>
+		                                                </setOutcomeValue>
+		                                            </responseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t2One"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T2-ONE</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t2BadSign"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T2-BADSIGN</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElseIf>
+		                                                <variable identifier="t2Zero"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T2-ZERO</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElseIf>
+		                                            <responseElse>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">T2-BAD</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseElse>
+		                                        </responseCondition>
+		                                        <responseCondition>
+		                                            <responseIf>
+		                                                <variable identifier="constOne"/>
+		                                                <setOutcomeValue identifier="FEEDBACK">
+		                                                    <multiple>
+		                                                        <variable identifier="FEEDBACK"/>
+		                                                        <baseValue baseType="identifier">CONST-ONE</baseValue>
+		                                                    </multiple>
+		                                                </setOutcomeValue>
+		                                            </responseIf>
+		                                        </responseCondition>
+		                                    </responseElse>
+		                                </responseCondition>
+		                            </responseElseIf>
+		                            <responseElse>
+		                                <setOutcomeValue identifier="FEEDBACK">
+		                                    <multiple>
+		                                        <baseValue baseType="identifier">NOT-POLY</baseValue>
+		                                    </multiple>
+		                                </setOutcomeValue>
+		                                <setOutcomeValue identifier="SCORE">
+		                                    <baseValue baseType="float">0</baseValue>
+		                                </setOutcomeValue>
+		                            </responseElse>
+		                        </responseCondition>
+		                    </responseElse>
+                		</responseCondition>
+                		<setOutcomeValue identifier="completionStatus">
+                			<baseValue baseType="identifier">completed</baseValue>
+                		</setOutcomeValue>
+                		<setOutcomeValue identifier="ASKHINT">
+                			<baseValue baseType="identifier">null</baseValue>
+                		</setOutcomeValue>
+                		<setOutcomeValue identifier="ASKSOLUTION">
+                			<baseValue baseType="identifier">null</baseValue>
+                		</setOutcomeValue>
+                	</responseElse>
+                </responseCondition>
+            </responseElse>
+        </responseCondition>
+		<responseCondition>
+			<responseIf>
+				<variable identifier="seenSolution"/>
+				<setOutcomeValue identifier="SCORE">
+					<baseValue baseType="float">0.0</baseValue>
+				</setOutcomeValue>
+			</responseIf>
+			<responseElseIf>
+				<variable identifier="seenHint"/>
+				<setOutcomeValue identifier="SCORE">
+					<divide>
+						<variable identifier="SCORE"/>
+						<baseValue baseType="float">2.0</baseValue>
+					</divide>
+				</setOutcomeValue>
+			</responseElseIf>
+		</responseCondition>
+	</responseProcessing>
+</assessmentItem>

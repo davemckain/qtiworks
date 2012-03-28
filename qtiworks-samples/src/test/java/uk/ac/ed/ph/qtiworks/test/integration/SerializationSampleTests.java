@@ -58,6 +58,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
@@ -66,6 +69,7 @@ import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceConstants;
 import org.custommonkey.xmlunit.DifferenceListener;
+import org.custommonkey.xmlunit.NodeDetail;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
 import org.junit.Assert;
@@ -74,6 +78,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -90,8 +96,10 @@ public class SerializationSampleTests {
     
     @Parameters
     public static Collection<Object[]> data() {
-        return TestUtils.makeTestParameters(StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID));
+        return TestUtils.makeTestParameters(
+                StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+        );
     }
     
     public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
@@ -138,7 +146,7 @@ public class SerializationSampleTests {
         Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
         
         /* (We need to tell xmlunit to allow differences in namespace prefixes) */
-        diff.overrideDifferenceListener(new QtiDifferenceListener());
+        diff.overrideDifferenceListener(new QtiDifferenceListener(qtiSampleResource));
         if (!diff.identical()) {
             System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
@@ -155,17 +163,27 @@ public class SerializationSampleTests {
      * @author David McKain
      */
     protected static class QtiDifferenceListener implements DifferenceListener {
+
+        private static final Logger logger = LoggerFactory.getLogger(QtiDifferenceListener.class);
         
+        private final QtiSampleResource qtiSampleResouce;
+        
+        public QtiDifferenceListener(QtiSampleResource qtiSampleResouce) {
+            this.qtiSampleResouce = qtiSampleResouce;
+        }
+
         @Override
-        public void skippedComparison(Node conotrl, Node test) {
+        public void skippedComparison(Node input, Node output) {
             /* No change */
         }
         
         @Override
         public int differenceFound(Difference difference) {
             int differenceId = difference.getId();
-            String controlValue = difference.getControlNodeDetail().getValue();
-            String testValue = difference.getTestNodeDetail().getValue();
+            NodeDetail inputNodeDetail = difference.getControlNodeDetail();
+            NodeDetail outputNodeDetail = difference.getTestNodeDetail();
+            String inputValue = inputNodeDetail.getValue();
+            String outputValue = outputNodeDetail.getValue();
             switch (differenceId) {
                 case DifferenceConstants.NAMESPACE_PREFIX_ID:
                     /* Don't worry about namespace prefixes */
@@ -174,7 +192,7 @@ public class SerializationSampleTests {
                 case DifferenceConstants.TEXT_VALUE_ID:
                     /* Different values. */
                     /* Test for equal floats */
-                    if (isEqualFloat(controlValue, testValue)) {
+                    if (isEqualFloat(inputValue, outputValue)) {
                         return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
@@ -182,15 +200,56 @@ public class SerializationSampleTests {
                 case DifferenceConstants.ATTR_VALUE_ID:
                     /* Different attribute values */
                     /* Test for equal floats */
-                    if (isEqualFloat(controlValue, testValue)) {
+                    if (isEqualFloat(inputValue, outputValue)) {
                         return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }
+                    /* If still here, then assume it's a difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
+                    
+                case DifferenceConstants.SCHEMA_LOCATION_ID:
+                    /* Check xsi:schemaLocation */
+                    return areSchemaLocationsGoodEnough(inputValue, outputValue) ? DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL : DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
                     
                 default:
                     /* Assume anything else is a valid difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
             }
+        }
+        
+        private boolean areSchemaLocationsGoodEnough(String input, String output) {
+            Map<String, String> inputInfo = extractXsiSchemaLocationData(input);
+            Map<String, String> outputInfo = extractXsiSchemaLocationData(output);
+            for (Entry<String, String> inputEntry : inputInfo.entrySet()) {
+                String nsUri = inputEntry.getKey();
+                String inputSchemaUri = inputEntry.getValue();
+                String outputSchemaUri = outputInfo.get(nsUri);
+                if (outputSchemaUri==null) {
+                    logger.warn("In sample {}: schema URI {} found in input XML but not included in output XML. Allowing this.", qtiSampleResouce, nsUri);
+                }
+                else if (!outputSchemaUri.equals(inputSchemaUri)) {
+                    logger.warn("In sample {}: schema URI {} maps to URI {} in input XML but {} in output XML. Allowing this.",
+                            new Object[] { qtiSampleResouce, nsUri, inputSchemaUri, outputSchemaUri });
+                }
+            }
+            for (Entry<String, String> outputEntry : outputInfo.entrySet()) {
+                String nsUri = outputEntry.getKey();
+                if (!inputInfo.containsKey(nsUri)) {
+                    logger.error("In sample {}: schema URI {} is in output XML but not input XML", qtiSampleResouce, nsUri);
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        private Map<String, String> extractXsiSchemaLocationData(String xsiSchemaLocationAttr) {
+            String[] splitData = xsiSchemaLocationAttr.split("\\s+");
+            Map<String, String> result = new HashMap<String, String>();
+            for (int i=0; i<splitData.length; ) {
+                String nsUri = splitData[i++];
+                String schemaUri = splitData[i++];
+                result.put(nsUri, schemaUri);
+            }
+            return result;
         }
         
         /**

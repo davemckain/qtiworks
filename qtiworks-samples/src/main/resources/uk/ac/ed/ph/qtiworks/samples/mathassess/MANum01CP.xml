@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem
+ xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
+ xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd 
+ http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"  
+ xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="false" 
+ identifier="MANum01CP" timeDependent="false" title="Value of e^n (2) CasProcess">
+<!-- 
+Simple customOperator template processing, textEntryInteraction and numerical judging in response processing
+-->
+	<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float" />
+	<responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST" />
+	<responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST" />
+	<outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0" normalMinimum="0.0">
+		<defaultValue>
+			<value>0.0</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+	<outcomeDeclaration identifier="seenSolution" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="seenHint" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKHINT" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>askhint</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKSOLUTION" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>asksolution</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true" paramVariable="false" />
+	<templateDeclaration baseType="float" cardinality="single" identifier="fAns" mathVariable="true" paramVariable="false" />
+	<templateProcessing>
+		<!-- simple randomisation begins -->
+		<setTemplateValue identifier="iA">
+			<randomInteger min="1" max="4" />
+		</setTemplateValue>
+		<setTemplateValue identifier="fAns">
+			<customOperator class="org.qtitools.mathassess.CasProcess" ma:syntax="text/x-maxima" ma:returnType="float">
+				<baseValue baseType="string">
+					<![CDATA[
+					ev(exp(iA), numer,simp);
+					]]>
+			 	</baseValue>
+			</customOperator>
+		</setTemplateValue>
+	</templateProcessing>
+	<itemBody><!-- contains MathML -->
+		<p>Find the value of &#160;&#160; 
+				<m:math >
+					<m:semantics>
+						<m:mrow>
+							<m:msup>
+								<m:mn>e</m:mn>
+								<m:mi>iA</m:mi>
+							</m:msup>
+						</m:mrow>
+						<m:annotation encoding='LaTeX'>\[\e^\qv{iA}\]</m:annotation>
+					</m:semantics>
+				</m:math> &#160;&#160;to 3 decimal places.
+		</p>
+		<div>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<textEntryInteraction expectedLength="20" responseIdentifier="RESPONSE" label="mathInput" />
+						</td>
+						<td> 
+							<feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								Correct
+							</feedbackInline>
+							<feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+								You should ask for tutor help on this question.
+							</feedbackInline>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:msup>
+												<m:mn>e</m:mn>
+												<m:mi>iA</m:mi>
+											</m:msup>
+										</m:mrow>
+										<m:annotation encoding='LaTeX'>\[\e^\qv{iA}\]</m:annotation>
+									</m:semantics>
+								</m:math> 
+							</td>
+							<td>
+								<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mo>&#160;&#160;=&#160;&#160;</m:mo>
+											<m:mi>exp</m:mi>
+											<m:mo>(</m:mo>
+											<m:mi>iA</m:mi>
+											<m:mo>)</m:mo>
+										</m:mrow>
+										<m:annotation encoding='LaTeX'>\[\exp(\qv{iA})\]</m:annotation>
+									</m:semantics>
+								</m:math>
+							</td>
+						</tr>
+						<tr>
+							<td>&#160;</td>
+							<td>
+								<m:math>
+									<m:semantics>
+										<m:mrow>
+											<m:mo>&#160;&#160;=&#160;&#160;</m:mo>
+										</m:mrow>
+										<m:annotation encoding='LaTeX'>\[\ = \]</m:annotation>
+									</m:semantics>
+								</m:math>
+								<printedVariable format="%10.3f" identifier="fAns" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</feedbackBlock>
+		<feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" >
+			<p>Use a calculator; &#160; 
+				<m:math >
+					<m:semantics>
+						<m:mrow>
+							<m:msup>
+								<m:mn>e</m:mn>
+								<m:mi>iA</m:mi>
+							</m:msup>
+						</m:mrow>
+						<m:annotation encoding='LaTeX'>\[\e^\qv{iA}\]</m:annotation>
+					</m:semantics>
+				</m:math> &#160;is sometimes written &#160; 
+				<m:math >
+					<m:semantics>
+						<m:mrow>
+							<m:mi>exp</m:mi>
+							<m:mo>(</m:mo>
+							<m:mi>iA</m:mi>
+							<m:mo>)</m:mo>
+						</m:mrow>
+						<m:annotation encoding='LaTeX'>\[\exp(\qv{iA})\]</m:annotation>
+					</m:semantics>
+				</m:math>.</p>
+		</feedbackBlock>
+		<feedbackBlock outcomeIdentifier="ASKHINT" identifier="askhint" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST" title="Show Hint"/>
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+		<feedbackBlock outcomeIdentifier="ASKSOLUTION" identifier="asksolution" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST" title="Show Solution"/>  
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+	</itemBody>
+	<responseProcessing><!-- basic string match, includes feedback on specific errors -->
+		<responseCondition>
+	        <responseIf>
+	            <variable identifier="HINTREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+	                <baseValue baseType="identifier">HINT</baseValue>
+	            </setOutcomeValue>
+				<setOutcomeValue identifier="seenHint">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        </responseIf>
+	        <responseElseIf>
+	            <variable identifier="SOLREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+	                <baseValue baseType="identifier">SOLUTION</baseValue>
+	            </setOutcomeValue>
+				<setOutcomeValue identifier="seenSolution">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        	<setOutcomeValue identifier="completionStatus">
+	        		<baseValue baseType="identifier">completed</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKHINT">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKSOLUTION">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        </responseElseIf>
+			<responseElse>
+				<responseCondition>
+					<responseIf>
+						<isNull>
+							<variable identifier="RESPONSE"/>
+						</isNull>
+						<setOutcomeValue identifier="SCORE">
+							<baseValue baseType="float">0</baseValue>
+						</setOutcomeValue>
+					</responseIf>
+					<responseElse>
+						<responseCondition>
+							<responseIf>
+								<equalRounded roundingMode="decimalPlaces" figures="3">
+									<variable identifier="RESPONSE"/>
+									<variable identifier="fAns"/>
+								</equalRounded>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">CORRECT</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">2</baseValue>
+								</setOutcomeValue>
+							</responseIf>
+							<responseElse>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">INCORRECT</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">0</baseValue>
+								</setOutcomeValue>
+							</responseElse>
+						</responseCondition>
+					</responseElse>
+				</responseCondition>
+				<setOutcomeValue identifier="completionStatus">
+					<baseValue baseType="identifier">completed</baseValue>
+				</setOutcomeValue>
+				<setOutcomeValue identifier="ASKHINT">
+					<baseValue baseType="identifier">null</baseValue>
+				</setOutcomeValue>
+				<setOutcomeValue identifier="ASKSOLUTION">
+					<baseValue baseType="identifier">null</baseValue>
+				</setOutcomeValue>
+			</responseElse>
+		</responseCondition>
+		<responseCondition>
+			<responseIf>
+				<variable identifier="seenSolution"/>
+				<setOutcomeValue identifier="SCORE">
+					<baseValue baseType="float">0.0</baseValue>
+				</setOutcomeValue>
+			</responseIf>
+			<responseElseIf>
+				<variable identifier="seenHint"/>
+				<setOutcomeValue identifier="SCORE">
+					<divide>
+						<variable identifier="SCORE"/>
+						<baseValue baseType="float">2.0</baseValue>
+					</divide>
+				</setOutcomeValue>
+			</responseElseIf>
+		</responseCondition>
+	</responseProcessing>
+</assessmentItem>

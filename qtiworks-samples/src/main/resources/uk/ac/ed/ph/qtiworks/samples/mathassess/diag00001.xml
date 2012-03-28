@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author:  Sue Milne  -->
+<!-- Converted to QTI version 2 from CALMAT TAS diagnostic question    -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
+    xmlns:m="http://www.w3.org/1998/Math/MathML"
+    xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" identifier="diag0001"
+    title="Solve ax+b=c" adaptive="false" timeDependent="false" toolName="mela" toolVersion="v1.0">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="FEEDBACK"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <templateDeclaration baseType="float" cardinality="single" identifier="fullMarks"
+        mathVariable="true" paramVariable="true">
+        <defaultValue>
+            <value>1.0</value>
+        </defaultValue>
+    </templateDeclaration>
+    <templateDeclaration baseType="float" cardinality="single" identifier="fMarksOff"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iB" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iC" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iAabs"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iBabs"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iCabs"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iAA"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iBB"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iCC"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iDD"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iEE"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iFF"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="string" cardinality="single" identifier="sBB" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="string" cardinality="single" identifier="sDD" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="string" cardinality="single" identifier="sFF" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iG1"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iG2"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iG3"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iNumer1"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iNumer2"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iNumer3"
+        mathVariable="true" paramVariable="false"/>
+    <templateDeclaration cardinality="record" identifier="oEquation" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration cardinality="record" identifier="oChoiceA" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration cardinality="record" identifier="oChoiceB" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration cardinality="record" identifier="oChoiceC" mathVariable="true"
+        paramVariable="false"/>
+    <templateDeclaration identifier="tDummy" cardinality="single" baseType="boolean"
+        mathVariable="false" paramVariable="false"/>
+    <templateDeclaration baseType="string" cardinality="single" identifier="sSign"
+        mathVariable="true" paramVariable="false"/>
+    <templateProcessing>
+        <setTemplateValue identifier="fullMarks">
+            <baseValue baseType="float">1.0
+            </baseValue>
+        </setTemplateValue>
+        <setTemplateValue identifier="fMarksOff">
+            <baseValue baseType="float">1.0
+            </baseValue>
+        </setTemplateValue>
+        <!-- randomisation in here
+        -->
+        <!-- a, b and c are all in the range -9 to -2 or 2 to 9 
+             b != c and abs values must not be equal -->
+        <setTemplateValue identifier="iA">
+            <product>
+                <randomInteger min="2" max="9"/>
+                <randomInteger min="-1" max="1" step="2"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iB">
+            <product>
+                <randomInteger min="2" max="9"/>
+                <randomInteger min="-1" max="1" step="2"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iC">
+            <product>
+                <randomInteger min="2" max="9"/>
+                <randomInteger min="-1" max="1" step="2"/>
+            </product>
+        </setTemplateValue>
+
+        <templateCondition>
+            <templateIf>
+                <equal toleranceMode="exact">
+                    <variable identifier="iC"/>
+                    <variable identifier="iB"/>
+                </equal>
+                <setTemplateValue identifier="iB">
+                    <baseValue baseType="integer">-10</baseValue>
+                </setTemplateValue>
+            </templateIf>
+        </templateCondition>
+
+        <setTemplateValue identifier="iAabs">
+            <round>
+                <mathOperator name="abs">
+                    <variable identifier="iA"/>
+                </mathOperator>
+            </round>
+        </setTemplateValue>
+        <setTemplateValue identifier="iBabs">
+            <round>
+                <mathOperator name="abs">
+                    <variable identifier="iB"/>
+                </mathOperator>
+            </round>
+        </setTemplateValue>
+        <setTemplateValue identifier="iCabs">
+            <round>
+                <mathOperator name="abs">
+                    <variable identifier="iC"/>
+                </mathOperator>
+            </round>
+        </setTemplateValue>
+
+        <templateCondition>
+            <templateIf>
+                <and>
+                    <equal toleranceMode="exact">
+                        <variable identifier="iAabs"/>
+                        <variable identifier="iBabs"/>
+                    </equal>
+                    <equal toleranceMode="exact">
+                        <variable identifier="iCabs"/>
+                        <variable identifier="iBabs"/>
+                    </equal>
+                </and>
+                <setTemplateValue identifier="iB">
+                    <baseValue baseType="integer">-10</baseValue>
+                </setTemplateValue>
+            </templateIf>
+        </templateCondition>
+
+        <setTemplateValue identifier="tDummy">
+            <customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
+                <baseValue baseType="string">
+                    <![CDATA[
+                    oEquation: ev(iA*x+iB,simp);
+                    oChoiceA: ev((iC-iB)/iA,simp);
+                    oChoiceB: ev((iC+iB)/iA,simp);
+                    oChoiceC: ev((iB-iC)/iA,simp);
+                    ]]>
+                </baseValue>
+            </customOperator>
+        </setTemplateValue>
+    </templateProcessing>
+    <itemBody>
+
+        <p class="EQCENTRE">The solution of&#160;&#160; <m:math id="mathML0">
+                <m:semantics>
+                    <m:mrow>
+                        <m:mi>oEquation</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>iC</m:mi>
+                    </m:mrow>
+                    <m:annotation encoding="LaTeX">\[\qv{oEquation}=\qv{iC}}\]</m:annotation>
+                </m:semantics>
+            </m:math>&#160;&#160;is: </p>
+        <div>
+            <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+                <!--<prompt>Select one of these options:</prompt>-->
+                <simpleChoice identifier="ChoiceA">
+                    <printedVariable identifier="oChoiceA"/>
+                </simpleChoice>
+                <simpleChoice identifier="ChoiceB">
+                    <printedVariable identifier="oChoiceB"/>
+                </simpleChoice>
+                <simpleChoice identifier="ChoiceC">
+                    <printedVariable identifier="oChoiceC"/>
+                </simpleChoice>
+                <simpleChoice identifier="Forgot" fixed="true">I have forgotten how to do
+                    this.</simpleChoice>
+                <simpleChoice identifier="NeverKnew" fixed="true">I never knew how to do
+                    this.</simpleChoice>
+            </choiceInteraction>
+            <div>
+                <feedbackInline class="PART_OK" identifier="CORRECT" outcomeIdentifier="FEEDBACK"
+                    showHide="show"> That's right! If you like, you can check up on this topic 
+                    <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">here</a>
+                </feedbackInline>
+                <feedbackInline class="PART_NO" identifier="WRONG" outcomeIdentifier="FEEDBACK"
+                    showHide="show"> No, that's not correct. Here is a link to 
+                    <a href="http://www.slideshare.net/andrewhickson/equations-revision-3044879">some revision material</a>
+                </feedbackInline>
+                <feedbackInline class="PART_OK" identifier="FORGOT" outcomeIdentifier="FEEDBACK"
+                    showHide="show"> Since you have forgotten how to do this, take a look at this
+                    <a href="http://www.slideshare.net/keithpeter/linear-equations-slide-share-version-exploded1">revision material</a>
+                </feedbackInline>
+                <feedbackInline class="PART_NO" identifier="NEVERKNEW" outcomeIdentifier="FEEDBACK"
+                    showHide="show"> Since this is new to you, start by looking at  
+                    <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">these resources</a>
+                </feedbackInline>
+            </div>
+        </div>
+    </itemBody>
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="RESPONSE"/>
+                    <correct identifier="RESPONSE"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <variable identifier="fullMarks"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">CORRECT</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPONSE"/>
+                    <baseValue baseType="identifier">Forgot</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">FORGOT</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPONSE"/>
+                    <baseValue baseType="identifier">NeverKnew</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">NEVERKNEW</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">WRONG</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>

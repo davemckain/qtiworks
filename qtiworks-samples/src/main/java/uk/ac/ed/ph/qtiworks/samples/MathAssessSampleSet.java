@@ -43,7 +43,25 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 public final class MathAssessSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
-            new QtiSampleResource(Type.ITEM, "mathassess/MAA01a.xml")
+            new QtiSampleResource(Type.ITEM, "mathassess/MAA01a.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAB01a.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/Diff-001.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/GU-Formulae-006-BMI.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAA01a.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAB01a.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAC02-SR.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD01-SRinCO-demo.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD01-SRinRP.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD01-newSRinRP.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD02-SRnoRand.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD03a.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD04-ltgt-tVars.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD05-Factors-CC.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD05-Factors-SR.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MAD06-Diff.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MANum01CP.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/MANum01SR.xml"),
+            new QtiSampleResource(Type.ITEM, "mathassess/diag00001.xml")
     );
     
     private MathAssessSampleSet() {

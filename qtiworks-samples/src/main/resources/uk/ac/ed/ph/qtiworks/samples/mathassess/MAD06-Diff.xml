@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assessmentItem toolVersion="0.5.1" toolName="Mathqurate" title="Differentiate ax^b" timeDependent="false" identifier="MAD06-Diff" adaptive="false" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd	http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<responseDeclaration identifier="pInput" cardinality="single" baseType="string"/>
+	<responseDeclaration identifier="HINTREQUEST" cardinality="single" baseType="boolean"/>
+	<responseDeclaration identifier="SOLREQUEST" cardinality="single" baseType="boolean"/>
+	<responseDeclaration identifier="RESPONSE" cardinality="record"/>
+	<outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0" normalMinimum="0.0"/>
+	<outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+	<outcomeDeclaration identifier="seenSolution" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="seenHint" cardinality="single" baseType="boolean">
+		<defaultValue>
+			<value>false</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKHINT" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>askhint</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="ASKSOLUTION" cardinality="single" baseType="identifier">
+		<defaultValue>
+			<value>asksolution</value>
+		</defaultValue>
+	</outcomeDeclaration>
+	<outcomeDeclaration identifier="oInput" cardinality="record"/>
+	<outcomeDeclaration identifier="opInput" cardinality="single" baseType="string"/>
+	<outcomeDeclaration identifier="ob1" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="ob2" cardinality="single" baseType="boolean"/>
+	<outcomeDeclaration identifier="ob3" cardinality="single" baseType="boolean"/>
+	<templateDeclaration identifier="tDummy" cardinality="single" baseType="boolean" paramVariable="false" mathVariable="false"/>
+	<templateDeclaration identifier="mX" cardinality="record" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="mQues" cardinality="record" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="mDeriv" cardinality="record" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="mInt" cardinality="record" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="iA" cardinality="single" baseType="integer" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="iB" cardinality="single" baseType="integer" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="iAB" cardinality="single" baseType="integer" paramVariable="false" mathVariable="true"/>
+	<templateDeclaration identifier="iBm1" cardinality="single" baseType="integer" paramVariable="false" mathVariable="true"/>
+	<templateProcessing>
+		<!-- now do the randomisation and mathematical calculations, using maxima -->
+		<setTemplateValue identifier="tDummy">
+			<customOperator class="org.qtitools.mathassess.ScriptRule"  ma:syntax="text/x-maxima">
+			  <baseValue baseType="string">
+				<![CDATA[
+				simp:true;
+				s1 : make_random_state(true)$ set_random_state(s1);
+				iA: ev(random(6)+2,simp);
+				iB: ev(random(3)+2,simp);
+				iAB: ev(iA*iB,simp);
+				iBm1: ev(iB-1,simp);
+				array(aarr,18);
+				fillarray(aarr,[a,b,c,d,h,k,m,n,p,q,r,s,t,u,v,w,x,y,z]);
+				mX:aarr[random(18)];
+				mQues: iA*mX^iB;
+				mDeriv: diff(mQues,mX);
+				mInt: integrate(mQues,mX);
+				]]>
+			  </baseValue>
+			</customOperator>
+		</setTemplateValue>
+	</templateProcessing>
+	<itemBody>
+		<p>Differentiate</p>
+		<div class="">
+			<m:math id="mathML0" display="block">
+				<m:semantics>
+					<m:mrow>
+						<m:mi>iA</m:mi>
+						<m:msup>
+						<m:mi>mX</m:mi>
+						<m:mi>iB</m:mi>
+						</m:msup>
+					</m:mrow>
+					<m:annotation encoding="LaTeX">\[\qv{iA}\qv{mX}^{\qv{iB}}\]</m:annotation>
+				</m:semantics>
+			</m:math></div>
+		<div class="">
+			<customInteraction class="org.qtitools.mathassess.MathEntryInteraction" responseIdentifier="RESPONSE" ma:printIdentifier="pInput" ma:syntax="text/x-maxima" ma:expectedLength="15" id="customInteraction0" /></div>
+		<div class="">
+			<feedbackInline id="feedbackInline0" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Integrated">
+			You integrated!	
+</feedbackInline>
+</div>
+		<div class="">
+			<feedbackInline id="feedbackInline1" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Original">
+			Your input is equivalent to the expression in the question.
+</feedbackInline></div>
+		<div class="">
+			<feedbackInline id="feedbackInline2" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Incorrect">
+			Please see your tutor about this question. 
+</feedbackInline></div>
+		<div class="">
+			<feedbackInline id="feedbackInline3" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Correct">
+			Good, you have successfully differentiated the expression. 
+	  </feedbackInline></div>
+		<div class="">
+		<feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+			<p>To differentiate this expression, we "multiply by the power", so the coefficient becomes</p>
+							<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mi>iA</m:mi>
+											<m:mo>&#xd7;</m:mo>
+											<m:mi>iB</m:mi>
+											<m:mo>=</m:mo>
+											<m:mi>iAB</m:mi>
+										</m:mrow>
+										<m:annotation encoding='LaTeX'>\[ \qv{iA}\times\qv{iB}=\qv{iAB}\]</m:annotation>
+									</m:semantics>
+							</m:math>
+			<p>Then we "reduce the power by 1"</p>
+							<m:math display="block">
+									<m:semantics>
+										<m:mrow>
+											<m:mi>iB</m:mi>
+											<m:mo>-</m:mo>
+											<m:mn>1</m:mn>
+											<m:mo>=</m:mo>
+											<m:mi>iBm1</m:mi>
+										</m:mrow>
+										<m:annotation encoding='LaTeX'>\[ \qv{iB}-1=\qv{iBm1}\]</m:annotation>
+									</m:semantics>
+							</m:math>
+			<p>So the derivative of <printedVariable identifier="mQues"/> is <printedVariable identifier="mDeriv"/>.</p>
+		</feedbackBlock></div>
+		<div class="">
+		<feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
+			<p>Multiply by the power and reduce the power by 1.</p>
+		</feedbackBlock></div>
+		<feedbackBlock outcomeIdentifier="ASKHINT" identifier="askhint" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST" title="Show Hint"/>
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+		<feedbackBlock outcomeIdentifier="ASKSOLUTION" identifier="asksolution" showHide="show">
+			<p>
+				<strong>
+					<endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST" title="Show Solution"/>  
+				</strong>
+			</p>
+		</feedbackBlock>
+		
+	</itemBody>
+	<responseProcessing><!-- CAS judging, includes feedback on specific errors -->
+		<responseCondition>
+	        <responseIf>
+	            <variable identifier="HINTREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+	                <baseValue baseType="identifier">HINT</baseValue>
+	            </setOutcomeValue>
+				<setOutcomeValue identifier="seenHint">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        </responseIf>
+	        <responseElseIf>
+	            <variable identifier="SOLREQUEST"/>
+	            <setOutcomeValue identifier="FEEDBACK">
+	                <baseValue baseType="identifier">SOLUTION</baseValue>
+	            </setOutcomeValue>
+				<setOutcomeValue identifier="seenSolution">
+					<baseValue baseType="boolean">true</baseValue>
+				</setOutcomeValue>
+	        	<setOutcomeValue identifier="completionStatus">
+	        		<baseValue baseType="identifier">completed</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKHINT">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        	<setOutcomeValue identifier="ASKSOLUTION">
+	        		<baseValue baseType="identifier">null</baseValue>
+	        	</setOutcomeValue>
+	        </responseElseIf>
+			<responseElse>
+				<responseCondition>
+					<responseIf>
+						<isNull>
+							<variable identifier="RESPONSE"/>
+						</isNull>
+						<setOutcomeValue identifier="SCORE">
+							<baseValue baseType="float">0</baseValue>
+						</setOutcomeValue>
+					</responseIf>
+					<responseElse>
+						<setOutcomeValue identifier="oInput">
+							<customOperator class="org.qtitools.mathassess.CasProcess"  ma:syntax="text/x-maxima" ma:returnType="mathsContent">
+							  <baseValue baseType="string">
+							  <![CDATA[ev(RESPONSE,simp);]]>
+							  </baseValue>
+							</customOperator>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="ob1">
+							<customOperator class="org.qtitools.mathassess.CasProcess"  ma:syntax="text/x-maxima" ma:returnType="boolean">
+							  <baseValue baseType="string">
+							  <![CDATA[is(is(equal(RESPONSE,mDeriv))=true);]]>
+							  </baseValue>
+							</customOperator>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="ob2">
+							<customOperator class="org.qtitools.mathassess.CasProcess"  ma:syntax="text/x-maxima" ma:returnType="boolean">
+							  <baseValue baseType="string">
+							  <![CDATA[is(is(equal(ev(diff(RESPONSE,mX),simp),mQues))=true);]]>
+							  </baseValue>
+							</customOperator>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="ob3">
+							<customOperator class="org.qtitools.mathassess.CasProcess"  ma:syntax="text/x-maxima" ma:returnType="boolean">
+							  <baseValue baseType="string">
+							  <![CDATA[is(is(equal(RESPONSE,mQues))=true);]]>
+							  </baseValue>
+							</customOperator>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="opInput">
+							<fieldValue fieldIdentifier="PMathML">
+								<variable identifier="oInput"/>
+							</fieldValue>
+						</setOutcomeValue>
+						<responseCondition>
+							<responseIf>
+								<variable identifier="ob1"/>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">Correct</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">2</baseValue>
+								</setOutcomeValue>
+							</responseIf>
+							<responseElseIf>
+								<variable identifier="ob2"/>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">Integrated</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">0</baseValue>
+								</setOutcomeValue>
+							</responseElseIf>
+							<responseElseIf>
+								<variable identifier="ob3"/>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">Original</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">0</baseValue>
+								</setOutcomeValue>
+							</responseElseIf>
+							<responseElse>
+								<setOutcomeValue identifier="FEEDBACK">
+									<baseValue baseType="identifier">Incorrect</baseValue>
+								</setOutcomeValue>
+								<setOutcomeValue identifier="SCORE">
+									<baseValue baseType="float">0</baseValue>
+								</setOutcomeValue>
+							</responseElse>
+						</responseCondition>
+						<setOutcomeValue identifier="completionStatus">
+							<baseValue baseType="identifier">completed</baseValue>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="ASKHINT">
+							<baseValue baseType="identifier">null</baseValue>
+						</setOutcomeValue>
+						<setOutcomeValue identifier="ASKSOLUTION">
+							<baseValue baseType="identifier">null</baseValue>
+						</setOutcomeValue>
+					</responseElse>
+				</responseCondition>
+			</responseElse>
+		</responseCondition>
+		<responseCondition>
+			<responseIf>
+				<variable identifier="seenSolution"/>
+				<setOutcomeValue identifier="SCORE">
+					<baseValue baseType="float">0.0</baseValue>
+				</setOutcomeValue>
+			</responseIf>
+			<responseElseIf>
+				<variable identifier="seenHint"/>
+				<setOutcomeValue identifier="SCORE">
+					<divide>
+						<variable identifier="SCORE"/>
+						<baseValue baseType="float">2.0</baseValue>
+					</divide>
+				</setOutcomeValue>
+			</responseElseIf>
+		</responseCondition>
+	</responseProcessing>
+</assessmentItem>
+
