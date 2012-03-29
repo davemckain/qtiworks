@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,19 +70,19 @@ public class FieldValueRefuseTest extends ExpressionRefuseTest {
                 // single
                 { "<fieldValue fieldIdentifier='identifier'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</fieldValue>", QTICardinalityException.class },
+                        "</fieldValue>", QtiCardinalityException.class },
                 // multiple
                 { "<fieldValue fieldIdentifier='identifier'>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</fieldValue>", QTICardinalityException.class },
+                        "</fieldValue>", QtiCardinalityException.class },
                 // ordered
                 { "<fieldValue fieldIdentifier='identifier'>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</fieldValue>", QTICardinalityException.class },
+                        "</fieldValue>", QtiCardinalityException.class },
         });
     }
 
@@ -93,7 +93,7 @@ public class FieldValueRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public FieldValueRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public FieldValueRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

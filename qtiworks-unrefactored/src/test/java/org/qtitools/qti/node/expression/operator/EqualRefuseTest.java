@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -139,7 +139,7 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</equal>", QTICardinalityException.class },
+                        "</equal>", QtiCardinalityException.class },
                 // ordered
                 { "<equal toleranceMode='exact'>" +
                         "<ordered>" +
@@ -148,7 +148,7 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</equal>", QTICardinalityException.class },
+                        "</equal>", QtiCardinalityException.class },
                 // record
                 { "<equal toleranceMode='exact'>" +
                         "<recordEx identifiers='key_1'>" +
@@ -157,7 +157,7 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</equal>", QTICardinalityException.class },
+                        "</equal>", QtiCardinalityException.class },
                 // identifier
                 { "<equal toleranceMode='exact'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -213,7 +213,7 @@ public class EqualRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public EqualRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public EqualRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

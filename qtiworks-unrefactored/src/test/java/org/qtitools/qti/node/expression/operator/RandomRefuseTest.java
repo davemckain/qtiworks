@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -78,6 +78,6 @@ public class RandomRefuseTest extends ExpressionRefuseTest {
      * @param xml xml data used for creation tested expression
      */
     public RandomRefuseTest(String xml) {
-        super(xml, QTICardinalityException.class);
+        super(xml, QtiCardinalityException.class);
     }
 }

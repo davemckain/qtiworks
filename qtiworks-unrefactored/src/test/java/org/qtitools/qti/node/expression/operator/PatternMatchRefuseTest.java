@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,19 +66,19 @@ public class PatternMatchRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</multiple>" +
-                        "</patternMatch>", QTICardinalityException.class },
+                        "</patternMatch>", QtiCardinalityException.class },
                 // ordered
                 { "<patternMatch pattern='A'>" +
                         "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</ordered>" +
-                        "</patternMatch>", QTICardinalityException.class },
+                        "</patternMatch>", QtiCardinalityException.class },
                 // record
                 { "<patternMatch pattern='A'>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</recordEx>" +
-                        "</patternMatch>", QTICardinalityException.class },
+                        "</patternMatch>", QtiCardinalityException.class },
                 // identifier
                 { "<patternMatch pattern='A'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -129,7 +129,7 @@ public class PatternMatchRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public PatternMatchRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public PatternMatchRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

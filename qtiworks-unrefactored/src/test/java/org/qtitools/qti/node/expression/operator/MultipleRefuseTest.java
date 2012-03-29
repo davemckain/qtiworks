@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,23 +64,23 @@ public class MultipleRefuseTest extends ExpressionRefuseTest {
                 // ordered
                 { "<multiple>" +
                         "<ordered/>" +
-                        "</multiple>", QTICardinalityException.class }, { "<multiple>" +
+                        "</multiple>", QtiCardinalityException.class }, { "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
-                        "</multiple>", QTICardinalityException.class },
+                        "</multiple>", QtiCardinalityException.class },
                 // record
                 { "<multiple>" +
                         "<recordEx/>" +
-                        "</multiple>", QTICardinalityException.class }, { "<multiple>" +
+                        "</multiple>", QtiCardinalityException.class }, { "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
-                        "</multiple>", QTICardinalityException.class },
+                        "</multiple>", QtiCardinalityException.class },
                 // mixing different baseTypes
                 { "<multiple>" +
                         "<baseValue baseType='boolean'>1</baseValue>" +
@@ -102,7 +102,7 @@ public class MultipleRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public MultipleRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public MultipleRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

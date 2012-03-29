@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.test.flow;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -82,7 +82,7 @@ public class ItemFlowTPTest extends ItemFlowTest {
         });
     }
 
-    public ItemFlowTPTest(String fileName, Class<? extends QTIRuntimeException> hasNextException, Class<? extends QTIRuntimeException> nextException,
+    public ItemFlowTPTest(String fileName, Class<? extends QtiRuntimeException> hasNextException, Class<? extends QtiRuntimeException> nextException,
             String[][] identifiers) {
         super("tp/" + fileName, new Step[] {});
     }

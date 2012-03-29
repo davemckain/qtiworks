@@ -35,7 +35,7 @@ package org.qtitools.qti.node.expression;
 
 import static org.junit.Assert.fail;
 
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ import org.junit.Test;
  */
 public abstract class ExpressionRefuseTest extends ExpressionTest {
 
-    private final Class<? extends QTIRuntimeException> expectedException;
+    private final Class<? extends QtiRuntimeException> expectedException;
 
     /**
      * Constructs expression test.
@@ -59,7 +59,7 @@ public abstract class ExpressionRefuseTest extends ExpressionTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public ExpressionRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public ExpressionRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml);
 
         this.expectedException = expectedException;

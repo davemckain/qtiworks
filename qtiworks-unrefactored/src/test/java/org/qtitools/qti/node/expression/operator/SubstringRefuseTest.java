@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,36 +79,36 @@ public class SubstringRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "</substring>", QtiCardinalityException.class }, { "<substring caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</multiple>" +
-                        "</substring>", QTICardinalityException.class },
+                        "</substring>", QtiCardinalityException.class },
                 // ordered
                 { "<substring caseSensitive='true'>" +
                         "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "</substring>", QtiCardinalityException.class }, { "<substring caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</ordered>" +
-                        "</substring>", QTICardinalityException.class },
+                        "</substring>", QtiCardinalityException.class },
                 // record
                 { "<substring caseSensitive='true'>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</substring>", QTICardinalityException.class }, { "<substring caseSensitive='true'>" +
+                        "</substring>", QtiCardinalityException.class }, { "<substring caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</recordEx>" +
-                        "</substring>", QTICardinalityException.class },
+                        "</substring>", QtiCardinalityException.class },
                 // identifier
                 { "<substring caseSensitive='true'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -199,7 +199,7 @@ public class SubstringRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public SubstringRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public SubstringRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

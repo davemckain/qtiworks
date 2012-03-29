@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,19 +66,19 @@ public class RoundRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</multiple>" +
-                        "</round>", QTICardinalityException.class },
+                        "</round>", QtiCardinalityException.class },
                 // ordered
                 { "<round>" +
                         "<ordered>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</ordered>" +
-                        "</round>", QTICardinalityException.class },
+                        "</round>", QtiCardinalityException.class },
                 // record
                 { "<round>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='float'>1</baseValue>" +
                         "</recordEx>" +
-                        "</round>", QTICardinalityException.class },
+                        "</round>", QtiCardinalityException.class },
                 // identifier
                 { "<round>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -129,7 +129,7 @@ public class RoundRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public RoundRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public RoundRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

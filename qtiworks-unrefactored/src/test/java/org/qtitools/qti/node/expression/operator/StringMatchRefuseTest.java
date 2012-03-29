@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,36 +79,36 @@ public class StringMatchRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QTICardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiCardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</multiple>" +
-                        "</stringMatch>", QTICardinalityException.class },
+                        "</stringMatch>", QtiCardinalityException.class },
                 // ordered
                 { "<stringMatch caseSensitive='true'>" +
                         "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QTICardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiCardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</ordered>" +
-                        "</stringMatch>", QTICardinalityException.class },
+                        "</stringMatch>", QtiCardinalityException.class },
                 // record
                 { "<stringMatch caseSensitive='true'>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QTICardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
+                        "</stringMatch>", QtiCardinalityException.class }, { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "</recordEx>" +
-                        "</stringMatch>", QTICardinalityException.class },
+                        "</stringMatch>", QtiCardinalityException.class },
                 // identifier
                 { "<stringMatch caseSensitive='true'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -199,7 +199,7 @@ public class StringMatchRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public StringMatchRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public StringMatchRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

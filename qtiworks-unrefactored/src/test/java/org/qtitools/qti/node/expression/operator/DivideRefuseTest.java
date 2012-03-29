@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class DivideRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTICardinalityException.class }, { "<divide>" +
+                        "</divide>", QtiCardinalityException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</divide>", QTICardinalityException.class },
+                        "</divide>", QtiCardinalityException.class },
                 // ordered
                 { "<divide>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTICardinalityException.class }, { "<divide>" +
+                        "</divide>", QtiCardinalityException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</divide>", QTICardinalityException.class },
+                        "</divide>", QtiCardinalityException.class },
                 // record
                 { "<divide>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</divide>", QTICardinalityException.class }, { "<divide>" +
+                        "</divide>", QtiCardinalityException.class }, { "<divide>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</divide>", QTICardinalityException.class },
+                        "</divide>", QtiCardinalityException.class },
                 // identifier
                 { "<divide>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -179,7 +179,7 @@ public class DivideRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public DivideRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public DivideRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

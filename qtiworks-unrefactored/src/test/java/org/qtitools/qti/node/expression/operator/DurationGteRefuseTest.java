@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class DurationGteRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationGTE>", QTICardinalityException.class }, { "<durationGTE>" +
+                        "</durationGTE>", QtiCardinalityException.class }, { "<durationGTE>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
-                        "</durationGTE>", QTICardinalityException.class },
+                        "</durationGTE>", QtiCardinalityException.class },
                 // ordered
                 { "<durationGTE>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationGTE>", QTICardinalityException.class }, { "<durationGTE>" +
+                        "</durationGTE>", QtiCardinalityException.class }, { "<durationGTE>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
-                        "</durationGTE>", QTICardinalityException.class },
+                        "</durationGTE>", QtiCardinalityException.class },
                 // record
                 { "<durationGTE>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationGTE>", QTICardinalityException.class }, { "<durationGTE>" +
+                        "</durationGTE>", QtiCardinalityException.class }, { "<durationGTE>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</recordEx>" +
-                        "</durationGTE>", QTICardinalityException.class },
+                        "</durationGTE>", QtiCardinalityException.class },
                 // identifier
                 { "<durationGTE>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -187,7 +187,7 @@ public class DurationGteRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public DurationGteRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public DurationGteRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

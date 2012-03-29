@@ -416,7 +416,7 @@ public class TestCoordinator {
             itemHref = new URI(testHref).resolve(itemToTestHref).toString();
         }
         catch (final URISyntaxException e) {
-            throw new QTIRenderingException("Could not resolve item href " + itemToTestHref + " against test href " + testHref, e);
+            throw new QtiRenderingException("Could not resolve item href " + itemToTestHref + " against test href " + testHref, e);
         }
 
         boolean isResponded;

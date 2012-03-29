@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,17 +67,17 @@ public class MatchRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "</match>", QtiCardinalityException.class }, { "<match>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "</match>", QtiCardinalityException.class }, { "<match>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</match>", QTICardinalityException.class },
+                        "</match>", QtiCardinalityException.class },
                 // multiple
                 { "<match>" +
                         "<multiple>" +
@@ -86,14 +86,14 @@ public class MatchRefuseTest extends ExpressionRefuseTest {
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</match>", QTICardinalityException.class }, { "<match>" +
+                        "</match>", QtiCardinalityException.class }, { "<match>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</match>", QTICardinalityException.class },
+                        "</match>", QtiCardinalityException.class },
                 // ordered
                 { "<match>" +
                         "<ordered>" +
@@ -102,7 +102,7 @@ public class MatchRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</match>", QTICardinalityException.class },
+                        "</match>", QtiCardinalityException.class },
                 // identifier
                 { "<match>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -311,7 +311,7 @@ public class MatchRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public MatchRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public MatchRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

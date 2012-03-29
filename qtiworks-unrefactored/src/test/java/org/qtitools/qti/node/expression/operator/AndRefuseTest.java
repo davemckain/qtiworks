@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,19 +66,19 @@ public class AndRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</multiple>" +
-                        "</and>", QTICardinalityException.class },
+                        "</and>", QtiCardinalityException.class },
                 // ordered
                 { "<and>" +
                         "<ordered>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</ordered>" +
-                        "</and>", QTICardinalityException.class },
+                        "</and>", QtiCardinalityException.class },
                 // record
                 { "<and>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</recordEx>" +
-                        "</and>", QTICardinalityException.class },
+                        "</and>", QtiCardinalityException.class },
                 // identifier
                 { "<and>" +
                         "<baseValue baseType='identifier'>true</baseValue>" +
@@ -135,7 +135,7 @@ public class AndRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public AndRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public AndRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

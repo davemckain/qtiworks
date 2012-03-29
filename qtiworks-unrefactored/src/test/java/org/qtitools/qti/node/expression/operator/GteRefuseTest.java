@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class GteRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gte>", QTICardinalityException.class }, { "<gte>" +
+                        "</gte>", QtiCardinalityException.class }, { "<gte>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</gte>", QTICardinalityException.class },
+                        "</gte>", QtiCardinalityException.class },
                 // ordered
                 { "<gte>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gte>", QTICardinalityException.class }, { "<gte>" +
+                        "</gte>", QtiCardinalityException.class }, { "<gte>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</gte>", QTICardinalityException.class },
+                        "</gte>", QtiCardinalityException.class },
                 // record
                 { "<gte>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</gte>", QTICardinalityException.class }, { "<gte>" +
+                        "</gte>", QtiCardinalityException.class }, { "<gte>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</gte>", QTICardinalityException.class },
+                        "</gte>", QtiCardinalityException.class },
                 // identifier
                 { "<gte>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -179,7 +179,7 @@ public class GteRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public GteRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public GteRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

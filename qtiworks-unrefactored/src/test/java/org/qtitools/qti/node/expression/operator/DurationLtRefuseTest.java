@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class DurationLtRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationLT>", QTICardinalityException.class }, { "<durationLT>" +
+                        "</durationLT>", QtiCardinalityException.class }, { "<durationLT>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</multiple>" +
-                        "</durationLT>", QTICardinalityException.class },
+                        "</durationLT>", QtiCardinalityException.class },
                 // ordered
                 { "<durationLT>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationLT>", QTICardinalityException.class }, { "<durationLT>" +
+                        "</durationLT>", QtiCardinalityException.class }, { "<durationLT>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</ordered>" +
-                        "</durationLT>", QTICardinalityException.class },
+                        "</durationLT>", QtiCardinalityException.class },
                 // record
                 { "<durationLT>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</durationLT>", QTICardinalityException.class }, { "<durationLT>" +
+                        "</durationLT>", QtiCardinalityException.class }, { "<durationLT>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
                         "</recordEx>" +
-                        "</durationLT>", QTICardinalityException.class },
+                        "</durationLT>", QtiCardinalityException.class },
                 // identifier
                 { "<durationLT>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -187,7 +187,7 @@ public class DurationLtRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public DurationLtRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public DurationLtRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

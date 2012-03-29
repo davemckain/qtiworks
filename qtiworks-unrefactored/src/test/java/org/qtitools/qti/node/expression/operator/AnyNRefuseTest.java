@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,19 +80,19 @@ public class AnyNRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</multiple>" +
-                        "</anyN>", QTICardinalityException.class },
+                        "</anyN>", QtiCardinalityException.class },
                 // ordered
                 { "<anyN min='1' max='1'>" +
                         "<ordered>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</ordered>" +
-                        "</anyN>", QTICardinalityException.class },
+                        "</anyN>", QtiCardinalityException.class },
                 // record
                 { "<anyN min='1' max='1'>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
                         "</recordEx>" +
-                        "</anyN>", QTICardinalityException.class },
+                        "</anyN>", QtiCardinalityException.class },
                 // identifier
                 { "<anyN min='1' max='1'>" +
                         "<baseValue baseType='identifier'>true</baseValue>" +
@@ -149,7 +149,7 @@ public class AnyNRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public AnyNRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public AnyNRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

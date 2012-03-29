@@ -34,8 +34,9 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
+
+import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +44,6 @@ import java.util.Collection;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.qtitools.qti.node.expression.ExpressionRefuseTest;
 
 /**
  * Test of <code>Contains</code> expression.
@@ -65,31 +65,31 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                 { "<contains>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // single + multiple
                 { "<contains>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</contains>", QTICardinalityException.class }, { "<contains>" +
+                        "</contains>", QtiCardinalityException.class }, { "<contains>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // single + ordered
                 { "<contains>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</contains>", QTICardinalityException.class }, { "<contains>" +
+                        "</contains>", QtiCardinalityException.class }, { "<contains>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // record
                 { "<contains>" +
                         "<recordEx identifiers='key_1'>" +
@@ -98,7 +98,7 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // record + multiple
                 { "<contains>" +
                         "<recordEx identifiers='key_1'>" +
@@ -107,14 +107,14 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</contains>", QTICardinalityException.class }, { "<contains>" +
+                        "</contains>", QtiCardinalityException.class }, { "<contains>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // record + ordered
                 { "<contains>" +
                         "<recordEx identifiers='key_1'>" +
@@ -123,14 +123,14 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</contains>", QTICardinalityException.class }, { "<contains>" +
+                        "</contains>", QtiCardinalityException.class }, { "<contains>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // multiple + ordered
                 { "<contains>" +
                         "<multiple>" +
@@ -139,14 +139,14 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</contains>", QTICardinalityException.class }, { "<contains>" +
+                        "</contains>", QtiCardinalityException.class }, { "<contains>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</contains>", QTICardinalityException.class },
+                        "</contains>", QtiCardinalityException.class },
                 // mixed baseTypes
                 { "<contains>" +
                         "<multiple>" +
@@ -189,7 +189,7 @@ public class ContainsRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public ContainsRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public ContainsRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

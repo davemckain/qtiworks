@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class PowerRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</power>", QTICardinalityException.class }, { "<power>" +
+                        "</power>", QtiCardinalityException.class }, { "<power>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</power>", QTICardinalityException.class },
+                        "</power>", QtiCardinalityException.class },
                 // ordered
                 { "<power>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</power>", QTICardinalityException.class }, { "<power>" +
+                        "</power>", QtiCardinalityException.class }, { "<power>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</power>", QTICardinalityException.class },
+                        "</power>", QtiCardinalityException.class },
                 // record
                 { "<power>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</power>", QTICardinalityException.class }, { "<power>" +
+                        "</power>", QtiCardinalityException.class }, { "<power>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</power>", QTICardinalityException.class },
+                        "</power>", QtiCardinalityException.class },
                 // identifier
                 { "<power>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -179,7 +179,7 @@ public class PowerRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public PowerRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public PowerRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

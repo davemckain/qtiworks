@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,31 +69,31 @@ public class MemberRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "</member>", QtiCardinalityException.class }, { "<member>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "</member>", QtiCardinalityException.class }, { "<member>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</member>", QTICardinalityException.class },
+                        "</member>", QtiCardinalityException.class },
                 // second operand is not multiple or ordered
                 { "<member>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</member>", QTICardinalityException.class }, { "<member>" +
+                        "</member>", QtiCardinalityException.class }, { "<member>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</member>", QTICardinalityException.class },
+                        "</member>", QtiCardinalityException.class },
                 // different baseTypes
                 { "<member>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
@@ -123,7 +123,7 @@ public class MemberRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public MemberRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public MemberRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

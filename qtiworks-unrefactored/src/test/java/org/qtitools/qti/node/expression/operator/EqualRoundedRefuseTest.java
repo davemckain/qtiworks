@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -94,7 +94,7 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</equalRounded>", QTICardinalityException.class },
+                        "</equalRounded>", QtiCardinalityException.class },
                 // ordered
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<ordered>" +
@@ -103,7 +103,7 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</equalRounded>", QTICardinalityException.class },
+                        "</equalRounded>", QtiCardinalityException.class },
                 // record
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<recordEx identifiers='key_1'>" +
@@ -112,7 +112,7 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</equalRounded>", QTICardinalityException.class },
+                        "</equalRounded>", QtiCardinalityException.class },
                 // identifier
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -168,7 +168,7 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public EqualRoundedRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public EqualRoundedRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

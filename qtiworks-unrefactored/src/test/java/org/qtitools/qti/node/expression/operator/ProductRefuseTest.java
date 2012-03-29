@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,19 +66,19 @@ public class ProductRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</product>", QTICardinalityException.class },
+                        "</product>", QtiCardinalityException.class },
                 // ordered
                 { "<product>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</product>", QTICardinalityException.class },
+                        "</product>", QtiCardinalityException.class },
                 // record
                 { "<product>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</product>", QTICardinalityException.class },
+                        "</product>", QtiCardinalityException.class },
                 // identifier
                 { "<product>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -137,7 +137,7 @@ public class ProductRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public ProductRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public ProductRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

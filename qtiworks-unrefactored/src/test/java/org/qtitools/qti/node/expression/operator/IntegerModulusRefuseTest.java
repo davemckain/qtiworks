@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,36 +67,36 @@ public class IntegerModulusRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</integerModulus>", QTICardinalityException.class }, { "<integerModulus>" +
+                        "</integerModulus>", QtiCardinalityException.class }, { "<integerModulus>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</integerModulus>", QTICardinalityException.class },
+                        "</integerModulus>", QtiCardinalityException.class },
                 // ordered
                 { "<integerModulus>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</integerModulus>", QTICardinalityException.class }, { "<integerModulus>" +
+                        "</integerModulus>", QtiCardinalityException.class }, { "<integerModulus>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</integerModulus>", QTICardinalityException.class },
+                        "</integerModulus>", QtiCardinalityException.class },
                 // record
                 { "<integerModulus>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</integerModulus>", QTICardinalityException.class }, { "<integerModulus>" +
+                        "</integerModulus>", QtiCardinalityException.class }, { "<integerModulus>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</integerModulus>", QTICardinalityException.class },
+                        "</integerModulus>", QtiCardinalityException.class },
                 // identifier
                 { "<integerModulus>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -187,7 +187,7 @@ public class IntegerModulusRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public IntegerModulusRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public IntegerModulusRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

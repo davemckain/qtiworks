@@ -63,7 +63,7 @@ public class IdentifierTest {
         this.fileName = fileName;
     }
 
-    // @Test (expected = QTIEvaluationException.class)
+    // @Test (expected = QtiEvaluationException.class)
     @Test
     public void test() {
         final AssessmentTest test = new AssessmentTest();

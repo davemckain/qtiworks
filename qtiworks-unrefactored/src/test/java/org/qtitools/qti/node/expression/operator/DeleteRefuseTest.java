@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,31 +69,31 @@ public class DeleteRefuseTest extends ExpressionRefuseTest {
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "</delete>", QtiCardinalityException.class }, { "<delete>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "</delete>", QtiCardinalityException.class }, { "<delete>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</delete>", QTICardinalityException.class },
+                        "</delete>", QtiCardinalityException.class },
                 // second operand is not multiple or ordered
                 { "<delete>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</delete>", QTICardinalityException.class }, { "<delete>" +
+                        "</delete>", QtiCardinalityException.class }, { "<delete>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</delete>", QTICardinalityException.class },
+                        "</delete>", QtiCardinalityException.class },
                 // different baseTypes
                 { "<delete>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
@@ -123,7 +123,7 @@ public class DeleteRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public DeleteRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public DeleteRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

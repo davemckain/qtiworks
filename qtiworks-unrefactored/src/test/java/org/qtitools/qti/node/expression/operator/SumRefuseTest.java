@@ -34,8 +34,8 @@
 package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +66,7 @@ public class SumRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</sum>", QTICardinalityException.class },
+                        "</sum>", QtiCardinalityException.class },
                 // identifier
                 { "<sum>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -125,7 +125,7 @@ public class SumRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public SumRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public SumRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }

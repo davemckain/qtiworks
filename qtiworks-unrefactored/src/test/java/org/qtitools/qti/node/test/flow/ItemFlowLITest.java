@@ -126,23 +126,23 @@ public class ItemFlowLITest extends ItemFlowTest {
                 // "I05"}}},
                 // {"ItemFlow-jump-05.xml", null, new String[][] {{"I01",
                 // "I05"}}},
-                // {"ItemFlow-jump-back-01.xml", QTIItemFlowException.class, new
+                // {"ItemFlow-jump-back-01.xml", QtiItemFlowException.class, new
                 // String[][] {{"I01", "I02", "I03"}}},
-                // {"ItemFlow-jump-back-02.xml", QTIItemFlowException.class, new
+                // {"ItemFlow-jump-back-02.xml", QtiItemFlowException.class, new
                 // String[][] {{"I01", "I03"}}},
-                // {"ItemFlow-jump-back-03.xml", QTIItemFlowException.class, new
+                // {"ItemFlow-jump-back-03.xml", QtiItemFlowException.class, new
                 // String[][] {{"I01", "I05"}}},
-                // {"ItemFlow-jump-error-01.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-01.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
-                // {"ItemFlow-jump-error-02.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-02.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
-                // {"ItemFlow-jump-error-03.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-03.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
-                // {"ItemFlow-jump-error-04.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-04.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
-                // {"ItemFlow-jump-error-05.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-05.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
-                // {"ItemFlow-jump-error-06.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-error-06.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01"}}},
                 // {"ItemFlow-jump-special-01.xml", null, new String[][]
                 // {{"I01"}}},
@@ -154,7 +154,7 @@ public class ItemFlowLITest extends ItemFlowTest {
                 // {{"I01"}}},
                 // {"ItemFlow-jump-special-05.xml", null, new String[][]
                 // {{"I01", "I02", "I03", "I05"}}},
-                // {"ItemFlow-jump-special-06.xml", QTIItemFlowException.class,
+                // {"ItemFlow-jump-special-06.xml", QtiItemFlowException.class,
                 // new String[][] {{"I01", "I02", "I03", "I04"}}},
                 // {"ItemFlow-jump-special-07.xml", null, new String[][]
                 // {{"I01", "I07", "I09"}}},

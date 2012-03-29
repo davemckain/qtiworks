@@ -35,8 +35,8 @@ package org.qtitools.qti.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QTICardinalityException;
-import uk.ac.ed.ph.jqtiplus.exception.QTIRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -133,11 +133,11 @@ public class InsideRefuseTest extends ExpressionRefuseTest {
                 // record
                 { "<inside shape='default'>" +
                         "<recordEx/>" +
-                        "</inside>", QTICardinalityException.class }, { "<inside shape='default'>" +
+                        "</inside>", QtiCardinalityException.class }, { "<inside shape='default'>" +
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
                         "</recordEx>" +
-                        "</inside>", QTICardinalityException.class },
+                        "</inside>", QtiCardinalityException.class },
                 // identifier
                 { "<inside shape='default'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
@@ -188,7 +188,7 @@ public class InsideRefuseTest extends ExpressionRefuseTest {
      * @param expectedException expected exception during evaluation of tested
      *            expression
      */
-    public InsideRefuseTest(String xml, Class<? extends QTIRuntimeException> expectedException) {
+    public InsideRefuseTest(String xml, Class<? extends QtiRuntimeException> expectedException) {
         super(xml, expectedException);
     }
 }
