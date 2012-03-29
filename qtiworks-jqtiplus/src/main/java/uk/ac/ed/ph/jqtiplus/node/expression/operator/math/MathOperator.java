@@ -33,10 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -49,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @author David McKain
  * @revision $Revision: 2652 $
  */
-public class MathOperator extends AbstractExpression {
+public class MathOperator extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -79,7 +78,7 @@ public class MathOperator extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    public final Value evaluateSelf(Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

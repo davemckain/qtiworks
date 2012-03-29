@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -49,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * 
  * @author Jiri Kajaba
  */
-public class DurationGte extends AbstractExpression {
+public class DurationGte extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 1768930756619437645L;
 
@@ -61,7 +60,7 @@ public class DurationGte extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

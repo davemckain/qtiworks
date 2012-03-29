@@ -34,9 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
@@ -53,7 +52,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.StringMatch
  * @author Jiri Kajaba
  */
-public class Substring extends AbstractExpression {
+public class Substring extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 389530305199141690L;
 
@@ -90,7 +89,7 @@ public class Substring extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -61,7 +60,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Delete extends AbstractExpression {
+public class Delete extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -3347943030791068562L;
 
@@ -107,7 +106,7 @@ public class Delete extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
@@ -115,9 +114,6 @@ public class Delete extends AbstractExpression {
         final ListValue value = (ListValue) ((ListValue) childValues[1]).clone();
         value.removeAll((SingleValue) childValues[0]);
 
-        if (value.isNull()) {
-            return NullValue.INSTANCE;
-        }
-        return value;
+        return value.isNull() ? NullValue.INSTANCE : value;
     }
 }

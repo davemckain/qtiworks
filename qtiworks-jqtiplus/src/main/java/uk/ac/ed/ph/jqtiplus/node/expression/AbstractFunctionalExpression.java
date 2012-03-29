@@ -31,55 +31,30 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression.operator;
+package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
-import uk.ac.ed.ph.jqtiplus.value.ListValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The member operator takes two sub-expressions which must both have the same base-type. The first
- * sub-expression must have single cardinality and the second must be A multiple or ordered container.
- * The result is A single boolean with A value of true if the value given by the first sub-expression
- * is in the container defined by the second sub-expression.
- * If either sub-expression is NULL then the result of the operator is NULL.
- * <p>
- * The member operator should not be used on sub-expressions with A base-type of float because of the poorly defined comparison of values. It must not be used
- * on sub-expressions with A base-type of duration.
+ * Convenience superclass for "purely functional" {@link Expression} which
+ * return an output based only on input values and perform no side effects.
  * 
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Member extends AbstractFunctionalExpression {
+public abstract class AbstractFunctionalExpression extends AbstractExpression {
 
-    private static final long serialVersionUID = -6317462846920017136L;
+    private static final long serialVersionUID = 2619103475550131247L;
 
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "member";
-
-    public Member(ExpressionParent parent) {
-        super(parent, QTI_CLASS_NAME);
+    public AbstractFunctionalExpression(ExpressionParent parent, String localName) {
+        super(parent, localName);
     }
 
-    @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
-        return getRequiredSameBaseTypes(context, index, false);
+    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+        return evaluateSelf(childValues);
     }
-
-    @Override
-    protected Value evaluateSelf(Value[] childValues) {
-        if (isAnyChildNull(childValues)) {
-            return NullValue.INSTANCE;
-        }
-
-        final boolean result = ((ListValue) childValues[1]).contains((SingleValue) childValues[0]);
-        return BooleanValue.valueOf(result);
-    }
+    
+    protected abstract Value evaluateSelf(Value[] childValues);
 }

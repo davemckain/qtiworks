@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -49,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Convenience base class for expressions like <tt>sum</tt>, <tt>max</tt> that
  * are evaluated by "mapping" over their values in a certain way.
  */
-public abstract class MathMapExpression extends AbstractExpression {
+public abstract class MathMapExpression extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 5311729106818194456L;
 
@@ -63,7 +62,7 @@ public abstract class MathMapExpression extends AbstractExpression {
     }
 
     @Override
-    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected final Value evaluateSelf(Value[] childValues) {
         BaseType baseType = BaseType.INTEGER;
         double running = initialValue();
 

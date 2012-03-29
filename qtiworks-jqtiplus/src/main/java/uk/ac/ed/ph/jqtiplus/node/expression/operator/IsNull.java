@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -48,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IsNull extends AbstractExpression {
+public class IsNull extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 2510627886708118311L;
 
@@ -60,7 +59,7 @@ public class IsNull extends AbstractExpression {
     }
 
     @Override
-    protected BooleanValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected BooleanValue evaluateSelf(Value[] childValues) {
         return BooleanValue.valueOf(childValues[0].isNull());
     }
 }

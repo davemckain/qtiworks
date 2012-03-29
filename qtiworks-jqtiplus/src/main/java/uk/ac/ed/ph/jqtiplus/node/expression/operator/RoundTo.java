@@ -35,9 +35,8 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.RoundingModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -51,7 +50,7 @@ import java.math.BigDecimal;
  * 
  * @author David McKain
  */
-public class RoundTo extends AbstractExpression {
+public class RoundTo extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 7637604241884891345L;
 
@@ -122,7 +121,7 @@ public class RoundTo extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(Value[] childValues) {
         Value childValue = childValues[0];
         if (childValue.isNull()) {
             return NullValue.INSTANCE;

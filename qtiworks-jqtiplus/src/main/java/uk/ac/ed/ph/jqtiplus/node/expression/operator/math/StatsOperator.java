@@ -33,10 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -51,7 +50,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public class StatsOperator extends AbstractExpression {
+public class StatsOperator extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -81,7 +80,7 @@ public class StatsOperator extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    public final Value evaluateSelf(Value[] childValues) {
         final ListValue containerValue = (ListValue) childValues[0];
         if (containerValue.isNull()) {
             return NullValue.INSTANCE;
