@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -46,34 +47,50 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 /**
- * TODO: document this
+ * Callback interface used when {@link XmlNode}s validate themselves.
  * 
  * @author David McKain
  */
 public interface ValidationContext {
     
-    void add(ValidationItem item);
-    
-    AbstractValidationResult getValidationResult();
-    
+    /** 
+     * Returns true if validating an {@link AssessmentItem}, false otherwise.
+     */
     boolean isValidatingItem();
-    
+
+    /**
+     * Returns true of validating an {@link AssessmentTest}, false otherwise.
+     */
     boolean isValidatingTest();
+    
+    /**
+     * Returns the {@link AssessmentObject} being validated, which will not be null.
+     */
+    AssessmentObject getSubject();
+    
+    /**
+     * Returns the {@link AssessmentItem} being validated, if this is the case.
+     * 
+     * @throws QtiLogicException if not validating an item
+     */
+    AssessmentItem getSubjectItem();
+
+    /**
+     * Returns the {@link AssessmentTest} being validated, if this is the case.
+     * 
+     * @throws QtiLogicException if not validating a test
+     */
+    AssessmentTest getSubjectTest();
     
     ResolvedAssessmentObject<?> getResolvedAssessmentObject();
     
     ResolvedAssessmentItem getResolvedAssessmentItem();
     
     ResolvedAssessmentTest getResolvedAssessmentTest();
-
-    /**
-     * NB: This is guaranteed to return non-null
-     */
-    AssessmentObject getSubject();
     
-    AssessmentItem getSubjectItem();
+    void add(ValidationItem item);
     
-    AssessmentTest getSubjectTest();
+    AbstractValidationResult getValidationResult();
     
     //------------------------------------------------------
     

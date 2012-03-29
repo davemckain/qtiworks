@@ -37,20 +37,27 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * FIXME: We need to merge this somehow with {@link ValidationContext}
+ * Extension of {@link ProcessingContext} passed when running an {@link AssessmentTest}
  * 
  * @author David McKain
- * @revision $Revision: 2782 $
  */
 public interface TestProcessingContext extends ProcessingContext {
+    
+    ResolvedAssessmentTest getResolvedAssessmentTest();
+    
+    AssessmentTest getSubjectTest();
+    
+    AssessmentTestState getTestSessionState();
 
     Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
             VariableReferenceIdentifier variableReferenceIdentifier);

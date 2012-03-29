@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -82,7 +83,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -96,7 +97,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
         super.validate(context);
 
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 context.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
@@ -109,12 +110,13 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
+        TestProcessingContext testContext = (TestProcessingContext) context;
         final Value value = getExpression().evaluate(context);
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QtiEvaluationException("Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
-        context.setOutcomeValue(declaration, value);
+        testContext.getTestSessionState().setOutcomeValue(declaration, value);
     }
 }

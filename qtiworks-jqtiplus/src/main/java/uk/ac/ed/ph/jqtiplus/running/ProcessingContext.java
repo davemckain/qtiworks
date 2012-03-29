@@ -33,55 +33,39 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * FIXME: This needs refactored!
+ * Callback for common tasks during item/test processing,
+ * e.g. in template, response and outcome processing.
  * 
- *  @author David McKain
+ * @see ItemProcessingContext
+ * @see TestProcessingContext
+ * 
+ * @author David McKain
  */
 public interface ProcessingContext {
-    
-    boolean isItem();
-    
-    boolean isTest();
-    
-    ResolvedAssessmentObject<?> getResolvedAssessmentObject();
-    
-    ResolvedAssessmentItem getResolvedAssessmentItem();
-    
-    ResolvedAssessmentTest getResolvedAssessmentTest();
 
     /**
      * NB: This is guaranteed to return non-null
      */
     AssessmentObject getSubject();
-    
-    AssessmentItem getSubjectItem();
-    
-    AssessmentTest getSubjectTest();
-
-    Value lookupVariable(VariableDeclaration variableDeclaration);
 
     /**
-     * NB: Returns null if variable is not defined!
+     * Convenience method to look up the value of the variable having the 
+     * given {@link Identifier} and having the given permitted types.
+     * <p>
+     * If permittedTypes is empty, then it looks up ANY type of variable.
+     * 
+     * @throws QtiEvaluationException if no variable (of the permitted type) has
+     *   the given identifier.
+     * 
+     * @param identifier
+     * @param permittedTypes
      */
-    Value lookupVariable(Identifier identifier);
-
-    Value lookupVariable(Identifier identifier, VariableType... permittedTypes);
-
-    void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value);
-
-    void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value);
+    Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes);
 }

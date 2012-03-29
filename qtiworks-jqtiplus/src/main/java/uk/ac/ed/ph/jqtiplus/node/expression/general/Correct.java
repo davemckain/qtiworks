@@ -86,7 +86,7 @@ public class Correct extends LookupExpression {
 
     @Override
     protected Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier) {
-        return itemContext.computeCorrectReponse(itemVariableIdentifier);
+        return itemContext.computeCorrectResponse(itemVariableIdentifier);
     }
 
     @Override

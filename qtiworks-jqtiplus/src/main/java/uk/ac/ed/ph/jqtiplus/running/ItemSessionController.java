@@ -65,21 +65,18 @@ import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +92,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author David McKain
  */
-public final class ItemSessionController {
+public final class ItemSessionController implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
@@ -105,7 +102,7 @@ public final class ItemSessionController {
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
-    private final ItemSessionState itemState;
+    private final ItemSessionState itemSessionState;
     
     public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
         this(null, resolvedAssessmentItem, assessmentItemState);
@@ -117,7 +114,7 @@ public final class ItemSessionController {
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
-        this.itemState = assessmentItemState;
+        this.itemSessionState = assessmentItemState;
     }
     
     public JqtiExtensionManager getJqtiExtensionManager() {
@@ -127,14 +124,26 @@ public final class ItemSessionController {
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
         return resolvedAssessmentItem;
     }
+    
+    @Override
+    public AssessmentObject getSubject() {
+        return item;
+    }
 
     public AssessmentItem getItem() {
         return item;
     }
-
-    public ItemSessionState getItemState() {
-        return itemState;
+    
+    @Override
+    public AssessmentItem getSubjectItem() {
+        return item;
     }
+
+    public ItemSessionState getItemSessionState() {
+        return itemSessionState;
+    }
+    
+    
 
     //-------------------------------------------------------------------
     // Initialization & template processing
@@ -154,23 +163,21 @@ public final class ItemSessionController {
      */
     public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
-        if (itemState.isInitialized()) {
+        if (itemSessionState.isInitialized()) {
             throw new IllegalStateException("Item state has already been initialized");
         }
-
-        final ItemProcessingContext context = new ItemProcessingContextImpl();
 
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
             /* Set up built-in variables */
-            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
-            itemState.setNumAttempts(0);
+            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            itemSessionState.setNumAttempts(0);
 
             /* Perform template processing as many times as required. */
             int templateProcessingAttemptNumber = 0;
             boolean templateProcessingCompleted = false;
             while (!templateProcessingCompleted) {
-                templateProcessingCompleted = doTemplateProcessing(context, templateDefaults, ++templateProcessingAttemptNumber);
+                templateProcessingCompleted = doTemplateProcessing(templateDefaults, ++templateProcessingAttemptNumber);
             }
 
             /* Initialises outcomeDeclaration's values. */
@@ -184,21 +191,21 @@ public final class ItemSessionController {
             }
 
             /* Set the completion status to unknown */
-            itemState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
+            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
             /* Initialize all interactions in the itemBody */
             for (final Interaction interaction : item.getItemBody().getInteractions()) {
                 interaction.initialize(this);
             }
 
-            itemState.setInitialized(true);
+            itemSessionState.setInitialized(true);
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
         }
     }
 
-    private boolean doTemplateProcessing(ItemProcessingContext context, List<TemplateDefault> templateDefaults, int attemptNumber)
+    private boolean doTemplateProcessing(List<TemplateDefault> templateDefaults, int attemptNumber)
             throws RuntimeValidationException {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
@@ -208,8 +215,8 @@ public final class ItemSessionController {
             for (final TemplateDefault templateDefault : templateDefaults) {
                 final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
                 if (declaration != null) {
-                    final Value defaultValue = templateDefault.evaluate(context);
-                    itemState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                    final Value defaultValue = templateDefault.evaluate(this);
+                    itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
                 }
             }
         }
@@ -230,7 +237,7 @@ public final class ItemSessionController {
             logger.trace("Evaluating template processing rules");
             try {
                 for (final TemplateProcessingRule templateProcessingRule : templateProcessing.getTemplateProcessingRules()) {
-                    templateProcessingRule.evaluate(context);
+                    templateProcessingRule.evaluate(this);
                 }
             }
             catch (final TemplateProcessingInterrupt e) {
@@ -260,7 +267,7 @@ public final class ItemSessionController {
      * Binds response variables for this assessmentItem, returning a List of response
      * variable identifiers for whom the given data could not be successfully bound.
      * <p>
-     * This will modify {@link #itemState}
+     * This will modify {@link #itemSessionState}
      * 
      * @return a List of identifiers corresponding to response variables which could not be
      *         successfully bound from the provided data. (E.g. expected a float but got a String)
@@ -282,7 +289,7 @@ public final class ItemSessionController {
          */
         final ItemBody itemBody = item.getItemBody();
         for (final EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
-            itemState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
+            itemSessionState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
         }
 
         /* Now bind response values for each incoming response. (Note that this may be a subset
@@ -319,7 +326,7 @@ public final class ItemSessionController {
         logger.debug("Validating responses");
         final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
         for (final Interaction interaction : item.getItemBody().getInteractions()) {
-            final Value responseValue = itemState.getResponseValue(interaction);
+            final Value responseValue = itemSessionState.getResponseValue(interaction);
             if (!interaction.validateResponse(this, responseValue)) {
                 invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
             }
@@ -328,13 +335,12 @@ public final class ItemSessionController {
     }
     
     /**
-     * Runs response processing on the currently bound responses, changing {@link #itemState}
+     * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
      * 
      * @throws RuntimeValidationException
      */
     public void processResponses() throws RuntimeValidationException {
-        final ItemProcessingContext processingContext = new ItemProcessingContextImpl();
         logger.debug("Response processing starting");
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
@@ -345,7 +351,7 @@ public final class ItemSessionController {
             for (final Interaction interaction : item.getItemBody().getInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
-                    final BooleanValue value = (BooleanValue) itemState.getResponseValue(interaction);
+                    final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
                     if (value != null && value.booleanValue() == true) {
                         countAttempt = !Boolean.FALSE.equals(endAttemptInteraction.getCountAttempt());
                         break;
@@ -353,8 +359,8 @@ public final class ItemSessionController {
                 }
             }
             if (countAttempt) {
-                final int oldAttempts = itemState.getNumAttempts();
-                itemState.setNumAttempts(oldAttempts + 1);
+                final int oldAttempts = itemSessionState.getNumAttempts();
+                itemSessionState.setNumAttempts(oldAttempts + 1);
             }
 
             if (!item.getAdaptive()) {
@@ -373,10 +379,10 @@ public final class ItemSessionController {
             }
             
             if (responseProcessing != null) {
-                responseProcessing.evaluate(processingContext);
+                responseProcessing.evaluate(this);
             }
             else {
-                logger.debug("No responseProcessing rules or responseProcessing template exists, so no processing will be performed");
+                logger.debug("No responseProcessing rules or responseProcessing template exists, so no response processing will be performed");
             }
         }
         finally {
@@ -424,53 +430,54 @@ public final class ItemSessionController {
                         }
                     }
                 }
-                itemState.setShuffledInteractionChoiceOrder(interaction, choiceIdentifiers);
+                itemSessionState.setShuffledInteractionChoiceOrder(interaction, choiceIdentifiers);
             }
             else {
-                itemState.setShuffledInteractionChoiceOrder(interaction, null);
+                itemSessionState.setShuffledInteractionChoiceOrder(interaction, null);
             }
         }
     }
 
     //-------------------------------------------------------------------
 
-    public Value lookupVariable(VariableDeclaration variableDeclaration) {
-        ConstraintUtilities.ensureNotNull(variableDeclaration);
-        return lookupVariable(variableDeclaration.getIdentifier());
-    }
-
-    public Value lookupVariable(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        return itemState.getValue(identifier);
-    }
-
-    public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
+    public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value value = null;
-        for (final VariableType type : permittedTypes) {
-            switch (type) {
-                case TEMPLATE:
-                    value = itemState.getTemplateValue(identifier);
-                    break;
+        if (permittedTypes.length==0) {
+            /* No types specified, so allow any variable */
+            value = itemSessionState.getValue(identifier);
+        }
+        else {
+            /* Only allows specified types of variables */
+            for (final VariableType type : permittedTypes) {
+                switch (type) {
+                    case TEMPLATE:
+                        value = itemSessionState.getTemplateValue(identifier);
+                        break;
 
-                case RESPONSE:
-                    value = itemState.getResponseValue(identifier);
-                    break;
+                    case RESPONSE:
+                        value = itemSessionState.getResponseValue(identifier);
+                        break;
 
-                case OUTCOME:
-                    value = itemState.getOutcomeValue(identifier);
-                    break;
+                    case OUTCOME:
+                        value = itemSessionState.getOutcomeValue(identifier);
+                        break;
 
-                default:
-                    throw new QtiLogicException("Unexpected switch case");
+                    default:
+                        throw new QtiLogicException("Unexpected switch case");
+                }
             }
+        }
+        if (value==null) {
+            throw new QtiEvaluationException("No variable with identifier " + identifier
+                    + " and permitted type(s) " + Arrays.toString(permittedTypes));
         }
         return value;
     }
 
     private void initValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
-        itemState.setValue(declaration, computeInitialValue(declaration));
+        itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
     }
 
     private Value computeInitialValue(Identifier identifier) {
@@ -490,7 +497,7 @@ public final class ItemSessionController {
 
     public Value computeDefaultValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
-        Value result = itemState.getOverriddenDefaultValue(declaration);
+        Value result = itemSessionState.getOverriddenDefaultValue(declaration);
         if (result == null) {
             final DefaultValue defaultValue = declaration.getDefaultValue();
             if (defaultValue != null) {
@@ -521,6 +528,7 @@ public final class ItemSessionController {
         return result;
     }
 
+    @Override
     public Value computeCorrectResponse(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
@@ -528,7 +536,7 @@ public final class ItemSessionController {
 
     public Value computeCorrectResponse(ResponseDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
-        Value result = itemState.getOverriddenCorrectResponseValue(declaration);
+        Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
         if (result == null) {
             final CorrectResponse correctResponse = declaration.getCorrectResponse();
             if (correctResponse != null) {
@@ -540,7 +548,7 @@ public final class ItemSessionController {
         }
         return result;
     }
-
+    
     /**
      * Returns true if this declarations value matches its correctValue.
      * Returns null if there is no correct value
@@ -553,7 +561,7 @@ public final class ItemSessionController {
         if (correctResponseValue.isNull()) {
             return null;
         }
-        return correctResponseValue.equals(itemState.getValue(responseDeclaration));
+        return correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration));
     }
 
     //-------------------------------------------------------------------
@@ -573,31 +581,31 @@ public final class ItemSessionController {
         final ItemResult result = new ItemResult(null);
         result.setIdentifier(item.getIdentifier());
         result.setDateStamp(new Date());
-        result.setSessionStatus(itemState.getNumAttempts() > 0 ? SessionStatus.FINAL : SessionStatus.INITIAL); // TODO: Not really sure what's best here, but probably not important!
+        result.setSessionStatus(itemSessionState.getNumAttempts() > 0 ? SessionStatus.FINAL : SessionStatus.INITIAL); // TODO: Not really sure what's best here, but probably not important!
         recordItemVariables(result);
         return result;
     }
 
     void recordItemVariables(ItemResult result) {
         result.getItemVariables().clear();
-        for (final Entry<Identifier, Value> mapEntry : itemState.getOutcomeValues().entrySet()) {
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
             final OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
             result.getItemVariables().add(variable);
         }
-        for (final Entry<Identifier, Value> mapEntry : itemState.getResponseValues().entrySet()) {
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
             final ResponseDeclaration declaration = item.getResponseDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             List<Identifier> interactionChoiceOrder = null;
             final Interaction interaction = item.getItemBody().getInteraction(declaration.getIdentifier());
             if (interaction != null && interaction instanceof Shuffleable) {
-                interactionChoiceOrder = itemState.getShuffledInteractionChoiceOrder(interaction);
+                interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
             }
             final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
             result.getItemVariables().add(variable);
         }
-        for (final Entry<Identifier, Value> mapEntry : itemState.getTemplateValues().entrySet()) {
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
             final TemplateDeclaration declaration = item.getTemplateDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             final TemplateVariable variable = new TemplateVariable(result, declaration, value);
@@ -698,144 +706,7 @@ public final class ItemSessionController {
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
                 + "(resolvedAssessmentItem=" + resolvedAssessmentItem
-                + ",itemState=" + itemState
+                + ",itemSessionState=" + itemSessionState
                 + ")";
-    }
-
-    //---------------------------------------------------
-
-    /**
-     * Callback implementation of {@link ItemProcessingContext}
-     */
-    protected class ItemProcessingContextImpl implements ItemProcessingContext {
-
-        public ItemProcessingContextImpl() {
-        }
-        
-        @Override
-        public boolean isItem() {
-            return true;
-        }
-
-        @Override
-        public boolean isTest() {
-            return false;
-        }
-
-        @Override
-        public ResolvedAssessmentObject<?> getResolvedAssessmentObject() {
-            return resolvedAssessmentItem;
-        }
-
-        @Override
-        public ResolvedAssessmentItem getResolvedAssessmentItem() {
-            return resolvedAssessmentItem;
-        }
-
-        @Override
-        public ResolvedAssessmentTest getResolvedAssessmentTest() {
-            return null;
-        }
-
-        @Override
-        public AssessmentObject getSubject() {
-            return item;
-        }
-        
-        @Override
-        public AssessmentTest getSubjectTest() {
-            return null;
-        }
-        
-        @Override
-        public AssessmentItem getSubjectItem() {
-            return item;
-        }
-
-        @Override
-        public void setTemplateValue(TemplateDeclaration variableDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(variableDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setTemplateValue(variableDeclaration, value);
-        }
-
-        @Override
-        public void setOutcomeValue(OutcomeDeclaration variableDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(variableDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setOutcomeValue(variableDeclaration, value);
-        }
-
-        @Override
-        public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
-            ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setOutcomeValueFromLookupTable(outcomeDeclaration, value);
-        }
-
-        @Override
-        public void setVariableValue(VariableDeclaration variableDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(variableDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setValue(variableDeclaration, value);
-        }
-
-        @Override
-        public void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(responseDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setOverriddenResponseDefaultValue(responseDeclaration, value);
-        }
-
-        @Override
-        public void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(responseDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setOverriddenCorrectResponseValue(responseDeclaration, value);
-        }
-
-        @Override
-        public void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value) {
-            ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            itemState.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
-        }
-
-        @Override
-        public Value lookupVariable(VariableDeclaration variableDeclaration) {
-            return ItemSessionController.this.lookupVariable(variableDeclaration);
-        }
-
-        @Override
-        public Value lookupVariable(Identifier identifier) {
-            return ItemSessionController.this.lookupVariable(identifier);
-        }
-
-        @Override
-        public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
-            return ItemSessionController.this.lookupVariable(identifier, permittedTypes);
-        }
-
-        @Override
-        public Value computeDefaultValue(Identifier identifier) {
-            return ItemSessionController.this.computeDefaultValue(identifier);
-        }
-
-        public Value computeDefaultValue(VariableDeclaration declaration) {
-            return ItemSessionController.this.computeDefaultValue(declaration);
-        }
-
-        @Override
-        public Value computeCorrectReponse(Identifier responseIdentifier) {
-            ConstraintUtilities.ensureNotNull(responseIdentifier);
-            return ItemSessionController.this.computeCorrectResponse(ensureResponseDeclaration(responseIdentifier));
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + "@" + hashCode()
-                    + "(controller=" + ItemSessionController.this
-                    + ")";
-        }
     }
 }

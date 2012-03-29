@@ -38,8 +38,8 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -74,7 +74,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
                 if (declaration.getLookupTable() instanceof MatchTable) {
                     return new BaseType[] { BaseType.INTEGER };
@@ -90,7 +90,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
         super.validate(context);
 
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {
                 context.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
@@ -103,6 +103,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
+        TestProcessingContext testContext = (TestProcessingContext) context;
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {
@@ -111,7 +112,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
             }
             numberValue = (NumberValue) value;
         }
-        final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
-        context.setOutcomeValueFromLookupTable(declaration, numberValue);
+        final OutcomeDeclaration declaration = testContext.getSubjectTest().getOutcomeDeclaration(getIdentifier());
+        testContext.getTestSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

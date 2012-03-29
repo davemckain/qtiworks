@@ -172,7 +172,7 @@ public class TestVariables extends ItemSubset {
 
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
             final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
-            final Value value = itemRefController.getItemController().lookupVariable(getVariableIdentifier());
+            final Value value = itemRefController.getItemController().lookupVariableValue(getVariableIdentifier());
             if (value != null && !value.isNull() && value.getCardinality() == Cardinality.SINGLE) {
                 if (baseType != null && value.getBaseType() == baseType ||
                         baseType == null && value.getBaseType().isNumeric()) {

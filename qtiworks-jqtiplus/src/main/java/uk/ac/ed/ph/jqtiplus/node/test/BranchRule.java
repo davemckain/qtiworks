@@ -200,7 +200,7 @@ public class BranchRule extends AbstractJump {
                 }
             }
             else {
-                final ControlObject<?> targetControlObject = getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getTarget());
+                final ControlObject<?> targetControlObject = context.getSubjectTest().lookupDescendentOrSelf(getTarget());
 
                 if (targetControlObject == null) {
                     context.add(new ItemFlowValidationError(this, "Cannot find target: " + getTarget()));

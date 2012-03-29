@@ -201,7 +201,7 @@ public class TestFeedback extends AbstractNode {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getOutcomeIdentifier() != null && getRootObject(AssessmentTest.class).getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
+        if (getOutcomeIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
             context.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
         }
     }

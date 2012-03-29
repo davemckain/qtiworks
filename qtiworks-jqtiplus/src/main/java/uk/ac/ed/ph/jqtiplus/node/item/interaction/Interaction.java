@@ -158,7 +158,7 @@ public abstract class Interaction extends BodyElement {
         ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = bindResponse(responseDeclaration, responseData);
-        itemController.getItemState().setResponseValue(this, value);
+        itemController.getItemSessionState().setResponseValue(this, value);
     }
 
     /**

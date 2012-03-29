@@ -33,33 +33,24 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * FIXME: We need to merge this somehow with {@link ValidationContext}
+ * Extension of {@link ProcessingContext} passed when running an {@link AssessmentItem}
  * 
  * @author David McKain
  */
 public interface ItemProcessingContext extends ProcessingContext {
     
+    AssessmentItem getSubjectItem();
+    
+    ItemSessionState getItemSessionState();
+    
     Value computeDefaultValue(Identifier identifier);
 
-    Value computeCorrectReponse(Identifier responseIdentifier);
-
-    void setTemplateValue(TemplateDeclaration outcomeDeclaration, Value value);
-
-    void setVariableValue(VariableDeclaration variableDeclaration, Value value);
-
-    void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value);
-
-    void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value);
-
-    void setOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration, Value value);
+    Value computeCorrectResponse(Identifier responseIdentifier);
 
 }

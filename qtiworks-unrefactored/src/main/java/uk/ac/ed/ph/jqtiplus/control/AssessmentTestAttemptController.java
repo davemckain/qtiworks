@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.control;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
@@ -64,7 +65,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
-import uk.ac.ed.ph.jqtiplus.running.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.Timer;
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartState;
@@ -133,7 +133,7 @@ public final class AssessmentTestAttemptController {
         ConstraintUtilities.ensureNotNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
-        this.test = resolvedAssessmentTest.getTestLookup().extractEnsuringSuccessful();
+        this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
         this.testState = assessmentTestState;
         this.itemRefControllerMap = new HashMap<AssessmentItemRefState, AssessmentItemRefAttemptController>();
         this.timer = timer;
@@ -232,7 +232,7 @@ public final class AssessmentTestAttemptController {
     // Workflow methods
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
-        for (final JqtiExtensionPackage extensionPackage : testManager.getQTIObjectManager().getJQTIExtensionManager().getExtensionPackages()) {
+        for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
             extensionPackage.lifecycleEvent(this, eventType);
         }
     }
@@ -684,19 +684,32 @@ public final class AssessmentTestAttemptController {
         public TestProcessingContextImpl() {
             this.expressionValues = new TreeMap<String, Value>();
         }
-
-        public AssessmentTest getTest() {
+        
+        @Override
+        public AssessmentObject getSubject() {
             return test;
         }
 
-        public AssessmentObject getOwner() {
+        @Override
+        public AssessmentTest getSubjectTest() {
             return test;
         }
-
+        
+        @Override
+        public AssessmentTestState getTestSessionState() {
+            return testState;
+        }
+        
+        @Override
+        public ResolvedAssessmentTest getResolvedAssessmentTest() {
+            return resolvedAssessmentTest;
+        }
+        
+        @Override
         public void terminate() {
             testState.setFinished(true);
         }
-
+        
         public AssessmentItemManager resolveItem(AssessmentItemRef assessmentItemRef) {
             return testManager.resolveItem(assessmentItemRef);
         }
@@ -705,14 +718,17 @@ public final class AssessmentTestAttemptController {
             return testManager.resolveVariableReference(variableReferenceIdentifier);
         }
 
+        @Override
         public Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef) {
             return AssessmentTestAttemptController.this.getItemRefControllers(itemRef);
         }
 
+        @Override
         public AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState) {
             return AssessmentTestAttemptController.this.itemRefControllerMap.get(itemRefState);
         }
 
+        @Override
         public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
                 VariableReferenceIdentifier variableReferenceIdentifier) {
             return AssessmentTestAttemptController.this.resolveDottedVariableReference(variableReferenceIdentifier);
@@ -729,34 +745,24 @@ public final class AssessmentTestAttemptController {
         public Map<String, Value> exportExpressionValues() {
             return Collections.unmodifiableMap(expressionValues);
         }
-
+        
         public void setExpressionValue(Expression expression, Value value) {
             expressionValues.put(expression.computeXPath(), value);
         }
 
-        public void setOutcomeValue(OutcomeDeclaration variableDeclaration, Value value) {
+        @Override
+        public Value lookupVariableValue(VariableDeclaration variableDeclaration) {
             ConstraintUtilities.ensureNotNull(variableDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            testState.setOutcomeValue(variableDeclaration, value);
+            return getVariableValue(variableDeclaration.getIdentifier());
         }
 
-        public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
-            ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-            ConstraintUtilities.ensureNotNull(value);
-            testState.setOutcomeValueFromLookupTable(outcomeDeclaration, value);
-        }
-
-        public Value lookupVariable(VariableDeclaration variableDeclaration) {
-            ConstraintUtilities.ensureNotNull(variableDeclaration);
-            return lookupVariable(variableDeclaration.getIdentifier());
-        }
-
-        public Value lookupVariable(Identifier identifier) {
+        public Value getVariableValue(Identifier identifier) {
             ConstraintUtilities.ensureNotNull(identifier);
             return testState.getOutcomeValue(identifier);
         }
-
-        public Value lookupVariable(Identifier identifier, VariableType... permittedTypes) {
+        
+        @Override
+        public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
             ConstraintUtilities.ensureNotNull(identifier);
             Value value = null;
             for (final VariableType type : permittedTypes) {
@@ -776,7 +782,7 @@ public final class AssessmentTestAttemptController {
             }
             return value;
         }
-
+        
         @Override
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()

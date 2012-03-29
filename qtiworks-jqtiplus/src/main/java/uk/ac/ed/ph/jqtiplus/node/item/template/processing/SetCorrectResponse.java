@@ -93,7 +93,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
             throw new QtiEvaluationException("Cannot find " + ResponseDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
-        ((ItemProcessingContext) context).setOverriddenCorrectResponseValue(declaration, value);
+        itemContext.getItemSessionState().setOverriddenCorrectResponseValue(declaration, value);
     }
 
     @Override

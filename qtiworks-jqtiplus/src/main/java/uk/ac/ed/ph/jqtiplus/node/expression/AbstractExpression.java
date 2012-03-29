@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
@@ -329,7 +328,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     @Override
     public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
-        final AbstractValidationResult runtimeValidationResult = new RuntimeValidationResult(getRootObject(AssessmentObject.class));
+        final AbstractValidationResult runtimeValidationResult = new RuntimeValidationResult(context.getSubject());
         final Value result = evaluate(context, runtimeValidationResult, 0);
         if (!runtimeValidationResult.getAllItems().isEmpty()) {
             throw new RuntimeValidationException(runtimeValidationResult);

@@ -144,9 +144,9 @@ public class CasProcess extends MathAssessOperator {
         /* Pass variables to Maxima */
         logger.debug("Passing variables to maxima");
         for (final VariableDeclaration declaration : getAllCASReadableVariableDeclarations()) {
-            final Value value = context.lookupVariable(declaration);
+            final Value value = context.getItemSessionState().getVariableValue(declaration);
             final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            if (value != null && !value.isNull() && resultClass != null) {
+            if (!value.isNull() && resultClass != null) {
                 qtiMaximaSession.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
             }
         }

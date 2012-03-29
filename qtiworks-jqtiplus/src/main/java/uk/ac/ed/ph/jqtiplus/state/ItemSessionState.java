@@ -277,6 +277,7 @@ public final class ItemSessionState implements Serializable {
 
     public void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
+        ConstraintUtilities.ensureNotNull(value);
         setOverriddenResponseDefaultValue(responseDeclaration.getIdentifier(), value);
     }
     
@@ -478,12 +479,12 @@ public final class ItemSessionState implements Serializable {
         return result;
     }
 
-    public Value getValue(VariableDeclaration variableDeclaration) {
+    public Value getVariableValue(VariableDeclaration variableDeclaration) {
         ConstraintUtilities.ensureNotNull(variableDeclaration);
         return getValue(variableDeclaration.getIdentifier());
     }
 
-    public void setValue(VariableDeclaration variableDeclaration, Value value) {
+    public void setVariableValue(VariableDeclaration variableDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(variableDeclaration);
         ConstraintUtilities.ensureNotNull(value);
         final Identifier identifier = variableDeclaration.getIdentifier();

@@ -175,7 +175,7 @@ public abstract class AbstractStringInteraction extends InlineInteraction implem
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
             final Value value = bindResponse(stringIdentifierResponseDeclaration, responseData);
-            itemController.getItemState().setResponseValue(this, value);
+            itemController.getItemSessionState().setResponseValue(this, value);
         }
     }
 

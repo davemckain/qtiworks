@@ -207,7 +207,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
 
         /* Now bind the variables */
-        final ItemSessionState itemState = itemController.getItemState();
+        final ItemSessionState itemState = itemController.getItemSessionState();
         itemState.setResponseValue(getResponseDeclaration(), responseValue);
         if (getPrintIdentifier() != null) {
             /* handle stringIdentifier binding if required */

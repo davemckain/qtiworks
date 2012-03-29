@@ -338,7 +338,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseData);
-            itemController.getItemState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
+            itemController.getItemSessionState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
         }
     }
 

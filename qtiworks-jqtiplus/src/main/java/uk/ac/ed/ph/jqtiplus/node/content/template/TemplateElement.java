@@ -180,7 +180,7 @@ public abstract class TemplateElement extends BodyElement {
      * @return true if this feedback can be displayed; false otherwise
      */
     public boolean isVisible(ItemProcessingContext itemContext) {
-        final Value templateValue = itemContext.lookupVariable(getTemplateIdentifier());
+        final Value templateValue = itemContext.lookupVariableValue(getTemplateIdentifier(), VariableType.TEMPLATE);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 
         boolean identifierCheck;

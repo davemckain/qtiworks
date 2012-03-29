@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -90,16 +91,17 @@ public class SetDefaultValue extends ProcessTemplateValue {
     public void evaluate(ProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
-        final AssessmentItem item = getRootObject(AssessmentItem.class);
+        final AssessmentItem item = itemContext.getSubjectItem();
+        ItemSessionState itemSessionState = itemContext.getItemSessionState();
 
         final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
-            itemContext.setOverriddenResponseDefaultValue(responseDeclaration, value);
+            itemSessionState.setOverriddenResponseDefaultValue(responseDeclaration, value);
         }
         else {
             final OutcomeDeclaration outcomeDeclaration = item.getOutcomeDeclaration(getIdentifier());
             if (outcomeDeclaration != null) {
-                itemContext.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
+                itemSessionState.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
             }
             else {
                 throw new QtiEvaluationException("Cannot find response or outcome declaration " + getIdentifier());

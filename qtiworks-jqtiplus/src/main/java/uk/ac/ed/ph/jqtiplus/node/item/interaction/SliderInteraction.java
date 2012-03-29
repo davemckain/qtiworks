@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -245,7 +244,7 @@ public class SliderInteraction extends BlockInteraction {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
+            final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
                 context.add(new ValidationError(this, "Response variable must have single cardinality"));
             }

@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -185,7 +185,7 @@ public abstract class FeedbackElement extends BodyElement {
      * @return true if this feedback can be displayed; false otherwise
      */
     public boolean isVisible(ItemProcessingContext itemContext) {
-        final Value outcomeValue = itemContext.lookupVariable(getOutcomeIdentifier());
+        final Value outcomeValue = itemContext.lookupVariableValue(getOutcomeIdentifier(), VariableType.OUTCOME);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 
         boolean identifierCheck;

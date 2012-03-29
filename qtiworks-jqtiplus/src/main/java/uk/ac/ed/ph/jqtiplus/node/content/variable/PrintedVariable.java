@@ -170,15 +170,11 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
 
     public SingleValue evaluate(ProcessingContext context) {
         final Identifier identifier = getIdentifier();
-        final Value value = context.lookupVariable(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
-        if (value == null) {
-            throw new QtiEvaluationException("Outcome or template variable doesn't exist " + identifier);
-        }
+        final Value value = context.lookupVariableValue(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
         if (!value.isNull() && !(value.getCardinality() == Cardinality.SINGLE && value.getCardinality() == Cardinality.RECORD)) {
             throw new QtiEvaluationException("Outcome or response variable is wrong cardinality: " +
                     value.getCardinality() + " Expected: " + Cardinality.SINGLE);
         }
-
         return (SingleValue) value;
     }
 

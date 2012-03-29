@@ -100,7 +100,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
             throw new QtiEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
-        ((ItemProcessingContext) context).setTemplateValue(declaration, value);
+        itemContext.getItemSessionState().setVariableValue(declaration, value);
     }
 
     @Override

@@ -201,7 +201,7 @@ public class ModalFeedback extends AbstractNode {
     public boolean isVisible(ItemSessionController itemController) {
 
         /* FIXME: This way of accessing outcome values looks old... probably needs refactored! */
-        final ItemSessionState itemState = itemController.getItemState();
+        final ItemSessionState itemState = itemController.getItemSessionState();
         final Value outcomeValue = itemState.getOutcomeValue(getOutcomeIdentifier());
         boolean identifierCheck;
         if (outcomeValue.getCardinality() == Cardinality.SINGLE) {

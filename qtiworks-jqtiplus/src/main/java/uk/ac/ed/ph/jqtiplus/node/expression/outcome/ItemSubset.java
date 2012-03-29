@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -130,7 +129,7 @@ public abstract class ItemSubset extends AbstractExpression {
 
     @Override
     protected void validateAttributes(ValidationContext context) {
-        if (getIdentifier() != null && getRootObject(AssessmentTest.class).lookupDescendentOrSelf(getIdentifier()) == null) {
+        if (getIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getIdentifier()) == null) {
             context.add(new ValidationWarning(this, "Cannot find control object: " + getIdentifier()));
         }
     }

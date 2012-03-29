@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -116,7 +117,7 @@ public class MapResponse extends AbstractExpression {
     protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
-        final Value responseValue = itemContext.lookupVariable(getIdentifier());
+        final Value responseValue = itemContext.lookupVariableValue(getIdentifier(), VariableType.RESPONSE);
 
         return responseDeclaration.getMapping().getTargetValue(responseValue);
     }
