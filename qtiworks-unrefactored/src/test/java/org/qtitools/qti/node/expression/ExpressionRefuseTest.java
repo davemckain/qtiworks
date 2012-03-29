@@ -71,7 +71,7 @@ public abstract class ExpressionRefuseTest extends ExpressionTest {
     @Test
     public void testEvaluate() {
         try {
-            getExpression().evaluate();
+            getExpression().evaluate(ExpressionTest.createContextFreeItemProcessingContext());
         }
         catch (final Throwable ex) {
             if (!expectedException.equals(ex.getClass())) {

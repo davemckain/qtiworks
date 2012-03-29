@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
-import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelperOriginal;
 
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class TemplateTest {
 
     @Test
     public void test() {
-        final AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TemplateTest.class);
+        final AssessmentItemController itemController = UnitTestHelperOriginal.loadTestAssessmentItemForControl(fileName, TemplateTest.class);
         final AssessmentItemState itemState = itemController.getItemState();
         final AssessmentItem item = itemController.getItem();
 

@@ -36,7 +36,6 @@ package org.qtitools.qti.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
-import uk.ac.ed.ph.jqtiplus.value.FileValue;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -46,13 +45,14 @@ import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.UriValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import org.qtitools.qti.node.expression.ExpressionAcceptTest;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.qtitools.qti.node.expression.ExpressionAcceptTest;
 
 /**
  * Test of <code>BaseValue</code> expression.
@@ -121,8 +121,6 @@ public class BaseValueAcceptTest extends ExpressionAcceptTest {
                 { "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>", new DirectedPairValue("identifier_1", "identifier_2") },
                 // duration
                 { "<baseValue baseType='duration'>1</baseValue>", new DurationValue(1) },
-                // file
-                { "<baseValue baseType='file'>file</baseValue>", new FileValue("file") },
                 // uri
                 { "<baseValue baseType='uri'>uri</baseValue>", new UriValue("uri") },
         });

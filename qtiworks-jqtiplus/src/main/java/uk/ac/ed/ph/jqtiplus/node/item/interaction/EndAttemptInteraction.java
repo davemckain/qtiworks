@@ -145,7 +145,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) {
+    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) {
         return BooleanValue.TRUE;
     }
 

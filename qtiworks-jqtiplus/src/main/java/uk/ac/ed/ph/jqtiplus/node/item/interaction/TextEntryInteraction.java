@@ -43,8 +43,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -180,37 +180,36 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             }
         }
     }
-
+    
     @Override
-    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+    public final void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
         super.bindResponse(itemController, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
-            final Value value = bindResponse(stringIdentifierResponseDeclaration, responseData);
-            itemController.getItemSessionState().setResponseValue(this, value);
+            final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
+            itemController.getItemSessionState().setResponseValue(stringIdentifierResponseDeclaration, value);
         }
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("textInteraction must be bound to string response data");
         }
         String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
-        Cardinality responseCardinality = responseDeclaration.getCardinality();
-        BaseType responseBaseType = responseDeclaration.getBaseType();
-        
         if (stringResponseData.length > 1) {
             throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
         }
-        String responseString = stringResponseData[0];
+        
+        Cardinality responseCardinality = responseDeclaration.getCardinality();
+        BaseType responseBaseType = responseDeclaration.getBaseType();
+        String responseString = stringResponseData.length > 0 ? stringResponseData[0] : null;
 
-        //handle record special case
         Value result;
         if (responseCardinality.isRecord()) {
-            result = bindRecordValueResponse(responseString, getBase());
+            result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
         }
         else if (responseBaseType.isInteger()) {
             if (responseString == null || responseString.trim().length() == 0) {
@@ -221,63 +220,9 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             }
         }
         else {
-            result = super.bindResponse(responseDeclaration, responseData);
+            result = super.parseResponse(responseDeclaration, responseData);
         }
         return result;
-    }
-
-    protected static RecordValue bindRecordValueResponse(String responseString, Integer base) {
-        final RecordValue value = new RecordValue();
-
-        value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
-        value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
-
-        String exponentIndicator = null;
-        if (responseString.contains("e")) {
-            exponentIndicator = "e";
-        }
-        if (responseString.contains("E")) {
-            exponentIndicator = "E";
-        }
-
-        final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : null;
-        responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
-        final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
-        final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
-
-        if (exponentIndicator != null || responseString.contains(".")) {
-            value.add(KEY_INTEGER_VALUE_NAME, null);
-        }
-        else {
-            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, base));
-        }
-
-        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
-        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
-
-        if (exponentIndicator != null) {
-            int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-            if (exponentPart != null && exponentPart.length() > 0) {
-                frac -= Integer.parseInt(exponentPart);
-            }
-
-            value.add(KEY_NDP_NAME, new IntegerValue(frac));
-        }
-        else {
-            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
-        }
-
-        int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
-        nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-        value.add(KEY_NSF_NAME, new IntegerValue(nsf));
-
-        if (exponentIndicator != null) {
-            value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
-        }
-        else {
-            value.add(KEY_EXPONENT_NAME, null);
-        }
-        return value;
     }
 
     @Override
@@ -289,5 +234,59 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         }
 
         return true;
+    }
+
+    protected static RecordValue parseRecordValueResponse(String responseString, Integer base) {
+        final RecordValue value = new RecordValue();
+    
+        value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
+        value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
+    
+        String exponentIndicator = null;
+        if (responseString.contains("e")) {
+            exponentIndicator = "e";
+        }
+        if (responseString.contains("E")) {
+            exponentIndicator = "E";
+        }
+    
+        final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : null;
+        responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
+        final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
+        final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
+    
+        if (exponentIndicator != null || responseString.contains(".")) {
+            value.add(KEY_INTEGER_VALUE_NAME, null);
+        }
+        else {
+            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, base));
+        }
+    
+        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
+        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
+    
+        if (exponentIndicator != null) {
+            int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
+            if (exponentPart != null && exponentPart.length() > 0) {
+                frac -= Integer.parseInt(exponentPart);
+            }
+    
+            value.add(KEY_NDP_NAME, new IntegerValue(frac));
+        }
+        else {
+            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
+        }
+    
+        int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
+        nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
+        value.add(KEY_NSF_NAME, new IntegerValue(nsf));
+    
+        if (exponentIndicator != null) {
+            value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
+        }
+        else {
+            value.add(KEY_EXPONENT_NAME, null);
+        }
+        return value;
     }
 }

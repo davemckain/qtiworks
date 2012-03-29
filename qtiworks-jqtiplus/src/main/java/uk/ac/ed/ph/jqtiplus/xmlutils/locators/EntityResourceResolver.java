@@ -93,7 +93,6 @@ public class EntityResourceResolver implements EntityResolver {
         return result;
     }
     
-    @SuppressWarnings("unused")
     public InputSource onMiss(String publicId, String systemId) {
         return null;
     }

@@ -55,7 +55,7 @@ public final class StringResponseData implements ResponseData, Serializable {
     }
     
     public StringResponseData(String singleResponse) {
-        this.responseData = responseData!=null ? new String[] { singleResponse } : StringUtilities.EMPTY_STRING_ARRAY;
+        this.responseData = singleResponse!=null ? new String[] { singleResponse } : StringUtilities.EMPTY_STRING_ARRAY;
     }
     
     @Override

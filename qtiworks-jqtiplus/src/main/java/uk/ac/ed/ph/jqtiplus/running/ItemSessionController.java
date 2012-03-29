@@ -263,6 +263,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     //-------------------------------------------------------------------
     // Response processing
 
+
     /**
      * Binds response variables for this assessmentItem, returning a List of response
      * variable identifiers for whom the given data could not be successfully bound.
@@ -280,6 +281,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public List<Identifier> bindResponses(Map<String, ResponseData> responseMap) {
         ConstraintUtilities.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
+        ensureInitialized();
         
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
@@ -324,6 +326,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      */
     public List<Identifier> validateResponses() {
         logger.debug("Validating responses");
+        ensureInitialized();
         final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
         for (final Interaction interaction : item.getItemBody().getInteractions()) {
             final Value responseValue = itemSessionState.getResponseValue(interaction);
@@ -342,6 +345,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      */
     public void processResponses() throws RuntimeValidationException {
         logger.debug("Response processing starting");
+        ensureInitialized();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* We always count the attempt, unless the response was to an endAttemptInteraction
@@ -565,6 +569,12 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     //-------------------------------------------------------------------
+    
+    private void ensureInitialized() {
+        if (!itemSessionState.isInitialized()) {
+            throw new IllegalStateException("Item session has not been initialized");
+        }
+    }
 
     private void fireLifecycleEvent(LifecycleEventType eventType) {
         if (jqtiExtensionManager!=null) {

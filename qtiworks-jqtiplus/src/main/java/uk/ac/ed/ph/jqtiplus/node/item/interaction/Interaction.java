@@ -44,8 +44,8 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -135,7 +135,7 @@ public abstract class Interaction extends BodyElement {
      * Initialize the interaction.
      * Subclasses should override this method as required.
      */
-    public void initialize(@SuppressWarnings("unused") ItemSessionController itemController) {
+    public void initialize(ItemSessionController itemController) {
         /* Let subclasses override as required */
     }
 
@@ -143,7 +143,7 @@ public abstract class Interaction extends BodyElement {
      * Given the user response to the interaction in the form of a
      * List of Strings, set the appropriate response variables.
      * <p>
-     * This default implementation calls up {@link #bindResponse(ResponseDeclaration, ResponseData)}
+     * This default implementation calls up {@link #parseResponse(ResponseDeclaration, ResponseData)}
      * and sets the value of the appropriate response declaration. You'll need to override this
      * for things that might do more, such as string interactions that might bind two variables.
      * <p>
@@ -157,12 +157,12 @@ public abstract class Interaction extends BodyElement {
             throws ResponseBindingException {
         ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
-        final Value value = bindResponse(responseDeclaration, responseData);
+        final Value value = parseResponse(responseDeclaration, responseData);
         itemController.getItemSessionState().setResponseValue(this, value);
     }
 
     /**
-     * Binds the raw user response to the interaction to an appropriate {@link Value}.
+     * Parses the raw user response to the interaction to an appropriate {@link Value}.
      * <p>
      * This default implementation is sufficient in many cases,
      * but may need overridden for certain types of Interactions.
@@ -176,7 +176,7 @@ public abstract class Interaction extends BodyElement {
      *             value encoded by the responseList
      */
     @SuppressWarnings("static-method")
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData)
+    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData)
             throws ResponseBindingException {
         Value value = null;
         BaseType responseBaseType = responseDeclaration.getBaseType();

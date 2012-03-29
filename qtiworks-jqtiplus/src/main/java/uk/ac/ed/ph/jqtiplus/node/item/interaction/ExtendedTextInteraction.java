@@ -44,8 +44,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -337,13 +337,13 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
-            final Value value = bindResponse(getStringIdentifierResponseDeclaration(), responseData);
+            final Value value = parseResponse(getStringIdentifierResponseDeclaration(), responseData);
             itemController.getItemSessionState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
         }
     }
 
     @Override
-    protected Value bindResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("extendedTextInteraction must be bound to string response data");
         }
@@ -362,7 +362,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 responseString = stringResponseData[0];
             }
 
-            result = TextEntryInteraction.bindRecordValueResponse(responseString, getBase());
+            result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
         }
         else if (responseBaseType.isInteger()) {
             if (responseCardinality.isList()) {
@@ -384,7 +384,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
             }
         }
         else {
-            result = super.bindResponse(responseDeclaration, responseData);
+            result = super.parseResponse(responseDeclaration, responseData);
         }
         return result;
     }

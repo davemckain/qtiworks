@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
 
-
 import java.io.InputStream;
 import java.net.URI;
 

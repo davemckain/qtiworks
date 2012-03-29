@@ -31,14 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.qti.node.item.interaction;
+package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.jqtiplus.control.AssessmentItemController;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.StringInteraction;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemState;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
@@ -82,7 +84,8 @@ public class TextEntryInteractionTest {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "TextEntryInteraction-basic.xml", "foo", new StringValue("foo"), null, true },
+        return Arrays.asList(new Object[][] {
+                { "TextEntryInteraction-basic.xml", "foo", new StringValue("foo"), null, true },
                 { "TextEntryInteraction-patternMask.xml", "foobarbob", new StringValue("foobarbob"), null, true },
                 { "TextEntryInteraction-patternMask.xml", "foobob", new StringValue("foobob"), null, false },
                 { "TextEntryInteraction-patternMask.xml", "foobobz", new StringValue("foobobz"), null, false },
@@ -95,21 +98,17 @@ public class TextEntryInteractionTest {
                         new StringValue("1.23e2"), true },
                 { "TextEntryInteraction-basic-record.xml", "1.23e-2", createRecordResult("1.23e-2", 0.0123, null, 1, 2, 4, 3, -2),
                         new StringValue("1.23e-2"), true },
-                { "TextEntryInteraction-basic-integer-radix.xml", "465", new IntegerValue(243), new StringValue("465"), true } });
+                { "TextEntryInteraction-basic-integer-radix.xml", "465", new IntegerValue(243), new StringValue("465"), true }
+        });
     }
 
     private static String RESPONSE_NAME = "response";
-
     private static String STRING_RESPONSE_NAME = "stringResponse";
-
+    
     private final String fileName;
-
     private final String stringResponse;
-
     private final Value expectedResponse;
-
     private final Value expectedStringResponse;
-
     private final boolean expectedValidates;
 
     public TextEntryInteractionTest(String fileName, String stringResponse, Value expectedResponse, Value expectedStringResponse, boolean expectedValidates) {
@@ -121,17 +120,17 @@ public class TextEntryInteractionTest {
     }
 
     @Test
-    public void test() {
-        final AssessmentItemController itemController = UnitTestHelper.loadItemForControl(fileName, TextEntryInteractionTest.class);
-        final AssessmentItemState itemState = itemController.getItemState();
+    public void test() throws Exception {
+        final ItemSessionController itemSessionController = UnitTestHelper.loadTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class);
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        itemSessionController.initialize();
 
-        final Map<String, List<String>> responses = new HashMap<String, List<String>>();
-        responses.put(RESPONSE_NAME, Arrays.asList(new String[] { stringResponse }));
-
-        itemController.setResponses(responses);
-
-        assertEquals(expectedResponse, itemState.getResponseValue(RESPONSE_NAME));
-        assertEquals(expectedStringResponse, itemState.getResponseValue(STRING_RESPONSE_NAME));
-        assertEquals(expectedValidates, itemController.validateResponses().size() == 0);
+        final Map<String, ResponseData> responses = new HashMap<String, ResponseData>();
+        responses.put(RESPONSE_NAME, new StringResponseData(stringResponse));
+        List<Identifier> badResponses = itemSessionController.bindResponses(responses);
+        assertEquals(0, badResponses.size());
+        assertEquals(expectedValidates, itemSessionController.validateResponses().size() == 0);
+        assertEquals(expectedResponse, itemSessionState.getResponseValue(new Identifier(RESPONSE_NAME)));
+        assertEquals(expectedStringResponse, itemSessionState.getResponseValue(new Identifier(STRING_RESPONSE_NAME)));
     }
 }

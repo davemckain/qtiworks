@@ -35,7 +35,7 @@ package org.qtitools.qti.attribute;
 
 import uk.ac.ed.ph.jqtiplus.control.AssessmentTestAttemptController;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelperOriginal;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationType;
 
 import java.util.Arrays;
@@ -71,7 +71,7 @@ public class AttributeRefuseTest {
 
     @Test(expected = QtiAttributeException.class)
     public void test() {
-        final AssessmentTestAttemptController testController = UnitTestHelper.loadTestForControl(fileName, AttributeRefuseTest.class);
+        final AssessmentTestAttemptController testController = UnitTestHelperOriginal.loadTestForControl(fileName, AttributeRefuseTest.class);
         final ValidationResult result = testController.validate();
 
         switch (validationType) {

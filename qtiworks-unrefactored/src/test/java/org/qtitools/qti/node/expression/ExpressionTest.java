@@ -33,12 +33,26 @@
  */
 package org.qtitools.qti.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationResult;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
-import org.w3c.dom.Node;
+import java.io.StringReader;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /**
  * Superclass for all expression tests.
@@ -71,20 +85,49 @@ public abstract class ExpressionTest {
      * Creates tested expression from given xml data.
      * 
      * @return tested expression from give xml data
+     * @throws Exception 
      */
-    protected Expression getExpression() {
+    protected Expression getExpression() throws Exception {
         if (expression == null) {
-            final Node node = AbstractNode.getElement(xml);
-            expression = ExpressionType.getInstance(null, node.getNodeName());
-            expression.load(node, jqtiController);
-
-            final ValidationResult result = expression.validate(context, this);
-
-            if (result.getErrors().size() > 0) {
-                throw result.getErrors().get(0).createException();
+            final Element element = readQtiXmlFragment(xml);
+            expression = ExpressionType.getInstance(null, element.getLocalName());
+            loadQtiModel(element, expression);
+        }
+        return expression;
+    }
+    
+    public static Element readQtiXmlFragment(String xmlFragment) throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(new InputSource(new StringReader(xmlFragment)));
+        return document.getDocumentElement();
+    }
+    
+    public static void loadQtiModel(Element element, XmlNode targetNode) {
+        targetNode.load(element, new TestLoadingContext());
+    }
+    
+    public static ItemProcessingContext createContextFreeItemProcessingContext() {
+        InvocationHandler invocationHandler = new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                throw new RuntimeException("Unexpected invocation: proxy=" + proxy + ",method=" + method + ",args=" + Arrays.asList(args));
             }
+        };
+        return (ItemProcessingContext) Proxy.newProxyInstance(ItemProcessingContext.class.getClassLoader(), new Class[] { ItemProcessingContext.class }, invocationHandler);
+    }
+    
+    public static class TestLoadingContext implements LoadingContext {
+        
+        @Override
+        public JqtiExtensionManager getJqtiExtensionManager() {
+            return null;
         }
 
-        return expression;
+        @Override
+        public void modelBuildingError(QtiModelException exception, Element element) {
+            throw(exception);
+        }
     }
 }

@@ -34,7 +34,7 @@
 package org.qtitools.qti.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelperOriginal;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,6 +66,6 @@ public class AttributeAcceptTest {
 
     @Test
     public void test() {
-        UnitTestHelper.loadUnitTestFile(fileName, AttributeAcceptTest.class, AssessmentTest.class);
+        UnitTestHelperOriginal.loadUnitTestFile(fileName, AttributeAcceptTest.class, AssessmentTest.class);
     }
 }
