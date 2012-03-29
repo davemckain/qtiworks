@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -96,7 +96,7 @@ public abstract class OutcomeConditionExpressionChild extends OutcomeConditionCh
     }
 
     @Override
-    public boolean evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {

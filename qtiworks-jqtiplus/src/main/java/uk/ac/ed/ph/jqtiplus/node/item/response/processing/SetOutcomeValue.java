@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -113,14 +112,13 @@ public class SetOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
-        ItemProcessingContext itemContext = (ItemProcessingContext) context;
+    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QtiEvaluationException("Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
-        itemContext.getItemSessionState().setOutcomeValue(declaration, value);
+        context.getItemSessionState().setOutcomeValue(declaration, value);
     }
 }

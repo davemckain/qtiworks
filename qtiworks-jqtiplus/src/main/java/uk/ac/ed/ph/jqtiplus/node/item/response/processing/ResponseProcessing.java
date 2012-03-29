@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.net.URI;
@@ -159,7 +159,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
      * 
      * @throws RuntimeValidationException
      */
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
         try {
             for (final ResponseRule responseRule : getResponseRules()) {
                 responseRule.evaluate(context);

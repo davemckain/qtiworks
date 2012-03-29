@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseIfGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +137,7 @@ public class ResponseCondition extends ResponseRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final ResponseConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

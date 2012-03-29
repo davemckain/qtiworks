@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -91,16 +90,15 @@ public class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
-        final ItemProcessingContext itemContext = (ItemProcessingContext) context;
+    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
-        final TemplateDeclaration declaration = itemContext.getSubjectItem().getTemplateDeclaration(getIdentifier());
+        final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QtiEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
-        itemContext.getItemSessionState().setVariableValue(declaration, value);
+        context.getItemSessionState().setVariableValue(declaration, value);
     }
 
     @Override

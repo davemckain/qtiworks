@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt.InterruptType;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * exitTemplate - stop template processing immediately.
@@ -55,7 +55,7 @@ public class ExitTemplate extends TemplateRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt {
+    public void evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt {
         throw new TemplateProcessingInterrupt(InterruptType.EXIT_TEMPLATE);
     }
 }

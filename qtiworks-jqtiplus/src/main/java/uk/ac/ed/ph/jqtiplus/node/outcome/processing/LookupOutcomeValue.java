@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -102,8 +101,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
-        TestProcessingContext testContext = (TestProcessingContext) context;
+    public void evaluate(TestProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {
@@ -112,7 +110,7 @@ public class LookupOutcomeValue extends ProcessOutcomeValue {
             }
             numberValue = (NumberValue) value;
         }
-        final OutcomeDeclaration declaration = testContext.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-        testContext.getTestSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
+        final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
+        context.getTestSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -84,16 +83,15 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
-        final ItemProcessingContext itemContext = (ItemProcessingContext) context;
 
-        final ResponseDeclaration declaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
+        final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (declaration == null) {
             throw new QtiEvaluationException("Cannot find " + ResponseDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
 
-        itemContext.getItemSessionState().setOverriddenCorrectResponseValue(declaration, value);
+        context.getItemSessionState().setOverriddenCorrectResponseValue(declaration, value);
     }
 
     @Override

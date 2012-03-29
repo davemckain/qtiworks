@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
  * Force processing to stop and the text to exit
@@ -54,7 +54,7 @@ public class ExitTest extends OutcomeRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QtiProcessingInterrupt {
+    public void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt {
         throw new QtiProcessingInterrupt();
     }
 }

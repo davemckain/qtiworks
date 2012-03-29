@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -92,8 +91,7 @@ public class OutcomeProcessing extends AbstractNode {
      * 
      * @throws RuntimeValidationException
      */
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
+    public void evaluate(TestProcessingContext context) throws RuntimeValidationException {
         try {
             for (final OutcomeRule outcomeRule : getOutcomeRules()) {
                 outcomeRule.evaluate(context);
@@ -101,7 +99,7 @@ public class OutcomeProcessing extends AbstractNode {
         }
         catch (final QtiProcessingInterrupt interrupt) {
             //stop the test by setting to finished
-            testContext.terminate();
+            context.terminate();
         }
     }
 }

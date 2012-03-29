@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -82,7 +82,7 @@ public abstract class TemplateConditionChild extends AbstractNode {
      * @return true
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
         for (final TemplateRule templateRule : getTemplateRules()) {
             templateRule.evaluate(context);
         }

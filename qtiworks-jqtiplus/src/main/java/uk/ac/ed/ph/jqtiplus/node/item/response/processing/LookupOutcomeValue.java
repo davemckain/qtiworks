@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -105,8 +104,7 @@ public class LookupOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws RuntimeValidationException {
-        ItemProcessingContext itemContext = (ItemProcessingContext) context;
+    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {
@@ -117,6 +115,6 @@ public class LookupOutcomeValue extends ProcessResponseValue {
         }
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-        itemContext.getItemSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
+        context.getItemSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
     }
 }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * The exit response rule terminates response processing immediately (for this invocation).
@@ -54,7 +54,7 @@ public class ExitResponse extends ResponseRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws QtiProcessingInterrupt {
+    public void evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt {
         throw new QtiProcessingInterrupt();
     }
 }

@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
  * Abstract parent of all outcome rules.
@@ -61,5 +61,5 @@ public abstract class OutcomeRule extends AbstractNode {
      * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public abstract void evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException;
+    public abstract void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException;
 }

@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +137,7 @@ public class TemplateCondition extends TemplateRule {
     }
 
     @Override
-    public void evaluate(ProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
         for (final TemplateConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

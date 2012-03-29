@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * Abstract parent of all template processing rules.
@@ -66,6 +66,6 @@ public abstract class TemplateProcessingRule extends AbstractNode {
      * @throws RuntimeValidationException
      * @throws TemplateProcessingInterrupt
      */
-    public abstract void evaluate(ProcessingContext context)
+    public abstract void evaluate(ItemProcessingContext context)
             throws TemplateProcessingInterrupt, RuntimeValidationException;
 }

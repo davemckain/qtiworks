@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -88,7 +88,7 @@ public abstract class OutcomeConditionChild extends AbstractNode {
      * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeRule outcomeRule : getOutcomeRules()) {
             outcomeRule.evaluate(context);
         }
