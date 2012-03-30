@@ -70,12 +70,12 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
     }
 
     @Override
-    protected String parseSingleValue(String value) {
+    protected String parseItemValue(String value) {
         return value;
     }
     
     @Override
-    protected String itemToString(String item) {
+    protected String itemToQtiString(String item) {
         return item;
     }
 }

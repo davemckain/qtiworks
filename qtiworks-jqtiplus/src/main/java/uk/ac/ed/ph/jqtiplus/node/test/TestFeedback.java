@@ -235,7 +235,7 @@ public class TestFeedback extends AbstractNode {
         final Value outcomeValue = testState.getOutcomeValue(getOutcomeIdentifier());
         if (outcomeValue != null && !outcomeValue.isNull() && outcomeValue.getBaseType().isIdentifier()) {
             if (outcomeValue.getCardinality() == Cardinality.SINGLE &&
-                    ((IdentifierValue) outcomeValue).stringValue().equals(getOutcomeValue())) {
+                    ((IdentifierValue) outcomeValue).toQtiString().equals(getOutcomeValue())) {
                 match = true;
             }
             if (outcomeValue.getCardinality() == Cardinality.MULTIPLE &&

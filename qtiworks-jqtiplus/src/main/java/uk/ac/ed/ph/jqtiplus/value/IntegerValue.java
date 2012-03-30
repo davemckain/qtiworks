@@ -117,7 +117,7 @@ public final class IntegerValue extends NumberValue {
     }
     
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return Integer.toString(intValue);
     }
 

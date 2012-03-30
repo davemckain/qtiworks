@@ -67,7 +67,7 @@ public class DateAttribute extends SingleAttribute<Date> {
     }
 
     @Override
-    protected Date parseValue(String value) {
+    protected Date parseQtiString(String value) {
         if (value == null || value.length() == 0) {
             throw new QtiParseException("Invalid datetime '" + value + "'. Length is not valid.");
         }
@@ -81,7 +81,7 @@ public class DateAttribute extends SingleAttribute<Date> {
     }
     
     @Override
-    protected String valueToString(Date value) {
+    protected String toQtiString(Date value) {
         return format.format(value);
     }
 }

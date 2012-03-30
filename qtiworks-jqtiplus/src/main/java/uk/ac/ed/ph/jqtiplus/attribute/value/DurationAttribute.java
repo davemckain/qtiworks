@@ -55,12 +55,12 @@ public class DurationAttribute extends SingleAttribute<Double> {
     }
 
     @Override
-    protected Double parseValue(String value) {
+    protected Double parseQtiString(String value) {
         return FloatValue.parseFloat(value);
     }
     
     @Override
-    protected String valueToString(Double value) {
+    protected String toQtiString(Double value) {
         return value.toString();
     }
 }

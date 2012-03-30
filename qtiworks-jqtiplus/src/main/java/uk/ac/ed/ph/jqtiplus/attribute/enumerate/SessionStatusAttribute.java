@@ -54,7 +54,7 @@ public final class SessionStatusAttribute extends SingleEnumerateAttribute<Sessi
     }
 
     @Override
-    protected SessionStatus parseValue(String value) {
+    protected SessionStatus parseQtiString(String value) {
         return SessionStatus.parseSessionStatus(value);
     }
 

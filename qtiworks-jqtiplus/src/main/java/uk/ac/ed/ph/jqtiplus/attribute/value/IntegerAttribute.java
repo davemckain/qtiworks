@@ -63,12 +63,12 @@ public class IntegerAttribute extends SingleAttribute<Integer> {
     }
 
     @Override
-    protected Integer parseValue(String value) {
+    protected Integer parseQtiString(String value) {
         return IntegerValue.parseInteger(value);
     }
     
     @Override
-    protected String valueToString(Integer value) {
+    protected String toQtiString(Integer value) {
         return value.toString();
     }
 }

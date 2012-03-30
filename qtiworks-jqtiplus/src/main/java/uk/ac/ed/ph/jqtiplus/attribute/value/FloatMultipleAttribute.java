@@ -61,12 +61,12 @@ public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
     }
 
     @Override
-    protected Double parseSingleValue(String value) {
+    protected Double parseItemValue(String value) {
         return FloatValue.parseFloat(value);
     }
     
     @Override
-    protected String itemToString(Double item) {
+    protected String itemToQtiString(Double item) {
         return item.toString();
     }
 }

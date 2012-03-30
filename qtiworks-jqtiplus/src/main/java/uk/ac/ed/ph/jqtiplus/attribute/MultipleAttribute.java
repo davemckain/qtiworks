@@ -105,7 +105,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     public final void load(Element owner, String stringValue, LoadingContext context) {
         if (stringValue != null) {
             try {
-                value = parseStringValue(stringValue);
+                value = parseQtiString(stringValue);
             }
             catch (final QtiParseException ex) {
                 value = null;
@@ -117,6 +117,16 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
         }
     }
 
+    @Override
+    protected final List<E> parseQtiString(String stringValue) {
+        final List<String> values = splitStringValue(stringValue);
+        final List<E> result = new ArrayList<E>(values.size());
+        for (final String string : values) {
+            result.add(parseItemValue(string));
+        }
+        return result;
+    }
+    
     /**
      * Splits multiple string value into single string values.
      * For example attr="1 2 3". Multiple value is "1 2 3" and result is list
@@ -137,31 +147,27 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
         return result;
     }
-    
-    private List<E> parseStringValue(String stringValue) {
-        final List<String> values = splitStringValue(stringValue);
-        final List<E> result = new ArrayList<E>(values.size());
-        for (final String string : values) {
-            result.add(parseSingleValue(string));
-        }
-        return result;
-    }
 
     /**
      * Parses value from given string.
      * 
-     * @param value string value
+     * @param itemValue string value
      * @return parsed value
      */
-    protected abstract E parseSingleValue(String value);
-
+    protected abstract E parseItemValue(String itemValue);
+    
     @Override
-    public final String valueToString() {
+    protected final String toQtiString(List<E> value) {
         return itemsToString(value);
     }
 
     @Override
-    public final String defaultValueToString() {
+    public final String valueToQtiString() {
+        return itemsToString(value);
+    }
+
+    @Override
+    public final String defaultValueToQtiString() {
         return itemsToString(defaultValue);
     }
 
@@ -175,7 +181,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
         final StringBuilder builder = new StringBuilder();
         if (value!=null) {
             for (int i = 0; i < value.size(); i++) {
-                builder.append(itemToString(value.get(i)));
+                builder.append(itemToQtiString(value.get(i)));
                 if (i < value.size() - 1) {
                     builder.append(FIELDS_SEPARATOR);
                 }
@@ -184,5 +190,5 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
         return builder.toString();
     }
     
-    protected abstract String itemToString(E item);
+    protected abstract String itemToQtiString(E item);
 }

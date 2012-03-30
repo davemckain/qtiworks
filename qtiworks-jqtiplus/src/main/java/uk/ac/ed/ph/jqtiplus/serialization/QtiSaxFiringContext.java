@@ -68,7 +68,7 @@ public final class QtiSaxFiringContext {
                 String namespaceUri = attribute.getNamespaceUri();
                 String qName = attributeNamespacePrefixMappings.getQName(namespaceUri, localName);
                 xmlAttributes.addAttribute(namespaceUri, localName, qName,
-                        "CDATA", attribute.valueToString());
+                        "CDATA", attribute.valueToQtiString());
             }
         }
 

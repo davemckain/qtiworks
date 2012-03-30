@@ -203,7 +203,7 @@ public class FieldValue extends AbstractNode {
 
     @Override
     protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
-        saxFiringContext.fireText(singleValue.stringValue());
+        saxFiringContext.fireText(singleValue.toQtiString());
     }
 
     @Override

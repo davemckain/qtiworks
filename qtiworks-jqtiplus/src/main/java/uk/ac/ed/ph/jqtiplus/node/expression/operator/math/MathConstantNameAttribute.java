@@ -50,7 +50,7 @@ public final class MathConstantNameAttribute extends SingleEnumerateAttribute<Ma
     }
 
     @Override
-    protected MathConstantTarget parseValue(String value) {
+    protected MathConstantTarget parseQtiString(String value) {
         return MathConstantTarget.parseConstant(value);
     }
 

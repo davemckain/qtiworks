@@ -108,7 +108,7 @@ public final class FloatValue extends NumberValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return Double.toString(doubleValue);
     }
 

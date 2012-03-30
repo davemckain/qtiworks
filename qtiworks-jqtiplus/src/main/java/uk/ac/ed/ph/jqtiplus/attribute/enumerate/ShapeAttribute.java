@@ -54,7 +54,7 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
     }
 
     @Override
-    protected Shape parseValue(String value) {
+    protected Shape parseQtiString(String value) {
         return Shape.parseShape(value);
     }
 

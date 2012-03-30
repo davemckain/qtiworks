@@ -58,7 +58,7 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
     }
     
     @Override
-    protected VisibilityMode parseValue(String value) {
+    protected VisibilityMode parseQtiString(String value) {
         return VisibilityMode.parseVisibilityMode(value);
     }
 

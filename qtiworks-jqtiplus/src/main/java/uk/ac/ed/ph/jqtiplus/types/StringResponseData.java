@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -44,7 +43,7 @@ import java.util.Arrays;
  *
  * @author David McKain
  */
-public final class StringResponseData implements ResponseData, Serializable {
+public final class StringResponseData implements ResponseData {
     
     private static final long serialVersionUID = -3969978393997321192L;
     

@@ -97,7 +97,7 @@ public class PatternMatch extends AbstractFunctionalExpression {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = ((StringValue) childValues[0]).stringValue().matches(getPattern());
+        final boolean result = ((StringValue) childValues[0]).toQtiString().matches(getPattern());
         return BooleanValue.valueOf(result);
     }
 }

@@ -52,7 +52,7 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnType> {
     }
 
     @Override
-    protected ReturnType parseValue(String value) {
+    protected ReturnType parseQtiString(String value) {
         return ReturnType.parseReturnType(value);
     }
 

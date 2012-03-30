@@ -58,7 +58,7 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
     }
 
     @Override
-    protected Orientation parseValue(String value) {
+    protected Orientation parseQtiString(String value) {
         return Orientation.parseOrientation(value);
     }
 

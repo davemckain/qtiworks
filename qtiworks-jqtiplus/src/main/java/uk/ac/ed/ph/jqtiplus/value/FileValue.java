@@ -117,7 +117,7 @@ public final class FileValue extends SingleValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return file.getPath();
     }
 }

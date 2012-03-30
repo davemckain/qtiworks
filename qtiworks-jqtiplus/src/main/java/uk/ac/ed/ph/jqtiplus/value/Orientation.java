@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +98,7 @@ public enum Orientation implements Stringifiable {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return orientation;
     }
 

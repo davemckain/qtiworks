@@ -58,7 +58,7 @@ public final class TableCellScopeAttribute extends SingleEnumerateAttribute<Tabl
     }
     
     @Override
-    protected TableCellScope parseValue(String value) {
+    protected TableCellScope parseQtiString(String value) {
         return TableCellScope.parseTableCellScope(value);
     }
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,7 +114,7 @@ enum StatsOperatorTarget implements Stringifiable {
     }
     
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return name;
     }
 

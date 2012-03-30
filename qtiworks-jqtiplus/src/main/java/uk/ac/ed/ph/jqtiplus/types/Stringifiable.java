@@ -31,15 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.value;
+package uk.ac.ed.ph.jqtiplus.types;
 
 /**
- * FIXME: Document this type
+ * Interface for something which can be converted to a QTI String,
+ * e.g. an enumerated attribute value
  *
  * @author David McKain
  */
 public interface Stringifiable {
     
-    String stringValue();
+    String toQtiString();
 
 }

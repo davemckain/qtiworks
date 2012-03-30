@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.HashMap;
@@ -184,7 +184,7 @@ public enum MathOperatorTarget implements Stringifiable {
     }
     
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return name;
     }
 

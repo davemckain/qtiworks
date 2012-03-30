@@ -54,7 +54,7 @@ public final class NavigationModeAttribute extends SingleEnumerateAttribute<Navi
     }
 
     @Override
-    protected NavigationMode parseValue(String value) {
+    protected NavigationMode parseQtiString(String value) {
         return NavigationMode.parseNavigationMode(value);
     }
 

@@ -93,7 +93,8 @@ public final class IdentifierValue extends SingleValue {
         return identifierValue.hashCode();
     }
 
-    public String stringValue() {
+    @Override
+    public String toQtiString() {
         return identifierValue.toString();
     }
 }

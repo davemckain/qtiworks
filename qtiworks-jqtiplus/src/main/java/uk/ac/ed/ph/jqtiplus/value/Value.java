@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
+
 import java.io.Serializable;
 
 /**
@@ -78,10 +80,11 @@ public interface Value extends Serializable, Stringifiable {
     boolean qtiEquals(Value other);
 
     /**
-     * Converts this value to a String. This is new in JQTI+;
-     * the original JQTI used {@link #toString()} for that.
+     * Converts this value to a QTI-meaningful String. 
+     * This is new in JQTI+; the original JQTI used {@link #toString()} for that.
      */
-    String stringValue();
+    @Override
+    String toQtiString();
 
     /**
      * In JQTI+, this returns a property dump of the Object, rather than

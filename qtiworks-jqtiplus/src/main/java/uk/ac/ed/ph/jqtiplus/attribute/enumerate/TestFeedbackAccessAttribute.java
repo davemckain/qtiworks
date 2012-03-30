@@ -58,7 +58,7 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
     }
 
     @Override
-    protected TestFeedbackAccess parseValue(String value) {
+    protected TestFeedbackAccess parseQtiString(String value) {
         return TestFeedbackAccess.parseTestFeedbackAccess(value);
     }
 

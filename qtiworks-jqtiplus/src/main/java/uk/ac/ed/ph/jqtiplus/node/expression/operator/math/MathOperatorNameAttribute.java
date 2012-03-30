@@ -50,7 +50,7 @@ public final class MathOperatorNameAttribute extends SingleEnumerateAttribute<Ma
     }
 
     @Override
-    protected MathOperatorTarget parseValue(String value) {
+    protected MathOperatorTarget parseQtiString(String value) {
         return MathOperatorTarget.parseOperation(value);
     }
 

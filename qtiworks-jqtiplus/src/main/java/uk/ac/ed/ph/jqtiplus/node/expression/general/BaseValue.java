@@ -84,7 +84,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     @Override
     public final String computeXPathComponent() {
         if (singleValue != null) {
-            return getClassTag() + "[.=\"" + escapeForXmlString(singleValue.stringValue(), true) + "\"]";
+            return getClassTag() + "[.=\"" + escapeForXmlString(singleValue.toQtiString(), true) + "\"]";
         }
         return super.computeXPathComponent();
     }
@@ -143,7 +143,7 @@ public class BaseValue extends AbstractFunctionalExpression {
 
     @Override
     protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
-        saxFiringContext.fireText(singleValue.stringValue());
+        saxFiringContext.fireText(singleValue.toQtiString());
     }
 
     @Override

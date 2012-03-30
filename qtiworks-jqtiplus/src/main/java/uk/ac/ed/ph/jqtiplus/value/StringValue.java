@@ -73,10 +73,11 @@ public final class StringValue extends SingleValue {
         return BaseType.STRING;
     }
 
-    public String stringValue() {
+    @Override
+    public String toQtiString() {
         return stringValue;
     }
-
+    
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof StringValue)) {

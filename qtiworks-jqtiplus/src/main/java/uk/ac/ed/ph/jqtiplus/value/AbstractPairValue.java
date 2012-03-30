@@ -141,7 +141,7 @@ public abstract class AbstractPairValue extends SingleValue {
     }
 
     @Override
-    public final String stringValue() {
+    public final String toQtiString() {
         return sourceValue + " " + destValue;
     }
 }

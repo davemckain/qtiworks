@@ -52,7 +52,7 @@ public class SyntaxTypeAttribute extends SingleEnumerateAttribute<SyntaxType> {
     }
 
     @Override
-    protected SyntaxType parseValue(String value) {
+    protected SyntaxType parseQtiString(String value) {
         return SyntaxType.parseSyntaxType(value);
     }
 

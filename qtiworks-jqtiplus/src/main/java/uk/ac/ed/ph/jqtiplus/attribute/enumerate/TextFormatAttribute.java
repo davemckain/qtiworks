@@ -58,7 +58,7 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
     }
 
     @Override
-    protected TextFormat parseValue(String value) {
+    protected TextFormat parseQtiString(String value) {
         return TextFormat.parseTextFormat(value);
     }
 

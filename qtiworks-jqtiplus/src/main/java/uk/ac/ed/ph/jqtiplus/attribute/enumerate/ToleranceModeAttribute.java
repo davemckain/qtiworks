@@ -54,7 +54,7 @@ public final class ToleranceModeAttribute extends SingleEnumerateAttribute<Toler
     }
 
     @Override
-    protected ToleranceMode parseValue(String value) {
+    protected ToleranceMode parseQtiString(String value) {
         return ToleranceMode.parseToleranceMode(value);
     }
 

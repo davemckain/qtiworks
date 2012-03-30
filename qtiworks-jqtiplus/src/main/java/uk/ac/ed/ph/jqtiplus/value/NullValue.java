@@ -84,7 +84,7 @@ public class NullValue extends AbstractValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return "NULL";
     }
 }

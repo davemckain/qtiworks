@@ -117,7 +117,7 @@ public final class DurationValue extends SingleValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return Double.toString(doubleValue);
     }
 }

@@ -35,9 +35,9 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -169,7 +169,7 @@ public enum RoundingMode implements Stringifiable {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return roundingMode;
     }
 

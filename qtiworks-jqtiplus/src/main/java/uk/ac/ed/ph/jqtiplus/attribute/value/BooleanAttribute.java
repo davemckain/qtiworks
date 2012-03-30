@@ -67,12 +67,12 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     }
 
     @Override
-    protected Boolean parseValue(String value) {
+    protected Boolean parseQtiString(String value) {
         return BooleanValue.parseBoolean(value);
     }
     
     @Override
-    protected String valueToString(Boolean value) {
+    protected String toQtiString(Boolean value) {
         return value.toString();
     }
 

@@ -138,6 +138,20 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + ",value=" + value
                 + ")";
     }
+    
+    /**
+     * Parses value from given QTI string.
+     * 
+     * @param value string value
+     * @return parsed value
+     */
+    protected abstract V parseQtiString(String value);
+    
+    /**
+     * Subclasses should implement to convert the given value to
+     * the String format used in the QTI information model
+     */
+    protected abstract String toQtiString(V value);
 
     @Override
     public void validate(ValidationContext context) {

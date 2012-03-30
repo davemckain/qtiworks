@@ -54,7 +54,7 @@ public final class RoundingModeAttribute extends SingleEnumerateAttribute<Roundi
     }
 
     @Override
-    protected RoundingMode parseValue(String value) {
+    protected RoundingMode parseQtiString(String value) {
         return RoundingMode.parseRoundingMode(value);
     }
 

@@ -52,7 +52,7 @@ public final class ActionTypeAttribute extends SingleEnumerateAttribute<ActionTy
     }
 
     @Override
-    protected ActionType parseValue(String value) {
+    protected ActionType parseQtiString(String value) {
         return ActionType.parseActionType(value);
     }
 

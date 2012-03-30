@@ -94,8 +94,8 @@ public class Substring extends AbstractFunctionalExpression {
             return NullValue.INSTANCE;
         }
 
-        String firstString = ((StringValue) childValues[0]).stringValue();
-        String secondString = ((StringValue) childValues[1]).stringValue();
+        String firstString = ((StringValue) childValues[0]).toQtiString();
+        String secondString = ((StringValue) childValues[1]).toQtiString();
 
         if (!getCaseSensitive()) {
             firstString = firstString.toLowerCase();

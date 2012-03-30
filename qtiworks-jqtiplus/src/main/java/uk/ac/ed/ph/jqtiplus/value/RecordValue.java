@@ -246,7 +246,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return container.toString();
     }
 }

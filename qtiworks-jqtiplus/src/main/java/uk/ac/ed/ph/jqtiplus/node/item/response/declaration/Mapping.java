@@ -260,7 +260,7 @@ public class Mapping extends AbstractNode {
             result = mapKey.equals(value);
         }
         else {
-            result = mapKey.stringValue().equalsIgnoreCase(value.stringValue());
+            result = mapKey.toQtiString().equalsIgnoreCase(value.toQtiString());
         }
         return result;
     }

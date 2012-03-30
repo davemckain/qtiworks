@@ -130,8 +130,8 @@ public class StringMatch extends AbstractFunctionalExpression {
             return NullValue.INSTANCE;
         }
 
-        String firstString = ((StringValue) childValues[0]).stringValue();
-        String secondString = ((StringValue) childValues[1]).stringValue();
+        String firstString = ((StringValue) childValues[0]).toQtiString();
+        String secondString = ((StringValue) childValues[1]).toQtiString();
 
         Boolean result = null;
 

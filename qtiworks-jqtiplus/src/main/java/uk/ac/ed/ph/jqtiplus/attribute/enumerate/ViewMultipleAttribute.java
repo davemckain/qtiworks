@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class ViewMultipleAttribute extends MultipleAttribute<View> {
+public final class ViewMultipleAttribute extends MultipleAttribute<View> {
 
     private static final long serialVersionUID = -2076945522660615196L;
 
@@ -61,22 +61,12 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> {
     }
 
     @Override
-    public List<View> getValueAsList() {
-        return super.getValueAsList();
-    }
-
-    @Override
-    public List<View> getDefaultValueAsList() {
-        return super.getDefaultValueAsList();
-    }
-
-    @Override
-    protected View parseSingleValue(String value) {
+    protected View parseItemValue(String value) {
         return View.parseView(value);
     }
     
     @Override
-    protected String itemToString(View item) {
-        return item.stringValue();
+    protected String itemToQtiString(View item) {
+        return item.toQtiString();
     }
 }

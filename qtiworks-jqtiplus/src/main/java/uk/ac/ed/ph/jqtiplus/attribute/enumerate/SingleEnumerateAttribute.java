@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 /**
  * Convenience partial implementation of {@link EnumerateAttribute} for
@@ -64,7 +64,8 @@ public abstract class SingleEnumerateAttribute<V extends Enum<V> & Stringifiable
         super(parent, localName, defaultValue, value, required);
     }
     
-    protected String valueToString(V value) {
-        return value.stringValue();
+    @Override
+    protected String toQtiString(V value) {
+        return value.toQtiString();
     }
 }

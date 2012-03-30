@@ -61,12 +61,12 @@ public class UriAttribute extends SingleAttribute<URI> {
     }
 
     @Override
-    protected URI parseValue(String value) {
+    protected URI parseQtiString(String value) {
         return UriValue.parseUri(value);
     }
     
     @Override
-    protected String valueToString(URI value) {
+    protected String toQtiString(URI value) {
         return value.toString();
     }
 }

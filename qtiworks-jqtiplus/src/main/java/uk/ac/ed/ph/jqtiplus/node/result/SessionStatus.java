@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public enum SessionStatus implements Stringifiable {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return sessionStatus;
     }
 

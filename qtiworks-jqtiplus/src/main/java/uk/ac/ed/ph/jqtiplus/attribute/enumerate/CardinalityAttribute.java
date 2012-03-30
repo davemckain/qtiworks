@@ -50,7 +50,7 @@ public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardina
     }
 
     @Override
-    protected Cardinality parseValue(String value) {
+    protected Cardinality parseQtiString(String value) {
         return Cardinality.parseCardinality(value);
     }
 

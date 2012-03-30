@@ -211,7 +211,7 @@ public final class ItemSessionState implements Serializable {
     
     public void setCompletionStatusValue(IdentifierValue value) {
         ConstraintUtilities.ensureNotNull(value);
-        String status = value.stringValue();
+        String status = value.toQtiString();
         if (!AssessmentItem.VALUE_ITEM_IS_UNKNOWN.equals(status)
                 && !AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED.equals(status)
                 && !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(status)
@@ -222,7 +222,7 @@ public final class ItemSessionState implements Serializable {
     }
     
     public String getCompletionStatus() {
-        return getCompletionStatusValue().stringValue();
+        return getCompletionStatusValue().toQtiString();
     }
     
     public void setCompletionStatus(String completionStatus) {

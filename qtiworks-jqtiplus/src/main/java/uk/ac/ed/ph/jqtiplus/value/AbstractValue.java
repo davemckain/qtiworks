@@ -53,6 +53,6 @@ public abstract class AbstractValue implements Value {
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "@" + hashCode()
-                + "(" + stringValue() + ")";
+                + "(" + toQtiString() + ")";
     }
 }

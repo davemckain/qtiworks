@@ -54,7 +54,7 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
     }
 
     @Override
-    protected SubmissionMode parseValue(String value) {
+    protected SubmissionMode parseQtiString(String value) {
         return SubmissionMode.parseSubmissionMode(value);
     }
 

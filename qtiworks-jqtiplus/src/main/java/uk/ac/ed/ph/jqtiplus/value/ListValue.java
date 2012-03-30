@@ -227,7 +227,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
     }
     
     @Override
-    public final String stringValue() {
+    public final String toQtiString() {
         return container.toString();
     }
 }

@@ -35,10 +35,10 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
-import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -366,7 +366,7 @@ public enum Shape implements Stringifiable {
     public abstract boolean isInside(int[] coords, PointValue point);
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return shape;
     }
 

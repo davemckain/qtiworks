@@ -51,12 +51,12 @@ public final class ForeignAttribute extends SingleAttribute<String> {
     }
 
     @Override
-    protected String parseValue(String value) {
+    protected String parseQtiString(String value) {
         return value;
     }
     
     @Override
-    protected String valueToString(String value) {
+    protected String toQtiString(String value) {
         return value;
     }
 }

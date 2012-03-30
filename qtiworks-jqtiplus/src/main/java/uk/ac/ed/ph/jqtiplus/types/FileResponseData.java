@@ -34,14 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.types;
 
 import java.io.File;
-import java.io.Serializable;
 
 /**
  * Encapsulates file-based response data
  *
  * @author David McKain
  */
-public final class FileResponseData implements ResponseData, Serializable {
+public final class FileResponseData implements ResponseData {
     
     private static final long serialVersionUID = -7780168487104250697L;
     

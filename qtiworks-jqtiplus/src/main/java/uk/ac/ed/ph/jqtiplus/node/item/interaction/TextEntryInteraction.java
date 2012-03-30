@@ -228,7 +228,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     @Override
     public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
         if (getPatternMask() != null) {
-            if (!responseValue.stringValue().matches(getPatternMask())) {
+            if (!responseValue.toQtiString().matches(getPatternMask())) {
                 return false;
             }
         }

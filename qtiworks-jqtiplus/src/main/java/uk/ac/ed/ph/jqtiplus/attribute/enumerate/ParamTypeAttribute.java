@@ -54,7 +54,7 @@ public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType
     }
 
     @Override
-    protected ParamType parseValue(String value) {
+    protected ParamType parseQtiString(String value) {
         return ParamType.parseParamType(value);
     }
 

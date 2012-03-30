@@ -55,12 +55,12 @@ public class VariableReferenceIdentifierAttribute extends SingleAttribute<Variab
     }
 
     @Override
-    protected VariableReferenceIdentifier parseValue(String value) {
+    protected VariableReferenceIdentifier parseQtiString(String value) {
         return new VariableReferenceIdentifier(value);
     }
     
     @Override
-    protected String valueToString(VariableReferenceIdentifier value) {
+    protected String toQtiString(VariableReferenceIdentifier value) {
         return value.toString();
     }
 }

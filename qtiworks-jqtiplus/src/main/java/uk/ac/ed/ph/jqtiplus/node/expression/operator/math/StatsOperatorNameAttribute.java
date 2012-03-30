@@ -50,7 +50,7 @@ public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<S
     }
 
     @Override
-    protected StatsOperatorTarget parseValue(String value) {
+    protected StatsOperatorTarget parseQtiString(String value) {
         return StatsOperatorTarget.parseOperation(value);
     }
 

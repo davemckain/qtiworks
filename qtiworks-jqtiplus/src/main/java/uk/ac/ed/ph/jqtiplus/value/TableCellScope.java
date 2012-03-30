@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,7 +130,7 @@ public enum TableCellScope implements Stringifiable {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return tableCellScope;
     }
 

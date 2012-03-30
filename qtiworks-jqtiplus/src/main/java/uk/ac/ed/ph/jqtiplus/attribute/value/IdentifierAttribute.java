@@ -63,12 +63,12 @@ public class IdentifierAttribute extends SingleAttribute<Identifier> {
     }
 
     @Override
-    protected Identifier parseValue(String value) {
+    protected Identifier parseQtiString(String value) {
         return new Identifier(value);
     }
     
     @Override
-    protected String valueToString(Identifier value) {
+    protected String toQtiString(Identifier value) {
         return value.toString();
     }
 }

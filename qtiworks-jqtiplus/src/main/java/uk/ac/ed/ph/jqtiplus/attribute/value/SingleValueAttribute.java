@@ -87,13 +87,13 @@ public class SingleValueAttribute extends SingleAttribute<SingleValue> {
     }
 
     @Override
-    protected SingleValue parseValue(String value) {
+    protected SingleValue parseQtiString(String value) {
         return baseType.parseSingleValue(value);
     }
     
     @Override
-    protected String valueToString(SingleValue value) {
-        return value.stringValue();
+    protected String toQtiString(SingleValue value) {
+        return value.toQtiString();
     }
 
     @Override

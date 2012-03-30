@@ -116,7 +116,7 @@ public final class BooleanValue extends SingleValue {
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return Boolean.toString(booleanValue);
     }
 

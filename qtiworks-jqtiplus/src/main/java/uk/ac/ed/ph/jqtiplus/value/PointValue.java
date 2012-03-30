@@ -135,11 +135,11 @@ public final class PointValue extends SingleValue {
 
     @Override
     public int hashCode() {
-        return stringValue().hashCode();
+        return toQtiString().hashCode();
     }
 
     @Override
-    public String stringValue() {
+    public String toQtiString() {
         return horizontalValue + " " + verticalValue;
     }
 }

@@ -102,7 +102,7 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
     public final void load(Element owner, String value, LoadingContext context) {
         if (value != null) {
             try {
-                this.value = parseValue(value);
+                this.value = parseQtiString(value);
             }
             catch (final QtiParseException ex) {
                 this.value = null;
@@ -114,23 +114,14 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
         }
     }
 
-    /**
-     * Parses value from given string.
-     * 
-     * @param value string value
-     * @return parsed value
-     */
-    protected abstract V parseValue(String value);
-
     @Override
-    public final String valueToString() {
-        return value != null ? valueToString(value) : "";
+    public final String valueToQtiString() {
+        return value != null ? toQtiString(value) : "";
     }
 
     @Override
-    public final String defaultValueToString() {
-        return defaultValue != null ? valueToString(defaultValue) : "";
+    public final String defaultValueToQtiString() {
+        return defaultValue != null ? toQtiString(defaultValue) : "";
     }
-    
-    protected abstract String valueToString(V value);
+
 }

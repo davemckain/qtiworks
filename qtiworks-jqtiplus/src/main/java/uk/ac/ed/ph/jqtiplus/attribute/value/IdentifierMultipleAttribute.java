@@ -61,12 +61,12 @@ public class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
     }
 
     @Override
-    protected Identifier parseSingleValue(String value) {
+    protected Identifier parseItemValue(String value) {
         return new Identifier(value);
     }
     
     @Override
-    protected String itemToString(Identifier item) {
+    protected String itemToQtiString(Identifier item) {
         return item.toString();
     }
 }

@@ -137,14 +137,14 @@ public interface Attribute<V> extends Validatable {
      * @param value source string
      */
     void load(Element owner, String value, LoadingContext context);
-
+    
     /**
      * Converts this Attribute's value to the String form used in
      * the QTI information model.
      * 
      * @return attribute's value converted to string
      */
-    String valueToString();
+    String valueToQtiString();
 
     /**
      * Converts this Attribute's defaultValue to the String form used in
@@ -152,5 +152,5 @@ public interface Attribute<V> extends Validatable {
      * 
      * @return attribute's defaultValue converted to string
      */
-    String defaultValueToString();
+    String defaultValueToQtiString();
 }

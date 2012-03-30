@@ -148,7 +148,7 @@ public final class XsltParamBuilder {
                 v.setAttribute("fileName", fileValue.getFileName());
             }
             else {
-                v.setTextContent(value.stringValue());
+                v.setTextContent(value.toQtiString());
             }
             element.appendChild(v);
         }
@@ -156,7 +156,7 @@ public final class XsltParamBuilder {
             OrderedValue orderedValue = (OrderedValue) value;
             for (int i=0; i<orderedValue.size(); i++) {
                 Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                v.setTextContent(((ListValue)value).get(i).stringValue());
+                v.setTextContent(((ListValue)value).get(i).toQtiString());
                 element.appendChild(v);                        
             }
         }
@@ -165,7 +165,7 @@ public final class XsltParamBuilder {
             ListValue listValue = (ListValue) value;
             for (int i=0; i<listValue.size(); i++) {
                 Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                v.setTextContent(listValue.get(i).stringValue());
+                v.setTextContent(listValue.get(i).toQtiString());
                 element.appendChild(v);                        
             }
         }

@@ -55,7 +55,7 @@ public final class LongAttribute extends SingleAttribute<Long> {
     }
 
     @Override
-    protected Long parseValue(String value) {
+    protected Long parseQtiString(String value) {
         if (value == null || value.length() == 0) {
             throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
         }
@@ -79,7 +79,7 @@ public final class LongAttribute extends SingleAttribute<Long> {
     }
     
     @Override
-    protected String valueToString(Long value) {
+    protected String toQtiString(Long value) {
         return value.toString();
     }
 }
