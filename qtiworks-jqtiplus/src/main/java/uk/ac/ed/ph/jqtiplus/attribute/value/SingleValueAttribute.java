@@ -90,6 +90,11 @@ public class SingleValueAttribute extends SingleAttribute<SingleValue> {
     protected SingleValue parseValue(String value) {
         return baseType.parseSingleValue(value);
     }
+    
+    @Override
+    protected String valueToString(SingleValue value) {
+        return value.stringValue();
+    }
 
     @Override
     public void validate(ValidationContext context) {

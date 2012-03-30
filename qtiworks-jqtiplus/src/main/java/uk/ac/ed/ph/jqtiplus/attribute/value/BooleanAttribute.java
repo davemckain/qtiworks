@@ -70,6 +70,11 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     protected Boolean parseValue(String value) {
         return BooleanValue.parseBoolean(value);
     }
+    
+    @Override
+    protected String valueToString(Boolean value) {
+        return value.toString();
+    }
 
     /**
      * Gets all supported values of this attribute.

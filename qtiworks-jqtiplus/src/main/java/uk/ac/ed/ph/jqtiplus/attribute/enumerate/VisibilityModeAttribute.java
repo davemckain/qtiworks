@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
  * 
  * @author Jiri Kajaba
  */
-public class VisibilityModeAttribute extends SingleAttribute<VisibilityMode> implements EnumerateAttribute<VisibilityMode> {
+public final class VisibilityModeAttribute extends SingleEnumerateAttribute<VisibilityMode> {
 
     private static final long serialVersionUID = 6524337813805169272L;
 

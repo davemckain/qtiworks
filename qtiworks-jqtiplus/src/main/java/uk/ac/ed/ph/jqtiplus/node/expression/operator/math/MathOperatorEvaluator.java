@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Trivial little interface for evaluating each operator supported by {@link MathOperator}.
  * 
  * @author David McKain
- * @revision $Revision: 2642 $
  */
 interface MathOperatorEvaluator {
 

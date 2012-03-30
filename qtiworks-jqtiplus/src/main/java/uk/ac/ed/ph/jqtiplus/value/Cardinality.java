@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum Cardinality {
+public enum Cardinality implements Stringifiable {
     /**
      * One single value.
      */
@@ -141,7 +141,7 @@ public enum Cardinality {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return cardinality;
     }
 

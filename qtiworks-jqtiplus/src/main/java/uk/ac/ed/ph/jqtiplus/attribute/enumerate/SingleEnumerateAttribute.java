@@ -31,55 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.attribute.value;
+package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
+import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 /**
- * Attribute with long value.
+ * Convenience partial implementation of {@link EnumerateAttribute} for
+ * enums that follow our {@link Stringifiable} convention.
  * 
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class LongAttribute extends SingleAttribute<Long> {
+public abstract class SingleEnumerateAttribute<V extends Enum<V> & Stringifiable> extends SingleAttribute<V> implements EnumerateAttribute<V> {
 
-    private static final long serialVersionUID = 1138880928751132617L;
-
-    public LongAttribute(XmlNode parent, String localName) {
+    private static final long serialVersionUID = -3379931153392373791L;
+    
+    public SingleEnumerateAttribute(XmlNode parent, String localName) {
         super(parent, localName);
     }
 
-    public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
+    public SingleEnumerateAttribute(XmlNode parent, String localName, String namespaceUri) {
+        super(parent, localName, namespaceUri);
+    }
+
+    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue) {
         super(parent, localName, defaultValue);
     }
 
-    @Override
-    protected Long parseValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
-        }
-
-        final String originalValue = value;
-
-        // Removes + sign because of Long.parseLong cannot handle it.
-        if (value.startsWith("+")) {
-            value = value.substring(1);
-            if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QtiParseException("Invalid long '" + originalValue + "'.");
-            }
-        }
-
-        try {
-            return Long.parseLong(value);
-        }
-        catch (final NumberFormatException ex) {
-            throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
-        }
+    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue, V value, boolean required) {
+        super(parent, localName, defaultValue, value, required);
     }
     
-    @Override
-    protected String valueToString(Long value) {
-        return value.toString();
+    protected String valueToString(V value) {
+        return value.stringValue();
     }
 }

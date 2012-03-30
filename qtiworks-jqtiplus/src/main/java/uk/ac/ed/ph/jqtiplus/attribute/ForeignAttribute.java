@@ -54,4 +54,9 @@ public final class ForeignAttribute extends SingleAttribute<String> {
     protected String parseValue(String value) {
         return value;
     }
+    
+    @Override
+    protected String valueToString(String value) {
+        return value;
+    }
 }

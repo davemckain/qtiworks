@@ -35,8 +35,9 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import java.util.Map;
  * @see EqualRounded
  * @author Jiri Kajaba
  */
-public enum RoundingMode {
+public enum RoundingMode implements Stringifiable {
     /**
      * Number is rounded to A given number of significant figures.
      */
@@ -168,7 +169,7 @@ public enum RoundingMode {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return roundingMode;
     }
 

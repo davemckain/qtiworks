@@ -51,7 +51,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
  * @author Jiri Kajaba
  */
-public class PointValue extends SingleValue {
+public final class PointValue extends SingleValue {
 
     private static final long serialVersionUID = -4496855150070341627L;
 
@@ -124,22 +124,22 @@ public class PointValue extends SingleValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof PointValue)) {
             return false;
         }
 
-        final PointValue value = (PointValue) object;
-
-        return horizontalValue == value.horizontalValue && verticalValue == value.verticalValue;
+        final PointValue other = (PointValue) object;
+        return horizontalValue == other.horizontalValue 
+                && verticalValue == other.verticalValue;
     }
 
     @Override
     public int hashCode() {
-        return horizontalValue + verticalValue;
+        return stringValue().hashCode();
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return horizontalValue + " " + verticalValue;
     }
 }

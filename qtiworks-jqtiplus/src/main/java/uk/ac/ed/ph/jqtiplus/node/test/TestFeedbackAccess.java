@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,8 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum TestFeedbackAccess {
+public enum TestFeedbackAccess implements Stringifiable {
+    
     /** Feedback is shown during test/testPart. */
     DURING("during"),
 
@@ -73,7 +75,7 @@ public enum TestFeedbackAccess {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return testFeedbackAccess;
     }
 

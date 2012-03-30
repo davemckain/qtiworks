@@ -66,4 +66,9 @@ public class IdentifierAttribute extends SingleAttribute<Identifier> {
     protected Identifier parseValue(String value) {
         return new Identifier(value);
     }
+    
+    @Override
+    protected String valueToString(Identifier value) {
+        return value.toString();
+    }
 }

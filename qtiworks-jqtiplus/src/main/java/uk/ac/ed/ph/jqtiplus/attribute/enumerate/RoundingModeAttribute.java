@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RoundingMode;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.RoundingMode;
  * 
  * @author Jiri Kajaba
  */
-public class RoundingModeAttribute extends SingleAttribute<RoundingMode> implements EnumerateAttribute<RoundingMode> {
+public final class RoundingModeAttribute extends SingleEnumerateAttribute<RoundingMode> {
 
     private static final long serialVersionUID = 7527369761752182141L;
 

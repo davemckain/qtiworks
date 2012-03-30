@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.Orientation;
  * 
  * @author Jiri Kajaba
  */
-public class OrientationAttribute extends SingleAttribute<Orientation> implements EnumerateAttribute<Orientation> {
+public final class OrientationAttribute extends SingleEnumerateAttribute<Orientation> {
 
     private static final long serialVersionUID = 5170134258927740739L;
 

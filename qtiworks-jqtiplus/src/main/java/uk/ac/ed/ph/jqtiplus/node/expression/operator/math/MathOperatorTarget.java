@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.HashMap;
@@ -44,9 +45,8 @@ import java.util.Map;
  * Enumerates all of the operations supported by the <tt>mathOperator</tt> operator
  * 
  * @author David McKain
- * @revision $Revision: 2642 $
  */
-enum MathOperatorTarget {
+public enum MathOperatorTarget implements Stringifiable {
 
     SIN("sin", 1, new ReflectionEvaluator("sin")),
     COS("cos", 1, new ReflectionEvaluator("cos")),
@@ -184,7 +184,7 @@ enum MathOperatorTarget {
     }
     
     @Override
-    public String toString() {
+    public String stringValue() {
         return name;
     }
 

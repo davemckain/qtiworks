@@ -191,7 +191,7 @@ public final class CasTypeGlue {
             return false;
         }
         final SingleValue testValue = ((RecordValue) value).get(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER);
-        return testValue != null && testValue.toString().equals(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE);
+        return testValue != null && testValue.stringValue().equals(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE);
     }
 
     public static ValueWrapper convertFromJQTI(Value value) {
@@ -295,19 +295,19 @@ public final class CasTypeGlue {
     public static MathsContentValueWrapper convertFromJQTI(RecordValue value) {
         final MathsContentInputValueWrapper wrapper = new MathsContentInputValueWrapper();
         if (value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) != null) {
-            wrapper.setMaximaInput(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).toString());
+            wrapper.setMaximaInput(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).stringValue());
         }
         if (value.get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER) != null) {
-            wrapper.setPMathML(value.get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER).toString());
+            wrapper.setPMathML(value.get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER).stringValue());
         }
         if (value.get(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER) != null) {
-            wrapper.setPMathMLBracketed(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).toString());
+            wrapper.setPMathMLBracketed(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).stringValue());
         }
         if (value.get(MathAssessConstants.FIELD_CMATHML_IDENTIFIER) != null) {
-            wrapper.setCMathML(value.get(MathAssessConstants.FIELD_CMATHML_IDENTIFIER).toString());
+            wrapper.setCMathML(value.get(MathAssessConstants.FIELD_CMATHML_IDENTIFIER).stringValue());
         }
         if (value.get(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER) != null) {
-            wrapper.setAsciiMathInput(value.get(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER).toString());
+            wrapper.setAsciiMathInput(value.get(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER).stringValue());
         }
         return wrapper;
     }

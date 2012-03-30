@@ -59,7 +59,8 @@ import java.util.Map;
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  * @author Jiri Kajaba
  */
-public enum BaseType {
+public enum BaseType implements Stringifiable {
+    
     /**
      * Identifier baseType.
      * 
@@ -341,9 +342,9 @@ public enum BaseType {
      * @throws QtiParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
      */
     public abstract SingleValue parseSingleValue(String singleValue);
-
+    
     @Override
-    public String toString() {
+    public String stringValue() {
         return baseType;
     }
 
@@ -356,7 +357,6 @@ public enum BaseType {
      */
     public static BaseType parseBaseType(String baseType) {
         final BaseType result = baseTypes.get(baseType);
-
         if (result == null) {
             throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
         }

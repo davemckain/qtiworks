@@ -157,12 +157,12 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
     @Override
     public final String valueToString() {
-        return valueToXmlString(value);
+        return itemsToString(value);
     }
 
     @Override
     public final String defaultValueToString() {
-        return valueToXmlString(defaultValue);
+        return itemsToString(defaultValue);
     }
 
     /**
@@ -171,11 +171,11 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      * @param value single values
      * @return multiple string value
      */
-    private String valueToXmlString(List<E> value) {
+    private String itemsToString(List<E> value) {
         final StringBuilder builder = new StringBuilder();
         if (value!=null) {
             for (int i = 0; i < value.size(); i++) {
-                builder.append(value.get(i));
+                builder.append(itemToString(value.get(i)));
                 if (i < value.size() - 1) {
                     builder.append(FIELDS_SEPARATOR);
                 }
@@ -183,4 +183,6 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
         }
         return builder.toString();
     }
+    
+    protected abstract String itemToString(E item);
 }

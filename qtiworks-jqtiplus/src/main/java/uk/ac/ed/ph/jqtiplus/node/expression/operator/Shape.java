@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -49,7 +50,8 @@ import java.util.Map;
  * @see Inside
  * @author Jiri Kajaba
  */
-public enum Shape {
+public enum Shape implements Stringifiable {
+    
     /**
      * The default shape refers to the entire area of the associated image.
      */
@@ -364,7 +366,7 @@ public enum Shape {
     public abstract boolean isInside(int[] coords, PointValue point);
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return shape;
     }
 

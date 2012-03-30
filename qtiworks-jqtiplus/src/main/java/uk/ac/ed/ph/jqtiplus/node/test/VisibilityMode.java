@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,8 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum VisibilityMode {
+public enum VisibilityMode implements Stringifiable {
+    
     /** Feedback is shown only if outcome variable matches the value of identifier attribute. */
     SHOW_IF_MATCH("show"),
 
@@ -78,7 +80,7 @@ public enum VisibilityMode {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return visibilityMode;
     }
 

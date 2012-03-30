@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Implementation of the <tt>mathConstant</tt> operator.
  * 
  * @author David McKain
- * @revision $Revision: 2652 $
  */
 public class MathConstant extends AbstractExpression {
 

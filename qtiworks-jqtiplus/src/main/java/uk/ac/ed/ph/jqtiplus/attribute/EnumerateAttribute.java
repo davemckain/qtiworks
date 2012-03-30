@@ -50,10 +50,4 @@ public interface EnumerateAttribute<V> extends Attribute<V> {
      */
     V[] getSupportedValues();
 
-    /**
-     * By convention from JQTI, this MUST return the String form
-     * of the attribute as it is used in the QTI XML.
-     */
-    @Override
-    String toString();
 }

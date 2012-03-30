@@ -33,8 +33,7 @@
  */
 package org.qtitools.mathassess.attribute;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.type.SyntaxType;
@@ -44,7 +43,7 @@ import org.qtitools.mathassess.type.SyntaxType;
  * 
  * @author Jonathon Hare
  */
-public class SyntaxTypeAttribute extends SingleAttribute<SyntaxType> implements EnumerateAttribute<SyntaxType> {
+public class SyntaxTypeAttribute extends SingleEnumerateAttribute<SyntaxType> {
 
     private static final long serialVersionUID = 8834496656714809174L;
 

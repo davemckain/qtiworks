@@ -79,14 +79,9 @@ public class DateAttribute extends SingleAttribute<Date> {
             throw new QtiParseException("Invalid datetime '" + value + "'.", ex);
         }
     }
-
+    
     @Override
-    public String valueToString() {
-        return getComputedValue() != null ? format.format(getComputedValue()) : "";
-    }
-
-    @Override
-    public String defaultValueToString() {
-        return getDefaultValue() != null ? format.format(getDefaultValue()) : "";
+    protected String valueToString(Date value) {
+        return format.format(value);
     }
 }

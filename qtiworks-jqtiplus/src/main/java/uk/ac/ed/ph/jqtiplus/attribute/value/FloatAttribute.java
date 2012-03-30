@@ -62,4 +62,9 @@ public class FloatAttribute extends SingleAttribute<Double> {
     protected Double parseValue(String value) {
         return FloatValue.parseFloat(value);
     }
+    
+    @Override
+    protected String valueToString(Double value) {
+        return value.toString();
+    }
 }

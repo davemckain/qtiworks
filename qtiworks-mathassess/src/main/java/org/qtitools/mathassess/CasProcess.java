@@ -134,7 +134,7 @@ public class CasProcess extends MathAssessOperator {
     @Override
     protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
         final boolean simplify = getSimplify().booleanValue();
-        final String code = childValues[0].toString().trim();
+        final String code = childValues[0].stringValue().trim();
 
         logger.info("Performing casProcess: code={}, simplify={}", code, simplify);
 

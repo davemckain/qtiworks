@@ -67,17 +67,12 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     }
 
     @Override
-    public List<Integer> getValueAsList() {
-        return super.getValueAsList();
-    }
-
-    @Override
-    public List<Integer> getDefaultValueAsList() {
-        return super.getDefaultValueAsList();
-    }
-
-    @Override
     protected Integer parseSingleValue(String value) {
         return IntegerValue.parseInteger(value);
+    }
+    
+    @Override
+    protected String itemToString(Integer item) {
+        return item.toString();
     }
 }

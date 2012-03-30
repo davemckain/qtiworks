@@ -102,7 +102,6 @@ public class Match extends AbstractFunctionalExpression {
 
         final Value firstValue = childValues[0];
         final Value secondValue = childValues[1];
-
-        return BooleanValue.valueOf(firstValue.equals(secondValue));
+        return BooleanValue.valueOf(firstValue.qtiEquals(secondValue));
     }
 }

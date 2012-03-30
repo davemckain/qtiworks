@@ -52,7 +52,7 @@ import java.util.TreeMap;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class RecordValue implements MultiValue {
+public final class RecordValue extends AbstractValue implements MultiValue {
 
     private static final long serialVersionUID = -8055629924489632630L;
 
@@ -232,34 +232,21 @@ public class RecordValue implements MultiValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null) {
+        if (!(object instanceof RecordValue)) {
             return false;
         }
 
-        if (isNull() && object instanceof Value && ((Value) object).isNull()) {
-            return true;
-        }
-
-        if (!getClass().equals(object.getClass())) {
-            return false;
-        }
-
-        final RecordValue value = (RecordValue) object;
-
-        return container.equals(value.container);
+        final RecordValue other = (RecordValue) object;
+        return container.equals(other.container);
     }
 
     @Override
     public int hashCode() {
-        if (isNull()) {
-            return 0;
-        }
-
         return container.hashCode();
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return container.toString();
     }
 }

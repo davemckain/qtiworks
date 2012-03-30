@@ -52,7 +52,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  * @author Jiri Kajaba
  */
-public class PairValue extends AbstractPairValue {
+public final class PairValue extends AbstractPairValue {
 
     private static final long serialVersionUID = -9157898996344626699L;
 
@@ -92,19 +92,12 @@ public class PairValue extends AbstractPairValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof PairValue)) {
             return false;
         }
 
-        final PairValue value = (PairValue) object;
-
-        return sourceValue.equals(value.sourceValue) && destValue.equals(value.destValue) ||
-                sourceValue.equals(value.destValue) && destValue.equals(value.sourceValue);
-    }
-
-    @Override
-    public int hashCode() {
-        /* (Slightly artificial implementation has to reflect non-directional nature of this value) */
-        return sourceValue.hashCode() + destValue.hashCode();
+        final PairValue other = (PairValue) object;
+        return sourceValue.equals(other.sourceValue) && destValue.equals(other.destValue) ||
+                sourceValue.equals(other.destValue) && destValue.equals(other.sourceValue);
     }
 }

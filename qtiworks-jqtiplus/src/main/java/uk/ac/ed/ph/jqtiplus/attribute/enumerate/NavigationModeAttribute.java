@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
  * 
  * @author Jiri Kajaba
  */
-public class NavigationModeAttribute extends SingleAttribute<NavigationMode> implements EnumerateAttribute<NavigationMode> {
+public final class NavigationModeAttribute extends SingleEnumerateAttribute<NavigationMode> {
 
     private static final long serialVersionUID = -8896482192798423143L;
 

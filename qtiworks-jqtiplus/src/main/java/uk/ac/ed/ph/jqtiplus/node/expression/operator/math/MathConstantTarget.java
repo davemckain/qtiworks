@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,9 +43,8 @@ import java.util.Map;
  * Enumerates all of the constants supported by the <tt>mathConstant</tt> operator.
  * 
  * @author David McKain
- * @revision $Revision: 2642 $
  */
-enum MathConstantTarget {
+enum MathConstantTarget implements Stringifiable {
 
     PI("pi", Math.PI),
     E("e", Math.E),
@@ -76,7 +76,7 @@ enum MathConstantTarget {
     }
     
     @Override
-    public String toString() {
+    public String stringValue() {
         return name;
     }
 

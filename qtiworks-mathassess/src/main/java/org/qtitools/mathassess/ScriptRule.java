@@ -111,7 +111,7 @@ public final class ScriptRule extends MathAssessOperator {
             throws MaximaTimeoutException, MathsContentTooComplexException {
         final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
-        final String code = childValues[0].toString().trim();
+        final String code = childValues[0].stringValue().trim();
         final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();
         final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         final boolean simplify = getSimplify().booleanValue();

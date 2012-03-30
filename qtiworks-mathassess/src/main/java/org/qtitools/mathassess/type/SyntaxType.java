@@ -34,12 +34,18 @@
 package org.qtitools.mathassess.type;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-public enum SyntaxType {
+/**
+ * Enumerates the values of the syntax attribute
+ *
+ * @author David McKain
+ */
+public enum SyntaxType implements Stringifiable {
+    
     MAXIMA("text/x-maxima");
 
     /** Name of this class in xml schema. */
@@ -73,7 +79,7 @@ public enum SyntaxType {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return syntaxType;
     }
 }

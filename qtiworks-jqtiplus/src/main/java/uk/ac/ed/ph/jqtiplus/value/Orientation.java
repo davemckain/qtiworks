@@ -47,7 +47,8 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum Orientation {
+public enum Orientation implements Stringifiable {
+    
     /**
      * horizontal
      */
@@ -96,7 +97,7 @@ public enum Orientation {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return orientation;
     }
 

@@ -43,17 +43,17 @@ package uk.ac.ed.ph.jqtiplus.value;
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
-public abstract class SingleValue implements Value {
+public abstract class SingleValue extends AbstractValue {
 
     private static final long serialVersionUID = 4392147022615484889L;
 
     @Override
-    public boolean isNull() {
+    public final boolean isNull() {
         return false;
     }
 
     @Override
-    public Cardinality getCardinality() {
+    public final Cardinality getCardinality() {
         return Cardinality.SINGLE;
     }
 }

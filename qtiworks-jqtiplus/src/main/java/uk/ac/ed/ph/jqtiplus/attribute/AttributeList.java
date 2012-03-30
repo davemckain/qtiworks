@@ -84,18 +84,9 @@ import org.w3c.dom.Node;
  * 
  * @author Jiri Kajaba
  */
-public class AttributeList implements Validatable, Iterable<Attribute<?>> {
+public final class AttributeList implements Validatable, Iterable<Attribute<?>> {
 
     private static final long serialVersionUID = 4537124098886951888L;
-
-    /**
-     * Separator between two attributes (valid only if attributes are printed on
-     * one line).
-     */
-    public static final String ATTRIBUTES_SEPARATOR = " ";
-
-    /** Line wrap limit while printing attributes. */
-    public static final int LINE_WRAP_LIMIT = 100;
 
     /** Owner (node) of these attributes. */
     private final XmlNode owner;

@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum NavigationMode {
+public enum NavigationMode implements Stringifiable {
     /**
      * Restricts the candidate to attempt each item in turn.
      */
@@ -78,7 +79,7 @@ public enum NavigationMode {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return navigationMode;
     }
 

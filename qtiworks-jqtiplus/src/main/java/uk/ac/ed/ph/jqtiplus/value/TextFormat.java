@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum TextFormat {
+public enum TextFormat implements Stringifiable {
     /**
      * plain type.
      */
@@ -122,7 +122,7 @@ public enum TextFormat {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return textFormat;
     }
 

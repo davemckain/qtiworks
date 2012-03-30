@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
-public class MultipleValue extends ListValue {
+public final class MultipleValue extends ListValue {
 
     private static final long serialVersionUID = 717217375026655181L;
 
@@ -144,24 +144,14 @@ public class MultipleValue extends ListValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null) {
+        if (!(object instanceof MultipleValue)) {
             return false;
         }
-
-        if (isNull() && object instanceof Value && ((Value) object).isNull()) {
-            return true;
-        }
-
-        if (!getClass().equals(object.getClass())) {
+        
+        MultipleValue other = (MultipleValue) object;
+        if (container.size() != other.container.size()) {
             return false;
         }
-
-        final MultipleValue value = (MultipleValue) object;
-
-        if (container.size() != value.container.size()) {
-            return false;
-        }
-
-        return container.containsAll(value.container);
+        return container.containsAll(other.container);
     }
 }

@@ -73,4 +73,9 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
     protected String parseSingleValue(String value) {
         return value;
     }
+    
+    @Override
+    protected String itemToString(String item) {
+        return item;
+    }
 }

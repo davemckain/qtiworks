@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,8 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum View {
+public enum View implements Stringifiable {
+    
     /** Author. */
     AUTHOR("author"),
 
@@ -82,7 +84,7 @@ public enum View {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return view;
     }
 

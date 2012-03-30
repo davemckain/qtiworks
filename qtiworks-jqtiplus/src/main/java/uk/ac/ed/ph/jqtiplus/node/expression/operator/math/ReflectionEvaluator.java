@@ -45,7 +45,6 @@ import java.lang.reflect.Method;
  * method in the standard {@link Math} class.
  * 
  * @author David McKain
- * @revision $Revision: 2652 $
  */
 final class ReflectionEvaluator implements MathOperatorEvaluator {
 

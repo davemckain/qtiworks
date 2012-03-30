@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.TextFormat;
  * 
  * @author Jiri Kajaba
  */
-public class TextFormatAttribute extends SingleAttribute<TextFormat> implements EnumerateAttribute<TextFormat> {
+public final class TextFormatAttribute extends SingleEnumerateAttribute<TextFormat> {
 
     private static final long serialVersionUID = -4365578230488574089L;
 

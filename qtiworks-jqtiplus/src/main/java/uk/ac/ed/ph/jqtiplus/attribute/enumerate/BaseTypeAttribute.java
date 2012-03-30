@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
  * 
  * @author Jiri Kajaba
  */
-public class BaseTypeAttribute extends SingleAttribute<BaseType> implements EnumerateAttribute<BaseType> {
+public final class BaseTypeAttribute extends SingleEnumerateAttribute<BaseType> {
 
     private static final long serialVersionUID = 5731708928910577525L;
 

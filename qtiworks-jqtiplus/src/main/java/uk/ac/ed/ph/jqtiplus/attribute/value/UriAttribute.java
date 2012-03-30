@@ -64,4 +64,9 @@ public class UriAttribute extends SingleAttribute<URI> {
     protected URI parseValue(String value) {
         return UriValue.parseUri(value);
     }
+    
+    @Override
+    protected String valueToString(URI value) {
+        return value.toString();
+    }
 }

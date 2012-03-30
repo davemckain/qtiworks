@@ -56,7 +56,7 @@ import java.net.URISyntaxException;
  * @see java.net.URI
  * @author Jiri Kajaba
  */
-public class UriValue extends SingleValue {
+public final class UriValue extends SingleValue {
 
     private static final long serialVersionUID = -748965776874283350L;
 
@@ -97,22 +97,21 @@ public class UriValue extends SingleValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof UriValue)) {
             return false;
         }
 
-        final UriValue value = (UriValue) object;
-
-        return uriValue.equals(value.uriValue);
+        final UriValue other = (UriValue) object;
+        return uriValue.equals(other.uriValue);
     }
 
     @Override
     public int hashCode() {
         return uriValue.hashCode();
     }
-
+    
     @Override
-    public String toString() {
+    public String stringValue() {
         return uriValue.toString();
     }
 

@@ -33,17 +33,15 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Wraps {@link MathOperator} attribute up in QTI style
  * 
  * @author David McKain
- * @revision $Revision: 2642 $
  */
-public class MathOperatorNameAttribute extends SingleAttribute<MathOperatorTarget> implements EnumerateAttribute<MathOperatorTarget> {
+public final class MathOperatorNameAttribute extends SingleEnumerateAttribute<MathOperatorTarget> {
 
     private static final long serialVersionUID = -2367561162140765443L;
 

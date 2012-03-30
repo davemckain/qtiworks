@@ -58,4 +58,9 @@ public class VariableReferenceIdentifierAttribute extends SingleAttribute<Variab
     protected VariableReferenceIdentifier parseValue(String value) {
         return new VariableReferenceIdentifier(value);
     }
+    
+    @Override
+    protected String valueToString(VariableReferenceIdentifier value) {
+        return value.toString();
+    }
 }

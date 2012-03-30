@@ -421,7 +421,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (patternMask != null) {
             final Pattern pattern = Pattern.compile(patternMask);
             for (final SingleValue responseEntry : responseEntries) {
-                if (!pattern.matcher(responseEntry.toString()).matches()) {
+                if (!pattern.matcher(responseEntry.stringValue()).matches()) {
                     return false;
                 }
             }

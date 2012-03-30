@@ -34,12 +34,18 @@
 package org.qtitools.mathassess.type;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-public enum ActionType {
+/**
+ * Defines the values for the action attribute.
+ *
+ * @author David McKain
+ */
+public enum ActionType implements Stringifiable {
+    
     EQUAL("equal"),
     SYNTEQUAL("syntequal"),
     CODE("code");
@@ -75,7 +81,7 @@ public enum ActionType {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return actionType;
     }
 }

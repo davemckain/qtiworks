@@ -66,4 +66,9 @@ public class IntegerAttribute extends SingleAttribute<Integer> {
     protected Integer parseValue(String value) {
         return IntegerValue.parseInteger(value);
     }
+    
+    @Override
+    protected String valueToString(Integer value) {
+        return value.toString();
+    }
 }

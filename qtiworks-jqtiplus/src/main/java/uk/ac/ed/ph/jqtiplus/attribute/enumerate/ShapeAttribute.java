@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
  * 
  * @author Jiri Kajaba
  */
-public class ShapeAttribute extends SingleAttribute<Shape> implements EnumerateAttribute<Shape> {
+public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
 
     private static final long serialVersionUID = -5369017290814290862L;
 

@@ -74,4 +74,9 @@ public class ViewMultipleAttribute extends MultipleAttribute<View> {
     protected View parseSingleValue(String value) {
         return View.parseView(value);
     }
+    
+    @Override
+    protected String itemToString(View item) {
+        return item.stringValue();
+    }
 }

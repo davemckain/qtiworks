@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,9 +43,8 @@ import java.util.Map;
  * Enumerates all of the operations supported by the <tt>statsOperator</tt> operator
  * 
  * @author David McKain
- * @revision $Revision: 2766 $
  */
-enum StatsOperatorTarget {
+enum StatsOperatorTarget implements Stringifiable {
 
     MEAN("mean", new StatsOperatorEvaluator() {
 
@@ -114,7 +114,7 @@ enum StatsOperatorTarget {
     }
     
     @Override
-    public String toString() {
+    public String stringValue() {
         return name;
     }
 

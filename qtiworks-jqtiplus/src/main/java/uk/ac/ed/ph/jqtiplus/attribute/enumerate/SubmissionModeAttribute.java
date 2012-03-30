@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
  * 
  * @author Jiri Kajaba
  */
-public class SubmissionModeAttribute extends SingleAttribute<SubmissionMode> implements EnumerateAttribute<SubmissionMode> {
+public final class SubmissionModeAttribute extends SingleEnumerateAttribute<SubmissionMode> {
 
     private static final long serialVersionUID = -1875382709228264679L;
 

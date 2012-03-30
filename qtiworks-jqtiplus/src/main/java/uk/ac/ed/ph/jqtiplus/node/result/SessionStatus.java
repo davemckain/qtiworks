@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum SessionStatus {
+public enum SessionStatus implements Stringifiable {
     /**
      * The value to use for sessions in the initial state, as described above. This value can only be used to describe
      * sessions for which the response variable numAttempts is 0. The values of the variables are set according to the
@@ -95,7 +96,7 @@ public enum SessionStatus {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return sessionStatus;
     }
 

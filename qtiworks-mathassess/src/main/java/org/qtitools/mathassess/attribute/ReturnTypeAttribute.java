@@ -33,8 +33,7 @@
  */
 package org.qtitools.mathassess.attribute;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.type.ReturnType;
@@ -44,7 +43,7 @@ import org.qtitools.mathassess.type.ReturnType;
  * 
  * @author Jonathon Hare
  */
-public class ReturnTypeAttribute extends SingleAttribute<ReturnType> implements EnumerateAttribute<ReturnType> {
+public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnType> {
 
     private static final long serialVersionUID = -1032549489931459690L;
 

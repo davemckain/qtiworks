@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
  * 
  * @author Jiri Kajaba
  */
-public class TestFeedbackAccessAttribute extends SingleAttribute<TestFeedbackAccess> implements EnumerateAttribute<TestFeedbackAccess> {
+public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<TestFeedbackAccess> {
 
     private static final long serialVersionUID = 3074149624431788342L;
 

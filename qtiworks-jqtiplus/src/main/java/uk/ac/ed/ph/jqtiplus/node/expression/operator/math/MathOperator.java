@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Implementation of <tt>mathOperator</tt>
  * 
  * @author David McKain
- * @revision $Revision: 2652 $
  */
 public class MathOperator extends AbstractFunctionalExpression {
 

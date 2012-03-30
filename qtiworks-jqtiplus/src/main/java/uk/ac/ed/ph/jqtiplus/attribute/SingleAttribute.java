@@ -123,12 +123,14 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
     protected abstract V parseValue(String value);
 
     @Override
-    public String valueToString() {
-        return value != null ? value.toString() : "";
+    public final String valueToString() {
+        return value != null ? valueToString(value) : "";
     }
 
     @Override
-    public String defaultValueToString() {
-        return defaultValue != null ? defaultValue.toString() : "";
+    public final String defaultValueToString() {
+        return defaultValue != null ? valueToString(defaultValue) : "";
     }
+    
+    protected abstract String valueToString(V value);
 }

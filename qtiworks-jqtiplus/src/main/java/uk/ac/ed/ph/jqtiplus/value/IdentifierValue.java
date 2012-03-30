@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IdentifierValue extends SingleValue {
+public final class IdentifierValue extends SingleValue {
 
     private static final long serialVersionUID = -7679966688625082326L;
 
@@ -78,33 +78,22 @@ public class IdentifierValue extends SingleValue {
         return identifierValue;
     }
 
-    /**
-     * Returns the value of this <code>IdentifierValue</code> as a <code>String</code>.
-     * 
-     * @return the value of this <code>IdentifierValue</code> as a <code>String</code>
-     */
-    public String stringValue() {
-        return identifierValue.toString();
-    }
-
-    @Override
-    public String toString() {
-        return stringValue();
-    }
-
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof IdentifierValue)) {
             return false;
         }
 
-        final IdentifierValue value = (IdentifierValue) object;
-
-        return identifierValue.equals(value.identifierValue);
+        final IdentifierValue other = (IdentifierValue) object;
+        return identifierValue.equals(other.identifierValue);
     }
 
     @Override
     public int hashCode() {
         return identifierValue.hashCode();
+    }
+
+    public String stringValue() {
+        return identifierValue.toString();
     }
 }

@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class StringValue extends SingleValue {
+public final class StringValue extends SingleValue {
 
     private static final long serialVersionUID = 5898101380417066220L;
 
@@ -73,33 +73,22 @@ public class StringValue extends SingleValue {
         return BaseType.STRING;
     }
 
-    /**
-     * Returns the value of this <code>StringValue</code> as A <code>String</code>.
-     * 
-     * @return the value of this <code>StringValue</code> as A <code>String</code>
-     */
     public String stringValue() {
         return stringValue;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof StringValue)) {
             return false;
         }
 
-        final StringValue value = (StringValue) object;
-
-        return stringValue.equals(value.stringValue);
+        final StringValue other = (StringValue) object;
+        return stringValue.equals(other.stringValue);
     }
 
     @Override
     public int hashCode() {
         return stringValue.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return stringValue;
     }
 }

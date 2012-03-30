@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ import java.util.Map;
  * @see Equal
  * @author Jiri Kajaba
  */
-public enum ToleranceMode {
+public enum ToleranceMode implements Stringifiable {
     /**
      * Exact comparing. No tolerances are needed.
      */
@@ -168,7 +169,7 @@ public enum ToleranceMode {
                     , boolean includeUpperBound);
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return toleranceMode;
     }
 

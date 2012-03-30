@@ -134,9 +134,14 @@ public abstract class AbstractPairValue extends SingleValue {
     public final Identifier destValue() {
         return destValue;
     }
+    
+    @Override
+    public final int hashCode() {
+        return (sourceValue + " " + destValue + " " + isDirected()).hashCode();
+    }
 
     @Override
-    public final String toString() {
+    public final String stringValue() {
         return sourceValue + " " + destValue;
     }
 }

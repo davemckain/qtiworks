@@ -34,12 +34,18 @@
 package org.qtitools.mathassess.type;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-public enum ReturnType {
+/**
+ * Enumerates the values of the returnType attribute
+ *
+ * @author David McKain
+ */
+public enum ReturnType implements Stringifiable {
+    
     MATHS_CONTENT("mathsContent"),
     INTEGER("integer"),
     INTEGER_MULTIPLE("integerMultiple"),
@@ -82,7 +88,7 @@ public enum ReturnType {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return returnType;
     }
 

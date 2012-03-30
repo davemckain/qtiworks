@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
  * 
  * @author Jiri Kajaba
  */
-public class TableCellScopeAttribute extends SingleAttribute<TableCellScope> implements EnumerateAttribute<TableCellScope> {
+public final class TableCellScopeAttribute extends SingleEnumerateAttribute<TableCellScope> {
 
     private static final long serialVersionUID = -5619179078436198190L;
 

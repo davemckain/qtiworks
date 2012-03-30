@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
  * 
  * @author Jiri Kajaba
  */
-public class ToleranceModeAttribute extends SingleAttribute<ToleranceMode> implements EnumerateAttribute<ToleranceMode> {
+public final class ToleranceModeAttribute extends SingleEnumerateAttribute<ToleranceMode> {
 
     private static final long serialVersionUID = 1737056425484603310L;
 

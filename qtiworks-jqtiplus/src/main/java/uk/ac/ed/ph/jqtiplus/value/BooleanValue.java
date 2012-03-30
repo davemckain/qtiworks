@@ -48,9 +48,11 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class BooleanValue extends SingleValue {
+public final class BooleanValue extends SingleValue {
 
     private static final long serialVersionUID = -5150274870390179580L;
+    
+    public static final BooleanValue[] values = { BooleanValue.FALSE, BooleanValue.TRUE };
 
     public static final BooleanValue FALSE = new BooleanValue(false);
 
@@ -101,13 +103,11 @@ public class BooleanValue extends SingleValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof BooleanValue)) {
             return false;
         }
-
-        final BooleanValue value = (BooleanValue) object;
-
-        return booleanValue == value.booleanValue;
+        final BooleanValue other = (BooleanValue) object;
+        return booleanValue == other.booleanValue;
     }
 
     @Override
@@ -116,7 +116,7 @@ public class BooleanValue extends SingleValue {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return Boolean.toString(booleanValue);
     }
 

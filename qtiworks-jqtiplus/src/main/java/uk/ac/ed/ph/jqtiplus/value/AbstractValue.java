@@ -31,55 +31,28 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.attribute.value;
-
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Attribute with long value.
+ * Base class for all QTI {@link Value} classes.
  * 
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class LongAttribute extends SingleAttribute<Long> {
+public abstract class AbstractValue implements Value {
 
-    private static final long serialVersionUID = 1138880928751132617L;
-
-    public LongAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-
-    public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
+    private static final long serialVersionUID = -2658294172416932855L;
+    
     @Override
-    protected Long parseValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
+    public final boolean qtiEquals(Value other) {
+        if (isNull() && other.isNull()) {
+            return true;
         }
-
-        final String originalValue = value;
-
-        // Removes + sign because of Long.parseLong cannot handle it.
-        if (value.startsWith("+")) {
-            value = value.substring(1);
-            if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QtiParseException("Invalid long '" + originalValue + "'.");
-            }
-        }
-
-        try {
-            return Long.parseLong(value);
-        }
-        catch (final NumberFormatException ex) {
-            throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
-        }
+        return equals(other);
     }
     
     @Override
-    protected String valueToString(Long value) {
-        return value.toString();
+    public final String toString() {
+        return getClass().getSimpleName() + "@" + hashCode()
+                + "(" + stringValue() + ")";
     }
 }

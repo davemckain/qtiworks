@@ -43,6 +43,8 @@ import org.w3c.dom.Node;
 /**
  * Node's attribute interface.
  * 
+ * @param <V> the type of value encoded by this Attribute. 
+ * 
  * @author Jiri Kajaba
  */
 public interface Attribute<V> extends Validatable {
@@ -137,16 +139,16 @@ public interface Attribute<V> extends Validatable {
     void load(Element owner, String value, LoadingContext context);
 
     /**
-     * Gets attribute's value converted to string.
-     * If value is not defined, returns empty (but not null) string.
+     * Converts this Attribute's value to the String form used in
+     * the QTI information model.
      * 
      * @return attribute's value converted to string
      */
     String valueToString();
 
     /**
-     * Gets attribute's defaultValue converted to string.
-     * If defaultValue is not defined, returns empty (but not null) string.
+     * Converts this Attribute's defaultValue to the String form used in
+     * the QTI information model.
      * 
      * @return attribute's defaultValue converted to string
      */

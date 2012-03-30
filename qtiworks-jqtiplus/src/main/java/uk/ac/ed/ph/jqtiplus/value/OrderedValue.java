@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
-public class OrderedValue extends ListValue {
+public final class OrderedValue extends ListValue {
 
     private static final long serialVersionUID = 5819887477828683688L;
 

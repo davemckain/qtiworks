@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IntegerValue extends NumberValue {
+public final class IntegerValue extends NumberValue {
 
     private static final long serialVersionUID = -2229184387480773991L;
 
@@ -103,22 +103,21 @@ public class IntegerValue extends NumberValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof IntegerValue)) {
             return false;
         }
 
-        final IntegerValue value = (IntegerValue) object;
-
-        return intValue == value.intValue;
+        final IntegerValue other = (IntegerValue) object;
+        return intValue == other.intValue;
     }
 
     @Override
     public int hashCode() {
         return intValue();
     }
-
+    
     @Override
-    public String toString() {
+    public String stringValue() {
         return Integer.toString(intValue);
     }
 

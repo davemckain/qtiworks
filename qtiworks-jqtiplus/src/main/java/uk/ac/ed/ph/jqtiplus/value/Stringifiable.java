@@ -31,55 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.attribute.value;
-
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Attribute with long value.
- * 
- * @author Jiri Kajaba
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public final class LongAttribute extends SingleAttribute<Long> {
-
-    private static final long serialVersionUID = 1138880928751132617L;
-
-    public LongAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-
-    public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    @Override
-    protected Long parseValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
-        }
-
-        final String originalValue = value;
-
-        // Removes + sign because of Long.parseLong cannot handle it.
-        if (value.startsWith("+")) {
-            value = value.substring(1);
-            if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QtiParseException("Invalid long '" + originalValue + "'.");
-            }
-        }
-
-        try {
-            return Long.parseLong(value);
-        }
-        catch (final NumberFormatException ex) {
-            throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
-        }
-    }
+public interface Stringifiable {
     
-    @Override
-    protected String valueToString(Long value) {
-        return value.toString();
-    }
+    String stringValue();
+
 }

@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
  * @author Jiri Kajaba
  */
-public class DurationValue extends SingleValue {
+public final class DurationValue extends SingleValue {
 
     private static final long serialVersionUID = 2662972970373655606L;
 
@@ -78,7 +78,6 @@ public class DurationValue extends SingleValue {
     public DurationValue(String value) {
         try {
             this.doubleValue = FloatValue.parseFloat(value);
-
             if (doubleValue < 0) {
                 throw new QtiParseException("Invalid duration '" + value + "'. Duration cannot be negative.");
             }
@@ -104,22 +103,21 @@ public class DurationValue extends SingleValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof DurationValue)) {
             return false;
         }
 
-        final DurationValue value = (DurationValue) object;
-
-        return doubleValue == value.doubleValue;
+        final DurationValue other = (DurationValue) object;
+        return doubleValue == other.doubleValue;
     }
 
     @Override
     public int hashCode() {
-        return (int) doubleValue;
+        return Double.valueOf(doubleValue).hashCode();
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return Double.toString(doubleValue);
     }
 }

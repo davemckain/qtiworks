@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,7 +52,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public abstract class ListValue implements Cloneable, MultiValue, Iterable<SingleValue> {
+public abstract class ListValue extends AbstractValue implements Cloneable, MultiValue, Iterable<SingleValue> {
 
     private static final long serialVersionUID = 4655949258467611295L;
 
@@ -207,41 +208,26 @@ public abstract class ListValue implements Cloneable, MultiValue, Iterable<Singl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object clone() throws QtiEvaluationException {
         try {
             final ListValue value = (ListValue) super.clone();
-
             if (container != null) {
-                value.container = (List<SingleValue>) ((ArrayList<SingleValue>) container).clone();
+                value.container = new ArrayList<SingleValue>(container);
             }
-
             return value;
         }
-        catch (final CloneNotSupportedException ex) {
-            throw new QtiEvaluationException("Cannot clone container.", ex);
+        catch (final CloneNotSupportedException e) {
+            throw new QtiLogicException("Cannot clone container", e);
         }
     }
 
     @Override
-    public int hashCode() {
-        int hashCode = 0;
-
-        for (final Value value : container) {
-            hashCode += value.hashCode();
-        }
-
-        return hashCode;
+    public final int hashCode() {
+        return container.hashCode();
     }
-
+    
     @Override
-    public String toString() {
-        String string = container.toString();
-
-        if (isOrdered() && string.length() > 1) {
-            string = "<" + string.substring(1, string.length() - 1) + ">";
-        }
-
-        return string;
+    public final String stringValue() {
+        return container.toString();
     }
 }

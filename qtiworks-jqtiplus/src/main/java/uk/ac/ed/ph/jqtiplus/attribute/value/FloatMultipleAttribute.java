@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class FloatMultipleAttribute extends MultipleAttribute<Double> {
+public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
 
     private static final long serialVersionUID = 1429666396177699288L;
 
@@ -61,17 +61,12 @@ public class FloatMultipleAttribute extends MultipleAttribute<Double> {
     }
 
     @Override
-    public List<Double> getValueAsList() {
-        return super.getValueAsList();
-    }
-
-    @Override
-    public List<Double> getDefaultValueAsList() {
-        return super.getDefaultValueAsList();
-    }
-
-    @Override
     protected Double parseSingleValue(String value) {
         return FloatValue.parseFloat(value);
+    }
+    
+    @Override
+    protected String itemToString(Double item) {
+        return item.toString();
     }
 }

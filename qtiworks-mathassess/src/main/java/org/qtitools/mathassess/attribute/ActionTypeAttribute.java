@@ -33,8 +33,7 @@
  */
 package org.qtitools.mathassess.attribute;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.type.ActionType;
@@ -44,7 +43,7 @@ import org.qtitools.mathassess.type.ActionType;
  * 
  * @author Jonathon Hare
  */
-public class ActionTypeAttribute extends SingleAttribute<ActionType> implements EnumerateAttribute<ActionType> {
+public final class ActionTypeAttribute extends SingleEnumerateAttribute<ActionType> {
 
     private static final long serialVersionUID = 2096278682370848167L;
 

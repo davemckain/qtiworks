@@ -44,30 +44,49 @@ import java.io.Serializable;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public interface Value extends Serializable {
+public interface Value extends Serializable, Stringifiable {
 
     /**
      * Returns true if this value is NULL or false otherwise.
-     * 
-     * @return true if this value is NULL or false otherwise
      */
-    public boolean isNull();
+    boolean isNull();
 
     /**
      * Returns cardinality of this value.
      * <p>
      * If value is NULL returns null.
-     * 
-     * @return cardinality of this value
      */
-    public Cardinality getCardinality();
+    Cardinality getCardinality();
 
     /**
      * Returns baseType of this value.
      * <p>
      * If value is NULL or record cardinality returns null.
-     * 
-     * @return baseType of this value
      */
-    public BaseType getBaseType();
+    BaseType getBaseType();
+
+    /**
+     * Returns whether this value is considered the "same" as the
+     * other value, as defined in the QTI spec.
+     * <p>
+     * This method is new in JQTI+; the original JQTI used the
+     * default {@link #equals(Object)} method for this.
+     * 
+     * @param other value to compare with, which will not be
+     *   Java null (but might respresent a QTI NULL value!)
+     */
+    boolean qtiEquals(Value other);
+
+    /**
+     * Converts this value to a String. This is new in JQTI+;
+     * the original JQTI used {@link #toString()} for that.
+     */
+    String stringValue();
+
+    /**
+     * In JQTI+, this returns a property dump of the Object, rather than
+     * converting the value to a String as it did in JQTI.
+     */
+    @Override
+    public String toString();
 }

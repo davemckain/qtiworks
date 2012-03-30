@@ -52,7 +52,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class FloatValue extends NumberValue {
+public final class FloatValue extends NumberValue {
 
     private static final long serialVersionUID = 3799071457858594877L;
 
@@ -94,22 +94,21 @@ public class FloatValue extends NumberValue {
 
     @Override
     public boolean equals(Object object) {
-        if (object == null || !getClass().equals(object.getClass())) {
+        if (!(object instanceof FloatValue)) {
             return false;
         }
-
-        final FloatValue value = (FloatValue) object;
-
-        return doubleValue == value.doubleValue;
+        
+        FloatValue other = (FloatValue) object;
+        return doubleValue == other.doubleValue;
     }
 
     @Override
     public int hashCode() {
-        return (int) doubleValue;
+        return Double.valueOf(doubleValue).hashCode();
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return Double.toString(doubleValue);
     }
 

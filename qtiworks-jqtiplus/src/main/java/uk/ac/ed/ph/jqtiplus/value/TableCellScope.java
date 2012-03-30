@@ -52,7 +52,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum TableCellScope {
+public enum TableCellScope implements Stringifiable {
     /**
      * Row type.
      */
@@ -129,7 +129,7 @@ public enum TableCellScope {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return tableCellScope;
     }
 

@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.ParamType;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * 
  * @author Jiri Kajaba
  */
-public class ParamTypeAttribute extends SingleAttribute<ParamType> implements EnumerateAttribute<ParamType> {
+public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType> {
 
     private static final long serialVersionUID = 1206043208733719873L;
 

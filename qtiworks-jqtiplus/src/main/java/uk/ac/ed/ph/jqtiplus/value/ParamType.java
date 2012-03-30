@@ -50,7 +50,8 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum ParamType {
+public enum ParamType implements Stringifiable {
+    
     /**
      * DATA type.
      */
@@ -99,7 +100,7 @@ public enum ParamType {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return paramType;
     }
 

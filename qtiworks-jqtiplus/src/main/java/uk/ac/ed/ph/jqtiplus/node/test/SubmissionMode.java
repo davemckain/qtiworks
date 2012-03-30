@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.value.Stringifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author Jiri Kajaba
  */
-public enum SubmissionMode {
+public enum SubmissionMode implements Stringifiable {
     /**
      * Requires the candidate to submit their responses on an item-by-item basis.
      */
@@ -78,7 +79,7 @@ public enum SubmissionMode {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return submissionMode;
     }
 

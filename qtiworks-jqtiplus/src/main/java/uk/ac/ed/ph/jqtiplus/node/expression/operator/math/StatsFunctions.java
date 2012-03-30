@@ -33,11 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-
 /**
+ * Helper to implement all of our statistics functions.
+ * 
  * @author David McKain
  */
-public class StatsFunctions {
+public final class StatsFunctions {
 
     public static double mean(double[] values) {
         if (values.length == 0) {

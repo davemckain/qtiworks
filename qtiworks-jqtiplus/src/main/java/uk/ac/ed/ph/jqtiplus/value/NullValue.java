@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-
 /**
  * Represents NULL value.
  * <p>
@@ -45,7 +44,7 @@ package uk.ac.ed.ph.jqtiplus.value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class NullValue implements Value {
+public class NullValue extends AbstractValue {
 
     private static final long serialVersionUID = -2128753622845223642L;
 
@@ -71,21 +70,12 @@ public class NullValue implements Value {
         return null;
     }
 
-    /**
-     * Returns true for any value which is NULL; false otherwise.
-     * 
-     * @param object the reference object with which to compare
-     * @return true for any value which is NULL; false otherwise
-     */
     @Override
     public boolean equals(Object object) {
-        if (object == null || !(object instanceof Value)) {
+        if (!(object instanceof NullValue)) {
             return false;
         }
-
-        final Value value = (Value) object;
-
-        return value.isNull();
+        return true; /* (There's only 1 null!) */
     }
 
     @Override
@@ -94,7 +84,7 @@ public class NullValue implements Value {
     }
 
     @Override
-    public String toString() {
+    public String stringValue() {
         return "NULL";
     }
 }
