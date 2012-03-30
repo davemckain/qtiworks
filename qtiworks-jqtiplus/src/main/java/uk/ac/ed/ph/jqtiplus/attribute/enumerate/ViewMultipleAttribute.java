@@ -49,15 +49,15 @@ public final class ViewMultipleAttribute extends MultipleAttribute<View> {
     private static final long serialVersionUID = -2076945522660615196L;
 
     public ViewMultipleAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR);
     }
 
     public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue) {
-        super(parent, localName, defaultValue);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue);
     }
 
     public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue, List<View> value, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
     }
 
     @Override

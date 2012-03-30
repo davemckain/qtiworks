@@ -53,19 +53,22 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
 
     private static final long serialVersionUID = -2295280039498864733L;
 
-    /** Values separator. */
-    public String FIELDS_SEPARATOR = " ";
+    public static final String SPACE_FIELD_SEPARATOR = " ";
+    public static final String COMMA_FIELDS_SEPARATOR = ",";
+    
+    private final String fieldSeparator;
 
-    public MultipleAttribute(XmlNode parent, String localName) {
-        this(parent, localName, null, null, true);
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator) {
+        this(parent, localName, fieldSeparator, null, null, true);
     }
 
-    public MultipleAttribute(XmlNode parent, String localName, List<E> defaultValue) {
-        this(parent, localName, null, defaultValue, false);
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue) {
+        this(parent, localName, fieldSeparator, null, defaultValue, false);
     }
 
-    public MultipleAttribute(XmlNode parent, String localName, List<E> value, List<E> defaultValue, boolean required) {
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> value, List<E> defaultValue, boolean required) {
         super(parent, localName, defaultValue, value, required);
+        this.fieldSeparator = fieldSeparator;
     }
 
     /**
@@ -137,7 +140,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
      */
     private List<String> splitStringValue(String stringValue) {
         final List<String> result = new ArrayList<String>();
-        final String[] values = stringValue.split(FIELDS_SEPARATOR);
+        final String[] values = stringValue.split(fieldSeparator);
 
         for (int i = 0; i < values.length; i++) {
             if (values[i].length() != 0) {
@@ -183,7 +186,7 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
             for (int i = 0; i < value.size(); i++) {
                 builder.append(itemToQtiString(value.get(i)));
                 if (i < value.size() - 1) {
-                    builder.append(FIELDS_SEPARATOR);
+                    builder.append(fieldSeparator);
                 }
             }
         }

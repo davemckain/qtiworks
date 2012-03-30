@@ -49,15 +49,15 @@ public class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
     private static final long serialVersionUID = -4902112764512399666L;
 
     public IdentifierMultipleAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR);
     }
 
     public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue) {
-        super(parent, localName, defaultValue);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue);
     }
 
     public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue, List<Identifier> value, boolean required) {
-        super(parent, localName, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
     }
 
     @Override

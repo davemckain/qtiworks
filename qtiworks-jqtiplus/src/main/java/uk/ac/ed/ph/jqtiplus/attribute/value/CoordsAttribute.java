@@ -48,22 +48,16 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
 
     private static final long serialVersionUID = -3499455085135083349L;
 
-    /** Values separator. */
-    public static String FIELDS_SEPARATOR = ",";
-
     public CoordsAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-        super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
+        super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR);
     }
 
     public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue) {
-        super(parent, localName, defaultValue);
-        super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
+        super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, defaultValue);
     }
 
     public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue, List<Integer> value, boolean required) {
-        super(parent, localName, value, defaultValue, required);
-        super.FIELDS_SEPARATOR = FIELDS_SEPARATOR;
+        super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, value, defaultValue, required);
     }
 
     @Override
