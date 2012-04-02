@@ -121,7 +121,7 @@ public class TextEntryInteractionTest {
 
     @Test
     public void test() throws Exception {
-        final ItemSessionController itemSessionController = UnitTestHelper.loadTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class);
+        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         itemSessionController.initialize();
 
