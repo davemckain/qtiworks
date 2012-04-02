@@ -55,9 +55,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class OutcomeTest {
 
     private static final MultipleValue multipleValue;
-
     private static final OrderedValue orderedValue;
-
     private static final RecordValue recordValue;
 
     static {
@@ -80,7 +78,6 @@ public class OutcomeTest {
     private static class Outcome {
 
         private final String name;
-
         private final Value expectedValue;
 
         public Outcome(String name, Value expectedValue) {
@@ -104,65 +101,76 @@ public class OutcomeTest {
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "Outcome-default-01.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", multipleValue),
-                new Outcome("Outcome04", orderedValue),
-                new Outcome("Outcome05", recordValue),
-        } }, { "Outcome-default-02.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", multipleValue),
-                new Outcome("Outcome04", orderedValue),
-                new Outcome("Outcome05", recordValue),
-        } }, { "Outcome-set-01.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", new StringValue("VALUE")),
-        } }, { "Outcome-lookup-match-01.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", new StringValue("VALUE 1")),
-                new Outcome("Outcome04", new StringValue("VALUE 2")),
-                new Outcome("Outcome05", new StringValue("VALUE 3")),
-                new Outcome("Outcome06", new StringValue("VALUE DEFAULT")),
-                new Outcome("Outcome07", new StringValue("VALUE DEFAULT")),
-        } }, { "Outcome-lookup-interpolation-01.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", new StringValue("VALUE 3")),
-                new Outcome("Outcome04", new StringValue("VALUE 3")),
-                new Outcome("Outcome05", new StringValue("VALUE 2")),
-                new Outcome("Outcome06", new StringValue("VALUE 2")),
-                new Outcome("Outcome07", new StringValue("VALUE 2")),
-                new Outcome("Outcome08", new StringValue("VALUE 1")),
-                new Outcome("Outcome09", new StringValue("VALUE 1")),
-                new Outcome("Outcome10", new StringValue("VALUE 1")),
-                new Outcome("Outcome11", new StringValue("VALUE DEFAULT")),
-                new Outcome("Outcome12", new StringValue("VALUE DEFAULT")),
-                new Outcome("Outcome13", new StringValue("VALUE DEFAULT")),
-        } }, { "Outcome-condition-01.xml", new Outcome[] {
-                new Outcome("Outcome01", NullValue.INSTANCE),
-                new Outcome("Outcome02", new StringValue("DEFAULT")),
-                new Outcome("Outcome03", NullValue.INSTANCE),
-                new Outcome("Outcome04", new StringValue("IF")),
-                new Outcome("Outcome05", new StringValue("ELSE")),
-                new Outcome("Outcome06", new StringValue("IF")),
-                new Outcome("Outcome07", new StringValue("ELSE")),
-                new Outcome("Outcome08", new StringValue("ELSE IF")),
-                new Outcome("Outcome09", new StringValue("IF")),
-                new Outcome("Outcome10", new StringValue("IF")),
-                new Outcome("Outcome11", new StringValue("ELSE")),
-                new Outcome("Outcome12", new StringValue("ELSE IF 2")),
-                new Outcome("Outcome13", new StringValue("ELSE IF 1")),
-                new Outcome("Outcome14", new StringValue("IF")),
-        } },
+        return Arrays.asList(new Object[][] { 
+                { "Outcome-default-01.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", multipleValue),
+                        new Outcome("Outcome04", orderedValue),
+                        new Outcome("Outcome05", recordValue),
+                    }
+                }, 
+                { "Outcome-default-02.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", multipleValue),
+                        new Outcome("Outcome04", orderedValue),
+                        new Outcome("Outcome05", recordValue),
+                    } 
+                }, 
+                { "Outcome-set-01.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", new StringValue("VALUE")),
+                    } 
+                },
+                { "Outcome-lookup-match-01.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", new StringValue("VALUE 1")),
+                        new Outcome("Outcome04", new StringValue("VALUE 2")),
+                        new Outcome("Outcome05", new StringValue("VALUE 3")),
+                        new Outcome("Outcome06", new StringValue("VALUE DEFAULT")),
+                        new Outcome("Outcome07", new StringValue("VALUE DEFAULT")),
+                    }
+                },
+                { "Outcome-lookup-interpolation-01.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", new StringValue("VALUE 3")),
+                        new Outcome("Outcome04", new StringValue("VALUE 3")),
+                        new Outcome("Outcome05", new StringValue("VALUE 2")),
+                        new Outcome("Outcome06", new StringValue("VALUE 2")),
+                        new Outcome("Outcome07", new StringValue("VALUE 2")),
+                        new Outcome("Outcome08", new StringValue("VALUE 1")),
+                        new Outcome("Outcome09", new StringValue("VALUE 1")),
+                        new Outcome("Outcome10", new StringValue("VALUE 1")),
+                        new Outcome("Outcome11", new StringValue("VALUE DEFAULT")),
+                        new Outcome("Outcome12", new StringValue("VALUE DEFAULT")),
+                        new Outcome("Outcome13", new StringValue("VALUE DEFAULT")),
+                    } 
+                }, 
+                { "Outcome-condition-01.xml", new Outcome[] {
+                        new Outcome("Outcome01", NullValue.INSTANCE),
+                        new Outcome("Outcome02", new StringValue("DEFAULT")),
+                        new Outcome("Outcome03", NullValue.INSTANCE),
+                        new Outcome("Outcome04", new StringValue("IF")),
+                        new Outcome("Outcome05", new StringValue("ELSE")),
+                        new Outcome("Outcome06", new StringValue("IF")),
+                        new Outcome("Outcome07", new StringValue("ELSE")),
+                        new Outcome("Outcome08", new StringValue("ELSE IF")),
+                        new Outcome("Outcome09", new StringValue("IF")),
+                        new Outcome("Outcome10", new StringValue("IF")),
+                        new Outcome("Outcome11", new StringValue("ELSE")),
+                        new Outcome("Outcome12", new StringValue("ELSE IF 2")),
+                        new Outcome("Outcome13", new StringValue("ELSE IF 1")),
+                        new Outcome("Outcome14", new StringValue("IF")),
+                    } 
+                },
         });
     }
 
     private final String fileName;
-
     private final Outcome[] outcomes;
 
     public OutcomeTest(String fileName, Outcome[] outcomes) {
