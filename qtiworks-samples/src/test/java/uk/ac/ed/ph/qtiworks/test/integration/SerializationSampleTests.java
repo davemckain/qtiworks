@@ -39,13 +39,10 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -56,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,9 +67,7 @@ import org.custommonkey.xmlunit.DifferenceConstants;
 import org.custommonkey.xmlunit.DifferenceListener;
 import org.custommonkey.xmlunit.NodeDetail;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -89,10 +83,7 @@ import org.xml.sax.InputSource;
  * @author David McKain
  */
 @RunWith(Parameterized.class)
-public class SerializationSampleTests {
-    
-    private QtiSampleResource qtiSampleResource;
-    private JqtiExtensionManager jqtiExtensionManager;
+public class SerializationSampleTests extends AbstractIntegrationTest {
     
     @Parameters
     public static Collection<Object[]> data() {
@@ -103,30 +94,14 @@ public class SerializationSampleTests {
     }
     
     public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
-        this.qtiSampleResource = qtiSampleResource;
-    }
-    
-    @Before
-    public void before() {
-        jqtiExtensionManager = TestUtils.getJqtiExtensionManager();
-        jqtiExtensionManager.init();
-    }
-    
-    @After
-    public void after() {
-        if (jqtiExtensionManager!=null) {
-            jqtiExtensionManager.destroy();
-        }
+        super(qtiSampleResource);
     }
     
     @Test
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
-        final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
-        
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
-        QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
+        final QtiXmlObjectReader objectReader = createSampleObjectReader();
+        QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(qtiSampleResource.toClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
         AssessmentItem item = itemReadResult.getRootObject();
         
         XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
@@ -150,7 +125,7 @@ public class SerializationSampleTests {
         if (!diff.identical()) {
             System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
-            System.out.println("\n\nOriginal XML: " + IOUtilities.readUnicodeStream(sampleResourceLocator.findResource(sampleResourceUri)));
+            System.out.println("\n\nOriginal XML: " + readSampleXmlSource());
             System.out.println("\n\nSerialized XML: " + serializedXml);
             Assert.fail("XML differences found: " + diff.toString());
         }

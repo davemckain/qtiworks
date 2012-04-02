@@ -41,21 +41,12 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.net.URI;
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -68,11 +59,7 @@ import org.junit.runners.Parameterized.Parameters;
  * @author David McKain
  */
 @RunWith(Parameterized.class)
-public class ValidationSampleTests {
-    
-    private QtiSampleResource qtiSampleResource;
-    
-    private JqtiExtensionManager jqtiExtensionManager;
+public class ValidationSampleTests extends AbstractIntegrationTest {
     
     @Parameters
     public static Collection<Object[]> data() {
@@ -83,31 +70,12 @@ public class ValidationSampleTests {
     }
     
     public ValidationSampleTests(QtiSampleResource qtiSampleResource) {
-        this.qtiSampleResource = qtiSampleResource;
-    }
-    
-    @Before
-    public void before() {
-        jqtiExtensionManager = TestUtils.getJqtiExtensionManager();
-        jqtiExtensionManager.init();
-    }
-    
-    @After
-    public void after() {
-        if (jqtiExtensionManager!=null) {
-            jqtiExtensionManager.destroy();
-        }
+        super(qtiSampleResource);
     }
     
     @Test
     public void test() throws Exception {
-        final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
-        final URI sampleResourceUri = qtiSampleResource.toClassPathUri();
-        
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        ItemValidationResult validationResult = objectManager.resolveAndValidateItem(sampleResourceUri);
+        ItemValidationResult validationResult = validateSampleItem();
         
         boolean expectedValid = !qtiSampleResource.hasFeature(Feature.NOT_FULLY_VALID);
         if (expectedValid != validationResult.isValid()) {
