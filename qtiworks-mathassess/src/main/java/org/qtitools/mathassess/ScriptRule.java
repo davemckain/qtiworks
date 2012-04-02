@@ -121,9 +121,9 @@ public final class ScriptRule extends MathAssessOperator {
         /* Pass variables to Maxima */
         logger.debug("Passing variables to maxima");
         for (final VariableDeclaration declaration : inputDeclarations) {
-            final Value value = context.getItemSessionState().getVariableValue(declaration);
             final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            if (!value.isNull() && resultClass != null) {
+            final Value value = context.getItemSessionState().getVariableValue(declaration);
+            if (value!=null && !value.isNull() && resultClass != null) {
                 qtiMaximaSession.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
             }
         }

@@ -36,14 +36,14 @@ package org.qtitools.mathassess.attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
-import org.qtitools.mathassess.type.ReturnType;
+import org.qtitools.mathassess.value.ReturnTypeType;
 
 /**
  * Attribute with returnType value.
  * 
  * @author Jonathon Hare
  */
-public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnType> {
+public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType> {
 
     private static final long serialVersionUID = -1032549489931459690L;
 
@@ -52,8 +52,8 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnType> {
     }
 
     @Override
-    protected ReturnType parseQtiString(String value) {
-        return ReturnType.parseReturnType(value);
+    protected ReturnTypeType parseQtiString(String value) {
+        return ReturnTypeType.parseReturnType(value);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnType> {
      * @return all supported values of this attribute
      */
     @Override
-    public ReturnType[] getSupportedValues() {
-        return ReturnType.values();
+    public ReturnTypeType[] getSupportedValues() {
+        return ReturnTypeType.values();
     }
 }

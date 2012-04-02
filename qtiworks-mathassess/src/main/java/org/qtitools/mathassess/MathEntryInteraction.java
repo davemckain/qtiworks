@@ -51,8 +51,8 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -61,10 +61,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
 
-import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
+import org.qtitools.mathassess.attribute.SyntaxAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
 import org.qtitools.mathassess.tools.qticasbridge.types.MathsContentInputValueWrapper;
-import org.qtitools.mathassess.type.SyntaxType;
+import org.qtitools.mathassess.value.SyntaxType;
 
 import java.util.List;
 
@@ -86,7 +86,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     public MathEntryInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new SyntaxTypeAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
         getAttributes().add(new IdentifierAttribute(this, ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
     }
@@ -97,7 +97,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
-        return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
+        return ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
@@ -107,7 +107,7 @@ public final class MathEntryInteraction extends CustomInteraction {
      * @param syntax value to set
      */
     public void setSyntax(SyntaxType syntax) {
-        ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
+        ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
@@ -184,7 +184,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         final String asciiMathInput = stringResponseData[0].trim();
         Value responseValue;
         Value printResponseValue;
-        logger.info("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);
+        logger.debug("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);
         if (asciiMathInput.length() != 0) {
             /* Convert the ASCIIMath input to the appropriate Math Context
              * variable */
@@ -193,7 +193,7 @@ public final class MathEntryInteraction extends CustomInteraction {
             final MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
             if (upConversionFailures != null && !upConversionFailures.isEmpty()) {
-                logger.warn("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
+                logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
                 throw new QtiParseException("Error: Math content is too complex for current implementation");
             }
             responseValue = CasTypeGlue.convertToJQTI(resultWrapper);

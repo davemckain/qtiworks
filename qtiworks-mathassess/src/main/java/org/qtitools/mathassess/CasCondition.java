@@ -129,8 +129,8 @@ public class CasCondition extends MathAssessOperator {
         final boolean simplify = getSimplify().booleanValue();
         final String code = getCode().trim();
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Performing casCondition: code={}, simplify={}, values={}",
+        if (logger.isDebugEnabled()) {
+            logger.debug("Performing casCondition: code={}, simplify={}, values={}",
                     new Object[] { code, simplify, childValues });
         }
 

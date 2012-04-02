@@ -36,18 +36,18 @@ package org.qtitools.mathassess.attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
-import org.qtitools.mathassess.type.SyntaxType;
+import org.qtitools.mathassess.value.SyntaxType;
 
 /**
  * Attribute with syntaxType value.
  * 
  * @author Jonathon Hare
  */
-public class SyntaxTypeAttribute extends SingleEnumerateAttribute<SyntaxType> {
+public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
 
     private static final long serialVersionUID = 8834496656714809174L;
 
-    public SyntaxTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
+    public SyntaxAttribute(XmlNode parent, String localName, String namespaceUri) {
         super(parent, localName, namespaceUri);
     }
 

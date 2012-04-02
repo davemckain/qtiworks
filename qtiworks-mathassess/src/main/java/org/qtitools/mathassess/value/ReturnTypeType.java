@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.mathassess.type;
+package org.qtitools.mathassess.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
@@ -40,39 +40,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumerates the values of the syntax attribute
+ * Enumerates the values of the returnType attribute
  *
  * @author David McKain
  */
-public enum SyntaxType implements Stringifiable {
+public enum ReturnTypeType implements Stringifiable {
     
-    MAXIMA("text/x-maxima");
+    MATHS_CONTENT("mathsContent"),
+    INTEGER("integer"),
+    INTEGER_MULTIPLE("integerMultiple"),
+    INTEGER_ORDERED("integerOrdered"),
+    FLOAT("float"),
+    FLOAT_MULTIPLE("floatMultiple"),
+    FLOAT_ORDERED("floatOrdered"),
+    BOOLEAN("boolean"),
+    BOOLEAN_MULTIPLE("booleanMultiple"),
+    BOOLEAN_ORDERED("booleanOrdered");
 
     /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "casType";
+    public static final String QTI_CLASS_NAME = "returnTypeCard";
 
-    private static Map<String, SyntaxType> syntaxTypes = new HashMap<String, SyntaxType>();
+    private static Map<String, ReturnTypeType> returnTypeTypes = new HashMap<String, ReturnTypeType>();
     static {
-        for (final SyntaxType type : SyntaxType.values()) {
-            syntaxTypes.put(type.getSyntaxType(), type);
+        for (final ReturnTypeType type : ReturnTypeType.values()) {
+            returnTypeTypes.put(type.getReturnType(), type);
         }
     }
 
-    private String syntaxType;
+    private String returnType;
 
-    SyntaxType(String syntaxType) {
-        this.syntaxType = syntaxType;
+    ReturnTypeType(String returnType) {
+        this.returnType = returnType;
     }
 
-    public String getSyntaxType() {
-        return syntaxType;
+    public String getReturnType() {
+        return returnType;
     }
 
-    public static SyntaxType parseSyntaxType(String syntaxType) {
-        final SyntaxType result = syntaxTypes.get(syntaxType);
+    public static ReturnTypeType parseReturnType(String returnType) {
+        final ReturnTypeType result = returnTypeTypes.get(returnType);
 
         if (result == null) {
-            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + returnType + "'.");
         }
 
         return result;
@@ -80,6 +89,7 @@ public enum SyntaxType implements Stringifiable {
 
     @Override
     public String toQtiString() {
-        return syntaxType;
+        return returnType;
     }
+
 }

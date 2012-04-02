@@ -31,38 +31,55 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.mathassess.attribute;
+package org.qtitools.mathassess.value;
 
-import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
-import org.qtitools.mathassess.type.ActionType;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Attribute with actionType value.
- * 
- * @author Jonathon Hare
+ * Enumerates the values of the syntax attribute
+ *
+ * @author David McKain
  */
-public final class ActionTypeAttribute extends SingleEnumerateAttribute<ActionType> {
+public enum SyntaxType implements Stringifiable {
+    
+    MAXIMA("text/x-maxima");
 
-    private static final long serialVersionUID = 2096278682370848167L;
+    /** Name of this class in xml schema. */
+    public static final String QTI_CLASS_NAME = "casType";
 
-    public ActionTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+    private static Map<String, SyntaxType> syntaxTypes = new HashMap<String, SyntaxType>();
+    static {
+        for (final SyntaxType type : SyntaxType.values()) {
+            syntaxTypes.put(type.getSyntaxType(), type);
+        }
+    }
+
+    private String syntaxType;
+
+    SyntaxType(String syntaxType) {
+        this.syntaxType = syntaxType;
+    }
+
+    public String getSyntaxType() {
+        return syntaxType;
+    }
+
+    public static SyntaxType parseSyntaxType(String syntaxType) {
+        final SyntaxType result = syntaxTypes.get(syntaxType);
+
+        if (result == null) {
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
+        }
+
+        return result;
     }
 
     @Override
-    protected ActionType parseQtiString(String value) {
-        return ActionType.parseActionType(value);
-    }
-
-    /**
-     * Gets all supported values of this attribute.
-     * 
-     * @return all supported values of this attribute
-     */
-    @Override
-    public ActionType[] getSupportedValues() {
-        return ActionType.values();
+    public String toQtiString() {
+        return syntaxType;
     }
 }

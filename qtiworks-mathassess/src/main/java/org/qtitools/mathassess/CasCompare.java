@@ -54,9 +54,9 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-import org.qtitools.mathassess.attribute.ActionTypeAttribute;
+import org.qtitools.mathassess.attribute.ActionAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
-import org.qtitools.mathassess.type.ActionType;
+import org.qtitools.mathassess.value.ActionType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +93,7 @@ public class CasCompare extends MathAssessOperator {
     public CasCompare(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
 
-        getAttributes().add(new ActionTypeAttribute(this, ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new ActionAttribute(this, ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI));
         getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, null, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
     }
@@ -127,7 +127,7 @@ public class CasCompare extends MathAssessOperator {
      * @see #setAction
      */
     public ActionType getAction() {
-        return ((ActionTypeAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
+        return ((ActionAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
@@ -138,7 +138,7 @@ public class CasCompare extends MathAssessOperator {
      * @see #getAction
      */
     public void setAction(ActionType action) {
-        ((ActionTypeAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
+        ((ActionAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(action);
     }
 
@@ -193,8 +193,8 @@ public class CasCompare extends MathAssessOperator {
         String code = getCode();
         code = code != null ? code.trim() : getActionCode(getAction());
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Performing casCompare: code={}, simplify={}, value1={}, value2={}",
+        if (logger.isDebugEnabled()) {
+            logger.debug("Performing casCompare: code={}, simplify={}, value1={}, value2={}",
                     new Object[] { code, simplify, v1, v2 });
         }
 

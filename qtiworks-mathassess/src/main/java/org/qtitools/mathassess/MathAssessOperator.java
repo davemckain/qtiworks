@@ -53,9 +53,9 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-import org.qtitools.mathassess.attribute.SyntaxTypeAttribute;
+import org.qtitools.mathassess.attribute.SyntaxAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
-import org.qtitools.mathassess.type.SyntaxType;
+import org.qtitools.mathassess.value.SyntaxType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     public MathAssessOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(jqtiExtensionPackage, parent);
-        getAttributes().add(new SyntaxTypeAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
+        getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
-        return ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
+        return ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
@@ -93,7 +93,7 @@ public abstract class MathAssessOperator extends CustomOperator {
      * @param syntax value to set
      */
     public void setSyntax(SyntaxType syntax) {
-        ((SyntaxTypeAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
+        ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 

@@ -55,7 +55,7 @@ import org.qtitools.mathassess.attribute.ReturnTypeAttribute;
 import org.qtitools.mathassess.tools.qticasbridge.MathsContentTooComplexException;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 import org.qtitools.mathassess.tools.qticasbridge.types.ValueWrapper;
-import org.qtitools.mathassess.type.ReturnType;
+import org.qtitools.mathassess.value.ReturnTypeType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +88,7 @@ public class CasProcess extends MathAssessOperator {
      * @return value of returnType attribute
      * @see #setReturnType
      */
-    public ReturnType getReturnType() {
+    public ReturnTypeType getReturnType() {
         return ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
@@ -96,12 +96,12 @@ public class CasProcess extends MathAssessOperator {
     /**
      * Sets new value of returnType attribute.
      * 
-     * @param returnType new value of returnType attribute
+     * @param returnTypeType new value of returnType attribute
      * @see #getReturnType
      */
-    public void setReturnType(ReturnType returnType) {
+    public void setReturnType(ReturnTypeType returnTypeType) {
         ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
-                .setValue(returnType);
+                .setValue(returnTypeType);
     }
 
     /**
@@ -136,23 +136,23 @@ public class CasProcess extends MathAssessOperator {
         final boolean simplify = getSimplify().booleanValue();
         final String code = childValues[0].toQtiString().trim();
 
-        logger.info("Performing casProcess: code={}, simplify={}", code, simplify);
+        logger.debug("Performing casProcess: code={}, simplify={}", code, simplify);
 
         final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         /* Pass variables to Maxima */
-        logger.debug("Passing variables to maxima");
+        logger.trace("Passing variables to maxima");
         for (final VariableDeclaration declaration : getAllCASReadableVariableDeclarations()) {
-            final Value value = context.getItemSessionState().getVariableValue(declaration);
             final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            if (!value.isNull() && resultClass != null) {
+            final Value value = context.getItemSessionState().getVariableValue(declaration);
+            if (value!=null && !value.isNull() && resultClass != null) {
                 qtiMaximaSession.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
             }
         }
 
         /* Run Maxima code and return result */
-        logger.debug("Running code to determine result of casProcess");
+        logger.trace("Running code to determine result of casProcess");
         final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(getBaseType(), getCardinality());
         final ValueWrapper result = qtiMaximaSession.executeCasProcess(code, simplify, resultClass);
         return CasTypeGlue.convertToJQTI(result);

@@ -31,65 +31,38 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.mathassess.type;
+package org.qtitools.mathassess.attribute;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.qtitools.mathassess.value.ActionType;
 
 /**
- * Enumerates the values of the returnType attribute
- *
- * @author David McKain
+ * Attribute with actionType value.
+ * 
+ * @author Jonathon Hare
  */
-public enum ReturnType implements Stringifiable {
-    
-    MATHS_CONTENT("mathsContent"),
-    INTEGER("integer"),
-    INTEGER_MULTIPLE("integerMultiple"),
-    INTEGER_ORDERED("integerOrdered"),
-    FLOAT("float"),
-    FLOAT_MULTIPLE("floatMultiple"),
-    FLOAT_ORDERED("floatOrdered"),
-    BOOLEAN("boolean"),
-    BOOLEAN_MULTIPLE("booleanMultiple"),
-    BOOLEAN_ORDERED("booleanOrdered");
+public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> {
 
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "returnTypeCard";
+    private static final long serialVersionUID = 2096278682370848167L;
 
-    private static Map<String, ReturnType> returnTypes = new HashMap<String, ReturnType>();
-    static {
-        for (final ReturnType type : ReturnType.values()) {
-            returnTypes.put(type.getReturnType(), type);
-        }
-    }
-
-    private String returnType;
-
-    ReturnType(String returnType) {
-        this.returnType = returnType;
-    }
-
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public static ReturnType parseReturnType(String returnType) {
-        final ReturnType result = returnTypes.get(returnType);
-
-        if (result == null) {
-            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + returnType + "'.");
-        }
-
-        return result;
+    public ActionAttribute(XmlNode parent, String localName, String namespaceUri) {
+        super(parent, localName, namespaceUri);
     }
 
     @Override
-    public String toQtiString() {
-        return returnType;
+    protected ActionType parseQtiString(String value) {
+        return ActionType.parseActionType(value);
     }
 
+    /**
+     * Gets all supported values of this attribute.
+     * 
+     * @return all supported values of this attribute
+     */
+    @Override
+    public ActionType[] getSupportedValues() {
+        return ActionType.values();
+    }
 }
