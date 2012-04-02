@@ -196,6 +196,7 @@ public class DefaultItemFlow implements ItemFlow {
         return ((AssessmentTest) start.getObject()).isFinished();
     }
 
+    @Override
     public AssessmentTest getTest() {
         final AssessmentTest test = (AssessmentTest) start.getObject();
 
@@ -204,6 +205,7 @@ public class DefaultItemFlow implements ItemFlow {
         return test;
     }
 
+    @Override
     public TestPart getCurrentTestPart() {
         final TestPart testPart = current != null ? current.getItemRef().getParentTestPart() : null;
 
@@ -213,6 +215,7 @@ public class DefaultItemFlow implements ItemFlow {
         return testPart;
     }
 
+    @Override
     public AssessmentItemRef getCurrentItemRef() {
         logger.debug("Current item ref is {} in node {}.", current != null ? current.getItemRef()
                 .getIdentifier() : "NULL", current != null ? current.getIndex() : "NULL");
@@ -220,6 +223,7 @@ public class DefaultItemFlow implements ItemFlow {
         return current != null ? current.getItemRef() : null;
     }
 
+    @Override
     public boolean hasPrevItemRef(boolean includeFinished) {
         logger.debug("Has previous item ref requested. Include finished: {}", includeFinished);
 
@@ -231,6 +235,7 @@ public class DefaultItemFlow implements ItemFlow {
         return node != null;
     }
 
+    @Override
     public AssessmentItemRef getPrevItemRef(boolean includeFinished) {
         logger.debug("Previous item ref requested. Include finished: {}", includeFinished);
 
@@ -279,6 +284,7 @@ public class DefaultItemFlow implements ItemFlow {
         return node;
     }
 
+    @Override
     public boolean hasNextItemRef(boolean includeFinished) {
         logger.debug("Has next item ref requested. Include finished: {}", includeFinished);
 
@@ -302,6 +308,7 @@ public class DefaultItemFlow implements ItemFlow {
         return node != null;
     }
 
+    @Override
     public AssessmentItemRef getNextItemRef(boolean includeFinished) {
         logger.debug("Next item ref requested. Include finished: {}", includeFinished);
 
