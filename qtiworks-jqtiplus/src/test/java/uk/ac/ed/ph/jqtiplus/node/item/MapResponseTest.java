@@ -31,14 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.qti.node.item;
+package uk.ac.ed.ph.jqtiplus.node.item;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
-import uk.ac.ed.ph.jqtiplus.value.PointValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -51,7 +53,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class MapResponsePointTest {
+public class MapResponseTest {
 
     /**
      * Creates test data for this test.
@@ -61,52 +63,56 @@ public class MapResponsePointTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null identifier, null or empty include and exclude categories
-                // (all items)
-                { "MapResponsePoint-Single.xml", new String[] { "1 1" }, 1.0 }, { "MapResponsePoint-Single.xml", new String[] { "1 3" }, 2.0 },
-                { "MapResponsePoint-Single.xml", new String[] { "3 1" }, 3.0 }, { "MapResponsePoint-Single.xml", new String[] { "3 3" }, 4.0 },
-                { "MapResponsePoint-Single.xml", new String[] { "10 10" }, -1.0 },
-                { "MapResponsePoint-Multiple.xml", new String[] { "1 1" }, 1.0 }, { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 1" }, 1.0 },
-                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3" }, 3.0 },
-                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1" }, 6.0 },
-                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1", "3 3" }, 10.0 },
-                { "MapResponsePoint-Multiple.xml", new String[] { "1 1", "1 3", "3 1", "3 3", "3 3", "3 1" }, 10.0 },
+                { "MapResponse-Single.xml", new String[] { "A" }, 0.0 },
+                { "MapResponse-Single.xml", new String[] { "B" }, 1.0 }, 
+                { "MapResponse-Single.xml", new String[] { "C" }, 0.5 },
+                { "MapResponse-Single.xml", new String[] { "D" }, 0.0 },
+                { "MapResponse-Single.xml", new String[] { "X" }, -1.0 }, 
+                { "MapResponse-Multiple.xml", new String[] { "A" }, 0.0 },
+                { "MapResponse-Multiple.xml", new String[] { "B" }, 1.0 },
+                { "MapResponse-Multiple.xml", new String[] { "C" }, 0.5 }, 
+                { "MapResponse-Multiple.xml", new String[] { "D" }, 0.0 },
+                { "MapResponse-Multiple.xml", new String[] { "A", "B" }, 1.0 }, 
+                { "MapResponse-Multiple.xml", new String[] { "C", "B" }, 1.5 },
+                { "MapResponse-Multiple.xml", new String[] { "B", "C" }, 1.5 },
+                { "MapResponse-Multiple.xml", new String[] { "A", "B", "B" }, 1.0 },
+                { "MapResponse-Multiple.xml", new String[] { "B", "B", "C" }, 1.5 }
         });
     }
 
     private final String fileName;
-
     private Value response;
+    private final double expectedOutcome;
 
-    double expectedOutcome;
-
-    public MapResponsePointTest(String fileName, String[] responses, double expectedOutcome) {
+    public MapResponseTest(String fileName, String[] responses, double expectedOutcome) {
         this.fileName = fileName;
         this.expectedOutcome = expectedOutcome;
 
         if (responses.length == 1) {
-            response = new PointValue(responses[0]);
+            response = new IdentifierValue(responses[0]);
         }
         else {
             response = new MultipleValue();
             for (final String s : responses) {
-                ((MultipleValue) response).add(new PointValue(s));
+                ((MultipleValue) response).add(new IdentifierValue(s));
             }
         }
     }
 
     @Test
-    public void test() {
-        final AssessmentItem item = new AssessmentItem();
-        item.load(getClass().getResource(fileName), jqtiController);
+    public void test() throws Exception {
+        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class);
+        itemSessionController.initialize();
+        
+        ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        AssessmentItem item = itemSessionController.getItem();
 
         if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
             response = new MultipleValue((SingleValue) response);
         }
-
-        item.getResponseDeclaration("RESPONSE").setValue(response);
-        item.processResponses();
-
-        assertEquals(expectedOutcome, ((FloatValue) item.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
+        itemSessionState.setResponseValue("RESPONSE", response);
+        itemSessionController.processResponses();
+        
+        assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
     }
 }
