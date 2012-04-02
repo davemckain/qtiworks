@@ -38,9 +38,13 @@ import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -101,10 +105,18 @@ public abstract class AbstractIntegrationTest {
         return sampleXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
     }
     
-    protected ItemValidationResult validateSampleItem() {
+    protected AssessmentObjectManager createAssessmentObjectManager() {
         final QtiXmlObjectReader objectReader = createSampleObjectReader();
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        
-        return objectManager.resolveAndValidateItem(sampleResourceUri);
+        return new AssessmentObjectManager(objectReader);
+    }
+    
+    protected ItemValidationResult validateSampleItem() {
+        return createAssessmentObjectManager().resolveAndValidateItem(sampleResourceUri);
+    }
+    
+    protected ItemSessionController createItemSessionController() {
+        final ResolvedAssessmentItem resolvedAssessmentItem = createAssessmentObjectManager().resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);
+        final ItemSessionState itemSessionState = new ItemSessionState();
+        return new ItemSessionController(resolvedAssessmentItem, itemSessionState);
     }
 }
