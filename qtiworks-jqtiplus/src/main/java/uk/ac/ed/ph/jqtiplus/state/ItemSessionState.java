@@ -126,6 +126,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(responseIdentifier);
         return shuffledInteractionChoiceOrders.get(responseIdentifier);
     }
+    
+    public List<Identifier> getShuffledInteractionChoiceOrder(String responseIdentifierString) {
+        ConstraintUtilities.ensureNotNull(responseIdentifierString);
+        return getShuffledInteractionChoiceOrder(new Identifier(responseIdentifierString));
+    }
 
     public List<Identifier> getShuffledInteractionChoiceOrder(Interaction interaction) {
         ConstraintUtilities.ensureNotNull(interaction);
@@ -142,25 +147,14 @@ public final class ItemSessionState implements Serializable {
         }
     }
 
+    public void setShuffledInteractionChoiceOrder(String responseIdentifierString, List<Identifier> shuffleOrders) {
+        ConstraintUtilities.ensureNotNull(responseIdentifierString);
+        setShuffledInteractionChoiceOrder(new Identifier(responseIdentifierString), shuffleOrders);
+    }
+
     public void setShuffledInteractionChoiceOrder(Interaction interaction, List<Identifier> shuffleOrders) {
         ConstraintUtilities.ensureNotNull(interaction);
         setShuffledInteractionChoiceOrder(interaction.getResponseIdentifier(), shuffleOrders);
-    }
-
-    public Value getOverriddenDefaultValue(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        Value result = getOverriddenTemplateDefaultValue(identifier);
-        if (result == null) {
-            result = getOverriddenResponseDefaultValue(identifier);
-            if (result == null) {
-                result = getOverriddenOutcomeDefaultValue(identifier);
-            }
-        }
-        return result;
-    }
-
-    public Value getOverriddenDefaultValue(VariableDeclaration declaration) {
-        return getOverriddenDefaultValue(declaration.getIdentifier());
     }
 
     //----------------------------------------------------------------
@@ -229,7 +223,30 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(completionStatus);
         setCompletionStatusValue(new IdentifierValue(completionStatus));
     }
+    
+    //----------------------------------------------------------------
 
+    public Value getOverriddenDefaultValue(Identifier identifier) {
+        ConstraintUtilities.ensureNotNull(identifier);
+        Value result = getOverriddenTemplateDefaultValue(identifier);
+        if (result == null) {
+            result = getOverriddenResponseDefaultValue(identifier);
+            if (result == null) {
+                result = getOverriddenOutcomeDefaultValue(identifier);
+            }
+        }
+        return result;
+    }
+    
+    public Value getOverriddenDefaultValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getOverriddenDefaultValue(new Identifier(identifierString));
+    }
+
+    public Value getOverriddenDefaultValue(VariableDeclaration declaration) {
+        return getOverriddenDefaultValue(declaration.getIdentifier());
+    }
+    
     //----------------------------------------------------------------
 
     public Value getOverriddenTemplateDefaultValue(Identifier identifier) {
@@ -237,6 +254,11 @@ public final class ItemSessionState implements Serializable {
         return overriddenTemplateDefaultValues.get(identifier);
     }
 
+    public Value getOverriddenTemplateDefaultValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getOverriddenTemplateDefaultValue(new Identifier(identifierString));
+    }
+    
     public Value getOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
         return getOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier());
@@ -248,6 +270,11 @@ public final class ItemSessionState implements Serializable {
         overriddenTemplateDefaultValues.put(identifier, value);
     }
 
+    public void setOverriddenTemplateDefaultValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setOverriddenTemplateDefaultValue(new Identifier(identifierString), value);
+    }
+    
     public void setOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
         setOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier(), value);
@@ -264,6 +291,11 @@ public final class ItemSessionState implements Serializable {
         return overriddenResponseDefaultValues.get(identifier);
     }
 
+    public Value getOverriddenResponseDefaultValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return overriddenResponseDefaultValues.get(new Identifier(identifierString));
+    }
+
     public Value getOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration) {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
         return getOverriddenResponseDefaultValue(responseDeclaration.getIdentifier());
@@ -273,6 +305,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         overriddenResponseDefaultValues.put(identifier, value);
+    }
+    
+    public void setOverriddenResponseDefaultValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setOverriddenResponseDefaultValue(new Identifier(identifierString), value);
     }
 
     public void setOverriddenResponseDefaultValue(ResponseDeclaration responseDeclaration, Value value) {
@@ -290,6 +327,11 @@ public final class ItemSessionState implements Serializable {
     public Value getOverriddenOutcomeDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return overriddenOutcomeDefaultValues.get(identifier);
+    }
+    
+    public Value getOverriddenOutcomeDefaultValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getOverriddenOutcomeDefaultValue(new Identifier(identifierString));
     }
 
     public Value getOverriddenOutcomeDefaultValue(OutcomeDeclaration outcomeDeclaration) {
@@ -318,6 +360,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         return overriddenCorrectResponseValues.get(identifier);
     }
+    
+    public Value getOverriddenCorrectResponseValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getOverriddenCorrectResponseValue(new Identifier(identifierString));
+    }
 
     public Value getOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration) {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
@@ -328,6 +375,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         overriddenCorrectResponseValues.put(identifier, value);
+    }
+
+    public void setOverriddenCorrectResponseValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setOverriddenOutcomeDefaultValue(new Identifier(identifierString), value);
     }
 
     public void setOverriddenCorrectResponseValue(ResponseDeclaration responseDeclaration, Value value) {
@@ -346,6 +398,11 @@ public final class ItemSessionState implements Serializable {
         return templateValues.get(identifier);
     }
 
+    public Value getTemplateValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getTemplateValue(new Identifier(identifierString));
+    }
+
     public Value getTemplateValue(TemplateDeclaration templateDeclaration) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
         return getTemplateValue(templateDeclaration.getIdentifier());
@@ -355,6 +412,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         templateValues.put(identifier, value);
+    }
+
+    public void setTemplateValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setTemplateValue(new Identifier(identifierString), value);
     }
 
     public void setTemplateValue(TemplateDeclaration templateDeclaration, Value value) {
@@ -371,6 +433,11 @@ public final class ItemSessionState implements Serializable {
     public Value getResponseValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return responseValues.get(identifier);
+    }
+
+    public Value getResponseValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getResponseValue(new Identifier(identifierString));
     }
 
     public Value getResponseValue(ResponseDeclaration responseDeclaration) {
@@ -393,6 +460,11 @@ public final class ItemSessionState implements Serializable {
             throw new IllegalArgumentException("numAttempts variable should not be set via setResponseValue()");
         }
         responseValues.put(identifier, value);
+    }
+
+    public void setResponseValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setResponseValue(new Identifier(identifierString), value);
     }
 
     public void setResponseValue(ResponseDeclaration responseDeclaration, Value value) {
@@ -418,18 +490,30 @@ public final class ItemSessionState implements Serializable {
         return outcomeValues.get(identifier);
     }
 
+    public Value getOutcomeValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getOutcomeValue(new Identifier(identifierString));
+    }
+    
     public Value getOutcomeValue(OutcomeDeclaration outcomeDeclaration) {
         ConstraintUtilities.ensureNotNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
+    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(Identifier identifier, Value value) {
-        /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
         ConstraintUtilities.ensureNotNull(identifier);
         ConstraintUtilities.ensureNotNull(value);
         outcomeValues.put(identifier, value);
     }
 
+    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
+    public void setOutcomeValue(String identifierString, Value value) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        setOutcomeValue(new Identifier(identifierString), value);
+    }
+
+    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(outcomeDeclaration);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
@@ -469,8 +553,13 @@ public final class ItemSessionState implements Serializable {
         }
         return result;
     }
+    
+    public Value getTemplateOrOutcomeValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getTemplateOrOutcomeValue(new Identifier(identifierString));
+    }
 
-    public Value getValue(Identifier identifier) {
+    public Value getVariableValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value result = getResponseValue(identifier);
         if (result == null) {
@@ -479,9 +568,14 @@ public final class ItemSessionState implements Serializable {
         return result;
     }
 
+    public Value getVariableValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return getVariableValue(new Identifier(identifierString));
+    }
+
     public Value getVariableValue(VariableDeclaration variableDeclaration) {
         ConstraintUtilities.ensureNotNull(variableDeclaration);
-        return getValue(variableDeclaration.getIdentifier());
+        return getVariableValue(variableDeclaration.getIdentifier());
     }
 
     public void setVariableValue(VariableDeclaration variableDeclaration, Value value) {

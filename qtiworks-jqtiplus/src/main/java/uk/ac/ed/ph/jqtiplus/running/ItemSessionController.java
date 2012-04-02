@@ -449,7 +449,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
-            value = itemSessionState.getValue(identifier);
+            value = itemSessionState.getVariableValue(identifier);
         }
         else {
             /* Only allows specified types of variables */
@@ -478,25 +478,21 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return value;
     }
-
-    private void initValue(VariableDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
-        itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
-    }
-
-    private Value computeInitialValue(Identifier identifier) {
-        return computeDefaultValue(identifier);
-    }
-
-    private Value computeInitialValue(VariableDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
-        return computeInitialValue(declaration.getIdentifier());
+    
+    public Value lookupVariableValue(String identifierString, VariableType... permittedTypes) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return lookupVariableValue(new Identifier(identifierString), permittedTypes);
     }
 
     @Override
     public Value computeDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
+    }
+    
+    public Value computeDefaultValue(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
     }
 
     public Value computeDefaultValue(VariableDeclaration declaration) {
@@ -537,6 +533,11 @@ public final class ItemSessionController implements ItemProcessingContext {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
+    
+    public Value computeCorrectResponse(String identifierString) {
+        ConstraintUtilities.ensureNotNull(identifierString);
+        return computeCorrectResponse(new Identifier(identifierString));
+    }
 
     public Value computeCorrectResponse(ResponseDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
@@ -567,6 +568,23 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration));
     }
+    
+    //-------------------------------------------------------------------
+
+    private void initValue(VariableDeclaration declaration) {
+        ConstraintUtilities.ensureNotNull(declaration);
+        itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
+    }
+
+    private Value computeInitialValue(Identifier identifier) {
+        return computeDefaultValue(identifier);
+    }
+    
+    private Value computeInitialValue(VariableDeclaration declaration) {
+        ConstraintUtilities.ensureNotNull(declaration);
+        return computeInitialValue(declaration.getIdentifier());
+    }
+
 
     //-------------------------------------------------------------------
     
