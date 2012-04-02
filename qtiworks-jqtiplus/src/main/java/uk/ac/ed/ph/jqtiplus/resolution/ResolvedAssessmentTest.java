@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResol
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +56,7 @@ import java.util.Map;
  * 
  * @author David McKain
  */
-public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<AssessmentTest> implements Serializable {
+public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<AssessmentTest> {
 
     private static final long serialVersionUID = -8302050952592265206L;
     

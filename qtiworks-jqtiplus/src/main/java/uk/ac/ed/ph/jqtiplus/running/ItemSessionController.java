@@ -139,11 +139,10 @@ public final class ItemSessionController implements ItemProcessingContext {
         return item;
     }
 
+    @Override
     public ItemSessionState getItemSessionState() {
         return itemSessionState;
     }
-    
-    
 
     //-------------------------------------------------------------------
     // Initialization & template processing
@@ -444,6 +443,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     //-------------------------------------------------------------------
 
+    @Override
     public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value value = null;
@@ -493,7 +493,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         return computeInitialValue(declaration.getIdentifier());
     }
 
-    /* DM: This copes with defaults and overridden values */
+    @Override
     public Value computeDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));

@@ -194,6 +194,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @return value of title attribute
      * @see #setTitle
      */
+    @Override
     public String getTitle() {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
@@ -204,6 +205,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @param title new value of title attribute
      * @see #getTitle
      */
+    @Override
     public void setTitle(String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
@@ -214,6 +216,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @return value of toolName attribute
      * @see #setToolName
      */
+    @Override
     public String getToolName() {
         return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getComputedValue();
     }
@@ -224,6 +227,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @param toolName new value of toolName attribute
      * @see #getToolName
      */
+    @Override
     public void setToolName(String toolName) {
         getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).setValue(toolName);
     }
@@ -234,6 +238,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @return value of toolVersion attribute
      * @see #setToolVersion
      */
+    @Override
     public String getToolVersion() {
         return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getComputedValue();
     }
@@ -244,6 +249,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
      * @param toolVersion new value of toolVersion attribute
      * @see #getToolVersion
      */
+    @Override
     public void setToolVersion(String toolVersion) {
         getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).setValue(toolVersion);
     }

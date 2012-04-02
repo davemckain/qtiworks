@@ -39,8 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
-import java.io.Serializable;
-
 /**
  * Encapsulates the result of instantiating a QTI {@link RootObject} from XML, as returned
  * by {@link QtiXmlObjectReader}.
@@ -49,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author David McKain
  */
-public final class QtiXmlObjectReadResult<E extends RootObject> implements RootObjectHolder<E>, Serializable {
+public final class QtiXmlObjectReadResult<E extends RootObject> implements RootObjectHolder<E> {
 
     private static final long serialVersionUID = -6470500039269477402L;
 

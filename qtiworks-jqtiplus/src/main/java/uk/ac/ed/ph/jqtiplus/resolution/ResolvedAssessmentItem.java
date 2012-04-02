@@ -42,15 +42,13 @@ import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResol
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
-import java.io.Serializable;
-
 /**
  * Wraps up the lookup of an {@link AssessmentItem} and its corresponding
  * {@link ResponseProcessing} template (where applicable). 
  * 
  * @author David McKain
  */
-public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<AssessmentItem> implements Serializable {
+public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<AssessmentItem> {
 
     private static final long serialVersionUID = -8302050952592265206L;
 
