@@ -104,17 +104,17 @@ public final class ItemSessionController implements ItemProcessingContext {
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
     
-    public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
-        this(null, resolvedAssessmentItem, assessmentItemState);
+    public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) {
+        this(null, resolvedAssessmentItem, itemSessionState);
     }
 
-    public ItemSessionController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState assessmentItemState) {
+    public ItemSessionController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
-        ConstraintUtilities.ensureNotNull(assessmentItemState, "assessmentItemState");
+        ConstraintUtilities.ensureNotNull(itemSessionState, "itemSessionState");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
-        this.itemSessionState = assessmentItemState;
+        this.itemSessionState = itemSessionState;
     }
     
     public JqtiExtensionManager getJqtiExtensionManager() {
