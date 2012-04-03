@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -45,7 +46,7 @@ import java.util.Map;
  * 
  * @author David McKain
  */
-public interface JqtiExtensionPackage extends LifecycleListener {
+public interface JqtiExtensionPackage extends LifecycleListener, Serializable {
     
     /**
      * Returns a displayable name for this extension package.

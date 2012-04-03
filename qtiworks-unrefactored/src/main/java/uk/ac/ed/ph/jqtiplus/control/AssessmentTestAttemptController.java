@@ -63,6 +63,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
@@ -278,6 +279,7 @@ public final class AssessmentTestAttemptController {
 
     private void initializeItemRefController(AssessmentItemRef itemRef, AssessmentItemRefState itemRefState) {
         /* Resolve item href */
+        ResolvedAssessmentItem resolvedAssessmentItem = resolvedAssessmentTest.getResolvedAssessmentItem(itemRef);
         final AssessmentItemManager itemManager = getTestManager().resolveItem(itemRef);
 
         /* Create controller for this ref */
@@ -679,10 +681,7 @@ public final class AssessmentTestAttemptController {
      */
     protected class TestProcessingContextImpl implements TestProcessingContext {
 
-        private final Map<String, Value> expressionValues;
-
         public TestProcessingContextImpl() {
-            this.expressionValues = new TreeMap<String, Value>();
         }
         
         @Override
@@ -709,14 +708,6 @@ public final class AssessmentTestAttemptController {
         public void terminate() {
             testState.setFinished(true);
         }
-        
-        public AssessmentItemManager resolveItem(AssessmentItemRef assessmentItemRef) {
-            return testManager.resolveItem(assessmentItemRef);
-        }
-
-        public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) {
-            return testManager.resolveVariableReference(variableReferenceIdentifier);
-        }
 
         @Override
         public Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef) {
@@ -734,20 +725,9 @@ public final class AssessmentTestAttemptController {
             return AssessmentTestAttemptController.this.resolveDottedVariableReference(variableReferenceIdentifier);
         }
 
+        @Override
         public List<AssessmentItemRefState> lookupItemRefStates() {
             return testState.lookupItemRefStates();
-        }
-
-        public Value getExpressionValue(Expression expression) {
-            return expressionValues.get(expression.computeXPath());
-        }
-
-        public Map<String, Value> exportExpressionValues() {
-            return Collections.unmodifiableMap(expressionValues);
-        }
-        
-        public void setExpressionValue(Expression expression, Value value) {
-            expressionValues.put(expression.computeXPath(), value);
         }
 
         @Override
@@ -787,7 +767,6 @@ public final class AssessmentTestAttemptController {
         public String toString() {
             return getClass().getSimpleName() + "@" + hashCode()
                     + "(controller=" + AssessmentTestAttemptController.this
-                    + ",expressionValues=" + expressionValues
                     + ")";
         }
     }

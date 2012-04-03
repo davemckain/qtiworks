@@ -20,7 +20,6 @@ hence slightly easier to debug.
   <xsl:param name="serializationMethod" as="xs:string"/>
   <xsl:param name="contentType" as="xs:string"/>
   <xsl:param name="outputMethod" as="xs:string"/>
-  <xsl:param name="engineBasePath" as="xs:string"/>
 
   <!--
   <xsl:param name="mathJaxUrl" select="'http://www2.ph.ed.ac.uk/lib/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>

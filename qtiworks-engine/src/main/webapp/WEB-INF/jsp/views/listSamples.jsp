@@ -16,7 +16,7 @@ Model attributes:
 demoSampleCollection (QTISampleCollection)
 
 --%>
-<c:set var="title" value="QTI Validator" />
+<c:set var="title" value="QTI Samples" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
 <h2>Sample items</h2>

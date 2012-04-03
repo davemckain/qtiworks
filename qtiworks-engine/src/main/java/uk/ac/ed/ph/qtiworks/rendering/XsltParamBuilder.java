@@ -130,10 +130,10 @@ public final class XsltParamBuilder {
         
         /* Add type information to container element. This won't be available for NullValues */
         if (value.getBaseType()!=null) {
-            element.setAttribute("baseType", value.getBaseType().toString());
+            element.setAttribute("baseType", value.getBaseType().toQtiString());
         }
         if (value.getCardinality()!=null) {
-            element.setAttribute("cardinality", value.getCardinality().toString());
+            element.setAttribute("cardinality", value.getCardinality().toQtiString());
         }
 
         /* Then add child Elements containing actual value information */

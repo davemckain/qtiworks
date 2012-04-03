@@ -71,6 +71,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
 
+    private static final long serialVersionUID = -5817285044862817737L;
+
     private static final Logger logger = LoggerFactory.getLogger(MathAssessExtensionPackage.class);
     
     public static final String DISPLAY_NAME = "MathAssess QTI Extensions";
