@@ -115,7 +115,7 @@ public class SliderInteraction extends BlockInteraction {
         getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME));
         getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, null, null, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_STEP_LABEL_NAME, null, null, false));
-        getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, null, null, false));
+        getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_REVERSE_NAME, null, null, false));
     }
 

@@ -57,7 +57,7 @@ public class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
     }
 
     public IdentifierMultipleAttribute(XmlNode parent, String localName, List<Identifier> defaultValue, List<Identifier> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
     }
 
     @Override

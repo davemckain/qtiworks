@@ -116,7 +116,11 @@ public class PositionObjectInteraction extends BlockInteraction {
      * @return value of centerPoint attribute
      */
     public List<Integer> getCenterPoint() {
-        return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getValueAsList();
+        return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getValue();
+    }
+    
+    public void setCenterPoint(List<Integer> value) {
+        getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).setValue(value);
     }
 
     /**

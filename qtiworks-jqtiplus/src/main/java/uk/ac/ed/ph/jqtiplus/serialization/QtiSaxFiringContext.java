@@ -63,7 +63,7 @@ public final class QtiSaxFiringContext {
         /* Build up attributes */
         AttributesImpl xmlAttributes = new AttributesImpl();
         for (Attribute<?> attribute : node.getAttributes()) {
-            if (attribute.isRequired() || attribute.getValue()!=null) {
+            if (attribute.isRequired() || attribute.isSet()) {
                 String localName = attribute.getLocalName();
                 String namespaceUri = attribute.getNamespaceUri();
                 String qName = attributeNamespacePrefixMappings.getQName(namespaceUri, localName);

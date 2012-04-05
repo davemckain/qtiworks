@@ -49,10 +49,6 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
         super(parent, localName);
     }
 
-    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, VisibilityMode value, boolean required) {
         super(parent, localName, defaultValue, value, required);
     }

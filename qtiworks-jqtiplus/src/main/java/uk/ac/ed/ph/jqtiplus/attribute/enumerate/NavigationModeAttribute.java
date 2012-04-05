@@ -49,10 +49,6 @@ public final class NavigationModeAttribute extends SingleEnumerateAttribute<Navi
         super(parent, localName);
     }
 
-    public NavigationModeAttribute(XmlNode parent, String localName, NavigationMode defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected NavigationMode parseQtiString(String value) {
         return NavigationMode.parseNavigationMode(value);

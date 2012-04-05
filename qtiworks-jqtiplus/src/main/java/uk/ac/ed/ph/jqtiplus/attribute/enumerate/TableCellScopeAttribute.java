@@ -45,18 +45,10 @@ public final class TableCellScopeAttribute extends SingleEnumerateAttribute<Tabl
 
     private static final long serialVersionUID = -5619179078436198190L;
 
-    public TableCellScopeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public TableCellScopeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, null, null, required);
     }
 
-    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public TableCellScopeAttribute(XmlNode parent, String localName, TableCellScope defaultValue, TableCellScope value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
-    }
-    
     @Override
     protected TableCellScope parseQtiString(String value) {
         return TableCellScope.parseTableCellScope(value);

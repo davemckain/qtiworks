@@ -49,10 +49,6 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
         super(parent, localName);
     }
 
-    public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue, TextFormat value, boolean required) {
         super(parent, localName, defaultValue, value, required);
     }

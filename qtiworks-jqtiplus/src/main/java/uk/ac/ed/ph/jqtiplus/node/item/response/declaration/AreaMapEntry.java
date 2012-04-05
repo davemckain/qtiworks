@@ -111,7 +111,11 @@ public class AreaMapEntry extends AbstractNode {
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValueAsList();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValue();
+    }
+    
+    public void setCoordinates(List<Integer> value) {
+        getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
     /**

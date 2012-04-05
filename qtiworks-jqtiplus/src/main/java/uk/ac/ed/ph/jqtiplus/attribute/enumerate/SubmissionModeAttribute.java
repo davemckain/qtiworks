@@ -49,10 +49,6 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
         super(parent, localName);
     }
 
-    public SubmissionModeAttribute(XmlNode parent, String localName, SubmissionMode defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected SubmissionMode parseQtiString(String value) {
         return SubmissionMode.parseSubmissionMode(value);

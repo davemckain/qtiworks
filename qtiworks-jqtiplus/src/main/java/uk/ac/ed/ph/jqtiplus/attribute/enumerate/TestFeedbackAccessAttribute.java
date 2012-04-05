@@ -49,14 +49,6 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
         super(parent, localName);
     }
 
-    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public TestFeedbackAccessAttribute(XmlNode parent, String localName, TestFeedbackAccess defaultValue, TestFeedbackAccess value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
-    }
-
     @Override
     protected TestFeedbackAccess parseQtiString(String value) {
         return TestFeedbackAccess.parseTestFeedbackAccess(value);

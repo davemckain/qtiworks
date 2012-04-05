@@ -49,10 +49,6 @@ public final class SessionStatusAttribute extends SingleEnumerateAttribute<Sessi
         super(parent, localName);
     }
 
-    public SessionStatusAttribute(XmlNode parent, String localName, SessionStatus defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected SessionStatus parseQtiString(String value) {
         return SessionStatus.parseSessionStatus(value);

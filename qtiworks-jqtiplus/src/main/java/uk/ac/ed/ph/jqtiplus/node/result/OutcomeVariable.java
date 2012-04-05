@@ -127,7 +127,7 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
             setCardinality(declaration.getCardinality());
             setBaseType(declaration.getBaseType());
             getFieldValues().addAll(FieldValue.getValues(this, value));
-            getViews().addAll(declaration.getViews());
+            setViews(declaration.getViews());
             setInterpretation(declaration.getInterpretation());
             setLongInterpretation(declaration.getLongInterpretation());
             setNormalMaximum(declaration.getNormalMaximum());
@@ -158,13 +158,12 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
         }
     }
 
-    /**
-     * Gets value of view attribute.
-     * 
-     * @return value of view attribute
-     */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValueAsList();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValue();
+    }
+    
+    public void setViews(List<View> value) {
+        getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
 
     /**

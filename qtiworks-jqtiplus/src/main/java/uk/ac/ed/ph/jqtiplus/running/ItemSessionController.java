@@ -58,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.ResponseVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
@@ -615,12 +616,13 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     void recordItemVariables(ItemResult result) {
-        result.getItemVariables().clear();
+        List<ItemVariable> itemVariables = result.getItemVariables();
+        itemVariables.clear();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
             final OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
-            result.getItemVariables().add(variable);
+            itemVariables.add(variable);
         }
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
             final ResponseDeclaration declaration = item.getResponseDeclaration(mapEntry.getKey());
@@ -631,13 +633,13 @@ public final class ItemSessionController implements ItemProcessingContext {
                 interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
             }
             final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
-            result.getItemVariables().add(variable);
+            itemVariables.add(variable);
         }
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
             final TemplateDeclaration declaration = item.getTemplateDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             final TemplateVariable variable = new TemplateVariable(result, declaration, value);
-            result.getItemVariables().add(variable);
+            itemVariables.add(variable);
         }
     }
 

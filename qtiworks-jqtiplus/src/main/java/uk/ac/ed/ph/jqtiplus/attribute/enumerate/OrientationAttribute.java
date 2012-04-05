@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
 
 /**
- * Attribute with baseType value.
+ * Attribute with orientation value
  * 
  * @author Jiri Kajaba
  */
@@ -45,16 +45,8 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
 
     private static final long serialVersionUID = 5170134258927740739L;
 
-    public OrientationAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-
-    public OrientationAttribute(XmlNode parent, String localName, Orientation defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public OrientationAttribute(XmlNode parent, String localName, Orientation defaultValue, Orientation value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public OrientationAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, null, null, required);
     }
 
     @Override

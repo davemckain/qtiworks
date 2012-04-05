@@ -109,7 +109,11 @@ public class Inside extends AbstractFunctionalExpression {
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getValueAsList();
+        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getValue();
+    }
+    
+    public void setCoordinates(List<Integer> value) {
+        getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).setValue(value);
     }
 
     @Override

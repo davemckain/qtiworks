@@ -49,10 +49,6 @@ public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType
         super(parent, localName);
     }
 
-    public ParamTypeAttribute(XmlNode parent, String localName, ParamType defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected ParamType parseQtiString(String value) {
         return ParamType.parseParamType(value);

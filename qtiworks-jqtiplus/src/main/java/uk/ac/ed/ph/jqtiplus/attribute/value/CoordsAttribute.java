@@ -57,7 +57,7 @@ public class CoordsAttribute extends MultipleAttribute<Integer> {
     }
 
     public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue, List<Integer> value, boolean required) {
-        super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, defaultValue, value, required);
     }
 
     @Override

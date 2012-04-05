@@ -49,10 +49,6 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
         super(parent, localName);
     }
 
-    public ShapeAttribute(XmlNode parent, String localName, Shape defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected Shape parseQtiString(String value) {
         return Shape.parseShape(value);

@@ -69,7 +69,12 @@ public class HotspotChoice extends Choice implements Hotspot {
 
     @Override
     public List<Integer> getCoords() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValueAsList();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValue();
+    }
+    
+    @Override
+    public void setCoords(List<Integer> value) {
+        getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
     @Override
@@ -78,15 +83,15 @@ public class HotspotChoice extends Choice implements Hotspot {
     }
 
     @Override
-    public Shape getShape() {
-        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
-    }
-
-    @Override
     public void setHotspotLabel(String hotspotLabel) {
         getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).setValue(hotspotLabel);
     }
 
+    @Override
+    public Shape getShape() {
+        return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
+    }
+    
     @Override
     public void setShape(Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);

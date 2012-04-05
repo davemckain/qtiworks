@@ -199,47 +199,17 @@ public class AssessmentItemRef extends SectionPart {
         }
     }
 
-    //    /**
-    //     * Gets referenced item (can be null).
-    //     * <p>
-    //     * Every {@code validate} method call tries to load referenced item from file (even if item is already loaded).
-    //     * <p>
-    //     * Referenced item is properly loaded after {@code initialize} method call.
-    //     *
-    //     * @return referenced item (can be null)
-    //     * @see #setItem
-    //     */
-    //    public AssessmentItem getItem()
-    //    {
-    //        return item;
-    //    }
-
-    //    /**
-    //     * Sets new referenced item.
-    //     * <p>
-    //     * Every {@code validate} method call overwrites referenced item!
-    //     *
-    //     * @param item new referenced item
-    //     * @see #getItem
-    //     */
-    //    public void setItem(AssessmentItem item)
-    //    {
-    //        if (this.item!=null) {
-    //            this.item.removeLifecycleListener(lifecycleEventProxy);
-    //        }
-    //        this.item = item;
-    //        if (item!=null) {
-    //            item.addLifecycleListener(lifecycleEventProxy);
-    //        }
-    //    }
-
     /**
      * Gets value of category attribute.
      * 
      * @return value of category attribute
      */
     public List<String> getCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getValueAsList();
+        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getValue();
+    }
+    
+    public void setCategories(List<String> value) {
+        getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).setValue(value);
     }
 
     /**

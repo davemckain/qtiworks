@@ -50,19 +50,19 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
     private static final long serialVersionUID = 7394997591576564116L;
 
     public SingleAttribute(XmlNode owner, String localName) {
-        this(owner, localName, null, null, true);
+        super(owner, localName, null, null, true);
     }
     
     public SingleAttribute(XmlNode owner, String localName, boolean required) {
-        this(owner, localName, null, null, required);
+        super(owner, localName, null, null, required);
     }
 
     public SingleAttribute(XmlNode owner, String localName, String namespaceUri) {
-        this(owner, localName, namespaceUri, null, null, true);
+        super(owner, localName, namespaceUri, null, null, true);
     }
 
     public SingleAttribute(XmlNode owner, String localName, V defaultValue) {
-        this(owner, localName, defaultValue, defaultValue, false);
+        super(owner, localName, defaultValue, defaultValue, false);
     }
 
     public SingleAttribute(XmlNode owner, String localName, V defaultValue, V value, boolean required) {
@@ -73,26 +73,6 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
         super(owner, localName, namespaceUri, defaultValue, value, required);
     }
     
-    /**
-     * Sets new value of attribute.
-     * 
-     * @param value new value of attribute
-     * @see #getValue
-     */
-    public void setValue(V value) {
-        this.value = value;
-    }
-
-    /**
-     * Sets new default value of attribute.
-     * 
-     * @param defaultValue new default value of attribute
-     * @see #getDefaultValue
-     */
-    public void setDefaultValue(V defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
     @Override
     public final void load(Element owner, Node node, LoadingContext context) {
         load(owner, node.getNodeValue(), context);

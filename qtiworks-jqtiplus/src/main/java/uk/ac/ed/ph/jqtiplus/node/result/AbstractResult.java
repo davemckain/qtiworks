@@ -121,7 +121,7 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
     public List<ItemVariable> getItemVariables() {
         return getNodeGroups().getItemVariableGroup().getItemVariables();
     }
-
+    
     @Override
     public final String computeXPathComponent() {
         final String identifier = getIdentifier();

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -63,42 +62,14 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     }
 
     public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue) {
-        this(parent, localName, fieldSeparator, null, defaultValue, false);
+        this(parent, localName, fieldSeparator, defaultValue, null, false);
     }
 
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> value, List<E> defaultValue, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue, List<E> value, boolean required) {
+        super(parent, localName, defaultValue, value!=null ? new ArrayList<E>() : value, required);
         this.fieldSeparator = fieldSeparator;
     }
-
-    /**
-     * Returns a List representing the value of this attribute, returning an empty List
-     * for a null value.
-     * <p>
-     * Important Note: you cannot subsequently differentiate between a null and an empty value from
-     * the result of this method!
-     * 
-     * @return value of attribute
-     */
-    @SuppressWarnings("unchecked")
-    public List<E> getValueAsList() {
-        return value!=null ? value : (List<E>) Collections.emptyList();
-    }
-
-    /**
-     * Returns a List representing the default value of this attribute, returning an empty List
-     * for a null default value.
-     * <p>
-     * Important Note: you cannot subsequently differentiate between a null and an empty value from
-     * the result of this method!
-     * 
-     * @return value of attribute
-     */
-    @SuppressWarnings("unchecked")
-    public List<E> getDefaultValueAsList() {
-        return defaultValue!=null ? defaultValue : (List<E>) Collections.emptyList();
-    }
-
+    
     @Override
     public final void load(Element owner, Node node, LoadingContext context) {
         load(owner, node.getNodeValue(), context);

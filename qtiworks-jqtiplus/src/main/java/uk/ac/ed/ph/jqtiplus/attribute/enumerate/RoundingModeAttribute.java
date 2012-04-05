@@ -49,10 +49,6 @@ public final class RoundingModeAttribute extends SingleEnumerateAttribute<Roundi
         super(parent, localName);
     }
 
-    public RoundingModeAttribute(XmlNode parent, String localName, RoundingMode defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
     @Override
     protected RoundingMode parseQtiString(String value) {
         return RoundingMode.parseRoundingMode(value);

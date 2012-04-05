@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
@@ -69,16 +68,8 @@ public class ResponseVariable extends ItemVariable {
         getNodeGroups().add(new CandidateResponseGroup(this));
     }
 
-    /**
-     * Creates new responseVariable from given responseDeclaration.
-     * 
-     * @param parent parent of created responseVariable
-     * @param declaration Response declaration to use
-     */
-    @ToRefactor
     public ResponseVariable(AbstractResult parent, ResponseDeclaration declaration, Value value, List<Identifier> shuffledInteractionChoiceIdentifiers) {
         this(parent);
-
         if (declaration != null) {
             setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
             setBaseType(declaration.getBaseType());
@@ -103,7 +94,11 @@ public class ResponseVariable extends ItemVariable {
      * @return value of choiceSequence attribute
      */
     public List<Identifier> getChoiceSequence() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getValueAsList();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getValue();
+    }
+    
+    public void setChoiceSequence(List<Identifier> value) {
+        getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).setValue(value);
     }
 
     /**

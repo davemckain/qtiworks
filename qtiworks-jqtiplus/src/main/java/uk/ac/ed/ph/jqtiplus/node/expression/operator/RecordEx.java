@@ -83,7 +83,11 @@ public class RecordEx extends AbstractFunctionalExpression {
      * @return value of identifiers attribute
      */
     public List<Identifier> getIdentifiers() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getValueAsList();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getValue();
+    }
+    
+    public void setIdentifiers(List<Identifier> value) {
+        getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).setValue(value);
     }
 
     /**

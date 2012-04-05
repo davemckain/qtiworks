@@ -56,23 +56,16 @@ public abstract class AssociableChoice extends Choice {
     /** Name of matchGroup attribute in xml schema. */
     public static String ATTR_MATCH_GROUP_NAME = "matchGroup";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public AssociableChoice(XmlNode parent, String localName) {
         super(parent, localName);
-
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, null, false));
     }
 
-    /**
-     * Gets value of matchGroup attribute.
-     * 
-     * @return value of matchGroup attribute
-     */
     public List<Identifier> getMatchGroup() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).getValueAsList();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).getValue();
+    }
+    
+    public void setMatchGroup(List<Identifier> value) {
+        getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).setValue(value);
     }
 }

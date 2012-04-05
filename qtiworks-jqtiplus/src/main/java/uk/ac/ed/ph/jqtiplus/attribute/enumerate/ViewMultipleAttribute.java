@@ -57,7 +57,7 @@ public final class ViewMultipleAttribute extends MultipleAttribute<View> {
     }
 
     public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue, List<View> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
     }
 
     @Override

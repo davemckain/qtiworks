@@ -91,18 +91,20 @@ public interface Attribute<V> extends Validatable {
     /**
      * Returns true if this attribute's value has been explicitly set.
      * <p>
-     * This is equivalent to {@link #getComputedValue()} returning non-null.
+     * This is equivalent to {@link #getValue()} returning non-null.
      */
     boolean isSet();
     
     /**
      * Returns the default value of the attribute, which is the effective value used if the
-     * attribute has not been explicitly set.
+     * attribute has not been explicitly set. This will be null if there is no default value.
+     * The result of this should be assumed immutable.
      */
     V getDefaultValue();
     
     /**
-     * Gets the explicitly-set value of attribute.
+     * Gets the explicitly-set value of this attribute, returning null if this
+     * attribute has not been explicitly set. The value should be assumed immutable.
      * <p>
      * In JQTI+, this will return null if the value has not been explicitly set. This is
      * different from the original JQTI behaviour! 
@@ -110,6 +112,14 @@ public interface Attribute<V> extends Validatable {
      * @return value of attribute
      */
     V getValue();
+    
+    /**
+     * Sets the value of this attribute.
+     * 
+     * @param value new value of attribute, which may be null to indicate that the attribute's
+     * value should be unset.
+     */
+    void setValue(V value);
     
     /**
      * Gets the "computed" value of this attribute, which is defined to be the

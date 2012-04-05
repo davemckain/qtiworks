@@ -31,36 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
+package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * Attribute with toleranceMode value.
- * 
- * @author Jiri Kajaba
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public final class ToleranceModeAttribute extends SingleEnumerateAttribute<ToleranceMode> {
+public class MultipleAttributeValue<E> implements Iterable<E>, Serializable {
 
-    private static final long serialVersionUID = 1737056425484603310L;
-
-    public ToleranceModeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    private static final long serialVersionUID = 208865119673768849L;
+    
+    private List<E> value;
+    
+    public MultipleAttributeValue() {
+        this.value = null;
     }
-
+    
     @Override
-    protected ToleranceMode parseQtiString(String value) {
-        return ToleranceMode.parseToleranceMode(value);
+    public Iterator<E> iterator() {
+        return null;
+    }
+    
+    public boolean isSet() {
+        return value!=null;
     }
 
-    /**
-     * Gets all supported values of this attribute.
-     * 
-     * @return all supported values of this attribute
-     */
-    @Override
-    public ToleranceMode[] getSupportedValues() {
-        return ToleranceMode.values();
-    }
 }

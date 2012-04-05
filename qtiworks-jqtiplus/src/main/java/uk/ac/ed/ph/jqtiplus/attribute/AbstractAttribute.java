@@ -116,6 +116,11 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
     
     @Override
+    public final void setValue(V value) {
+        this.value = value;
+    }
+    
+    @Override
     public final V getComputedValue() {
         return value!=null ? value : defaultValue;
     }

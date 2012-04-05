@@ -87,7 +87,7 @@ public abstract class TableCell extends BodyElement {
         super(parent, localName);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, null, null, false));
-        getAttributes().add(new TableCellScopeAttribute(this, ATTR_SCOPE_NAME, null, null, false));
+        getAttributes().add(new TableCellScopeAttribute(this, ATTR_SCOPE_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_ABBR_NAME, null, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_AXIS_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_ROWSPAN_NAME, null, null, false));
@@ -107,7 +107,11 @@ public abstract class TableCell extends BodyElement {
      * @return value of headers attribute
      */
     public List<Identifier> getHeaders() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getValueAsList();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getValue();
+    }
+    
+    public void setHeaders(List<Identifier> value) {
+        getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).setValue(value);
     }
 
     /**

@@ -57,7 +57,7 @@ public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
     }
 
     public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue, List<Double> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
     }
 
     @Override

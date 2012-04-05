@@ -69,7 +69,7 @@ public interface Hotspot {
      * @param shape new value of shape attribute
      * @see #getShape
      */
-    public void setShape(Shape shape);
+    void setShape(Shape shape);
 
     /**
      * Gets value of shape attribute.
@@ -77,14 +77,16 @@ public interface Hotspot {
      * @return value of shape attribute
      * @see #setShape
      */
-    public Shape getShape();
+    Shape getShape();
 
     /**
      * Gets value of coords attribute.
      * 
      * @return value of coords attribute
      */
-    public List<Integer> getCoords();
+    List<Integer> getCoords();
+
+    void setCoords(List<Integer> value);
 
     /**
      * Sets new value of hotspotLabel attribute.
@@ -92,7 +94,7 @@ public interface Hotspot {
      * @param hotspotLabel new value of hotspotLabel attribute
      * @see #getHotspotLabel
      */
-    public void setHotspotLabel(String hotspotLabel);
+    void setHotspotLabel(String hotspotLabel);
 
     /**
      * Gets value of hotspotLabel attribute.
@@ -100,5 +102,5 @@ public interface Hotspot {
      * @return value of hotspotLabel attribute
      * @see #setHotspotLabel
      */
-    public String getHotspotLabel();
+    String getHotspotLabel();
 }

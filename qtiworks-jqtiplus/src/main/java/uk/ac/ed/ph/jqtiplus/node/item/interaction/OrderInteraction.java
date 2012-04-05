@@ -122,7 +122,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
-        getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, null, null, false));
+        getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, false));
 
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
     }

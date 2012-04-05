@@ -53,10 +53,6 @@ public final class BaseTypeAttribute extends SingleEnumerateAttribute<BaseType> 
         super(parent, localName, defaultValue);
     }
 
-    public BaseTypeAttribute(XmlNode parent, String localName, BaseType defaultValue, BaseType value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
-    }
-
     @Override
     protected BaseType parseQtiString(String value) {
         return BaseType.parseBaseType(value);

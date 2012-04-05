@@ -115,7 +115,11 @@ public abstract class ItemSubset extends AbstractExpression {
      * @return value of includeCategory attribute
      */
     public List<String> getIncludeCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).getValueAsList();
+        return getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).getValue();
+    }
+    
+    public void setIncludeCategories(List<String> value) {
+        getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).setValue(value);
     }
 
     /**
@@ -124,7 +128,11 @@ public abstract class ItemSubset extends AbstractExpression {
      * @return value of excludeCategory attribute
      */
     public List<String> getExcludeCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).getValueAsList();
+        return getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).getValue();
+    }
+    
+    public void setExcludeCategories(List<String> value) {
+        getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).setValue(value);
     }
 
     @Override

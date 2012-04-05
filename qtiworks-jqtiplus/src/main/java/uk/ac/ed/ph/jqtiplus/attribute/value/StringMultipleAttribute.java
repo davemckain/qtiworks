@@ -56,17 +56,7 @@ public class StringMultipleAttribute extends MultipleAttribute<String> {
     }
 
     public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue, List<String> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, value, defaultValue, required);
-    }
-
-    @Override
-    public List<String> getValueAsList() {
-        return super.getValueAsList();
-    }
-
-    @Override
-    public List<String> getDefaultValueAsList() {
-        return super.getDefaultValueAsList();
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
     }
 
     @Override

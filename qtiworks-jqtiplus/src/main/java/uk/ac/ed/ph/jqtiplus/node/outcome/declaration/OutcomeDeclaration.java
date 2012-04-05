@@ -134,9 +134,13 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @return value of view attribute
      */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValueAsList();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValue();
     }
 
+    public void setViews(List<View> value) {
+        getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
+    }
+    
     /**
      * Gets value of interpretation attribute.
      * 

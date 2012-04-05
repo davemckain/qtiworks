@@ -86,9 +86,6 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     /** Name of shuffle attribute in xml schema. */
     public static String ATTR_SHUFFLE_NAME = "shuffle";
 
-    /** Default value of shuffle attribute. */
-    public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
-
     /** Name of maxAssociations attribute in xml schema. */
     public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
 
@@ -101,19 +98,12 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     /** Default value of minAssociations attribute. */
     public static int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public AssociateInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
-        getAttributes().add(
-                new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
-        getAttributes().add(
-                new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this, 1));
     }
