@@ -82,7 +82,7 @@ import java.util.Map;
  * Contains : simpleMatchSet [2]
  * The two sets of choices, the first set defines the source choices and the
  * second set the targets.
- * 
+ *
  * @author Jonathon Hare
  */
 public class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer, Shuffleable {
@@ -110,7 +110,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     /** Default value of minAssociations attribute . */
     public static int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
-    public MatchInteraction(XmlNode parent) {
+    public MatchInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
@@ -135,18 +135,18 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -157,17 +157,17 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
 
     /**
      * Sets new value of maxAssociations attribute.
-     * 
+     *
      * @param maxAssociations new value of maxAssociations attribute
      * @see #getMaxAssociations
      */
-    public void setMaxAssociations(Integer maxAssociations) {
+    public void setMaxAssociations(final Integer maxAssociations) {
         getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(maxAssociations);
     }
 
     /**
      * Gets value of maxAssociations attribute.
-     * 
+     *
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
@@ -177,17 +177,17 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
 
     /**
      * Sets new value of minAssociations attribute.
-     * 
+     *
      * @param minAssociations new value of minAssociations attribute
      * @see #getMinAssociations
      */
-    public void setMinAssociations(Integer minAssociations) {
+    public void setMinAssociations(final Integer minAssociations) {
         getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).setValue(minAssociations);
     }
 
     /**
      * Gets value of minAssociations attribute.
-     * 
+     *
      * @return value of minAssociations attribute
      * @see #setMinAssociations
      */
@@ -197,7 +197,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
 
     /**
      * Gets simpleMatchSet children.
-     * 
+     *
      * @return simpleMatchSet children
      */
     public List<SimpleMatchSet> getSimpleMatchSets() {
@@ -205,7 +205,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getMaxAssociations() != 0 && getMinAssociations() > getMaxAssociations()) {
@@ -231,7 +231,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public void initialize(ItemSessionController itemController) {
+    public void initialize(final ItemSessionController itemController) {
         super.initialize(itemController);
 
         final List<SimpleMatchSet> simpleMatchSets = getSimpleMatchSets();
@@ -243,7 +243,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {
@@ -297,20 +297,20 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
 
         for (final SimpleAssociableChoice leftChoice : leftChoices) {
             final Integer leftCount = responseLeftAssociationCounts.get(leftChoice.getIdentifier());
-            if (!validateResponseChoice(leftChoice, leftCount)) {
+            if (!validateResponseChoice(leftChoice, leftCount.intValue())) {
                 return false;
             }
         }
         for (final SimpleAssociableChoice rightChoice : rightChoices) {
             final Integer rightCount = responseRightAssociationCounts.get(rightChoice.getIdentifier());
-            if (!validateResponseChoice(rightChoice, rightCount)) {
+            if (!validateResponseChoice(rightChoice, rightCount.intValue())) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean validateResponseChoice(SimpleAssociableChoice choice, int responseAssociateCount) {
+    private boolean validateResponseChoice(final SimpleAssociableChoice choice, final int responseAssociateCount) {
         final int matchMin = choice.getMatchMin();
         final int matchMax = choice.getMatchMax();
         if (responseAssociateCount < matchMin) {

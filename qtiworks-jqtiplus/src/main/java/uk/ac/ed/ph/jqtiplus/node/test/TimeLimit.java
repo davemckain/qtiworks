@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
  * spent in states where no item is being interacted with, such as dedicated navigation screens.
  * <p>
  * Minimum times are applicable to assessmentSections and assessmentItems only when linear navigation mode is in effect.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class TimeLimit extends AbstractNode {
@@ -63,7 +63,7 @@ public class TimeLimit extends AbstractNode {
     /** Name of maxTime attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "maxTime";
 
-    public TimeLimit(ControlObject<?> parent) {
+    public TimeLimit(final ControlObject<?> parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, false));
@@ -72,7 +72,7 @@ public class TimeLimit extends AbstractNode {
 
     /**
      * Gets value of minTime attribute.
-     * 
+     *
      * @return value of minTime attribute
      * @see #setMinimum
      */
@@ -82,7 +82,7 @@ public class TimeLimit extends AbstractNode {
 
     /**
      * Gets value of minTime attribute in millis or null.
-     * 
+     *
      * @return value of minTime attribute in millis or null
      */
     public Long getMinimumMillis() {
@@ -90,22 +90,22 @@ public class TimeLimit extends AbstractNode {
             return null;
         }
 
-        return (long) (getMinimum() * 1000);
+        return Long.valueOf((long) (getMinimum().doubleValue() * 1000));
     }
 
     /**
      * Sets new value of minTime attribute.
-     * 
+     *
      * @param minimum new value of minTime attribute
      * @see #getMinimum
      */
-    public void setMinimum(Double minimum) {
+    public void setMinimum(final Double minimum) {
         getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
     }
 
     /**
      * Gets value of maxTime attribute.
-     * 
+     *
      * @return value of maxTime attribute
      * @see #setMaximum
      */
@@ -115,7 +115,7 @@ public class TimeLimit extends AbstractNode {
 
     /**
      * Gets value of maxTime attribute in millis.
-     * 
+     *
      * @return value of maxTime attribute in millis
      */
     public Long getMaximumMillis() {
@@ -123,28 +123,28 @@ public class TimeLimit extends AbstractNode {
             return null;
         }
 
-        return (long) (getMaximum() * 1000);
+        return Long.valueOf((long) (getMaximum().doubleValue() * 1000));
     }
 
     /**
      * Sets new value of maxTime attribute.
-     * 
+     *
      * @param maximum new value of maxTime attribute
      * @see #getMaximum
      */
-    public void setMaximum(Double maximum) {
+    public void setMaximum(final Double maximum) {
         getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getMinimum() != null && getMinimum() < 0) {
+        if (getMinimum() != null && getMinimum().doubleValue() < 0) {
             context.add(new ValidationError(this, "Minimum time cannot be negative."));
         }
 
-        if (getMaximum() != null && getMaximum() < 0) {
+        if (getMaximum() != null && getMaximum().doubleValue() < 0) {
             context.add(new ValidationError(this, "Maximum time cannot be negative."));
         }
     }

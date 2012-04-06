@@ -51,7 +51,7 @@ import java.util.List;
  * of an outcome variable in A sub-set of the items referred to in A test. Only variables with single cardinality are
  * considered. If any of the items within the given subset have no declared maximum the result is NULL, otherwise the
  * result has cardinality multiple and base-type float.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class OutcomeMaximum extends OutcomeMinMax {
@@ -61,12 +61,12 @@ public class OutcomeMaximum extends OutcomeMinMax {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeMaximum";
 
-    public OutcomeMaximum(ExpressionParent parent) {
+    public OutcomeMaximum(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 
@@ -78,8 +78,7 @@ public class OutcomeMaximum extends OutcomeMinMax {
                 if (!outcomeDeclaration.getBaseType().isNumeric() || outcomeDeclaration.getNormalMaximum() == null) {
                     return NullValue.INSTANCE;
                 }
-
-                final double maximum = outcomeDeclaration.getNormalMaximum();
+                final double maximum = outcomeDeclaration.getNormalMaximum().doubleValue();
                 final double weight = itemRefController.getItemRef().lookupWeight(getWeightIdentifier());
 
                 list.add(new FloatValue(maximum * weight));

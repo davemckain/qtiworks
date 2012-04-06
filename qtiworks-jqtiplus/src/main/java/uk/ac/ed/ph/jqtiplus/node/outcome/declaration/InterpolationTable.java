@@ -47,7 +47,7 @@ import java.util.List;
  * <p>
  * For example, an interpolation table can be used to map A raw numeric score onto an identifier representing A grade. It may also be used to implement numeric
  * transformations such as those from A simple raw score to A value on A calibrated scale.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class InterpolationTable extends LookupTable {
@@ -57,7 +57,7 @@ public class InterpolationTable extends LookupTable {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "interpolationTable";
 
-    public InterpolationTable(OutcomeDeclaration parent) {
+    public InterpolationTable(final OutcomeDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InterpolationTableEntryGroup(this));
@@ -70,7 +70,7 @@ public class InterpolationTable extends LookupTable {
 
     /**
      * Gets interpolationTableEntry children.
-     * 
+     *
      * @return interpolationTableEntry children
      */
     public List<InterpolationTableEntry> getInterpolationEntries() {
@@ -78,7 +78,7 @@ public class InterpolationTable extends LookupTable {
     }
 
     @Override
-    public SingleValue getTargetValue(NumberValue sourceValue) {
+    public SingleValue getTargetValue(final NumberValue sourceValue) {
         if (sourceValue != null) {
             for (final InterpolationTableEntry entry : getInterpolationEntries()) {
                 if (entry.getIncludeBoundary()) {
@@ -98,15 +98,14 @@ public class InterpolationTable extends LookupTable {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         Double lastValue = null;
         for (final InterpolationTableEntry entry : getInterpolationEntries()) {
             if (entry.getSourceValue() != null) {
-                final double currentValue = entry.getSourceValue().doubleValue();
-
-                if (lastValue == null || lastValue >= currentValue) {
+                final Double currentValue = entry.getSourceValue();
+                if (lastValue == null || lastValue.doubleValue() >= currentValue.doubleValue()) {
                     lastValue = currentValue;
                 }
                 else {

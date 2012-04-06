@@ -119,14 +119,14 @@ import java.util.Map;
  * customOperator, mapResponse, mapResponsePoint.
  * <p>
  * Additional expressions: randomFloatEx, randomIntegerEx, randomEx, recordEx
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
 public enum ExpressionType {
     /**
      * Creates and expression.
-     * 
+     *
      * @see And
      */
     AND(And.QTI_CLASS_NAME, 1, null
@@ -136,14 +136,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new And(parent);
         }
     },
 
     /**
      * Creates anyN expression.
-     * 
+     *
      * @see AnyN
      */
     ANY_N(AnyN.QTI_CLASS_NAME, 1, null
@@ -153,14 +153,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new AnyN(parent);
         }
     },
 
     /**
      * Creates baseValue expression.
-     * 
+     *
      * @see BaseValue
      */
     BASE_VALUE(BaseValue.QTI_CLASS_NAME, null, 0
@@ -170,14 +170,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new BaseValue(parent);
         }
     },
 
     /**
      * Creates containerSize expression.
-     * 
+     *
      * @see ContainerSize
      */
     CONTAINER_SIZE(ContainerSize.QTI_CLASS_NAME, 1, 1
@@ -187,14 +187,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new ContainerSize(parent);
         }
     },
 
     /**
      * Creates contains expression.
-     * 
+     *
      * @see Contains
      */
     CONTAINS(Contains.QTI_CLASS_NAME, 2, 2
@@ -204,14 +204,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Contains(parent);
         }
     },
 
     /**
      * Creates correct expression.
-     * 
+     *
      * @see Correct
      */
     CORRECT(Correct.QTI_CLASS_NAME, null, 0
@@ -221,14 +221,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Correct(parent);
         }
     },
 
     /**
      * Creates correct expression.
-     * 
+     *
      * @see Correct
      */
     CUSTOM_OPERATOR(CustomOperator.QTI_CLASS_NAME, 0, null
@@ -238,14 +238,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             throw new QtiLogicException("customOperators should have been intercepted before this method got called");
         }
     },
 
     /**
      * Creates default expression.
-     * 
+     *
      * @see Default
      */
     DEFAULT(Default.QTI_CLASS_NAME, null, 0
@@ -255,14 +255,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Default(parent);
         }
     },
 
     /**
      * Creates delete expression.
-     * 
+     *
      * @see Delete
      */
     DELETE(Delete.QTI_CLASS_NAME, 2, 2
@@ -272,12 +272,12 @@ public enum ExpressionType {
             , BaseType.values(new BaseType[] { BaseType.DURATION })) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Delete(parent);
         }
 
         @Override
-        public Cardinality[] getRequiredCardinalities(int index) {
+        public Cardinality[] getRequiredCardinalities(final int index) {
             switch (index) {
                 case 0:
                     return new Cardinality[] { Cardinality.SINGLE };
@@ -291,7 +291,7 @@ public enum ExpressionType {
 
     /**
      * Creates divide expression.
-     * 
+     *
      * @see Divide
      */
     DIVIDE(Divide.QTI_CLASS_NAME, 2, 2
@@ -301,14 +301,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Divide(parent);
         }
     },
 
     /**
      * Creates durationGTE expression.
-     * 
+     *
      * @see DurationGte
      */
     DURATION_GTE(DurationGte.QTI_CLASS_NAME, 2, 2
@@ -318,14 +318,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new DurationGte(parent);
         }
     },
 
     /**
      * Creates durationLT expression.
-     * 
+     *
      * @see DurationLt
      */
     DURATION_LT(DurationLt.QTI_CLASS_NAME, 2, 2
@@ -335,14 +335,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new DurationLt(parent);
         }
     },
 
     /**
      * Creates equal expression.
-     * 
+     *
      * @see Equal
      */
     EQUAL(Equal.QTI_CLASS_NAME, 2, 2
@@ -352,14 +352,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Equal(parent);
         }
     },
 
     /**
      * Creates equalRounded expression.
-     * 
+     *
      * @see EqualRounded
      */
     EQUAL_ROUNDED(EqualRounded.QTI_CLASS_NAME, 2, 2
@@ -369,14 +369,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new EqualRounded(parent);
         }
     },
 
     /**
      * Creates fieldValue expression.
-     * 
+     *
      * @see FieldValue
      */
     FIELD_VALUE(FieldValue.QTI_CLASS_NAME, 1, 1
@@ -386,14 +386,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new FieldValue(parent);
         }
     },
 
     /**
      * Creates gt expression.
-     * 
+     *
      * @see Gt
      */
     GT(Gt.QTI_CLASS_NAME, 2, 2
@@ -403,14 +403,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Gt(parent);
         }
     },
 
     /**
      * Creates gte expression.
-     * 
+     *
      * @see Gte
      */
     GTE(Gte.QTI_CLASS_NAME, 2, 2
@@ -420,14 +420,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Gte(parent);
         }
     },
 
     /**
      * Creates index expression.
-     * 
+     *
      * @see Index
      */
     INDEX(Index.QTI_CLASS_NAME, 1, 1
@@ -437,14 +437,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Index(parent);
         }
     },
 
     /**
      * Creates inside expression.
-     * 
+     *
      * @see Inside
      */
     INSIDE(Inside.QTI_CLASS_NAME, 1, 1
@@ -454,14 +454,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Inside(parent);
         }
     },
 
     /**
      * Creates integerDivide expression.
-     * 
+     *
      * @see IntegerDivide
      */
     INTEGER_DIVIDE(IntegerDivide.QTI_CLASS_NAME, 2, 2
@@ -471,14 +471,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new IntegerDivide(parent);
         }
     },
 
     /**
      * Creates integerModulus expression.
-     * 
+     *
      * @see IntegerModulus
      */
     INTEGER_MODULUS(IntegerModulus.QTI_CLASS_NAME, 2, 2
@@ -488,14 +488,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new IntegerModulus(parent);
         }
     },
 
     /**
      * Creates integerToFloat expression.
-     * 
+     *
      * @see IntegerToFloat
      */
     INTEGER_TO_FLOAT(IntegerToFloat.QTI_CLASS_NAME, 1, 1
@@ -505,14 +505,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new IntegerToFloat(parent);
         }
     },
 
     /**
      * Creates isNull expression.
-     * 
+     *
      * @see IsNull
      */
     IS_NULL(IsNull.QTI_CLASS_NAME, 1, 1
@@ -522,14 +522,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new IsNull(parent);
         }
     },
 
     /**
      * Creates lt expression.
-     * 
+     *
      * @see Lt
      */
     LT(Lt.QTI_CLASS_NAME, 2, 2
@@ -539,14 +539,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Lt(parent);
         }
     },
 
     /**
      * Creates lte expression.
-     * 
+     *
      * @see Lte
      */
     LTE(Lte.QTI_CLASS_NAME, 2, 2
@@ -556,14 +556,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Lte(parent);
         }
     },
 
     /**
      * Creates mapResponse expression.
-     * 
+     *
      * @see MapResponse
      */
     MAP_RESPONSE(MapResponse.QTI_CLASS_NAME, null, 0
@@ -573,14 +573,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new MapResponse(parent);
         }
     },
 
     /**
      * Creates mapResponsePoint expression.
-     * 
+     *
      * @see MapResponsePoint
      */
     MAP_RESPONSE_POINT(MapResponsePoint.QTI_CLASS_NAME, null, 0
@@ -590,14 +590,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new MapResponsePoint(parent);
         }
     },
 
     /**
      * Creates match expression.
-     * 
+     *
      * @see Match
      */
     MATCH(Match.QTI_CLASS_NAME, 2, 2
@@ -607,14 +607,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Match(parent);
         }
     },
 
     /**
      * Creates mathConstant expression.
-     * 
+     *
      * @see MathConstant
      */
     MATH_CONSTANT(MathConstant.QTI_CLASS_NAME, 0, 0
@@ -624,14 +624,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new MathConstant(parent);
         }
     },
 
     /**
      * Creates mathOperator expression.
-     * 
+     *
      * @see MathOperator
      */
     MATH_OPERATOR(MathOperator.QTI_CLASS_NAME, 1, null
@@ -641,14 +641,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new MathOperator(parent);
         }
     },
 
     /**
      * Creates max expression.
-     * 
+     *
      * @see Max
      */
     MAX(Max.QTI_CLASS_NAME, 1, null
@@ -658,14 +658,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Max(parent);
         }
     },
 
     /**
      * Creates min expression.
-     * 
+     *
      * @see Min
      */
     MIN(Min.QTI_CLASS_NAME, 1, null
@@ -675,14 +675,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Min(parent);
         }
     },
 
     /**
      * Creates member expression.
-     * 
+     *
      * @see Member
      */
     MEMBER(Member.QTI_CLASS_NAME, 2, 2
@@ -692,12 +692,12 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Member(parent);
         }
 
         @Override
-        public Cardinality[] getRequiredCardinalities(int index) {
+        public Cardinality[] getRequiredCardinalities(final int index) {
             switch (index) {
                 case 0:
                     return new Cardinality[] { Cardinality.SINGLE };
@@ -711,7 +711,7 @@ public enum ExpressionType {
 
     /**
      * Creates multiple expression.
-     * 
+     *
      * @see Multiple
      */
     MULTIPLE(Multiple.QTI_CLASS_NAME, null, null
@@ -721,14 +721,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Multiple(parent);
         }
     },
 
     /**
      * Creates not expression.
-     * 
+     *
      * @see Not
      */
     NOT(Not.QTI_CLASS_NAME, 1, 1
@@ -738,14 +738,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Not(parent);
         }
     },
 
     /**
      * Creates null expression.
-     * 
+     *
      * @see Null
      */
     NULL(Null.QTI_CLASS_NAME, null, 0
@@ -755,14 +755,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Null(parent);
         }
     },
 
     /**
      * Creates numberCorrect expression.
-     * 
+     *
      * @see NumberCorrect
      */
     NUMBER_CORRECT(NumberCorrect.QTI_CLASS_NAME, null, 0
@@ -772,14 +772,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new NumberCorrect(parent);
         }
     },
 
     /**
      * Creates numberIncorrect expression.
-     * 
+     *
      * @see NumberIncorrect
      */
     NUMBER_INCORRECT(NumberIncorrect.QTI_CLASS_NAME, null, 0
@@ -789,14 +789,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new NumberIncorrect(parent);
         }
     },
 
     /**
      * Creates numberPresented expression.
-     * 
+     *
      * @see NumberPresented
      */
     NUMBER_PRESENTED(NumberPresented.QTI_CLASS_NAME, null, 0
@@ -806,14 +806,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new NumberPresented(parent);
         }
     },
 
     /**
      * Creates numberResponded expression.
-     * 
+     *
      * @see NumberResponded
      */
     NUMBER_RESPONDED(NumberResponded.QTI_CLASS_NAME, null, 0
@@ -823,14 +823,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new NumberResponded(parent);
         }
     },
 
     /**
      * Creates numberSelected expression.
-     * 
+     *
      * @see NumberSelected
      */
     NUMBER_SELECTED(NumberSelected.QTI_CLASS_NAME, null, 0
@@ -840,14 +840,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new NumberSelected(parent);
         }
     },
 
     /**
      * Creates or expression.
-     * 
+     *
      * @see Or
      */
     OR(Or.QTI_CLASS_NAME, 1, null
@@ -857,14 +857,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Or(parent);
         }
     },
 
     /**
      * Creates outcomeMaximum expression.
-     * 
+     *
      * @see OutcomeMaximum
      */
     OUTCOME_MAXIMUM(OutcomeMaximum.QTI_CLASS_NAME, null, 0
@@ -874,14 +874,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new OutcomeMaximum(parent);
         }
     },
 
     /**
      * Creates outcomeMinimum expression.
-     * 
+     *
      * @see OutcomeMinimum
      */
     OUTCOME_MINIMUM(OutcomeMinimum.QTI_CLASS_NAME, null, 0
@@ -891,14 +891,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new OutcomeMinimum(parent);
         }
     },
 
     /**
      * Creates ordered expression.
-     * 
+     *
      * @see Ordered
      */
     ORDERED(Ordered.QTI_CLASS_NAME, null, null
@@ -908,14 +908,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Ordered(parent);
         }
     },
 
     /**
      * Creates patternMatch expression.
-     * 
+     *
      * @see PatternMatch
      */
     PATTERN_MATCH(PatternMatch.QTI_CLASS_NAME, 1, 1
@@ -925,14 +925,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new PatternMatch(parent);
         }
     },
 
     /**
      * Creates power expression.
-     * 
+     *
      * @see Power
      */
     POWER(Power.QTI_CLASS_NAME, 2, 2
@@ -942,14 +942,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Power(parent);
         }
     },
 
     /**
      * Creates product expression.
-     * 
+     *
      * @see Product
      */
     PRODUCT(Product.QTI_CLASS_NAME, 1, null
@@ -959,14 +959,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Product(parent);
         }
     },
 
     /**
      * Creates random expression.
-     * 
+     *
      * @see Random
      */
     RANDOM(Random.QTI_CLASS_NAME, 1, 1
@@ -976,14 +976,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Random(parent);
         }
     },
 
     /**
      * Creates randomEx expression.
-     * 
+     *
      * @see RandomEx
      */
     RANDOM_EX(RandomEx.QTI_CLASS_NAME, 1, 1
@@ -993,14 +993,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RandomEx(parent);
         }
     },
 
     /**
      * Creates randomFloat expression.
-     * 
+     *
      * @see RandomFloat
      */
     RANDOM_FLOAT(RandomFloat.QTI_CLASS_NAME, null, 0
@@ -1010,14 +1010,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RandomFloat(parent);
         }
     },
 
     /**
      * Creates randomFloatEx expression.
-     * 
+     *
      * @see RandomFloatEx
      */
     RANDOM_FLOAT_EX(RandomFloatEx.QTI_CLASS_NAME, null, 0
@@ -1027,14 +1027,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RandomFloatEx(parent);
         }
     },
 
     /**
      * Creates randomInteger expression.
-     * 
+     *
      * @see RandomInteger
      */
     RANDOM_INTEGER(RandomInteger.QTI_CLASS_NAME, null, 0
@@ -1044,14 +1044,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RandomInteger(parent);
         }
     },
 
     /**
      * Creates randomIntegerEx expression.
-     * 
+     *
      * @see RandomIntegerEx
      */
     RANDOM_INTEGER_EX(RandomIntegerEx.QTI_CLASS_NAME, null, 0
@@ -1061,14 +1061,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RandomIntegerEx(parent);
         }
     },
 
     /**
      * Creates recordEx expression.
-     * 
+     *
      * @see RecordEx
      */
     RECORD_EX(RecordEx.QTI_CLASS_NAME, null, null
@@ -1078,14 +1078,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RecordEx(parent);
         }
     },
 
     /**
      * Creates round expression.
-     * 
+     *
      * @see Round
      */
     ROUND(Round.QTI_CLASS_NAME, 1, 1
@@ -1095,14 +1095,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Round(parent);
         }
     },
 
     /**
      * Creates roundTo expression.
-     * 
+     *
      * @see RoundTo
      */
     ROUND_TO(RoundTo.QTI_CLASS_NAME, 1, 1
@@ -1112,14 +1112,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new RoundTo(parent);
         }
     },
 
     /**
      * Creates statsOperator expression.
-     * 
+     *
      * @see StatsOperator
      */
     STATS_OPERATOR(StatsOperator.QTI_CLASS_NAME, 1, 1
@@ -1129,14 +1129,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new StatsOperator(parent);
         }
     },
 
     /**
      * Creates stringMatch expression.
-     * 
+     *
      * @see StringMatch
      */
     STRING_MATCH(StringMatch.QTI_CLASS_NAME, 2, 2
@@ -1146,14 +1146,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new StringMatch(parent);
         }
     },
 
     /**
      * Creates substring expression.
-     * 
+     *
      * @see Substring
      */
     SUBSTRING(Substring.QTI_CLASS_NAME, 2, 2
@@ -1163,14 +1163,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.BOOLEAN }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Substring(parent);
         }
     },
 
     /**
      * Creates subtract expression.
-     * 
+     *
      * @see Subtract
      */
     SUBTRACT(Subtract.QTI_CLASS_NAME, 2, 2
@@ -1180,14 +1180,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Subtract(parent);
         }
     },
 
     /**
      * Creates sum expression.
-     * 
+     *
      * @see Sum
      */
     SUM(Sum.QTI_CLASS_NAME, 1, null
@@ -1197,14 +1197,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER, BaseType.FLOAT }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Sum(parent);
         }
     },
 
     /**
      * Creates testVariables expression.
-     * 
+     *
      * @see TestVariables
      */
     TEST_VARIABLES(TestVariables.QTI_CLASS_NAME, null, 0
@@ -1214,14 +1214,14 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new TestVariables(parent);
         }
     },
 
     /**
      * Creates truncate expression.
-     * 
+     *
      * @see Truncate
      */
     TRUNCATE(Truncate.QTI_CLASS_NAME, 1, 1
@@ -1231,14 +1231,14 @@ public enum ExpressionType {
             , new BaseType[] { BaseType.INTEGER }) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Truncate(parent);
         }
     },
 
     /**
      * Creates variable expression.
-     * 
+     *
      * @see Variable
      */
     VARIABLE(Variable.QTI_CLASS_NAME, null, 0
@@ -1248,7 +1248,7 @@ public enum ExpressionType {
             , BaseType.values()) {
 
         @Override
-        public Expression create(ExpressionParent parent) {
+        public Expression create(final ExpressionParent parent) {
             return new Variable(parent);
         }
     };
@@ -1263,27 +1263,17 @@ public enum ExpressionType {
         }
     }
 
-    private String expressionType;
+    private final String expressionType;
+    private final Integer minimum;
+    private final Integer maximum;
+    private final Cardinality[] requiredCardinalities;
+    private final BaseType[] requiredBaseTypes;
+    private final Cardinality[] producedCardinalities;
+    private final BaseType[] producedBaseTypes;
 
-    private Integer minimum;
-
-    private Integer maximum;
-
-    private Cardinality[] requiredCardinalities;
-
-    private BaseType[] requiredBaseTypes;
-
-    private Cardinality[] producedCardinalities;
-
-    private BaseType[] producedBaseTypes;
-
-    private ExpressionType(String expressionType
-            , Integer minimum
-            , Integer maximum
-            , Cardinality[] requiredCardinalities
-            , BaseType[] requiredBaseTypes
-            , Cardinality[] producedCardinalities
-            , BaseType[] producedBaseTypes) {
+    private ExpressionType(final String expressionType, final Integer minimum, final Integer maximum,
+            final Cardinality[] requiredCardinalities, final BaseType[] requiredBaseTypes,
+            final Cardinality[] producedCardinalities, final BaseType[] producedBaseTypes) {
         this.expressionType = expressionType;
         this.minimum = minimum;
         this.maximum = maximum;
@@ -1293,9 +1283,33 @@ public enum ExpressionType {
         this.producedBaseTypes = producedBaseTypes;
     }
 
+    private ExpressionType(final String expressionType, final int minimum, final int maximum,
+            final Cardinality[] requiredCardinalities, final BaseType[] requiredBaseTypes,
+            final Cardinality[] producedCardinalities, final BaseType[] producedBaseTypes) {
+        this(expressionType, Integer.valueOf(minimum), Integer.valueOf(maximum),
+                requiredCardinalities, requiredBaseTypes,
+                producedCardinalities, producedBaseTypes);
+    }
+
+    private ExpressionType(final String expressionType, final Integer minimum, final int maximum,
+            final Cardinality[] requiredCardinalities, final BaseType[] requiredBaseTypes,
+            final Cardinality[] producedCardinalities, final BaseType[] producedBaseTypes) {
+        this(expressionType, minimum, Integer.valueOf(maximum),
+                requiredCardinalities, requiredBaseTypes,
+                producedCardinalities, producedBaseTypes);
+    }
+
+    private ExpressionType(final String expressionType, final int minimum, final Integer maximum,
+            final Cardinality[] requiredCardinalities, final BaseType[] requiredBaseTypes,
+            final Cardinality[] producedCardinalities, final BaseType[] producedBaseTypes) {
+        this(expressionType, Integer.valueOf(minimum), maximum,
+                requiredCardinalities, requiredBaseTypes,
+                producedCardinalities, producedBaseTypes);
+    }
+
     /**
      * Gets QTI_CLASS_NAME of this expression type.
-     * 
+     *
      * @return QTI_CLASS_NAME of this expression type
      */
     public String getClassTag() {
@@ -1304,7 +1318,7 @@ public enum ExpressionType {
 
     /**
      * Gets minimum required children or null.
-     * 
+     *
      * @return minimum required children or null
      */
     public Integer getMinimum() {
@@ -1313,7 +1327,7 @@ public enum ExpressionType {
 
     /**
      * Gets maximum allowed children or null.
-     * 
+     *
      * @return maximum allowed children or null
      */
     public Integer getMaximum() {
@@ -1322,29 +1336,29 @@ public enum ExpressionType {
 
     /**
      * Gets list of all acceptable cardinalities for given position.
-     * 
+     *
      * @param index position
      * @return list of all acceptable cardinalities for given position
      * @see ExpressionParent#getRequiredCardinalities(ValidationContext, int)
      */
-    public Cardinality[] getRequiredCardinalities(int index) {
+    public Cardinality[] getRequiredCardinalities(final int index) {
         return requiredCardinalities;
     }
 
     /**
      * Gets list of all acceptable baseTypes for given position.
-     * 
+     *
      * @param index position
      * @return list of all acceptable baseTypes for given position
      * @see ExpressionParent#getRequiredBaseTypes(ValidationContext, int)
      */
-    public BaseType[] getRequiredBaseTypes(int index) {
+    public BaseType[] getRequiredBaseTypes(final int index) {
         return requiredBaseTypes;
     }
 
     /**
      * Gets list of all produced cardinalities.
-     * 
+     *
      * @return list of all produced cardinalities
      * @see Expression#getProducedCardinalities(ValidationContext)
      */
@@ -1354,7 +1368,7 @@ public enum ExpressionType {
 
     /**
      * Gets list of all produced baseTypes.
-     * 
+     *
      * @return list of all produced baseTypes
      * @see Expression#getProducedBaseTypes(ValidationContext)
      */
@@ -1364,7 +1378,7 @@ public enum ExpressionType {
 
     /**
      * Creates expression.
-     * 
+     *
      * @param parent parent of created expression
      * @return created expression
      */
@@ -1377,11 +1391,11 @@ public enum ExpressionType {
 
     /**
      * Gets expression type for given QTI_CLASS_NAME.
-     * 
+     *
      * @param classTag QTI_CLASS_NAME
      * @return expression type for given QTI_CLASS_NAME
      */
-    public static ExpressionType getType(String classTag) {
+    public static ExpressionType getType(final String classTag) {
         return expressionTypes.get(classTag);
     }
 
@@ -1432,7 +1446,7 @@ public enum ExpressionType {
              * @return created expression
              */
             public static
-            Expression getInstance(ExpressionParent parent, String classTag) {
+            Expression getInstance(final ExpressionParent parent, final String classTag) {
         final ExpressionType expressionType = expressionTypes.get(classTag);
 
         if (expressionType == null) {

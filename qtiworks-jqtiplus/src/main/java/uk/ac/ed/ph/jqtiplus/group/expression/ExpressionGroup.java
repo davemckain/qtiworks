@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Group of expression children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ExpressionGroup extends AbstractNodeGroup {
@@ -52,12 +52,12 @@ public class ExpressionGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum required children of created group
      * @param maximum maximum allowed children of created group
      */
-    public ExpressionGroup(ExpressionParent parent, Integer minimum, Integer maximum) {
+    public ExpressionGroup(final ExpressionParent parent, final Integer minimum, final Integer maximum) {
         super(parent, Expression.DISPLAY_NAME, minimum, maximum);
 
         final List<String> supportedClasses = getAllSupportedClasses();
@@ -65,6 +65,10 @@ public class ExpressionGroup extends AbstractNodeGroup {
         for (final ExpressionType type : ExpressionType.values()) {
             supportedClasses.add(type.getClassTag());
         }
+    }
+
+    public ExpressionGroup(final ExpressionParent parent, final int minimum, final int maximum) {
+        this(parent, Integer.valueOf(minimum), Integer.valueOf(maximum));
     }
 
     @Override
@@ -95,7 +99,7 @@ public class ExpressionGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setExpression
      */
@@ -105,18 +109,18 @@ public class ExpressionGroup extends AbstractNodeGroup {
 
     /**
      * Sets new child.
-     * 
+     *
      * @param expression new child
      * @see #getExpression
      */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getChildren().clear();
         getChildren().add(expression);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -128,12 +132,12 @@ public class ExpressionGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */
     @Override
-    public Expression create(String classTag) {
+    public Expression create(final String classTag) {
         return ExpressionType.getInstance(getParent(), classTag);
     }
 }

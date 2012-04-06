@@ -55,10 +55,10 @@ import org.xml.sax.InputSource;
 public class EntityResourceResolver implements EntityResolver {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityResourceResolver.class);
-    
+
     private final ResourceLocator resourceLocator;
-    
-    public EntityResourceResolver(ResourceLocator resourceLocator) {
+
+    public EntityResourceResolver(final ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
     }
 
@@ -67,36 +67,37 @@ public class EntityResourceResolver implements EntityResolver {
     }
 
     //-------------------------------------------
-    
+
     @Override
-    public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(final String publicId, final String systemId) {
         logger.trace("resolveEntity(publicId={}, systemId={})", publicId, systemId);
-        
+
         URI systemIdUri;
         try {
             systemIdUri = new URI(systemId);
         }
-        catch (URISyntaxException e) {
+        catch (final URISyntaxException e) {
             logger.trace("System ID {} could not be parsed as a URI", systemId);
             return onMiss(publicId, systemId);
         }
-        
+
         final InputStream stream = resourceLocator.findResource(systemIdUri);
         if (stream==null) {
             return onMiss(publicId, systemId);
         }
-        
+
         logger.trace("resolveEntity() succeeded for publicId={}, systemId={}", publicId, systemId);
-        InputSource result = new InputSource(stream);
+        final InputSource result = new InputSource(stream);
         result.setPublicId(publicId);
         result.setSystemId(systemId);
         return result;
     }
-    
-    public InputSource onMiss(String publicId, String systemId) {
+
+    @SuppressWarnings("unused")
+    public InputSource onMiss(final String publicId, final String systemId) {
         return null;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()

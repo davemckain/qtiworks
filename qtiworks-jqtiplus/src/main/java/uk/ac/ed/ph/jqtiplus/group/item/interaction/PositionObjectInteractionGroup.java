@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Group of PositionObjectInteraction children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class PositionObjectInteractionGroup extends AbstractNodeGroup {
@@ -52,26 +52,26 @@ public class PositionObjectInteractionGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public PositionObjectInteractionGroup(PositionObjectStage parent) {
+    public PositionObjectInteractionGroup(final PositionObjectStage parent) {
         super(parent, PositionObjectInteraction.QTI_CLASS_NAME, null, null);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public PositionObjectInteractionGroup(PositionObjectStage parent, Integer minimum) {
+    public PositionObjectInteractionGroup(final PositionObjectStage parent, final int minimum) {
         super(parent, PositionObjectInteraction.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -83,12 +83,12 @@ public class PositionObjectInteractionGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public PositionObjectInteraction create(String classTag) {
+    public PositionObjectInteraction create(final String classTag) {
         return new PositionObjectInteraction(getParent());
     }
 }

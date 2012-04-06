@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The result is A value of base-type integer formed by truncating the value of the sub-expression towards zero.
  * For example, the value 6.8 becomes 6 and the value -6.8 becomes -6.
  * If the sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -57,19 +57,19 @@ public class Truncate extends AbstractFunctionalExpression {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "truncate";
 
-    public Truncate(ExpressionParent parent) {
+    public Truncate(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
         final double number = ((FloatValue) childValues[0]).doubleValue();
 
-        Integer result = null;
+        int result;
         if (number >= 0) {
             result = (int) Math.floor(number);
         }

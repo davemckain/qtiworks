@@ -50,7 +50,7 @@ import java.util.List;
  * This expression, which can only be used in outcomes processing, simultaneously looks up the normalMinimum value
  * of an outcome variable in A sub-set of the items referred to in A test. Only variables with single cardinality are
  * considered. Items with no declared minimum are ignored. The result has cardinality multiple and base-type float.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class OutcomeMinimum extends OutcomeMinMax {
@@ -60,12 +60,12 @@ public class OutcomeMinimum extends OutcomeMinMax {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeMinimum";
 
-    public OutcomeMinimum(ExpressionParent parent) {
+    public OutcomeMinimum(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 
@@ -78,10 +78,10 @@ public class OutcomeMinimum extends OutcomeMinMax {
                     return NullValue.INSTANCE;
                 }
 
-                final double maximum = outcomeDeclaration.getNormalMinimum();
+                final double minimum = outcomeDeclaration.getNormalMinimum().doubleValue();
                 final double weight = itemRefController.getItemRef().lookupWeight(getWeightIdentifier());
 
-                list.add(new FloatValue(maximum * weight));
+                list.add(new FloatValue(minimum * weight));
             }
         }
 

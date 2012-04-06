@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of gapChoice children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GapChoiceGroup extends AbstractContentNodeGroup {
@@ -51,20 +51,20 @@ public class GapChoiceGroup extends AbstractContentNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public GapChoiceGroup(XmlNode parent) {
+    public GapChoiceGroup(final XmlNode parent) {
         this(parent, 1);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public GapChoiceGroup(XmlNode parent, Integer minimum) {
+    public GapChoiceGroup(final XmlNode parent, final int minimum) {
         super(parent, GapChoice.DISPLAY_NAME, minimum, null);
 
         getAllSupportedClasses().clear();
@@ -80,7 +80,7 @@ public class GapChoiceGroup extends AbstractContentNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setGapChoice
      */
@@ -90,18 +90,18 @@ public class GapChoiceGroup extends AbstractContentNodeGroup {
 
     /**
      * Sets new child.
-     * 
+     *
      * @param gapChoice new child
      * @see #getGapChoice
      */
-    public void setGapChoice(GapChoice gapChoice) {
+    public void setGapChoice(final GapChoice gapChoice) {
         getChildren().clear();
         getChildren().add(gapChoice);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -113,12 +113,12 @@ public class GapChoiceGroup extends AbstractContentNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */
     @Override
-    public GapChoice create(String classTag) {
+    public GapChoice create(final String classTag) {
         return ContentType.getGapChoiceInstance(getParent(), classTag);
     }
 }

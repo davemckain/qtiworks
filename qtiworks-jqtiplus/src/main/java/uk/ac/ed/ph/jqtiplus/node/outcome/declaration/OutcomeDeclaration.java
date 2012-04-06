@@ -62,13 +62,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Outcome variables are declared by outcome declarations.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class OutcomeDeclaration extends VariableDeclaration {
-    
+
     private static final long serialVersionUID = -5519664280437668195L;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(OutcomeDeclaration.class);
 
     /** Name of this class in xml schema. */
@@ -92,7 +92,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
     /** Name of masteryValue attribute in xml schema. */
     public static final String ATTR_MASTERY_VALUE_NAME = "masteryValue";
 
-    public OutcomeDeclaration(AssessmentObject parent) {
+    public OutcomeDeclaration(final AssessmentObject parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, false));
@@ -112,20 +112,20 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Gets value of view attribute.
-     * 
+     *
      * @return value of view attribute
      */
     public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
 
-    public void setViews(List<View> value) {
+    public void setViews(final List<View> value) {
         getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
-    
+
     /**
      * Gets value of interpretation attribute.
-     * 
+     *
      * @return value of interpretation attribute
      * @see #setInterpretation
      */
@@ -135,17 +135,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of interpretation attribute.
-     * 
+     *
      * @param interpretation new value of interpretation attribute
      * @see #getInterpretation
      */
-    public void setInterpretation(String interpretation) {
+    public void setInterpretation(final String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
     /**
      * Gets value of longInterpretation attribute.
-     * 
+     *
      * @return value of longInterpretation attribute
      * @see #setLongInterpretation
      */
@@ -155,17 +155,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of longInterpretation attribute.
-     * 
+     *
      * @param longInterpretation new value of longInterpretation attribute
      * @see #getLongInterpretation
      */
-    public void setLongInterpretation(URI longInterpretation) {
+    public void setLongInterpretation(final URI longInterpretation) {
         getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).setValue(longInterpretation);
     }
 
     /**
      * Gets value of normalMaximum attribute.
-     * 
+     *
      * @return value of normalMaximum attribute
      * @see #setNormalMaximum
      */
@@ -175,17 +175,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of normalMaximum attribute.
-     * 
+     *
      * @param normalMaximum new value of normalMaximum attribute
      * @see #getNormalMaximum
      */
-    public void setNormalMaximum(Double normalMaximum) {
+    public void setNormalMaximum(final Double normalMaximum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).setValue(normalMaximum);
     }
 
     /**
      * Gets value of normalMinimum attribute.
-     * 
+     *
      * @return value of normalMinimum attribute
      * @see #setNormalMinimum
      */
@@ -195,17 +195,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of normalMinimum attribute.
-     * 
+     *
      * @param normalMinimum new value of normalMinimum attribute
      * @see #getNormalMinimum()
      */
-    public void setNormalMinimum(Double normalMinimum) {
+    public void setNormalMinimum(final Double normalMinimum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).setValue(normalMinimum);
     }
 
     /**
      * Gets value of masteryValue attribute.
-     * 
+     *
      * @return value of masteryValue attribute
      * @see #setMasteryValue
      */
@@ -215,17 +215,17 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of masteryValue attribute.
-     * 
+     *
      * @param masteryValue new value of masteryValue attribute
      * @see #getMasteryValue
      */
-    public void setMasteryValue(Double masteryValue) {
+    public void setMasteryValue(final Double masteryValue) {
         getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).setValue(masteryValue);
     }
 
     /**
      * Gets lookupTable child.
-     * 
+     *
      * @return lookupTable child
      * @see #setLookupTable
      */
@@ -235,16 +235,16 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Sets new lookupTable child.
-     * 
+     *
      * @param lookupTable new lookupTable child
      * @see #getLookupTable
      */
-    public void setLookupTable(LookupTable lookupTable) {
+    public void setLookupTable(final LookupTable lookupTable) {
         getNodeGroups().getLookupTableGroup().setLookupTable(lookupTable);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getNormalMaximum() != null) {
@@ -258,7 +258,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
                         + " will be ignored for baseType: "
                         + getBaseType()));
             }
-            else if (getNormalMaximum() <= 0) {
+            else if (getNormalMaximum().doubleValue() <= 0) {
                 context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                         + " must be positive."));
             }
@@ -279,7 +279,8 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
         if (getCardinality() != null && getCardinality().isSingle() &&
                 getBaseType() != null && getBaseType().isNumeric() &&
-                getNormalMaximum() != null && getNormalMinimum() != null && getNormalMaximum() < getNormalMinimum()) {
+                getNormalMaximum() != null && getNormalMinimum() != null
+                && getNormalMaximum().doubleValue() < getNormalMinimum().doubleValue()) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                     + " cannot be lower than attribute "
                     + ATTR_NORMAL_MINIMUM_NAME
@@ -288,7 +289,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
@@ -300,11 +301,11 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
     /**
      * Returns true if this outcomeDeclaration is read by given node or its children; false otherwise.
-     * 
+     *
      * @param xmlNode node
      * @return true if this outcomeDeclaration is read by given node or its children; false otherwise
      */
-    private boolean isRead(ValidationContext context, XmlNode xmlNode) {
+    private boolean isRead(final ValidationContext context, final XmlNode xmlNode) {
         if (xmlNode instanceof PrintedVariable) {
             final PrintedVariable printedVariable = (PrintedVariable) xmlNode;
             if (printedVariable.getIdentifier() != null && printedVariable.getIdentifier().equals(getIdentifier())) {
@@ -320,7 +321,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
                     return true;
                 }
             }
-            catch (VariableResolutionException e) {
+            catch (final VariableResolutionException e) {
                 logger.warn("Refactor this:", e);
             }
         }

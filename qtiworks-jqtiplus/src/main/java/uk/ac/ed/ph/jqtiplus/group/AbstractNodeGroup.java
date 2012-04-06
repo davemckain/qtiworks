@@ -56,13 +56,13 @@ import org.w3c.dom.NodeList;
 
 /**
  * Parent of all groups.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class AbstractNodeGroup implements NodeGroup {
 
     private static final long serialVersionUID = 903238011893494959L;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractNodeGroup.class);
 
     private final XmlNode parent;
@@ -76,24 +76,24 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      * Constructs group with maximum set to 1.
      * <p>
      * This is convenient constructor for group with only one child.
-     * 
+     *
      * @param parent parent of created group
      * @param name name of created group
      * @param required if true, minimum is set to 1, if false, minimum is set to 0
      */
-    public AbstractNodeGroup(XmlNode parent, String name, boolean required) {
+    public AbstractNodeGroup(final XmlNode parent, final String name, final boolean required) {
         this(parent, name, required ? 1 : 0, 1);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param name name of created group
      * @param minimum minimum required children of created group
      * @param maximum maximum allowed children of created group
      */
-    public AbstractNodeGroup(XmlNode parent, String name, Integer minimum, Integer maximum) {
+    public AbstractNodeGroup(final XmlNode parent, final String name, final Integer minimum, final Integer maximum) {
         ConstraintUtilities.ensureNotNull(parent);
         ConstraintUtilities.ensureNotNull(name);
         this.parent = parent;
@@ -104,6 +104,14 @@ public abstract class AbstractNodeGroup implements NodeGroup {
 
         supportedClasses = new ArrayList<String>();
         supportedClasses.add(name);
+    }
+
+    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
+        this(parent, name, Integer.valueOf(minimum), Integer.valueOf(maximum));
+    }
+
+    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
+        this(parent, name, Integer.valueOf(minimum), maximum);
     }
 
     @Override
@@ -134,7 +142,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     /**
      * Gets first child or null.
      * This is convenient method for groups only with one child (maximum = 1).
-     * 
+     *
      * @return first child or null
      * @see #setChild
      */
@@ -148,11 +156,11 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      * Removes all children from list first!
      * <p>
      * This method should be used only on groups with one child (maximum = 1), because it clears list before setting new child.
-     * 
+     *
      * @param child new child
      * @see #getChild
      */
-    protected void setChild(XmlNode child) {
+    protected void setChild(final XmlNode child) {
         children.clear();
         if (child != null) {
             children.add(child);
@@ -175,7 +183,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
-    public void load(Element node, LoadingContext context) {
+    public void load(final Element node, final LoadingContext context) {
         final NodeList childNodes = node.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
@@ -195,7 +203,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     /**
      * @throws QtiIllegalChildException
      */
-    protected XmlNode createChild(Element childElement, JqtiExtensionManager jqtiExtensionManager) {
+    protected XmlNode createChild(final Element childElement, final JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
         XmlNode child;
         if ("customOperator".equals(localName)) {
@@ -227,11 +235,11 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
-    public void validate(ValidationContext context) {
-        if (minimum != null && children.size() < minimum) {
+    public void validate(final ValidationContext context) {
+        if (minimum != null && children.size() < minimum.intValue()) {
             context.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
         }
-        if (maximum != null && children.size() > maximum) {
+        if (maximum != null && children.size() > maximum.intValue()) {
             context.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
         }
     }

@@ -47,38 +47,31 @@ import org.w3c.dom.Text;
 
 /**
  * Group of content children.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
 
     private static final long serialVersionUID = -630489519873000102L;
 
-    /**
-     * Constructs group.
-     * 
-     * @param parent parent of created group
-     * @param name name of node group
-     * @param required is group required
-     */
-    public AbstractContentNodeGroup(XmlNode parent, String name, boolean required) {
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final boolean required) {
         super(parent, name, required);
     }
 
-    /**
-     * Constructs group.
-     * 
-     * @param parent parent of created group
-     * @param name name of node group
-     * @param minimum minimum number of children
-     * @param maximum maximum number of children
-     */
-    public AbstractContentNodeGroup(XmlNode parent, String name, Integer minimum, Integer maximum) {
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Integer minimum, final Integer maximum) {
+        super(parent, name, minimum, maximum);
+    }
+
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
+        super(parent, name, minimum, maximum);
+    }
+
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
         super(parent, name, minimum, maximum);
     }
 
     @Override
-    public void load(Element node, LoadingContext context) {
+    public void load(final Element node, final LoadingContext context) {
         final NodeList childNodes = node.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);

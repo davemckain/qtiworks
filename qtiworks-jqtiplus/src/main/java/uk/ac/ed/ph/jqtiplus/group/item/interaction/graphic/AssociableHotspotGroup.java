@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of associableHotspot children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class AssociableHotspotGroup extends AbstractNodeGroup {
@@ -51,26 +51,26 @@ public class AssociableHotspotGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public AssociableHotspotGroup(AssociableHotspotContainer parent) {
+    public AssociableHotspotGroup(final AssociableHotspotContainer parent) {
         super(parent, AssociableHotspot.QTI_CLASS_NAME, null, null);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public AssociableHotspotGroup(AssociableHotspotContainer parent, Integer minimum) {
+    public AssociableHotspotGroup(final AssociableHotspotContainer parent, final int minimum) {
         super(parent, AssociableHotspot.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -82,12 +82,12 @@ public class AssociableHotspotGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public AssociableHotspot create(String classTag) {
+    public AssociableHotspot create(final String classTag) {
         return new AssociableHotspot(getParent());
     }
 }

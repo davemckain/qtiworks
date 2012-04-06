@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of simpleAssociableChoice children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
@@ -51,26 +51,26 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public SimpleAssociableChoiceGroup(SimpleAssociableChoiceContainer parent) {
+    public SimpleAssociableChoiceGroup(final SimpleAssociableChoiceContainer parent) {
         super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, null, null);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public SimpleAssociableChoiceGroup(SimpleAssociableChoiceContainer parent, Integer minimum) {
+    public SimpleAssociableChoiceGroup(final SimpleAssociableChoiceContainer parent, final int minimum) {
         super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -82,12 +82,12 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public SimpleAssociableChoice create(String classTag) {
+    public SimpleAssociableChoice create(final String classTag) {
         return new SimpleAssociableChoice(getParent());
     }
 }

@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of fieldValue children.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class FieldValueGroup extends AbstractNodeGroup {
@@ -51,18 +51,22 @@ public class FieldValueGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum required children of created group
      * @param maximum maximum allowed children of created group
      */
-    public FieldValueGroup(FieldValueParent parent, Integer minimum, Integer maximum) {
+    public FieldValueGroup(final FieldValueParent parent, final Integer minimum, final Integer maximum) {
         super(parent, FieldValue.QTI_CLASS_NAME, minimum, maximum);
+    }
+
+    public FieldValueGroup(final FieldValueParent parent, final int minimum, final Integer maximum) {
+        this(parent, Integer.valueOf(minimum), maximum);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -74,12 +78,12 @@ public class FieldValueGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public FieldValue create(String classTag) {
+    public FieldValue create(final String classTag) {
         return new FieldValue((FieldValueParent) getParent());
     }
 }

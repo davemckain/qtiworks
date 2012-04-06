@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * Group of blockStatic children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class BlockStaticGroup extends AbstractContentNodeGroup {
@@ -50,20 +50,24 @@ public class BlockStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public BlockStaticGroup(XmlNode parent) {
+    public BlockStaticGroup(final XmlNode parent) {
         this(parent, null);
+    }
+
+    public BlockStaticGroup(final XmlNode parent, final int minimum) {
+        this(parent, Integer.valueOf(minimum));
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public BlockStaticGroup(XmlNode parent, Integer minimum) {
+    public BlockStaticGroup(final XmlNode parent, final Integer minimum) {
         super(parent, BlockStatic.DISPLAY_NAME, minimum, null);
 
         getAllSupportedClasses().clear();
@@ -79,7 +83,7 @@ public class BlockStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setBlockStatic
      */
@@ -89,18 +93,18 @@ public class BlockStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Sets new child.
-     * 
+     *
      * @param block new child
      * @see #getBlockStatic
      */
-    public void setBlockStatic(BlockStatic block) {
+    public void setBlockStatic(final BlockStatic block) {
         getChildren().clear();
         getChildren().add(block);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -112,12 +116,12 @@ public class BlockStaticGroup extends AbstractContentNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */
     @Override
-    public BlockStatic create(String classTag) {
+    public BlockStatic create(final String classTag) {
         return ContentType.getBlockStaticInstance(getParent(), classTag);
     }
 }

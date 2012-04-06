@@ -50,7 +50,7 @@ import java.util.List;
  * responses defined and have been attempted at least once are considered.
  * <p>
  * The result is an integer with single cardinality.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -62,19 +62,20 @@ public class NumberIncorrect extends ItemSubset {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "numberIncorrect";
 
-    public NumberIncorrect(ExpressionParent parent) {
+    public NumberIncorrect(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected IntegerValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 
         int incorrectCount = 0;
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
             final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
-            if (itemRefController.isIncorrect()) {
+            final Boolean incorrect = itemRefController.isIncorrect();
+            if (incorrect!=null && incorrect.booleanValue()) {
                 incorrectCount++;
             }
         }

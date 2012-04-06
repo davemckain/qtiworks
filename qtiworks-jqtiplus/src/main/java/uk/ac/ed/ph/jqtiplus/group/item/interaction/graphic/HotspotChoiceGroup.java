@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of hotspotChoice children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class HotspotChoiceGroup extends AbstractNodeGroup {
@@ -51,26 +51,26 @@ public class HotspotChoiceGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public HotspotChoiceGroup(HotspotChoiceContainer parent) {
+    public HotspotChoiceGroup(final HotspotChoiceContainer parent) {
         super(parent, HotspotChoice.QTI_CLASS_NAME, null, null);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public HotspotChoiceGroup(HotspotChoiceContainer parent, Integer minimum) {
+    public HotspotChoiceGroup(final HotspotChoiceContainer parent, final int minimum) {
         super(parent, HotspotChoice.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -82,12 +82,12 @@ public class HotspotChoiceGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public HotspotChoice create(String classTag) {
+    public HotspotChoice create(final String classTag) {
         return new HotspotChoice(getParent());
     }
 }

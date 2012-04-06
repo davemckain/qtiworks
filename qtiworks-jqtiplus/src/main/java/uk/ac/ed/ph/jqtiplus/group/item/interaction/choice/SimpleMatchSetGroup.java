@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Group of simpleMatchSet children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SimpleMatchSetGroup extends AbstractNodeGroup {
@@ -51,28 +51,28 @@ public class SimpleMatchSetGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      * @param maximum maximum number of children
      */
-    public SimpleMatchSetGroup(SimpleMatchSetContainer parent, Integer minimum, Integer maximum) {
+    public SimpleMatchSetGroup(final SimpleMatchSetContainer parent, final int minimum, final int maximum) {
         super(parent, SimpleMatchSet.QTI_CLASS_NAME, minimum, maximum);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public SimpleMatchSetGroup(SimpleMatchSetContainer parent, Integer minimum) {
+    public SimpleMatchSetGroup(final SimpleMatchSetContainer parent, final int minimum) {
         super(parent, SimpleMatchSet.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -84,12 +84,12 @@ public class SimpleMatchSetGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public SimpleMatchSet create(String classTag) {
+    public SimpleMatchSet create(final String classTag) {
         return new SimpleMatchSet(getParent());
     }
 }

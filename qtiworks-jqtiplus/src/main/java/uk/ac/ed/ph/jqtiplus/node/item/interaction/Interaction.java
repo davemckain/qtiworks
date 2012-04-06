@@ -63,7 +63,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Through an interaction, the candidate selects or constructs A response.
  * The candidate's responses are stored in the response variables. Each
  * interaction is associated with (at least) one response variable.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class Interaction extends BodyElement {
@@ -76,7 +76,7 @@ public abstract class Interaction extends BodyElement {
     /** Name of responseIdentifier attribute in xml schema. */
     public static final String ATTR_RESPONSE_IDENTIFIER_NAME = "responseIdentifier";
 
-    public Interaction(XmlNode parent, String localName) {
+    public Interaction(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, true));
@@ -84,7 +84,7 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Gets value of responseIdentifier attribute.
-     * 
+     *
      * @return value of responseIdentifier attribute
      * @see #setResponseIdentifier
      */
@@ -94,17 +94,17 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Sets new value of responseIdentifier attribute.
-     * 
+     *
      * @param responseIdentifier new value of responseIdentifier attribute
      * @see #getResponseIdentifier
      */
-    public void setResponseIdentifier(Identifier responseIdentifier) {
+    public void setResponseIdentifier(final Identifier responseIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).setValue(responseIdentifier);
     }
 
     /**
      * Gets the responseDeclaration for this interaction.
-     * 
+     *
      * @return the responseDeclaration for this interactions responseIdentifier
      */
     public ResponseDeclaration getResponseDeclaration() {
@@ -112,7 +112,7 @@ public abstract class Interaction extends BodyElement {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -127,7 +127,7 @@ public abstract class Interaction extends BodyElement {
      * Initialize the interaction.
      * Subclasses should override this method as required.
      */
-    public void initialize(ItemSessionController itemController) {
+    public void initialize(@SuppressWarnings("unused") final ItemSessionController itemController) {
         /* Let subclasses override as required */
     }
 
@@ -140,12 +140,12 @@ public abstract class Interaction extends BodyElement {
      * for things that might do more, such as string interactions that might bind two variables.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
-     * 
+     *
      * @param responseData Response to process, which must not be null
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(ItemSessionController itemController, ResponseData responseData)
+    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData)
             throws ResponseBindingException {
         ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
@@ -160,7 +160,7 @@ public abstract class Interaction extends BodyElement {
      * but may need overridden for certain types of Interactions.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
-     * 
+     *
      * @param responseData Response to process, which must not be null
      * @param resposneDeclaration underlying response declaration
      * @see #bindResponse(ItemSessionController, ResponseData)
@@ -168,24 +168,24 @@ public abstract class Interaction extends BodyElement {
      *             value encoded by the responseList
      */
     @SuppressWarnings("static-method")
-    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData)
+    protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData)
             throws ResponseBindingException {
         Value value = null;
-        BaseType responseBaseType = responseDeclaration.getBaseType();
-        Cardinality responseCardinality = responseDeclaration.getCardinality();
-        
+        final BaseType responseBaseType = responseDeclaration.getBaseType();
+        final Cardinality responseCardinality = responseDeclaration.getCardinality();
+
         if (responseBaseType==BaseType.FILE) {
             if (responseData.getType()!=ResponseDataType.FILE) {
                 throw new ResponseBindingException("Attempted to bind non-file response data to a file response");
             }
-            FileResponseData fileResponseData = (FileResponseData) responseData;
+            final FileResponseData fileResponseData = (FileResponseData) responseData;
             value = new FileValue(fileResponseData);
         }
         else {
             if (responseData.getType()!=ResponseDataType.STRING) {
                 throw new ResponseBindingException("Attempted to bind non-string response data to response with baseType " + responseBaseType);
             }
-            String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+            final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
             if (responseCardinality == Cardinality.SINGLE) {
                 if (stringResponseData.length == 0 || stringResponseData[0].trim().length() == 0) {
                     value = NullValue.INSTANCE;
@@ -215,7 +215,7 @@ public abstract class Interaction extends BodyElement {
     /**
      * Validate the response associated with this interaction.
      * This is called after {@link #bindResponse(ItemSessionController, ResponseData)}
-     * 
+     *
      * @return true if the response is valid, false otherwise
      */
     public abstract boolean validateResponse(ItemSessionController itemController, Value responseValue);

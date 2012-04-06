@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * Group of GapImg children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GapImgGroup extends AbstractNodeGroup {
@@ -50,26 +50,26 @@ public class GapImgGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
-    public GapImgGroup(XmlNode parent) {
+    public GapImgGroup(final XmlNode parent) {
         super(parent, GapImg.QTI_CLASS_NAME, null, null);
     }
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param minimum minimum number of children
      */
-    public GapImgGroup(XmlNode parent, Integer minimum) {
+    public GapImgGroup(final XmlNode parent, final int minimum) {
         super(parent, GapImg.QTI_CLASS_NAME, minimum, null);
     }
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -81,12 +81,12 @@ public class GapImgGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override
-    public GapImg create(String classTag) {
+    public GapImg create(final String classTag) {
         return new GapImg(getParent());
     }
 }
