@@ -51,13 +51,13 @@ public abstract class SectionPart extends AbstractPart {
     public static final String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static final boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of fixed attribute in xml schema. */
     public static final String ATTR_FIXED_NAME = "fixed";
 
     /** Default value of fixed attribute. */
-    public static final boolean ATTR_FIXED_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_FIXED_DEFAULT_VALUE = Boolean.FALSE;
 
     /**
      * Constructs part.

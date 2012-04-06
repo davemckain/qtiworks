@@ -45,8 +45,8 @@ public final class MathOperatorNameAttribute extends SingleEnumerateAttribute<Ma
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public MathOperatorNameAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public MathOperatorNameAttribute(XmlNode parent, String name, boolean required) {
+        super(parent, name, required);
     }
 
     @Override

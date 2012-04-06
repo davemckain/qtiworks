@@ -41,30 +41,20 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * 
  * @author Jiri Kajaba
  */
-public class StringAttribute extends SingleAttribute<String> {
+public final class StringAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = 3119455031436453049L;
 
-    public StringAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-    
     public StringAttribute(XmlNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
     
-    public StringAttribute(XmlNode parent, String localName, String defaultValue) {
-        super(parent, localName, defaultValue, null, false);
-    }
-
-    public StringAttribute(XmlNode parent, String localName, String defaultValue, 
-            String value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public StringAttribute(XmlNode parent, String localName, String defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
     
-    public StringAttribute(XmlNode parent, String localName, String namespaceUri, 
-            String defaultValue, String value, boolean required) {
-        super(parent, localName, namespaceUri, defaultValue, value, required);
+    public StringAttribute(XmlNode parent, String localName, String namespaceUri, String defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, null, required);
     }
     
     @Override

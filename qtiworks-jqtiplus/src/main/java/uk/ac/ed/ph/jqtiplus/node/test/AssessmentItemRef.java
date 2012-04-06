@@ -73,9 +73,6 @@ public class AssessmentItemRef extends SectionPart {
     /** Name of category attribute in xml schema. */
     public static final String ATTR_CATEGORIES_NAME = "category";
 
-    /** Default value of category attribute. */
-    public static final List<String> ATTR_CATEGORIES_DEFAULT_VALUE = null;
-
     //    private final LifecycleListener lifecycleEventProxy;
 
     private final List<AbstractPart> children;
@@ -114,8 +111,8 @@ public class AssessmentItemRef extends SectionPart {
     public AssessmentItemRef(AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME));
-        getAttributes().add(new StringMultipleAttribute(this, ATTR_CATEGORIES_NAME, ATTR_CATEGORIES_DEFAULT_VALUE));
+        getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME, true));
+        getAttributes().add(new StringMultipleAttribute(this, ATTR_CATEGORIES_NAME, false));
 
         getNodeGroups().add(new VariableMappingGroup(this));
         getNodeGroups().add(new WeightGroup(this));
@@ -205,7 +202,7 @@ public class AssessmentItemRef extends SectionPart {
      * @return value of category attribute
      */
     public List<String> getCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getValue();
+        return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getComputedValue();
     }
     
     public void setCategories(List<String> value) {
@@ -474,7 +471,7 @@ public class AssessmentItemRef extends SectionPart {
     //
     //        declaration.resetValue();
     //
-    //        return declaration.getValue();
+    //        return declaration.getComputedValue();
     //    }
     //
     //    /**

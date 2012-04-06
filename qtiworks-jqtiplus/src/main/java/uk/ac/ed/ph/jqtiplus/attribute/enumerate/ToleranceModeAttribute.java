@@ -45,8 +45,8 @@ public final class ToleranceModeAttribute extends SingleEnumerateAttribute<Toler
 
     private static final long serialVersionUID = 1737056425484603310L;
 
-    public ToleranceModeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ToleranceModeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

@@ -64,11 +64,11 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     /** Attribute default value (may be null) */
     protected V defaultValue;
 
-    public AbstractAttribute(XmlNode owner, String localName, V defaultValue, V value, boolean required) {
-        this(owner, localName, "", defaultValue, value, required);
+    public AbstractAttribute(XmlNode owner, String localName, V defaultValue, boolean required) {
+        this(owner, localName, "", defaultValue, required);
     }
 
-    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue, V value, boolean required) {
+    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue, boolean required) {
         ConstraintUtilities.ensureNotNull(owner, "owner");
         ConstraintUtilities.ensureNotNull(localName, "localName");
         ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
@@ -76,7 +76,6 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
         this.localName = localName;
         this.namespaceUri = namespaceUri;
         this.required = required;
-        this.value = value;
         this.defaultValue = defaultValue;
     }
 

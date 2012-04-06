@@ -67,15 +67,12 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    /** Default value of baseType attribute. */
-    public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
-
     public VariableDeclaration(AssessmentObject parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));
-        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME, true));
+        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
 
         getNodeGroups().add(new DefaultValueGroup(this));
     }

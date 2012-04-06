@@ -83,10 +83,10 @@ public class ModalFeedback extends AbstractNode {
     public ModalFeedback(AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, null, null, false));
+        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, null, false));
 
         getNodeGroups().add(new FlowStaticGroup(this));
     }

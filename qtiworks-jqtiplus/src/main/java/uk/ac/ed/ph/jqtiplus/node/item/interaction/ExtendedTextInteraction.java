@@ -128,17 +128,17 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     public ExtendedTextInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_STRINGS_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_STRINGS_NAME, ATTR_MIN_STRINGS_DEFAULT_VALUE, ATTR_MIN_STRINGS_DEFAULT_VALUE, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LINES_NAME, null, null, false));
-        getAttributes().add(new TextFormatAttribute(this, ATTR_FORMAT_NAME, ATTR_FORMAT_DEFAULT_VALUE, ATTR_FORMAT_DEFAULT_VALUE, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_STRINGS_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_STRINGS_NAME, ATTR_MIN_STRINGS_DEFAULT_VALUE, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LINES_NAME, false));
+        getAttributes().add(new TextFormatAttribute(this, ATTR_FORMAT_NAME, ATTR_FORMAT_DEFAULT_VALUE, false));
 
         //for StringInteraction...
-        getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, ATTR_BASE_DEFAULT_VALUE, false));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_STRING_IDENTIFIER_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, null, null, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_STRING_IDENTIFIER_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
     }
 
     /**

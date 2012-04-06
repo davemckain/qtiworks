@@ -42,16 +42,16 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
  * 
  * @author Jiri Kajaba
  */
-public class DurationAttribute extends SingleAttribute<Double> {
+public final class DurationAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -2706570073349757182L;
 
-    public DurationAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public DurationAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
     
-    public DurationAttribute(XmlNode parent, String localName, Double defaultValue) {
-        super(parent, localName, defaultValue);
+    public DurationAttribute(XmlNode parent, String localName, Double defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

@@ -70,8 +70,8 @@ public abstract class GapChoice extends AssociableChoice {
     public GapChoice(XmlNode parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
     }
 
     /**

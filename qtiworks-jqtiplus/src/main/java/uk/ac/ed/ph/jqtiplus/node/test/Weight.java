@@ -63,8 +63,8 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
     public Weight(AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new FloatAttribute(this, ATTR_VALUE_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new FloatAttribute(this, ATTR_VALUE_NAME, true));
     }
 
     @Override

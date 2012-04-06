@@ -65,8 +65,8 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
     public AbstractResult(AssessmentResult parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new DateAttribute(this, ATTR_DATE_STAMP_NAME));
+        getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new DateAttribute(this, ATTR_DATE_STAMP_NAME, true));
 
         getNodeGroups().add(new ItemVariableGroup(this));
     }

@@ -65,13 +65,10 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
 
-    /** Default value of interpretation attribute. */
-    public static final String ATTR_INTERPRETATION_DEFAULT_VALUE = null;
-
     public DefaultValue(VariableDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
+        getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, false));
 
         getNodeGroups().add(new FieldValueGroup(this, 1, null));
     }
@@ -85,7 +82,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     public DefaultValue(VariableDeclaration parent, Value value) {
         this(parent);
 
-        getFieldValues().addAll(FieldValue.getValues(this, value));
+        getFieldValues().addAll(FieldValue.computeValues(this, value));
         evaluate();
     }
 
@@ -152,7 +149,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
      * @return evaluated value of this defaultValue
      */
     public Value evaluate() {
-        return FieldValue.getValue(getCardinality(), getFieldValues());
+        return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
 
     //    @Override

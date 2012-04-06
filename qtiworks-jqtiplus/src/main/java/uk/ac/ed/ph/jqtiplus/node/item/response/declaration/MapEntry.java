@@ -60,14 +60,14 @@ public class MapEntry extends AbstractNode {
     public static final String ATTR_CASE_SENSITIVE_VALUE_NAME = "caseSensitive";
 
     /** Default value of caseSensitive attribute */
-    public static final boolean ATTR_CASE_SENSITIVE_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_CASE_SENSITIVE_DEFAULT_VALUE = Boolean.TRUE;
 
     public MapEntry(Mapping parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new SingleValueAttribute(this, ATTR_MAP_KEY_NAME, parent.getParent().getBaseType()));
-        getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_VALUE_NAME, ATTR_CASE_SENSITIVE_DEFAULT_VALUE));
+        getAttributes().add(new SingleValueAttribute(this, ATTR_MAP_KEY_NAME, parent.getParent().getBaseType(), true));
+        getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_VALUE_NAME, ATTR_CASE_SENSITIVE_DEFAULT_VALUE, false));
     }
 
     /**

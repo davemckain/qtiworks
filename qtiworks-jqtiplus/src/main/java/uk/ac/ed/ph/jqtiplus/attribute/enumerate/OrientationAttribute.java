@@ -46,7 +46,7 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
     private static final long serialVersionUID = 5170134258927740739L;
 
     public OrientationAttribute(XmlNode parent, String localName, boolean required) {
-        super(parent, localName, null, null, required);
+        super(parent, localName, required);
     }
 
     @Override

@@ -45,11 +45,6 @@ public abstract class DlElement extends BodyElement {
 
     private static final long serialVersionUID = -1037128914556395698L;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public DlElement(XmlNode parent, String localName) {
         super(parent, localName);
     }

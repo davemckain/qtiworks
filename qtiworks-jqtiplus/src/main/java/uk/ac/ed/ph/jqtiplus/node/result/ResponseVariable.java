@@ -62,7 +62,7 @@ public class ResponseVariable extends ItemVariable {
     public ResponseVariable(AbstractResult parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_CHOICE_SEQUENCE_NAME, null, null, false));
+        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_CHOICE_SEQUENCE_NAME, false));
 
         getNodeGroups().add(new CorrectResponseGroup(this));
         getNodeGroups().add(new CandidateResponseGroup(this));
@@ -77,7 +77,7 @@ public class ResponseVariable extends ItemVariable {
             setCorrectResponse(declaration.getCorrectResponse());
 
             final CandidateResponse response = new CandidateResponse(this);
-            response.getFieldValues().addAll(FieldValue.getValues(response, value));
+            response.getFieldValues().addAll(FieldValue.computeValues(response, value));
             setCandidateResponse(response);
 
             if (shuffledInteractionChoiceIdentifiers != null) {
@@ -94,7 +94,7 @@ public class ResponseVariable extends ItemVariable {
      * @return value of choiceSequence attribute
      */
     public List<Identifier> getChoiceSequence() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getValue();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getComputedValue();
     }
     
     public void setChoiceSequence(List<Identifier> value) {

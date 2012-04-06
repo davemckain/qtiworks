@@ -57,16 +57,12 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     
     private final String fieldSeparator;
 
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator) {
-        this(parent, localName, fieldSeparator, null, null, true);
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, boolean required) {
+        this(parent, localName, fieldSeparator, null, required);
     }
 
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue) {
-        this(parent, localName, fieldSeparator, defaultValue, null, false);
-    }
-
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue, List<E> value, boolean required) {
-        super(parent, localName, defaultValue, value!=null ? new ArrayList<E>() : value, required);
+    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
         this.fieldSeparator = fieldSeparator;
     }
     

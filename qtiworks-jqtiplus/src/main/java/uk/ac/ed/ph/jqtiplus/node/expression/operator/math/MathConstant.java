@@ -59,7 +59,7 @@ public class MathConstant extends AbstractExpression {
     public MathConstant(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new MathConstantNameAttribute(this, "name"));
+        getAttributes().add(new MathConstantNameAttribute(this, "name", true));
     }
 
     @Override

@@ -103,9 +103,9 @@ public class PositionObjectInteraction extends BlockInteraction {
     public PositionObjectInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new CoordsAttribute(this, ATTR_CENTER_POINT_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
+        getAttributes().add(new CoordsAttribute(this, ATTR_CENTER_POINT_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, false));
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }
@@ -116,7 +116,7 @@ public class PositionObjectInteraction extends BlockInteraction {
      * @return value of centerPoint attribute
      */
     public List<Integer> getCenterPoint() {
-        return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getValue();
+        return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getComputedValue();
     }
     
     public void setCenterPoint(List<Integer> value) {

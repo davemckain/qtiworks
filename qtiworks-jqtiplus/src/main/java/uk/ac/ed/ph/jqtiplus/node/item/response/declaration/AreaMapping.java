@@ -88,9 +88,9 @@ public class AreaMapping extends AbstractNode {
     public AreaMapping(ResponseDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, null, null, false));
-        getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME, null, null, false));
-        getAttributes().add(new FloatAttribute(this, ATTR_DEFAULT_VALUE_NAME, ATTR_DEFAULT_VALUE_DEFAULT_VALUE));
+        getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, false));
+        getAttributes().add(new FloatAttribute(this, ATTR_UPPER_BOUND_NAME, false));
+        getAttributes().add(new FloatAttribute(this, ATTR_DEFAULT_VALUE_NAME, ATTR_DEFAULT_VALUE_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new AreaMapEntryGroup(this));
     }

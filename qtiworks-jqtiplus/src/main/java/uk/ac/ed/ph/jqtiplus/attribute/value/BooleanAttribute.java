@@ -50,20 +50,16 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     /** Supported values. */
     private static final Boolean[] values = new Boolean[] { Boolean.TRUE, Boolean.FALSE };
 
-    public BooleanAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public BooleanAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue) {
-        super(parent, localName, defaultValue);
+    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
-    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue, Boolean value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
-    }
-    
-    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, Boolean value, boolean required) {
-        super(parent, localName, namespaceUri, defaultValue, value, required);
+    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, required);
     }
 
     @Override

@@ -106,15 +106,15 @@ public class MediaInteraction extends BlockInteraction {
     public static String ATTR_LOOP_NAME = "loop";
 
     /** Default value of loop attribute. */
-    public static boolean ATTR_LOOP_DEFAULT_VALUE = false;
-
+    public static Boolean ATTR_LOOP_DEFAULT_VALUE = Boolean.FALSE;
+    
     public MediaInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_AUTOSTART_NAME, null, null, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_PLAYS_NAME, ATTR_MIN_PLAYS_DEFAULT_VALUE));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_PLAYS_NAME, ATTR_MAX_PLAYS_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_LOOP_NAME, ATTR_LOOP_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_AUTOSTART_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_PLAYS_NAME, ATTR_MIN_PLAYS_DEFAULT_VALUE, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_PLAYS_NAME, ATTR_MAX_PLAYS_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_LOOP_NAME, ATTR_LOOP_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }

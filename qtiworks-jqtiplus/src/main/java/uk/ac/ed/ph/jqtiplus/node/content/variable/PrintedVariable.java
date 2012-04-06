@@ -71,9 +71,6 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     /** Name of format attribute in xml schema. */
     public static final String ATTR_FORMAT_NAME = "format";
 
-    /** Default value of format attribute. */
-    public static final String ATTR_FORMAT_DEFAULT_VALUE = null;
-
     /** Name of base attribute in xml schema. */
     public static final String ATTR_BASE_NAME = "base";
 
@@ -83,9 +80,9 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     public PrintedVariable(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_FORMAT_NAME, ATTR_FORMAT_DEFAULT_VALUE));
-        getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_FORMAT_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, false));
     }
 
     /**

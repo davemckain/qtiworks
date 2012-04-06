@@ -45,8 +45,8 @@ public final class SessionStatusAttribute extends SingleEnumerateAttribute<Sessi
 
     private static final long serialVersionUID = 8759133738524182291L;
 
-    public SessionStatusAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public SessionStatusAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

@@ -45,12 +45,12 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
 
     private static final long serialVersionUID = 6524337813805169272L;
 
-    public VisibilityModeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public VisibilityModeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, VisibilityMode value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
     
     @Override

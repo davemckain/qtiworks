@@ -88,7 +88,7 @@ public class Variable extends LookupExpression {
     public Variable(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
     /**

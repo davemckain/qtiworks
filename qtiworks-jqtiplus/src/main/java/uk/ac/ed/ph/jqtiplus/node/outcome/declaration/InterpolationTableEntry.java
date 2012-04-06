@@ -55,13 +55,13 @@ public class InterpolationTableEntry extends LookupTableEntry {
     public static final String ATTR_INCLUDE_BOUNDARY_NAME = "includeBoundary";
 
     /** Default value of includeBoundary attribute. */
-    public static final Boolean ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE = Boolean.TRUE;
 
     public InterpolationTableEntry(InterpolationTable parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(0, new FloatAttribute(this, ATTR_SOURCE_VALUE_NAME));
-        getAttributes().add(1, new BooleanAttribute(this, ATTR_INCLUDE_BOUNDARY_NAME, ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE));
+        getAttributes().add(0, new FloatAttribute(this, ATTR_SOURCE_VALUE_NAME, true));
+        getAttributes().add(1, new BooleanAttribute(this, ATTR_INCLUDE_BOUNDARY_NAME, ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE, false));
     }
 
     /**

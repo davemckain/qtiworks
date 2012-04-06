@@ -57,11 +57,6 @@ public class ContainerSize extends AbstractFunctionalExpression {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "containerSize";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public ContainerSize(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }

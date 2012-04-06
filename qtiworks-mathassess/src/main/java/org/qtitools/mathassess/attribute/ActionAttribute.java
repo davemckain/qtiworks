@@ -47,8 +47,8 @@ public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> 
 
     private static final long serialVersionUID = 2096278682370848167L;
 
-    public ActionAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+    public ActionAttribute(XmlNode parent, String localName, String namespaceUri, boolean required) {
+        super(parent, localName, namespaceUri, required);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class CasProcess extends MathAssessOperator {
         super(jqtiExtensionPackage, parent);
 
         getAttributes().add(new ReturnTypeAttribute(this, ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI));
-        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, Boolean.FALSE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, false));
 
         // Allow 1 child only
         getNodeGroups().clear();

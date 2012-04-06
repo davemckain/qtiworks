@@ -75,13 +75,13 @@ public class StringMatch extends AbstractFunctionalExpression {
     public static final String ATTR_SUBSTRING_NAME = "substring";
 
     /** Default value of substring attribute. */
-    public static final boolean ATTR_SUBSTRING_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_SUBSTRING_DEFAULT_VALUE = Boolean.FALSE;
 
     public StringMatch(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_SUBSTRING_NAME, ATTR_SUBSTRING_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SUBSTRING_NAME, ATTR_SUBSTRING_DEFAULT_VALUE, false));
     }
 
     /**

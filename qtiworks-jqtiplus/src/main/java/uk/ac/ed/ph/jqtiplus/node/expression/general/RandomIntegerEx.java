@@ -53,13 +53,10 @@ public class RandomIntegerEx extends RandomInteger {
     /** Name of seed attribute in xml schema. */
     public static final String ATTR_SEED_NAME = "seed";
 
-    /** Default value of seed attribute. */
-    public static final Long ATTR_SEED_DEFAULT_VALUE = null;
-
     public RandomIntegerEx(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, ATTR_SEED_DEFAULT_VALUE));
+        getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, false));
     }
 
     @Override

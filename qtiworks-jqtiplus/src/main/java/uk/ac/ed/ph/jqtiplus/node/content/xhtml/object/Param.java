@@ -90,10 +90,10 @@ public class Param extends AbstractNode implements ObjectFlow {
     public Param(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_VALUE_NAME));
-        getAttributes().add(new ParamTypeAttribute(this, ATTR_VALUETYPE_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_VALUE_NAME, true));
+        getAttributes().add(new ParamTypeAttribute(this, ATTR_VALUETYPE_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
     /**

@@ -76,9 +76,9 @@ public abstract class TemplateElement extends BodyElement {
     public TemplateElement(XmlNode parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
     /**

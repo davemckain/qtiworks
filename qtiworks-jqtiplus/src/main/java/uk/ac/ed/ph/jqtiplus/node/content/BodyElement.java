@@ -94,10 +94,10 @@ public abstract class BodyElement extends AbstractNode {
 
     public BodyElement(XmlNode parent, String localName) {
         super(parent, localName);
-        getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, null, null, false));
-        getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, null, null, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, false));
+        getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class BodyElement extends AbstractNode {
      * @return value of class attribute
      */
     public List<String> getClassAttr() {
-        return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getValue();
+        return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getComputedValue();
     }
     
     public void setClassAttr(List<String> value) {

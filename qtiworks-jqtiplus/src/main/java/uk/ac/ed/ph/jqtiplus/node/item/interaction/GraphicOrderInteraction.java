@@ -100,8 +100,8 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     public GraphicOrderInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, false));
 
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
     }

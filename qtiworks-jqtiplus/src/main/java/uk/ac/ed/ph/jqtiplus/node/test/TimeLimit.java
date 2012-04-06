@@ -60,20 +60,14 @@ public class TimeLimit extends AbstractNode {
     /** Name of minTime attribute in xml schema. */
     public static final String ATTR_MINIMUM_NAME = "minTime";
 
-    /** Default value of minTime attribute. */
-    public static final Double ATTR_MINIMUM_DEFAULT_VALUE = null;
-
     /** Name of maxTime attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "maxTime";
-
-    /** Default value of maxTime attribute. */
-    public static final Double ATTR_MAXIMUM_DEFAULT_VALUE = null;
 
     public TimeLimit(ControlObject<?> parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, ATTR_MINIMUM_DEFAULT_VALUE));
-        getAttributes().add(new DurationAttribute(this, ATTR_MAXIMUM_NAME, ATTR_MAXIMUM_DEFAULT_VALUE));
+        getAttributes().add(new DurationAttribute(this, ATTR_MINIMUM_NAME, false));
+        getAttributes().add(new DurationAttribute(this, ATTR_MAXIMUM_NAME, false));
     }
 
     /**

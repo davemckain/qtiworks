@@ -70,8 +70,8 @@ public class A extends AbstractSimpleInline {
     public A(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
+        getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
     @Override

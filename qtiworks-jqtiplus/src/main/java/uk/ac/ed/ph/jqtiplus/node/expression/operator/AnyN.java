@@ -70,16 +70,11 @@ public class AnyN extends AbstractFunctionalExpression {
     /** Name of max attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "max";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public AnyN(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME, true));
     }
 
     /**

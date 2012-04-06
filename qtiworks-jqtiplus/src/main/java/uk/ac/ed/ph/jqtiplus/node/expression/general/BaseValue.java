@@ -78,7 +78,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     public BaseValue(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME));
+        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, true));
     }
 
     @Override

@@ -74,7 +74,7 @@ public class RecordEx extends AbstractFunctionalExpression {
     public RecordEx(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_IDENTIFIERS_NAME, null));
+        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_IDENTIFIERS_NAME, false));
     }
 
     /**
@@ -83,7 +83,7 @@ public class RecordEx extends AbstractFunctionalExpression {
      * @return value of identifiers attribute
      */
     public List<Identifier> getIdentifiers() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getValue();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getComputedValue();
     }
     
     public void setIdentifiers(List<Identifier> value) {

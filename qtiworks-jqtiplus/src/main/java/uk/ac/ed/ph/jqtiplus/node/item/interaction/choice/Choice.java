@@ -87,7 +87,7 @@ public abstract class Choice extends BodyElement {
     public static final String ATTR_FIXED_NAME = "fixed";
 
     /** Default value of fixed attribute. */
-    public static final boolean ATTR_FIXED_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_FIXED_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of templateIdentifier attribute in xml schema. */
     public static final String ATTR_TEMPLATE_IDENTIFIER_NAME = "templateIdentifier";
@@ -97,10 +97,10 @@ public abstract class Choice extends BodyElement {
 
     public Choice(XmlNode parent, String localName) {
         super(parent, localName);
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, null, null, false));
-        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, null, null, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, false));
+        getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, false));
     }
 
     /**

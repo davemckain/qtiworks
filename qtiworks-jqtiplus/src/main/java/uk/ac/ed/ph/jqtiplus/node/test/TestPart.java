@@ -65,8 +65,8 @@ public class TestPart extends AbstractPart {
     public TestPart(AssessmentTest parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new NavigationModeAttribute(this, ATTR_NAVIGATION_MODE_NAME));
-        getAttributes().add(new SubmissionModeAttribute(this, ATTR_SUBMISSION_MODE_NAME));
+        getAttributes().add(new NavigationModeAttribute(this, ATTR_NAVIGATION_MODE_NAME, true));
+        getAttributes().add(new SubmissionModeAttribute(this, ATTR_SUBMISSION_MODE_NAME, true));
 
         getNodeGroups().add(new AssessmentSectionGroup(this));
         getNodeGroups().add(new TestFeedbackGroup(this));

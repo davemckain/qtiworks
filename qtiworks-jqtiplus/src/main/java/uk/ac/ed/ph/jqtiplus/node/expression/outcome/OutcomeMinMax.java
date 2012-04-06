@@ -62,8 +62,8 @@ public abstract class OutcomeMinMax extends ItemSubset {
     public OutcomeMinMax(ExpressionParent parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
     /**

@@ -46,7 +46,7 @@ public final class TableCellScopeAttribute extends SingleEnumerateAttribute<Tabl
     private static final long serialVersionUID = -5619179078436198190L;
 
     public TableCellScopeAttribute(XmlNode parent, String localName, boolean required) {
-        super(parent, localName, null, null, required);
+        super(parent, localName, required);
     }
 
     @Override

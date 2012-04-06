@@ -74,10 +74,10 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
     public Object(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, false));
 
         getNodeGroups().add(new ObjectFlowGroup(this));
     }

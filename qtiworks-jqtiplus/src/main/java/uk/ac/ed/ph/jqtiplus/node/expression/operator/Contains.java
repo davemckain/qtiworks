@@ -74,11 +74,6 @@ public class Contains extends AbstractFunctionalExpression {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "contains";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
     public Contains(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }

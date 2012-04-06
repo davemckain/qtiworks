@@ -46,12 +46,12 @@ public final class LongAttribute extends SingleAttribute<Long> {
 
     private static final long serialVersionUID = 1138880928751132617L;
 
-    public LongAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public LongAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public LongAttribute(XmlNode parent, String localName, Long defaultValue) {
-        super(parent, localName, defaultValue);
+    public LongAttribute(XmlNode parent, String localName, Long defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

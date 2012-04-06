@@ -105,7 +105,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     public static String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
+    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of maxChoices attribute in xml schema. */
     public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
@@ -119,9 +119,9 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     public OrderInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, null, null, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, false));
         getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, false));
 
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));

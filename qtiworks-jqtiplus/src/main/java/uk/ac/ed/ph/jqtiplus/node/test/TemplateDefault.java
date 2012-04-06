@@ -70,7 +70,7 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
     public TemplateDefault(AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, true));
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
     }

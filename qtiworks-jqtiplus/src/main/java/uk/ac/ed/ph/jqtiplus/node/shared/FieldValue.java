@@ -82,17 +82,14 @@ public class FieldValue extends AbstractNode {
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    /** Default value of baseType attribute. */
-    public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
-
     /** Single value of this fieldValue. */
     private SingleValue singleValue;
 
     public FieldValue(FieldValueParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, null));
-        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
+        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
     }
 
     @Override
@@ -252,7 +249,7 @@ public class FieldValue extends AbstractNode {
      * @return value (of any cardinality) from given list of fieldValues (list of single values)
      * @see #getValues
      */
-    public static Value getValue(Cardinality cardinality, List<FieldValue> values) {
+    public static Value computeValue(Cardinality cardinality, List<FieldValue> values) {
         if (values.size() == 0) {
             return NullValue.INSTANCE;
         }
@@ -302,7 +299,7 @@ public class FieldValue extends AbstractNode {
      * @return list of fieldValues (list of single values) from given value (of any cardinality)
      * @see #getValue
      */
-    public static List<FieldValue> getValues(FieldValueParent parent, Value value) {
+    public static List<FieldValue> computeValues(FieldValueParent parent, Value value) {
         final List<FieldValue> values = new ArrayList<FieldValue>();
 
         if (value == null || value.isNull()) {

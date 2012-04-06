@@ -45,8 +45,8 @@ public final class RoundingModeAttribute extends SingleEnumerateAttribute<Roundi
 
     private static final long serialVersionUID = 7527369761752182141L;
 
-    public RoundingModeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public RoundingModeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

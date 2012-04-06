@@ -57,9 +57,8 @@ public class InfoControl extends BodyElement implements Block {
 
     public InfoControl(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
         getNodeGroups().add(new FlowGroup(this));
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
     }
 
     public String getTitle() {

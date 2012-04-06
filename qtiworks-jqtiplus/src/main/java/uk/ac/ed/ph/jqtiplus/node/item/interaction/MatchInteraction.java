@@ -96,7 +96,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     public static String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
+    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of maxAssociations attribute in xml schema. */
     public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
@@ -113,10 +113,9 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     public MatchInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
-        getAttributes().add(
-                new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new SimpleMatchSetGroup(this, 2, 2));
     }

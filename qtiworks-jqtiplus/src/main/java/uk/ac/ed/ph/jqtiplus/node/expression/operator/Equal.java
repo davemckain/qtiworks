@@ -96,28 +96,25 @@ public class Equal extends AbstractFunctionalExpression {
     /** Name of tolerance attribute in xml schema. */
     public static final String ATTR_TOLERANCES_NAME = "tolerance";
 
-    /** Default value of tolerance attribute. */
-    public static final List<Double> ATTR_TOLERANCES_DEFAULT_VALUE = null;
-
     /** Name of includeLowerBound attribute in xml schema. */
     public static final String ATTR_INCLUDE_LOWER_BOUND_NAME = "includeLowerBound";
 
     /** Default value of includeLowerBound attribute. */
-    public static final boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = Boolean.valueOf(true);
 
     /** Name of includeUpperBound attribute in xml schema. */
     public static final String ATTR_INCLUDE_UPPER_BOUND_NAME = "includeUpperBound";
 
     /** Default value of incluseUpperBound attribute. */
-    public static final boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = Boolean.valueOf(true);
 
     public Equal(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ToleranceModeAttribute(this, ATTR_TOLERANCE_MODE_NAME));
-        getAttributes().add(new FloatMultipleAttribute(this, ATTR_TOLERANCES_NAME, ATTR_TOLERANCES_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_LOWER_BOUND_NAME, ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_UPPER_BOUND_NAME, ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE));
+        getAttributes().add(new ToleranceModeAttribute(this, ATTR_TOLERANCE_MODE_NAME, true));
+        getAttributes().add(new FloatMultipleAttribute(this, ATTR_TOLERANCES_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_LOWER_BOUND_NAME, ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_UPPER_BOUND_NAME, ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE, false));
     }
 
     /**
@@ -146,7 +143,7 @@ public class Equal extends AbstractFunctionalExpression {
      * @return value of tolerance attribute
      */
     public List<Double> getTolerances() {
-        return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getValue();
+        return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getComputedValue();
     }
     
     public void setTolerances(List<Double> value) {
@@ -159,7 +156,8 @@ public class Equal extends AbstractFunctionalExpression {
      * @return first tolerance if defined; zero otherwise
      */
     protected double getFirstTolerance() {
-        return getTolerances().size() > 0 ? getTolerances().get(0) : 0;
+        List<Double> tolerances = getTolerances();
+        return tolerances!=null && tolerances.size()>0 ? tolerances.get(0) : 0;
     }
 
     /**
@@ -168,7 +166,8 @@ public class Equal extends AbstractFunctionalExpression {
      * @return second tolerance if defined; first tolerance otherwise
      */
     protected double getSecondTolerance() {
-        return getTolerances().size() > 1 ? getTolerances().get(1) : getFirstTolerance();
+        List<Double> tolerances = getTolerances();
+        return tolerances!=null && tolerances.size()>1 ? tolerances.get(1) : 0;
     }
 
     /**

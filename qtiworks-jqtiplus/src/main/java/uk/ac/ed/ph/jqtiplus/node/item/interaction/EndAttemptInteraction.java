@@ -80,7 +80,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     public static final String ATTR_COUNT_ATTEMPT_NAME = "countAttempt";
 
     /** Default value of countAttempt attribute in xml schema. */
-    public static final boolean ATTR_COUNT_ATTEMPT_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_COUNT_ATTEMPT_DEFAULT_VALUE = Boolean.TRUE;
 
     /**
      * Construct new interaction.
@@ -90,8 +90,8 @@ public class EndAttemptInteraction extends InlineInteraction {
     public EndAttemptInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_COUNT_ATTEMPT_NAME, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, false));
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_COUNT_ATTEMPT_NAME, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, false));
     }
 
     @Override

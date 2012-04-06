@@ -57,9 +57,9 @@ public class HotspotChoice extends Choice implements Hotspot {
     public HotspotChoice(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
-        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_HOTSPOT_LABEL_NAME, null, null, false));
+        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
+        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_HOTSPOT_LABEL_NAME, false));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class HotspotChoice extends Choice implements Hotspot {
 
     @Override
     public List<Integer> getCoords() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValue();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
     
     @Override

@@ -63,7 +63,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     public ProcessOutcomeValue(XmlNode parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
     }

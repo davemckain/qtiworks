@@ -45,12 +45,12 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
 
     private static final long serialVersionUID = -4365578230488574089L;
 
-    public TextFormatAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public TextFormatAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue, TextFormat value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

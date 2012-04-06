@@ -52,6 +52,7 @@ public abstract class AbstractFunctionalExpression extends AbstractExpression {
         super(parent, localName);
     }
 
+    @Override
     protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         return evaluateSelf(childValues);
     }

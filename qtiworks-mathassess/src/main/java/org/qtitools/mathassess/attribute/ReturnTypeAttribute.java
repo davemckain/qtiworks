@@ -48,7 +48,7 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType
     private static final long serialVersionUID = -1032549489931459690L;
 
     public ReturnTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+        super(parent, localName, namespaceUri, true);
     }
 
     @Override

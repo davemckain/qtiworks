@@ -48,7 +48,7 @@ public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
     private static final long serialVersionUID = 8834496656714809174L;
 
     public SyntaxAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
+        super(parent, localName, namespaceUri, true);
     }
 
     @Override

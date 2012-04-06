@@ -58,7 +58,7 @@ public abstract class AssociableChoice extends Choice {
 
     public AssociableChoice(XmlNode parent, String localName) {
         super(parent, localName);
-        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, null, false));
+        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, false));
     }
 
     public List<Identifier> getMatchGroup() {

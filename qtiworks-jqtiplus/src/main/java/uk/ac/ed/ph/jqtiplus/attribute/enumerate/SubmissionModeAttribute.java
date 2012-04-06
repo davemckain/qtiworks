@@ -45,8 +45,8 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
 
     private static final long serialVersionUID = -1875382709228264679L;
 
-    public SubmissionModeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public SubmissionModeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

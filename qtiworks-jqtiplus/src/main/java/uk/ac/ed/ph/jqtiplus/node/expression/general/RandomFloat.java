@@ -73,8 +73,8 @@ public class RandomFloat extends RandomExpression {
     protected RandomFloat(ExpressionParent parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new FloatAttribute(this, ATTR_MINIMUM_NAME));
-        getAttributes().add(new FloatAttribute(this, ATTR_MAXIMUM_NAME));
+        getAttributes().add(new FloatAttribute(this, ATTR_MINIMUM_NAME, true));
+        getAttributes().add(new FloatAttribute(this, ATTR_MAXIMUM_NAME, true));
     }
 
     /**

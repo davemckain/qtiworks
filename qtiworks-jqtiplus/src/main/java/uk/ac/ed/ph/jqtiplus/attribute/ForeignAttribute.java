@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 
 /**
- * An attribute for a {@link ForeignElement}, or any other unkown attribute. 
+ * An attribute for a {@link ForeignElement}, or any other unknown attribute. 
  * These are simply wrapped up {@link String}s.
  * 
  * @author David McKain
@@ -47,7 +47,7 @@ public final class ForeignAttribute extends SingleAttribute<String> {
     private static final long serialVersionUID = -2789631230857582434L;
 
     public ForeignAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri, null, null, false);
+        super(parent, localName, namespaceUri, null, false);
     }
 
     @Override

@@ -86,12 +86,12 @@ public abstract class TableCell extends BodyElement {
     public TableCell(XmlNode parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, null, null, false));
+        getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, false));
         getAttributes().add(new TableCellScopeAttribute(this, ATTR_SCOPE_NAME, false));
-        getAttributes().add(new StringAttribute(this, ATTR_ABBR_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_AXIS_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_ROWSPAN_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_COLSPAN_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_ABBR_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_AXIS_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_ROWSPAN_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_COLSPAN_NAME, false));
 
         getNodeGroups().add(new FlowGroup(this));
     }
@@ -107,7 +107,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of headers attribute
      */
     public List<Identifier> getHeaders() {
-        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getValue();
+        return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getComputedValue();
     }
     
     public void setHeaders(List<Identifier> value) {

@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
@@ -60,76 +61,61 @@ public class ItemSessionControl extends AbstractNode {
     /** Name of maxAttempts attribute in xml schema. */
     public static final String ATTR_MAX_ATTEMPTS_NAME = "maxAttempts";
 
-    /** Default value of maxAttempts attribute. */
-    public static final Integer ATTR_MAX_ATTEMPTS_DEFAULT_VALUE = null;
-
     /** Default value of getMaxAttempts method. */
     public static final int MAX_ATTEMPTS_DEFAULT_VALUE = 1;
 
     /** Name of showFeedback attribute in xml schema. */
     public static final String ATTR_SHOW_FEEDBACK_NAME = "showFeedback";
 
-    /** Default value of showFeedback attribute. */
-    public static final Boolean ATTR_SHOW_FEEDBACK_DEFAULT_VALUE = null;
-
     /** Default value of getShowFeedback method. */
+    @ToRefactor
     public static final boolean SHOW_FEEDBACK_DEFAULT_VALUE = false;
 
     /** Name of allowReview attribute in xml schema. */
     public static final String ATTR_ALLOW_REVIEW_NAME = "allowReview";
 
-    /** Default value of allowReview attribute. */
-    public static final Boolean ATTR_ALLOW_REVIEW_DEFAULT_VALUE = null;
-
     /** Default value of getAllowReview method. */
+    @ToRefactor
     public static final boolean ALLOW_REVIEW_DEFAULT_VALUE = true;
 
     /** Name of showSolution attribute in xml schema. */
     public static final String ATTR_SHOW_SOLUTION_NAME = "showSolution";
 
-    /** Default value of showSolution attribute. */
-    public static final Boolean ATTR_SHOW_SOLUTION_DEFAULT_VALUE = null;
-
     /** Default value of getShowSolution method. */
+    @ToRefactor
     public static final boolean SHOW_SOLUTION_DEFAULT_VALUE = false;
 
     /** Name of allowComment attribute in xml schema. */
     public static final String ATTR_ALLOW_COMMENT_NAME = "allowComment";
 
-    /** Default value of allowComment attribute. */
-    public static final Boolean ATTR_ALLOW_COMMENT_DEFAULT_VALUE = null;
-
     /** Default value of getAllowComment method. */
+    @ToRefactor
     public static final boolean ALLOW_COMMENT_DEFAULT_VALUE = false;
 
     /** Name of allowSkipping attribute in xml schema. */
     public static final String ATTR_ALLOW_SKIPPING_NAME = "allowSkipping";
 
-    /** Default value of allowSkipping attribute. */
-    public static final Boolean ATTR_ALLOW_SKIPPING_DEFAULT_VALUE = null;
-
     /** Default value of getAllowSkipping method. */
+    @ToRefactor
     public static final boolean ALLOW_SKIPPING_DEFAULT_VALUE = true;
 
     /** Name of validateResponses attribute in xml schema. */
     public static final String ATTR_VALIDATE_RESPONSES_NAME = "validateResponses";
 
-    /** Default value of validateResponses attribute. */
-    public static final Boolean ATTR_VALIDATE_RESPONSES_DEFAULT_VALUE = null;
-
     /** Default value of getValidateResponses method. */
+    @ToRefactor
     public static final boolean VALIDATE_RESPONSES_DEFAULT_VALUE = false;
 
     public ItemSessionControl(AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ATTEMPTS_NAME, ATTR_MAX_ATTEMPTS_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHOW_FEEDBACK_NAME, ATTR_SHOW_FEEDBACK_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_REVIEW_NAME, ATTR_ALLOW_REVIEW_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHOW_SOLUTION_NAME, ATTR_SHOW_SOLUTION_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_COMMENT_NAME, ATTR_ALLOW_COMMENT_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_SKIPPING_NAME, ATTR_ALLOW_SKIPPING_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_VALIDATE_RESPONSES_NAME, ATTR_VALIDATE_RESPONSES_DEFAULT_VALUE));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ATTEMPTS_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHOW_FEEDBACK_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_REVIEW_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHOW_SOLUTION_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_COMMENT_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ALLOW_SKIPPING_NAME, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_VALIDATE_RESPONSES_NAME, false));
     }
 
     @Override

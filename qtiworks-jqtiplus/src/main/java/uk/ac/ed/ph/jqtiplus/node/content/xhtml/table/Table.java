@@ -77,7 +77,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
     public Table(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, false));
 
         getNodeGroups().add(new CaptionGroup(this));
         getNodeGroups().add(new ColGroup(this));

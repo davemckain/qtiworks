@@ -80,19 +80,19 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     public static String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
+    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of required attribute in xml schema. */
     public static String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
+    public static Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
 
     public InlineChoiceInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
-        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, ATTR_REQUIRED_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new InlineChoiceGroup(this, 1));
     }

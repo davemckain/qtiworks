@@ -54,11 +54,6 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
 
     private static final long serialVersionUID = 5394096779088948497L;
 
-    /**
-     * Construct condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
     public TemplateConditionExpressionChild(TemplateCondition parent, String localName) {
         super(parent, localName);
 

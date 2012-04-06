@@ -64,7 +64,7 @@ public class UploadInteraction extends BlockInteraction {
     public UploadInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
     /**

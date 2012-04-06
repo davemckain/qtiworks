@@ -77,48 +77,30 @@ public class OutcomeDeclaration extends VariableDeclaration {
     /** Name of view attribute in xml schema. */
     public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
-    /** Default value of view attribute. */
-    public static final List<View> ATTR_VIEWS_DEFAULT_VALUE = null;
-
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
-
-    /** Default value of interpretation attribute. */
-    public static final String ATTR_INTERPRETATION_DEFAULT_VALUE = null;
 
     /** Name of longInterpretation attribute in xml schema. */
     public static final String ATTR_LONG_INTERPRETATION = "longInterpretation";
 
-    /** Default value of longInterpretation attribute. */
-    public static final URI ATTR_LONG_INTERPRETATION_DEFAULT_VALUE = null;
-
     /** Name of normalMaximum attribute in xml schema. */
     public static final String ATTR_NORMAL_MAXIMUM_NAME = "normalMaximum";
-
-    /** Default value of normalMaximum attribute. */
-    public static final Double ATTR_NORMAL_MAXIMUM_DEFAULT_VALUE = null;
 
     /** Name of normalMinimum attribute in xml schema. */
     public static final String ATTR_NORMAL_MINIMUM_NAME = "normalMinimum";
 
-    /** Default value of normalMinimum attribute. */
-    public static final Double ATTR_NORMAL_MINIMUM_DEFAULT_VALUE = null;
-
     /** Name of masteryValue attribute in xml schema. */
     public static final String ATTR_MASTERY_VALUE_NAME = "masteryValue";
-
-    /** Default value of masteryValue attribute. */
-    public static final Double ATTR_MASTERY_VALUE_DEFAULT_VALUE = null;
 
     public OutcomeDeclaration(AssessmentObject parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, ATTR_VIEWS_DEFAULT_VALUE));
-        getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, ATTR_INTERPRETATION_DEFAULT_VALUE));
-        getAttributes().add(new UriAttribute(this, ATTR_LONG_INTERPRETATION, ATTR_LONG_INTERPRETATION_DEFAULT_VALUE));
-        getAttributes().add(new FloatAttribute(this, ATTR_NORMAL_MAXIMUM_NAME, ATTR_NORMAL_MAXIMUM_DEFAULT_VALUE));
-        getAttributes().add(new FloatAttribute(this, ATTR_NORMAL_MINIMUM_NAME, ATTR_NORMAL_MINIMUM_DEFAULT_VALUE));
-        getAttributes().add(new FloatAttribute(this, ATTR_MASTERY_VALUE_NAME, ATTR_MASTERY_VALUE_DEFAULT_VALUE));
+        getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, false));
+        getAttributes().add(new UriAttribute(this, ATTR_LONG_INTERPRETATION, false));
+        getAttributes().add(new FloatAttribute(this, ATTR_NORMAL_MAXIMUM_NAME, false));
+        getAttributes().add(new FloatAttribute(this, ATTR_NORMAL_MINIMUM_NAME, false));
+        getAttributes().add(new FloatAttribute(this, ATTR_MASTERY_VALUE_NAME, false));
 
         getNodeGroups().add(new LookupTableGroup(this));
     }
@@ -134,7 +116,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @return value of view attribute
      */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValue();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
 
     public void setViews(List<View> value) {

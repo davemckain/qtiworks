@@ -73,14 +73,11 @@ public class Inside extends AbstractFunctionalExpression {
     /** Name of coords attribute in xml schema. */
     public static final String ATTR_COORDINATES_NAME = "coords";
 
-    /** Default value of coords attribute. */
-    public static final List<Integer> ATTR_COORDINATES_DEFAULT_VALUE = null;
-
     public Inside(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
-        getAttributes().add(new CoordsAttribute(this, ATTR_COORDINATES_NAME, ATTR_COORDINATES_DEFAULT_VALUE));
+        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
+        getAttributes().add(new CoordsAttribute(this, ATTR_COORDINATES_NAME, false));
     }
 
     /**
@@ -109,7 +106,7 @@ public class Inside extends AbstractFunctionalExpression {
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getValue();
+        return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getComputedValue();
     }
     
     public void setCoordinates(List<Integer> value) {

@@ -59,12 +59,12 @@ public class Selection extends AbstractNode {
     public static final String ATTR_WITH_REPLACEMENT_NAME = "withReplacement";
 
     /** Default value of withReplacement attribute. */
-    public static final Boolean ATTR_WITH_REPLACEMENT_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_WITH_REPLACEMENT_DEFAULT_VALUE = Boolean.FALSE;
 
     public Selection(AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_SELECT_NAME));
+        getAttributes().add(new IntegerAttribute(this, ATTR_SELECT_NAME, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_WITH_REPLACEMENT_NAME, ATTR_WITH_REPLACEMENT_DEFAULT_VALUE));
     }
 

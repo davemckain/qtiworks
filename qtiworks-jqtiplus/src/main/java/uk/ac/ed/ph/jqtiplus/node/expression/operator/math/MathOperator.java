@@ -60,7 +60,7 @@ public class MathOperator extends AbstractFunctionalExpression {
     public MathOperator(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new MathOperatorNameAttribute(this, "name"));
+        getAttributes().add(new MathOperatorNameAttribute(this, "name", true));
     }
 
     @Override

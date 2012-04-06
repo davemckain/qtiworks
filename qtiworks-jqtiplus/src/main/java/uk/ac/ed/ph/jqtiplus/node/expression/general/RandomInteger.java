@@ -78,9 +78,9 @@ public class RandomInteger extends RandomExpression {
     protected RandomInteger(ExpressionParent parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, ATTR_STEP_DEFAULT_VALUE));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, ATTR_STEP_DEFAULT_VALUE, false));
     }
 
     /**

@@ -59,7 +59,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
     public UniqueControlObject(ControlObject<?> parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
     }
 
     /**

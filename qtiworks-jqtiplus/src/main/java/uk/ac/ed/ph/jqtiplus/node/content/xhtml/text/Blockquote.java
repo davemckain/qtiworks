@@ -58,7 +58,7 @@ public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
     public Blockquote(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, null, null, false));
+        getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, false));
     }
 
     /**

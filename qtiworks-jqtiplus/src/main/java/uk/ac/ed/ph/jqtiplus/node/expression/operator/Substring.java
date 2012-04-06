@@ -65,7 +65,7 @@ public class Substring extends AbstractFunctionalExpression {
     public Substring(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME));
+        getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME, true));
     }
 
     /**

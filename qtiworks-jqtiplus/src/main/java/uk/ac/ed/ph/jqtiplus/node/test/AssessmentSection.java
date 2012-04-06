@@ -66,7 +66,7 @@ public class AssessmentSection extends SectionPart {
     public static final String ATTR_KEEP_TOGETHER_NAME = "keepTogether";
 
     /** Default value of keepTogether attribute. */
-    public static final boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = true;
+    public static final Boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = Boolean.TRUE;
 
     /**
      * Constructs section.
@@ -76,9 +76,9 @@ public class AssessmentSection extends SectionPart {
     public AssessmentSection(AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_VISIBLE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_KEEP_TOGETHER_NAME, ATTR_KEEP_TOGETHER_DEFAULT_VALUE));
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_VISIBLE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_KEEP_TOGETHER_NAME, ATTR_KEEP_TOGETHER_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new SelectionGroup(this));
         getNodeGroups().add(new OrderingGroup(this));

@@ -61,20 +61,11 @@ public abstract class ItemSubset extends AbstractExpression {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "sectionIdentifier";
 
-    /** Default value of identifier attribute. */
-    public static final Identifier ATTR_IDENTIFIER_DEFAULT_VALUE = null;
-
     /** Name of includeCategory attribute in xml schema. */
     public static final String ATTR_INCLUDE_CATEGORIES_NAME = "includeCategory";
 
-    /** Default value of includeCategory attribute. */
-    public static final List<String> ATTR_INCLUDE_CATEGORIES_DEFAULT_VALUE = null;
-
     /** Name of excludeCategory attribute in xml schema. */
     public static final String ATTR_EXCLUDE_CATEGORIES_NAME = "excludeCategory";
-
-    /** Default value of excludeCategory attribute. */
-    public static final List<String> ATTR_EXCLUDE_CATEGORIES_DEFAULT_VALUE = null;
 
     /**
      * Constructs expression.
@@ -84,9 +75,9 @@ public abstract class ItemSubset extends AbstractExpression {
     public ItemSubset(ExpressionParent parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, ATTR_IDENTIFIER_DEFAULT_VALUE));
-        getAttributes().add(new StringMultipleAttribute(this, ATTR_INCLUDE_CATEGORIES_NAME, ATTR_INCLUDE_CATEGORIES_DEFAULT_VALUE));
-        getAttributes().add(new StringMultipleAttribute(this, ATTR_EXCLUDE_CATEGORIES_NAME, ATTR_EXCLUDE_CATEGORIES_DEFAULT_VALUE));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
+        getAttributes().add(new StringMultipleAttribute(this, ATTR_INCLUDE_CATEGORIES_NAME, false));
+        getAttributes().add(new StringMultipleAttribute(this, ATTR_EXCLUDE_CATEGORIES_NAME, false));
     }
 
     /**
@@ -115,7 +106,7 @@ public abstract class ItemSubset extends AbstractExpression {
      * @return value of includeCategory attribute
      */
     public List<String> getIncludeCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).getValue();
+        return getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).getComputedValue();
     }
     
     public void setIncludeCategories(List<String> value) {
@@ -128,7 +119,7 @@ public abstract class ItemSubset extends AbstractExpression {
      * @return value of excludeCategory attribute
      */
     public List<String> getExcludeCategories() {
-        return getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).getValue();
+        return getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).getComputedValue();
     }
     
     public void setExcludeCategories(List<String> value) {

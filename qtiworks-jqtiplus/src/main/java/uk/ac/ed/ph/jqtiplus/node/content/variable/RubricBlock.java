@@ -62,7 +62,7 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
     public RubricBlock(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME));
+        getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, true));
 
         getNodeGroups().add(new BlockGroup(this));
     }
@@ -78,7 +78,7 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
      * @return value of view attribute
      */
     public List<View> getViews() {
-        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getValue();
+        return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
     
     public void setViews(List<View> value) {

@@ -45,8 +45,8 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
 
     private static final long serialVersionUID = -5369017290814290862L;
 
-    public ShapeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ShapeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

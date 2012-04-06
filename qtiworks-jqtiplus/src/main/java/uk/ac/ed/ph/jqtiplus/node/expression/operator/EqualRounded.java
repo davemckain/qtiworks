@@ -69,8 +69,8 @@ public class EqualRounded extends AbstractFunctionalExpression {
     public EqualRounded(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_FIGURES_NAME));
+        getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_FIGURES_NAME, true));
     }
 
     /**

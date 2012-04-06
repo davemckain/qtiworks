@@ -53,13 +53,10 @@ public class RandomFloatEx extends RandomFloat {
     /** Name of seed attribute in xml schema. */
     public static final String ATTR_SEED_NAME = "seed";
 
-    /** Default value of seed attribute. */
-    public static final Long ATTR_SEED_DEFAULT_VALUE = null;
-
     public RandomFloatEx(ExpressionParent parent) {
         super(parent);
 
-        getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, ATTR_SEED_DEFAULT_VALUE));
+        getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, false));
     }
 
     @Override

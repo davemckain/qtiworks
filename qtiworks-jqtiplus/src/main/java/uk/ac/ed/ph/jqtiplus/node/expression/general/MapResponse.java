@@ -75,7 +75,7 @@ public class MapResponse extends AbstractExpression {
     public MapResponse(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
     /**

@@ -49,28 +49,16 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     private static final long serialVersionUID = 7394997591576564116L;
 
-    public SingleAttribute(XmlNode owner, String localName) {
-        super(owner, localName, null, null, true);
-    }
-    
     public SingleAttribute(XmlNode owner, String localName, boolean required) {
-        super(owner, localName, null, null, required);
+        super(owner, localName, null, required);
     }
 
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri) {
-        super(owner, localName, namespaceUri, null, null, true);
+    public SingleAttribute(XmlNode owner, String localName, V defaultValue, boolean required) {
+        super(owner, localName, defaultValue, required);
     }
 
-    public SingleAttribute(XmlNode owner, String localName, V defaultValue) {
-        super(owner, localName, defaultValue, defaultValue, false);
-    }
-
-    public SingleAttribute(XmlNode owner, String localName, V defaultValue, V value, boolean required) {
-        super(owner, localName, defaultValue, value, required);
-    }
-    
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue,  V value, boolean required) {
-        super(owner, localName, namespaceUri, defaultValue, value, required);
+    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue,  boolean required) {
+        super(owner, localName, namespaceUri, defaultValue, required);
     }
     
     @Override

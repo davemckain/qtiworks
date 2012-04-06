@@ -95,7 +95,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     public static String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
+    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /**
      * Construct new interaction.
@@ -105,7 +105,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     public GapMatchInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, ATTR_SHUFFLE_DEFAULT_VALUE, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
 
         getNodeGroups().add(new GapChoiceGroup(this, 1));
         getNodeGroups().add(new BlockStaticGroup(this, 1));

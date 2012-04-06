@@ -42,24 +42,20 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
  * 
  * @author Jiri Kajaba
  */
-public class IntegerAttribute extends SingleAttribute<Integer> {
+public final class IntegerAttribute extends SingleAttribute<Integer> {
 
     private static final long serialVersionUID = 6169314176032331265L;
 
-    public IntegerAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-
-    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue, Integer value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public IntegerAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
     
-    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer defaultValue, Integer value, boolean required) {
-        super(parent, localName, namespaceUri, defaultValue, value, required);
+    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
+    }
+    
+    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer defaultValue, boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, required);
     }
 
     @Override

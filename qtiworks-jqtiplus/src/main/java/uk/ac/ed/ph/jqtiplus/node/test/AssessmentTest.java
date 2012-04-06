@@ -73,20 +73,14 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     /** Name of toolName attribute in xml schema. */
     public static final String ATTR_TOOL_NAME_NAME = "toolName";
 
-    /** Default value of toolName attribute. */
-    public static final String ATTR_TOOL_NAME_DEFAULT_VALUE = null;
-
     /** Name of toolVersion attribute in xml schema. */
     public static final String ATTR_TOOL_VERSION_NAME = "toolVersion";
-
-    /** Default value of toolVersion attribute. */
-    public static final String ATTR_TOOL_VERSION_DEFAULT_VALUE = null;
 
     /** Name of duration built-in variable. */
     public static final String VARIABLE_DURATION_NAME = "duration";
 
     /** Identifier of duration built-in variable. */
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME);
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME, false);
 
     private URI systemId;
     private ModelRichness modelRichness;
@@ -104,11 +98,11 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     public AssessmentTest() {
         super(null, QTI_CLASS_NAME); // Test doesn't have any parent.
 
-        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
 
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, ATTR_TOOL_NAME_DEFAULT_VALUE));
-        getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, ATTR_TOOL_VERSION_DEFAULT_VALUE));
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, false));
 
         getNodeGroups().add(0, new OutcomeDeclarationGroup(this));
         getNodeGroups().add(new TestPartGroup(this));

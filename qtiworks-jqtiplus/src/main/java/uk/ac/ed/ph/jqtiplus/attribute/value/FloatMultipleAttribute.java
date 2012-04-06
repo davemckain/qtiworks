@@ -48,16 +48,12 @@ public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
 
     private static final long serialVersionUID = 1429666396177699288L;
 
-    public FloatMultipleAttribute(XmlNode parent, String localName) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR);
+    public FloatMultipleAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue);
-    }
-
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue, List<Double> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
+    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue, boolean required) {
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 
     @Override

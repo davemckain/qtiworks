@@ -70,7 +70,7 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
             setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
             setCardinality(declaration.getCardinality());
             setBaseType(declaration.getBaseType());
-            getFieldValues().addAll(FieldValue.getValues(this, value));
+            getFieldValues().addAll(FieldValue.computeValues(this, value));
         }
     }
 
@@ -89,6 +89,6 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
      * @return value of this variableDeclaration
      */
     public Value getValue() {
-        return FieldValue.getValue(getCardinality(), getFieldValues());
+        return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
 }

@@ -80,11 +80,11 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     public AssociableHotspot(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
-        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_HOTSPOT_LABEL_NAME, null, null, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
+        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
+        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_HOTSPOT_LABEL_NAME, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
     }
 
     /**
@@ -134,7 +134,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
 
     @Override
     public List<Integer> getCoords() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValue();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
     
     @Override

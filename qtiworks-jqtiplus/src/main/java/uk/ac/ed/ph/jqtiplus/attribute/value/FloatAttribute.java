@@ -42,20 +42,16 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
  * 
  * @author Jiri Kajaba
  */
-public class FloatAttribute extends SingleAttribute<Double> {
+public final class FloatAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -8445977254402390812L;
 
-    public FloatAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public FloatAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public FloatAttribute(XmlNode parent, String localName, Double defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public FloatAttribute(XmlNode parent, String localName, Double defaultValue, Double value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public FloatAttribute(XmlNode parent, String localName, Double defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

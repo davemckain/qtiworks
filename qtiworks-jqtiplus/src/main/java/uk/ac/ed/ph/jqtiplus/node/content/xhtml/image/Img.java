@@ -76,11 +76,11 @@ public class Img extends BodyElement implements AtomicInline {
     public Img(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_SRC_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_ALT_NAME));
-        getAttributes().add(new UriAttribute(this, ATTR_LONGDESC_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, null, null, false));
-        getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, null, null, false));
+        getAttributes().add(new UriAttribute(this, ATTR_SRC_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_ALT_NAME, true));
+        getAttributes().add(new UriAttribute(this, ATTR_LONGDESC_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_HEIGHT_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, false));
     }
 
     @Override

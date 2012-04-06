@@ -60,8 +60,8 @@ public class VariableMapping extends AbstractNode {
     public VariableMapping(AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_SOURCE_IDENTIFIER_NAME));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_IDENTIFIER_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_SOURCE_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_IDENTIFIER_NAME, true));
     }
 
     /**

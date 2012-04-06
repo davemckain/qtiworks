@@ -68,7 +68,7 @@ public class PatternMatch extends AbstractFunctionalExpression {
     public PatternMatch(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_PATTERN_NAME));
+        getAttributes().add(new StringAttribute(this, ATTR_PATTERN_NAME, true));
     }
 
     /**

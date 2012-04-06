@@ -144,13 +144,13 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public AssessmentItem() {
         super(null, QTI_CLASS_NAME); // Item doesn't have any parent.
 
-        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new StringAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
 
-        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME));
+        getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
-        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, null, false));
-        getAttributes().add(new BooleanAttribute(this, ATTR_ADAPTIVE_NAME));
-        getAttributes().add(new BooleanAttribute(this, ATTR_TIME_DEPENDENT_NAME));
+        getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_ADAPTIVE_NAME, true));
+        getAttributes().add(new BooleanAttribute(this, ATTR_TIME_DEPENDENT_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_NAME_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_TOOL_VERSION_NAME, false));
 

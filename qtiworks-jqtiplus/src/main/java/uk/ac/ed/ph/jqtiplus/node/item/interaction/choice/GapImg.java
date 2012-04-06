@@ -61,7 +61,7 @@ public class GapImg extends GapChoice {
     public GapImg(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, null, null, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, false));
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }

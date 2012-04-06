@@ -60,7 +60,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
     public static String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
+    public static Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
 
     /**
      * Constructs object.
@@ -70,7 +70,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
     public Gap(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, false));
     }
 
     /**

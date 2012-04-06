@@ -75,7 +75,7 @@ public class BranchRule extends AbstractJump {
     public BranchRule(AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_NAME));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_NAME, true));
     }
 
     @Override

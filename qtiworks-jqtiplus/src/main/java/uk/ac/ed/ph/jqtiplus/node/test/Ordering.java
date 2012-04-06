@@ -56,7 +56,7 @@ public class Ordering extends AbstractNode {
     public Ordering(AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, true));
     }
 
     @Override

@@ -83,8 +83,8 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
     public ResponseProcessing(AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_NAME, null, null, false));
-        getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_LOCATION_NAME, null, null, false));
+        getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_NAME, false));
+        getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_LOCATION_NAME, false));
 
         getNodeGroups().add(new ResponseRuleGroup(this));
     }

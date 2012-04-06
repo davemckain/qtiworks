@@ -45,8 +45,8 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
 
     private static final long serialVersionUID = 3074149624431788342L;
 
-    public TestFeedbackAccessAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public TestFeedbackAccessAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

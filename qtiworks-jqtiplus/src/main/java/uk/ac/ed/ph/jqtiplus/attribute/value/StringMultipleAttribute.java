@@ -43,20 +43,16 @@ import java.util.List;
  * 
  * @author Jiri Kajaba
  */
-public class StringMultipleAttribute extends MultipleAttribute<String> {
+public final class StringMultipleAttribute extends MultipleAttribute<String> {
 
     private static final long serialVersionUID = -867950733254443208L;
 
-    public StringMultipleAttribute(XmlNode parent, String localName) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR);
+    public StringMultipleAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue);
-    }
-
-    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue, List<String> value, boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, value, required);
+    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue, boolean required) {
+        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 
     @Override

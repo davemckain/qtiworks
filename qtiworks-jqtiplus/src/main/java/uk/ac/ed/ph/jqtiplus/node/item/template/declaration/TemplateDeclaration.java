@@ -60,19 +60,19 @@ public class TemplateDeclaration extends VariableDeclaration {
     public static final String ATTR_PARAM_VARIABLE_NAME = "paramVariable";
 
     /** Default value of paramVariable attribute. */
-    public static final Boolean ATTR_PARAM_VARIABLE_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_PARAM_VARIABLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of mathVariable attribute in xml schema. */
     public static final String ATTR_MATH_VARIABLE_NAME = "mathVariable";
 
     /** Default value of mathVariable attribute. */
-    public static final Boolean ATTR_MATH_VARIABLE_DEFAULT_VALUE = false;
+    public static final Boolean ATTR_MATH_VARIABLE_DEFAULT_VALUE = Boolean.FALSE;
 
     public TemplateDeclaration(AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_PARAM_VARIABLE_NAME, ATTR_PARAM_VARIABLE_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_MATH_VARIABLE_NAME, ATTR_MATH_VARIABLE_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_PARAM_VARIABLE_NAME, ATTR_PARAM_VARIABLE_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_MATH_VARIABLE_NAME, ATTR_MATH_VARIABLE_DEFAULT_VALUE, false));
     }
 
     @Override

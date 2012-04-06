@@ -53,7 +53,7 @@ public class MatchTableEntry extends LookupTableEntry {
     public MatchTableEntry(MatchTable parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(0, new IntegerAttribute(this, ATTR_SOURCE_VALUE_NAME));
+        getAttributes().add(0, new IntegerAttribute(this, ATTR_SOURCE_VALUE_NAME, true));
     }
 
     /**

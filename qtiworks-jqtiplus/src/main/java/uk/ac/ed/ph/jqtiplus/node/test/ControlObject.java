@@ -57,14 +57,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     private static final long serialVersionUID = 3477216040498945052L;
 
-
     protected boolean finished;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
     public ControlObject(ControlObject<?> parent, String localName) {
         super(parent, localName);
 

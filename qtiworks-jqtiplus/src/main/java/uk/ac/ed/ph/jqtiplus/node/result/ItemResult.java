@@ -53,17 +53,14 @@ public class ItemResult extends AbstractResult {
     /** Name of sequenceIndex attribute in xml schema. */
     public static final String ATTR_SEQUENCE_INDEX_NAME = "sequenceIndex";
 
-    /** Default value of sequenceIndex attribute. */
-    public static final Integer ATTR_SEQUENCE_INDEX_DEFAULT_VALUE = null;
-
     /** Name of sessionStatus attribute in xml schema. */
     public static final String ATTR_SESSION_STATUS_NAME = "sessionStatus";
 
     public ItemResult(AssessmentResult parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_SEQUENCE_INDEX_NAME, ATTR_SEQUENCE_INDEX_DEFAULT_VALUE));
-        getAttributes().add(new SessionStatusAttribute(this, ATTR_SESSION_STATUS_NAME));
+        getAttributes().add(new IntegerAttribute(this, ATTR_SEQUENCE_INDEX_NAME, false));
+        getAttributes().add(new SessionStatusAttribute(this, ATTR_SESSION_STATUS_NAME, true));
 
         getNodeGroups().add(new CandidateCommentGroup(this));
     }

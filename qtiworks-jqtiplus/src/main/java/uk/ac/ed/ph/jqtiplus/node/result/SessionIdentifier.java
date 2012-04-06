@@ -62,8 +62,8 @@ public class SessionIdentifier extends AbstractNode {
     public SessionIdentifier(Context parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new UriAttribute(this, ATTR_SOURCE_ID_NAME));
-        getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME));
+        getAttributes().add(new UriAttribute(this, ATTR_SOURCE_ID_NAME, true));
+        getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
     /**

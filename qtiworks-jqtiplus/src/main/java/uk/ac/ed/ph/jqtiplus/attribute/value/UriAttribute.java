@@ -44,20 +44,16 @@ import java.net.URI;
  * 
  * @author Jiri Kajaba
  */
-public class UriAttribute extends SingleAttribute<URI> {
+public final class UriAttribute extends SingleAttribute<URI> {
 
     private static final long serialVersionUID = -4951687349594320740L;
 
-    public UriAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public UriAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
-    public UriAttribute(XmlNode parent, String localName, URI defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public UriAttribute(XmlNode parent, String localName, URI defaultValue, URI value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public UriAttribute(XmlNode parent, String localName, URI defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

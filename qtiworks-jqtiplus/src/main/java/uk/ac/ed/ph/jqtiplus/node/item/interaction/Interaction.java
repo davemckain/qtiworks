@@ -76,18 +76,10 @@ public abstract class Interaction extends BodyElement {
     /** Name of responseIdentifier attribute in xml schema. */
     public static final String ATTR_RESPONSE_IDENTIFIER_NAME = "responseIdentifier";
 
-    /** All interactions in xml schema end in "Interaction" */
-    public static final String QTI_CLASS_NAME_SUFFIX = "Interaction";
-
-    /**
-     * Construct new interaction.
-     * 
-     * @param parent Parent node
-     */
     public Interaction(XmlNode parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, null, null, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, true));
     }
 
     /**

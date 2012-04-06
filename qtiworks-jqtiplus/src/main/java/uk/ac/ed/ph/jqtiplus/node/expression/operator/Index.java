@@ -69,7 +69,7 @@ public class Index extends AbstractFunctionalExpression {
     public Index(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_INDEX_NAME));
+        getAttributes().add(new IntegerAttribute(this, ATTR_INDEX_NAME, true));
     }
 
     /**

@@ -45,8 +45,8 @@ public final class MathConstantNameAttribute extends SingleEnumerateAttribute<Ma
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public MathConstantNameAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public MathConstantNameAttribute(XmlNode parent, String name, boolean required) {
+        super(parent, name, required);
     }
 
     @Override

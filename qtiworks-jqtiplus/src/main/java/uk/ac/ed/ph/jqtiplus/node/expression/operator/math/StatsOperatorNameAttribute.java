@@ -45,8 +45,8 @@ public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<S
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public StatsOperatorNameAttribute(XmlNode parent, String name) {
-        super(parent, name);
+    public StatsOperatorNameAttribute(XmlNode parent, String name, boolean required) {
+        super(parent, name, required);
     }
 
     @Override

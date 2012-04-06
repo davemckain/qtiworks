@@ -48,22 +48,18 @@ public abstract class SingleEnumerateAttribute<V extends Enum<V> & Stringifiable
 
     private static final long serialVersionUID = -3379931153392373791L;
     
-    public SingleEnumerateAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
-    }
-
-    public SingleEnumerateAttribute(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName, namespaceUri);
-    }
-
-    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue, V value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public SingleEnumerateAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
     
+    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
+    }
+
+    public SingleEnumerateAttribute(XmlNode parent, String localName, String namespaceUri, boolean required) {
+        super(parent, localName, namespaceUri, null, required);
+    }
+
     @Override
     protected String toQtiString(V value) {
         return value.toQtiString();

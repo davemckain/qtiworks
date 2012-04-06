@@ -45,8 +45,8 @@ public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType
 
     private static final long serialVersionUID = 1206043208733719873L;
 
-    public ParamTypeAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ParamTypeAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, required);
     }
 
     @Override

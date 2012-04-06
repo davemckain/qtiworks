@@ -70,8 +70,8 @@ public abstract class CustomOperator extends AbstractExpression {
     protected CustomOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
         this.jqtiExtensionPackage = jqtiExtensionPackage;
-        getAttributes().add(new StringAttribute(this, ATTR_CLASS_NAME, null, null, false)); //allow .'s, so use String
-        getAttributes().add(new UriAttribute(this, ATTR_DEFINITION_NAME, null, null, false));
+        getAttributes().add(new StringAttribute(this, ATTR_CLASS_NAME, false)); //allow .'s, so use String
+        getAttributes().add(new UriAttribute(this, ATTR_DEFINITION_NAME, false));
     }
 
     public JqtiExtensionPackage getJqtiExtensionPackage() {

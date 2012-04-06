@@ -58,11 +58,6 @@ public abstract class TemplateConditionChild extends AbstractNode {
         getNodeGroups().add(new TemplateRuleGroup(this));
     }
 
-    /**
-     * Gets templateRule children.
-     * 
-     * @return templateRule children
-     */
     public List<TemplateRule> getTemplateRules() {
         return getNodeGroups().getTemplateRuleGroup().getTemplateRules();
     }

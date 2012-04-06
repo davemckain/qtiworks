@@ -63,7 +63,7 @@ public class StatsOperator extends AbstractFunctionalExpression {
     public StatsOperator(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StatsOperatorNameAttribute(this, "name"));
+        getAttributes().add(new StatsOperatorNameAttribute(this, "name", true));
     }
 
     @Override

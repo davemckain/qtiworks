@@ -47,23 +47,19 @@ import java.util.Date;
  * 
  * @author Jiri Kajaba
  */
-public class DateAttribute extends SingleAttribute<Date> {
+public final class DateAttribute extends SingleAttribute<Date> {
 
     private static final long serialVersionUID = 2736828962257037608L;
 
     /** Date formatting pattern. */
     private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public DateAttribute(XmlNode parent, String localName) {
-        super(parent, localName);
+    public DateAttribute(XmlNode parent, String localName, boolean required) {
+        super(parent, localName, false);
     }
 
-    public DateAttribute(XmlNode parent, String localName, Date defaultValue) {
-        super(parent, localName, defaultValue);
-    }
-
-    public DateAttribute(XmlNode parent, String localName, Date defaultValue, Date value, boolean required) {
-        super(parent, localName, defaultValue, value, required);
+    public DateAttribute(XmlNode parent, String localName, Date defaultValue, boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
     @Override

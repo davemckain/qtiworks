@@ -77,18 +77,15 @@ public class TestVariables extends ItemSubset {
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    /** Default value of baseType attribute. */
-    public static final BaseType ATTR_BASE_TYPE_DEFAULT_VALUE = null;
-
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
     public TestVariables(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_VARIABLE_IDENTIFIER_NAME));
-        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, ATTR_BASE_TYPE_DEFAULT_VALUE));
-        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, null));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_VARIABLE_IDENTIFIER_NAME, true));
+        getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
     /**

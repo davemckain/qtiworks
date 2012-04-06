@@ -71,9 +71,9 @@ public class AreaMapEntry extends AbstractNode {
     public AreaMapEntry(AreaMapping parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME));
-        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME));
-        getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME));
+        getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
+        getAttributes().add(new CoordsAttribute(this, ATTR_COORDS_NAME, true));
+        getAttributes().add(new FloatAttribute(this, ATTR_MAPPED_VALUE_NAME, true));
     }
 
     @Override
@@ -111,7 +111,7 @@ public class AreaMapEntry extends AbstractNode {
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
-        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getValue();
+        return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
     
     public void setCoordinates(List<Integer> value) {
