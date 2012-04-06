@@ -120,7 +120,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
     
     @Override
-    public final V getComputedValue() {
+    public V getComputedValue() {
         return value!=null ? value : defaultValue;
     }
 

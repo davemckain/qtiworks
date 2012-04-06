@@ -160,13 +160,8 @@ public enum ToleranceMode implements Stringifiable {
      * @param includeUpperBound accept upper boundary
      * @return true if given numbers are equal; false otherwise
      */
-    public abstract boolean isEqual
-            (double firstNumber
-                    , double secondNumber
-                    , double tolerance1
-                    , double tolerance2
-                    , boolean includeLowerBound
-                    , boolean includeUpperBound);
+    public abstract boolean isEqual(double firstNumber, double secondNumber, double tolerance1, double tolerance2,
+            boolean includeLowerBound, boolean includeUpperBound);
 
     @Override
     public String toQtiString() {

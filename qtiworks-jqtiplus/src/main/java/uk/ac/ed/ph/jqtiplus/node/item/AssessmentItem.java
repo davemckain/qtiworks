@@ -300,8 +300,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @return value of adaptive attribute
      * @see #setAdaptive
      */
-    public Boolean getAdaptive() {
-        return getAttributes().getBooleanAttribute(ATTR_ADAPTIVE_NAME).getComputedValue();
+    public boolean getAdaptive() {
+        return getAttributes().getBooleanAttribute(ATTR_ADAPTIVE_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -320,8 +320,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * @return value of timeDependent attribute
      * @see #setTimeDependent
      */
-    public Boolean getTimeDependent() {
-        return getAttributes().getBooleanAttribute(ATTR_TIME_DEPENDENT_NAME).getComputedValue();
+    public boolean getTimeDependent() {
+        return getAttributes().getBooleanAttribute(ATTR_TIME_DEPENDENT_NAME).getComputedNonNullValue();
     }
 
     /**

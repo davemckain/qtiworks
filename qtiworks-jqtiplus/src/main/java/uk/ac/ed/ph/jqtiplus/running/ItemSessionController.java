@@ -357,7 +357,7 @@ public final class ItemSessionController implements ItemProcessingContext {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
                     if (value != null && value.booleanValue() == true) {
-                        countAttempt = !Boolean.FALSE.equals(endAttemptInteraction.getCountAttempt());
+                        countAttempt = !endAttemptInteraction.getCountAttempt();
                         break;
                     }
                 }
@@ -407,7 +407,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     public <C extends Choice> void shuffleInteractionChoiceOrders(final Interaction interaction, final List<List<C>> choiceLists) {
         if (interaction instanceof Shuffleable) {
-            if (((Shuffleable) interaction).getShuffle().booleanValue()) {
+            if (((Shuffleable) interaction).getShuffle()) {
                 final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
                 for (final List<C> choiceList : choiceLists) {
                     final List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
@@ -567,7 +567,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         if (correctResponseValue.isNull()) {
             return null;
         }
-        return correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration));
+        return Boolean.valueOf(correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration)));
     }
     
     //-------------------------------------------------------------------

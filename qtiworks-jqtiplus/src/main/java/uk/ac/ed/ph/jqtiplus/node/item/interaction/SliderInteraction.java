@@ -180,6 +180,16 @@ public class SliderInteraction extends BlockInteraction {
     }
 
     /**
+     * Gets value of stepLabel attribute.
+     * 
+     * @return value of stepLabel attribute
+     * @see #setStepLabel
+     */
+    public boolean getStepLabel() {
+        return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getComputedNonNullValue();
+    }
+    
+    /**
      * Sets new value of stepLabel attribute.
      * 
      * @param stepLabel new value of stepLabel attribute
@@ -189,15 +199,6 @@ public class SliderInteraction extends BlockInteraction {
         getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).setValue(stepLabel);
     }
 
-    /**
-     * Gets value of stepLabel attribute.
-     * 
-     * @return value of stepLabel attribute
-     * @see #setStepLabel
-     */
-    public Boolean getStepLabel() {
-        return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getComputedValue();
-    }
 
     /**
      * Sets new value of orientation attribute.
@@ -218,6 +219,16 @@ public class SliderInteraction extends BlockInteraction {
     public Orientation getOrientation() {
         return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getComputedValue();
     }
+    
+    /**
+     * Gets value of reverse attribute.
+     * 
+     * @return value of reverse attribute
+     * @see #setReverse
+     */
+    public boolean getReverse() {
+        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getComputedNonNullValue();
+    }
 
     /**
      * Sets new value of reverse attribute.
@@ -229,15 +240,6 @@ public class SliderInteraction extends BlockInteraction {
         getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).setValue(reverse);
     }
 
-    /**
-     * Gets value of reverse attribute.
-     * 
-     * @return value of reverse attribute
-     * @see #setReverse
-     */
-    public Boolean getReverse() {
-        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getComputedValue();
-    }
 
     @Override
     public void validate(ValidationContext context) {

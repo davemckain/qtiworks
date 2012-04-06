@@ -90,8 +90,8 @@ public class StringMatch extends AbstractFunctionalExpression {
      * @return value of caseSensitive attribute
      * @see #setCaseSensitive
      */
-    public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedValue();
+    public boolean getCaseSensitive() {
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -110,8 +110,8 @@ public class StringMatch extends AbstractFunctionalExpression {
      * @return value of substring attribute
      * @see #setSubString
      */
-    public Boolean getSubString() {
-        return getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).getComputedValue();
+    public boolean getSubString() {
+        return getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -133,8 +133,7 @@ public class StringMatch extends AbstractFunctionalExpression {
         String firstString = ((StringValue) childValues[0]).toQtiString();
         String secondString = ((StringValue) childValues[1]).toQtiString();
 
-        Boolean result = null;
-
+        boolean result;
         if (!getSubString()) {
             if (getCaseSensitive()) {
                 result = firstString.compareTo(secondString) == 0;
@@ -151,8 +150,6 @@ public class StringMatch extends AbstractFunctionalExpression {
 
             result = firstString.indexOf(secondString) != -1;
         }
-
-        assert result != null;
 
         return BooleanValue.valueOf(result);
     }

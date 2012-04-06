@@ -124,8 +124,8 @@ public class EndAttemptInteraction extends InlineInteraction {
         getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).setValue(countAttempt);
     }
 
-    public Boolean getCountAttempt() {
-        return getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).getComputedValue();
+    public boolean getCountAttempt() {
+        return getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).getComputedNonNullValue();
     }
 
 

@@ -128,8 +128,8 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(Boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(shuffle);
+    public void setShuffle(boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
     /**
@@ -139,8 +139,8 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @see #setShuffle
      */
     @Override
-    public Boolean getShuffle() {
-        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedValue();
+    public boolean getShuffle() {
+        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
     /**

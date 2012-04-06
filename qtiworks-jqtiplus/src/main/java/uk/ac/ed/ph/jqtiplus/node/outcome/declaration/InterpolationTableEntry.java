@@ -91,8 +91,8 @@ public class InterpolationTableEntry extends LookupTableEntry {
      * @return value of includeBoundary attribute
      * @see #setIncludeBoundary
      */
-    public Boolean getIncludeBoundary() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).getComputedValue();
+    public boolean getIncludeBoundary() {
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).getComputedNonNullValue();
     }
 
     /**

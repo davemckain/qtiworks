@@ -135,8 +135,8 @@ public class MediaInteraction extends BlockInteraction {
      * @return value of autostart attribute
      * @see #setAutostart
      */
-    public Boolean getAutostart() {
-        return getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).getComputedValue();
+    public boolean getAutostart() {
+        return getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -178,6 +178,16 @@ public class MediaInteraction extends BlockInteraction {
     public Integer getMaxPlays() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).getComputedValue();
     }
+    
+    /**
+     * Gets value of loop attribute.
+     * 
+     * @return value of loop attribute
+     * @see #setLoop
+     */
+    public boolean getLoop() {
+        return getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).getComputedNonNullValue();
+    }
 
     /**
      * Sets new value of loop attribute.
@@ -187,16 +197,6 @@ public class MediaInteraction extends BlockInteraction {
      */
     public void setLoop(Boolean loop) {
         getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).setValue(loop);
-    }
-
-    /**
-     * Gets value of loop attribute.
-     * 
-     * @return value of loop attribute
-     * @see #setLoop
-     */
-    public Boolean getLoop() {
-        return getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).getComputedValue();
     }
 
     /**

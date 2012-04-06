@@ -40,8 +40,8 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
  */
 public interface Shuffleable {
 
-    Boolean getShuffle();
+    boolean getShuffle();
 
-    void setShuffle(Boolean shuffle);
+    void setShuffle(boolean shuffle);
 
 }

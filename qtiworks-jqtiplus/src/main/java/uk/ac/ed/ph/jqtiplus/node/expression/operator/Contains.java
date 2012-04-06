@@ -97,7 +97,7 @@ public class Contains extends AbstractFunctionalExpression {
         final Value firstValue = childValues[0];
         final Value secondValue = childValues[1];
 
-        Boolean result = null;
+        boolean result;
         switch (firstValue.getCardinality()) {
             case MULTIPLE:
                 result = ((MultipleValue) firstValue).contains((MultipleValue) secondValue);

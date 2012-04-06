@@ -67,8 +67,8 @@ public abstract class SectionPart extends AbstractPart {
     public SectionPart(AbstractPart parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE));
-        getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE, false));
     }
 
     @Override
@@ -91,8 +91,8 @@ public abstract class SectionPart extends AbstractPart {
      * @return value of required attribute
      * @see #setRequired
      */
-    public Boolean getRequired() {
-        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedValue();
+    public boolean getRequired() {
+        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -111,8 +111,8 @@ public abstract class SectionPart extends AbstractPart {
      * @return value of fixed attribute
      * @see #setFixed
      */
-    public Boolean getFixed() {
-        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getComputedValue();
+    public boolean getFixed() {
+        return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -144,9 +144,7 @@ public abstract class SectionPart extends AbstractPart {
     public boolean isJumpSafeSource() {
         final AssessmentSection parent = getParentSection();
         if (parent != null) {
-            if (parent.getOrdering() != null &&
-                    parent.getOrdering().getShuffle() != null &&
-                    parent.getOrdering().getShuffle()) {
+            if (parent.getOrdering() != null && parent.getOrdering().getShuffle()) {
                 if (!getFixed()) {
                     return false;
                 }
@@ -167,14 +165,12 @@ public abstract class SectionPart extends AbstractPart {
                     return false;
                 }
 
-                if (parent.getSelection().getWithReplacement() != null && parent.getSelection().getWithReplacement()) {
+                if (parent.getSelection().getWithReplacement()) {
                     return false;
                 }
             }
 
-            if (parent.getOrdering() != null &&
-                    parent.getOrdering().getShuffle() != null &&
-                    parent.getOrdering().getShuffle()) {
+            if (parent.getOrdering() != null && parent.getOrdering().getShuffle()) {
                 if (!getFixed()) {
                     return false;
                 }

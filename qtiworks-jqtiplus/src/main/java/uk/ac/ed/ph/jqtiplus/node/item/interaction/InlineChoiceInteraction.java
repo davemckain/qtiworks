@@ -109,8 +109,8 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(Boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(shuffle);
+    public void setShuffle(boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
     /**
@@ -120,8 +120,8 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @see #setShuffle
      */
     @Override
-    public Boolean getShuffle() {
-        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedValue();
+    public boolean getShuffle() {
+        return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -140,8 +140,8 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @return value of required attribute
      * @see #setRequired
      */
-    public Boolean getRequired() {
-        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedValue();
+    public boolean getRequired() {
+        return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedNonNullValue();
     }
 
     /**

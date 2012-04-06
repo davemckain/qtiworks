@@ -74,8 +74,8 @@ public class Substring extends AbstractFunctionalExpression {
      * @return value of caseSensitive attribute
      * @see #setCaseSensitive
      */
-    public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedValue();
+    public boolean getCaseSensitive() {
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -102,8 +102,7 @@ public class Substring extends AbstractFunctionalExpression {
             secondString = secondString.toLowerCase();
         }
 
-        final Boolean result = secondString.indexOf(firstString) != -1;
-
+        final boolean result = secondString.indexOf(firstString) != -1;
         return BooleanValue.valueOf(result);
     }
 }

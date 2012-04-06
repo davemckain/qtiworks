@@ -65,7 +65,7 @@ public class Selection extends AbstractNode {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SELECT_NAME, true));
-        getAttributes().add(new BooleanAttribute(this, ATTR_WITH_REPLACEMENT_NAME, ATTR_WITH_REPLACEMENT_DEFAULT_VALUE));
+        getAttributes().add(new BooleanAttribute(this, ATTR_WITH_REPLACEMENT_NAME, ATTR_WITH_REPLACEMENT_DEFAULT_VALUE, false));
     }
 
     @Override
@@ -99,8 +99,8 @@ public class Selection extends AbstractNode {
      * @return value of withReplacement attribute
      * @see #setWithReplacement
      */
-    public Boolean getWithReplacement() {
-        return getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).getComputedValue();
+    public boolean getWithReplacement() {
+        return getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).getComputedNonNullValue();
     }
 
     /**

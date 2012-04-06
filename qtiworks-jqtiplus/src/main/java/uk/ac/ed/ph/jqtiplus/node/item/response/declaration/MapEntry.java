@@ -111,8 +111,8 @@ public class MapEntry extends AbstractNode {
     }
 
 
-    public Boolean getCaseSensitive() {
-        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).getComputedValue();
+    public boolean getCaseSensitive() {
+        return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).getComputedNonNullValue();
     }
 
     public void setCaseSensitive(Boolean caseSensitive) {

@@ -110,9 +110,9 @@ public class CasProcess extends MathAssessOperator {
      * @return value of simplify attribute
      * @see #setSimplify
      */
-    public Boolean getSimplify() {
+    public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getComputedValue();
+                .getComputedNonNullValue();
     }
 
     /**
@@ -133,7 +133,7 @@ public class CasProcess extends MathAssessOperator {
 
     @Override
     protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
-        final boolean simplify = getSimplify().booleanValue();
+        final boolean simplify = getSimplify();
         final String code = childValues[0].toQtiString().trim();
 
         logger.debug("Performing casProcess: code={}, simplify={}", code, simplify);

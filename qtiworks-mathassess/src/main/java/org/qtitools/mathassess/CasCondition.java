@@ -103,9 +103,9 @@ public class CasCondition extends MathAssessOperator {
      * @return value of simplify attribute
      * @see #setSimplify
      */
-    public Boolean getSimplify() {
+    public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getComputedValue();
+                .getComputedNonNullValue();
     }
 
     /**
@@ -126,7 +126,7 @@ public class CasCondition extends MathAssessOperator {
 
     @Override
     protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException {
-        final boolean simplify = getSimplify().booleanValue();
+        final boolean simplify = getSimplify();
         final String code = getCode().trim();
 
         if (logger.isDebugEnabled()) {

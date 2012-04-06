@@ -100,13 +100,13 @@ public class Equal extends AbstractFunctionalExpression {
     public static final String ATTR_INCLUDE_LOWER_BOUND_NAME = "includeLowerBound";
 
     /** Default value of includeLowerBound attribute. */
-    public static final Boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = Boolean.valueOf(true);
+    public static final Boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = Boolean.TRUE;
 
     /** Name of includeUpperBound attribute in xml schema. */
     public static final String ATTR_INCLUDE_UPPER_BOUND_NAME = "includeUpperBound";
 
     /** Default value of incluseUpperBound attribute. */
-    public static final Boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = Boolean.valueOf(true);
+    public static final Boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = Boolean.TRUE;
 
     public Equal(ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
@@ -157,7 +157,7 @@ public class Equal extends AbstractFunctionalExpression {
      */
     protected double getFirstTolerance() {
         List<Double> tolerances = getTolerances();
-        return tolerances!=null && tolerances.size()>0 ? tolerances.get(0) : 0;
+        return tolerances!=null && tolerances.size()>0 ? tolerances.get(0).doubleValue() : 0;
     }
 
     /**
@@ -167,7 +167,7 @@ public class Equal extends AbstractFunctionalExpression {
      */
     protected double getSecondTolerance() {
         List<Double> tolerances = getTolerances();
-        return tolerances!=null && tolerances.size()>1 ? tolerances.get(1) : 0;
+        return tolerances!=null && tolerances.size()>1 ? tolerances.get(1).doubleValue() : 0;
     }
 
     /**
@@ -176,8 +176,8 @@ public class Equal extends AbstractFunctionalExpression {
      * @return value of includeLowerBound attribute
      * @see #setIncludeLowerBound
      */
-    public Boolean getIncludeLowerBound() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).getComputedValue();
+    public boolean getIncludeLowerBound() {
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -196,8 +196,8 @@ public class Equal extends AbstractFunctionalExpression {
      * @return value of includeUpperBound attribute
      * @see #setIncludeUpperBound
      */
-    public Boolean getIncludeUpperBound() {
-        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).getComputedValue();
+    public boolean getIncludeUpperBound() {
+        return getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).getComputedNonNullValue();
     }
 
     /**

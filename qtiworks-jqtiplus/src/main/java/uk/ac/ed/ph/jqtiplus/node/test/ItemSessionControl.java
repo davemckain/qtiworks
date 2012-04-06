@@ -42,6 +42,9 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
  * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
  * the logic in here to make sure it's not doing something odd!
  * 
+ * FIXME: The logic in this class does too much with merging defaults together. It needs a lot of refactoring
+ * before it can be used properly.
+ * 
  * When items are referenced as part of A test, the test may impose constraints on how many attempts
  * and which states are allowed. These constraints can be specified for individual items, for whole
  * sections, or for an entire testPart. By default, A setting at testPart level affects all items in
@@ -51,6 +54,7 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
  * 
  * @author Jiri Kajaba
  */
+@ToRefactor
 public class ItemSessionControl extends AbstractNode {
 
     private static final long serialVersionUID = 4320465731424106788L;

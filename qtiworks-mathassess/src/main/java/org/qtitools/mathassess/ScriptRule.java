@@ -86,9 +86,9 @@ public final class ScriptRule extends MathAssessOperator {
      * @return value of simplify attribute
      * @see #setSimplify
      */
-    public Boolean getSimplify() {
+    public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getComputedValue();
+                .getComputedNonNullValue();
     }
 
     /**
@@ -114,7 +114,7 @@ public final class ScriptRule extends MathAssessOperator {
         final String code = childValues[0].toQtiString().trim();
         final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();
         final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
-        final boolean simplify = getSimplify().booleanValue();
+        final boolean simplify = getSimplify();
 
         logger.info("Performing scriptRule: code={}, simplify={}", code, simplify);
 

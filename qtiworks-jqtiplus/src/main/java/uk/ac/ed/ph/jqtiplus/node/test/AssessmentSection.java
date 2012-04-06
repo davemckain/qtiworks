@@ -117,8 +117,8 @@ public class AssessmentSection extends SectionPart {
      * @return value of visible attribute
      * @see #setVisible
      */
-    public Boolean getVisible() {
-        return getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).getComputedValue();
+    public boolean getVisible() {
+        return getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -137,8 +137,8 @@ public class AssessmentSection extends SectionPart {
      * @return value of keepTogether attribute
      * @see #setKeepTogether
      */
-    public Boolean getKeepTogether() {
-        return getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).getComputedValue();
+    public boolean getKeepTogether() {
+        return getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).getComputedNonNullValue();
     }
 
     /**

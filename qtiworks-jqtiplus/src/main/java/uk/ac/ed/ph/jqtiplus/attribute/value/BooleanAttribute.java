@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 
@@ -61,10 +62,27 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, boolean required) {
         super(parent, localName, namespaceUri, defaultValue, required);
     }
+    
+    @Override
+    public Boolean getComputedValue() {
+        return super.getComputedValue();
+    }
+    
+    /**
+     * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
+     * returning a raw boolean
+     */
+    public boolean getComputedNonNullValue() {
+        Boolean computed = super.getComputedValue();
+        if (computed==null) {
+            throw new QtiAttributeException("Did not expect boolean attribute " + getLocalName() + " to have a null computed value");
+        }
+        return computed.booleanValue();
+    }
 
     @Override
     protected Boolean parseQtiString(String value) {
-        return BooleanValue.parseBoolean(value);
+        return Boolean.valueOf(BooleanValue.parseBoolean(value));
     }
     
     @Override

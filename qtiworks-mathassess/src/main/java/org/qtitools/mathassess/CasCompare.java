@@ -148,9 +148,9 @@ public class CasCompare extends MathAssessOperator {
      * @return value of simplify attribute
      * @see #setSimplify
      */
-    public Boolean getSimplify() {
+    public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
-                .getComputedValue();
+                .getComputedNonNullValue();
     }
 
     /**
@@ -189,7 +189,7 @@ public class CasCompare extends MathAssessOperator {
         final Value v1 = childValues[0];
         final Value v2 = childValues[1];
 
-        final boolean simplify = getSimplify().booleanValue();
+        final boolean simplify = getSimplify();
         String code = getCode();
         code = code != null ? code.trim() : getActionCode(getAction());
 
