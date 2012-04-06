@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
  * Weights allow custom values to be defined for scaling an item's outcomes.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class Weight extends AbstractNode implements IdentifiableNode<Identifier> {
@@ -60,7 +60,7 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
     /** Default weight if no weight is specified. */
     public static final double DEFAULT_WEIGHT = 1;
 
-    public Weight(AssessmentItemRef parent) {
+    public Weight(final AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -78,7 +78,7 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -89,32 +89,32 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
     @Override
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of value attribute.
-     * 
+     *
      * @return value of value attribute
      * @see #setValue
      */
-    public Double getValue() {
-        return getAttributes().getFloatAttribute(ATTR_VALUE_NAME).getComputedValue();
+    public double getValue() {
+        return getAttributes().getFloatAttribute(ATTR_VALUE_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of value attribute.
-     * 
+     *
      * @param value new value of value attribute
      * @see #getValue
      */
-    public void setValue(Double value) {
+    public void setValue(final Double value) {
         getAttributes().getFloatAttribute(ATTR_VALUE_NAME).setValue(value);
     }
 }

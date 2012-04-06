@@ -159,8 +159,8 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
-    public Integer getMaxAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedValue();
+    public int getMaxAssociations() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -179,8 +179,8 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @return value of minAssociations attribute
      * @see #setMinAssociations
      */
-    public Integer getMinAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedValue();
+    public int getMinAssociations() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -287,7 +287,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
         for (final SimpleAssociableChoice choice : choices) {
             final Integer responseChoiceCount = responseChoiceCounts.get(choice.getIdentifier());
-            if (!validateChoice(choice, responseChoiceCount)) {
+            if (!validateChoice(choice, responseChoiceCount.intValue())) {
                 return false;
             }
         }

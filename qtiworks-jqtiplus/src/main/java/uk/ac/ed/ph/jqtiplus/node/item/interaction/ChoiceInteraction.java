@@ -162,8 +162,8 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
+    public int getMaxChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -182,8 +182,8 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
-    public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
+    public int getMinChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**

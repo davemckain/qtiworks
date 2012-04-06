@@ -121,8 +121,8 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
-    public Integer getMaxAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedValue();
+    public int getMaxAssociations() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -191,7 +191,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
         }
 
         /* Check constraints */
-        final int maxAssociations = getMaxAssociations().intValue();
+        final int maxAssociations = getMaxAssociations();
         if (maxAssociations != 0 && responseAssociations.size() > maxAssociations) {
             return false;
         }

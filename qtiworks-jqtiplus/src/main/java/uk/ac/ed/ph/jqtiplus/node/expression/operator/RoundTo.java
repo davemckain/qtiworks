@@ -96,8 +96,8 @@ public class RoundTo extends AbstractFunctionalExpression {
      * @return value of figures attribute
      * @see #setFigures
      */
-    public Integer getFigures() {
-        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedValue();
+    public int getFigures() {
+        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -114,7 +114,7 @@ public class RoundTo extends AbstractFunctionalExpression {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getRoundingMode() != null && getFigures() != null) {
+        if (getRoundingMode() != null) {
             getRoundingMode().validateFigures(getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME),
                     context.getValidationResult(), getFigures());
         }
@@ -128,7 +128,7 @@ public class RoundTo extends AbstractFunctionalExpression {
         }
 
         final double childNumber = ((NumberValue) childValue).doubleValue();
-        final BigDecimal rounded = getRoundingMode().round(childNumber, getFigures().intValue());
+        final BigDecimal rounded = getRoundingMode().round(childNumber, getFigures());
         return new FloatValue(rounded.doubleValue());
     }
 }

@@ -171,8 +171,8 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
-    public Integer getMaxAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedValue();
+    public int getMaxAssociations() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -191,8 +191,8 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
      * @return value of minAssociations attribute
      * @see #setMinAssociations
      */
-    public Integer getMinAssociations() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedValue();
+    public int getMinAssociations() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -261,8 +261,8 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
         }
 
         /* Validate min/max */
-        final int maxAssociations = getMaxAssociations().intValue();
-        final int minAssociations = getMinAssociations().intValue();
+        final int maxAssociations = getMaxAssociations();
+        final int minAssociations = getMinAssociations();
         if (responseAssociations.size() < minAssociations) {
             return false;
         }

@@ -62,7 +62,7 @@ public class MapEntry extends AbstractNode {
     /** Default value of caseSensitive attribute */
     public static final Boolean ATTR_CASE_SENSITIVE_DEFAULT_VALUE = Boolean.TRUE;
 
-    public MapEntry(Mapping parent) {
+    public MapEntry(final Mapping parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_MAP_KEY_NAME, parent.getParent().getBaseType(), true));
@@ -72,7 +72,7 @@ public class MapEntry extends AbstractNode {
 
     /**
      * Gets value of mapKey attribute.
-     * 
+     *
      * @return value of mapKey attribute
      * @see #setMapKey
      */
@@ -82,31 +82,31 @@ public class MapEntry extends AbstractNode {
 
     /**
      * Sets new value of mappedValue attribute.
-     * 
+     *
      * @param mapKey new value of mapKey attribute
      * @see #getMapKey
      */
-    public void setMapKey(SingleValue mapKey) {
+    public void setMapKey(final SingleValue mapKey) {
         getAttributes().getSingleValueAttribute(ATTR_MAP_KEY_NAME).setValue(mapKey);
     }
 
     /**
      * Gets value of mappedValue attribute.
-     * 
+     *
      * @return value of mappedValue attribute
      * @see #setMappedValue
      */
-    public Double getMappedValue() {
-        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedValue();
+    public double getMappedValue() {
+        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of mappedValue attribute.
-     * 
+     *
      * @param mappedValue new value of mappedValue attribute
      * @see #getMappedValue
      */
-    public void setMappedValue(Double mappedValue) {
+    public void setMappedValue(final Double mappedValue) {
         getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).setValue(mappedValue);
     }
 
@@ -115,7 +115,7 @@ public class MapEntry extends AbstractNode {
         return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).getComputedNonNullValue();
     }
 
-    public void setCaseSensitive(Boolean caseSensitive) {
+    public void setCaseSensitive(final Boolean caseSensitive) {
         getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_VALUE_NAME).setValue(caseSensitive);
     }
 }

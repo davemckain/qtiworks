@@ -52,7 +52,7 @@ import java.util.List;
  * to form a valid response. If matchMin is 0 then the candidate is not
  * required to associate this choice with any others at all. matchMin
  * must be less than or equal to the limit imposed by matchMax.
- * 
+ *
  * @author Jonathon Hare
  */
 public class AssociableHotspot extends AssociableChoice implements Hotspot {
@@ -74,10 +74,10 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
 
     /**
      * Construct new AssociableHotspot.
-     * 
+     *
      * @param parent Parent node
      */
-    public AssociableHotspot(XmlNode parent) {
+    public AssociableHotspot(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
@@ -89,41 +89,41 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
 
     /**
      * Gets value of matchMax attribute.
-     * 
+     *
      * @return value of matchMax attribute
      * @see #setMatchMax
      */
-    public Integer getMatchMax() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedValue();
+    public int getMatchMax() {
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of matchMax attribute.
-     * 
+     *
      * @param matchMax new value of matchMax attribute
      * @see #getMatchMax
      */
-    public void setMatchMax(Integer matchMax) {
+    public void setMatchMax(final Integer matchMax) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).setValue(matchMax);
     }
 
     /**
      * Gets value of matchMin attribute.
-     * 
+     *
      * @return value of matchMin attribute
      * @see #setMatchMin
      */
-    public Integer getMatchMin() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedValue();
+    public int getMatchMin() {
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of matchMin attribute.
-     * 
+     *
      * @param matchMin new value of matchMin attribute
      * @see #getMatchMin
      */
-    public void setMatchMin(Integer matchMin) {
+    public void setMatchMin(final Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
     }
 
@@ -136,9 +136,9 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     public List<Integer> getCoords() {
         return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
-    
+
     @Override
-    public void setCoords(List<Integer> value) {
+    public void setCoords(final List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
@@ -148,7 +148,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     }
 
     @Override
-    public void setHotspotLabel(String hotspotLabel) {
+    public void setHotspotLabel(final String hotspotLabel) {
         getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).setValue(hotspotLabel);
     }
 
@@ -156,9 +156,9 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     public Shape getShape() {
         return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
-    
+
     @Override
-    public void setShape(Shape shape) {
+    public void setShape(final Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
     }
 }

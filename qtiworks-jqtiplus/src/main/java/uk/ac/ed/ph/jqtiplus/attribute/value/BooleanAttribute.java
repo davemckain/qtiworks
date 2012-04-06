@@ -63,11 +63,6 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
         super(parent, localName, namespaceUri, defaultValue, required);
     }
     
-    @Override
-    public Boolean getComputedValue() {
-        return super.getComputedValue();
-    }
-    
     /**
      * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
      * returning a raw boolean

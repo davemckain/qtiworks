@@ -89,8 +89,8 @@ public class RandomInteger extends RandomExpression {
      * @return value of min attribute
      * @see #setMinimum
      */
-    public Integer getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedValue();
+    public int getMinimum() {
+        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -109,8 +109,8 @@ public class RandomInteger extends RandomExpression {
      * @return value of max attribute
      * @see #setMaximum
      */
-    public Integer getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
+    public int getMaximum() {
+        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -129,8 +129,8 @@ public class RandomInteger extends RandomExpression {
      * @return value of step attribute
      * @see #setStep
      */
-    public Integer getStep() {
-        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedValue();
+    public int getStep() {
+        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -152,12 +152,12 @@ public class RandomInteger extends RandomExpression {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum()) {
+        if (getMaximum() < getMinimum()) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
                     ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
         }
 
-        if (getStep() != null && getStep() < 1) {
+        if (getStep() < 1) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME), "Attribute " + ATTR_STEP_NAME
                     + " ("
                     + getStep()

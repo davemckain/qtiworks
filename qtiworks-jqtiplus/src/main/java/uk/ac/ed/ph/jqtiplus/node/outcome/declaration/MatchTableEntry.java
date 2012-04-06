@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 
 /**
  * Entry for matchTable.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class MatchTableEntry extends LookupTableEntry {
@@ -50,7 +50,7 @@ public class MatchTableEntry extends LookupTableEntry {
     /** Name of sourceValue attribute in xml schema. */
     public static final String ATTR_SOURCE_VALUE_NAME = "sourceValue";
 
-    public MatchTableEntry(MatchTable parent) {
+    public MatchTableEntry(final MatchTable parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(0, new IntegerAttribute(this, ATTR_SOURCE_VALUE_NAME, true));
@@ -58,7 +58,7 @@ public class MatchTableEntry extends LookupTableEntry {
 
     /**
      * Gets value of sourceValue attribute.
-     * 
+     *
      * @return value of sourceValue attribute
      * @see #setSourceValue
      */
@@ -69,11 +69,11 @@ public class MatchTableEntry extends LookupTableEntry {
 
     /**
      * Sets new value of sourceValue attribute.
-     * 
+     *
      * @param sourceValue new value of sourceValue attribute
      * @see #getSourceValue
      */
-    public void setSourceValue(Integer sourceValue) {
+    public void setSourceValue(final Integer sourceValue) {
         getAttributes().getIntegerAttribute(ATTR_SOURCE_VALUE_NAME).setValue(sourceValue);
     }
 }

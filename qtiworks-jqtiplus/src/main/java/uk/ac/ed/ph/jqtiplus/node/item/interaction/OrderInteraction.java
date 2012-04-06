@@ -91,7 +91,7 @@ import java.util.Set;
  * Attribute : orientation [0..1]: orientation
  * The orientation attribute provides A hint to rendering systems that the ordering has
  * an inherent vertical or horizontal interpretation.
- * 
+ *
  * @author Jonathon Hare
  */
 public class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
@@ -116,7 +116,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     /** Name of orientation attribute in xml schema. */
     public static String ATTR_ORIENTATION_NAME = "orientation";
 
-    public OrderInteraction(XmlNode parent) {
+    public OrderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
@@ -142,18 +142,18 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -164,17 +164,17 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices) {
+    public void setMaxChoices(final Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -184,17 +184,17 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices) {
+    public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -204,17 +204,17 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Sets new value of orientation attribute.
-     * 
+     *
      * @param orientation new value of orientation attribute
      * @see #getOrientation
      */
-    public void setOrientation(Orientation orientation) {
+    public void setOrientation(final Orientation orientation) {
         getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
     }
 
     /**
      * Gets value of orientation attribute.
-     * 
+     *
      * @return value of orientation attribute
      * @see #setOrientation
      */
@@ -224,7 +224,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Gets simpleChoice children.
-     * 
+     *
      * @return simpleChoice children
      */
     public List<SimpleChoice> getSimpleChoices() {
@@ -233,11 +233,11 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
 
     /**
      * Gets simpleChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public SimpleChoice getSimpleChoice(Identifier identifier) {
+    public SimpleChoice getSimpleChoice(final Identifier identifier) {
         for (final SimpleChoice choice : getSimpleChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -248,18 +248,20 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
+        final Integer maxChoices = getMaxChoices();
+        final Integer minChoices = getMinChoices();
 
-        if (getMinChoices() != null && getMinChoices() < 1) {
+        if (minChoices != null && minChoices.intValue() < 1) {
             context.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
         }
 
-        if (getMaxChoices() != null && getMinChoices() != null && getMaxChoices() < getMinChoices()) {
+        if (maxChoices != null && minChoices != null && maxChoices.intValue() < minChoices.intValue()) {
             context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
         }
 
-        if (getMaxChoices() != null && getMaxChoices() > getSimpleChoices().size()) {
+        if (maxChoices != null && maxChoices.intValue() > getSimpleChoices().size()) {
             context.add(new ValidationError(this, "Maximum number of choices cannot be larger than the number of choice children"));
         }
 
@@ -276,13 +278,13 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     }
 
     @Override
-    public void initialize(ItemSessionController itemController) {
+    public void initialize(final ItemSessionController itemController) {
         super.initialize(itemController);
         itemController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

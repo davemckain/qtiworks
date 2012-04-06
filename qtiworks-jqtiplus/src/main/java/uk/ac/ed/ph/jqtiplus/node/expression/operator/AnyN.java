@@ -83,8 +83,8 @@ public class AnyN extends AbstractFunctionalExpression {
      * @return value of min attribute
      * @see #setMinimum
      */
-    public Integer getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedValue();
+    public int getMinimum() {
+        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -103,8 +103,8 @@ public class AnyN extends AbstractFunctionalExpression {
      * @return value of max attribute
      * @see #setMaximum
      */
-    public Integer getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
+    public int getMaximum() {
+        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -119,14 +119,16 @@ public class AnyN extends AbstractFunctionalExpression {
 
     @Override
     protected void validateAttributes(ValidationContext context) {
-        if (getMinimum() != null && getMinimum() < 0) {
-            context.add(new ValidationWarning(this, "Attribute " + ATTR_MINIMUM_NAME + " (" + getMinimum() +
+        int min = getMinimum();
+        int max = getMaximum();
+        if (min < 0) {
+            context.add(new ValidationWarning(this, "Attribute " + ATTR_MINIMUM_NAME + " (" + min +
                     ") should be positive."));
         }
 
-        if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum()) {
-            context.add(new ValidationWarning(this, "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
-                    ") should be greater than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
+        if (max < min) {
+            context.add(new ValidationWarning(this, "Attribute " + ATTR_MAXIMUM_NAME + " (" + max +
+                    ") should be greater than " + ATTR_MINIMUM_NAME + " (" + min + ")."));
         }
 
     }

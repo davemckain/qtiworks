@@ -78,8 +78,8 @@ public class Index extends AbstractFunctionalExpression {
      * @return value of n attribute
      * @see #setIndex
      */
-    public Integer getIndex() {
-        return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getComputedValue();
+    public int getIndex() {
+        return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -109,17 +109,18 @@ public class Index extends AbstractFunctionalExpression {
     @Override
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
+        int index = getIndex();
 
-        if (getIndex() != null && getIndex() < 1) {
+        if (index < 1) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
-                    " (" + getIndex() + ") must be positive."));
+                    " (" + index + ") must be positive."));
         }
 
-        if (getIndex() != null && getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
+        if (getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
             final Ordered ordered = (Ordered) getChildren().get(0);
-            if (ordered.getChildren().size() > 0 && getIndex() > ordered.getChildren().size()) {
+            if (ordered.getChildren().size() > 0 && index > ordered.getChildren().size()) {
                 context.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
-                        ordered.getChildren().size() + ", but found: " + getIndex()));
+                        ordered.getChildren().size() + ", but found: " + index));
             }
         }
     }

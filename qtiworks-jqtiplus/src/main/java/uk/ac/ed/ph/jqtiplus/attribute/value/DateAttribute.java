@@ -44,7 +44,7 @@ import java.util.Date;
 
 /**
  * Attribute with Date value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class DateAttribute extends SingleAttribute<Date> {
@@ -54,16 +54,16 @@ public final class DateAttribute extends SingleAttribute<Date> {
     /** Date formatting pattern. */
     private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public DateAttribute(XmlNode parent, String localName, boolean required) {
-        super(parent, localName, false);
+    public DateAttribute(final XmlNode parent, final String localName, final boolean required) {
+        super(parent, localName, required);
     }
 
-    public DateAttribute(XmlNode parent, String localName, Date defaultValue, boolean required) {
+    public DateAttribute(final XmlNode parent, final String localName, final Date defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
     @Override
-    protected Date parseQtiString(String value) {
+    protected Date parseQtiString(final String value) {
         if (value == null || value.length() == 0) {
             throw new QtiParseException("Invalid datetime '" + value + "'. Length is not valid.");
         }
@@ -75,9 +75,9 @@ public final class DateAttribute extends SingleAttribute<Date> {
             throw new QtiParseException("Invalid datetime '" + value + "'.", ex);
         }
     }
-    
+
     @Override
-    protected String toQtiString(Date value) {
+    protected String toQtiString(final Date value) {
         return format.format(value);
     }
 }

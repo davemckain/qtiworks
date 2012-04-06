@@ -139,8 +139,8 @@ public class PositionObjectInteraction extends BlockInteraction {
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
+    public int getMaxChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -186,12 +186,14 @@ public class PositionObjectInteraction extends BlockInteraction {
     @Override
     public void validate(ValidationContext context) {
         super.validate(context);
+        int maxChoices = getMaxChoices();
+        Integer minChoices = getMinChoices();
 
-        if (getMinChoices() != null && getMinChoices() > getMaxChoices()) {
+        if (minChoices != null && minChoices.intValue() > maxChoices) {
             context.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
         }
 
-        if (getMinChoices() != null && getMinChoices() <= 1) {
+        if (minChoices != null && minChoices.intValue() <= 1) {
             context.add(new ValidationError(this, "Minimum number of choices can't be less than 1"));
         }
 
@@ -201,13 +203,13 @@ public class PositionObjectInteraction extends BlockInteraction {
                 context.add(new ValidationError(this, "Response variable must have point base type"));
             }
 
-            if (declaration != null && getMaxChoices() == 1 &&
+            if (declaration != null && maxChoices == 1 &&
                     declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
                     !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
             }
 
-            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (declaration != null && maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
             }
         }
@@ -233,11 +235,11 @@ public class PositionObjectInteraction extends BlockInteraction {
         }
 
         /* Check minChoices/maxChoices */
+        final int maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
         if (minChoices != null && responsePoints.size() < minChoices.intValue()) {
             return false;
         }
-        final int maxChoices = getMaxChoices().intValue();
         if (maxChoices != 0 && responsePoints.size() > maxChoices) {
             return false;
         }

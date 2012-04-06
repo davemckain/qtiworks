@@ -56,7 +56,7 @@ import java.util.List;
  * of base type float should be avoided due to the difficulty of matching floating
  * point values, see the match operator for more details. When mapping containers
  * the result is the sum of the mapped values from the target set.
- * 
+ *
  * @see MapResponse for details.
  * @author Jonathon Hare
  */
@@ -79,7 +79,7 @@ public class Mapping extends AbstractNode {
     /** Default value of the defaultValue attribute */
     public static final double ATTR_DEFAULT_VALUE_DEFAULT_VALUE = 0.0;
 
-    public Mapping(ResponseDeclaration parent) {
+    public Mapping(final ResponseDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, false));
@@ -96,27 +96,27 @@ public class Mapping extends AbstractNode {
 
     /**
      * Gets value of defaultValue attribute.
-     * 
+     *
      * @return value of defaultValue attribute
      * @see #setDefaultValue
      */
-    public Double getDefaultValue() {
-        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedValue();
+    public double getDefaultValue() {
+        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of defaultValue attribute.
-     * 
+     *
      * @param defaultValue new value of defaultValue attribute
      * @see #getDefaultValue
      */
-    public void setDefaultValue(Double defaultValue) {
+    public void setDefaultValue(final Double defaultValue) {
         getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }
 
     /**
      * Gets value of lowerBound attribute.
-     * 
+     *
      * @return value of lowerBound attribute
      * @see #setLowerBound
      */
@@ -126,17 +126,17 @@ public class Mapping extends AbstractNode {
 
     /**
      * Sets new value of lowerBound attribute.
-     * 
+     *
      * @param lowerBound new value of lowerBound attribute
      * @see #getLowerBound
      */
-    public void setLowerBound(Double lowerBound) {
+    public void setLowerBound(final Double lowerBound) {
         getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
     /**
      * Gets value of upperBound attribute.
-     * 
+     *
      * @return value of upperBound attribute
      * @see #setUpperBound
      */
@@ -146,17 +146,17 @@ public class Mapping extends AbstractNode {
 
     /**
      * Sets new value of upperBound attribute.
-     * 
+     *
      * @param upperBound new value of upperBound attribute
      * @see #getUpperBound
      */
-    public void setUpperBound(Double upperBound) {
+    public void setUpperBound(final Double upperBound) {
         getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
     /**
      * Gets mapEntry children.
-     * 
+     *
      * @return mapEntry children
      */
     public List<MapEntry> getMapEntries() {
@@ -164,10 +164,12 @@ public class Mapping extends AbstractNode {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
+        final Double lowerBound = getLowerBound();
+        final Double upperBound = getUpperBound();
 
-        if (getLowerBound() != null && getUpperBound() != null && getLowerBound() > getUpperBound()) {
+        if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
             context.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
         }
 
@@ -194,26 +196,26 @@ public class Mapping extends AbstractNode {
 
     /**
      * Gets target value for given source value.
-     * 
+     *
      * @param sourceValue given source value
      * @return target value for given source value
      */
-    public FloatValue getTargetValue(Value sourceValue) {
+    public FloatValue getTargetValue(final Value sourceValue) {
         if (sourceValue != null) {
             /*
-             * If the response variable has single cardinality then the value 
-             * returned is simply the mapped target value from the map. If the 
-             * response variable has multiple or ordered cardinality then the 
-             * value returned is the sum of the mapped target values. This 
+             * If the response variable has single cardinality then the value
+             * returned is simply the mapped target value from the map. If the
+             * response variable has multiple or ordered cardinality then the
+             * value returned is the sum of the mapped target values. This
              * expression cannot be applied to variables of record cardinality.
-             * 
-             * For example, if a mapping associates the identifiers {A,B,C,D} 
-             * with the values {0,1,0.5,0} respectively then mapResponse will 
-             * map the single value 'C' to the numeric value 0.5 and the set of 
+             *
+             * For example, if a mapping associates the identifiers {A,B,C,D}
+             * with the values {0,1,0.5,0} respectively then mapResponse will
+             * map the single value 'C' to the numeric value 0.5 and the set of
              * values {C,B} to the value 1.5.
-             * 
-             * If a container contains multiple instances of the same value then 
-             * that value is counted once only. To continue the example above 
+             *
+             * If a container contains multiple instances of the same value then
+             * that value is counted once only. To continue the example above
              * {B,B,C} would still map to 1.5 and not 2.5.
              */
             if (getParent().getCardinality() == Cardinality.SINGLE) {
@@ -225,7 +227,7 @@ public class Mapping extends AbstractNode {
             }
             else {
                 if (!(sourceValue instanceof ListValue)) {
-                    throw new QtiNotImplementedException();                   
+                    throw new QtiNotImplementedException();
                 }
                 double sum = 0.0;
                 final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());
@@ -253,7 +255,7 @@ public class Mapping extends AbstractNode {
         return new FloatValue(applyConstraints(getDefaultValue()));
     }
 
-    private boolean entryCompare(MapEntry mapEntry, SingleValue value) {
+    private boolean entryCompare(final MapEntry mapEntry, final SingleValue value) {
         boolean result;
         final SingleValue mapKey = mapEntry.getMapKey();
         if (mapEntry.getCaseSensitive()) {
@@ -265,19 +267,18 @@ public class Mapping extends AbstractNode {
         return result;
     }
 
-    private double applyConstraints(double value) {
-        if (getLowerBound() != null) {
-            if (value < getLowerBound()) {
-                value = getLowerBound();
-            }
+    private double applyConstraints(final double value) {
+        double result = value;
+        final Double lowerBound = getLowerBound();
+        if (lowerBound != null) {
+            result = Math.max(result, lowerBound.doubleValue());
         }
 
-        if (getUpperBound() != null) {
-            if (value > getUpperBound()) {
-                value = getUpperBound();
-            }
+        final Double upperBound = getUpperBound();
+        if (upperBound != null) {
+            result = Math.min(result, upperBound.doubleValue());
         }
 
-        return value;
+        return result;
     }
 }

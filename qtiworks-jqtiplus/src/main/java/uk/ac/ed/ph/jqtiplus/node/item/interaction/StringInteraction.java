@@ -125,7 +125,14 @@ public interface StringInteraction {
     /** Name of exponent key if response is bound to A record container. */
     public static Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
 
-
+    /**
+     * Gets value of base attribute.
+     * 
+     * @return value of base attribute
+     * @see #setBase
+     */
+    public int getBase();
+    
     /**
      * Sets new value of base attribute.
      * 
@@ -133,16 +140,7 @@ public interface StringInteraction {
      * @see #getBase
      */
     public void setBase(Integer base);
-
-    /**
-     * Gets value of base attribute.
-     * 
-     * @return value of base attribute
-     * @see #setBase
-     */
-    public Integer getBase();
-
-
+    
     /**
      * Sets new value of stringIdentifier attribute.
      * 

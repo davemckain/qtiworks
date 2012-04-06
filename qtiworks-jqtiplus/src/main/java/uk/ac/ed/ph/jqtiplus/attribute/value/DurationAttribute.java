@@ -39,28 +39,28 @@ import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 
 /**
  * Attribute with duration value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class DurationAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -2706570073349757182L;
 
-    public DurationAttribute(XmlNode parent, String localName, boolean required) {
+    public DurationAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
-    
-    public DurationAttribute(XmlNode parent, String localName, Double defaultValue, boolean required) {
+
+    public DurationAttribute(final XmlNode parent, final String localName, final Double defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
     @Override
-    protected Double parseQtiString(String value) {
-        return FloatValue.parseFloat(value);
+    protected Double parseQtiString(final String value) {
+        return Double.valueOf(FloatValue.parseFloat(value));
     }
-    
+
     @Override
-    protected String toQtiString(Double value) {
+    protected String toQtiString(final Double value) {
         return value.toString();
     }
 }

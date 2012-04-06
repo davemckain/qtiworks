@@ -97,7 +97,7 @@ import java.util.regex.Pattern;
  * below. This attribute affects the way the value of the associated response
  * variable should be interpreted by response processing engines and also controls
  * the way it should be captured in the delivery engine.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ExtendedTextInteraction extends BlockInteraction implements StringInteraction {
@@ -114,7 +114,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     public static String ATTR_MIN_STRINGS_NAME = "minStrings";
 
     /** Name of minStrings attribute in xml schema. */
-    public static Integer ATTR_MIN_STRINGS_DEFAULT_VALUE = 0;
+    public static int ATTR_MIN_STRINGS_DEFAULT_VALUE = 0;
 
     /** Name of expectedLines attribute in xml schema. */
     public static String ATTR_EXPECTED_LINES_NAME = "expectedLines";
@@ -125,7 +125,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     /** Default value of format attribute. */
     public static TextFormat ATTR_FORMAT_DEFAULT_VALUE = TextFormat.PLAIN;
 
-    public ExtendedTextInteraction(XmlNode parent) {
+    public ExtendedTextInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_STRINGS_NAME, false));
@@ -143,17 +143,17 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
     /**
      * Sets new value of maxStrings attribute.
-     * 
+     *
      * @param maxStrings new value of maxStrings attribute
      * @see #getMaxStrings
      */
-    public void setMaxStrings(Integer maxStrings) {
+    public void setMaxStrings(final Integer maxStrings) {
         getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).setValue(maxStrings);
     }
 
     /**
      * Gets value of maxStrings attribute.
-     * 
+     *
      * @return value of maxStrings attribute
      * @see #setMaxStrings
      */
@@ -163,37 +163,37 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
     /**
      * Sets new value of minStrings attribute.
-     * 
+     *
      * @param minStrings new value of minStrings attribute
      * @see #getMinStrings
      */
-    public void setMinStrings(Integer minStrings) {
+    public void setMinStrings(final Integer minStrings) {
         getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).setValue(minStrings);
     }
 
     /**
      * Gets value of minStrings attribute.
-     * 
+     *
      * @return value of minStrings attribute
      * @see #setMinStrings
      */
-    public Integer getMinStrings() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getComputedValue();
+    public int getMinStrings() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of expectedLines attribute.
-     * 
+     *
      * @param expectedLines new value of expectedLines attribute
      * @see #getExpectedLines
      */
-    public void setExpectedLines(Integer expectedLines) {
+    public void setExpectedLines(final Integer expectedLines) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).setValue(expectedLines);
     }
 
     /**
      * Gets value of expectedLines attribute.
-     * 
+     *
      * @return value of expectedLines attribute
      * @see #setExpectedLines
      */
@@ -203,17 +203,17 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
     /**
      * Sets new value of format attribute.
-     * 
+     *
      * @param format new value of format attribute
      * @see #getFormat
      */
-    public void setFormat(TextFormat format) {
+    public void setFormat(final TextFormat format) {
         getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).setValue(format);
     }
 
     /**
      * Gets value of format attribute.
-     * 
+     *
      * @return value of format attribute
      * @see #setFormat
      */
@@ -222,8 +222,8 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
+    public int getBase() {
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedNonNullValue();
     }
 
     @Override
@@ -247,27 +247,27 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public void setBase(Integer base) {
+    public void setBase(final Integer base) {
         getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
     }
 
     @Override
-    public void setExpectedLength(Integer expectedLength) {
+    public void setExpectedLength(final Integer expectedLength) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).setValue(expectedLength);
     }
 
     @Override
-    public void setPatternMask(String patternMask) {
+    public void setPatternMask(final String patternMask) {
         getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).setValue(patternMask);
     }
 
     @Override
-    public void setPlaceholderText(String placeholderText) {
+    public void setPlaceholderText(final String placeholderText) {
         getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).setValue(placeholderText);
     }
 
     @Override
-    public void setStringIdentifier(Identifier stringIdentifier) {
+    public void setStringIdentifier(final Identifier stringIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).setValue(stringIdentifier);
     }
 
@@ -280,11 +280,13 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
-        if (getMaxStrings() != null) {
-            if (getMaxStrings() < getMinStrings()) {
+        final Integer maxStrings = getMaxStrings();
+        final int minStrings = getMinStrings();
+        if (maxStrings != null) {
+            if (maxStrings.intValue() < minStrings) {
                 context.add(new ValidationError(this, "maxStrings cannot be smaller than minStrings"));
             }
         }
@@ -292,7 +294,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
 
-            if (getMinStrings() > 1 || getMaxStrings() != null && getMaxStrings() > 1) {
+            if (minStrings > 1 || (maxStrings != null && maxStrings.intValue() > 1)) {
                 if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
                     if (declaration.getCardinality().isRecord()) {
                         context.add(new ValidationError(this,
@@ -332,7 +334,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
 
     @Override
-    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
         super.bindResponse(itemController, responseData);
 
         /* Also handle stringIdentifier binding if required */
@@ -343,14 +345,15 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+    protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("extendedTextInteraction must be bound to string response data");
         }
-        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
-        Cardinality responseCardinality = responseDeclaration.getCardinality();
-        BaseType responseBaseType = responseDeclaration.getBaseType();
-        
+        final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        final Cardinality responseCardinality = responseDeclaration.getCardinality();
+        final BaseType responseBaseType = responseDeclaration.getBaseType();
+        final int base = getBase();
+
         //handle record special case
         Value result;
         if (responseCardinality.isRecord()) {
@@ -369,7 +372,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 final IntegerValue[] values = new IntegerValue[stringResponseData.length];
 
                 for (int i = 0; i < stringResponseData.length; i++) {
-                    values[i] = new IntegerValue(stringResponseData[i], getBase());
+                    values[i] = new IntegerValue(stringResponseData[i], base);
                 }
 
                 if (responseCardinality == Cardinality.MULTIPLE) {
@@ -380,7 +383,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 }
             }
             else {
-                result = new IntegerValue(stringResponseData[0], getBase());
+                result = new IntegerValue(stringResponseData[0], base);
             }
         }
         else {
@@ -390,7 +393,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         /* Gather up the values */
         final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {
@@ -410,9 +413,9 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
         /* Now do the validation */
         final Integer maxStrings = getMaxStrings();
-        final Integer minStrings = getMinStrings();
+        final int minStrings = getMinStrings();
         final String patternMask = getPatternMask();
-        if (responseEntries.size() >= 0 && responseEntries.size() < minStrings.intValue()) {
+        if (responseEntries.size() >= 0 && responseEntries.size() < minStrings) {
             return false;
         }
         if (maxStrings != null && responseEntries.size() > maxStrings.intValue()) {

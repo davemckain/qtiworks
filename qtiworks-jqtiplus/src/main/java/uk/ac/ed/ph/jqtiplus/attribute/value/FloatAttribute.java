@@ -34,33 +34,47 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 
 /**
  * Attribute with float value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class FloatAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -8445977254402390812L;
 
-    public FloatAttribute(XmlNode parent, String localName, boolean required) {
+    public FloatAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public FloatAttribute(XmlNode parent, String localName, Double defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
+    public FloatAttribute(final XmlNode parent, final String localName, final double defaultValue, final boolean required) {
+        super(parent, localName, Double.valueOf(defaultValue), required);
+    }
+
+    /**
+     * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
+     * returning a raw boolean
+     */
+    public double getComputedNonNullValue() {
+        final Double computed = super.getComputedValue();
+        if (computed==null) {
+            throw new QtiAttributeException("Did not expect float attribute " + getLocalName() + " to have a null computed value");
+        }
+        return computed.doubleValue();
+    }
+
+
+    @Override
+    protected Double parseQtiString(final String value) {
+        return Double.valueOf(FloatValue.parseFloat(value));
     }
 
     @Override
-    protected Double parseQtiString(String value) {
-        return FloatValue.parseFloat(value);
-    }
-    
-    @Override
-    protected String toQtiString(Double value) {
+    protected String toQtiString(final Double value) {
         return value.toString();
     }
 }

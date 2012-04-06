@@ -66,7 +66,7 @@ import java.util.List;
  * cardinality only. The baseType must be one of string, integer, or float.
  * Note: Spec is slightly wrong: record response is also allowed from inherited
  * StringInteraction
- * 
+ *
  * @author Jonathon Hare
  */
 public class TextEntryInteraction extends InlineInteraction implements StringInteraction {
@@ -76,13 +76,13 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "textEntryInteraction";
 
-    public TextEntryInteraction(XmlNode parent) {
+    public TextEntryInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         //for StringInteraction...
         getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, false));
         getAttributes().add(new IdentifierAttribute(this, ATTR_STRING_IDENTIFIER_NAME, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, null, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
     }
@@ -93,8 +93,8 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
+    public int getBase() {
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedNonNullValue();
     }
 
     @Override
@@ -118,27 +118,27 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public void setBase(Integer base) {
+    public void setBase(final Integer base) {
         getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
     }
 
     @Override
-    public void setExpectedLength(Integer expectedLength) {
+    public void setExpectedLength(final Integer expectedLength) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).setValue(expectedLength);
     }
 
     @Override
-    public void setPatternMask(String patternMask) {
+    public void setPatternMask(final String patternMask) {
         getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).setValue(patternMask);
     }
 
     @Override
-    public void setPlaceholderText(String placeholderText) {
+    public void setPlaceholderText(final String placeholderText) {
         getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).setValue(placeholderText);
     }
 
     @Override
-    public void setStringIdentifier(Identifier stringIdentifier) {
+    public void setStringIdentifier(final Identifier stringIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).setValue(stringIdentifier);
     }
 
@@ -151,7 +151,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -180,9 +180,9 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             }
         }
     }
-    
+
     @Override
-    public final void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+    public final void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
         super.bindResponse(itemController, responseData);
 
         /* Also handle stringIdentifier binding if required */
@@ -194,29 +194,30 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) throws ResponseBindingException {
+    protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("textInteraction must be bound to string response data");
         }
-        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
         if (stringResponseData.length > 1) {
             throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
         }
-        
-        Cardinality responseCardinality = responseDeclaration.getCardinality();
-        BaseType responseBaseType = responseDeclaration.getBaseType();
-        String responseString = stringResponseData.length > 0 ? stringResponseData[0] : null;
+
+        final Cardinality responseCardinality = responseDeclaration.getCardinality();
+        final BaseType responseBaseType = responseDeclaration.getBaseType();
+        final String responseString = stringResponseData.length > 0 ? stringResponseData[0] : null;
+        final int base = getBase();
 
         Value result;
         if (responseCardinality.isRecord()) {
-            result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
+            result = TextEntryInteraction.parseRecordValueResponse(responseString, base);
         }
         else if (responseBaseType.isInteger()) {
             if (responseString == null || responseString.trim().length() == 0) {
                 result = NullValue.INSTANCE;
             }
             else {
-                result = new IntegerValue(responseString, getBase());
+                result = new IntegerValue(responseString, base);
             }
         }
         else {
@@ -226,7 +227,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         if (getPatternMask() != null) {
             if (!responseValue.toQtiString().matches(getPatternMask())) {
                 return false;
@@ -236,12 +237,12 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         return true;
     }
 
-    protected static RecordValue parseRecordValueResponse(String responseString, Integer base) {
+    protected static RecordValue parseRecordValueResponse(String responseString, final int base) {
         final RecordValue value = new RecordValue();
-    
+
         value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
         value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
-    
+
         String exponentIndicator = null;
         if (responseString.contains("e")) {
             exponentIndicator = "e";
@@ -249,38 +250,38 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         if (responseString.contains("E")) {
             exponentIndicator = "E";
         }
-    
+
         final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : null;
         responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
         final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
         final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
-    
+
         if (exponentIndicator != null || responseString.contains(".")) {
             value.add(KEY_INTEGER_VALUE_NAME, null);
         }
         else {
             value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, base));
         }
-    
+
         value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
         value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
-    
+
         if (exponentIndicator != null) {
             int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
             if (exponentPart != null && exponentPart.length() > 0) {
                 frac -= Integer.parseInt(exponentPart);
             }
-    
+
             value.add(KEY_NDP_NAME, new IntegerValue(frac));
         }
         else {
             value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
         }
-    
+
         int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
         nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
         value.add(KEY_NSF_NAME, new IntegerValue(nsf));
-    
+
         if (exponentIndicator != null) {
             value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
         }

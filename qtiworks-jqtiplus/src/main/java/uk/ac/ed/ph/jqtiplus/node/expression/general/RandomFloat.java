@@ -50,7 +50,7 @@ import java.util.Random;
  * This implementation returns random double from range &lt;min, max).
  * <p>
  * Additional conditions: max &gt;= min
- * 
+ *
  * @author Jiri Kajaba
  */
 public class RandomFloat extends RandomExpression {
@@ -66,11 +66,11 @@ public class RandomFloat extends RandomExpression {
     /** Name of max attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "max";
 
-    public RandomFloat(ExpressionParent parent) {
+    public RandomFloat(final ExpressionParent parent) {
         this(parent, QTI_CLASS_NAME);
     }
 
-    protected RandomFloat(ExpressionParent parent, String localName) {
+    protected RandomFloat(final ExpressionParent parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new FloatAttribute(this, ATTR_MINIMUM_NAME, true));
@@ -79,41 +79,41 @@ public class RandomFloat extends RandomExpression {
 
     /**
      * Gets value of min attribute.
-     * 
+     *
      * @return value of min attribute
      * @see #setMinimum
      */
-    public Double getMinimum() {
-        return getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).getComputedValue();
+    public double getMinimum() {
+        return getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of min attribute.
-     * 
+     *
      * @param minimum new value of min attribute
      * @see #getMinimum
      */
-    public void setMinimum(Double minimum) {
+    public void setMinimum(final Double minimum) {
         getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
     }
 
     /**
      * Gets value of max attribute.
-     * 
+     *
      * @return value of max attribute
      * @see #setMaximum
      */
-    public Double getMaximum() {
-        return getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
+    public double getMaximum() {
+        return getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of max attribute.
-     * 
+     *
      * @param maximum new value of max attribute
      * @see #getMaximum
      */
-    public void setMaximum(Double maximum) {
+    public void setMaximum(final Double maximum) {
         getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
     }
 
@@ -123,20 +123,24 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
+        final double minimum = getMinimum();
+        final double maximum = getMaximum();
 
-        if (getMinimum() != null && getMaximum() != null && getMaximum() < getMinimum()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
-                    ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
+        if (maximum < minimum) {
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + maximum +
+                    ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + minimum + ")."));
         }
     }
 
     @Override
-    protected FloatValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected FloatValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        final double minimum = getMinimum();
+        final double maximum = getMaximum();
         final Random randomGenerator = getRandomGenerator(depth);
         final double randomNumber = randomGenerator.nextDouble();
-        final double randomFloat = getMinimum() + (getMaximum() - getMinimum()) * randomNumber;
+        final double randomFloat = minimum + (maximum - minimum) * randomNumber;
 
         return new FloatValue(randomFloat);
     }

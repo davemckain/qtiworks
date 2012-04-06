@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  * a valid response. If matchMin is 0 then the candidate is not required
  * to associate this choice with any gaps at all. matchMin must be less
  * than or equal to the limit imposed by matchMax.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class GapChoice extends AssociableChoice {
@@ -67,7 +67,7 @@ public abstract class GapChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-    public GapChoice(XmlNode parent, String localName) {
+    public GapChoice(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));
@@ -76,41 +76,41 @@ public abstract class GapChoice extends AssociableChoice {
 
     /**
      * Gets value of matchMax attribute.
-     * 
+     *
      * @return value of matchMax attribute
      * @see #setMatchMax
      */
-    public Integer getMatchMax() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedValue();
+    public int getMatchMax() {
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of matchMax attribute.
-     * 
+     *
      * @param matchMax new value of matchMax attribute
      * @see #getMatchMax
      */
-    public void setMatchMax(Integer matchMax) {
+    public void setMatchMax(final Integer matchMax) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).setValue(matchMax);
     }
 
     /**
      * Gets value of matchMin attribute.
-     * 
+     *
      * @return value of matchMin attribute
      * @see #setMatchMin
      */
-    public Integer getMatchMin() {
-        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedValue();
+    public int getMatchMin() {
+        return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of matchMin attribute.
-     * 
+     *
      * @param matchMin new value of matchMin attribute
      * @see #getMatchMin
      */
-    public void setMatchMin(Integer matchMin) {
+    public void setMatchMin(final Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
     }
 }

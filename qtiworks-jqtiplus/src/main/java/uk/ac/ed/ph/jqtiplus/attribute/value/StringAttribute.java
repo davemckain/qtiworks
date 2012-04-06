@@ -38,32 +38,32 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Attribute with string value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class StringAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = 3119455031436453049L;
 
-    public StringAttribute(XmlNode parent, String localName, boolean required) {
+    public StringAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
-    
-    public StringAttribute(XmlNode parent, String localName, String defaultValue, boolean required) {
+
+    public StringAttribute(final XmlNode parent, final String localName, final String defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
-    
-    public StringAttribute(XmlNode parent, String localName, String namespaceUri, String defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, null, required);
+
+    public StringAttribute(final XmlNode parent, final String localName, final String namespaceUri, final String defaultValue, final boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, required);
     }
-    
+
     @Override
-    protected String parseQtiString(String value) {
+    protected String parseQtiString(final String value) {
         return value;
     }
-    
+
     @Override
-    protected String toQtiString(String value) {
+    protected String toQtiString(final String value) {
         return value.toString();
     }
 }

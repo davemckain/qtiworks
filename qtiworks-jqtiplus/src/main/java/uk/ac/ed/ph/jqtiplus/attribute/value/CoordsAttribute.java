@@ -35,34 +35,33 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 
 import java.util.List;
 
 /**
  * Attribute with integer values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class CoordsAttribute extends MultipleAttribute<Integer> {
 
     private static final long serialVersionUID = -3499455085135083349L;
 
-    public CoordsAttribute(XmlNode parent, String localName, boolean required) {
+    public CoordsAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, required);
     }
 
-    public CoordsAttribute(XmlNode parent, String localName, List<Integer> defaultValue, boolean required) {
+    public CoordsAttribute(final XmlNode parent, final String localName, final List<Integer> defaultValue, final boolean required) {
         super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, defaultValue, required);
     }
 
     @Override
-    protected Integer parseItemValue(String value) {
-        return IntegerValue.parseInteger(value);
+    protected Integer parseItemValue(final String value) {
+        return Integer.valueOf(value);
     }
-    
+
     @Override
-    protected String itemToQtiString(Integer item) {
+    protected String itemToQtiString(final Integer item) {
         return item.toString();
     }
 }

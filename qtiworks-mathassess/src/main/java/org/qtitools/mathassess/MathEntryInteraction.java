@@ -87,7 +87,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         super(jqtiExtensionPackage, parent);
 
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
-        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, MATHASSESS_NAMESPACE_URI, null, false));
+        getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, MATHASSESS_NAMESPACE_URI, false));
         getAttributes().add(new IdentifierAttribute(this, ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI, null, false));
     }
 

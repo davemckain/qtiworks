@@ -39,19 +39,15 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Attribute with long value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class LongAttribute extends SingleAttribute<Long> {
 
     private static final long serialVersionUID = 1138880928751132617L;
 
-    public LongAttribute(XmlNode parent, String localName, boolean required) {
+    public LongAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
-    }
-
-    public LongAttribute(XmlNode parent, String localName, Long defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
     }
 
     @Override
@@ -71,15 +67,15 @@ public final class LongAttribute extends SingleAttribute<Long> {
         }
 
         try {
-            return Long.parseLong(value);
+            return Long.valueOf(value);
         }
         catch (final NumberFormatException ex) {
             throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
         }
     }
-    
+
     @Override
-    protected String toQtiString(Long value) {
+    protected String toQtiString(final Long value) {
         return value.toString();
     }
 }

@@ -34,37 +34,50 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 
 /**
  * Attribute with integer value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class IntegerAttribute extends SingleAttribute<Integer> {
 
     private static final long serialVersionUID = 6169314176032331265L;
 
-    public IntegerAttribute(XmlNode parent, String localName, boolean required) {
+    public IntegerAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
-    
-    public IntegerAttribute(XmlNode parent, String localName, Integer defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
+
+    public IntegerAttribute(final XmlNode parent, final String localName, final int defaultValue, final boolean required) {
+        super(parent, localName, Integer.valueOf(defaultValue), required);
     }
-    
-    public IntegerAttribute(XmlNode parent, String localName, String namespaceUri, Integer defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, defaultValue, required);
+
+    public IntegerAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean required) {
+        super(parent, localName, namespaceUri, null, required);
+    }
+
+    /**
+     * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
+     * returning a raw boolean
+     */
+    public int getComputedNonNullValue() {
+        final Integer computed = super.getComputedValue();
+        if (computed==null) {
+            throw new QtiAttributeException("Did not expect integer attribute " + getLocalName() + " to have a null computed value");
+        }
+        return computed.intValue();
     }
 
     @Override
-    protected Integer parseQtiString(String value) {
-        return IntegerValue.parseInteger(value);
+    protected Integer parseQtiString(final String value) {
+        return Integer.valueOf(IntegerValue.parseInteger(value));
     }
-    
+
     @Override
-    protected String toQtiString(Integer value) {
+    protected String toQtiString(final Integer value) {
         return value.toString();
     }
 }

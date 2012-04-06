@@ -65,10 +65,10 @@ public class AreaMapEntry extends AbstractNode {
 
     /**
      * Construct A new AreaMapEntry.
-     * 
+     *
      * @param parent AreaMapEntry parent
      */
-    public AreaMapEntry(AreaMapping parent) {
+    public AreaMapEntry(final AreaMapping parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
@@ -77,7 +77,7 @@ public class AreaMapEntry extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         if (getShape() != null) {
             getShape().validateCoords(getAttributes().getCoordsAttribute(ATTR_COORDS_NAME),
                     context.getValidationResult(), convertCoordinates(getCoordinates()));
@@ -87,7 +87,7 @@ public class AreaMapEntry extends AbstractNode {
 
     /**
      * Gets value of shape attribute.
-     * 
+     *
      * @return value of shape attribute
      * @see #setShape
      */
@@ -97,57 +97,57 @@ public class AreaMapEntry extends AbstractNode {
 
     /**
      * Sets new value of shape attribute.
-     * 
+     *
      * @param shape new value of shape attribute
      * @see #getShape
      */
-    public void setShape(Shape shape) {
+    public void setShape(final Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
     }
 
     /**
      * Gets value of coords attribute.
-     * 
+     *
      * @return value of coords attribute
      */
     public List<Integer> getCoordinates() {
         return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
-    
-    public void setCoordinates(List<Integer> value) {
+
+    public void setCoordinates(final List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
     /**
      * Gets value of mappedValue attribute.
-     * 
+     *
      * @return value of mappedValue attribute
      * @see #setMappedValue
      */
-    public Double getMappedValue() {
-        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedValue();
+    public double getMappedValue() {
+        return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of mappedValue attribute.
-     * 
+     *
      * @param mappedValue new value of mappedValue attribute
      * @see #getMappedValue
      */
-    public void setMappedValue(Double mappedValue) {
+    public void setMappedValue(final Double mappedValue) {
         getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).setValue(mappedValue);
     }
 
     /**
      * Converts list of coordinates to array of coordinates.
-     * 
+     *
      * @param coords list of coordinates
      * @return array of coordinates
      */
-    private int[] convertCoordinates(List<Integer> coords) {
+    private int[] convertCoordinates(final List<Integer> coords) {
         final int[] result = new int[coords.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = coords.get(i);
+            result[i] = coords.get(i).intValue();
         }
 
         return result;

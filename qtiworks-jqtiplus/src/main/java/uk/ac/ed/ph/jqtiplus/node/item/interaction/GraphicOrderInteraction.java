@@ -81,7 +81,7 @@ import java.util.Set;
  * responding to the interaction. Used in conjunction with minChoices, if specified,
  * maxChoices must be greater than or equal to minChoices and must not exceed the
  * number of choices available. If unspecified, all of the choices may be ordered.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GraphicOrderInteraction extends GraphicInteraction implements HotspotChoiceContainer {
@@ -97,7 +97,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     /** Name of minChoices attribute in xml schema. */
     public static String ATTR_MIN_CHOICES_NAME = "minChoices";
 
-    public GraphicOrderInteraction(XmlNode parent) {
+    public GraphicOrderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, false));
@@ -121,17 +121,17 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices) {
+    public void setMaxChoices(final Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -141,17 +141,17 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices) {
+    public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -161,7 +161,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
     /**
      * Gets hotspotChoice children.
-     * 
+     *
      * @return hotspotChoice children
      */
     public List<HotspotChoice> getHotspotChoices() {
@@ -170,11 +170,11 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
     /**
      * Gets hotspotChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return hotspotChoice with given identifier or null
      */
-    public HotspotChoice getHotspotChoice(Identifier identifier) {
+    public HotspotChoice getHotspotChoice(final Identifier identifier) {
         for (final HotspotChoice choice : getHotspotChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -185,18 +185,20 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
+        final Integer minChoices = getMinChoices();
+        final Integer maxChoices = getMaxChoices();
 
-        if (getMinChoices() != null && getMinChoices() < 1) {
+        if (minChoices != null && minChoices.intValue() < 1) {
             context.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
         }
 
-        if (getMaxChoices() != null && getMinChoices() != null && getMaxChoices() < getMinChoices()) {
+        if (maxChoices != null && minChoices != null && maxChoices.intValue() < minChoices.intValue()) {
             context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
         }
 
-        if (getMaxChoices() != null && getMaxChoices() > getHotspotChoices().size()) {
+        if (maxChoices != null && maxChoices.intValue() > getHotspotChoices().size()) {
             context.add(new ValidationError(this, "Maximum number of choices cannot be larger than the number of choice children"));
         }
 
@@ -214,7 +216,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

@@ -99,8 +99,8 @@ public class EqualRounded extends AbstractFunctionalExpression {
      * @return value of figures attribute
      * @see #setFigures
      */
-    public Integer getFigures() {
-        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedValue();
+    public int getFigures() {
+        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -117,7 +117,7 @@ public class EqualRounded extends AbstractFunctionalExpression {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getRoundingMode() != null && getFigures() != null) {
+        if (getRoundingMode() != null) {
             getRoundingMode().validateFigures(getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME), context.getValidationResult(), getFigures());
         }
 

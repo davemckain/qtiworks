@@ -41,28 +41,28 @@ import java.util.List;
 
 /**
  * Attribute with float values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
 
     private static final long serialVersionUID = 1429666396177699288L;
 
-    public FloatMultipleAttribute(XmlNode parent, String localName, boolean required) {
+    public FloatMultipleAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public FloatMultipleAttribute(XmlNode parent, String localName, List<Double> defaultValue, boolean required) {
+    public FloatMultipleAttribute(final XmlNode parent, final String localName, final List<Double> defaultValue, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 
     @Override
-    protected Double parseItemValue(String value) {
-        return FloatValue.parseFloat(value);
+    protected Double parseItemValue(final String value) {
+        return Double.valueOf(FloatValue.parseFloat(value));
     }
-    
+
     @Override
-    protected String itemToQtiString(Double item) {
+    protected String itemToQtiString(final Double item) {
         return item.toString();
     }
 }

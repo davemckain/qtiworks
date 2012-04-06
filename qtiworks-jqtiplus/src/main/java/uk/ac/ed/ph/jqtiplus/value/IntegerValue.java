@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always integer.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -58,31 +58,31 @@ public final class IntegerValue extends NumberValue {
 
     /**
      * Constructs <code>IntegerValue</code> from given <code>int</code>.
-     * 
+     *
      * @param value <code>int</code>
      */
-    public IntegerValue(int value) {
+    public IntegerValue(final int value) {
         this.intValue = value;
     }
 
     /**
      * Constructs <code>IntegerValue</code> from given <code>String</code> representation.
-     * 
+     *
      * @param value <code>String</code> representation of <code>IntegerValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
      */
-    public IntegerValue(String value) {
+    public IntegerValue(final String value) {
         this.intValue = parseInteger(value);
     }
 
     /**
      * Constructs <code>IntegerValue</code> from given <code>String</code> representation and radix.
-     * 
+     *
      * @param value <code>String</code> representation of <code>IntegerValue</code>
      * @param radix Radix or base to use when interpreting value
      * @throws QtiParseException if <code>String</code> representation of <code>IntegerValue</code> is not valid
      */
-    public IntegerValue(String value, Integer radix) {
+    public IntegerValue(final String value, final int radix) {
         this.intValue = parseInteger(value, radix);
     }
 
@@ -102,7 +102,7 @@ public final class IntegerValue extends NumberValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof IntegerValue)) {
             return false;
         }
@@ -115,7 +115,7 @@ public final class IntegerValue extends NumberValue {
     public int hashCode() {
         return intValue();
     }
-    
+
     @Override
     public String toQtiString() {
         return Integer.toString(intValue);
@@ -123,24 +123,24 @@ public final class IntegerValue extends NumberValue {
 
     /**
      * Parses the <code>String</code> argument as A <code>int</code>.
-     * 
+     *
      * @param value <code>String</code> representation of <code>int</code>
      * @return parsed <code>int</code>
      * @throws QtiParseException if <code>String</code> representation of <code>int</code> is not valid
      */
-    public static int parseInteger(String value) {
+    public static int parseInteger(final String value) {
         return parseInteger(value, 10);
     }
 
     /**
      * Parses the <code>String</code> argument as A <code>int</code>.
-     * 
+     *
      * @param value <code>String</code> representation of <code>int</code>
      * @param radix base to use in conversion
      * @return parsed <code>int</code>
      * @throws QtiParseException if <code>String</code> representation of <code>int</code> is not valid
      */
-    public static int parseInteger(String value, int radix) {
+    public static int parseInteger(String value, final int radix) {
         if (value != null) {
             value = value.trim();
         }

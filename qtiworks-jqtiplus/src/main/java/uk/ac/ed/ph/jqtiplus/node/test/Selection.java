@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 /**
  * The selection class specifies the rules used to select the child elements of A section for each test
  * session. If no selection rules are given we assume that all elements are to be selected.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class Selection extends AbstractNode {
@@ -61,7 +61,7 @@ public class Selection extends AbstractNode {
     /** Default value of withReplacement attribute. */
     public static final Boolean ATTR_WITH_REPLACEMENT_DEFAULT_VALUE = Boolean.FALSE;
 
-    public Selection(AssessmentSection parent) {
+    public Selection(final AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SELECT_NAME, true));
@@ -75,27 +75,27 @@ public class Selection extends AbstractNode {
 
     /**
      * Gets value of select attribute.
-     * 
+     *
      * @return value of select attribute
      * @see #setSelect
      */
-    public Integer getSelect() {
-        return getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).getComputedValue();
+    public int getSelect() {
+        return getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of select attribute.
-     * 
+     *
      * @param select new value of select attribute
      * @see #getSelect
      */
-    public void setSelect(Integer select) {
+    public void setSelect(final Integer select) {
         getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).setValue(select);
     }
 
     /**
      * Gets value of withReplacement attribute.
-     * 
+     *
      * @return value of withReplacement attribute
      * @see #setWithReplacement
      */
@@ -105,19 +105,20 @@ public class Selection extends AbstractNode {
 
     /**
      * Sets new value of withReplacement attribute.
-     * 
+     *
      * @param withReplacement new value of withReplacement attribute
      * @see #getWithReplacement
      */
-    public void setWithReplacement(Boolean withReplacement) {
+    public void setWithReplacement(final Boolean withReplacement) {
         getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).setValue(withReplacement);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
+        final int select = getSelect();
 
-        if (getParent() != null && getSelect() != null) {
+        if (getParent() != null) {
             int required = 0;
             for (final SectionPart part : getParent().getSectionParts()) {
                 if (part.getRequired()) {
@@ -125,14 +126,14 @@ public class Selection extends AbstractNode {
                 }
             }
 
-            if (getSelect() < required) {
-                context.add(new ValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + getSelect()));
+            if (select < required) {
+                context.add(new ValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + select));
             }
 
-            if (!getWithReplacement() && getSelect() > getParent().getSectionParts().size()) {
+            if (!getWithReplacement() && select > getParent().getSectionParts().size()) {
                 context.add(new ValidationError(this, "Invalid selection. Required no more than: " + getParent().getSectionParts().size()
                         + ", but found: "
-                        + getSelect()));
+                        + select));
             }
         }
     }

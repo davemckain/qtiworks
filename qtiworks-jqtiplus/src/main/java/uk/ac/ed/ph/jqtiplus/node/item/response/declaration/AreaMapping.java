@@ -57,7 +57,7 @@ import java.util.List;
  * result is the sum of the mapped values from the target set. See
  * mapResponsePoint for details. The attributes have the same meaning
  * as the similarly named attributes on mapping.
- * 
+ *
  * @see MapResponsePoint for details.
  * @author Jonathon Hare
  */
@@ -82,10 +82,10 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Creates object.
-     * 
+     *
      * @param parent parent of this object
      */
-    public AreaMapping(ResponseDeclaration parent) {
+    public AreaMapping(final ResponseDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, false));
@@ -102,27 +102,27 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Gets value of defaultValue attribute.
-     * 
+     *
      * @return value of defaultValue attribute
      * @see #setDefaultValue
      */
-    public Double getDefaultValue() {
-        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedValue();
+    public double getDefaultValue() {
+        return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of defaultValue attribute.
-     * 
+     *
      * @param defaultValue new value of defaultValue attribute
      * @see #getDefaultValue
      */
-    public void setDefaultValue(Double defaultValue) {
+    public void setDefaultValue(final Double defaultValue) {
         getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }
 
     /**
      * Gets value of lowerBound attribute.
-     * 
+     *
      * @return value of lowerBound attribute
      * @see #setLowerBound
      */
@@ -132,17 +132,17 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Sets new value of lowerBound attribute.
-     * 
+     *
      * @param lowerBound new value of lowerBound attribute
      * @see #getLowerBound
      */
-    public void setLowerBound(Double lowerBound) {
+    public void setLowerBound(final Double lowerBound) {
         getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
     /**
      * Gets value of upperBound attribute.
-     * 
+     *
      * @return value of upperBound attribute
      * @see #setUpperBound
      */
@@ -152,17 +152,17 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Sets new value of upperBound attribute.
-     * 
+     *
      * @param upperBound new value of upperBound attribute
      * @see #getUpperBound
      */
-    public void setUpperBound(Double upperBound) {
+    public void setUpperBound(final Double upperBound) {
         getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
     /**
      * Gets areaMapEntry children.
-     * 
+     *
      * @return areaMapEntry children
      */
     public List<AreaMapEntry> getAreaMapEntries() {
@@ -170,10 +170,12 @@ public class AreaMapping extends AbstractNode {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
+        final Double lowerBound = getLowerBound();
+        final Double upperBound = getUpperBound();
 
-        if (getLowerBound() != null && getUpperBound() != null && getLowerBound() > getUpperBound()) {
+        if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
             context.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
         }
 
@@ -187,18 +189,18 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Gets target value for given source value.
-     * 
+     *
      * @param sourceValue given source value
      * @return target value for given source value
      */
-    public FloatValue getTargetValue(Value sourceValue) {
+    public FloatValue getTargetValue(final Value sourceValue) {
         if (sourceValue != null) {
             /*
-             * The transformation is similar to mapResponse except that 
-             * the points are tested against each area in turn. When 
-             * mapping containers each area can be mapped once only. For 
-             * example, if the candidate identified two points that both 
-             * fall in the same area then the mappedValue is still added 
+             * The transformation is similar to mapResponse except that
+             * the points are tested against each area in turn. When
+             * mapping containers each area can be mapped once only. For
+             * example, if the candidate identified two points that both
+             * fall in the same area then the mappedValue is still added
              * to the calculated total just once.
              */
             if (getParent().getCardinality() == Cardinality.SINGLE) {
@@ -238,32 +240,31 @@ public class AreaMapping extends AbstractNode {
 
     /**
      * Converts list of coordinates to array of coordinates.
-     * 
+     *
      * @param coords list of coordinates
      * @return array of coordinates
      */
-    private int[] convertCoordinates(List<Integer> coords) {
+    private int[] convertCoordinates(final List<Integer> coords) {
         final int[] result = new int[coords.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = coords.get(i);
+            result[i] = coords.get(i).intValue();
         }
 
         return result;
     }
 
-    private double applyConstraints(double value) {
-        if (getLowerBound() != null) {
-            if (value < getLowerBound()) {
-                value = getLowerBound();
-            }
+    private double applyConstraints(final double value) {
+        double result = value;
+        final Double lowerBound = getLowerBound();
+        if (lowerBound != null) {
+            result = Math.max(result, lowerBound.doubleValue());
         }
 
-        if (getUpperBound() != null) {
-            if (value > getUpperBound()) {
-                value = getUpperBound();
-            }
+        final Double upperBound = getUpperBound();
+        if (upperBound != null) {
+            result = Math.min(result, upperBound.doubleValue());
         }
 
-        return value;
+        return result;
     }
 }

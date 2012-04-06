@@ -112,8 +112,8 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
+    public int getMaxChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -132,15 +132,17 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
-    public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
+    public int getMinChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
     @Override
     public void validate(ValidationContext context) {
         super.validate(context);
+        final int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
 
-        if (getMaxChoices() < getMinChoices()) {
+        if (maxChoices < minChoices) {
             context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
         }
 
@@ -150,13 +152,13 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
                 context.add(new ValidationError(this, "Response variable must have point base type"));
             }
 
-            if (declaration != null && getMaxChoices() == 1 &&
+            if (declaration != null && maxChoices == 1 &&
                     declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
                     !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
             }
 
-            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (declaration != null && maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
             }
         }
@@ -180,8 +182,8 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
         }
 
         /* Check minChoices/maxChoices */
-        final int maxChoices = getMaxChoices().intValue();
-        final int minChoices = getMinChoices().intValue();
+        final int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
         if (responsePoints.size() < minChoices) {
             return false;
         }

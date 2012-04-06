@@ -137,8 +137,8 @@ public class HottextInteraction extends BlockInteraction {
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
+    public int getMaxChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -157,8 +157,8 @@ public class HottextInteraction extends BlockInteraction {
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
-    public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
+    public int getMinChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -173,8 +173,10 @@ public class HottextInteraction extends BlockInteraction {
     @Override
     public void validate(ValidationContext context) {
         super.validate(context);
+        final int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
 
-        if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) {
+        if (maxChoices != 0 && minChoices > maxChoices) {
             context.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
         }
 
@@ -215,8 +217,8 @@ public class HottextInteraction extends BlockInteraction {
         }
 
         /* Check the number of responses */
-        final int minChoices = getMinChoices().intValue();
-        final int maxChoices = getMaxChoices().intValue();
+        final int minChoices = getMinChoices();
+        final int maxChoices = getMaxChoices();
         if (responseHottextIdentifiers.size() < minChoices) {
             return false;
         }

@@ -131,8 +131,8 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
      * @return value of base attribute
      * @see #setBase
      */
-    public Integer getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedValue();
+    public int getBase() {
+        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedNonNullValue();
     }
 
     /**

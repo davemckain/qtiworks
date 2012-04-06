@@ -145,8 +145,8 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
-    public Integer getMaxChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
+    public int getMaxChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -165,8 +165,8 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
-    public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
+    public int getMinChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -197,8 +197,10 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     @Override
     public void validate(ValidationContext context) {
         super.validate(context);
+        int minChoices = getMinChoices();
+        int maxChoices = getMaxChoices();
 
-        if (getMaxChoices() < getMinChoices()) {
+        if (maxChoices < minChoices) {
             context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
         }
 
@@ -208,13 +210,13 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
                 context.add(new ValidationError(this, "Response variable must have identifier base type"));
             }
 
-            if (declaration != null && getMaxChoices() == 1 &&
+            if (declaration != null && maxChoices == 1 &&
                     declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
                     !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
             }
 
-            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (declaration != null && maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
                 context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
             }
         }
@@ -240,8 +242,8 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
         }
 
         /* Validate min/max */
-        final int maxChoices = getMaxChoices().intValue();
-        final int minChoices = getMinChoices().intValue();
+        final int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
         if (responseChoiceIdentifiers.size() < minChoices) {
             return false;
         }

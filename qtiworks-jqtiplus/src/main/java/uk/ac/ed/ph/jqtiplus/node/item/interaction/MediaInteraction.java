@@ -155,8 +155,8 @@ public class MediaInteraction extends BlockInteraction {
      * @return value of minPlays attribute
      * @see #setMinPlays
      */
-    public Integer getMinPlays() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).getComputedValue();
+    public int getMinPlays() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -175,8 +175,8 @@ public class MediaInteraction extends BlockInteraction {
      * @return value of maxPlays attribute
      * @see #setMinPlays
      */
-    public Integer getMaxPlays() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).getComputedValue();
+    public int getMaxPlays() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).getComputedNonNullValue();
     }
     
     /**

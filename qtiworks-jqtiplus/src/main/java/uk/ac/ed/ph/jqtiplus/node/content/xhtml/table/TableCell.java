@@ -180,8 +180,8 @@ public abstract class TableCell extends BodyElement {
      * @return value of rowspan attribute
      * @see #setRowspan
      */
-    public Integer getRowspan() {
-        return getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).getComputedValue();
+    public int getRowspan() {
+        return getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -200,8 +200,8 @@ public abstract class TableCell extends BodyElement {
      * @return value of colspan attribute
      * @see #setColspan
      */
-    public Integer getColspan() {
-        return getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).getComputedValue();
+    public int getColspan() {
+        return getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).getComputedNonNullValue();
     }
 
     /**

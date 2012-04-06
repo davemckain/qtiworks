@@ -80,7 +80,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Note that A slider interaction does not have A default or initial position except where
  * specified by A default value for the associated response variable. The currently selected value,
  * if any, must be clearly indicated to the candidate.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SliderInteraction extends BlockInteraction {
@@ -108,7 +108,7 @@ public class SliderInteraction extends BlockInteraction {
     /** Name of reverse attribute in xml schema. */
     public static String ATTR_REVERSE_NAME = "reverse";
 
-    public SliderInteraction(XmlNode parent) {
+    public SliderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, true));
@@ -121,57 +121,57 @@ public class SliderInteraction extends BlockInteraction {
 
     /**
      * Sets new value of lowerBound attribute.
-     * 
+     *
      * @param lowerBound new value of lowerBound attribute
      * @see #getLowerBound
      */
-    public void setLowerBound(Double lowerBound) {
+    public void setLowerBound(final Double lowerBound) {
         getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
     /**
      * Gets value of lowerBound attribute.
-     * 
+     *
      * @return value of lowerBound attribute
      * @see #setLowerBound
      */
-    public Double getLowerBound() {
-        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedValue();
+    public double getLowerBound() {
+        return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of upperBound attribute.
-     * 
+     *
      * @param upperBound new value of upperBound attribute
      * @see #getUpperBound
      */
-    public void setUpperBound(Double upperBound) {
+    public void setUpperBound(final Double upperBound) {
         getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
     /**
      * Gets value of upperBound attribute.
-     * 
+     *
      * @return value of upperBound attribute
      * @see #setUpperBound
      */
-    public Double getUpperBound() {
-        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedValue();
+    public double getUpperBound() {
+        return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedNonNullValue();
     }
 
     /**
      * Sets new value of step attribute.
-     * 
+     *
      * @param step new value of step attribute
      * @see #getStep
      */
-    public void setStep(Integer step) {
+    public void setStep(final Integer step) {
         getAttributes().getIntegerAttribute(ATTR_STEP_NAME).setValue(step);
     }
 
     /**
      * Gets value of step attribute.
-     * 
+     *
      * @return value of step attribute
      * @see #setStep
      */
@@ -181,48 +181,48 @@ public class SliderInteraction extends BlockInteraction {
 
     /**
      * Gets value of stepLabel attribute.
-     * 
+     *
      * @return value of stepLabel attribute
      * @see #setStepLabel
      */
     public boolean getStepLabel() {
         return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getComputedNonNullValue();
     }
-    
+
     /**
      * Sets new value of stepLabel attribute.
-     * 
+     *
      * @param stepLabel new value of stepLabel attribute
      * @see #getStepLabel
      */
-    public void setStepLabel(Boolean stepLabel) {
+    public void setStepLabel(final Boolean stepLabel) {
         getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).setValue(stepLabel);
     }
 
 
     /**
      * Sets new value of orientation attribute.
-     * 
+     *
      * @param orientation new value of orientation attribute
      * @see #getOrientation
      */
-    public void setOrientation(Orientation orientation) {
+    public void setOrientation(final Orientation orientation) {
         getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
     }
 
     /**
      * Gets value of orientation attribute.
-     * 
+     *
      * @return value of orientation attribute
      * @see #setOrientation
      */
     public Orientation getOrientation() {
         return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getComputedValue();
     }
-    
+
     /**
      * Gets value of reverse attribute.
-     * 
+     *
      * @return value of reverse attribute
      * @see #setReverse
      */
@@ -232,17 +232,17 @@ public class SliderInteraction extends BlockInteraction {
 
     /**
      * Sets new value of reverse attribute.
-     * 
+     *
      * @param reverse new value of reverse attribute
      * @see #getReverse
      */
-    public void setReverse(Boolean reverse) {
+    public void setReverse(final Boolean reverse) {
         getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).setValue(reverse);
     }
 
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -258,7 +258,7 @@ public class SliderInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         if (responseValue.isNull()) {
             /* Null responses are considered to be invalid, as far as I'm interpreting things */
             return false;
