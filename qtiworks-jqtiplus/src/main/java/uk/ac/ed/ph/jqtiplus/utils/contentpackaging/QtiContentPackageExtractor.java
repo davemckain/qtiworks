@@ -60,43 +60,43 @@ import org.w3c.dom.NodeList;
 
 /**
  * FIXME: Document this type
- * 
+ *
  * TODO: This does NOT validate packages (at least for the time being...)
- * 
+ *
  * TODO: This is *overly lax* in resolving relative files within CC packages. (The CC spec
  * defines some rules for what is permitted.)
  *
  * @author David McKain
  */
 public final class QtiContentPackageExtractor {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(QtiContentPackageExtractor.class);
-    
+
     public static final CustomUriScheme PACKAGE_URI_SCHEME = new CustomUriScheme("this-content-package");
-    
+
     /** Name of IMS manifest file */
     public static final String IMS_MANIFEST_FILE_NAME = "imsmanifest.xml";
-    
+
     /** <tt>cp:resource/@type</tt> for supported QTI items. */
-    public static final String[] ITEM_TYPES = {
+    private static final String[] ITEM_TYPES = {
         "imsqti_item_xmlv2p1", /* (Correct for QTI 2.1) */
         "imsqti_item_xml_v2p1" /* (Compatibility for old aqurate) */
     };
-    
+
     /** <tt>cp:resource/@type</tt> for supported QTI tests. */
-    public static final String[] TEST_TYPES = {
+    private static final String[] TEST_TYPES = {
         "imsqti_test_xmlv2p1", /* (Correct for QTI 2.1) */
     };
-    
+
     private final XmlResourceReader xmlResourceReader;
     private final FileSandboxResourceLocator packageResourceLocator;
-    
+
     public QtiContentPackageExtractor(File packageSandboxDirectory) {
         ConstraintUtilities.ensureNotNull(packageSandboxDirectory);
         this.xmlResourceReader = new XmlResourceReader(new NullResourceLocator()); /* (Not doing schema validation so no XSDs to register) */
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }
-    
+
     public QtiContentPackageSummary parse() throws XmlResourceNotFoundException, ImsManifestException {
         /* First parse the "top" IMS manifest, which should always be present */
         ImsManifestReadResult manifest = readManifestFile(IMS_MANIFEST_FILE_NAME);
@@ -111,7 +111,7 @@ public final class QtiContentPackageExtractor {
         }
         return new QtiContentPackageSummary(manifest, testResourceHrefs, itemResourceHrefs, fileHrefs);
     }
-    
+
     private Set<String> getResolvedResourceHrefsByTypes(ImsManifestReadResult manifest, String... types) {
         Set<String> result = new HashSet<String>();
         Map<String, List<ContentPackageResource>> resourcesByTypeMap = manifest.getResourcesByTypeMap();
@@ -128,7 +128,7 @@ public final class QtiContentPackageExtractor {
         }
         return result;
     }
-    
+
     private Set<String> getResolvedFileHrefs(ImsManifestReadResult manifest) {
         Set<String> result = new HashSet<String>();
         for (ContentPackageResource resource : manifest.getResourceList()) {
@@ -139,18 +139,18 @@ public final class QtiContentPackageExtractor {
         }
         return result;
     }
-    
+
     /**
      * Attempts to read, parse and summarise the IMS Content Package manifest file at the given
      * URI.
      * <p>
      * This currently does NOT check namespaces, so probably permits any recent version of
      * Content Packaging to be considered as legal.
-     * 
+     *
      * @param manifestHref href/path of the manifest within the package
-     * 
+     *
      * @throws XmlResourceNotFoundException if the manifest file could not be found
-     * @throws ImsManifestException if the manifest could not be understood 
+     * @throws ImsManifestException if the manifest could not be understood
      */
     private ImsManifestReadResult readManifestFile(String manifestHref)
             throws XmlResourceNotFoundException, ImsManifestException {
@@ -159,13 +159,13 @@ public final class QtiContentPackageExtractor {
         logger.info("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
         XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, packageResourceLocator, false);
         XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
-        
+
         /* If successful, extract information from the DOM */
         if (!xmlParseResult.isParsed()) {
             logger.warn("XML parse of IMS manifest at System ID {} failed: {}", manifestSystemId, xmlParseResult);
             throw new ImsManifestException("XML parse of IMS manifest file at " + manifestHref + " failed", xmlParseResult);
         }
-        
+
         /* Let's check that this looks like a proper manifest document.
          * NB: We're not presently checking namespaces!
          */
@@ -177,7 +177,7 @@ public final class QtiContentPackageExtractor {
                     + " does not appear to be an IMS manifest - its root element is "
                     + docElement.getNodeName(), xmlParseResult);
         }
-        
+
         /* Extract resources */
         List<String> errorMessageBuilder = new ArrayList<String>();
         String manifestNamespaceUri = docElement.getNamespaceURI();
@@ -190,19 +190,19 @@ public final class QtiContentPackageExtractor {
                 break;
             }
         }
-        
+
         /* Fail if any errors were discovered */
         if (!errorMessageBuilder.isEmpty()) {
             logger.warn("Parsed manifest at System ID {} contained some bad href attributes: {}", manifestSystemId, errorMessageBuilder);
             throw new ImsManifestException("Some href attributes within the manifest were not valid URIs",
                     xmlParseResult, errorMessageBuilder);
         }
-        
+
         ImsManifestReadResult result = new ImsManifestReadResult(manifestHref, xmlParseResult, manifestNamespaceUri, resources);
         logger.info("Parsed of manifest at system ID {} yielded {}", manifestSystemId, result);
         return result;
     }
-    
+
     private List<ContentPackageResource> extractResources(Element resourcesElement, List<String> errorMessageBuilder) {
         List<ContentPackageResource> resources = new ArrayList<ContentPackageResource>();
         NodeList childNodes = resourcesElement.getChildNodes();
@@ -223,7 +223,7 @@ public final class QtiContentPackageExtractor {
         }
         return resources;
     }
-    
+
     private List<URI> extractFileHrefs(Element resourceElement, List<String> errorMessageBuilder) {
         List<URI> hrefs = new ArrayList<URI>();
         NodeList childNodes = resourceElement.getChildNodes();
@@ -242,7 +242,7 @@ public final class QtiContentPackageExtractor {
         }
         return hrefs;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
