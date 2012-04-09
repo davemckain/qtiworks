@@ -46,7 +46,7 @@ import java.util.List;
 
 /**
  * Abstract parent for assessmentTest, testPart, assessmentSection and assessmentItemRef.
- * 
+ *
  * @param <E> type of the identifier attribute for this Object. This is required since {@link AssessmentTest} identifiers are arbitrary strings; whereas others
  *            are
  *            proper identifiers.
@@ -72,7 +72,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Gets timeLimit child.
-     * 
+     *
      * @return timeLimit child
      * @see #setTimeLimit
      */
@@ -82,7 +82,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Sets new timeLimit child.
-     * 
+     *
      * @param timeLimit new timeLimit child
      * @see #getTimeLimit
      */
@@ -92,7 +92,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Gets abstractPart children.
-     * 
+     *
      * @return abstractPart children
      */
     public abstract List<? extends AbstractPart> getChildren();
@@ -142,7 +142,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * Returns global index (position) of this object in test.
      * <p>
      * This method is used for validation of branchRule. It is not possible to jump back (jump on object with lower global index).
-     * 
+     *
      * @return global index (position) of this object in test
      */
     @ToRefactor
@@ -177,7 +177,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Returns true if given parameter is direct or indirect parent of this object; false otherwise.
-     * 
+     *
      * @param parent given parameter
      * @return true if given parameter is direct or indirect parent of this object; false otherwise
      */
@@ -193,7 +193,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Returns the child {@link AbstractPart} having the given {@link Identifier}, null if not found.
-     * 
+     *
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
@@ -211,7 +211,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * given {@link Identifier}, returning null if not found.
      * <p>
      * (Note that this will never return "self" for an {@link AssessmentTest}, since its identifier is a String).
-     * 
+     *
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
@@ -225,7 +225,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     /**
      * Searches descendents of this Object for the {@link AbstractPart} having the
      * given {@link Identifier}, or null if not found.
-     * 
+     *
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
@@ -242,7 +242,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Lookups for item reference with given identifier.
-     * 
+     *
      * @param identifier identifier of requested item reference
      * @return item reference with given identifier or null if identifier is not found or doesn't correspond
      *         to an {@link AssessmentItemRef}
@@ -260,7 +260,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         searchItemRefs(this, resultBuilder);
         return resultBuilder;
     }
-    
+
     public LinkedHashSet<AssessmentItemRef> searchUniqueItemRefs() {
         final LinkedHashSet<AssessmentItemRef> resultBuilder = new LinkedHashSet<AssessmentItemRef>();
         searchItemRefs(this, resultBuilder);
@@ -278,55 +278,57 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         }
     }
 
-    /**
-     * Returns all item references of given parent (identifier).
-     * <ul>
-     * <li>If you pass identifier of test or null, you will get all item references in test.</li>
-     * <li>If you pass identifier of section, you will get all item references in this section.</li>
-     * <li>If you pass identifier of item reference, you will get this item reference.</li>
-     * <li>If you pass unknown identifier, you will get empty list.</li>
-     * </ul>
-     * 
-     * @param identifier identifier of requested parent
-     * @return all item references of given parent (identifier)
-     * @see #lookupItemRefs(String, List, List)
-     */
-    @Deprecated
-    @ToRefactor
-    /* NB: Maybe this needs to account for selection/ordering? */
-    public List<AssessmentItemRef> lookupItemRefs(String identifier) {
-        return lookupItemRefs(identifier, null, null);
-    }
-
-    /**
-     * Returns all item references of given parent (identifier) with given conditions.
-     * 
-     * @param identifier identifier of requested parent
-     * @param includeCategories returned item reference must contain this category
-     * @param excludeCategories returned item reference must not contain this category
-     * @return all item references of given parent (identifier) with given conditions
-     * @see #lookupItemRefs(String)
-     */
-    @Deprecated
-    @ToRefactor
-    /* NB: Maybe this needs to account for selection/ordering? */
-    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
-        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
-            identifier = null;
-        }
-
-        final List<AssessmentItemRef> itemRefs = new ArrayList<AssessmentItemRef>();
-
-        for (final AbstractPart child : getChildren()) {
-            itemRefs.addAll(child.lookupItemRefs(identifier, includeCategories, excludeCategories));
-        }
-
-        return itemRefs;
-    }
+// NB: The 2 methods below are probably obsolete. They also don't handle the fact that
+// identifiers in tests are Strings, whereas elsewhere they're Identifiers.
+//    /**
+//     * Returns all item references of given parent (identifier).
+//     * <ul>
+//     * <li>If you pass identifier of test or null, you will get all item references in test.</li>
+//     * <li>If you pass identifier of section, you will get all item references in this section.</li>
+//     * <li>If you pass identifier of item reference, you will get this item reference.</li>
+//     * <li>If you pass unknown identifier, you will get empty list.</li>
+//     * </ul>
+//     *
+//     * @param identifier identifier of requested parent
+//     * @return all item references of given parent (identifier)
+//     * @see #lookupItemRefs(String, List, List)
+//     */
+//    @Deprecated
+//    @ToRefactor
+//    /* NB: Maybe this needs to account for selection/ordering? */
+//    public List<AssessmentItemRef> lookupItemRefs(String identifier) {
+//        return lookupItemRefs(identifier, null, null);
+//    }
+//
+//    /**
+//     * Returns all item references of given parent (identifier) with given conditions.
+//     *
+//     * @param identifier identifier of requested parent
+//     * @param includeCategories returned item reference must contain this category
+//     * @param excludeCategories returned item reference must not contain this category
+//     * @return all item references of given parent (identifier) with given conditions
+//     * @see #lookupItemRefs(String)
+//     */
+//    @Deprecated
+//    @ToRefactor
+//    /* NB: Maybe this needs to account for selection/ordering? */
+//    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
+//        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
+//            identifier = null;
+//        }
+//
+//        final List<AssessmentItemRef> itemRefs = new ArrayList<AssessmentItemRef>();
+//
+//        for (final AbstractPart child : getChildren()) {
+//            itemRefs.addAll(child.lookupItemRefs(identifier, includeCategories, excludeCategories));
+//        }
+//
+//        return itemRefs;
+//    }
 
     /**
      * Returns true if given identifier is identifier of one of built-in variables; false otherwise.
-     * 
+     *
      * @param identifier given identifier
      * @return true if given identifier is identifier of one of built-in variables; false otherwise
      */

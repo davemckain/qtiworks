@@ -55,7 +55,7 @@ import java.util.List;
 
 /**
  * Test level feedback implementation.
- * 
+ *
  * @see TestFeedbackAccess
  * @see VisibilityMode
  * @author Jiri Kajaba
@@ -96,7 +96,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Gets value of access attribute.
-     * 
+     *
      * @return value of access attribute
      * @see #setTestFeedbackAccess
      */
@@ -106,7 +106,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Sets new value of access attribute.
-     * 
+     *
      * @param testFeedbackAccess new value of access attribute
      * @see #getTestFeedbackAccess
      */
@@ -116,7 +116,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Gets value of showHide attribute.
-     * 
+     *
      * @return value of showHide attribute
      * @see #setVisibilityMode
      */
@@ -126,7 +126,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Sets new value of showHide attribute.
-     * 
+     *
      * @param visibilityMode new value of showHide attribute
      * @see #getVisibilityMode
      */
@@ -136,7 +136,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Gets value of outcomeIdentifier attribute.
-     * 
+     *
      * @return value of outcomeIdentifier attribute
      * @see #setOutcomeIdentifier
      */
@@ -146,7 +146,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Sets new value of outcomeIdentifier attribute.
-     * 
+     *
      * @param outcomeIdentifier new value of outcomeIdentifier attribute
      * @see #getOutcomeIdentifier
      */
@@ -156,7 +156,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setOutcomeValue
      */
@@ -166,7 +166,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param outcomeValue new value of identifier attribute
      * @see #getOutcomeValue
      */
@@ -176,7 +176,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Gets value of title attribute.
-     * 
+     *
      * @return value of title attribute
      * @see #setTitle
      */
@@ -186,7 +186,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Sets new value of title attribute.
-     * 
+     *
      * @param title new value of title attribute
      * @see #getTitle()
      */
@@ -218,7 +218,7 @@ public class TestFeedback extends AbstractNode {
 
     /**
      * Returns true if this feedback can be displayed for given requested access; false otherwise.
-     * 
+     *
      * @param requestedAccess given requested access
      * @return true if this feedback can be displayed for given requested access; false otherwise
      */
@@ -232,7 +232,7 @@ public class TestFeedback extends AbstractNode {
         final Value outcomeValue = testState.getOutcomeValue(getOutcomeIdentifier());
         if (outcomeValue != null && !outcomeValue.isNull() && outcomeValue.getBaseType().isIdentifier()) {
             if (outcomeValue.getCardinality() == Cardinality.SINGLE &&
-                    ((IdentifierValue) outcomeValue).toQtiString().equals(getOutcomeValue())) {
+                    ((IdentifierValue) outcomeValue).identifierValue().equals(getOutcomeValue())) {
                 match = true;
             }
             if (outcomeValue.getCardinality() == Cardinality.MULTIPLE &&

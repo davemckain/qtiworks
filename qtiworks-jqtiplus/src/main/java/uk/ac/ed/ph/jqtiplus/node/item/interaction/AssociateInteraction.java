@@ -73,7 +73,7 @@ import java.util.Map;
  * minAssociations must be less than or equal to the limit imposed by maxAssociations.
  * Contains : simpleAssociableChoice [1..*]
  * An ordered set of choices.
- * 
+ *
  * @author Jonathon Hare
  */
 public class AssociateInteraction extends BlockInteraction implements SimpleAssociableChoiceContainer, Shuffleable {
@@ -123,7 +123,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
@@ -134,7 +134,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -145,7 +145,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Sets new value of maxAssociations attribute.
-     * 
+     *
      * @param maxAssociations new value of maxAssociations attribute
      * @see #getMaxAssociations
      */
@@ -155,7 +155,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Gets value of maxAssociations attribute.
-     * 
+     *
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
@@ -165,7 +165,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Sets new value of minAssociations attribute.
-     * 
+     *
      * @param minAssociations new value of minAssociations attribute
      * @see #getMinAssociations
      */
@@ -175,7 +175,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Gets value of minAssociations attribute.
-     * 
+     *
      * @return value of minAssociations attribute
      * @see #setMinAssociations
      */
@@ -185,7 +185,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Gets simpleAssociableChoice children.
-     * 
+     *
      * @return simpleAssociableChoice children
      */
     public List<SimpleAssociableChoice> getSimpleAssociableChoices() {
@@ -194,17 +194,16 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
 
     /**
      * Gets simpleAssociableChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return simpleAssociableChoice with given identifier or null
      */
-    public SimpleAssociableChoice getSimpleAssociableChoice(String identifier) {
+    public SimpleAssociableChoice getSimpleAssociableChoice(final Identifier identifier) {
         for (final SimpleAssociableChoice choice : getSimpleAssociableChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
             }
         }
-
         return null;
     }
 

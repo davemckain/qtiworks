@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,7 +55,7 @@ import java.util.List;
  * Note that the identifier of the reference need not have any meaning outside the test. In particular it is not required to be unique in the context of any
  * catalogue, or be represented in the item's meta-data. The syntax of this identifier is more restrictive than that of the identifier attribute of the
  * assessmentItem itself.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
@@ -87,7 +86,7 @@ public class AssessmentItemRef extends SectionPart {
     //            sessionStatus = SessionStatus.INITIAL;
     //            timeRecord = new TimeRecord(air);
     //        }
-    //        
+    //
     //        private boolean presented;
     //        private boolean responded;
     //        private boolean skipped;
@@ -105,7 +104,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Constructs item reference.
-     * 
+     *
      * @param parent parent of constructed item reference
      */
     public AssessmentItemRef(AssessmentSection parent) {
@@ -120,12 +119,12 @@ public class AssessmentItemRef extends SectionPart {
 
         children = new ArrayList<AbstractPart>();
         //        states = new ArrayList<ItemState>();
-        //        
+        //
         //        /* Create a LifecycleListener to attach to Items that will forward Lifecycle events
         //         * via the owning AssessmentTest
         //         */
         //        lifecycleEventProxy = new LifecycleEventProxy(getRootNode(AssessmentTest.class));
-        //        
+        //
         //        initNewState();
     }
 
@@ -147,7 +146,7 @@ public class AssessmentItemRef extends SectionPart {
     //            parent.finished = false;
     //        }
     //    }
-    //    
+    //
     //    /**
     //     * Gets list of item states. Clients should not normally call this.
     //     * @return List of item states
@@ -163,7 +162,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Gets value of href attribute.
-     * 
+     *
      * @return value of href attribute
      * @see #setHref
      */
@@ -173,7 +172,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Sets new value of href attribute.
-     * 
+     *
      * @param href new value of href attribute
      * @see #getHref
      */
@@ -183,7 +182,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Sets new value of href attribute.
-     * 
+     *
      * @param href new value of href attribute
      * @see #getHref
      */
@@ -198,20 +197,20 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Gets value of category attribute.
-     * 
+     *
      * @return value of category attribute
      */
     public List<String> getCategories() {
         return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getComputedValue();
     }
-    
+
     public void setCategories(List<String> value) {
         getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).setValue(value);
     }
 
     /**
      * Gets variableMapping children.
-     * 
+     *
      * @return variableMapping children
      */
     public List<VariableMapping> getVariableMappings() {
@@ -220,7 +219,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Gets weight children.
-     * 
+     *
      * @return weight children
      */
     public List<Weight> getWeights() {
@@ -229,7 +228,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Returns weight with given identifier or null.
-     * 
+     *
      * @param identifier identifier of requested weight
      * @return weight with given identifier or null
      */
@@ -244,7 +243,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Returns value of weight with given identifier or default weight value (if weight was not found).
-     * 
+     *
      * @param identifier identifier of requested weight
      * @return value of weight with given identifier or default weight value (if weight was not found)
      */
@@ -259,7 +258,7 @@ public class AssessmentItemRef extends SectionPart {
 
     /**
      * Gets templateDefault children.
-     * 
+     *
      * @return templateDefault children
      */
     public List<TemplateDefault> getTemplateDefaults() {
@@ -273,7 +272,7 @@ public class AssessmentItemRef extends SectionPart {
          */
         super.validate(context);
     }
-    
+
     @Override
     protected void validateChildren(ValidationContext context) {
         super.validateChildren(context);
@@ -299,7 +298,7 @@ public class AssessmentItemRef extends SectionPart {
     //        if (item == null)
     //        {
     //            initialiseAssessmentItem();
-    //            
+    //
     //            item.setTimeRecord(currentState.timeRecord);
     //        }
     //    }
@@ -379,40 +378,40 @@ public class AssessmentItemRef extends SectionPart {
         return result;
     }
 
-    @Override
-    @ToRefactor
-    /* NB: Maybe this needs to account for selection/ordering? */
-    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
-        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
-            identifier = null;
-        }
-
-        final List<AssessmentItemRef> items = new ArrayList<AssessmentItemRef>();
-
-        if (identifier != null) {
-            return items;
-        }
-
-        if (excludeCategories != null) {
-            for (final String excludeCategory : excludeCategories) {
-                if (getCategories().contains(excludeCategory)) {
-                    return items;
-                }
-            }
-        }
-
-        if (includeCategories == null || includeCategories.size() == 0) {
-            items.add(this);
-        }
-        else {
-            for (final String includeCategory : includeCategories) {
-                if (getCategories().contains(includeCategory)) {
-                    items.add(this);
-                }
-            }
-        }
-        return items;
-    }
+//    @Override
+//    @ToRefactor
+//    /* NB: Maybe this needs to account for selection/ordering? */
+//    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
+//        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
+//            identifier = null;
+//        }
+//
+//        final List<AssessmentItemRef> items = new ArrayList<AssessmentItemRef>();
+//
+//        if (identifier != null) {
+//            return items;
+//        }
+//
+//        if (excludeCategories != null) {
+//            for (final String excludeCategory : excludeCategories) {
+//                if (getCategories().contains(excludeCategory)) {
+//                    return items;
+//                }
+//            }
+//        }
+//
+//        if (includeCategories == null || includeCategories.size() == 0) {
+//            items.add(this);
+//        }
+//        else {
+//            for (final String includeCategory : includeCategories) {
+//                if (getCategories().contains(includeCategory)) {
+//                    items.add(this);
+//                }
+//            }
+//        }
+//        return items;
+//    }
 
     @Override
     public boolean isBuiltInVariable(Identifier identifier) {
@@ -431,7 +430,7 @@ public class AssessmentItemRef extends SectionPart {
     //    {
     //        return lookupValue(identifier, states.size()-1);
     //    }
-    //    
+    //
     //    /**
     //     * Lookups for value of variable with given identifier in A particular state.
     //     * Clients should not normally call this method, and use lookupValue(identifier) instead.
@@ -475,11 +474,11 @@ public class AssessmentItemRef extends SectionPart {
     //    }
     //
     //    /**
-    //     * Returns true if this item reference was correctly responded; 
+    //     * Returns true if this item reference was correctly responded;
     //     * Correctly responded means ALL defined responseVars match their associated correctResponse.
     //     * Returns null if any of the responseDeclarations don't have  correctResponses.
     //     *
-    //     * @return true if this item reference was correctly responded; null if not all 
+    //     * @return true if this item reference was correctly responded; null if not all
     //     * responseDeclarations contain correctResponses; false otherwise
     //     * @see #isIncorrect
     //     */
@@ -489,18 +488,18 @@ public class AssessmentItemRef extends SectionPart {
     //        Value variable = this.currentState.outcomes.get("R2Q2_IS_RESPONSE_CORRECT");
     //        boolean isResponseCorrect = (variable != null) ? ((BooleanValue) variable).booleanValue() : false;
     //        if (isResponseCorrect) return true;
-    //        
+    //
     //        return item.isCorrect();
     //    }
     //
     //    /**
-    //     * Returns true if this item reference was incorrectly responded; 
-    //     * Incorrectly responded means ANY defined responseVars didn't match their 
+    //     * Returns true if this item reference was incorrectly responded;
+    //     * Incorrectly responded means ANY defined responseVars didn't match their
     //     * associated correctResponse.
-    //     * 
+    //     *
     //     * Returns null if any of the responseDeclarations don't have correctResponses.
     //     *
-    //     * @return true if this item reference was incorrectly responded; null if not all 
+    //     * @return true if this item reference was incorrectly responded; null if not all
     //     * responseDeclarations contain correctResponses; false otherwise
     //     * @see #isCorrect
     //     */
@@ -624,9 +623,9 @@ public class AssessmentItemRef extends SectionPart {
     //            boolean isResponseCorrect = (isCorrect() == Boolean.TRUE) ? true : false;
     //            //TODO: figure out a way to remove R2Q2_IS_RESPONSE_CORRECT using the following?
     //            //boolean isResponseCorrect = (getItem().countCorrect() > 0 && getItem().countIncorrect() == 0);
-    //            
+    //
     //            int maxAttempts = getItemSessionControl().getMaxAttempts();
-    //            
+    //
     //            if (getParentTestPart().getSubmissionMode() == SubmissionMode.SIMULTANEOUS || isResponseCorrect || (maxAttempts != 0 && attempts >= maxAttempts))
     //                setFinished();
     //        }
@@ -677,8 +676,8 @@ public class AssessmentItemRef extends SectionPart {
     //     * Clients should not normally call this method.
     //     * <p>
     //     * This methods returns pure response (thinking) time (navigation time is not included).
-    //     * 
-    //     * @param state State index to use of lookup. 
+    //     *
+    //     * @param state State index to use of lookup.
     //     *
     //     * @return total time spent <em>inside</em> this object excluding navigation time
     //     * @see #getTotalTime
@@ -687,13 +686,13 @@ public class AssessmentItemRef extends SectionPart {
     //    {
     //        return states.get(state).timeRecord.getDuration();
     //    }
-    //    
+    //
     //    @Override
     //    public long getDuration()
     //    {
     //        return getResponseTime();
     //    }
-    //    
+    //
     //    /**
     //     * Gets value of duration built-in variable.
     //     * Clients should not normally call this method.
@@ -701,8 +700,8 @@ public class AssessmentItemRef extends SectionPart {
     //     * Duration for test or test part or section means total time (thinking time including navigation time).
     //     * <p>
     //     * Duration for item reference means response time (thinking time excluding navigation time).
-    //     * 
-    //     * @param state State index to use of lookup. 
+    //     *
+    //     * @param state State index to use of lookup.
     //     *
     //     * @return value of duration built-in variable
     //     */
@@ -738,7 +737,7 @@ public class AssessmentItemRef extends SectionPart {
     //            result.setIdentifier(getIdentifier());
     //        else
     //            result.setIdentifier(getIdentifier() + "#" + (state+1));
-    //        
+    //
     //        result.setDateStamp(new Date());
     //        result.setSequenceIndex(sequenceIndex);
     //        result.setSessionStatus(sessionStatus);

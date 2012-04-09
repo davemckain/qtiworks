@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
  * BranchRules are evaluated after part or section or item is finished (not presented).
  * <p>
  * BranchRule is not real expression (doesn't implement Expression interface).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -64,13 +64,13 @@ public class BranchRule extends AbstractJump {
     public static final String ATTR_TARGET_NAME = "target";
 
     /** Special target for exiting assessmentTest. */
-    public static final String EXIT_TEST = "EXIT_TEST";
+    public static final Identifier EXIT_TEST = new Identifier("EXIT_TEST", false);
 
     /** Special target for exiting testPart. */
-    public static final String EXIT_TEST_PART = "EXIT_TESTPART";
+    public static final Identifier EXIT_TEST_PART = new Identifier("EXIT_TESTPART", false);
 
     /** Special target for exiting assessmentSection. */
-    public static final String EXIT_SECTION = "EXIT_SECTION";
+    public static final Identifier EXIT_SECTION = new Identifier("EXIT_SECTION", false);
 
     public BranchRule(AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
@@ -89,7 +89,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Gets value of target attribute.
-     * 
+     *
      * @return value of target attribute
      * @see #setTarget
      */
@@ -105,7 +105,7 @@ public class BranchRule extends AbstractJump {
      * <li>if target is EXIT_SECTION, returns assessmentSection which should be exited</li>
      * <li>otherwise returns target ControlObject</li>
      * </ol>
-     * 
+     *
      * @return target ControlObject of this branchRule or null it target doesn't exist
      */
     public ControlObject<?> getTargetControlObject() {
@@ -137,7 +137,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Sets new value of target attribute.
-     * 
+     *
      * @param target new value of target attribute
      * @see #getTarget
      */
@@ -147,7 +147,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Returns true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise.
-     * 
+     *
      * @return true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise
      */
     public boolean isSpecial() {
@@ -156,7 +156,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Returns true is target is EXIT_TEST; false otherwise.
-     * 
+     *
      * @return true is target is EXIT_TEST; false otherwise
      */
     public boolean isExitTest() {
@@ -165,7 +165,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Returns true is target is EXIT_TEST_PART; false otherwise.
-     * 
+     *
      * @return true is target is EXIT_TEST_PART; false otherwise
      */
     public boolean isExitTestPart() {
@@ -174,7 +174,7 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Returns true is target is EXIT_SECTION; false otherwise.
-     * 
+     *
      * @return true is target is EXIT_SECTION; false otherwise
      */
     public boolean isExitSection() {
@@ -239,11 +239,11 @@ public class BranchRule extends AbstractJump {
 
     /**
      * Returns true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise.
-     * 
+     *
      * @param target given target
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
-    public static boolean isSpecial(String target) {
+    public static boolean isSpecial(Identifier target) {
         return target != null && (target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION));
     }
 }

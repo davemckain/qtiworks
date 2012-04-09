@@ -278,7 +278,7 @@ public abstract class AbstractNode implements XmlNode {
     /** Helper method to validate a unique identifier (definition) attribute */
     protected void validateUniqueIdentifier(final AbstractValidationResult result, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
-            if (getRootObject(AssessmentTest.class) != null && BranchRule.isSpecial(identifier.toString())) {
+            if (getRootObject(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
                 result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
             }
             if (!validateUniqueIdentifier(getRootObject(), identifier)) {
