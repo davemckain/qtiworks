@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Parent of correct, default and variable expression.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
@@ -75,7 +75,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     /**
      * Constructs expression.
-     * 
+     *
      * @param parent parent of this expression
      */
     public LookupExpression(ExpressionParent parent, String localName) {
@@ -85,7 +85,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -95,7 +95,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
@@ -108,18 +108,18 @@ public abstract class LookupExpression extends AbstractExpression {
     @Override
     protected final void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
-        
+
         /* Check reference */
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
         VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
-        
+
         /* If reference was OK, let subclasses do any further validation as required */
         if (resolvedDeclaration!=null) {
             validateResolvedVariableReference(context, variableReferenceIdentifier, resolvedDeclaration);
-            
+
         }
     }
-    
+
     protected abstract void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
 
     //----------------------------------------------------------------------
@@ -187,7 +187,7 @@ public abstract class LookupExpression extends AbstractExpression {
                 final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolved = testContext
                         .resolveDottedVariableReference(variableReferenceIdentifier);
                 if (resolved == null) {
-                    logger.error("{}Cannot find assessmentItemRef with identifier {}. Returning NULL value.", getIndent(depth), itemRefIdentifier);
+                    logger.error("{} Cannot find assessmentItemRef with identifier {}. Returning NULL value.", getIndent(depth), itemRefIdentifier);
                 }
                 else {
                     final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap = resolved.getSecond();

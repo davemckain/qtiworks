@@ -42,10 +42,13 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackInline;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The item body contains the text, graphics, media objects, and interactions that describe
@@ -69,7 +72,7 @@ import java.util.List;
  * for details. Finally, this specification defines some new elements which are used to
  * represent the interactions and to control the display of Integrated Feedback and content
  * restricted to one or more of the defined content views.
- * 
+ *
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
@@ -88,7 +91,7 @@ public class ItemBody extends BodyElement {
 
     /**
      * Determine whether any feedback should be shown.
-     * 
+     *
      * @return true if any feedback should be shown; false otherwise;
      */
     public boolean willShowFeedback(ItemProcessingContext itemContext) {
@@ -107,7 +110,7 @@ public class ItemBody extends BodyElement {
 
     /**
      * Determine if this item has any inline or block feedback.
-     * 
+     *
      * @return true if the item has inline or block feedback; false otherwise;
      */
     public boolean hasFeedback() {
@@ -122,53 +125,62 @@ public class ItemBody extends BodyElement {
 
     /**
      * Get A snapshot of all the feedbackInline elements within this itemBody.
-     * The returned list is unmodifiable and cannot be used for adding
+     * The returned list cannot be used for adding
      * new feedbackInline elements to the itemBody.
-     * 
-     * @return unmodifiable list of feedbackInline elements in the itemBody.
+     *
+     * @return list of feedbackInline elements in the itemBody.
      */
     private List<FeedbackInline> getFeedbackInline() {
-        final List<FeedbackInline> results = new ArrayList<FeedbackInline>();
-
-        search(getChildren(), FeedbackInline.class, results);
-
-        return Collections.unmodifiableList(results);
+        return QueryUtils.search(FeedbackInline.class, getChildren());
     }
 
     /**
      * Get A snapshot of all the feedbackBlock elements within this itemBody.
-     * The returned list is unmodifiable and cannot be used for adding
+     * The returned list cannot be used for adding
      * new feedbackBlock elements to the itemBody.
-     * 
-     * @return unmodifiable list of feedbackBlock elements in the itemBody.
+     *
+     * @return list of feedbackBlock elements in the itemBody.
      */
     private List<FeedbackBlock> getFeedbackBlock() {
-        final List<FeedbackBlock> results = new ArrayList<FeedbackBlock>();
+        return QueryUtils.search(FeedbackBlock.class, getChildren());
+    }
 
-        search(getChildren(), FeedbackBlock.class, results);
-
-        return Collections.unmodifiableList(results);
+    /**
+     * Get a snapshot of all the interactions within this itemBody.
+     * The returned list cannot be used for adding
+     * new interactions to the itemBody.
+     *
+     * @return list of interactions in the itemBody.
+     */
+    public List<Interaction> getInteractions() {
+        return QueryUtils.search(Interaction.class, getChildren());
     }
 
 
     /**
-     * Get a snapshot of all the interactions within this itemBody.
-     * The returned list is unmodifiable and cannot be used for adding
-     * new interactions to the itemBody.
-     * 
-     * @return unmodifiable list of interactions in the itemBody.
+     * Get a snapshot of all the interactions within this itemBody, as a
+     * Map keyed on responseIdentifier.
+     * <p>
+     * The returned {@link Map} cannot be used for adding new interactions to the itemBody.
+     *
+     * @return Map of interactions in the itemBody, keyed on responseIdentifier.
      */
-    public List<Interaction> getInteractions() {
-        final List<Interaction> results = new ArrayList<Interaction>();
-
-        search(getChildren(), Interaction.class, results);
-
-        return Collections.unmodifiableList(results);
+    public Map<Identifier, Interaction> getInteractionMap() {
+        Map<Identifier, Interaction> result = new HashMap<Identifier, Interaction>();
+        for (Interaction interaction : getInteractions()) {
+            result.put(interaction.getResponseIdentifier(), interaction);
+        }
+        return result;
     }
 
     /**
      * Get the interaction for a given responseIdentifier.
-     * 
+     * <p>
+     * NB: This performs a deep search of the item body. If you need to find multiple interactions
+     * at once, use {@link #getInteractionMap()}.
+     *
+     * @see #getInteractionMap()
+     *
      * @param responseIdentifier responseIdentifier to search with.
      * @return interaction with matching responseIdentifier, or null if not found.
      */
@@ -178,7 +190,6 @@ public class ItemBody extends BodyElement {
                 return interaction;
             }
         }
-
         return null;
     }
 
@@ -186,20 +197,16 @@ public class ItemBody extends BodyElement {
      * Get a snapshot of all the templates within this itemBody.
      * The returned list is unmodifiable and cannot be used for adding
      * new templates to the itemBody.
-     * 
+     *
      * @return unmodifiable list of interactions in the itemBody.
      */
     public List<TemplateElement> getTemplates() {
-        final List<TemplateElement> results = new ArrayList<TemplateElement>();
-
-        search(getChildren(), TemplateElement.class, results);
-
-        return Collections.unmodifiableList(results);
+        return QueryUtils.search(TemplateElement.class, getChildren());
     }
 
     /**
      * Get the templates for a given templateIdentifier.
-     * 
+     *
      * @param templateIdentifier templateIdentifier to search with.
      * @return unmodifiable list of templates with matching templateIdentifier, or null if not found.
      */

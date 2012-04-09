@@ -63,9 +63,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Validates a {@link ResolvedAssessmentItem} or {@link ResolvedAssessmentTest}.
- * 
+ *
  * @see AssessmentObjectManager
- * 
+ *
  * @author David McKain
  */
 public final class AssessmentObjectValidator {
@@ -73,21 +73,21 @@ public final class AssessmentObjectValidator {
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectValidator.class);
 
     private final RootObjectProvider resourceProvider;
-    
+
     public AssessmentObjectValidator(final RootObjectProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
-    
-    public ItemValidationResult validateItem(ResolvedAssessmentItem resolvedAssessmentItem) {
+
+    public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem);
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
         logger.info("Validating {}", resolvedAssessmentItem);
         final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
-        AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
+        final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
         if (item!=null) {
-            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
                 result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
@@ -98,31 +98,31 @@ public final class AssessmentObjectValidator {
         }
         return result;
     }
-    
-    public TestValidationResult validateTest(ResolvedAssessmentTest resolvedAssessmentTest) {
+
+    public TestValidationResult validateTest(final ResolvedAssessmentTest resolvedAssessmentTest) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentTest);
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
         logger.info("Validating {}", resolvedAssessmentTest);
         final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
-        AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
+        final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         if (test!=null) {
             /* Validate each unique item first */
-            for (Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemMap().entrySet()) {
-                URI itemSystemId = entry.getKey();
-                ResolvedAssessmentItem itemHolder = entry.getValue();
-                StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
+            for (final Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemMap().entrySet()) {
+                final URI itemSystemId = entry.getKey();
+                final ResolvedAssessmentItem itemHolder = entry.getValue();
+                final StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
                     .append(itemSystemId)
                     .append(" referenced by identifiers ");
-                List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
+                final List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
                 for (int i=0,size=itemRefs.size(); i<size; i++) {
                     messageBuilder.append(itemRefs.get(i).getIdentifier());
                     messageBuilder.append((i<size-1) ? ", " : " and ");
                 }
-                
+
                 if (itemHolder.getItemLookup().wasSuccessful()) {
-                    ItemValidationResult itemValidationResult = validateItem(itemHolder);
+                    final ItemValidationResult itemValidationResult = validateItem(itemHolder);
                     result.addItemValidationResult(itemValidationResult);
                     if (itemValidationResult.hasErrors()) {
                         result.add(new ValidationError(test, messageBuilder.toString()
@@ -138,7 +138,7 @@ public final class AssessmentObjectValidator {
                             + " was not successfully instantiated. Further details are attached elsewhere."));
                 }
             }
-            
+
             /* Then validate the test itself */
             test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
         }
@@ -147,51 +147,51 @@ public final class AssessmentObjectValidator {
         }
         return result;
     }
-    
+
     //-------------------------------------------------------------------
-    
+
     abstract class AbstractValidationContextImpl<E extends AssessmentObject> implements ValidationContext {
-        
+
         protected final AbstractValidationResult validationResult;
         protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
         protected final E subject;
-        
+
         AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
             this.validationResult = validationResult;
             this.resolvedAssessmentObject = resolvedAssessmentObject;
             this.subject = resolvedAssessmentObject.getRootObjectLookup().extractAssumingSuccessful();
         }
-        
+
         @Override
-        public void add(ValidationItem item) {
+        public void add(final ValidationItem item) {
             validationResult.add(item);
         }
-        
+
         @Override
         public final AbstractValidationResult getValidationResult() {
             return validationResult;
         }
-        
+
         @Override
         public final ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
             return resolvedAssessmentObject;
         }
-        
+
         @Override
         public final AssessmentObject getSubject() {
             return subject;
         }
-        
+
         @Override
-        public final VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... allowedTypes) {
+        public final VariableDeclaration checkVariableReference(final XmlNode source, final Identifier variableDeclarationIdentifier, final VariableType... allowedTypes) {
             VariableDeclaration result = null;
             try {
-                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
+                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
                 if (declaration.isType(allowedTypes)) {
                     result = declaration;
                 }
                 else {
-                    StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
+                    final StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
                         .append(variableDeclarationIdentifier)
                         .append(" is a ")
                         .append(declaration.getVariableType().getName())
@@ -205,22 +205,22 @@ public final class AssessmentObjectValidator {
                 }
 
             }
-            catch (VariableResolutionException e) {
+            catch (final VariableResolutionException e) {
                 validationResult.add(new ValidationError(source, e.getMessage()));
             }
             return result;
         }
-        
+
         @Override
-        public final VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes) {
+        public final VariableDeclaration checkVariableReference(final XmlNode source, final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... allowedTypes) {
             VariableDeclaration result = null;
             try {
-                VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
+                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
                 if (declaration.isType(allowedTypes)) {
                     result = declaration;
                 }
                 else {
-                    StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
+                    final StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
                         .append(variableReferenceIdentifier)
                         .append(" is a ")
                         .append(declaration.getVariableType().getName())
@@ -234,24 +234,24 @@ public final class AssessmentObjectValidator {
                 }
 
             }
-            catch (VariableResolutionException e) {
+            catch (final VariableResolutionException e) {
                 validationResult.add(new ValidationError(source, e.getMessage()));
             }
             return result;
         }
     }
-    
+
     final class ItemValidationContextImpl extends AbstractValidationContextImpl<AssessmentItem> {
-        
+
         ItemValidationContextImpl(final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
             super(validationResult, resolvedAssessmentItem);
         }
-        
+
         @Override
         public ResolvedAssessmentItem getResolvedAssessmentItem() {
             return (ResolvedAssessmentItem) resolvedAssessmentObject;
         }
-        
+
         @Override
         public ResolvedAssessmentTest getResolvedAssessmentTest() {
             throw fail();
@@ -261,12 +261,12 @@ public final class AssessmentObjectValidator {
         public boolean isValidatingItem() {
             return true;
         }
-        
+
         @Override
         public boolean isValidatingTest() {
             return false;
         }
-        
+
         @Override
         public AssessmentItem getSubjectItem() {
             return subject;
@@ -276,25 +276,25 @@ public final class AssessmentObjectValidator {
         public AssessmentTest getSubjectTest() {
             throw fail();
         }
-        
+
         private QtiLogicException fail() {
             return new QtiLogicException("Current ValidationContext is for an item, not a test");
         }
     }
-    
 
-    
+
+
     final class TestValidationContextImpl extends AbstractValidationContextImpl<AssessmentTest> {
-        
+
         TestValidationContextImpl(final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
             super(result, resolvedAssessmentTest);
         }
-        
+
         @Override
         public ResolvedAssessmentItem getResolvedAssessmentItem() {
             throw fail();
         }
-        
+
         @Override
         public ResolvedAssessmentTest getResolvedAssessmentTest() {
             return (ResolvedAssessmentTest) resolvedAssessmentObject;
@@ -305,12 +305,12 @@ public final class AssessmentObjectValidator {
         public boolean isValidatingItem() {
             return false;
         }
-        
+
         @Override
         public boolean isValidatingTest() {
             return true;
         }
-        
+
         @Override
         public AssessmentItem getSubjectItem() {
             throw fail();
@@ -320,14 +320,14 @@ public final class AssessmentObjectValidator {
         public AssessmentTest getSubjectTest() {
             return subject;
         }
-        
+
         private QtiLogicException fail() {
             return new QtiLogicException("Current ValidationContext is for a test, not an item");
         }
     }
 
     //-------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()

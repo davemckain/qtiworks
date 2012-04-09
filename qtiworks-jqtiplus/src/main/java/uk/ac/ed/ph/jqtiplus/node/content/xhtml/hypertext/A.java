@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
@@ -46,7 +47,7 @@ import java.net.URI;
  * Although a inherits from simpleInline it must not contain, either directly or indirectly, another a.
  * Attribute : href [1]: uri
  * Attribute : type [0..1]: mimeType
- * 
+ *
  * @author Jonathon Hare
  */
 public class A extends AbstractSimpleInline {
@@ -64,7 +65,7 @@ public class A extends AbstractSimpleInline {
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
     public A(XmlNode parent) {
@@ -78,15 +79,15 @@ public class A extends AbstractSimpleInline {
     public void validate(ValidationContext context) {
         super.validate(context);
 
-        //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a. 
-        if (search(A.class).size() > 0) {
+        //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a.
+        if (QueryUtils.hasDescendant(A.class, this)) {
             context.getValidationResult().add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + QTI_CLASS_NAME + " children"));
         }
     }
 
     /**
      * Gets value of href attribute.
-     * 
+     *
      * @return value of href attribute
      * @see #setHref
      */
@@ -96,7 +97,7 @@ public class A extends AbstractSimpleInline {
 
     /**
      * Sets new value of href attribute.
-     * 
+     *
      * @param href new value of href attribute
      * @see #getHref
      */
@@ -106,7 +107,7 @@ public class A extends AbstractSimpleInline {
 
     /**
      * Gets value of type attribute.
-     * 
+     *
      * @return value of type attribute
      * @see #setType
      */
@@ -116,7 +117,7 @@ public class A extends AbstractSimpleInline {
 
     /**
      * Sets new value of type attribute.
-     * 
+     *
      * @param type new value of type attribute
      * @see #getType
      */

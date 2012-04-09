@@ -19,22 +19,23 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import java.net.URI;
 
 public class TemplateConstraintTest {
-    
-    public static void main(String[] args) throws RuntimeValidationException {
-        URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
-        
+
+    public static void main(final String[] args) throws RuntimeValidationException {
+//        URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
+        final URI inputUri = URI.create("classpath:/towns.xml");
+
         System.out.println("Reading and validating");
-        QtiXmlReader qtiXmlReader = new QtiXmlReader();
-        QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-        
-        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        
-        ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
+        final QtiXmlReader qtiXmlReader = new QtiXmlReader();
+        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+
+        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+
+        final ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
-        
-        ItemSessionState itemState = new ItemSessionState();
-        ItemSessionController itemController = new ItemSessionController(result.getResolvedAssessmentItem(), itemState);
-        
+
+        final ItemSessionState itemState = new ItemSessionState();
+        final ItemSessionController itemController = new ItemSessionController(result.getResolvedAssessmentItem(), itemState);
+
         System.out.println("\nInitialising");
         itemController.initialize();
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));

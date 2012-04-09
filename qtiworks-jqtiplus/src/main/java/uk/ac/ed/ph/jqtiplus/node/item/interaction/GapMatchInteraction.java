@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Gap;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
@@ -81,7 +82,7 @@ import java.util.Set;
  * The content of the interaction is simply a piece of content that
  * contains the gaps. If the block contains more than one gap then the
  * interaction must be bound to a response with multiple cardinality.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer, Shuffleable {
@@ -99,7 +100,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Construct new interaction.
-     * 
+     *
      * @param parent Parent node
      */
     public GapMatchInteraction(XmlNode parent) {
@@ -127,7 +128,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
@@ -138,7 +139,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -149,7 +150,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Gets gapChoice children.
-     * 
+     *
      * @return gapChoice children
      */
     public List<GapChoice> getGapChoices() {
@@ -158,7 +159,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Gets blockStatic children.
-     * 
+     *
      * @return blockStatic children
      */
     public List<BlockStatic> getBlockStatics() {
@@ -167,7 +168,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
     /**
      * Gets gapChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return gapChoice with given identifier or null
      */
@@ -203,12 +204,12 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
         }
     }
 
+    private List<Gap> findGaps() {
+        return QueryUtils.search(Gap.class, getNodeGroups().getBlockStaticGroup().getBlockStatics());
+    }
+
     private int countGaps() {
-        final List<Gap> results = new ArrayList<Gap>();
-
-        search(getNodeGroups().getBlockStaticGroup().getBlockStatics(), Gap.class, results);
-
-        return results.size();
+        return findGaps().size();
     }
 
     @Override
@@ -245,8 +246,8 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
         final Set<Identifier> gapIdentifiers = new HashSet<Identifier>();
         final Set<Identifier> requiredGapIdentifiers = new HashSet<Identifier>();
         final Map<Identifier, Integer> responseGapAssociationCounts = new HashMap<Identifier, Integer>();
-        final List<Gap> gaps = search(Gap.class);
-        for (final Gap gap : gaps) {
+        final List<Gap> gaps = findGaps();
+        for (final Gap gap : findGaps()) {
             final Identifier gapIdentifier = gap.getIdentifier();
             gapIdentifiers.add(gapIdentifier);
             responseGapAssociationCounts.put(gapIdentifier, Integer.valueOf(0));

@@ -50,14 +50,14 @@ import org.w3c.dom.Element;
  * Container for one node type.
  * <p>
  * For example: {@link TestPartGroup} (group for testParts), {@link ExpressionGroup} (group for expressions).
- * 
+ *
  * @author Jiri Kajaba
  */
-public interface NodeGroup extends Validatable, Serializable {
+public interface NodeGroup extends Validatable, Serializable, Iterable<XmlNode> {
 
     /**
      * Gets parent node of group.
-     * 
+     *
      * @return parent node of group
      */
     XmlNode getParent();
@@ -72,7 +72,7 @@ public interface NodeGroup extends Validatable, Serializable {
      * If group can contain children with different QTI class name, name is display name of abstract parent.
      * <p>
      * For example: name of {@link ExpressionGroup} is expression (expression is not QTI class name for any node).
-     * 
+     *
      * @return name of group
      */
     String getName();
@@ -87,7 +87,7 @@ public interface NodeGroup extends Validatable, Serializable {
 
     /**
      * Returns true if group can contain children with different QTI class name; false otherwise.
-     * 
+     *
      * @return true if group can contain children with different QTI class name; false otherwise
      */
     boolean isGeneral();
@@ -98,7 +98,7 @@ public interface NodeGroup extends Validatable, Serializable {
      * This list will not change in time (it contains every possible QTI class name).
      * <p>
      * For example: SectionPartNodegroups returns assessmentSection and assessmentItemRef.
-     * 
+     *
      * @return list of all possible QTI class names (all possible children in this group)
      */
     List<String> getAllSupportedClasses();
@@ -117,7 +117,7 @@ public interface NodeGroup extends Validatable, Serializable {
     //     * @return list of all currently possible QTI class names (all currently possible children in this group)
     //     */
     //    List<String> getCurrentSupportedClasses(int index);
-    
+
     /**
      * Gets list of all children.
      *
@@ -127,21 +127,21 @@ public interface NodeGroup extends Validatable, Serializable {
 
     /**
      * Gets required minimum number of children or null.
-     * 
+     *
      * @return required minimum number of children or null
      */
     Integer getMinimum();
 
     /**
      * Gets allowed maximum number of children or null.
-     * 
+     *
      * @return allowed maximum number of children or null
      */
     Integer getMaximum();
 
     /**
      * Loads children from given source node (DOM).
-     * 
+     *
      * @param sourceElement source node (DOM)
      */
     void load(Element sourceElement, LoadingContext context);
@@ -150,7 +150,7 @@ public interface NodeGroup extends Validatable, Serializable {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names (otherwise it is ignored).
-     * 
+     *
      * @param classTag QTI class name
      * @return created child
      * @throws QtiIllegalChildException if the given classTag is not appropriate

@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
@@ -73,7 +74,7 @@ import java.util.List;
  * associated template variable matches, or contains, the identifier of the choice.
  * If set to hide then the choice is shown by default and hidden if the associated
  * template variable matches, or contains, the choice's identifier.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class Choice extends BodyElement {
@@ -95,7 +96,7 @@ public abstract class Choice extends BodyElement {
     /** Name of showHide attribute in xml schema. */
     public static final String ATTR_VISIBILITY_MODE_NAME = "showHide";
 
-    public Choice(XmlNode parent, String localName) {
+    public Choice(final XmlNode parent, final String localName) {
         super(parent, localName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE, false));
@@ -105,7 +106,7 @@ public abstract class Choice extends BodyElement {
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -115,17 +116,17 @@ public abstract class Choice extends BodyElement {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of fixed attribute.
-     * 
+     *
      * @return value of fixed attribute
      * @see #setFixed
      */
@@ -135,17 +136,17 @@ public abstract class Choice extends BodyElement {
 
     /**
      * Sets new value of fixed attribute.
-     * 
+     *
      * @param fixed new value of fixed attribute
      * @see #getFixed
      */
-    public void setFixed(Boolean fixed) {
+    public void setFixed(final Boolean fixed) {
         getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).setValue(fixed);
     }
 
     /**
      * Gets value of showHide attribute.
-     * 
+     *
      * @return value of showHide attribute
      * @see #setVisibilityMode
      */
@@ -155,17 +156,17 @@ public abstract class Choice extends BodyElement {
 
     /**
      * Sets new value of showHide attribute.
-     * 
+     *
      * @param visibilityMode new value of showHide attribute
      * @see #getVisibilityMode
      */
-    public void setVisibilityMode(VisibilityMode visibilityMode) {
+    public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
     /**
      * Gets value of templateIdentifier attribute.
-     * 
+     *
      * @return value of templateIdentifier attribute
      * @see #setTemplateIdentifier
      */
@@ -175,22 +176,24 @@ public abstract class Choice extends BodyElement {
 
     /**
      * Sets new value of templateIdentifier attribute.
-     * 
+     *
      * @param templateIdentifier new value of templateIdentifier attribute
      * @see #getTemplateIdentifier
      */
-    public void setTemplateIdentifier(Identifier templateIdentifier) {
+    public void setTemplateIdentifier(final Identifier templateIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).setValue(templateIdentifier);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
+        System.out.println("VALIDATE!");
 
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
         final Identifier identifier = getIdentifier();
         final AssessmentItem item = context.getSubjectItem();
-        final List<Choice> choices = item.getItemBody().search(Choice.class);
+        final List<Choice> choices = QueryUtils.search(Choice.class, item.getItemBody());
+        System.out.println("CHOICES ARE " + choices);
         for (final Choice choice : choices) {
             if (choice != this && choice.getIdentifier().equals(identifier)) {
                 context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by another choice"));

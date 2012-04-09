@@ -46,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -165,6 +166,11 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         if (child != null) {
             children.add(child);
         }
+    }
+
+    @Override
+    public Iterator<XmlNode> iterator() {
+        return children.iterator();
     }
 
     @Override

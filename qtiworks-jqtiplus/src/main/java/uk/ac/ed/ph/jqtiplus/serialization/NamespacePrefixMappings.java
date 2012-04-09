@@ -58,40 +58,40 @@ import javax.xml.XMLConstants;
  * @author David McKain
  */
 public final class NamespacePrefixMappings implements Serializable {
-    
+
     /** Default XML schema instance NS prefix */
     public static final String DEFAULT_XSI_PREFIX = "xsi";
-    
+
     private static final long serialVersionUID = -1652757838448828206L;
-    
+
     private final Map<String, String> namespaceUriToPrefixMap;
     private final Map<String, String> prefixToNamespaceUriMap;
-    
+
     public NamespacePrefixMappings() {
         this.namespaceUriToPrefixMap = new HashMap<String, String>();
         this.prefixToNamespaceUriMap = new HashMap<String, String>();
     }
-    
+
     public Set<Entry<String, String>> entrySet() {
         return prefixToNamespaceUriMap.entrySet();
     }
-    
+
     public boolean isPrefixRegistered(String prefix) {
         return prefixToNamespaceUriMap.containsKey(prefix);
     }
-    
+
     public boolean isNamespaceUriRegistered(String namespaceUri) {
         return namespaceUriToPrefixMap.containsKey(namespaceUri);
     }
-    
+
     public String getPrefix(String namespaceUri) {
         return namespaceUriToPrefixMap.get(namespaceUri);
     }
-    
+
     public String getNamespaceUri(String prefix) {
         return namespaceUriToPrefixMap.get(prefix);
     }
-    
+
     public void register(String namespaceUri, String prefix) {
         if (namespaceUriToPrefixMap.containsKey(namespaceUri)) {
             throw new IllegalArgumentException("Namespace URI " + namespaceUri + " has already been registered");
@@ -102,24 +102,24 @@ public final class NamespacePrefixMappings implements Serializable {
         namespaceUriToPrefixMap.put(namespaceUri, prefix);
         prefixToNamespaceUriMap.put(prefix, namespaceUri);
     }
-    
+
     /**
      * Convenience method to register the XML schema location, bound to the default 'xsi:' prefix
      */
     public void registerSchemaInstanceMapping() {
         register(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, DEFAULT_XSI_PREFIX);
     }
-    
-    /** 
+
+    /**
      * Registers prefix mappings for all of the extensions used by the given {@link XmlNode}s
      * and their descendents.
      */
-    public void registerExtensionPrefixMappings(XmlNode... nodes) {
+    public void registerExtensionPrefixMappings(Iterable<? extends XmlNode> nodes) {
         Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(nodes);
         registerExtensionPrefixMappings(usedExtensionPackages);
     }
-    
-    /** 
+
+    /**
      * Registers prefix mappings for all of the given extensions
      */
     public void registerExtensionPrefixMappings(Set<JqtiExtensionPackage> qtiExtensionPackages) {
@@ -133,12 +133,12 @@ public final class NamespacePrefixMappings implements Serializable {
             }
         }
     }
-    
+
     /**
      * Registers prefix mappings for all namespaced foreign attributes used by the given
      * {@link XmlNode}s and their descendents.
      */
-    public void registerForeignAttributeNamespaces(XmlNode... nodes) {
+    public void registerForeignAttributeNamespaces(Iterable<? extends XmlNode> nodes) {
         ForeignNamespaceSummary foreignNamespaces = QueryUtils.findForeignNamespaces(nodes);
         for (String attributeNamespaceUri : foreignNamespaces.getAttributeNamespaceUris()) {
             /* TODO-LATER: Maybe allow some more control over this choice of prefix? */
@@ -146,7 +146,7 @@ public final class NamespacePrefixMappings implements Serializable {
             register(attributeNamespaceUri, resultingPrefix);
         }
     }
-    
+
     public String makeUniquePrefix(String requestedPrefix) {
         if (!prefixToNamespaceUriMap.containsKey(requestedPrefix)) {
             return requestedPrefix;
@@ -160,7 +160,7 @@ public final class NamespacePrefixMappings implements Serializable {
             i++;
         }
     }
-    
+
     public String getQName(String namespaceUri, String localName) {
         if (namespaceUri.isEmpty()) {
             return localName;
@@ -178,7 +178,7 @@ public final class NamespacePrefixMappings implements Serializable {
         }
         return prefix + ":" + localName;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + hashCode()

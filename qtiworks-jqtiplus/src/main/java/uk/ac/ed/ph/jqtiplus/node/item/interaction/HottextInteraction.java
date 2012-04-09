@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Hottext;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -77,7 +78,7 @@ import java.util.Set;
  * Contains : blockStatic [1..*]
  * The content of the interaction is simply a piece of content, such as a
  * simple passage of text, that contains the hottext areas.
- * 
+ *
  * @author Jonathon Hare
  */
 public class HottextInteraction extends BlockInteraction {
@@ -123,7 +124,7 @@ public class HottextInteraction extends BlockInteraction {
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
@@ -133,7 +134,7 @@ public class HottextInteraction extends BlockInteraction {
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -143,7 +144,7 @@ public class HottextInteraction extends BlockInteraction {
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
@@ -153,7 +154,7 @@ public class HottextInteraction extends BlockInteraction {
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -163,7 +164,7 @@ public class HottextInteraction extends BlockInteraction {
 
     /**
      * Gets blockStatic children.
-     * 
+     *
      * @return blockStatic children
      */
     public List<BlockStatic> getBlockStatics() {
@@ -228,7 +229,7 @@ public class HottextInteraction extends BlockInteraction {
 
         /* Make sure each choice is a valid identifier */
         final Set<Identifier> hottextIdentifiers = new HashSet<Identifier>();
-        final List<Hottext> hottexts = search(Hottext.class);
+        final List<Hottext> hottexts = QueryUtils.search(Hottext.class, this);
         for (final Hottext hottext : hottexts) {
             hottextIdentifiers.add(hottext.getIdentifier());
         }

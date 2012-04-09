@@ -39,12 +39,9 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -70,7 +67,7 @@ import javax.xml.XMLConstants;
  * elements of the content model with application specific data. If an item uses
  * labels then values for the associated toolName and toolVersion attributes must
  * also be provided.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class BodyElement extends AbstractNode {
@@ -92,7 +89,7 @@ public abstract class BodyElement extends AbstractNode {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_LABEL_NAME = "label";
 
-    public BodyElement(XmlNode parent, String localName) {
+    public BodyElement(final XmlNode parent, final String localName) {
         super(parent, localName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, false));
@@ -105,53 +102,19 @@ public abstract class BodyElement extends AbstractNode {
      * <p>
      * This works at this level because there is only ever a single {@link NodeGroupList}
      * within these elements.
-     * 
+     *
      * FIXME: This is a legacy method and I'm not sure how sensible it is.
      * FIXME: If we do keep this, we should create an interface that subsumes all the types
      * of things we can return and change the generified return type as appropriate.
-     * 
+     *
      * @return List of child nodes
      */
     @ToRefactor
     public abstract List<? extends XmlNode> getChildren();
 
     /**
-     * Search the children of this node for instances of the given class
-     * 
-     * @param target class to search for
-     * @return unmodifiable list of matching children
-     */
-    public <E extends XmlNode> List<E> search(Class<E> target) {
-        final List<E> results = new ArrayList<E>();
-        search(getChildren(), target, results);
-        return Collections.unmodifiableList(results);
-    }
-
-    protected <E extends XmlNode> void search(Class<E> target, List<E> results) {
-        search(getChildren(), target, results);
-    }
-
-    protected <E extends XmlNode> void search(List<? extends XmlNode> children, Class<E> target, List<E> results) {
-        if (children == null) {
-            return;
-        }
-
-        for (final XmlNode child : children) {
-            if (target.isInstance(child)) {
-                results.add(target.cast(child));
-            }
-            if (child instanceof BodyElement) {
-                search(((BodyElement) child).getChildren(), target, results);
-            }
-            else if (child instanceof PositionObjectStage) {
-                search(((PositionObjectStage) child).getPositionObjectInteractions(), target, results);
-            }
-        }
-    }
-
-    /**
      * Gets value of id attribute.
-     * 
+     *
      * @return value of id attribute
      * @see #setId
      */
@@ -161,30 +124,30 @@ public abstract class BodyElement extends AbstractNode {
 
     /**
      * Sets new value of id attribute.
-     * 
+     *
      * @param id new value of id attribute
      * @see #getId
      */
-    public void setId(Identifier id) {
+    public void setId(final Identifier id) {
         getAttributes().getIdentifierAttribute(ATTR_ID_NAME).setValue(id);
     }
 
     /**
      * Gets value of class attribute.
-     * 
+     *
      * @return value of class attribute
      */
     public List<String> getClassAttr() {
         return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getComputedValue();
     }
-    
-    public void setClassAttr(List<String> value) {
+
+    public void setClassAttr(final List<String> value) {
         getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).setValue(value);
     }
 
     /**
      * Gets value of lang attribute.
-     * 
+     *
      * @return value of lang attribute
      * @see #setLang
      */
@@ -194,17 +157,17 @@ public abstract class BodyElement extends AbstractNode {
 
     /**
      * Sets new value of lang attribute.
-     * 
+     *
      * @param lang new value of lang attribute
      * @see #getLang
      */
-    public void setLang(String lang) {
+    public void setLang(final String lang) {
         getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(lang);
     }
 
     /**
      * Gets value of label attribute.
-     * 
+     *
      * @return value of label attribute
      * @see #setLabel
      */
@@ -214,17 +177,17 @@ public abstract class BodyElement extends AbstractNode {
 
     /**
      * Sets new value of label attribute.
-     * 
+     *
      * @param label new value of label attribute
      * @see #getLabel
      */
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(label);
     }
 
     /**
      * Gets the first child block of this container.
-     * 
+     *
      * @return The first child block.
      */
     public XmlNode getFirstChild() {
@@ -236,7 +199,7 @@ public abstract class BodyElement extends AbstractNode {
 
     /**
      * Gets the last child block of this container.
-     * 
+     *
      * @return The last child block.
      */
     public XmlNode getLastChild() {
@@ -248,14 +211,14 @@ public abstract class BodyElement extends AbstractNode {
      * Inserts the node newChild before the existing child node refChild. If refChild is null,
      * insert newChild at the end of the list of children. If the newChild is already in the tree,
      * it is first removed.
-     * 
+     *
      * @param newChild New block to insert in the child list.
      * @param refChild Reference block to insert before.
      * @return block being inserted.
      * @throws IllegalArgumentException If <code>refChild</code> is not A child of this container.
      */
     @SuppressWarnings("unchecked")
-    public XmlNode insertBefore(XmlNode newChild, XmlNode refChild) throws IllegalArgumentException {
+    public XmlNode insertBefore(final XmlNode newChild, final XmlNode refChild) throws IllegalArgumentException {
         final List<XmlNode> children = (List<XmlNode>) getChildren();
 
         if (refChild != null) {
@@ -278,14 +241,14 @@ public abstract class BodyElement extends AbstractNode {
     /**
      * Replaces the child block oldChild with newChild in the list of children, and returns
      * the oldChild block. If the newChild is already in the tree, it is first removed.
-     * 
+     *
      * @param newChild The new block to put in the child list.
      * @param oldChild The block being replaced in the list.
      * @return The block replaced.
      * @throws IllegalArgumentException If <code>oldChild</code> is not A child of this container.
      */
     @SuppressWarnings("unchecked")
-    public XmlNode replaceChild(XmlNode newChild, XmlNode oldChild) throws IllegalArgumentException {
+    public XmlNode replaceChild(final XmlNode newChild, final XmlNode oldChild) throws IllegalArgumentException {
         final List<XmlNode> children = (List<XmlNode>) getChildren();
 
         if (!children.contains(oldChild)) {
@@ -303,13 +266,13 @@ public abstract class BodyElement extends AbstractNode {
 
     /**
      * Removes the child block indicated by oldChild from the list of children, and returns it.
-     * 
+     *
      * @param oldChild The block to remove
      * @return The block removed.
      * @throws IllegalArgumentException If <code>oldChild</code> is not A child of this container.
      */
     @SuppressWarnings("unchecked")
-    public XmlNode removeChild(XmlNode oldChild) throws IllegalArgumentException {
+    public XmlNode removeChild(final XmlNode oldChild) throws IllegalArgumentException {
         final List<XmlNode> children = (List<XmlNode>) getChildren();
 
         if (!children.contains(oldChild)) {
@@ -324,12 +287,12 @@ public abstract class BodyElement extends AbstractNode {
     /**
      * Adds the block newChild to the end of the list of children of this block.
      * If the newChild is already in the tree, it is first removed.
-     * 
+     *
      * @param newChild The block to add.
      * @return The block added.
      */
     @SuppressWarnings("unchecked")
-    public XmlNode appendChild(XmlNode newChild) {
+    public XmlNode appendChild(final XmlNode newChild) {
         final List<XmlNode> children = (List<XmlNode>) getChildren();
 
         if (children.contains(newChild)) {

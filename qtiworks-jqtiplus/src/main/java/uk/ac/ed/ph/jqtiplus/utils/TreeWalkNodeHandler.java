@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Call-back interface to handle each Node when walking an {@link XmlNode}
- * (sub)tree using {@link QueryUtils#walkTree(XmlNode, TreeWalkNodeHandler)}
+ * (sub)tree using {@link QueryUtils#walkTree(TreeWalkNodeHandler, XmlNode)}
  *
  * @author David McKain
  */

@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -58,66 +59,66 @@ import org.xml.sax.SAXException;
  * @author David McKain
  */
 public class XsltParamDocumentBuilder {
-    
+
     public interface SaxFirerCallback {
-        
-        XmlNode[] getQtiNodes();
-        
+
+        List<? extends XmlNode> getQtiNodes();
+
         void fireSaxEvents(SaxEventFirer saxEventFirer, QtiSaxFiringContext saxFiringContext)
                 throws SAXException;
     }
 
     private final SaxFirerCallback saxFirerCallback;
-    
-    public XsltParamDocumentBuilder(SaxFirerCallback saxFirerCallback) {
+
+    public XsltParamDocumentBuilder(final SaxFirerCallback saxFirerCallback) {
         this.saxFirerCallback = saxFirerCallback;
     }
-    
+
     public Document buildDocument() {
         try {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setNamespaceAware(true);
             final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
-            Document document = documentBuilder.newDocument();
-            SimpleDomBuilderHandler domBuilderHandler = new SimpleDomBuilderHandler(document);
-            
-            SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
+            final Document document = documentBuilder.newDocument();
+            final SimpleDomBuilderHandler domBuilderHandler = new SimpleDomBuilderHandler(document);
+
+            final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
             saxFiringOptions.setOmitSchemaLocations(true);
-            
+
             /* First, we'll reserve 'xsi' for schema instances */
-            NamespacePrefixMappings attrNamespacePrefixMappings = new NamespacePrefixMappings();
+            final NamespacePrefixMappings attrNamespacePrefixMappings = new NamespacePrefixMappings();
             attrNamespacePrefixMappings.registerSchemaInstanceMapping();
 
             /* Register namespace for parameter XML */
             attrNamespacePrefixMappings.register(XsltParamBuilder.QTIWORKS_NAMESPACE, XsltParamBuilder.QTIWORKS_NAMESPACE_PREFIX);
-            
+
             /* Next let each extension package that has been used have a shot */
-            XmlNode[] qtiNodes = saxFirerCallback.getQtiNodes();
-            Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(qtiNodes);
+            final List<? extends XmlNode> qtiNodes = saxFirerCallback.getQtiNodes();
+            final Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(qtiNodes);
             attrNamespacePrefixMappings.registerExtensionPrefixMappings(usedExtensionPackages);
-            
+
             /* Register prefixes for each foreign attribute in non-default namespace */
             attrNamespacePrefixMappings.registerForeignAttributeNamespaces(qtiNodes);
-            
-            SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
+
+            final SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
                     QtiSaxDocumentFirer.createSchemaLocationMap(usedExtensionPackages),
                     domBuilderHandler, saxFiringOptions);
-            
+
             /* Put namespace prefixes in scope */
             saxEventFirer.fireStartDocumentAndPrefixMappings();
 
             /* Create callback for nodes */
-            QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
-            
+            final QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
+
             /* Now build stuff */
             saxFirerCallback.fireSaxEvents(saxEventFirer, saxFiringContext);
-            
+
             /* Remove namespace prefixes from scope */
             saxEventFirer.fireEndDocumentAndPrefixMappings();
-            
+
             return document;
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new QtiRenderingException("Unexpected Exception generating DOM parameter", e);
         }
     }

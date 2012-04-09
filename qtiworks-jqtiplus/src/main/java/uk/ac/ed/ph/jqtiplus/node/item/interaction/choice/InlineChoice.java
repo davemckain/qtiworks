@@ -38,16 +38,16 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple run of text to be displayed to the user, may be subject to variable value substitution with printedVariable.
  * Spec is wrong I think - must contain textOrVariable children (see addendum).
- * 
+ *
  * @see PrintedVariable
  * @author Jonathon Hare
  */
@@ -68,10 +68,7 @@ public class InlineChoice extends Choice {
     public void validate(ValidationContext context) {
         super.validate(context);
 
-        final List<Interaction> interactions = new ArrayList<Interaction>();
-        search(getChildren(), Interaction.class, interactions);
-
-        if (interactions.size() > 0) {
+        if (QueryUtils.hasDescendant(Interaction.class, this)) {
             context.add(new ValidationError(this, QTI_CLASS_NAME + " cannot contain nested interactions"));
         }
     }

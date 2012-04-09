@@ -45,11 +45,11 @@ import org.xml.sax.SAXException;
 
 /**
  * Base class for all QTI XML Nodes
- * 
+ *
  * @author Jiri Kajaba
  * @author David McKain
  */
-public interface XmlNode extends Validatable {
+public interface XmlNode extends Validatable, Iterable<XmlNode> {
 
     /** Default indent. */
     @ToRefactor
@@ -62,7 +62,7 @@ public interface XmlNode extends Validatable {
      * <p>
      * While testing some nodes (for example expressions) don't have properly set parent, but it is usable only for testing. (Some nodes cannot exists without
      * parent even for testing).
-     * 
+     *
      * @return parent of this node or null (if node is root; for example AssessmentTest)
      */
     XmlNode getParent();
@@ -72,7 +72,7 @@ public interface XmlNode extends Validatable {
      * <p>
      * While testing some nodes (for example expressions) don't have properly set parent, but it is usable only for testing. (Some nodes cannot exists without
      * parent even for testing).
-     * 
+     *
      * @return root of this node or node itself (if node is root; for example AssessmentTest)
      */
     RootObject getRootObject();
@@ -81,7 +81,7 @@ public interface XmlNode extends Validatable {
 
     /**
      * Gets list (container) of all attributes.
-     * 
+     *
      * @return list (container) of all attributes of this node
      */
     AttributeList getAttributes();
@@ -92,7 +92,7 @@ public interface XmlNode extends Validatable {
      * For example AssessmentTest contains (one) testPart group. And this (one) group contains all testParts.
      * <p>
      * Group approach is useful for defining some rules to all testParts (for example required number of testParts in AssessmentTest).
-     * 
+     *
      * @return list (container) of all child group
      */
     NodeGroupList getNodeGroups();
@@ -101,10 +101,10 @@ public interface XmlNode extends Validatable {
      * Loads this node from given DOM source {@link Element}.
      */
     void load(Element sourceElement, LoadingContext context);
-    
+
     /**
      * FIXME: Document this!
-     * 
+     *
      * @param saxFiringContext
      * @throws SAXException
      */
@@ -133,7 +133,7 @@ public interface XmlNode extends Validatable {
     /**
      * Computes and returns a pseudo XPath expression that can be used to navigate to this Node.
      * (The expression will probably be over-verbose!)
-     * 
+     *
      * NOTE: This uses the form {nsURI}localName for non-QTI elements, so is not
      * a "proper" XPath.
      */
@@ -141,10 +141,9 @@ public interface XmlNode extends Validatable {
 
     /**
      * This is a convenience method to allow easy determination of whether a node has any children.
-     * 
+     *
      * @return true if the node has any children, false if the node has no children.
      */
-    @ToRefactor
     boolean hasChildNodes();
 
 }

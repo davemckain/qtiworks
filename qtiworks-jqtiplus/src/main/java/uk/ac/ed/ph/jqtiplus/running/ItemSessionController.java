@@ -72,6 +72,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -90,7 +91,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Usage: one-shot, not thread safe.
  * FIXME: Document this!
- * 
+ *
  * @author David McKain
  */
 public final class ItemSessionController implements ItemProcessingContext {
@@ -104,7 +105,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
-    
+
     public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) {
         this(null, resolvedAssessmentItem, itemSessionState);
     }
@@ -117,7 +118,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemSessionState = itemSessionState;
     }
-    
+
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }
@@ -125,7 +126,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
         return resolvedAssessmentItem;
     }
-    
+
     @Override
     public AssessmentObject getSubject() {
         return item;
@@ -134,7 +135,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public AssessmentItem getItem() {
         return item;
     }
-    
+
     @Override
     public AssessmentItem getSubjectItem() {
         return item;
@@ -147,7 +148,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     //-------------------------------------------------------------------
     // Initialization & template processing
-    
+
     public void initialize() throws RuntimeValidationException {
         initialize(null);
     }
@@ -156,7 +157,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * Initialise the item by setting the template defaults, resetting variables,
      * and performing templateProcessing.
      * An item should only be initialised if it is going to be rendered/presented
-     * 
+     *
      * @param templateDefaults given templateDefaults values
      * @throws RuntimeValidationException if a runtime validation error is detected during template
      *             processing.
@@ -269,11 +270,11 @@ public final class ItemSessionController implements ItemProcessingContext {
      * variable identifiers for whom the given data could not be successfully bound.
      * <p>
      * This will modify {@link #itemSessionState}
-     * 
+     *
      * @return a List of identifiers corresponding to response variables which could not be
      *         successfully bound from the provided data. (E.g. expected a float but got a String)
      * @param responseMap Map of responses to set, keyed on response variable identifier
-     * 
+     *
      * @throws QtiParseException if one of the response identifiers is not a valid identifier
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
@@ -282,28 +283,29 @@ public final class ItemSessionController implements ItemProcessingContext {
         ConstraintUtilities.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
-        
+
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
-         * 
+         *
          * (The spec seems to indicate that ALL responses bound to these interactions
          * should be set, which is why we have this special code here.)
          */
         final ItemBody itemBody = item.getItemBody();
-        for (final EndAttemptInteraction endAttemptInteraction : itemBody.search(EndAttemptInteraction.class)) {
+        for (final EndAttemptInteraction endAttemptInteraction : QueryUtils.search(EndAttemptInteraction.class, itemBody)) {
             itemSessionState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
         }
 
         /* Now bind response values for each incoming response. (Note that this may be a subset
          * of all responses, since adaptive items will only present certain interactions at certain
          * times.) */
+        Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
         final List<Identifier> badResponses = new ArrayList<Identifier>();
         for (final Entry<String, ResponseData> responseEntry : responseMap.entrySet()) {
             Identifier responseIdentifier = new Identifier(responseEntry.getKey());
             ResponseData responseData = responseEntry.getValue();
             ConstraintUtilities.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
-                final Interaction interaction = itemBody.getInteraction(responseIdentifier);
+                final Interaction interaction = interactionMap.get(responseIdentifier);
                 if (interaction != null) {
                     interaction.bindResponse(this, responseData);
                 }
@@ -317,10 +319,10 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return badResponses;
     }
-    
+
     /**
      * Validates the currently-bound responses for each of the interactions
-     * 
+     *
      * @return a List of identifiers corresponding to invalid responses. The List will be
      *         empty if all responses were valid.
      */
@@ -336,11 +338,11 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return invalidResponseIdentifiers;
     }
-    
+
     /**
      * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
-     * 
+     *
      * @throws RuntimeValidationException
      */
     public void processResponses() throws RuntimeValidationException {
@@ -381,7 +383,7 @@ public final class ItemSessionController implements ItemProcessingContext {
             else {
                 responseProcessing = item.getResponseProcessing();
             }
-            
+
             if (responseProcessing != null) {
                 responseProcessing.evaluate(this);
             }
@@ -479,7 +481,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return value;
     }
-    
+
     public Value lookupVariableValue(String identifierString, VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return lookupVariableValue(new Identifier(identifierString), permittedTypes);
@@ -490,7 +492,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
-    
+
     public Value computeDefaultValue(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
@@ -534,7 +536,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
-    
+
     public Value computeCorrectResponse(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return computeCorrectResponse(new Identifier(identifierString));
@@ -554,12 +556,12 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return result;
     }
-    
+
     /**
      * Returns true if this declarations value matches its correctValue.
      * Returns null if there is no correct value
      * NOTE: This only tests for "the" "correct" response, not "a" correct response.
-     * 
+     *
      * @return true if the associated correctResponse matches the value; false or null otherwise.
      */
     public Boolean isCorrectResponse(ResponseDeclaration responseDeclaration) {
@@ -569,7 +571,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         return Boolean.valueOf(correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration)));
     }
-    
+
     //-------------------------------------------------------------------
 
     private void initValue(VariableDeclaration declaration) {
@@ -580,7 +582,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     private Value computeInitialValue(Identifier identifier) {
         return computeDefaultValue(identifier);
     }
-    
+
     private Value computeInitialValue(VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
@@ -588,7 +590,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
 
     //-------------------------------------------------------------------
-    
+
     private void ensureInitialized() {
         if (!itemSessionState.isInitialized()) {
             throw new IllegalStateException("Item session has not been initialized");
@@ -624,15 +626,16 @@ public final class ItemSessionController implements ItemProcessingContext {
             final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
             itemVariables.add(variable);
         }
+        Map<Identifier, Interaction> interactionMap = item.getItemBody().getInteractionMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
-            final ResponseDeclaration declaration = item.getResponseDeclaration(mapEntry.getKey());
+            final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();
             List<Identifier> interactionChoiceOrder = null;
-            final Interaction interaction = item.getItemBody().getInteraction(declaration.getIdentifier());
+            final Interaction interaction = interactionMap.get(responseDeclaration.getIdentifier());
             if (interaction != null && interaction instanceof Shuffleable) {
                 interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
             }
-            final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
+            final ResponseVariable variable = new ResponseVariable(result, responseDeclaration, value, interactionChoiceOrder);
             itemVariables.add(variable);
         }
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
@@ -651,7 +654,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * Returns true if this item reference was correctly responded;
      * Correctly responded means ALL defined responseVars match their associated correctResponse.
      * Returns null if any of the responseDeclarations don't have correctResponses.
-     * 
+     *
      * @return true if this item reference was correctly responded; null if not all
      *         responseDeclarations contain correctResponses; false otherwise
      * @see #isIncorrect
@@ -674,7 +677,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
      * Returns the number of correct responses
-     * 
+     *
      * @return the number of correct responses
      * @see #countIncorrect
      */
@@ -695,7 +698,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * Incorrectly responded means ANY defined responseVars didn't match their
      * associated correctResponse.
      * Returns null if any of the responseDeclarations don't have correctResponses.
-     * 
+     *
      * @return true if this item reference was incorrectly responded; null if not all
      *         responseDeclarations contain correctResponses; false otherwise
      * @see #isCorrect
@@ -718,7 +721,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
      * Returns the number of incorrect responses
-     * 
+     *
      * @return the number of incorrect responses
      * @see #countIncorrect
      */
