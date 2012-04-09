@@ -43,10 +43,12 @@ import java.lang.reflect.Method;
 /**
  * Implementation of {@link MathOperatorEvaluator} that uses reflection to call up a
  * method in the standard {@link Math} class.
- * 
+ *
  * @author David McKain
  */
 final class ReflectionEvaluator implements MathOperatorEvaluator {
+
+    private static final long serialVersionUID = 5961647493853845432L;
 
     private final String methodName;
 

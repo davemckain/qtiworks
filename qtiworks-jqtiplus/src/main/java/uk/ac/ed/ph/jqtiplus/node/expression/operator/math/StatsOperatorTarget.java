@@ -41,12 +41,14 @@ import java.util.Map;
 
 /**
  * Enumerates all of the operations supported by the <tt>statsOperator</tt> operator
- * 
+ *
  * @author David McKain
  */
 enum StatsOperatorTarget implements Stringifiable {
 
     MEAN("mean", new StatsOperatorEvaluator() {
+
+        private static final long serialVersionUID = -6289883330973619181L;
 
         @Override
         public double evaluate(double[] arguments) {
@@ -56,6 +58,8 @@ enum StatsOperatorTarget implements Stringifiable {
 
     POP_VARIANCE("populationVariance", new StatsOperatorEvaluator() {
 
+        private static final long serialVersionUID = -421624373565025338L;
+
         @Override
         public double evaluate(double[] arguments) {
             return StatsFunctions.populationVariance(arguments);
@@ -63,6 +67,8 @@ enum StatsOperatorTarget implements Stringifiable {
     }),
 
     SAMPLE_VARIANCE("sampleVariance", new StatsOperatorEvaluator() {
+
+        private static final long serialVersionUID = 1999190142005487948L;
 
         @Override
         public double evaluate(double[] arguments) {
@@ -72,6 +78,8 @@ enum StatsOperatorTarget implements Stringifiable {
 
     POP_SD("popSD", new StatsOperatorEvaluator() {
 
+        private static final long serialVersionUID = -7980141585460648815L;
+
         @Override
         public double evaluate(double[] arguments) {
             return StatsFunctions.populationSD(arguments);
@@ -79,6 +87,8 @@ enum StatsOperatorTarget implements Stringifiable {
     }),
 
     SAMPLE_SD("sampleSD", new StatsOperatorEvaluator() {
+
+        private static final long serialVersionUID = -2120115256732362724L;
 
         @Override
         public double evaluate(double[] arguments) {
@@ -112,7 +122,7 @@ enum StatsOperatorTarget implements Stringifiable {
     public StatsOperatorEvaluator getEvaluator() {
         return evaluator;
     }
-    
+
     @Override
     public String toQtiString() {
         return name;

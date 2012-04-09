@@ -35,12 +35,14 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.io.Serializable;
+
 /**
  * Trivial little interface for evaluating each operator supported by {@link MathOperator}.
- * 
+ *
  * @author David McKain
  */
-interface MathOperatorEvaluator {
+public interface MathOperatorEvaluator extends Serializable {
 
     Value evaluate(double[] arguments);
 

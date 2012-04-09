@@ -33,12 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
+import java.io.Serializable;
+
 /**
  * Trivial little interface for evaluating each operator supported by {@link StatsOperator}.
- * 
+ *
  * @author David McKain
  */
-interface StatsOperatorEvaluator {
+interface StatsOperatorEvaluator extends Serializable {
 
     double evaluate(double[] arguments);
 

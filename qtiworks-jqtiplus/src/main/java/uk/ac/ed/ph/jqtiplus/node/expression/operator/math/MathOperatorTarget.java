@@ -43,15 +43,17 @@ import java.util.Map;
 
 /**
  * Enumerates all of the operations supported by the <tt>mathOperator</tt> operator
- * 
+ *
  * @author David McKain
  */
-public enum MathOperatorTarget implements Stringifiable {
+enum MathOperatorTarget implements Stringifiable {
 
     SIN("sin", 1, new ReflectionEvaluator("sin")),
     COS("cos", 1, new ReflectionEvaluator("cos")),
     TAN("tan", 1, new ReflectionEvaluator("tan")),
     SEC("sec", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = 5952861432197925478L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -60,12 +62,16 @@ public enum MathOperatorTarget implements Stringifiable {
     }),
     CSC("csc", 1, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = 2211612606822387935L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(1.0 / Math.sin(arguments[0]));
         }
     }),
     COT("cot", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = -7829778905281551485L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -77,12 +83,16 @@ public enum MathOperatorTarget implements Stringifiable {
     ATAN("atan", 1, new ReflectionEvaluator("atan")),
     ATAN2("atan2", 2, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = -8627119856230662538L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(Math.atan2(arguments[0], arguments[1]));
         };
     }),
     ASEC("asec", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = 810517144482158120L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -91,12 +101,16 @@ public enum MathOperatorTarget implements Stringifiable {
     }),
     ACSC("acsc", 1, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = 26830091793676045L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(Math.asin(1.0 / arguments[0]));
         }
     }),
     ACOT("acot", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = -8608437044005964279L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -108,6 +122,8 @@ public enum MathOperatorTarget implements Stringifiable {
     TANH("tanh", 1, new ReflectionEvaluator("tanh")),
     SECH("sech", 1, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = -2842606985174060779L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(1.0 / Math.cosh(arguments[0]));
@@ -115,12 +131,16 @@ public enum MathOperatorTarget implements Stringifiable {
     }),
     CSCH("csch", 1, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = 6866168553708026037L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(1.0 / Math.sinh(arguments[0]));
         }
     }),
     COTH("coth", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = 2969228173093469241L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -136,12 +156,16 @@ public enum MathOperatorTarget implements Stringifiable {
     SIGNUM("signum", 1, new ReflectionEvaluator("signum", true)),
     TO_DEGREES("toDegrees", 1, new MathOperatorEvaluator() {
 
+        private static final long serialVersionUID = -2561656693154640426L;
+
         @Override
         public Value evaluate(double[] arguments) {
             return new FloatValue(arguments[0] * 180.0 / Math.PI);
         }
     }),
     TO_RADIANS("toRadians", 1, new MathOperatorEvaluator() {
+
+        private static final long serialVersionUID = -5278220909027742114L;
 
         @Override
         public Value evaluate(double[] arguments) {
@@ -182,7 +206,7 @@ public enum MathOperatorTarget implements Stringifiable {
     public MathOperatorEvaluator getEvaluator() {
         return evaluator;
     }
-    
+
     @Override
     public String toQtiString() {
         return name;
