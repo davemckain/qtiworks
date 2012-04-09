@@ -51,8 +51,13 @@ public final class DateAttribute extends SingleAttribute<Date> {
 
     private static final long serialVersionUID = 2736828962257037608L;
 
-    /** Date formatting pattern. */
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    /**
+     * Date formatting pattern.
+     * NB: DateFormat is not Thread safe, so don't cache the results of this across Threads!
+     */
+    public static final DateFormat createDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    }
 
     public DateAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
@@ -69,7 +74,7 @@ public final class DateAttribute extends SingleAttribute<Date> {
         }
 
         try {
-            return format.parse(value);
+            return createDateFormat().parse(value);
         }
         catch (final ParseException ex) {
             throw new QtiParseException("Invalid datetime '" + value + "'.", ex);
@@ -78,6 +83,6 @@ public final class DateAttribute extends SingleAttribute<Date> {
 
     @Override
     protected String toQtiString(final Date value) {
-        return format.format(value);
+        return createDateFormat().format(value);
     }
 }
