@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 
 /**
@@ -79,7 +80,7 @@ public final class StandardQtiSampleSet {
             new QtiSampleResource(Type.ITEM, "ims/text_entry1.xml"),
             new QtiSampleResource(Type.ITEM, "ims/text_entry2.xml"),
             new QtiSampleResource(Type.ITEM, "ims/text_entry.xml"),
-            new QtiSampleResource(Type.ITEM, "ims/towns.xml"),
+            new QtiSampleResource(Type.ITEM, "ims/towns.xml", Feature.NOT_FULLY_VALID),
             new QtiSampleResource(Type.ITEM, "ims/upload_composite.xml"),
             new QtiSampleResource(Type.ITEM, "ims/upload.xml")
     );
