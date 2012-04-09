@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Arrays;
@@ -47,7 +46,7 @@ import java.util.TreeMap;
  * This container can contain 0..N non NULL single values of any <code>BaseType</code>.
  * <p>
  * This container can be record or NULL (if empty).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -67,7 +66,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Constructs empty (NULL) <code>RecordValue</code> container and adds given <code>SingleValue</code> into it.
-     * 
+     *
      * @param identifier identifier of added <code>SingleValue</code>
      * @param value added <code>SingleValue</code>
      */
@@ -82,12 +81,12 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Constructs empty (NULL) <code>RecordValue</code> container and adds given <code>RecordValue</code> into it.
-     * 
+     *
      * @param value added <code>RecordValue</code>
      */
     public RecordValue(RecordValue value) {
         container = new TreeMap<Identifier, SingleValue>();
-        add(value);
+        merge(value);
     }
 
     @Override
@@ -118,7 +117,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * Returns <code>SingleValue</code> for given identifier or null.
      * <p>
      * Returns null if there is no such identifier.
-     * 
+     *
      * @param identifier given identifier
      * @return <code>SingleValue</code> for given identifier or null
      */
@@ -128,7 +127,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Returns true if this container contains any <code>SingleValue</code> with given <code>BaseType</code> or false otherwise.
-     * 
+     *
      * @param baseType given <code>BaseType</code>
      * @return true if this container contains any <code>SingleValue</code> with given <code>BaseType</code> or false otherwise
      */
@@ -138,7 +137,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Returns true if this container contains any <code>SingleValue</code> with any given <code>BaseType</code>s or false otherwise.
-     * 
+     *
      * @param baseTypes given <code>BaseType</code>s
      * @return true if this container contains any <code>SingleValue</code> with any given <code>BaseType</code>s or false otherwise
      */
@@ -156,7 +155,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * Adds <code>SingleValue</code> into this container.
      * <p>
      * NULL <code>SingleValue</code> is ignored.
-     * 
+     *
      * @param identifier identifier of added <code>SingleValue</code>
      * @param value added <code>SingleValue</code>
      * @return true if value was added; false otherwise
@@ -178,14 +177,14 @@ public final class RecordValue extends AbstractValue implements MultiValue {
     /**
      * Adds <code>RecordValue</code> into this container.
      * <p>
-     * Takes all values from <code>RecordValue</code> container and adds them into this container.
+     * Takes all values from <code>RecordValue</code> container and merges them into this container.
      * <p>
      * NULL <code>RecordValue</code> container is ignored.
-     * 
+     *
      * @param value added <code>RecordValue</code>
      * @return true if value was added; false otherwise
      */
-    public boolean add(RecordValue value) {
+    public boolean merge(RecordValue value) {
         if (value.isNull()) {
             return false;
         }
@@ -197,7 +196,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Returns A set view of the keys contained in this container.
-     * 
+     *
      * @return A set view of the keys contained in this container
      */
     public Set<Identifier> keySet() {
@@ -206,28 +205,11 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     /**
      * Returns A collection view of the values contained in this container.
-     * 
+     *
      * @return A collection view of the values contained in this container
      */
     public Collection<SingleValue> values() {
         return container.values();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Object clone() throws QtiEvaluationException {
-        try {
-            final RecordValue value = (RecordValue) super.clone();
-
-            if (container != null) {
-                value.container = (TreeMap<Identifier, SingleValue>) container.clone();
-            }
-
-            return value;
-        }
-        catch (final CloneNotSupportedException ex) {
-            throw new QtiEvaluationException("Cannot clone container.", ex);
-        }
     }
 
     @Override
