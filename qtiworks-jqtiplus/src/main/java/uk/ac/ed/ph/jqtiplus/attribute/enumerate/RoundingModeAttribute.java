@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RoundingMode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with roundingMode value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class RoundingModeAttribute extends SingleEnumerateAttribute<RoundingMode> {
@@ -56,11 +60,11 @@ public final class RoundingModeAttribute extends SingleEnumerateAttribute<Roundi
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public RoundingMode[] getSupportedValues() {
-        return RoundingMode.values();
+    public List<RoundingMode> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(RoundingMode.values()));
     }
 }

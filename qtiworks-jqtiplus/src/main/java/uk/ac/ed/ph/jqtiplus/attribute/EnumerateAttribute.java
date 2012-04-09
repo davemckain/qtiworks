@@ -33,21 +33,23 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
+import java.util.List;
+
 /**
  * Attributes with known value set should implement this interface.
  * It can help user to input value of attribute.
  * Instead of typing values, he can choose from supported values.
  * For example boolean values or enumeration values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public interface EnumerateAttribute<V> extends Attribute<V> {
 
     /**
-     * Gets all supported values of this attribute.
-     * 
+     * Gets a read-only view of supported values of this attribute.
+     *
      * @return all supported values of this attribute
      */
-    V[] getSupportedValues();
+    List<V> getSupportedValues();
 
 }

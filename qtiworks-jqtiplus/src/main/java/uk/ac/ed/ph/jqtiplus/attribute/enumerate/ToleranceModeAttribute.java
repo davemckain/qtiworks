@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with toleranceMode value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class ToleranceModeAttribute extends SingleEnumerateAttribute<ToleranceMode> {
@@ -56,11 +60,11 @@ public final class ToleranceModeAttribute extends SingleEnumerateAttribute<Toler
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public ToleranceMode[] getSupportedValues() {
-        return ToleranceMode.values();
+    public List<ToleranceMode> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(ToleranceMode.values()));
     }
 }

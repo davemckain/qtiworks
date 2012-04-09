@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with textFormat value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class TextFormatAttribute extends SingleEnumerateAttribute<TextFormat> {
@@ -60,11 +64,11 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public TextFormat[] getSupportedValues() {
-        return TextFormat.values();
+    public List<TextFormat> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(TextFormat.values()));
     }
 }

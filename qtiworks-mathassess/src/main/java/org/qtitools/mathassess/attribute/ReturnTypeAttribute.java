@@ -38,31 +38,35 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.value.ReturnTypeType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with returnType value.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType> {
 
     private static final long serialVersionUID = -1032549489931459690L;
 
-    public ReturnTypeAttribute(XmlNode parent, String localName, String namespaceUri) {
+    public ReturnTypeAttribute(final XmlNode parent, final String localName, final String namespaceUri) {
         super(parent, localName, namespaceUri, true);
     }
 
     @Override
-    protected ReturnTypeType parseQtiString(String value) {
+    protected ReturnTypeType parseQtiString(final String value) {
         return ReturnTypeType.parseReturnType(value);
     }
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public ReturnTypeType[] getSupportedValues() {
-        return ReturnTypeType.values();
+    public List<ReturnTypeType> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(ReturnTypeType.values()));
     }
 }

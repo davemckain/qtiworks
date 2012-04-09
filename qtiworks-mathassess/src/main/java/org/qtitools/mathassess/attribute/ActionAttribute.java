@@ -38,31 +38,35 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.value.ActionType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with actionType value.
- * 
+ *
  * @author Jonathon Hare
  */
 public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> {
 
     private static final long serialVersionUID = 2096278682370848167L;
 
-    public ActionAttribute(XmlNode parent, String localName, String namespaceUri, boolean required) {
+    public ActionAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean required) {
         super(parent, localName, namespaceUri, required);
     }
 
     @Override
-    protected ActionType parseQtiString(String value) {
+    protected ActionType parseQtiString(final String value) {
         return ActionType.parseActionType(value);
     }
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public ActionType[] getSupportedValues() {
-        return ActionType.values();
+    public List<ActionType> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(ActionType.values()));
     }
 }

@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with shape value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
@@ -56,11 +60,11 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public Shape[] getSupportedValues() {
-        return Shape.values();
+    public List<Shape> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(Shape.values()));
     }
 }

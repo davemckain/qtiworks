@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Wraps {@link MathConstantTarget} attribute up in QTI style
- * 
+ *
  * @author David McKain
  */
 public final class MathConstantNameAttribute extends SingleEnumerateAttribute<MathConstantTarget> {
@@ -55,7 +59,7 @@ public final class MathConstantNameAttribute extends SingleEnumerateAttribute<Ma
     }
 
     @Override
-    public MathConstantTarget[] getSupportedValues() {
-        return MathConstantTarget.values();
+    public List<MathConstantTarget> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(MathConstantTarget.values()));
     }
 }

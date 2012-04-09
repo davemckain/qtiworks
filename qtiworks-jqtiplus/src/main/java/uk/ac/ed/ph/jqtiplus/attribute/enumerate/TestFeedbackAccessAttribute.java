@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with testFeedbackAccess value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<TestFeedbackAccess> {
@@ -56,11 +60,11 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public TestFeedbackAccess[] getSupportedValues() {
-        return TestFeedbackAccess.values();
+    public List<TestFeedbackAccess> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(TestFeedbackAccess.values()));
     }
 }

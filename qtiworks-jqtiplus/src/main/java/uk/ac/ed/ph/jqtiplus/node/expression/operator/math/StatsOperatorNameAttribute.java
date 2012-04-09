@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Wraps {@link StatsOperator} attribute up in QTI style
- * 
+ *
  * @author David McKain
  */
 public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<StatsOperatorTarget> {
@@ -55,7 +59,7 @@ public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<S
     }
 
     @Override
-    public StatsOperatorTarget[] getSupportedValues() {
-        return StatsOperatorTarget.values();
+    public List<StatsOperatorTarget> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(StatsOperatorTarget.values()));
     }
 }

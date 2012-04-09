@@ -38,31 +38,35 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import org.qtitools.mathassess.value.SyntaxType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with syntaxType value.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
 
     private static final long serialVersionUID = 8834496656714809174L;
 
-    public SyntaxAttribute(XmlNode parent, String localName, String namespaceUri) {
+    public SyntaxAttribute(final XmlNode parent, final String localName, final String namespaceUri) {
         super(parent, localName, namespaceUri, true);
     }
 
     @Override
-    protected SyntaxType parseQtiString(String value) {
+    protected SyntaxType parseQtiString(final String value) {
         return SyntaxType.parseSyntaxType(value);
     }
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public SyntaxType[] getSupportedValues() {
-        return SyntaxType.values();
+    public List<SyntaxType> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(SyntaxType.values()));
     }
 }

@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with navigationMode value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class NavigationModeAttribute extends SingleEnumerateAttribute<NavigationMode> {
@@ -56,11 +60,11 @@ public final class NavigationModeAttribute extends SingleEnumerateAttribute<Navi
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public NavigationMode[] getSupportedValues() {
-        return NavigationMode.values();
+    public List<NavigationMode> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(NavigationMode.values()));
     }
 }

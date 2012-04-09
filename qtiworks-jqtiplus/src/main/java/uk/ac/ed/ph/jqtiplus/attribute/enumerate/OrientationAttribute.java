@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with orientation value
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class OrientationAttribute extends SingleEnumerateAttribute<Orientation> {
@@ -56,11 +60,11 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public Orientation[] getSupportedValues() {
-        return Orientation.values();
+    public List<Orientation> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(Orientation.values()));
     }
 }

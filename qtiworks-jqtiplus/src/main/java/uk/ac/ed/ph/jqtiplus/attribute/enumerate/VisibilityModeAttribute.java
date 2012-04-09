@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with visibilityMode value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class VisibilityModeAttribute extends SingleEnumerateAttribute<VisibilityMode> {
@@ -52,7 +56,7 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
     public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
-    
+
     @Override
     protected VisibilityMode parseQtiString(String value) {
         return VisibilityMode.parseVisibilityMode(value);
@@ -60,11 +64,11 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public VisibilityMode[] getSupportedValues() {
-        return VisibilityMode.values();
+    public List<VisibilityMode> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(VisibilityMode.values()));
     }
 }

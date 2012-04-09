@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with cardinality value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardinality> {
@@ -56,11 +60,11 @@ public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardina
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public Cardinality[] getSupportedValues() {
-        return Cardinality.values();
+    public List<Cardinality> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(Cardinality.values()));
     }
 }

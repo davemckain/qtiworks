@@ -39,17 +39,21 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with boolean value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
 
     private static final long serialVersionUID = -6757069543350955429L;
 
-    /** Supported values. */
-    private static final Boolean[] values = new Boolean[] { Boolean.TRUE, Boolean.FALSE };
+    /** Read-only view of all allowed values */
+    private static final List<Boolean> valuesView = Collections.unmodifiableList(Arrays.asList(Boolean.TRUE, Boolean.FALSE));
 
     public BooleanAttribute(XmlNode parent, String localName, boolean required) {
         super(parent, localName, required);
@@ -62,7 +66,7 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, boolean required) {
         super(parent, localName, namespaceUri, defaultValue, required);
     }
-    
+
     /**
      * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
      * returning a raw boolean
@@ -79,7 +83,7 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     protected Boolean parseQtiString(String value) {
         return Boolean.valueOf(BooleanValue.parseBoolean(value));
     }
-    
+
     @Override
     protected String toQtiString(Boolean value) {
         return value.toString();
@@ -87,11 +91,11 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public Boolean[] getSupportedValues() {
-        return values;
+    public List<Boolean> getSupportedValues() {
+        return valuesView;
     }
 }

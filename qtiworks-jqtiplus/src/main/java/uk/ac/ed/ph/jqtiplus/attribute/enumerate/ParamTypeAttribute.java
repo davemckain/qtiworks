@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.value.ParamType;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with paramType value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType> {
@@ -56,11 +60,11 @@ public final class ParamTypeAttribute extends SingleEnumerateAttribute<ParamType
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public ParamType[] getSupportedValues() {
-        return ParamType.values();
+    public List<ParamType> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(ParamType.values()));
     }
 }

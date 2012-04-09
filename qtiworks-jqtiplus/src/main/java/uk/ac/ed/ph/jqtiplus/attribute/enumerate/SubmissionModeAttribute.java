@@ -36,9 +36,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Attribute with submissionMode value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class SubmissionModeAttribute extends SingleEnumerateAttribute<SubmissionMode> {
@@ -56,11 +60,11 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
 
     /**
      * Gets all supported values of this attribute.
-     * 
+     *
      * @return all supported values of this attribute
      */
     @Override
-    public SubmissionMode[] getSupportedValues() {
-        return SubmissionMode.values();
+    public List<SubmissionMode> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(SubmissionMode.values()));
     }
 }
