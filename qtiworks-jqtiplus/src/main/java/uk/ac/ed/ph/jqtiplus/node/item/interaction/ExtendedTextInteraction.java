@@ -357,14 +357,16 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         //handle record special case
         Value result;
         if (responseCardinality.isRecord()) {
-            String responseString = null;
+            String responseString;
             if (stringResponseData != null) {
                 if (stringResponseData.length > 1) {
                     throw new ResponseBindingException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
                 responseString = stringResponseData[0];
             }
-
+            else {
+                responseString = "";
+            }
             result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
         }
         else if (responseBaseType.isInteger()) {

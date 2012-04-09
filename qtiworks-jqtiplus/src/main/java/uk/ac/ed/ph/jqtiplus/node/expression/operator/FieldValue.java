@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The field-value operator takes A sub-expression with A record container value. The result is the value
  * of the field with the specified fieldIdentifier. If there is no field with that identifier then the
  * result of the operator is NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -81,7 +81,7 @@ public class FieldValue extends AbstractFunctionalExpression {
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -91,7 +91,7 @@ public class FieldValue extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
@@ -106,7 +106,7 @@ public class FieldValue extends AbstractFunctionalExpression {
         }
 
         final RecordEx record = (RecordEx) getChildren().get(0);
-        final Expression child = record.getChild(getIdentifier().toString());
+        final Expression child = record.getChild(getIdentifier());
 
         return child != null ? child.getProducedBaseTypes(context) : super.getProducedBaseTypes(context);
     }

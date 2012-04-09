@@ -56,7 +56,7 @@ import java.util.List;
  * All sub-expressions with NULL values are ignored. If no sub-expressions are given (or all are NULL) then the result is NULL.
  * <p>
  * This operator is not in specification, but it is needed for testing and to allow implementation of other expressions (for example fieldValue).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -79,13 +79,13 @@ public class RecordEx extends AbstractFunctionalExpression {
 
     /**
      * Gets value of identifiers attribute.
-     * 
+     *
      * @return value of identifiers attribute
      */
     public List<Identifier> getIdentifiers() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getComputedValue();
     }
-    
+
     public void setIdentifiers(List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).setValue(value);
     }
@@ -93,11 +93,11 @@ public class RecordEx extends AbstractFunctionalExpression {
     /**
      * Gets child of this expression with given identifier or null.
      * Identifier is not part of child, but this expression.
-     * 
+     *
      * @param identifier identifier of child
      * @return Gets child of this expression with given name or null
      */
-    public Expression getChild(String identifier) {
+    public Expression getChild(Identifier identifier) {
         final int index = getIdentifiers().indexOf(identifier);
         if (index != -1 && index < getChildren().size()) {
             return getChildren().get(index);

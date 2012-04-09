@@ -185,51 +185,47 @@ public class BranchRule extends AbstractJump {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
+        final Identifier target = getTarget();
         final TestPart parentTestPart = getParent().getParentTestPart();
-        if (getTarget() != null && parentTestPart.areJumpsEnabled()) {
+        if (target != null && parentTestPart.areJumpsEnabled()) {
             if (isSpecial()) {
                 if (isExitTestPart()) {
                     if (getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + getTarget()));
+                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
                     }
                 }
                 else if (isExitSection()) {
                     if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + getTarget()));
+                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
                     }
                 }
             }
             else {
-                final ControlObject<?> targetControlObject = context.getSubjectTest().lookupDescendentOrSelf(getTarget());
+                final AbstractPart targetPart = context.getSubjectTest().lookupDescendentOrSelf(target);
 
-                if (targetControlObject == null) {
-                    context.add(new ItemFlowValidationError(this, "Cannot find target: " + getTarget()));
-                }
-                else if (targetControlObject instanceof AssessmentTest) {
-                    context.add(new ItemFlowValidationError(this, "Cannot jump to assessmentTest: " + getTarget()));
+                if (targetPart == null) {
+                    context.add(new ItemFlowValidationError(this, "Cannot find target: " + target));
                 }
                 else {
-                    final AbstractPart targetAbstractPart = (AbstractPart) targetControlObject;
-
                     final int parentIdex = getParent().getGlobalIndex();
-                    final int targetIndex = targetControlObject.getGlobalIndex();
+                    final int targetIndex = targetPart.getGlobalIndex();
 
-                    if (getParent() instanceof TestPart && (targetControlObject instanceof AssessmentSection || targetControlObject instanceof AssessmentItemRef)) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetControlObject.getClassTag() + ": " + getTarget()));
+                    if (getParent() instanceof TestPart && (targetPart instanceof AssessmentSection || targetPart instanceof AssessmentItemRef)) {
+                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetPart.getClassTag() + ": " + target));
                     }
                     else if (targetIndex <= parentIdex) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump back to: " + getTarget()));
+                        context.add(new ItemFlowValidationError(this, "Cannot jump back to: " + target));
                     }
-                    else if (targetAbstractPart.isChildOf(getParent())) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump to own child: " + getTarget()));
+                    else if (targetPart.isChildOf(getParent())) {
+                        context.add(new ItemFlowValidationError(this, "Cannot jump to own child: " + target));
                     }
                     else {
                         if (!getParent().isJumpSafeSource()) {
                             context.add(new ValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings."));
                         }
 
-                        if (!targetAbstractPart.isJumpSafeTarget()) {
-                            context.add(new ValidationWarning(this, "Target is not safe for jump: " + getTarget() + " Check selection and ordering settings."));
+                        if (!targetPart.isJumpSafeTarget()) {
+                            context.add(new ValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings."));
                         }
                     }
                 }
