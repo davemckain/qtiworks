@@ -209,7 +209,7 @@ public final class ObjectUtilities {
             /* Now do the equals sign */
             result.append("=");
             /* Now get the value of the property */
-            Object value = null;
+            Object value;
             try {
                 value = method.invoke(bean);
             }
@@ -220,7 +220,7 @@ public final class ObjectUtilities {
             /* Now print something */
             if (propertyOption != null && propertyOption == PropertyOptions.HIDE_VALUE) {
                 /* Value is to be hidden */
-                result.append(value != null ? "[hidden]" : value);
+                result.append("[hidden]");
             }
             else {
                 if (value instanceof Object[]) {
