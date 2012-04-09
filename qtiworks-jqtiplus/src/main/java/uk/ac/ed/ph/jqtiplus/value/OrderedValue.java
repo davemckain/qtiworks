@@ -33,13 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 
 /**
  * Implementation of "sequence-type" container.
  * <p>
  * This container can be ordered or NULL (if empty).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
@@ -56,7 +55,7 @@ public final class OrderedValue extends ListValue {
 
     /**
      * Constructs empty (NULL) <code>OrderedValue</code> container and adds given <code>SingleValue</code> into it.
-     * 
+     *
      * @param value added <code>SingleValue</code>
      */
     public OrderedValue(SingleValue value) {
@@ -65,21 +64,21 @@ public final class OrderedValue extends ListValue {
 
     /**
      * Constructs empty (NULL) <code>OrderedValue</code> container and adds all given <code>SingleValue</code>s into it.
-     * 
+     *
      * @param values added <code>SingleValue</code>s
      */
-    public OrderedValue(SingleValue[] values) {
+    public OrderedValue(Iterable<? extends SingleValue> values) {
         super(values);
     }
 
     /**
      * Constructs empty (NULL) <code>OrderedValue</code> container and adds given <code>OrderedValue</code> into it.
-     * 
+     *
      * @param value added <code>OrderedValue</code>
      */
     public OrderedValue(OrderedValue value) {
         super();
-        add(value);
+        merge(value);
     }
 
     @Override
@@ -98,7 +97,7 @@ public final class OrderedValue extends ListValue {
 
     /**
      * Returns true if this container contains given <code>OrderedValue</code>; false otherwise.
-     * 
+     *
      * @param orderedValue given <code>OrderedValue</code>
      * @return true if this container contains given <code>OrderedValue</code>; false otherwise
      */
@@ -138,31 +137,6 @@ public final class OrderedValue extends ListValue {
         }
 
         return false; // End of this container. Stop searching.
-    }
-
-    /**
-     * Adds <code>OrderedValue</code> into this container.
-     * <p>
-     * Takes all values from <code>OrderedValue</code> container and adds them into this container.
-     * <p>
-     * Ordered container can contain only values of the same <code>BaseType</code>.
-     * <p>
-     * NULL <code>OrderedValue</code> container is ignored.
-     * 
-     * @param value added <code>OrderedValue</code>
-     * @return true if value was added; false otherwise
-     * @throws QtiBaseTypeException if <code>BaseType</code> is not same
-     */
-    public boolean add(OrderedValue value) throws QtiBaseTypeException {
-        if (value.isNull()) {
-            return false;
-        }
-
-        if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
-        }
-
-        return container.addAll(value.container);
     }
 
     @Override

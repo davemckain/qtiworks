@@ -33,13 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 
 /**
  * Implementation of "bag-type" container.
  * <p>
  * This container can be multiple or NULL (if empty).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
@@ -56,7 +55,7 @@ public final class MultipleValue extends ListValue {
 
     /**
      * Constructs empty (NULL) <code>MultipleValue</code> container and adds given <code>SingleValue</code> into it.
-     * 
+     *
      * @param value added <code>SingleValue</code>
      */
     public MultipleValue(SingleValue value) {
@@ -65,22 +64,11 @@ public final class MultipleValue extends ListValue {
 
     /**
      * Constructs empty (NULL) <code>MultipleValue</code> container and adds all given <code>SingleValue</code>s into it.
-     * 
+     *
      * @param values added <code>SingleValue</code>s
      */
-    public MultipleValue(SingleValue[] values) {
+    public MultipleValue(Iterable<? extends SingleValue> values) {
         super(values);
-    }
-
-    /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container and adds given <code>MultipleValue</code> into it.
-     * 
-     * @param value added <code>MultipleValue</code>
-     */
-    public MultipleValue(MultipleValue value) {
-        super();
-
-        add(value);
     }
 
     @Override
@@ -99,7 +87,7 @@ public final class MultipleValue extends ListValue {
 
     /**
      * Returns true if this container contains given <code>MultipleValue</code>; false otherwise.
-     * 
+     *
      * @param multipleValue given <code>MultipleValue</code>
      * @return true if this container contains given <code>MultipleValue</code>; false otherwise
      */
@@ -117,37 +105,12 @@ public final class MultipleValue extends ListValue {
         return true;
     }
 
-    /**
-     * Adds <code>MultipleValue</code> into this container.
-     * <p>
-     * Takes all values from <code>MultipleValue</code> container and adds them into this container.
-     * <p>
-     * Multiple container can contain only values of the same <code>BaseType</code>.
-     * <p>
-     * NULL <code>MultipleValue</code> container is ignored.
-     * 
-     * @param value added <code>MultipleValue</code>
-     * @return true if value was added; false otherwise
-     * @throws QtiBaseTypeException if <code>BaseType</code> is not same
-     */
-    public boolean add(MultipleValue value) throws QtiBaseTypeException {
-        if (value.isNull()) {
-            return false;
-        }
-
-        if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
-        }
-
-        return container.addAll(value.container);
-    }
-
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof MultipleValue)) {
             return false;
         }
-        
+
         MultipleValue other = (MultipleValue) object;
         if (container.size() != other.container.size()) {
             return false;

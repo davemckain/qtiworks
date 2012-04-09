@@ -198,14 +198,14 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("textInteraction must be bound to string response data");
         }
-        final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
-        if (stringResponseData.length > 1) {
+        final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
+        if (stringResponseData.size() > 1) {
             throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
         }
 
         final Cardinality responseCardinality = responseDeclaration.getCardinality();
         final BaseType responseBaseType = responseDeclaration.getBaseType();
-        final String responseString = stringResponseData.length > 0 ? stringResponseData[0] : null;
+        final String responseString = !stringResponseData.isEmpty() ? stringResponseData.get(0) : null;
         final int base = getBase();
 
         Value result;

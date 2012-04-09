@@ -109,7 +109,7 @@ public class Ordered extends AbstractFunctionalExpression {
                     container.add((SingleValue) value);
                 }
                 else if (value.getCardinality() == Cardinality.ORDERED) {
-                    container.add((OrderedValue) value);
+                    container.merge((OrderedValue) value);
                 }
                 else {
                     throw new QtiLogicException("Invalid cardinality: " + value.getCardinality());

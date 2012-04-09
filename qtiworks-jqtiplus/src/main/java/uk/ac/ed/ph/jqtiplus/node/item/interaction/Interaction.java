@@ -57,6 +57,9 @@ import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Interactions allow the candidate to interact with the item.
@@ -185,20 +188,19 @@ public abstract class Interaction extends BodyElement {
             if (responseData.getType()!=ResponseDataType.STRING) {
                 throw new ResponseBindingException("Attempted to bind non-string response data to response with baseType " + responseBaseType);
             }
-            final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+            final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
             if (responseCardinality == Cardinality.SINGLE) {
-                if (stringResponseData.length == 0 || stringResponseData[0].trim().length() == 0) {
+                if (stringResponseData.isEmpty() || stringResponseData.get(0).trim().length() == 0) {
                     value = NullValue.INSTANCE;
                 }
                 else {
-                    value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData[0]);
+                    value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData.get(0));
                 }
             }
             else if (!(responseCardinality == Cardinality.RECORD)) {
-                final SingleValue[] values = new SingleValue[stringResponseData.length];
-
-                for (int i = 0; i < stringResponseData.length; i++) {
-                    values[i] = responseBaseType.parseSingleValue(stringResponseData[i]);
+                final List<SingleValue> values = new ArrayList<SingleValue>(stringResponseData.size());
+                for (String stringResponseDatum : stringResponseData) {
+                    values.add(responseBaseType.parseSingleValue(stringResponseDatum));
                 }
 
                 if (responseCardinality == Cardinality.MULTIPLE) {

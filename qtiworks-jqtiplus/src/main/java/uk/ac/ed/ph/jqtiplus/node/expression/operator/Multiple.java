@@ -107,7 +107,7 @@ public class Multiple extends AbstractFunctionalExpression {
                     container.add((SingleValue) childValue);
                 }
                 else if (childValue.getCardinality() == Cardinality.MULTIPLE) {
-                    container.add((MultipleValue) childValue);
+                    container.merge((MultipleValue) childValue);
                 }
                 else {
                     throw new QtiLogicException("Invalid cardinality: " + childValue.getCardinality());

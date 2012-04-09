@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Defines the <tt>org.qtitools.mathassess.MathEntryInteraction</tt>
  * customInteraction
- * 
+ *
  * @author Jonathon Hare
  */
 public final class MathEntryInteraction extends CustomInteraction {
@@ -83,7 +83,7 @@ public final class MathEntryInteraction extends CustomInteraction {
 
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
-    public MathEntryInteraction(JqtiExtensionPackage jqtiExtensionPackage, XmlNode parent) {
+    public MathEntryInteraction(final JqtiExtensionPackage jqtiExtensionPackage, final XmlNode parent) {
         super(jqtiExtensionPackage, parent);
 
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
@@ -93,7 +93,7 @@ public final class MathEntryInteraction extends CustomInteraction {
 
     /**
      * Get the value of the syntax attribute of the interaction.
-     * 
+     *
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
@@ -103,17 +103,17 @@ public final class MathEntryInteraction extends CustomInteraction {
 
     /**
      * Set the syntax attribute of the interaction.
-     * 
+     *
      * @param syntax value to set
      */
-    public void setSyntax(SyntaxType syntax) {
+    public void setSyntax(final SyntaxType syntax) {
         ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
     /**
      * Get the value of the printIdentifier attribute of the interaction.
-     * 
+     *
      * @return the value of the printIdentifier attribute
      */
     public Identifier getPrintIdentifier() {
@@ -123,17 +123,17 @@ public final class MathEntryInteraction extends CustomInteraction {
 
     /**
      * Set the printIdentifier attribute of the interaction.
-     * 
+     *
      * @param printIdentifier value to set
      */
-    public void setPrintIdentifier(Identifier printIdentifier) {
+    public void setPrintIdentifier(final Identifier printIdentifier) {
         ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(printIdentifier);
     }
 
     /**
      * Get the responseDeclaration associated the printIdentifier attribute.
-     * 
+     *
      * @return associated responseDeclaration, or null if not found (or
      *         printIdentifier is not set)
      */
@@ -145,7 +145,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -171,17 +171,17 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void bindResponse(ItemSessionController itemController, ResponseData responseData) throws ResponseBindingException {
+    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("mathEntryInteraction must be bound to string response data");
         }
-        String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
-        if (stringResponseData.length != 1) {
+        final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
+        if (stringResponseData.size() != 1) {
             throw new ResponseBindingException("Expected one string value to be bound to this response.");
         }
 
         /* Parse the raw ASCIIMath input */
-        final String asciiMathInput = stringResponseData[0].trim();
+        final String asciiMathInput = stringResponseData.get(0).trim();
         Value responseValue;
         Value printResponseValue;
         logger.debug("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);
@@ -216,7 +216,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
         /* Currently, a successful binding is considered the same as a response
          * being valid */
         return true;

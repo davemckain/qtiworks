@@ -193,7 +193,7 @@ public final class XsltParamBuilder {
             responseInputElement.setAttribute("identifier", interactionIdentifier);
             switch (responseData.getType()) {
                 case STRING:
-                    final String [] stringResponses = ((StringResponseData) responseData).getResponseData();
+                    final List<String> stringResponses = ((StringResponseData) responseData).getResponseData();
                     for (final String string : stringResponses) {
                         final Element valueChild = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
                         valueChild.appendChild(doc.createTextNode(string));

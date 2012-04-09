@@ -349,7 +349,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("extendedTextInteraction must be bound to string response data");
         }
-        final String[] stringResponseData = ((StringResponseData) responseData).getResponseData();
+        final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
         final Cardinality responseCardinality = responseDeclaration.getCardinality();
         final BaseType responseBaseType = responseDeclaration.getBaseType();
         final int base = getBase();
@@ -359,10 +359,10 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (responseCardinality.isRecord()) {
             String responseString;
             if (stringResponseData != null) {
-                if (stringResponseData.length > 1) {
+                if (stringResponseData.size() > 1) {
                     throw new ResponseBindingException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
-                responseString = stringResponseData[0];
+                responseString = stringResponseData.get(0);
             }
             else {
                 responseString = "";
@@ -371,10 +371,9 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         }
         else if (responseBaseType.isInteger()) {
             if (responseCardinality.isList()) {
-                final IntegerValue[] values = new IntegerValue[stringResponseData.length];
-
-                for (int i = 0; i < stringResponseData.length; i++) {
-                    values[i] = new IntegerValue(stringResponseData[i], base);
+                final List<IntegerValue> values = new ArrayList<IntegerValue>(stringResponseData.size());
+                for (String stringResponseDatum : stringResponseData) {
+                    values.add(new IntegerValue(stringResponseDatum, base));
                 }
 
                 if (responseCardinality == Cardinality.MULTIPLE) {
@@ -385,7 +384,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 }
             }
             else {
-                result = new IntegerValue(stringResponseData[0], base);
+                result = new IntegerValue(stringResponseData.get(0), base);
             }
         }
         else {

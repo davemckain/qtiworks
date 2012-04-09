@@ -33,9 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Encapsulates string-based response data, which is represented as an array
@@ -44,36 +45,36 @@ import java.util.Arrays;
  * @author David McKain
  */
 public final class StringResponseData implements ResponseData {
-    
+
     private static final long serialVersionUID = -3969978393997321192L;
-    
-    private String[] responseData;
-    
+
+    private final List<String> responseData;
+
+    public StringResponseData(List<String> responseData) {
+        this.responseData = new ArrayList<String>(responseData);
+    }
+
     public StringResponseData(String[] responseData) {
-        this.responseData = responseData!=null ? responseData : StringUtilities.EMPTY_STRING_ARRAY;
+        this(Arrays.asList(responseData));
     }
-    
+
     public StringResponseData(String singleResponse) {
-        this.responseData = singleResponse!=null ? new String[] { singleResponse } : StringUtilities.EMPTY_STRING_ARRAY;
+        this(Arrays.asList(singleResponse));
     }
-    
+
     @Override
     public ResponseDataType getType() {
         return ResponseDataType.STRING;
     }
 
-    public String[] getResponseData() {
-        return responseData;
+    public List<String> getResponseData() {
+        return Collections.unmodifiableList(responseData);
     }
-    
-    public void setResponseData(String[] responseData) {
-        this.responseData = responseData;
-    }
-    
-    
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(" + Arrays.toString(responseData) + ")";
+                + "(" + responseData + ")";
     }
 }

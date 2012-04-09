@@ -47,7 +47,7 @@ import java.util.List;
  * This container can contain 0..N non NULL single values of the same <code>BaseType</code>.
  * <p>
  * This container can be multiple, ordered or NULL (if empty).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -68,7 +68,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     /**
      * Constructs empty (NULL) <code>ListValue</code> container and adds given <code>SingleValue</code> into it.
-     * 
+     *
      * @param value added <code>SingleValue</code>
      */
     public ListValue(SingleValue value) {
@@ -78,11 +78,11 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
     }
 
     /**
-     * Constructs empty (NULL) <code>ListValue</code> container and adds all given <code>SingleValue</code>s into it.
-     * 
+     * Constructs empty (NULL) <code>ListValue</code> container and copies all given <code>SingleValue</code>s into it.
+     *
      * @param values added <code>SingleValue</code>s
      */
-    public ListValue(SingleValue[] values) {
+    public ListValue(Iterable<? extends SingleValue> values) {
         container = new ArrayList<SingleValue>();
 
         for (final SingleValue value : values) {
@@ -116,14 +116,14 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     /**
      * Returns true if this container is ordered; false otherwise.
-     * 
+     *
      * @return true if this container is ordered; false otherwise
      */
     public abstract boolean isOrdered();
 
     /**
      * Returns true if this container contains given <code>SingleValue</code>; false otherwise.
-     * 
+     *
      * @param value given <code>SingleValue</code>
      * @return true if this container contains given <code>SingleValue</code>; false otherwise
      */
@@ -133,7 +133,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     /**
      * Returns number of occurrences of given <code>SingleValue</code>.
-     * 
+     *
      * @param value given <code>SingleValue</code>
      * @return number of occurrences of given <code>SingleValue</code>
      */
@@ -151,7 +151,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     /**
      * Returns <code>SingleValue</code> on given index.
-     * 
+     *
      * @param index given index
      * @return <code>SingleValue</code> on given index
      */
@@ -161,7 +161,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     /**
      * Returns a list of <code>SingleValue</code>s.
-     * 
+     *
      * @return list of <code>SingleValue</code>s.
      */
     public List<SingleValue> getAll() {
@@ -174,7 +174,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * This container can contain only values of the same <code>BaseType</code>.
      * <p>
      * NULL <code>SingleValue</code> is ignored.
-     * 
+     *
      * @param value added <code>SingleValue</code>
      * @return true if value was added; false otherwise
      * @throws QtiBaseTypeException if <code>BaseType</code> is not same
@@ -191,9 +191,21 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
         return container.add(value);
     }
 
+    public boolean merge(ListValue value) throws QtiBaseTypeException {
+        if (value.isNull()) {
+            return false;
+        }
+
+        if (!isNull() && getBaseType() != value.getBaseType()) {
+            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
+        }
+
+        return container.addAll(value.container);
+    }
+
     /**
      * Removes all occurrences of given <code>SingleValue</code> from this container.
-     * 
+     *
      * @param value given <code>SingleValue</code>
      * @return true if value was removed (container contained this value); false otherwise
      */
@@ -225,7 +237,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
     public final int hashCode() {
         return container.hashCode();
     }
-    
+
     @Override
     public final String toQtiString() {
         return container.toString();
