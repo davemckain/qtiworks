@@ -187,13 +187,11 @@ public abstract class Choice extends BodyElement {
     @Override
     public void validate(final ValidationContext context) {
         super.validate(context);
-        System.out.println("VALIDATE!");
 
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
         final Identifier identifier = getIdentifier();
         final AssessmentItem item = context.getSubjectItem();
         final List<Choice> choices = QueryUtils.search(Choice.class, item.getItemBody());
-        System.out.println("CHOICES ARE " + choices);
         for (final Choice choice : choices) {
             if (choice != this && choice.getIdentifier().equals(identifier)) {
                 context.add(new ValidationError(this, "The identifier " + identifier + " of this choice is used by another choice"));
