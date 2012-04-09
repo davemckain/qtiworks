@@ -33,14 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * objectFlow marker interface
- * 
+ *
  * @author Jonathon Hare
  */
-public interface ObjectFlow extends XmlNode {
+public interface ObjectFlow extends Content {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "objectFlow";

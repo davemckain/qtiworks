@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeCondition;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeElseIf;
 
 import java.util.List;
 
-
 /**
  * Group of outcomeElseIf children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeElseIfGroup extends AbstractNodeGroup {
+public final class OutcomeElseIfGroup extends AbstractNodeGroup<OutcomeElseIf> {
 
     private static final long serialVersionUID = 7361297940568871513L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public OutcomeElseIfGroup(OutcomeCondition parent) {
@@ -61,19 +59,18 @@ public class OutcomeElseIfGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<OutcomeElseIf> getOutcomeElseIfs() {
-        return (List<OutcomeElseIf>) (List<? extends XmlNode>) getChildren();
+        return  getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

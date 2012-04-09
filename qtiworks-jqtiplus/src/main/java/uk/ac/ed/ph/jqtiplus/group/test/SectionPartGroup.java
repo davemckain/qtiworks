@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
@@ -44,16 +43,16 @@ import java.util.List;
 
 /**
  * Group of sectionPart children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class SectionPartGroup extends AbstractNodeGroup {
+public final class SectionPartGroup extends AbstractNodeGroup<SectionPart> {
 
     private static final long serialVersionUID = 5679547727938708339L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public SectionPartGroup(AssessmentSection parent) {
@@ -71,19 +70,18 @@ public class SectionPartGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<SectionPart> getSectionParts() {
-        return (List<SectionPart>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

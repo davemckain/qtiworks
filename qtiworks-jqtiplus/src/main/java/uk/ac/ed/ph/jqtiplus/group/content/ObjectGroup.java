@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
-
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ObjectGroup extends AbstractNodeGroup {
+public final class ObjectGroup extends AbstractNodeGroup<Object> {
 
     private static final long serialVersionUID = 8768771986890876537L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ObjectGroup(XmlNode parent) {
@@ -58,7 +57,7 @@ public class ObjectGroup extends AbstractNodeGroup {
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      * @param required if true then group is mandatory
      */
@@ -68,17 +67,17 @@ public class ObjectGroup extends AbstractNodeGroup {
 
     /**
      * Gets Object child.
-     * 
+     *
      * @return Object child, or null if it doesn't exist.
      * @see #setObject
      */
     public Object getObject() {
-        return (Object) getChild();
+        return getChild();
     }
 
     /**
      * Sets new Object child.
-     * 
+     *
      * @param object new child
      * @see #getObject
      */
@@ -90,7 +89,7 @@ public class ObjectGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
 import uk.ac.ed.ph.jqtiplus.node.result.Identification;
 
-
 /**
  * Group of identification child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class IdentificationGroup extends AbstractNodeGroup {
+public final class IdentificationGroup extends AbstractNodeGroup<Identification> {
 
     private static final long serialVersionUID = 3185024329320657981L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public IdentificationGroup(Context parent) {
@@ -58,17 +57,17 @@ public class IdentificationGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setIdentification
      */
     public Identification getIdentification() {
-        return (Identification) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param identification new child
      * @see #getIdentification
      */
@@ -80,7 +79,7 @@ public class IdentificationGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

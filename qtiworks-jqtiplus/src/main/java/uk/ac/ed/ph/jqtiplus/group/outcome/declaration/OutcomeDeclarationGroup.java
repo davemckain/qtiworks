@@ -35,23 +35,22 @@ package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 
 import java.util.List;
 
 /**
  * Group of outcomeDeclaration children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeDeclarationGroup extends AbstractNodeGroup {
+public final class OutcomeDeclarationGroup extends AbstractNodeGroup<OutcomeDeclaration> {
 
     private static final long serialVersionUID = -1592008701965170483L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public OutcomeDeclarationGroup(AssessmentObject parent) {
@@ -60,19 +59,18 @@ public class OutcomeDeclarationGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<OutcomeDeclaration> getOutcomeDeclarations() {
-        return (List<OutcomeDeclaration>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

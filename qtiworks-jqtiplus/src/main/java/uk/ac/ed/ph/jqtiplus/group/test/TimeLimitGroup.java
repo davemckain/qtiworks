@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 
-
 /**
  * Group of timeLimits child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class TimeLimitGroup extends AbstractNodeGroup {
+public final class TimeLimitGroup extends AbstractNodeGroup<TimeLimit> {
 
     private static final long serialVersionUID = -4277774618437451112L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TimeLimitGroup(ControlObject<?> parent) {
@@ -58,17 +57,17 @@ public class TimeLimitGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setTimeLimit
      */
     public TimeLimit getTimeLimit() {
-        return (TimeLimit) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param timeLimit new child
      * @see #getTimeLimit
      */
@@ -80,7 +79,7 @@ public class TimeLimitGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

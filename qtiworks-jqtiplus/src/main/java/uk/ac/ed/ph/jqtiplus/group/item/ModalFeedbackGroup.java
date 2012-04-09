@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.item;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.ModalFeedback;
 
 import java.util.List;
 
-
 /**
  * Group of modalFeedback children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ModalFeedbackGroup extends AbstractNodeGroup {
+public final class ModalFeedbackGroup extends AbstractNodeGroup<ModalFeedback> {
 
     private static final long serialVersionUID = 7540621518736433863L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ModalFeedbackGroup(AssessmentItem parent) {
@@ -61,12 +59,11 @@ public class ModalFeedbackGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<ModalFeedback> getModalFeedback() {
-        return (List<ModalFeedback>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     @Override

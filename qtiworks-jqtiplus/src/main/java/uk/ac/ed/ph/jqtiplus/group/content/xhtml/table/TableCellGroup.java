@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.TableCell;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.TableCellType;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tr;
@@ -44,16 +43,16 @@ import java.util.List;
 
 /**
  * Group of tableCell children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TableCellGroup extends AbstractNodeGroup {
+public class TableCellGroup extends AbstractNodeGroup<TableCell> {
 
     private static final long serialVersionUID = 3647300480260318987L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TableCellGroup(Tr parent) {
@@ -77,19 +76,18 @@ public class TableCellGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TableCell> getDlElements() {
-        return (List<TableCell>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

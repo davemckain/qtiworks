@@ -34,28 +34,21 @@
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.list.DlElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.list.DlElementType;
 
 import java.util.List;
 
-
 /**
  * Group of dlElement children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class DlElementGroup extends AbstractNodeGroup {
+public final class DlElementGroup extends AbstractNodeGroup<DlElement> {
 
     private static final long serialVersionUID = 1889833531495911861L;
 
-    /**
-     * Constructs group.
-     * 
-     * @param parent parent of created group
-     */
     public DlElementGroup(BodyElement parent) {
         super(parent, BodyElement.DISPLAY_NAME, null, null);
 
@@ -76,41 +69,19 @@ public class DlElementGroup extends AbstractNodeGroup {
     }
 
     /**
-     * Gets child.
-     * 
-     * @return child
-     * @see #setDlElement
-     */
-    public DlElement getDlElement() {
-        return getChildren().size() != 0 ? (DlElement) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * 
-     * @param dlElement new child
-     * @see #getDlElement
-     */
-    public void setDlElement(DlElement dlElement) {
-        getChildren().clear();
-        getChildren().add(dlElement);
-    }
-
-    /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<DlElement> getDlElements() {
-        return (List<DlElement>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

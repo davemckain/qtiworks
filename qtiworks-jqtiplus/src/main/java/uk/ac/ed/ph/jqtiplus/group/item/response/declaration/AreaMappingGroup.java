@@ -40,16 +40,16 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 
 /**
  * Group of AreaMapping children
- * 
+ *
  * @author Jonathon Hare
  */
-public class AreaMappingGroup extends AbstractNodeGroup {
+public final class AreaMappingGroup extends AbstractNodeGroup<AreaMapping> {
 
     private static final long serialVersionUID = 5207162137272888723L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public AreaMappingGroup(ResponseDeclaration parent) {
@@ -58,17 +58,17 @@ public class AreaMappingGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setAreaMapping
      */
     public AreaMapping getAreaMapping() {
-        return (AreaMapping) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param mapping new child
      * @see #getAreaMapping
      */
@@ -80,7 +80,7 @@ public class AreaMappingGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

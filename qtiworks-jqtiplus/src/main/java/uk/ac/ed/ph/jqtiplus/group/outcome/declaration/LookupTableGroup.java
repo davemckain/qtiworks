@@ -42,16 +42,16 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 
 /**
  * Group of lookupTable child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class LookupTableGroup extends AbstractNodeGroup {
+public final class LookupTableGroup extends AbstractNodeGroup<LookupTable> {
 
     private static final long serialVersionUID = 8957840239215915389L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public LookupTableGroup(OutcomeDeclaration parent) {
@@ -69,17 +69,17 @@ public class LookupTableGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setLookupTable
      */
     public LookupTable getLookupTable() {
-        return (LookupTable) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param lookupTable new child
      * @see #getLookupTable
      */
@@ -91,7 +91,7 @@ public class LookupTableGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
-
 /**
  * Group of itemSessionControl child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class ItemSessionControlGroup extends AbstractNodeGroup {
+public final class ItemSessionControlGroup extends AbstractNodeGroup<ItemSessionControl> {
 
     private static final long serialVersionUID = -2510238710166216308L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ItemSessionControlGroup(AbstractPart parent) {
@@ -58,17 +57,17 @@ public class ItemSessionControlGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setItemSessionControl
      */
     public ItemSessionControl getItemSessionControl() {
-        return (ItemSessionControl) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param itemSessionControl new child
      * @see #getItemSessionControl
      */
@@ -80,7 +79,7 @@ public class ItemSessionControlGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

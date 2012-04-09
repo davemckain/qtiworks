@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.CandidateComment;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 
-
 /**
  * Group of candidateComment child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class CandidateCommentGroup extends AbstractNodeGroup {
+public final class CandidateCommentGroup extends AbstractNodeGroup<CandidateComment> {
 
     private static final long serialVersionUID = 4841058245935379411L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public CandidateCommentGroup(ItemResult parent) {
@@ -58,17 +57,17 @@ public class CandidateCommentGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setCandidateComment
      */
     public CandidateComment getCandidateComment() {
-        return (CandidateComment) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param candidateComment new child
      * @see #getCandidateComment
      */
@@ -80,7 +79,7 @@ public class CandidateCommentGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

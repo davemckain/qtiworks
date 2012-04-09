@@ -40,16 +40,16 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseElse;
 
 /**
  * Group of responseElse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseElseGroup extends AbstractNodeGroup {
+public final class ResponseElseGroup extends AbstractNodeGroup<ResponseElse> {
 
     private static final long serialVersionUID = 2103491746328094206L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ResponseElseGroup(ResponseCondition parent) {
@@ -58,17 +58,17 @@ public class ResponseElseGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setResponseElse
      */
     public ResponseElse getResponseElse() {
-        return (ResponseElse) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param responseElse new child
      * @see #getResponseElse
      */
@@ -80,7 +80,7 @@ public class ResponseElseGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

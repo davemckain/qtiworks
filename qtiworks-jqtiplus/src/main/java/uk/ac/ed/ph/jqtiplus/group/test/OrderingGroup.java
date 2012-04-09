@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 
-
 /**
  * Group of ordering child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OrderingGroup extends AbstractNodeGroup {
+public final class OrderingGroup extends AbstractNodeGroup<Ordering> {
 
     private static final long serialVersionUID = -314094244801543514L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public OrderingGroup(AssessmentSection parent) {
@@ -58,17 +57,17 @@ public class OrderingGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setOrdering
      */
     public Ordering getOrdering() {
-        return (Ordering) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param ordering new child
      * @see #getOrdering
      */
@@ -80,7 +79,7 @@ public class OrderingGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

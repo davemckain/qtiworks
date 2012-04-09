@@ -40,16 +40,16 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 
 /**
  * Group of defaultValue child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class DefaultValueGroup extends AbstractNodeGroup {
+public final class DefaultValueGroup extends AbstractNodeGroup<DefaultValue> {
 
     private static final long serialVersionUID = -849789190894504421L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public DefaultValueGroup(VariableDeclaration parent) {
@@ -58,17 +58,17 @@ public class DefaultValueGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setDefaultValue
      */
     public DefaultValue getDefaultValue() {
-        return (DefaultValue) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param defaultValue new child
      * @see #getDefaultValue
      */
@@ -80,7 +80,7 @@ public class DefaultValueGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

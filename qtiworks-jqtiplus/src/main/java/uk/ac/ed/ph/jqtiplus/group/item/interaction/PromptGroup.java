@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.BlockInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Prompt;
 
-
 /**
  * Group of prompt child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class PromptGroup extends AbstractNodeGroup {
+public final class PromptGroup extends AbstractNodeGroup<Prompt> {
 
     private static final long serialVersionUID = -3440936238732152194L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public PromptGroup(BlockInteraction parent) {
@@ -58,17 +57,17 @@ public class PromptGroup extends AbstractNodeGroup {
 
     /**
      * Gets prompt child.
-     * 
+     *
      * @return Prompt child, or null if it doesn't exist.
      * @see #setPrompt
      */
     public Prompt getPrompt() {
-        return (Prompt) getChild();
+        return getChild();
     }
 
     /**
      * Sets prompt child.
-     * 
+     *
      * @param prompt Prompt child to set.
      * @see #getPrompt
      */
@@ -80,7 +79,7 @@ public class PromptGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

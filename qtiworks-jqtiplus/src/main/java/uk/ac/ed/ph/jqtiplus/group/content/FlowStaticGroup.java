@@ -41,16 +41,16 @@ import java.util.List;
 
 /**
  * Group of flow children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class FlowStaticGroup extends AbstractContentNodeGroup {
+public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
 
     private static final long serialVersionUID = 252407139619211538L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public FlowStaticGroup(XmlNode parent) {
@@ -69,7 +69,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setFlowStatic
      */
@@ -79,7 +79,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Sets new child.
-     * 
+     *
      * @param flow new child
      * @see #getFlowStatic
      */
@@ -90,7 +90,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
     @SuppressWarnings("unchecked")
@@ -102,7 +102,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

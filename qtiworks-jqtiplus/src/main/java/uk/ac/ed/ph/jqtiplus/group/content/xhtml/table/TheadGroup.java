@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Thead;
 
-
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TheadGroup extends AbstractNodeGroup {
+public final class TheadGroup extends AbstractNodeGroup<Thead> {
 
     private static final long serialVersionUID = 1884153251149664177L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TheadGroup(Table parent) {
@@ -58,17 +57,17 @@ public class TheadGroup extends AbstractNodeGroup {
 
     /**
      * Gets thead child.
-     * 
+     *
      * @return thead child, or null if it doesn't exist.
      * @see #setThead
      */
     public Thead getThead() {
-        return (Thead) getChild();
+        return getChild();
     }
 
     /**
      * Sets new thead child.
-     * 
+     *
      * @param thead new child
      * @see #getThead
      */
@@ -80,7 +79,7 @@ public class TheadGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

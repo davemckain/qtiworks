@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Colgroup;
 
 import java.util.List;
 
-
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ColgroupGroup extends AbstractNodeGroup {
+public final class ColgroupGroup extends AbstractNodeGroup<Colgroup> {
 
     private static final long serialVersionUID = -1390159571079030615L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ColgroupGroup(BodyElement parent) {
@@ -61,19 +59,18 @@ public class ColgroupGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<Colgroup> getColgroups() {
-        return (List<Colgroup>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

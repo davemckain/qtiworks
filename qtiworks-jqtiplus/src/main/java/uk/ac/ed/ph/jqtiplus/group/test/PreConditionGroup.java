@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 
 import java.util.List;
 
-
 /**
  * Group of preCondition children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class PreConditionGroup extends AbstractNodeGroup {
+public final class PreConditionGroup extends AbstractNodeGroup<PreCondition> {
 
     private static final long serialVersionUID = 7873744576576748401L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public PreConditionGroup(AbstractPart parent) {
@@ -61,19 +59,18 @@ public class PreConditionGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<PreCondition> getPreConditions() {
-        return (List<PreCondition>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

@@ -41,16 +41,16 @@ import java.util.List;
 
 /**
  * Group of block children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class BlockGroup extends AbstractContentNodeGroup {
+public final class BlockGroup extends AbstractContentNodeGroup<Block> {
 
     private static final long serialVersionUID = 4196445027200459122L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public BlockGroup(XmlNode parent) {
@@ -68,41 +68,19 @@ public class BlockGroup extends AbstractContentNodeGroup {
     }
 
     /**
-     * Gets child.
-     * 
-     * @return child
-     * @see #setBlock
-     */
-    public Block getBlock() {
-        return getChildren().size() != 0 ? (Block) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * 
-     * @param block new child
-     * @see #getBlock
-     */
-    public void setBlock(Block block) {
-        getChildren().clear();
-        getChildren().add(block);
-    }
-
-    /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<Block> getBlocks() {
-        return (List<Block>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

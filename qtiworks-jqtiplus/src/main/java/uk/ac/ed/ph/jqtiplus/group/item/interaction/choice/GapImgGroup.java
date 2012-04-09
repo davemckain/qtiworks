@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class GapImgGroup extends AbstractNodeGroup {
+public final class GapImgGroup extends AbstractNodeGroup<GapImg> {
 
     private static final long serialVersionUID = -2058016255519477530L;
 

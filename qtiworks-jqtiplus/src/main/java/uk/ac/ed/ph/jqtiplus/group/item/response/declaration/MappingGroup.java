@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.Mapping;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 
-
 /**
  * Group of Mapping children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class MappingGroup extends AbstractNodeGroup {
+public final class MappingGroup extends AbstractNodeGroup<Mapping> {
 
     private static final long serialVersionUID = 7281533281741060744L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public MappingGroup(ResponseDeclaration parent) {
@@ -58,17 +57,17 @@ public class MappingGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setMapping
      */
     public Mapping getMapping() {
-        return (Mapping) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param mapping new child
      * @see #getMapping
      */
@@ -80,7 +79,7 @@ public class MappingGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

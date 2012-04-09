@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSet;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSetContainer;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class SimpleMatchSetGroup extends AbstractNodeGroup {
+public final class SimpleMatchSetGroup extends AbstractNodeGroup<SimpleMatchSet> {
 
     private static final long serialVersionUID = -7702789052867612916L;
 
@@ -75,9 +74,8 @@ public class SimpleMatchSetGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<SimpleMatchSet> getSimpleMatchSets() {
-        return (List<SimpleMatchSet>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

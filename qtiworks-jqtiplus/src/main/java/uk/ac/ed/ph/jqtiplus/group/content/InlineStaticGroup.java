@@ -41,16 +41,16 @@ import java.util.List;
 
 /**
  * Group of inlineStatic children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class InlineStaticGroup extends AbstractContentNodeGroup {
+public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStatic> {
 
     private static final long serialVersionUID = -3625988403289280882L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public InlineStaticGroup(XmlNode parent) {
@@ -68,41 +68,19 @@ public class InlineStaticGroup extends AbstractContentNodeGroup {
     }
 
     /**
-     * Gets child.
-     * 
-     * @return child
-     * @see #setInlineStatic
-     */
-    public InlineStatic getInlineStatic() {
-        return getChildren().size() != 0 ? (InlineStatic) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * 
-     * @param inline new child
-     * @see #getInlineStatic
-     */
-    public void setInlineStatic(InlineStatic inline) {
-        getChildren().clear();
-        getChildren().add(inline);
-    }
-
-    /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<InlineStatic> getInlineStatics() {
-        return (List<InlineStatic>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

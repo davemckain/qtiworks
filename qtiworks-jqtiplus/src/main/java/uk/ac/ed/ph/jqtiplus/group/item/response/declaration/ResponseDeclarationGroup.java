@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.item.response.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 
 import java.util.List;
 
-
 /**
  * Group of responseDeclaration children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseDeclarationGroup extends AbstractNodeGroup {
+public final class ResponseDeclarationGroup extends AbstractNodeGroup<ResponseDeclaration> {
 
     private static final long serialVersionUID = 1599116368594322171L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ResponseDeclarationGroup(AssessmentItem parent) {
@@ -61,19 +59,18 @@ public class ResponseDeclarationGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<ResponseDeclaration> getResponseDeclarations() {
-        return (List<ResponseDeclaration>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

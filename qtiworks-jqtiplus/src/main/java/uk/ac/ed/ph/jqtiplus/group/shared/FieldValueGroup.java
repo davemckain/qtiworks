@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.shared;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class FieldValueGroup extends AbstractNodeGroup {
+public final class FieldValueGroup extends AbstractNodeGroup<FieldValue> {
 
     private static final long serialVersionUID = 5884381764228207L;
 
@@ -69,9 +68,8 @@ public class FieldValueGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<FieldValue> getFieldValues() {
-        return (List<FieldValue>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

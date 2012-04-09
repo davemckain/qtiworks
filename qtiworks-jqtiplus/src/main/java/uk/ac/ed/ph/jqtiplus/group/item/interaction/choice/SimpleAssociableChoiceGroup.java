@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoiceContainer;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
+public final class SimpleAssociableChoiceGroup extends AbstractNodeGroup<SimpleAssociableChoice> {
 
     private static final long serialVersionUID = 3086385158729326936L;
 
@@ -73,9 +72,8 @@ public class SimpleAssociableChoiceGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<SimpleAssociableChoice> getSimpleAssociableChoices() {
-        return (List<SimpleAssociableChoice>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

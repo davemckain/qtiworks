@@ -33,14 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-
 /**
  * block marker interface
- * 
+ *
  * @author Jonathon Hare
  */
-public interface Block extends XmlNode {
+public interface Block extends Content {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "block";

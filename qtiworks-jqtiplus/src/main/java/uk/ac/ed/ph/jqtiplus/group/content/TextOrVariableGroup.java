@@ -41,16 +41,16 @@ import java.util.List;
 
 /**
  * Group of flow children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TextOrVariableGroup extends AbstractContentNodeGroup {
+public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable> {
 
     private static final long serialVersionUID = -4777558280555802758L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TextOrVariableGroup(XmlNode parent) {
@@ -68,41 +68,19 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup {
     }
 
     /**
-     * Gets child.
-     * 
-     * @return child
-     * @see #setTextOrVariable
-     */
-    public TextOrVariable getTextOrVariable() {
-        return getChildren().size() != 0 ? (TextOrVariable) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * 
-     * @param textOrVariable new child
-     * @see #getTextOrVariable
-     */
-    public void setTextOrVariable(TextOrVariable textOrVariable) {
-        getChildren().clear();
-        getChildren().add(textOrVariable);
-    }
-
-    /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TextOrVariable> getTextOrVariables() {
-        return (List<TextOrVariable>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
 
-
 /**
  * Group of context child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class ContextGroup extends AbstractNodeGroup {
+public final class ContextGroup extends AbstractNodeGroup<Context> {
 
     private static final long serialVersionUID = -4966860718102843750L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ContextGroup(AssessmentResult parent) {
@@ -58,17 +57,17 @@ public class ContextGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setContext
      */
     public Context getContext() {
-        return (Context) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param context new child
      * @see #getContext
      */
@@ -80,7 +79,7 @@ public class ContextGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

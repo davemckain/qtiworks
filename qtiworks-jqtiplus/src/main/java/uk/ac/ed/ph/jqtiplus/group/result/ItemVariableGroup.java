@@ -34,26 +34,24 @@
 package uk.ac.ed.ph.jqtiplus.group.result;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariableType;
 
 import java.util.List;
 
-
 /**
  * Group of assessmentSection children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class ItemVariableGroup extends AbstractNodeGroup {
+public final class ItemVariableGroup extends AbstractNodeGroup<ItemVariable> {
 
     private static final long serialVersionUID = -1454402289748757510L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ItemVariableGroup(AbstractResult parent) {
@@ -72,19 +70,18 @@ public class ItemVariableGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<ItemVariable> getItemVariables() {
-        return (List<ItemVariable>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

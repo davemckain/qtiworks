@@ -342,7 +342,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
 
         final NodeGroupList groups = xmlNode.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
-            final NodeGroup group = groups.get(i);
+            final NodeGroup<?> group = groups.get(i);
             for (final XmlNode child : group.getChildren()) {
                 if (isRead(context, child)) {
                     return true;

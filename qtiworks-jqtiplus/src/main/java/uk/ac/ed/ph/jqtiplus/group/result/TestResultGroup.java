@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 
-
 /**
  * Group of testResult child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class TestResultGroup extends AbstractNodeGroup {
+public final class TestResultGroup extends AbstractNodeGroup<TestResult> {
 
     private static final long serialVersionUID = 773881262969698055L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TestResultGroup(AssessmentResult parent) {
@@ -58,17 +57,17 @@ public class TestResultGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setTestResult
      */
     public TestResult getTestResult() {
-        return (TestResult) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param testResult new child
      * @see #getTestResult
      */
@@ -80,7 +79,7 @@ public class TestResultGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

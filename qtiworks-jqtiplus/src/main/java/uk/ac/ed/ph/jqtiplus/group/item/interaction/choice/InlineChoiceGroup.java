@@ -34,19 +34,17 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.InlineChoiceInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.InlineChoice;
 
 import java.util.List;
-
 
 /**
  * Group of InlineChoice children.
  *
  * @author Jonathon Hare
  */
-public class InlineChoiceGroup extends AbstractNodeGroup {
+public final class InlineChoiceGroup extends AbstractNodeGroup<InlineChoice> {
 
     private static final long serialVersionUID = -6552140842136886189L;
 
@@ -74,9 +72,8 @@ public class InlineChoiceGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<InlineChoice> getInlineChoices() {
-        return (List<InlineChoice>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

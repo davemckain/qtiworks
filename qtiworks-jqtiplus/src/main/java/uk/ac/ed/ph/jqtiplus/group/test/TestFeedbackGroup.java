@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 
 import java.util.List;
 
-
 /**
  * Group of assessmentSection children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class TestFeedbackGroup extends AbstractNodeGroup {
+public final class TestFeedbackGroup extends AbstractNodeGroup<TestFeedback> {
 
     private static final long serialVersionUID = -424594146402751111L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TestFeedbackGroup(ControlObject<?> parent) {
@@ -61,19 +59,18 @@ public class TestFeedbackGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TestFeedback> getTestFeedbacks() {
-        return (List<TestFeedback>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

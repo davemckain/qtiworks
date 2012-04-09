@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class BlockStaticGroup extends AbstractContentNodeGroup {
+public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic> {
 
     private static final long serialVersionUID = 5763029606930975982L;
 
@@ -82,34 +82,12 @@ public class BlockStaticGroup extends AbstractContentNodeGroup {
     }
 
     /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setBlockStatic
-     */
-    public BlockStatic getBlockStatic() {
-        return getChildren().size() != 0 ? (BlockStatic) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     *
-     * @param block new child
-     * @see #getBlockStatic
-     */
-    public void setBlockStatic(final BlockStatic block) {
-        getChildren().clear();
-        getChildren().add(block);
-    }
-
-    /**
      * Gets list of all children.
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<BlockStatic> getBlockStatics() {
-        return (List<BlockStatic>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

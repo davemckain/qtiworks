@@ -43,16 +43,16 @@ import java.util.List;
 
 /**
  * Group of templateProcessingRule children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateProcessingRuleGroup extends AbstractNodeGroup {
+public final class TemplateProcessingRuleGroup extends AbstractNodeGroup<TemplateProcessingRule> {
 
     private static final long serialVersionUID = -510565066058403275L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TemplateProcessingRuleGroup(XmlNode parent) {
@@ -71,19 +71,18 @@ public class TemplateProcessingRuleGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TemplateProcessingRule> getTemplateProcessingRules() {
-        return (List<TemplateProcessingRule>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

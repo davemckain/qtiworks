@@ -34,19 +34,17 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.PositionObjectInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 
 import java.util.List;
-
 
 /**
  * Group of PositionObjectInteraction children.
  *
  * @author Jonathon Hare
  */
-public class PositionObjectInteractionGroup extends AbstractNodeGroup {
+public final class PositionObjectInteractionGroup extends AbstractNodeGroup<PositionObjectInteraction> {
 
     private static final long serialVersionUID = 4524236294070620750L;
 
@@ -74,9 +72,8 @@ public class PositionObjectInteractionGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<PositionObjectInteraction> getPositionObjectInteractions() {
-        return (List<PositionObjectInteraction>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

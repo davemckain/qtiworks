@@ -33,23 +33,22 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateIf;
 
 /**
  * Group of templateIf child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateIfGroup extends AbstractNodeGroup {
+public final class TemplateIfGroup extends AbstractNodeGroup<TemplateIf> {
 
     private static final long serialVersionUID = 8675309429542795041L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TemplateIfGroup(TemplateCondition parent) {
@@ -58,17 +57,17 @@ public class TemplateIfGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setTemplateIf
      */
     public TemplateIf getTemplateIf() {
-        return (TemplateIf) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param templateIf new child
      * @see #getTemplateIf
      */
@@ -80,7 +79,7 @@ public class TemplateIfGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

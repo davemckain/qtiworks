@@ -33,14 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-
 /**
  * inline marker interface
- * 
+ *
  * @author Jonathon Hare
  */
-public interface Inline extends XmlNode {
+public interface Inline extends Content {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "inline";

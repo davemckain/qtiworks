@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tfoot;
 
-
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TfootGroup extends AbstractNodeGroup {
+public final class TfootGroup extends AbstractNodeGroup<Tfoot> {
 
     private static final long serialVersionUID = 610832088365163990L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TfootGroup(Table parent) {
@@ -58,17 +57,17 @@ public class TfootGroup extends AbstractNodeGroup {
 
     /**
      * Gets tfoot child.
-     * 
+     *
      * @return tfoot child, or null if it doesn't exist.
      * @see #setTfoot
      */
     public Tfoot getTfoot() {
-        return (Tfoot) getChild();
+        return getChild();
     }
 
     /**
      * Sets new tfoot child.
-     * 
+     *
      * @param tfoot new child
      * @see #getTfoot
      */
@@ -80,7 +79,7 @@ public class TfootGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

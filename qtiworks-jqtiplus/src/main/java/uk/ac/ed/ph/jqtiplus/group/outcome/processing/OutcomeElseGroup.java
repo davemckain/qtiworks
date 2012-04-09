@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeCondition;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeElse;
 
-
 /**
  * Group of outcomeElse child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeElseGroup extends AbstractNodeGroup {
+public final class OutcomeElseGroup extends AbstractNodeGroup<OutcomeElse> {
 
     private static final long serialVersionUID = -7537952792899635349L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public OutcomeElseGroup(OutcomeCondition parent) {
@@ -58,17 +57,17 @@ public class OutcomeElseGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setOutcomeElse
      */
     public OutcomeElse getOutcomeElse() {
-        return (OutcomeElse) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param outcomeElse new child
      * @see #getOutcomeElse
      */
@@ -80,7 +79,7 @@ public class OutcomeElseGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

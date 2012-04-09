@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseElseIf;
 
@@ -42,16 +41,16 @@ import java.util.List;
 
 /**
  * Group of responseElseIf children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseElseIfGroup extends AbstractNodeGroup {
+public final class ResponseElseIfGroup extends AbstractNodeGroup<ResponseElseIf> {
 
     private static final long serialVersionUID = -6280993789555268028L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ResponseElseIfGroup(ResponseCondition parent) {
@@ -60,19 +59,18 @@ public class ResponseElseIfGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<ResponseElseIf> getResponseElseIfs() {
-        return (List<ResponseElseIf>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

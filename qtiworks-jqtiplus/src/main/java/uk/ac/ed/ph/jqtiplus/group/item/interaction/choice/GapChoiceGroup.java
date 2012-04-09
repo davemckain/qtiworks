@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class GapChoiceGroup extends AbstractContentNodeGroup {
+public final class GapChoiceGroup extends AbstractContentNodeGroup<GapChoice> {
 
     private static final long serialVersionUID = 3797738603491602458L;
 

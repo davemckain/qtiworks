@@ -42,16 +42,16 @@ import java.util.List;
 
 /**
  * Group of outcomeRule children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateRuleGroup extends AbstractNodeGroup {
+public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateRule> {
 
     private static final long serialVersionUID = 7611032252474697635L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TemplateRuleGroup(XmlNode parent) {
@@ -70,19 +70,18 @@ public class TemplateRuleGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TemplateRule> getTemplateRules() {
-        return (List<TemplateRule>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

@@ -40,16 +40,16 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class CaptionGroup extends AbstractNodeGroup {
+public final class CaptionGroup extends AbstractNodeGroup<Caption> {
 
     private static final long serialVersionUID = 4870184636177405884L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public CaptionGroup(Table parent) {
@@ -58,17 +58,17 @@ public class CaptionGroup extends AbstractNodeGroup {
 
     /**
      * Gets caption child.
-     * 
+     *
      * @return caption child, or null if it doesn't exist.
      * @see #setCaption
      */
     public Caption getCaption() {
-        return (Caption) getChild();
+        return getChild();
     }
 
     /**
      * Sets new caption child.
-     * 
+     *
      * @param caption new child
      * @see #getCaption
      */
@@ -80,7 +80,7 @@ public class CaptionGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

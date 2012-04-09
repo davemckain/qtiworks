@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.item.template.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 
 import java.util.List;
 
-
 /**
  * Group of templateDeclaration children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateDeclarationGroup extends AbstractNodeGroup {
+public final class TemplateDeclarationGroup extends AbstractNodeGroup<TemplateDeclaration> {
 
     private static final long serialVersionUID = 711086738893965361L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public TemplateDeclarationGroup(AssessmentItem parent) {
@@ -61,19 +59,18 @@ public class TemplateDeclarationGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<TemplateDeclaration> getTemplateDeclarations() {
-        return (List<TemplateDeclaration>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

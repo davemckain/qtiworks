@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
-
 /**
  * Group of correctResponse child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseProcessingGroup extends AbstractNodeGroup {
+public final class ResponseProcessingGroup extends AbstractNodeGroup<ResponseProcessing> {
 
     private static final long serialVersionUID = 2005401093091006593L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public ResponseProcessingGroup(AssessmentItem parent) {
@@ -58,17 +57,17 @@ public class ResponseProcessingGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setResponseProcessing
      */
     public ResponseProcessing getResponseProcessing() {
-        return (ResponseProcessing) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param responseProcessing new child
      * @see #getResponseProcessing
      */
@@ -80,7 +79,7 @@ public class ResponseProcessingGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

@@ -37,19 +37,18 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 
-
 /**
  * Group of selection child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class SelectionGroup extends AbstractNodeGroup {
+public final class SelectionGroup extends AbstractNodeGroup<Selection> {
 
     private static final long serialVersionUID = -334457452115682483L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public SelectionGroup(AssessmentSection parent) {
@@ -58,17 +57,17 @@ public class SelectionGroup extends AbstractNodeGroup {
 
     /**
      * Gets child.
-     * 
+     *
      * @return child
      * @see #setSelection
      */
     public Selection getSelection() {
-        return (Selection) getChild();
+        return getChild();
     }
 
     /**
      * Sets new child.
-     * 
+     *
      * @param selection new child
      * @see #getSelection
      */
@@ -80,7 +79,7 @@ public class SelectionGroup extends AbstractNodeGroup {
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

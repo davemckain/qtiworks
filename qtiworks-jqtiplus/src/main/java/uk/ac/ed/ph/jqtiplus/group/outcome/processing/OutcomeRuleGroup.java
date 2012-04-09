@@ -42,16 +42,16 @@ import java.util.List;
 
 /**
  * Group of outcomeRule children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeRuleGroup extends AbstractNodeGroup {
+public final class OutcomeRuleGroup extends AbstractNodeGroup<OutcomeRule> {
 
     private static final long serialVersionUID = -2078014326662762459L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public OutcomeRuleGroup(XmlNode parent) {
@@ -70,19 +70,18 @@ public class OutcomeRuleGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<OutcomeRule> getOutcomeRules() {
-        return (List<OutcomeRule>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -70,7 +71,7 @@ import javax.xml.XMLConstants;
  *
  * @author Jonathon Hare
  */
-public abstract class BodyElement extends AbstractNode {
+public abstract class BodyElement extends AbstractNode implements Content {
 
     private static final long serialVersionUID = 876241954731607171L;
 

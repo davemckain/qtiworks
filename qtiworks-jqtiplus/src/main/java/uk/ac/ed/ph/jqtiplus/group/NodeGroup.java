@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,7 +52,7 @@ import org.w3c.dom.Element;
  *
  * @author Jiri Kajaba
  */
-public interface NodeGroup extends Validatable, Serializable, Iterable<XmlNode> {
+public interface NodeGroup<C extends XmlNode> extends Validatable, Serializable, Iterable<C> {
 
     /**
      * Gets parent node of group.
@@ -103,27 +102,12 @@ public interface NodeGroup extends Validatable, Serializable, Iterable<XmlNode> 
      */
     List<String> getAllSupportedClasses();
 
-    /* (This was never used anywhere and was a pain to implement) */
-    @ToRemove
-    //    /**
-    //     * Returns list of all currently possible QTI class names (all currently possible children in this group).
-    //     * <p>
-    //     * This list can change in time (it contains every possible QTI class name for current time (conditions)).
-    //     * <p>
-    //     * For example: expression delete can contain on first position only expressions which produce single value
-    //     * and on second position only expressions which produce multiple or ordered cardinality.
-    //     *
-    //     * @param index index of children in group
-    //     * @return list of all currently possible QTI class names (all currently possible children in this group)
-    //     */
-    //    List<String> getCurrentSupportedClasses(int index);
-
     /**
      * Gets list of all children.
      *
      * @return list of all children
      */
-    List<XmlNode> getChildren();
+    List<C> getChildren();
 
     /**
      * Gets required minimum number of children or null.
@@ -155,5 +139,5 @@ public interface NodeGroup extends Validatable, Serializable, Iterable<XmlNode> 
      * @return created child
      * @throws QtiIllegalChildException if the given classTag is not appropriate
      */
-    XmlNode create(String classTag);
+    C create(String classTag);
 }

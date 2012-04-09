@@ -34,25 +34,23 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTableEntry;
 
 import java.util.List;
 
-
 /**
  * Group of interpolationTableEntry children.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class InterpolationTableEntryGroup extends AbstractNodeGroup {
+public final class InterpolationTableEntryGroup extends AbstractNodeGroup<InterpolationTableEntry> {
 
     private static final long serialVersionUID = 8797131061703719006L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public InterpolationTableEntryGroup(InterpolationTable parent) {
@@ -61,19 +59,18 @@ public class InterpolationTableEntryGroup extends AbstractNodeGroup {
 
     /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<InterpolationTableEntry> getEntries() {
-        return (List<InterpolationTableEntry>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is ignored)
      * @return created child
      */

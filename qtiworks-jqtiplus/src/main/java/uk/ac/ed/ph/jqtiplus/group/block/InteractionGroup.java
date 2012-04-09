@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.block;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -44,16 +43,16 @@ import java.util.List;
 
 /**
  * Group of interaction children.
- * 
+ *
  * @author Jonathon Hare
  */
-public class InteractionGroup extends AbstractNodeGroup {
+public class InteractionGroup extends AbstractNodeGroup<Interaction> {
 
     private static final long serialVersionUID = 3984257304010665017L;
 
     /**
      * Constructs group.
-     * 
+     *
      * @param parent parent of created group
      */
     public InteractionGroup(BodyElement parent) {
@@ -76,41 +75,19 @@ public class InteractionGroup extends AbstractNodeGroup {
     }
 
     /**
-     * Gets child.
-     * 
-     * @return child
-     * @see #setInteraction
-     */
-    public Interaction getInteraction() {
-        return getChildren().size() != 0 ? (Interaction) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * 
-     * @param interaction new child
-     * @see #getInteraction
-     */
-    public void setInteraction(Interaction interaction) {
-        getChildren().clear();
-        getChildren().add(interaction);
-    }
-
-    /**
      * Gets list of all children.
-     * 
+     *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<Interaction> getInteractions() {
-        return (List<Interaction>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
      * Creates child with given QTI class name.
      * <p>
      * Parameter classTag is needed only if group can contain children with different QTI class names.
-     * 
+     *
      * @param classTag QTI class name (this parameter is needed)
      * @return created child
      */

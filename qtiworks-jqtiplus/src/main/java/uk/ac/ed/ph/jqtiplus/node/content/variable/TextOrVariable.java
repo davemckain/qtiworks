@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 
 /**
  * textOrVariable marker interface
- * 
+ *
  * @author Jonathon Hare
  */
-public interface TextOrVariable extends XmlNode {
+public interface TextOrVariable extends Content {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "textOrVariable";

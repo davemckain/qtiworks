@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspotContainer;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class AssociableHotspotGroup extends AbstractNodeGroup {
+public final class AssociableHotspotGroup extends AbstractNodeGroup<AssociableHotspot> {
 
     private static final long serialVersionUID = 5898143688224446359L;
 
@@ -73,9 +72,8 @@ public class AssociableHotspotGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<AssociableHotspot> getAssociableHotspots() {
-        return (List<AssociableHotspot>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

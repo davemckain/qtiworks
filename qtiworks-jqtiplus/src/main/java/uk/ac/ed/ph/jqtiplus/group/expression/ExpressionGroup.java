@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.expression;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
@@ -46,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class ExpressionGroup extends AbstractNodeGroup {
+public final class ExpressionGroup extends AbstractNodeGroup<Expression> {
 
     private static final long serialVersionUID = 891305708750072316L;
 
@@ -123,9 +122,8 @@ public class ExpressionGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<Expression> getExpressions() {
-        return (List<Expression>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**

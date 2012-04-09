@@ -139,7 +139,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public boolean hasChildNodes() {
-        for (final NodeGroup nodeGroup : getNodeGroups()) {
+        for (final NodeGroup<?> nodeGroup : getNodeGroups()) {
             if (nodeGroup.getChildren().size() > 0) {
                 return true;
             }
@@ -205,7 +205,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     protected void fireBodySaxEvents(final QtiSaxFiringContext saxFiringContext) throws SAXException {
-        for (final NodeGroup nodeGroup : nodeGroups) {
+        for (final NodeGroup<?> nodeGroup : nodeGroups) {
             for (final XmlNode childNode : nodeGroup.getChildren()) {
                 childNode.fireSaxEvents(saxFiringContext);
             }
@@ -217,7 +217,7 @@ public abstract class AbstractNode implements XmlNode {
         final XmlNode parentNode = getParent();
         int position = 1;
         if (parentNode != null) {
-            SEARCH: for (final NodeGroup nodeGroup : parentNode.getNodeGroups()) {
+            SEARCH: for (final NodeGroup<?> nodeGroup : parentNode.getNodeGroups()) {
                 position = 1;
                 for (final XmlNode child : nodeGroup.getChildren()) {
                     if (child == this) {
@@ -268,7 +268,7 @@ public abstract class AbstractNode implements XmlNode {
      */
     protected void validateChildren(final ValidationContext context) {
         for (int i = 0; i < nodeGroups.size(); i++) {
-            final NodeGroup node = nodeGroups.get(i);
+            final NodeGroup<?> node = nodeGroups.get(i);
             for (final XmlNode child : node.getChildren()) {
                 child.validate(context);
             }
@@ -297,7 +297,7 @@ public abstract class AbstractNode implements XmlNode {
 
         final NodeGroupList groups = parent.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
-            final NodeGroup group = groups.get(i);
+            final NodeGroup<?> group = groups.get(i);
             for (final XmlNode child : group.getChildren()) {
                 if (!validateUniqueIdentifier(child, identifier)) {
                     return false;
@@ -394,8 +394,8 @@ public abstract class AbstractNode implements XmlNode {
                 return false;
             }
             boolean hasNext;
-            NodeGroup currentGroup = nodeGroups.get(currentGroupIndex);
-            List<XmlNode> currentGroupChildren = currentGroup.getChildren();
+            NodeGroup<?> currentGroup = nodeGroups.get(currentGroupIndex);
+            List<? extends XmlNode> currentGroupChildren = currentGroup.getChildren();
             if (currentChildIndexInGroup < currentGroupChildren.size()) {
                 /* Children left within current group */
                 hasNext = true;
@@ -413,8 +413,8 @@ public abstract class AbstractNode implements XmlNode {
             if (currentGroupIndex==-1) {
                 throw new NoSuchElementException();
             }
-            NodeGroup currentGroup = nodeGroups.get(currentGroupIndex);
-            List<XmlNode> currentGroupChildren = currentGroup.getChildren();
+            NodeGroup<?> currentGroup = nodeGroups.get(currentGroupIndex);
+            List<? extends XmlNode> currentGroupChildren = currentGroup.getChildren();
             if (currentChildIndexInGroup < currentGroupChildren.size()) {
                 /* Children left within current group */
                 result = currentGroupChildren.get(currentChildIndexInGroup);
@@ -436,7 +436,7 @@ public abstract class AbstractNode implements XmlNode {
 
         private int firstNonEmptyGroupIndex(int startIndex) {
             for (int searchIndex = startIndex; searchIndex < nodeGroups.size(); searchIndex++) {
-                NodeGroup group = nodeGroups.get(searchIndex);
+                NodeGroup<?> group = nodeGroups.get(searchIndex);
                 if (group.getChildren().size() > 0) {
                     return searchIndex;
                 }

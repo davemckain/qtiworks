@@ -35,10 +35,12 @@ package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.UnsupportedCustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.UnsupportedCustomInteraction;
@@ -54,13 +56,14 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Parent of all groups.
  *
  * @author Jiri Kajaba
  */
-public abstract class AbstractNodeGroup implements NodeGroup {
+public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<C> {
 
     private static final long serialVersionUID = 903238011893494959L;
 
@@ -69,7 +72,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     private final XmlNode parent;
     private final String name;
     private final List<String> supportedClasses;
-    private final List<XmlNode> children;
+    private final List<C> children;
     private final Integer minimum;
     private final Integer maximum;
 
@@ -99,7 +102,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
         ConstraintUtilities.ensureNotNull(name);
         this.parent = parent;
         this.name = name;
-        this.children = new ArrayList<XmlNode>();
+        this.children = new ArrayList<C>();
         this.minimum = minimum;
         this.maximum = maximum;
 
@@ -147,7 +150,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      * @return first child or null
      * @see #setChild
      */
-    public XmlNode getChild() {
+    public C getChild() {
         return children.size() != 0 ? children.get(0) : null;
     }
 
@@ -161,7 +164,7 @@ public abstract class AbstractNodeGroup implements NodeGroup {
      * @param child new child
      * @see #getChild
      */
-    protected void setChild(final XmlNode child) {
+    protected void setChild(final C child) {
         children.clear();
         if (child != null) {
             children.add(child);
@@ -169,12 +172,12 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
-    public Iterator<XmlNode> iterator() {
+    public Iterator<C> iterator() {
         return children.iterator();
     }
 
     @Override
-    public List<XmlNode> getChildren() {
+    public List<C> getChildren() {
         return children;
     }
 
@@ -189,18 +192,29 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void load(final Element node, final LoadingContext context) {
         final NodeList childNodes = node.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                 try {
-                    final XmlNode child = createChild((Element) childNode, context.getJqtiExtensionManager());
-                    children.add(child);
+                    final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
+                    getChildren().add(child);
                     child.load((Element) childNode, context);
                 }
                 catch (final QtiModelException e) {
                     context.modelBuildingError(e, (Element) childNode);
+                }
+            }
+            else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
+                try {
+                    final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
+                    getChildren().add((C) child);
+                    child.load((Text) childNode);
+                }
+                catch (final Exception e) {
+                    throw new QtiLogicException("Expected to be able to add a " + TextRun.class + " here");
                 }
             }
         }
@@ -209,29 +223,30 @@ public abstract class AbstractNodeGroup implements NodeGroup {
     /**
      * @throws QtiIllegalChildException
      */
-    protected XmlNode createChild(final Element childElement, final JqtiExtensionManager jqtiExtensionManager) {
+    @SuppressWarnings("unchecked")
+    protected C createChild(final Element childElement, final JqtiExtensionManager jqtiExtensionManager) {
         final String localName = childElement.getLocalName();
-        XmlNode child;
+        C child;
         if ("customOperator".equals(localName)) {
             /* See if required operator has been registered and instantiate if it so */
             final ExpressionParent expressionParent = (ExpressionParent) parent;
             final String operatorClass = childElement.getAttribute("class");
             if (jqtiExtensionManager!=null) {
-                child = jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
+                child = (C) jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
             }
             else {
                 logger.warn("No JqtiExtensionManager registered, so no support for any customOperators");
-                return new UnsupportedCustomOperator(expressionParent);
+                child = (C) new UnsupportedCustomOperator(expressionParent);
             }
         }
         else if ("customInteraction".equals(localName)) {
             final String interactionClass = childElement.getAttribute("class");
             if (jqtiExtensionManager!=null) {
-                child = jqtiExtensionManager.createCustomInteraction(parent, interactionClass);
+                child = (C) jqtiExtensionManager.createCustomInteraction(parent, interactionClass);
             }
             else {
                 logger.warn("No JqtiExtensionManager registered, so no support for any customInteractions");
-                return new UnsupportedCustomInteraction(parent);
+                child = (C) new UnsupportedCustomInteraction(parent);
             }
         }
         else {

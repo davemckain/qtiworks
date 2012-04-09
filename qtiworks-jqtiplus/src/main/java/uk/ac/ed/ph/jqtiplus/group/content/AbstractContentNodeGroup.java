@@ -33,24 +33,20 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 
 /**
  * Group of content children.
  *
+ * TODO: This maybe isn't required any more as we've moved the logic from up back up to
+ * {@link AbstractNodeGroup}. If this eventually goes, we can take out the {@link Content}
+ * marker interface as well.
+ *
  * @author Jonathon Hare
  */
-public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
+public abstract class AbstractContentNodeGroup<C extends Content> extends AbstractNodeGroup<C> {
 
     private static final long serialVersionUID = -630489519873000102L;
 
@@ -68,33 +64,5 @@ public abstract class AbstractContentNodeGroup extends AbstractNodeGroup {
 
     public AbstractContentNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
         super(parent, name, minimum, maximum);
-    }
-
-    @Override
-    public void load(final Element node, final LoadingContext context) {
-        final NodeList childNodes = node.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            final Node childNode = childNodes.item(i);
-            if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                try {
-                    final XmlNode child = createChild((Element) childNode, context.getJqtiExtensionManager());
-                    getChildren().add(child);
-                    child.load((Element) childNode, context);
-                }
-                catch (final QtiModelException e) {
-                    context.modelBuildingError(e, (Element) childNode);
-                }
-            }
-            else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
-                try {
-                    final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
-                    getChildren().add(child);
-                    child.load((Text) childNode);
-                }
-                catch (final Exception e) {
-                    throw new QtiLogicException("Expected to be able to add a " + TextRun.class + " here");
-                }
-            }
-        }
     }
 }

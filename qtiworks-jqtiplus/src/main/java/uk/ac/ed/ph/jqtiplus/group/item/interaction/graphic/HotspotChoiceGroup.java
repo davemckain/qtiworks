@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoiceContainer;
 
@@ -45,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class HotspotChoiceGroup extends AbstractNodeGroup {
+public final class HotspotChoiceGroup extends AbstractNodeGroup<HotspotChoice> {
 
     private static final long serialVersionUID = -7699266322816203373L;
 
@@ -73,9 +72,8 @@ public class HotspotChoiceGroup extends AbstractNodeGroup {
      *
      * @return list of all children
      */
-    @SuppressWarnings("unchecked")
     public List<HotspotChoice> getHotspotChoices() {
-        return (List<HotspotChoice>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
     /**
