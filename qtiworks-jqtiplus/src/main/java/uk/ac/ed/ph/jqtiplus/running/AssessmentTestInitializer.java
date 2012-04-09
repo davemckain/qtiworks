@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Helper that performs the selection and ordering of the underlying Objects in the {@link AssessmentTest}.
- * 
+ *
  * @author David McKain
  */
 final class AssessmentTestInitializer {
@@ -173,7 +173,7 @@ final class AssessmentTestInitializer {
         logger.debug("Initialising instance of assessmentSection {}", section.getIdentifier());
 
         /* We first need to select which children we're going to have */
-        List<SectionPart> afterSelection = new ArrayList<SectionPart>();
+        List<SectionPart> afterSelection;
         if (section.getSelection() != null) {
             /* Perform requested selection */
             afterSelection = selectSectionParts(section);
