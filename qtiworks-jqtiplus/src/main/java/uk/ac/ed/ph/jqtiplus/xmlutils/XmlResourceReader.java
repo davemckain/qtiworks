@@ -80,13 +80,13 @@ import org.xml.sax.XMLReader;
  *   <li>Optional caching of schemas</li>
  *   <li>DOM is enriched with location information via a user Object</li>
  * </ul>
- * 
+ *
  * <h2>Implementation notes</h2>
- * 
+ *
  * The XML parsing process performs a SAX parse followed by a DOM tree build,
  * filling the resulting tree with SAX {@link Locator} information, which makes
  * later error reporting richer.
- * 
+ *
  * @see XmlReadResult
  * @author David McKain
  */
@@ -97,10 +97,10 @@ public final class XmlResourceReader {
     /** Name of the DOM "user object" where SAX {@link Locator} information will be stowed while parsing */
     public static final String LOCATION_INFORMATION_NAME = "locationInformation";
 
-    //--------------------------------------------------    
+    //--------------------------------------------------
 
     /**
-     * {@link ResourceLocator} used to locate schema resources. 
+     * {@link ResourceLocator} used to locate schema resources.
      * <p>
      * Must not be null.
      */
@@ -116,14 +116,14 @@ public final class XmlResourceReader {
      * The default is null,
      */
     private final Map<String, String> registeredSchemaMap;
-    
+
     /**
      * Optional {@link SchemaCache} that will be used to cache compiled schemas.
      * <p>
      * This may be null, which will prevent any caching from happening.
      */
     private final SchemaCache schemaCache;
-    
+
     /**
      * Resolver used to look up schema resources
      */
@@ -152,36 +152,36 @@ public final class XmlResourceReader {
     public Map<String, String> getRegisteredSchemaMap() {
         return registeredSchemaMap;
     }
-    
+
     public SchemaCache getSchemaCache() {
         return schemaCache;
     }
-    
+
     //--------------------------------------------------
 
     /**
      * FIXME: This currently calls the {@link ResourceLocator} to read the input *twice*. I may
      * want to save the initial input to a temp file if the stream is not something that can be
-     * quickly re-read (e.g. HTTP!) 
-     * 
+     * quickly re-read (e.g. HTTP!)
+     *
      * @param systemId system ID of the XML resource to read
      * @param inputResourceLocator resource locator that will find the XML to be read
      * @param entityResourceLocator resource locator that will load in any entities/DTD stuff
      *   encountered
      * @param schemaValidating whether to perform schema validation or not.
-     * 
+     *
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator, 
+    public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator,
             ResourceLocator entityResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException {
         ConstraintUtilities.ensureNotNull(systemId, "systemId");
         ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
         ConstraintUtilities.ensureNotNull(entityResourceLocator, "entityResourceLocator");
-        
+
         try {
             logger.debug("read({}, {}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating });
             final XmlReadResult result = doRead(systemId, inputResourceLocator, entityResourceLocator, schemaValidating);
@@ -218,7 +218,7 @@ public final class XmlResourceReader {
         final DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
         documentBuilder.setErrorHandler(inputErrorHandler);
         final Document document = documentBuilder.newDocument();
-        
+
         /* Set up SAX EntityResolver, which will record locator failures appropriately */
         final EntityResourceResolver entityResolver = new EntityResourceResolver(entityResourceLocator) {
             @Override
@@ -257,7 +257,7 @@ public final class XmlResourceReader {
         catch (final SAXParseException e) {
             /* Fatal parsing error */
         }
-        
+
         /* We'll consider successful parsing to be no errors or fatal errors, and no unresolved
          * entities */
         parsed = inputErrorHandler.fatalErrors.isEmpty() && inputErrorHandler.errors.isEmpty()
@@ -323,14 +323,14 @@ public final class XmlResourceReader {
                         schemaUris.size(), unsupportedSchemaNamespaces.size());
             }
         }
-        
+
         /* Build up result */
         XmlParseResult xmlParseResult = new XmlParseResult(systemId, parsed, validated,
                 inputErrorHandler.warnings, inputErrorHandler.errors, inputErrorHandler.fatalErrors,
                 unresolvedEntitySystemIds, supportedSchemaNamespaces, unsupportedSchemaNamespaces);
         return new XmlReadResult(parsed ? document : null, xmlParseResult);
     }
-    
+
     /**
      * Obtains the schema compiled from the given list of URIs, using a cached version if
      * possible.
@@ -357,7 +357,7 @@ public final class XmlResourceReader {
         }
         return result;
     }
-    
+
     /**
      * Compiles a schema from the given list of URIs.
      */
@@ -384,12 +384,12 @@ public final class XmlResourceReader {
             throw new XmlResourceReaderException("Unexpected Exception compiling schema(s) with URI(s)" + schemaUris, e);
         }
     }
-    
+
     /**
      * {@link ErrorHandler} used when parsing user input, which simply records
      * everything.
      */
-    public final class InputErrorHandler implements ErrorHandler {
+    public static final class InputErrorHandler implements ErrorHandler {
 
         final List<SAXParseException> warnings;
         final List<SAXParseException> errors;
@@ -417,19 +417,19 @@ public final class XmlResourceReader {
             throw exception;
         }
     }
-    
+
     /**
      * {@link ErrorHandler} used when parsing internal schemas, which is basically as strict
      * and quick to fail as possible as our internal schemas should be well behaved!
      */
     private static class SchemaParsingErrorHandler implements ErrorHandler {
-        
+
         private final List<String> schemaUris;
-        
+
         public SchemaParsingErrorHandler(List<String> schemaUris) {
             this.schemaUris = schemaUris;
         }
-        
+
         @Override
         public void error(SAXParseException e) {
             fail("error", e);
@@ -444,14 +444,14 @@ public final class XmlResourceReader {
         public void warning(SAXParseException e) {
             fail("warning", e);
         }
-        
+
         private void fail(String errorLevel, SAXParseException e) {
             throw new XmlResourceReaderException("Unexpected SAXParseException at level "
                     + errorLevel
                     + " when parsing schema(s) with URI(s) "
                     + schemaUris, e);
         }
-        
+
     }
 
     private static InputStream ensureLocateInput(URI systemId, ResourceLocator inputResourceLocator)
