@@ -54,39 +54,39 @@ import java.net.URISyntaxException;
 
 /**
  * FIXME: Refactor this more appropriately!
- * 
+ *
  * @author David McKain
  */
 public final class UnitTestHelper {
-    
+
     public static QtiXmlReader createUnitTestXmlReader() {
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         return new QtiXmlReader(jqtiExtensionManager);
     }
-    
+
     public static QtiXmlObjectReader createUnitTestXmlObjectReader() {
         final ResourceLocator testFileResourceLocator = new FileResourceLocator();
         return createUnitTestXmlReader().createQtiXmlObjectReader(testFileResourceLocator);
     }
-    
-    public static AssessmentObjectManager createUnitTestAssessmentObjectManager(Class<?> baseClass) {
+
+    public static AssessmentObjectManager createUnitTestAssessmentObjectManager() {
         final QtiXmlObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
         return new AssessmentObjectManager(qtiXmlObjectReader);
     }
-    
-    public static <E extends RootObject> E loadUnitTestRootObject(Class<?> baseClass, String fileName, ModelRichness modelRichness, Class<E> requiredResultClass) 
+
+    public static <E extends RootObject> E loadUnitTestRootObject(Class<?> baseClass, String fileName, ModelRichness modelRichness, Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
         final URI fileUri = createTestFileUri(baseClass, fileName);
         final QtiXmlObjectReadResult<E> rootObjectLookup = createUnitTestXmlObjectReader().lookupRootObject(fileUri, modelRichness, requiredResultClass);
         return rootObjectLookup.getRootObject();
     }
-    
+
     public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(Class<?> baseClass, String fileName, ModelRichness modelRichness) {
-        AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager(baseClass);
+        AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
         final URI fileUri = createTestFileUri(baseClass, fileName);
         return objectManager.resolveAssessmentItem(fileUri, modelRichness);
     }
-    
+
     public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(Class<?> baseClass, String fileName, ModelRichness modelRichness) {
         final QtiXmlObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlObjectReader);
