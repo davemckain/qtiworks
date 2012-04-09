@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.provision.ResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
 import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,35 +56,33 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-final class CachedResourceProvider implements Serializable {
-   
+final class CachedResourceProvider {
+
     private static final Logger logger = LoggerFactory.getLogger(CachedResourceProvider.class);
-    
-    private static final long serialVersionUID = -8407905672200096970L;
-    
+
     private final RootObjectProvider rootObjectProvider;
     private final ModelRichness modelRichness;
     private final Map<URI, RootObjectLookup<?>> cacheData;
-    
+
     public CachedResourceProvider(final RootObjectProvider rootObjectProvider, ModelRichness modelRichness) {
         this.rootObjectProvider = rootObjectProvider;
         this.modelRichness = modelRichness;
         this.cacheData = new HashMap<URI, RootObjectLookup<?>>();
     }
-    
+
     public RootObjectProvider getRootObjectProvider() {
         return rootObjectProvider;
     }
-    
+
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
     public Map<URI, RootObjectLookup<?>> getCacheData() {
         return cacheData;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <E extends RootObject> RootObjectLookup<E> getLookup(URI systemId, Class<E> resultClass) {
         RootObjectLookup<E> frozenResult = (RootObjectLookup<E>) cacheData.get(systemId);
@@ -110,7 +107,7 @@ final class CachedResourceProvider implements Serializable {
         }
         return frozenResult;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

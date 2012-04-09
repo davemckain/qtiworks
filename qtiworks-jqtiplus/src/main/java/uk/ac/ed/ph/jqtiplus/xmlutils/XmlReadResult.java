@@ -33,18 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import java.io.Serializable;
-
 import org.w3c.dom.Document;
 
 /**
  * Encapsulates the result of QTI XML reading
- * 
+ *
  * @author David McKain
  */
-public final class XmlReadResult implements Serializable {
-
-    private static final long serialVersionUID = -6558013135849907488L;
+public final class XmlReadResult {
 
     private final Document document;
     private final XmlParseResult xmlParseResult;
