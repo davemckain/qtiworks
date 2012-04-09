@@ -737,7 +737,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resolvedAssessmentItem=" + resolvedAssessmentItem
                 + ",itemSessionState=" + itemSessionState
                 + ")";

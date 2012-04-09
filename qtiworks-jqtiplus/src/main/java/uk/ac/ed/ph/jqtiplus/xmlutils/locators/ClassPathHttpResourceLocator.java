@@ -100,7 +100,7 @@ public final class ClassPathHttpResourceLocator implements ResourceLocator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(basePath=" + basePath
                 + ")";
     }

@@ -224,7 +224,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(displayName=" + getDisplayName()
                 + ",stylesheetCache=" + stylesheetCache
                 + ",sessionThreadLocal=" + sessionThreadLocal

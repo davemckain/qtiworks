@@ -43,7 +43,7 @@ import java.util.Set;
 
 /**
  * Some random "macros" for doing common Object-based tasks.
- * 
+ *
  * @author David McKain
  */
 public final class ObjectUtilities {
@@ -61,7 +61,7 @@ public final class ObjectUtilities {
         }
         return result;
     }
-    
+
     public static <T> Set<T> unmodifiableSet(Set<T> input) {
         Set<T> result;
         if (input!=null && !input.isEmpty()) {
@@ -72,7 +72,7 @@ public final class ObjectUtilities {
         }
         return result;
     }
-    
+
     public static <K,V> Map<K,V> unmodifiableMap(Map<K,V> input) {
         Map<K,V> result;
         if (input!=null && !input.isEmpty()) {
@@ -83,11 +83,11 @@ public final class ObjectUtilities {
         }
         return result;
     }
- 
+
     /**
      * Convenience toString() method that can be applied safely to a null
      * Object, yielding null.
-     * 
+     *
      * @param object
      */
     public static String safeToString(Object object) {
@@ -98,7 +98,7 @@ public final class ObjectUtilities {
      * Checks equality of two Objects, allowing the case where o1==o2==null
      * to return true. The equals() method on o2 should be compatible with
      * equality.
-     * 
+     *
      * @param o1
      * @param o2
      * @return true if either o1==o2 or (o1!=null and o1.equals(o2))
@@ -109,7 +109,7 @@ public final class ObjectUtilities {
 
     /**
      * Tests whether the given array is null or empty, which is sometimes useful.
-     * 
+     *
      * @return true array is either null or empty
      */
     public static boolean isNullOrEmpty(Object[] array) {
@@ -120,7 +120,7 @@ public final class ObjectUtilities {
      * Concatenates the given arrays into a single array, treating any null arrays as if they
      * were empty. (Note that if exactly one of the input arrays is null, then the result is
      * the other array.)
-     * 
+     *
      * @param <E> generic type of resulting array
      * @param array1 first array to concatenate, which may be null
      * @param array2 second array to concatenate, which may be null
@@ -154,7 +154,7 @@ public final class ObjectUtilities {
     /**
      * Utility method to create a simple String representation of a JavaBean Object by
      * showing all properties <code>p</code> which can be called by <code>getP()</code> on the Object.
-     * 
+     *
      * @param bean
      * @return String representation of the form <code>className(p1=value,p2=value,...)</code>
      */
@@ -164,7 +164,7 @@ public final class ObjectUtilities {
         /* Output bean's hashCode and start of property list */
         final StringBuilder result = new StringBuilder(beanClass.getName())
                 .append("@")
-                .append(Integer.toHexString(bean.hashCode()))
+                .append(Integer.toHexString(System.identityHashCode(bean)))
                 .append("(");
 
         /* Now show each property by calling relevant methods */

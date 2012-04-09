@@ -65,7 +65,7 @@ public class DynamicResourceHolder<E extends RootObject> implements RootObjectHo
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(rootObject=" + rootObject
                 + ")";
     }

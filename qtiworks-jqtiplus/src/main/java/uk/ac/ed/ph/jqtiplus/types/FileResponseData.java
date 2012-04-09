@@ -92,7 +92,7 @@ public final class FileResponseData implements ResponseData {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(file=" + file
                 + ",contentType=" + contentType
                 + ",fileName=" + fileName

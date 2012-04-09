@@ -63,7 +63,7 @@ public final class AssessmentSectionState extends SectionPartState {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testIdentifier=" + testIdentifier
                 + ",siblingIndex=" + siblingIndex
                 + ",finished=" + isFinished()

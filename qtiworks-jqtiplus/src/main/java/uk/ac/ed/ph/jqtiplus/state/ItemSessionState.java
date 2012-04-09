@@ -65,16 +65,16 @@ import java.util.Map;
  * mutation operations for you.
  * <p>
  * An instance of this class is NOT safe for use by multiple threads.
- * 
+ *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class ItemSessionState implements Serializable {
 
     private static final long serialVersionUID = -7586529679289092485L;
-    
+
     private boolean isInitialized;
-    
+
     /**
      * Map of interaction choice orders, for all {@link Shuffleable} interactions.
      * This is keyed on the interaction's responseIdentifier.
@@ -100,13 +100,13 @@ public final class ItemSessionState implements Serializable {
         this.templateValues = new HashMap<Identifier, Value>();
         this.responseValues = new HashMap<Identifier, Value>();
         this.outcomeValues = new HashMap<Identifier, Value>();
-        
+
         /* Set built-in variables */
         setDuration(0);
         setNumAttempts(0);
         setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
     }
-    
+
     //----------------------------------------------------------------
     // Initialisation-related mutators
 
@@ -126,7 +126,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(responseIdentifier);
         return shuffledInteractionChoiceOrders.get(responseIdentifier);
     }
-    
+
     public List<Identifier> getShuffledInteractionChoiceOrder(String responseIdentifierString) {
         ConstraintUtilities.ensureNotNull(responseIdentifierString);
         return getShuffledInteractionChoiceOrder(new Identifier(responseIdentifierString));
@@ -159,50 +159,50 @@ public final class ItemSessionState implements Serializable {
 
     //----------------------------------------------------------------
     // Built-in variable manipulation
-    
+
     @ObjectDumperOptions(DumpMode.IGNORE)
     public FloatValue getDurationValue() {
         return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER);
     }
-    
+
     public void setDurationValue(FloatValue value) {
         ConstraintUtilities.ensureNotNull(value);
         responseValues.put(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER, value);
     }
-    
+
     public double getDuration() {
         return getDurationValue().doubleValue();
     }
-    
+
     public void setDuration(double duration) {
         setDurationValue(new FloatValue(duration));
     }
-    
-    
+
+
     @ObjectDumperOptions(DumpMode.IGNORE)
     public IntegerValue getNumAttemptsValue() {
         return (IntegerValue) responseValues.get(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
     }
-    
+
     public void setNumAttemptsValue(IntegerValue value) {
         ConstraintUtilities.ensureNotNull(value);
         responseValues.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, value);
     }
-    
+
     public int getNumAttempts() {
         return getNumAttemptsValue().intValue();
     }
-    
+
     public void setNumAttempts(int numAttempts) {
         setNumAttemptsValue(new IntegerValue(numAttempts));
     }
-    
-    
+
+
     @ObjectDumperOptions(DumpMode.IGNORE)
     public IdentifierValue getCompletionStatusValue() {
         return (IdentifierValue) outcomeValues.get(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
     }
-    
+
     public void setCompletionStatusValue(IdentifierValue value) {
         ConstraintUtilities.ensureNotNull(value);
         String status = value.toQtiString();
@@ -214,16 +214,16 @@ public final class ItemSessionState implements Serializable {
         }
         outcomeValues.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, value);
     }
-    
+
     public String getCompletionStatus() {
         return getCompletionStatusValue().toQtiString();
     }
-    
+
     public void setCompletionStatus(String completionStatus) {
         ConstraintUtilities.ensureNotNull(completionStatus);
         setCompletionStatusValue(new IdentifierValue(completionStatus));
     }
-    
+
     //----------------------------------------------------------------
 
     public Value getOverriddenDefaultValue(Identifier identifier) {
@@ -237,7 +237,7 @@ public final class ItemSessionState implements Serializable {
         }
         return result;
     }
-    
+
     public Value getOverriddenDefaultValue(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getOverriddenDefaultValue(new Identifier(identifierString));
@@ -246,7 +246,7 @@ public final class ItemSessionState implements Serializable {
     public Value getOverriddenDefaultValue(VariableDeclaration declaration) {
         return getOverriddenDefaultValue(declaration.getIdentifier());
     }
-    
+
     //----------------------------------------------------------------
 
     public Value getOverriddenTemplateDefaultValue(Identifier identifier) {
@@ -258,7 +258,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getOverriddenTemplateDefaultValue(new Identifier(identifierString));
     }
-    
+
     public Value getOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
         return getOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier());
@@ -274,12 +274,12 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifierString);
         setOverriddenTemplateDefaultValue(new Identifier(identifierString), value);
     }
-    
+
     public void setOverriddenTemplateDefaultValue(TemplateDeclaration templateDeclaration, Value value) {
         ConstraintUtilities.ensureNotNull(templateDeclaration);
         setOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier(), value);
     }
-    
+
     public Map<Identifier, Value> getOverriddenTemplateDefaultValues() {
         return Collections.unmodifiableMap(overriddenTemplateDefaultValues);
     }
@@ -306,7 +306,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(value);
         overriddenResponseDefaultValues.put(identifier, value);
     }
-    
+
     public void setOverriddenResponseDefaultValue(String identifierString, Value value) {
         ConstraintUtilities.ensureNotNull(identifierString);
         setOverriddenResponseDefaultValue(new Identifier(identifierString), value);
@@ -317,18 +317,18 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(value);
         setOverriddenResponseDefaultValue(responseDeclaration.getIdentifier(), value);
     }
-    
+
     public Map<Identifier, Value> getOverriddenResponseDefaultValues() {
         return Collections.unmodifiableMap(overriddenResponseDefaultValues);
     }
 
     //----------------------------------------------------------------
-    
+
     public Value getOverriddenOutcomeDefaultValue(Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return overriddenOutcomeDefaultValues.get(identifier);
     }
-    
+
     public Value getOverriddenOutcomeDefaultValue(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getOverriddenOutcomeDefaultValue(new Identifier(identifierString));
@@ -349,7 +349,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(outcomeDeclaration);
         setOverriddenResponseDefaultValue(outcomeDeclaration.getIdentifier(), value);
     }
-    
+
     public Map<Identifier, Value> getOverriddenOutcomeDefaultValues() {
         return Collections.unmodifiableMap(overriddenOutcomeDefaultValues);
     }
@@ -360,7 +360,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifier);
         return overriddenCorrectResponseValues.get(identifier);
     }
-    
+
     public Value getOverriddenCorrectResponseValue(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getOverriddenCorrectResponseValue(new Identifier(identifierString));
@@ -386,11 +386,11 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(responseDeclaration);
         setOverriddenCorrectResponseValue(responseDeclaration.getIdentifier(), value);
     }
-    
+
     public Map<Identifier, Value> getOverriddenCorrectResponseValues() {
         return Collections.unmodifiableMap(overriddenCorrectResponseValues);
     }
-    
+
     //----------------------------------------------------------------
 
     public Value getTemplateValue(Identifier identifier) {
@@ -494,7 +494,7 @@ public final class ItemSessionState implements Serializable {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getOutcomeValue(new Identifier(identifierString));
     }
-    
+
     public Value getOutcomeValue(OutcomeDeclaration outcomeDeclaration) {
         ConstraintUtilities.ensureNotNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
@@ -539,7 +539,7 @@ public final class ItemSessionState implements Serializable {
      * Gets A template or outcome variable with given identifier or null.
      * DM: This used to be called getValue() in JQTI, but I've renamed it to be
      * clearer
-     * 
+     *
      * @param identifier
      *            given identifier
      * @return value of templateDeclaration or outcomeDeclaration with given
@@ -553,7 +553,7 @@ public final class ItemSessionState implements Serializable {
         }
         return result;
     }
-    
+
     public Value getTemplateOrOutcomeValue(String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return getTemplateOrOutcomeValue(new Identifier(identifierString));
@@ -600,7 +600,7 @@ public final class ItemSessionState implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(initialized=" + isInitialized
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues

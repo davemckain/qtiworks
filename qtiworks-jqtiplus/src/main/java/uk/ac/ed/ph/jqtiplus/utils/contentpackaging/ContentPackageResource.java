@@ -72,7 +72,7 @@ public final class ContentPackageResource implements Serializable {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                + "(type=" + type
                + ",href=" + href
                + ",fileHrefs=" + fileHrefs

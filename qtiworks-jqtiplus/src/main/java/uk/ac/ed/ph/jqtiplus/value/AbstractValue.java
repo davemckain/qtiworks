@@ -52,7 +52,7 @@ public abstract class AbstractValue implements Value {
     
     @Override
     public final String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(" + toQtiString() + ")";
     }
 }

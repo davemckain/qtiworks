@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Encapsulates the runtime state of an {@link TestPart}
- * 
+ *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
@@ -67,7 +67,7 @@ public final class TestPartState extends AbstractPartState {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(identifier=" + testIdentifier
                 + ",finished=" + isFinished()
                 + ",runtimeSectionPartStates=" + runtimeSectionPartStates

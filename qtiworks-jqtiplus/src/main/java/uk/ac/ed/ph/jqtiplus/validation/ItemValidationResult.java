@@ -59,7 +59,7 @@ public final class ItemValidationResult extends AssessmentObjectValidationResult
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resolvedAssessmentItem=" + getResolvedAssessmentItem()
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()

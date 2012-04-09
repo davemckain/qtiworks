@@ -95,7 +95,7 @@ final class AssessmentTestInitializer {
 
         @Override
         public String toString() {
-            return getClass().getSimpleName() + "@" + hashCode()
+            return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                     + "(sectionPart=" + sectionPart
                     + ",childNodes=" + childNodes
                     + ")";

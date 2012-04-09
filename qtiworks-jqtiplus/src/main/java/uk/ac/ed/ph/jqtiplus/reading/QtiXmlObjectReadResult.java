@@ -79,7 +79,7 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(rootObjectClass=" + requestedRootObjectClass
                 + ",xmlParseResult=" + xmlParseResult
                 + ",rootObject=" + rootObject

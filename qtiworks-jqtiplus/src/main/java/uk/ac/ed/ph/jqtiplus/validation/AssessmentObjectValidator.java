@@ -330,7 +330,7 @@ public final class AssessmentObjectValidator {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resourceProvider=" + resourceProvider
                 + ")";
     }

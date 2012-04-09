@@ -113,7 +113,7 @@ public final class ImsManifestReadResult implements Serializable {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(manifestHref=" + manifestHref
                 + ",xmlParseResult=" + xmlParseResult
                 + ",understood=" + isUnderstood()

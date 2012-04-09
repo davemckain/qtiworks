@@ -134,7 +134,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(localName=" + localName
                 + ",namespaceUri=" + namespaceUri
                 + ",required=" + required

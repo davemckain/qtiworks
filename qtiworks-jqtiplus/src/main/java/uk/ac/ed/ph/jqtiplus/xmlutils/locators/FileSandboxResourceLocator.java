@@ -111,7 +111,7 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(uriScheme=" + uriScheme
                 + ",sandboxBaseDirectory=" + sandboxBaseDirectory
                 + ")";

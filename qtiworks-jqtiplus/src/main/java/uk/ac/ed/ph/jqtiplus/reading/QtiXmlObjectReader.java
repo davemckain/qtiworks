@@ -202,7 +202,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(qtiXmlReader=" + qtiXmlReader
                 + ",inputResourceLocator=" + inputResourceLocator
                 + ")";

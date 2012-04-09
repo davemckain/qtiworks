@@ -192,7 +192,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(modelRichness=" + modelRichness
                 + ",testLookup=" + testLookup
                 + ",itemRefsByIdentifierMap=" + itemRefsByIdentifierMap

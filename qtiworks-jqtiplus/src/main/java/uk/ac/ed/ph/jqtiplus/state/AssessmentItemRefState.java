@@ -139,7 +139,7 @@ public final class AssessmentItemRefState extends SectionPartState {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testIdentifier=" + testIdentifier
                 + ",siblingIndex=" + siblingIndex
                 + ",presented=" + presented

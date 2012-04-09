@@ -480,7 +480,7 @@ public final class XmlResourceReader {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(schemaResourceLocator=" + schemaResourceLocator
                 + ",registeredSchemaMap=" + registeredSchemaMap
                 + ",schemaCache=" + schemaCache

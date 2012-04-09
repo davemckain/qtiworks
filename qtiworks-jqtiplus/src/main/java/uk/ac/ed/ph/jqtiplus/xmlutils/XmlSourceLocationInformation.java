@@ -93,7 +93,7 @@ public final class XmlSourceLocationInformation implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(publicId=" + publicId
                 + ",systemId=" + systemId
                 + ",lineNumber=" + lineNumber

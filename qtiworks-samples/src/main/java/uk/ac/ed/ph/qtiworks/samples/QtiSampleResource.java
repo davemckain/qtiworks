@@ -106,7 +106,7 @@ public class QtiSampleResource implements Serializable {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(type=" + type
                 + ",relativePath=" + relativePath
                 + ",features=" + features

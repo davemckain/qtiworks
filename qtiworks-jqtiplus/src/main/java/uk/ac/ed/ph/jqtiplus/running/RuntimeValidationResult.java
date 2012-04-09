@@ -64,7 +64,7 @@ public final class RuntimeValidationResult extends AbstractValidationResult {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(assessmentObject=" + assessmentObject
                 + ",errors=" + getErrors()
                 + ",warnings=" + getWarnings()

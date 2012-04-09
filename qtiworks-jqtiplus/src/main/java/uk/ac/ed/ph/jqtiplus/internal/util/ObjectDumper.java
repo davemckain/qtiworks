@@ -43,14 +43,14 @@ import java.util.Set;
 /**
  * Trivial but slightly useful helper for creating deep dumps of Objects and their
  * its properties, which can be useful for displaying status messages and debugging.
- * 
+ *
  * @author David McKain
  */
 public final class ObjectDumper {
 
-    public static int DEFAULT_INDENT_WIDTH = 4;
+    public static final int DEFAULT_INDENT_WIDTH = 4;
 
-    public static int DEFAULT_MAX_DEPTH = 10;
+    public static final int DEFAULT_MAX_DEPTH = 10;
 
     private static final String EMPTY = "(empty)";
 
@@ -116,7 +116,7 @@ public final class ObjectDumper {
 
     /**
      * Does a dump of the given Object using the given {@link DumpMode}.
-     * 
+     *
      * @param object
      * @param dumpMode if {@link DumpMode#DEEP} then the Object is dumped deeply, if {@link DumpMode#TO_STRING} then the Object's {@link #toString()} is called,
      *            if {@link DumpMode#IGNORE} then nothing happens.
@@ -184,7 +184,7 @@ public final class ObjectDumper {
         final Class<?> componentType = array.getClass().getComponentType();
         result.append(componentType.getName())
                 .append("[]@")
-                .append(Integer.toHexString(array.hashCode()))
+                .append(Integer.toHexString(System.identityHashCode(array)))
                 .append("[");
         if (array.length == 0) {
             result.append(EMPTY);
@@ -287,7 +287,7 @@ public final class ObjectDumper {
         final Class<?> objectClass = object.getClass();
         result.append(objectClass.getName())
                 .append("@")
-                .append(Integer.toHexString(object.hashCode()))
+                .append(Integer.toHexString(System.identityHashCode(object)))
                 .append("(");
 
         /* Traverse all properties */
@@ -363,7 +363,7 @@ public final class ObjectDumper {
     /**
      * Works out the most appropriate {@link DumpMode} for the given Object by inspecting
      * its class for the relevant annotation.
-     * 
+     *
      * @param object Object being dumped
      * @param currentDumpMode DumpMode currently in operation, used if nothing is specified
      *            for the Object's class or if the Object is null.

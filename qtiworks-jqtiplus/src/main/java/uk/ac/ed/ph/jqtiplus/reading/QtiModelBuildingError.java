@@ -78,7 +78,7 @@ public final class QtiModelBuildingError implements Serializable {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(exception=" + exception
                 + ",elementLocalName=" + elementLocalName
                 + ",elementNamespace=" + elementNamespace

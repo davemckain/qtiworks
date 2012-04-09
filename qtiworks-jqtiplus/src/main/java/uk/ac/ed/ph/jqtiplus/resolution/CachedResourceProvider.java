@@ -113,7 +113,7 @@ final class CachedResourceProvider implements Serializable {
     
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(rootObjectProvider=" + rootObjectProvider
                 + ",modelRichness=" + modelRichness
                 + ",cacheData=" + cacheData

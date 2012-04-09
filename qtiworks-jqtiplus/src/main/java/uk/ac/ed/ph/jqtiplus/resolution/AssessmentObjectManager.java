@@ -222,7 +222,7 @@ public final class AssessmentObjectManager {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "@" + hashCode()
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(resourceProvider=" + resourceProvider
                 + ")";
     }
