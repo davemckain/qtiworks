@@ -67,7 +67,7 @@ import java.util.List;
  * select to form a valid response. If minChoices is 0 then the
  * candidate is not required to select any points. minChoices must
  * be less than or equal to the limit imposed by maxChoices.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SelectPointInteraction extends GraphicInteraction implements HotspotChoiceContainer {
@@ -78,16 +78,16 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     public static final String QTI_CLASS_NAME = "selectPointInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute. */
-    public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     /** Default value of minChoices attribute. */
-    public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
     public SelectPointInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -98,7 +98,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
@@ -108,7 +108,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -118,7 +118,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
@@ -128,7 +128,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */

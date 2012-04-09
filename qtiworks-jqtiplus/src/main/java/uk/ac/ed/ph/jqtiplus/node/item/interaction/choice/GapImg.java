@@ -45,7 +45,7 @@ import java.util.List;
  * Attribute : objectLabel [0..1]: string
  * An optional label for the image object to be inserted.
  * Contains : object [1]
- * 
+ *
  * @author Jonathon Hare
  */
 public class GapImg extends GapChoice {
@@ -56,7 +56,7 @@ public class GapImg extends GapChoice {
     public static final String QTI_CLASS_NAME = "gapImg";
 
     /** Name of objectLabel attribute in xml schema. */
-    public static String ATTR_OBJECT_LABEL_NAME = "objectLabel";
+    public static final String ATTR_OBJECT_LABEL_NAME = "objectLabel";
 
     public GapImg(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -68,7 +68,7 @@ public class GapImg extends GapChoice {
 
     /**
      * Gets value of objectLabel attribute.
-     * 
+     *
      * @return value of objectLabel attribute
      * @see #setObjectLabel
      */
@@ -78,7 +78,7 @@ public class GapImg extends GapChoice {
 
     /**
      * Sets new value of objectLabel attribute.
-     * 
+     *
      * @param objectLabel new value of objectLabel attribute
      * @see #getObjectLabel
      */
@@ -93,7 +93,7 @@ public class GapImg extends GapChoice {
 
     /**
      * Gets object child.
-     * 
+     *
      * @return object child
      * @see #setObject
      */
@@ -103,7 +103,7 @@ public class GapImg extends GapChoice {
 
     /**
      * Sets new object child.
-     * 
+     *
      * @param object new object child
      * @see #getObject
      */

@@ -91,22 +91,22 @@ public class SliderInteraction extends BlockInteraction {
     public static final String QTI_CLASS_NAME = "sliderInteraction";
 
     /** Name of lowerBound attribute in xml schema. */
-    public static String ATTR_LOWER_BOUND_NAME = "lowerBound";
+    public static final String ATTR_LOWER_BOUND_NAME = "lowerBound";
 
     /** Name of upperBound attribute in xml schema. */
-    public static String ATTR_UPPER_BOUND_NAME = "upperBound";
+    public static final String ATTR_UPPER_BOUND_NAME = "upperBound";
 
     /** Name of step attribute in xml schema. */
-    public static String ATTR_STEP_NAME = "step";
+    public static final String ATTR_STEP_NAME = "step";
 
     /** Name of stepLabel attribute in xml schema. */
-    public static String ATTR_STEP_LABEL_NAME = "stepLabel";
+    public static final String ATTR_STEP_LABEL_NAME = "stepLabel";
 
     /** Name of orientation attribute in xml schema. */
-    public static String ATTR_ORIENTATION_NAME = "orientation";
+    public static final String ATTR_ORIENTATION_NAME = "orientation";
 
     /** Name of reverse attribute in xml schema. */
-    public static String ATTR_REVERSE_NAME = "reverse";
+    public static final String ATTR_REVERSE_NAME = "reverse";
 
     public SliderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

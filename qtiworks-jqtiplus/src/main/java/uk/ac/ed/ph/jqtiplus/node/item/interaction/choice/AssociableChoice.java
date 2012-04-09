@@ -46,7 +46,7 @@ import java.util.List;
  * A set of choices that this choice may be associated with, all others are excluded.
  * If no matchGroup is given, or if it is empty, then all other choices may be associated
  * with this one subject to their own matching constraints.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class AssociableChoice extends Choice {
@@ -54,7 +54,7 @@ public abstract class AssociableChoice extends Choice {
     private static final long serialVersionUID = 1563015843108965243L;
 
     /** Name of matchGroup attribute in xml schema. */
-    public static String ATTR_MATCH_GROUP_NAME = "matchGroup";
+    public static final String ATTR_MATCH_GROUP_NAME = "matchGroup";
 
     public AssociableChoice(XmlNode parent, String localName) {
         super(parent, localName);
@@ -64,7 +64,7 @@ public abstract class AssociableChoice extends Choice {
     public List<Identifier> getMatchGroup() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).getValue();
     }
-    
+
     public void setMatchGroup(List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_MATCH_GROUP_NAME).setValue(value);
     }

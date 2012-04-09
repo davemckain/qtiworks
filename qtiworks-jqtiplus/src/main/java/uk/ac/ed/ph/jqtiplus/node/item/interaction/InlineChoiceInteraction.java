@@ -66,7 +66,7 @@ import java.util.Set;
  * Attribute : required [0..1]: boolean = false
  * If true then A choice must be selected by the candidate in order to form A
  * valid response to the interaction.
- * 
+ *
  * @author Jonathon Hare
  */
 public class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
@@ -77,16 +77,16 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     public static final String QTI_CLASS_NAME = "inlineChoiceInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of required attribute in xml schema. */
-    public static String ATTR_REQUIRED_NAME = "required";
+    public static final String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
 
     public InlineChoiceInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -104,7 +104,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
@@ -115,7 +115,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -126,7 +126,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Sets new value of required attribute.
-     * 
+     *
      * @param required new value of required attribute
      * @see #getRequired
      */
@@ -136,7 +136,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Gets value of required attribute.
-     * 
+     *
      * @return value of required attribute
      * @see #setRequired
      */
@@ -146,7 +146,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Gets simpleChoice children.
-     * 
+     *
      * @return simpleChoice children
      */
     public List<InlineChoice> getInlineChoices() {
@@ -155,7 +155,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
 
     /**
      * Gets simpleChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */

@@ -85,7 +85,7 @@ import java.util.Set;
  * simple keyboard navigation. If hotspots overlap then those listed first
  * hide overlapping hotspots that appear later. The default hotspot, if
  * defined, must appear last.
- * 
+ *
  * @author Jonathon Hare
  */
 public class HotspotInteraction extends GraphicInteraction implements HotspotChoiceContainer {
@@ -96,16 +96,16 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     public static final String QTI_CLASS_NAME = "hotspotInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute. */
-    public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     /** Default value of minChoices attribute. */
-    public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
     public HotspotInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -131,7 +131,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
@@ -141,7 +141,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -151,7 +151,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
@@ -161,7 +161,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -171,7 +171,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Gets hotspotChoice children.
-     * 
+     *
      * @return hotspotChoice children
      */
     public List<HotspotChoice> getHotspotChoices() {
@@ -180,7 +180,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
     /**
      * Gets hotspotChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return hotspotChoice with given identifier or null
      */

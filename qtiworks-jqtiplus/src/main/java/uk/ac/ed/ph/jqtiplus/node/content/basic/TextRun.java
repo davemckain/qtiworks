@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Text content block. Contains only text content and no children.
- * 
+ *
  * @author Jonathon Hare
  */
 public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, TextOrVariable {
@@ -51,7 +51,7 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
     private static final long serialVersionUID = -8609122687264674305L;
 
     /** Display name of this class. */
-    public static String DISPLAY_NAME = "textRun";
+    public static final String DISPLAY_NAME = "textRun";
 
     /** Text content of this block. */
     private String textContent;
@@ -64,13 +64,13 @@ public class TextRun extends AbstractNode implements FlowStatic, InlineStatic, T
 
     /**
      * Gets text content of this block.
-     * 
+     *
      * @return text content of this block
      */
     public String getTextContent() {
         return textContent;
     }
-    
+
     @Override
     public void fireSaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(textContent);

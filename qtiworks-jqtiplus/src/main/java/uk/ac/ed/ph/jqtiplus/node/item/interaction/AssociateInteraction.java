@@ -84,19 +84,19 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     public static final String QTI_CLASS_NAME = "associateInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Name of maxAssociations attribute in xml schema. */
-    public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
+    public static final String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
 
     /** Default value of maxAssociations attribute. */
-    public static int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
 
     /** Name of minAssociations attribute in xml schema. */
-    public static String ATTR_MIN_ASSOCIATIONS_NAME = "minAssociations";
+    public static final String ATTR_MIN_ASSOCIATIONS_NAME = "minAssociations";
 
     /** Default value of minAssociations attribute. */
-    public static int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
     public AssociateInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

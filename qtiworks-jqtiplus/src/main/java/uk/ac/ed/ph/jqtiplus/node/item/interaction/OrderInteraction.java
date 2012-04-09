@@ -102,19 +102,19 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     public static final String QTI_CLASS_NAME = "orderInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     /** Name of orientation attribute in xml schema. */
-    public static String ATTR_ORIENTATION_NAME = "orientation";
+    public static final String ATTR_ORIENTATION_NAME = "orientation";
 
     public OrderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

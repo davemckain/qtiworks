@@ -93,22 +93,22 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     public static final String QTI_CLASS_NAME = "matchInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /** Name of maxAssociations attribute in xml schema. */
-    public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
+    public static final String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
 
     /** Default value of maxAssociations attribute . */
-    public static int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
 
     /** Name of minAssociations attribute in xml schema. */
-    public static String ATTR_MIN_ASSOCIATIONS_NAME = "minAssociations";
+    public static final String ATTR_MIN_ASSOCIATIONS_NAME = "minAssociations";
 
     /** Default value of minAssociations attribute . */
-    public static int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
     public MatchInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

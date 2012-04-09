@@ -108,22 +108,22 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     public static final String QTI_CLASS_NAME = "extendedTextInteraction";
 
     /** Name of maxStrings attribute in xml schema. */
-    public static String ATTR_MAX_STRINGS_NAME = "maxStrings";
+    public static final String ATTR_MAX_STRINGS_NAME = "maxStrings";
 
     /** Name of minStrings attribute in xml schema. */
-    public static String ATTR_MIN_STRINGS_NAME = "minStrings";
+    public static final String ATTR_MIN_STRINGS_NAME = "minStrings";
 
     /** Name of minStrings attribute in xml schema. */
-    public static int ATTR_MIN_STRINGS_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_STRINGS_DEFAULT_VALUE = 0;
 
     /** Name of expectedLines attribute in xml schema. */
-    public static String ATTR_EXPECTED_LINES_NAME = "expectedLines";
+    public static final String ATTR_EXPECTED_LINES_NAME = "expectedLines";
 
     /** Name of format attribute in xml schema. */
-    public static String ATTR_FORMAT_NAME = "format";
+    public static final String ATTR_FORMAT_NAME = "format";
 
     /** Default value of format attribute. */
-    public static TextFormat ATTR_FORMAT_DEFAULT_VALUE = TextFormat.PLAIN;
+    public static final TextFormat ATTR_FORMAT_DEFAULT_VALUE = TextFormat.PLAIN;
 
     public ExtendedTextInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

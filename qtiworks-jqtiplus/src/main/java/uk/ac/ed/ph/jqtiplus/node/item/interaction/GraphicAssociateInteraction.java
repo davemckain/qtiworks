@@ -76,7 +76,7 @@ import java.util.Map;
  * selection then the order in which the choices are given must be the
  * order in which they are offered to the candidate for selection. For
  * example, the 'tab order' in simple keyboard navigation.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GraphicAssociateInteraction extends GraphicInteraction implements AssociableHotspotContainer {
@@ -87,14 +87,14 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
     public static final String QTI_CLASS_NAME = "graphicAssociateInteraction";
 
     /** Name of maxAssociations attribute in xml schema. */
-    public static String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
+    public static final String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";
 
     /** Default value of maxAssociations attribute. */
-    public static int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
 
     /**
      * Construct new interaction.
-     * 
+     *
      * @param parent Parent node
      */
     public GraphicAssociateInteraction(XmlNode parent) {
@@ -107,7 +107,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
 
     /**
      * Sets new value of maxAssociations attribute.
-     * 
+     *
      * @param maxAssociations new value of maxAssociations attribute
      * @see #getMaxAssociations
      */
@@ -117,7 +117,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
 
     /**
      * Gets value of maxAssociations attribute.
-     * 
+     *
      * @return value of maxAssociations attribute
      * @see #setMaxAssociations
      */
@@ -127,7 +127,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
 
     /**
      * Gets associableHotspot children.
-     * 
+     *
      * @return associableHotspot children
      */
     public List<AssociableHotspot> getAssociableHotspots() {
@@ -136,7 +136,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
 
     /**
      * Gets associableHotspot child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return associableHotspot with given identifier or null
      */

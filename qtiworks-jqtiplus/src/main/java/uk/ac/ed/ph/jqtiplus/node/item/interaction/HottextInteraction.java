@@ -89,16 +89,16 @@ public class HottextInteraction extends BlockInteraction {
     public static final String QTI_CLASS_NAME = "hottextInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute . */
-    public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     /** Default value of minChoices attribute . */
-    public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
     public HottextInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

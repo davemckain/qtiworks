@@ -77,7 +77,7 @@ import java.util.List;
  * it should play continuously (subject to maxPlays).
  * Contains : object [1]
  * The media object itself.
- * 
+ *
  * @author Jonathon Hare
  */
 public class MediaInteraction extends BlockInteraction {
@@ -88,26 +88,26 @@ public class MediaInteraction extends BlockInteraction {
     public static final String QTI_CLASS_NAME = "mediaInteraction";
 
     /** Name of autostart attribute in xml schema. */
-    public static String ATTR_AUTOSTART_NAME = "autostart";
+    public static final String ATTR_AUTOSTART_NAME = "autostart";
 
     /** Name of minPlays attribute in xml schema. */
-    public static String ATTR_MIN_PLAYS_NAME = "minPlays";
+    public static final String ATTR_MIN_PLAYS_NAME = "minPlays";
 
     /** Default value of minPlays attribute. */
-    public static int ATTR_MIN_PLAYS_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_PLAYS_DEFAULT_VALUE = 0;
 
     /** Name of maxPlays attribute in xml schema. */
-    public static String ATTR_MAX_PLAYS_NAME = "maxPlays";
+    public static final String ATTR_MAX_PLAYS_NAME = "maxPlays";
 
     /** Default value of maxPlays attribute. */
-    public static int ATTR_MAX_PLAYS_DEFAULT_VALUE = 0;
+    public static final int ATTR_MAX_PLAYS_DEFAULT_VALUE = 0;
 
     /** Name of loop attribute in xml schema. */
-    public static String ATTR_LOOP_NAME = "loop";
+    public static final String ATTR_LOOP_NAME = "loop";
 
     /** Default value of loop attribute. */
-    public static Boolean ATTR_LOOP_DEFAULT_VALUE = Boolean.FALSE;
-    
+    public static final Boolean ATTR_LOOP_DEFAULT_VALUE = Boolean.FALSE;
+
     public MediaInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -121,7 +121,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Sets new value of autostart attribute.
-     * 
+     *
      * @param autostart new value of autostart attribute
      * @see #getAutostart
      */
@@ -131,7 +131,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Gets value of autostart attribute.
-     * 
+     *
      * @return value of autostart attribute
      * @see #setAutostart
      */
@@ -141,7 +141,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Sets new value of minPlays attribute.
-     * 
+     *
      * @param minPlays new value of minPlays attribute
      * @see #getMinPlays
      */
@@ -151,7 +151,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Gets value of minPlays attribute.
-     * 
+     *
      * @return value of minPlays attribute
      * @see #setMinPlays
      */
@@ -161,7 +161,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Sets new value of maxPlays attribute.
-     * 
+     *
      * @param maxPlays new value of maxPlays attribute
      * @see #getMaxPlays
      */
@@ -171,17 +171,17 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Gets value of maxPlays attribute.
-     * 
+     *
      * @return value of maxPlays attribute
      * @see #setMinPlays
      */
     public int getMaxPlays() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).getComputedNonNullValue();
     }
-    
+
     /**
      * Gets value of loop attribute.
-     * 
+     *
      * @return value of loop attribute
      * @see #setLoop
      */
@@ -191,7 +191,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Sets new value of loop attribute.
-     * 
+     *
      * @param loop new value of loop attribute
      * @see #getLoop
      */
@@ -215,7 +215,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Gets object child.
-     * 
+     *
      * @return object child
      * @see #setObject
      */
@@ -225,7 +225,7 @@ public class MediaInteraction extends BlockInteraction {
 
     /**
      * Sets new object child.
-     * 
+     *
      * @param object new object child
      * @see #getObject
      */

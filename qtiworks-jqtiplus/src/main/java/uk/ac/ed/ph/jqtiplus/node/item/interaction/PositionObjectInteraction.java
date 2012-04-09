@@ -78,7 +78,7 @@ import java.util.List;
  * exceed the limit imposed by maxChoices.
  * Contains : object [1]
  * The image to be positioned on the stage by the candidate.
- * 
+ *
  * @author Jonathon Hare
  */
 public class PositionObjectInteraction extends BlockInteraction {
@@ -89,16 +89,16 @@ public class PositionObjectInteraction extends BlockInteraction {
     public static final String QTI_CLASS_NAME = "positionObjectInteraction";
 
     /** Name of centerPoint attribute in xml schema. */
-    public static String ATTR_CENTER_POINT_NAME = "centerPoint";
+    public static final String ATTR_CENTER_POINT_NAME = "centerPoint";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute . */
-    public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     public PositionObjectInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -112,20 +112,20 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Gets value of centerPoint attribute.
-     * 
+     *
      * @return value of centerPoint attribute
      */
     public List<Integer> getCenterPoint() {
         return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getComputedValue();
     }
-    
+
     public void setCenterPoint(List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).setValue(value);
     }
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
@@ -135,7 +135,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -145,7 +145,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
@@ -155,7 +155,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -165,7 +165,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Gets object child.
-     * 
+     *
      * @return object child
      * @see #setObject
      */
@@ -175,7 +175,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
     /**
      * Sets new object child.
-     * 
+     *
      * @param object new object child
      * @see #getObject
      */

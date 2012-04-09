@@ -92,10 +92,10 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
     public static final String QTI_CLASS_NAME = "graphicOrderInteraction";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     public GraphicOrderInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);

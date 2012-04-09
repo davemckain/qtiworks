@@ -99,7 +99,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     /** TODO: Make this settable! */
-    public static int MAX_TEMPLATE_PROCESSING_TRIES = 100;
+    public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;

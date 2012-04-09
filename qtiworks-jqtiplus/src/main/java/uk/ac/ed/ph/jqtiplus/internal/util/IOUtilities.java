@@ -50,16 +50,16 @@ import java.nio.channels.FileChannel;
 
 /**
  * (Copied from PhCommons)
- * 
+ *
  * @author David McKain
  */
 public final class IOUtilities {
-    
+
     /** Buffer size when transferring streams */
-    public static int BUFFER_SIZE = 32 * 1024;
+    public static final int BUFFER_SIZE = 32 * 1024;
 
     /** Maximum size of characters we'll read from a text stream before complaining */
-    public static int MAX_TEXT_STREAM_SIZE = 1024 * 1024;
+    public static final int MAX_TEXT_STREAM_SIZE = 1024 * 1024;
 
     //----------------------------------------------------------------------------
 
@@ -101,15 +101,15 @@ public final class IOUtilities {
     }
 
     //----------------------------------------------------------------------------
-    
+
     /**
      * Ensures that as many of the given {@link Closeable}s are closed. If any fail to close, the
      * first Exception is thrown after an attempt has been made to close the rest.
      * <p>
      * For convenience, any number of the stream may be null, in which case they will be ignored.
-     * 
+     *
      * @param streams "streams" to close
-     * @throws IOException 
+     * @throws IOException
      */
     public static void ensureClose(Closeable... streams) throws IOException {
         IOException firstException = null;
@@ -127,10 +127,10 @@ public final class IOUtilities {
             throw firstException;
         }
     }
-    
+
     //----------------------------------------------------------------------------
     // Convenience methods for data transfers
-    
+
     /**
      * "Transfers" data from the given InputStream to the given OutputStream,
      * closing both streams once the InputStream has been exhausted.
@@ -150,7 +150,7 @@ public final class IOUtilities {
             transfer(inStream, outStream, true);
         }
     }
-    
+
     /**
      * Version of {@link #transfer(InputStream, OutputStream)} for File streams that uses
      * NIO to do a hopefully more efficient transfer.
@@ -171,7 +171,7 @@ public final class IOUtilities {
             ensureClose(fileInChannel, fileOutChannel);
         }
     }
-    
+
     /**
      * "Transfers" data from the given InputStream to the given OutputStream,
      * closing the InputStream afterwards. If the parameter closeOutputStream is true
@@ -221,13 +221,13 @@ public final class IOUtilities {
 
     //----------------------------------------------------------------------------
     // Reading methods
-    
+
     public static byte[] readBinaryStream(InputStream stream) throws IOException {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         transfer(stream, outStream);
         return outStream.toByteArray();
     }
-    
+
     /**
      * Reads all character data from the given Reader, returning a String
      * containing all of the data. The Reader will be buffered for efficiency and
@@ -279,7 +279,7 @@ public final class IOUtilities {
     public static String readUnicodeFile(File file) throws IOException {
         InputStream inStream = new FileInputStream(file);
         try {
-            return readUnicodeStream(inStream);   
+            return readUnicodeStream(inStream);
         }
         finally {
             inStream.close();

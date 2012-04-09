@@ -63,13 +63,13 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     public static final String QTI_CLASS_NAME = "associableHotspot";
 
     /** Name of matchMax attribute in xml schema. */
-    public static String ATTR_MATCH_MAX_NAME = "matchMax";
+    public static final String ATTR_MATCH_MAX_NAME = "matchMax";
 
     /** Name of matchMin attribute in xml schema. */
-    public static String ATTR_MATCH_MIN_NAME = "matchMin";
+    public static final String ATTR_MATCH_MIN_NAME = "matchMin";
 
     /** Default value of matchMin attribute. */
-    public static int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
+    public static final int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
 
     /**

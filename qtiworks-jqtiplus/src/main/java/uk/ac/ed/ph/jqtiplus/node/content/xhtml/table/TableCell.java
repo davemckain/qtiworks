@@ -55,7 +55,7 @@ import java.util.List;
  * Attribute : rowspan [0..1]: integer
  * Attribute : colspan [0..1]: integer
  * Contains : flow [*]
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class TableCell extends BodyElement {
@@ -63,7 +63,7 @@ public abstract class TableCell extends BodyElement {
     private static final long serialVersionUID = 1932167301649954082L;
 
     /** Name of this class in xml schema. */
-    public static String DISPLAY_NAME = "tableCell";
+    public static final String DISPLAY_NAME = "tableCell";
 
     /** Name of headers attribute in xml schema. */
     public static final String ATTR_HEADERS_NAME = "headers";
@@ -103,20 +103,20 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Gets value of headers attribute.
-     * 
+     *
      * @return value of headers attribute
      */
     public List<Identifier> getHeaders() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getComputedValue();
     }
-    
+
     public void setHeaders(List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).setValue(value);
     }
 
     /**
      * Gets value of scope attribute.
-     * 
+     *
      * @return value of scope attribute
      * @see #setScope
      */
@@ -126,7 +126,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Sets new value of scope attribute.
-     * 
+     *
      * @param scope new value of scope attribute
      * @see #getScope
      */
@@ -136,7 +136,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Gets value of abbr attribute.
-     * 
+     *
      * @return value of abbr attribute
      * @see #setAbbr
      */
@@ -146,7 +146,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Sets new value of abbr attribute.
-     * 
+     *
      * @param abbr new value of abbr attribute
      * @see #getAbbr
      */
@@ -156,7 +156,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Gets value of axis attribute.
-     * 
+     *
      * @return value of axis attribute
      * @see #setAxis
      */
@@ -166,7 +166,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Sets new value of axis attribute.
-     * 
+     *
      * @param axis new value of axis attribute
      * @see #getAxis
      */
@@ -176,7 +176,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Gets value of rowspan attribute.
-     * 
+     *
      * @return value of rowspan attribute
      * @see #setRowspan
      */
@@ -186,7 +186,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Sets new value of rowspan attribute.
-     * 
+     *
      * @param rowspan new value of rowspan attribute
      * @see #getRowspan
      */
@@ -196,7 +196,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Gets value of colspan attribute.
-     * 
+     *
      * @return value of colspan attribute
      * @see #setColspan
      */
@@ -206,7 +206,7 @@ public abstract class TableCell extends BodyElement {
 
     /**
      * Sets new value of colspan attribute.
-     * 
+     *
      * @param colspan new value of colspan attribute
      * @see #getColspan
      */

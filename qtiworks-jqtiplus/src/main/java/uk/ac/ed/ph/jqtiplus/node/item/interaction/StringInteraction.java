@@ -78,7 +78,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * instead of their default placeholder text when this is required. Implementors
  * should be aware of the issues concerning the use of default values described
  * in the section on Response Variables.
- * 
+ *
  * @author Jonathon Hare
  */
 public interface StringInteraction {
@@ -87,63 +87,63 @@ public interface StringInteraction {
     public static String ATTR_BASE_NAME = "base";
 
     /** Default value of base attribute. */
-    public static int ATTR_BASE_DEFAULT_VALUE = 10;
+    public static final int ATTR_BASE_DEFAULT_VALUE = 10;
 
     /** Name of stringIdentifier attribute in xml schema. */
-    public static String ATTR_STRING_IDENTIFIER_NAME = "stringIdentifier";
+    public static final String ATTR_STRING_IDENTIFIER_NAME = "stringIdentifier";
 
     /** Name of expectedLength attribute in xml schema. */
-    public static String ATTR_EXPECTED_LENGTH_NAME = "expectedLength";
+    public static final String ATTR_EXPECTED_LENGTH_NAME = "expectedLength";
 
     /** Name of patternMask attribute in xml schema. */
-    public static String ATTR_PATTERN_MASK_NAME = "patternMask";
+    public static final String ATTR_PATTERN_MASK_NAME = "patternMask";
 
     /** Name of placeholderText attribute in xml schema. */
-    public static String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
+    public static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
 
     /** Name of stringValue key if response is bound to A record container. */
-    public static Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue", false);
+    public static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue", false);
 
     /** Name of floatValue key if response is bound to A record container. */
-    public static Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue", false);
+    public static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue", false);
 
     /** Name of integerValue key if response is bound to A record container. */
-    public static Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue", false);
+    public static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue", false);
 
     /** Name of leftDigits key if response is bound to A record container. */
-    public static Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits", false);
+    public static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits", false);
 
     /** Name of rightDigits key if response is bound to A record container. */
-    public static Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits", false);
+    public static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits", false);
 
     /** Name of ndp key if response is bound to A record container. */
-    public static Identifier KEY_NDP_NAME = new Identifier("ndp", false);
+    public static final Identifier KEY_NDP_NAME = new Identifier("ndp", false);
 
     /** Name of nsf key if response is bound to A record container. */
-    public static Identifier KEY_NSF_NAME = new Identifier("nsf", false);
+    public static final Identifier KEY_NSF_NAME = new Identifier("nsf", false);
 
     /** Name of exponent key if response is bound to A record container. */
-    public static Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
+    public static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
 
     /**
      * Gets value of base attribute.
-     * 
+     *
      * @return value of base attribute
      * @see #setBase
      */
     public int getBase();
-    
+
     /**
      * Sets new value of base attribute.
-     * 
+     *
      * @param base new value of base attribute
      * @see #getBase
      */
     public void setBase(Integer base);
-    
+
     /**
      * Sets new value of stringIdentifier attribute.
-     * 
+     *
      * @param stringIdentifier new value of stringIdentifier attribute
      * @see #getStringIdentifier
      */
@@ -151,7 +151,7 @@ public interface StringInteraction {
 
     /**
      * Gets value of stringIdentifier attribute.
-     * 
+     *
      * @return value of stringIdentifier attribute
      * @see #setStringIdentifier
      */
@@ -160,7 +160,7 @@ public interface StringInteraction {
 
     /**
      * Sets new value of expectedLength attribute.
-     * 
+     *
      * @param expectedLength new value of expectedLength attribute
      * @see #getExpectedLength
      */
@@ -168,7 +168,7 @@ public interface StringInteraction {
 
     /**
      * Gets value of expectedLength attribute.
-     * 
+     *
      * @return value of expectedLength attribute
      * @see #setExpectedLength
      */
@@ -177,7 +177,7 @@ public interface StringInteraction {
 
     /**
      * Sets new value of patternMask attribute.
-     * 
+     *
      * @param patternMask new value of patternMask attribute
      * @see #getPatternMask
      */
@@ -185,7 +185,7 @@ public interface StringInteraction {
 
     /**
      * Gets value of patternMask attribute.
-     * 
+     *
      * @return value of patternMask attribute
      * @see #setPatternMask
      */
@@ -194,7 +194,7 @@ public interface StringInteraction {
 
     /**
      * Sets new value of placeholderText attribute.
-     * 
+     *
      * @param placeholderText new value of placeholderText attribute
      * @see #getPlaceholderText
      */
@@ -202,7 +202,7 @@ public interface StringInteraction {
 
     /**
      * Gets value of placeholderText attribute.
-     * 
+     *
      * @return value of placeholderText attribute
      * @see #setPlaceholderText
      */
@@ -210,7 +210,7 @@ public interface StringInteraction {
 
     /**
      * Gets ResponseDeclaration corresponding to the stringIdentifier attribute
-     * 
+     *
      * @return ResponseDeclaration identified by interactions stringIdentifier
      */
     public ResponseDeclaration getStringIdentifierResponseDeclaration();

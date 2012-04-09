@@ -76,7 +76,7 @@ import java.util.Set;
  * Contains : simpleChoice [1..*]
  * An ordered list of the choices that are displayed to the user. The order is the order
  * of the choices presented to the user, unless shuffle is true.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
@@ -87,19 +87,19 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     public static final String QTI_CLASS_NAME = "choiceInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Name of maxChoices attribute in xml schema. */
-    public static String ATTR_MAX_CHOICES_NAME = "maxChoices";
+    public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute . */
-    public static int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
 
     /** Name of minChoices attribute in xml schema. */
-    public static String ATTR_MIN_CHOICES_NAME = "minChoices";
+    public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
     /** Default value of minChoices attribute . */
-    public static int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
+    public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
     public ChoiceInteraction(XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
@@ -126,7 +126,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Sets new value of shuffle attribute.
-     * 
+     *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
@@ -137,7 +137,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Gets value of shuffle attribute.
-     * 
+     *
      * @return value of shuffle attribute
      * @see #setShuffle
      */
@@ -148,7 +148,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Sets new value of maxChoices attribute.
-     * 
+     *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
@@ -158,7 +158,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Gets value of maxChoices attribute.
-     * 
+     *
      * @return value of maxChoices attribute
      * @see #setMaxChoices
      */
@@ -168,7 +168,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Sets new value of minChoices attribute.
-     * 
+     *
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
@@ -178,7 +178,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Gets value of minChoices attribute.
-     * 
+     *
      * @return value of minChoices attribute
      * @see #setMinChoices
      */
@@ -188,7 +188,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Gets simpleChoice children.
-     * 
+     *
      * @return simpleChoice children
      */
     public List<SimpleChoice> getSimpleChoices() {
@@ -197,7 +197,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
 
     /**
      * Gets simpleChoice child with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
@@ -259,7 +259,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
             /* (Single response) */
             responseChoiceIdentifiers.add(((IdentifierValue) responseValue).identifierValue());
         }
-        
+
         /* Check the number of responses */
         final int minChoices = getMinChoices();
         final int maxChoices = getMaxChoices();
@@ -269,7 +269,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
         if (maxChoices != 0 && responseChoiceIdentifiers.size() > maxChoices) {
             return false;
         }
-        
+
 
         /* Make sure each choice is a valid identifier */
         final Set<Identifier> simpleChoiceIdentifiers = new HashSet<Identifier>();

@@ -46,7 +46,7 @@ import java.util.List;
  * Attribute : required [0..1]: boolean = false
  * If true then this gap must be filled by the candidate in order
  * to form a valid response to the interaction.
- * 
+ *
  * @author Jonathon Hare
  */
 public class Gap extends AssociableChoice implements InlineStatic {
@@ -57,14 +57,14 @@ public class Gap extends AssociableChoice implements InlineStatic {
     public static final String QTI_CLASS_NAME = "gap";
 
     /** Name of required attribute in xml schema. */
-    public static String ATTR_REQUIRED_NAME = "required";
+    public static final String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
     public Gap(XmlNode parent) {
@@ -75,7 +75,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
 
     /**
      * Sets new value of required attribute.
-     * 
+     *
      * @param required new value of required attribute
      * @see #getRequired
      */
@@ -85,7 +85,7 @@ public class Gap extends AssociableChoice implements InlineStatic {
 
     /**
      * Gets value of required attribute.
-     * 
+     *
      * @return value of required attribute
      * @see #setRequired
      */

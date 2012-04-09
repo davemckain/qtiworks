@@ -93,10 +93,10 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     public static final String QTI_CLASS_NAME = "gapMatchInteraction";
 
     /** Name of shuffle attribute in xml schema. */
-    public static String ATTR_SHUFFLE_NAME = "shuffle";
+    public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
 
     /**
      * Construct new interaction.

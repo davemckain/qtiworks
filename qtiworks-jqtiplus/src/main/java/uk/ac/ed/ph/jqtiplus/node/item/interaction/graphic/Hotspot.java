@@ -48,24 +48,24 @@ import java.util.List;
  * The alternative text for this (hot) area of the image, if specified it must be
  * treated in the same way as alternative text for img. For hidden hotspots this
  * label is ignored.
- * 
+ *
  * @author Jonathon Hare
  */
 public interface Hotspot {
 
     /** Name of shape attribute in xml schema. */
-    public static String ATTR_SHAPE_NAME = "shape";
+    public static final String ATTR_SHAPE_NAME = "shape";
 
     /** Name of coords attribute in xml schema. */
-    public static String ATTR_COORDS_NAME = "coords";
+    public static final String ATTR_COORDS_NAME = "coords";
 
     /** Name of hotspotLabel attribute in xml schema. */
-    public static String ATTR_HOTSPOT_LABEL_NAME = "hotspotLabel";
+    public static final String ATTR_HOTSPOT_LABEL_NAME = "hotspotLabel";
 
 
     /**
      * Sets new value of shape attribute.
-     * 
+     *
      * @param shape new value of shape attribute
      * @see #getShape
      */
@@ -73,7 +73,7 @@ public interface Hotspot {
 
     /**
      * Gets value of shape attribute.
-     * 
+     *
      * @return value of shape attribute
      * @see #setShape
      */
@@ -81,7 +81,7 @@ public interface Hotspot {
 
     /**
      * Gets value of coords attribute.
-     * 
+     *
      * @return value of coords attribute
      */
     List<Integer> getCoords();
@@ -90,7 +90,7 @@ public interface Hotspot {
 
     /**
      * Sets new value of hotspotLabel attribute.
-     * 
+     *
      * @param hotspotLabel new value of hotspotLabel attribute
      * @see #getHotspotLabel
      */
@@ -98,7 +98,7 @@ public interface Hotspot {
 
     /**
      * Gets value of hotspotLabel attribute.
-     * 
+     *
      * @return value of hotspotLabel attribute
      * @see #setHotspotLabel
      */

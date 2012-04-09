@@ -59,13 +59,13 @@ public abstract class GapChoice extends AssociableChoice {
     public static final String DISPLAY_NAME = "gapChoice";
 
     /** Name of matchMax attribute in xml schema. */
-    public static String ATTR_MATCH_MAX_NAME = "matchMax";
+    public static final String ATTR_MATCH_MAX_NAME = "matchMax";
 
     /** Name of matchMin attribute in xml schema. */
-    public static String ATTR_MATCH_MIN_NAME = "matchMin";
+    public static final String ATTR_MATCH_MIN_NAME = "matchMin";
 
     /** Default value of matchMin attribute. */
-    public static int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
+    public static final int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
     public GapChoice(final XmlNode parent, final String localName) {
         super(parent, localName);
