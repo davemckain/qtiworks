@@ -54,12 +54,13 @@ public final class StringResponseData implements ResponseData {
         this.responseData = new ArrayList<String>(responseData);
     }
 
-    public StringResponseData(String[] responseData) {
-        this(Arrays.asList(responseData));
-    }
-
-    public StringResponseData(String singleResponse) {
-        this(Arrays.asList(singleResponse));
+    public StringResponseData(String... responseData) {
+        if (responseData!=null) {
+            this.responseData = new ArrayList<String>(Arrays.asList(responseData));
+        }
+        else {
+            this.responseData = Collections.emptyList();
+        }
     }
 
     @Override
