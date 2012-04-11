@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -64,6 +65,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -78,6 +80,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,12 +88,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * First stab at controller for doing candidate (item) sessions
- * 
+ *
  * FIXME: I've killed off most of the old rendering parameters. We'll need to create a better
  * set once we work out exactly what variants need to be rendered.
  *
@@ -98,42 +102,48 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 @Controller
 public class CandidateController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
-    
+
     public static final QtiSampleCollection demoSampleCollection = new QtiSampleCollection(
             StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
             MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
     );
-    
-    private static final String CURRENT_ITEM = "currentItem";
-    private static final String CURRENT_ITEM_SESSION_STATE = "currentItemSessionState";
-    
+
+    private static final String CURRENT_ITEM_HANDLE = "currentItemHandle";
+
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
-    
+
     @Resource
     private CandidateUploadService candidateUploadService;
-    
+
     @Resource
     private QtiXmlReader qtiXmlReader;
-    
+
     @Resource
     private AssessmentRenderer renderer;
-    
+
     @RequestMapping(value="/listSamples", method=RequestMethod.GET)
-    public String listSamples(Model model) {
+    public String listSamples(final Model model) {
         model.addAttribute("demoSampleCollection", demoSampleCollection);
         return "listSamples";
     }
 
     /**
-     * Starts a new item session using the sample resource with the given path
+     * FIXME: Make the result of this cacheable
+     * @throws IOException
      */
-    @RequestMapping(value="/newSession/{setIndex}/{itemIndex}", method=RequestMethod.GET)
-    public String newSampleItemSession(HttpSession httpSession, @PathVariable int setIndex, @PathVariable int itemIndex) {
-        logger.info("newSampleItemSession(setIndex={}, itemIndex={})", setIndex, itemIndex);
-        
+    @RequestMapping(value="/source/{setIndex}/{itemIndex}", method=RequestMethod.GET)
+    public void getSource(final HttpServletResponse response, @PathVariable final int setIndex, @PathVariable final int itemIndex) throws IOException {
+        final QtiSampleResource qtiSampleResource = findSampleResource(setIndex, itemIndex);
+        final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
+        final InputStream sampleInputStream = sampleResourceLocator.findResource(qtiSampleResource.toClassPathUri());
+        response.setContentType("application/xml");
+        IOUtilities.transfer(sampleInputStream, response.getOutputStream(), false);
+    }
+
+    private QtiSampleResource findSampleResource(final int setIndex, final int itemIndex) {
         final List<QtiSampleSet> demoSampleSets = demoSampleCollection.getQtiSampleSets();
         if (setIndex < 0 || setIndex >= demoSampleSets.size()) {
             throw new QtiSampleNotFoundException("Could not find demo sample set with index " + setIndex);
@@ -143,22 +153,34 @@ public class CandidateController {
         if (itemIndex <0 || itemIndex >= demoSampleResources.size()) {
             throw new QtiSampleNotFoundException("Could not find demo sample resource with index " + setIndex + " in set " + demoSampleSet);
         }
-        final QtiSampleResource demoSampleResource = demoSampleResources.get(itemIndex);
-        logger.info("Starting new session for {}", demoSampleResource);
+        return demoSampleResources.get(itemIndex);
+    }
+
+    private ResolvedAssessmentItem resolveSampleItem(final int setIndex, final int itemIndex) {
+        final QtiSampleResource demoSampleResource = findSampleResource(setIndex, itemIndex);
 
         /* Load and resolve item */
         final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
         final URI sampleResourceUri = demoSampleResource.toClassPathUri();
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);
-        
+        return objectManager.resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);
+    }
+
+    /**
+     * Starts a new item session using the sample resource with the given path
+     */
+    @RequestMapping(value="/newSession/{setIndex}/{itemIndex}", method=RequestMethod.GET)
+    public String newSampleItemSession(final HttpSession httpSession, @PathVariable final int setIndex, @PathVariable final int itemIndex) {
+        logger.info("newSampleItemSession(setIndex={}, itemIndex={})", setIndex, itemIndex);
+        final ResolvedAssessmentItem resolvedSampleItem = resolveSampleItem(setIndex, itemIndex);
+
         /* Create new item session */
-        ItemSessionState itemSessionState = new ItemSessionState();
-        
-        /* TEMP: Store things in the HTTP session */
-        httpSession.setAttribute(CURRENT_ITEM, resolvedAssessmentItem);
-        httpSession.setAttribute(CURRENT_ITEM_SESSION_STATE, itemSessionState);
+        final ItemSessionState itemSessionState = new ItemSessionState();
+
+        /* TEMP: Create handle to store in HTTP session */
+        final SampleItemHandle handle = new SampleItemHandle(setIndex, itemIndex, resolvedSampleItem, itemSessionState);
+        httpSession.setAttribute(CURRENT_ITEM_HANDLE, handle);
 
         /* Redirect to session handler */
         return "redirect:/dispatcher/itemSession";
@@ -170,37 +192,80 @@ public class CandidateController {
     private ResourceLocator getSampleResourceLocator() {
         return new ClassPathResourceLocator();
     }
-    
+
+    private SampleItemHandle getCurrentSampleItemHandle(final HttpSession httpSession) throws NoItemInSessionException {
+        final SampleItemHandle sampleItemHandle = (SampleItemHandle) httpSession.getAttribute(CURRENT_ITEM_HANDLE);
+        if (sampleItemHandle==null) {
+            throw new NoItemInSessionException();
+        }
+        return sampleItemHandle;
+    }
+
     /** FIXME: This should be POST only */
     @RequestMapping(value="/endItemSession", method={ RequestMethod.GET, RequestMethod.POST })
-    public String endItemSession(HttpSession httpSession) {
+    public String endItemSession(final HttpSession httpSession) {
         /* TEMP: Remove stuff stored in HttpSession */
-        httpSession.removeAttribute(CURRENT_ITEM);
-        httpSession.removeAttribute(CURRENT_ITEM_SESSION_STATE);
-        
+        httpSession.removeAttribute(CURRENT_ITEM_HANDLE);
+
         /* TEMP: Go back to the listing */
         return "redirect:/dispatcher/listSamples";
     }
-    
-    /** FIXME: This should be POST only */
+
+    /** FIXME: This should be POST only
+     * @throws NoItemInSessionException
+     */
     @RequestMapping(value="/resetItemSession", method={ RequestMethod.GET, RequestMethod.POST })
-    public String resetItemSession(HttpSession httpSession) {
-        /* TEMP: Reset state stored in HttpSession */
-        httpSession.setAttribute(CURRENT_ITEM_SESSION_STATE, new ItemSessionState());
-        
+    public String resetItemSession(final HttpSession httpSession) throws NoItemInSessionException {
+        /* TEMP: Extract current item & state from HTTP session */
+        final SampleItemHandle sampleItemHandle = getCurrentSampleItemHandle(httpSession);
+        sampleItemHandle.itemSessionState = new ItemSessionState();
+
         /* Redirect to session handler */
         return "redirect:/dispatcher/itemSession";
     }
-    
-    /** FIXME: Separate out GET and POST */
+
+    /**
+     * FIXME: This isn't really required, other than saving me having to embed control URLs
+     * into the rendering output at the moment. This will probably die later.
+     *
+     * @param httpSession
+     * @return
+     * @throws NoItemInSessionException
+     */
+    @RequestMapping(value="/itemSource", method={ RequestMethod.GET })
+    public String getCurrentItemSource(final HttpSession httpSession)
+            throws NoItemInSessionException {
+        /* TEMP: Extract current item & state from HTTP session */
+        final SampleItemHandle sampleItemHandle = getCurrentSampleItemHandle(httpSession);
+
+        return "redirect:/dispatcher/source/" + sampleItemHandle.setIndex + "/" + sampleItemHandle.itemIndex;
+    }
+
+    @RequestMapping(value="/itemResult", method={ RequestMethod.GET })
+    public void getItemResult(final HttpServletResponse response, final HttpSession httpSession)
+            throws NoItemInSessionException, IOException {
+        /* TEMP: Extract current item & state from HTTP session */
+        final SampleItemHandle sampleItemHandle = getCurrentSampleItemHandle(httpSession);
+        final ResolvedAssessmentItem resolvedAssessmentItem = sampleItemHandle.resolvedSampleItem;
+        final ItemSessionState itemSessionState = sampleItemHandle.itemSessionState;
+
+        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemResult itemResult = itemController.computeItemResult();
+        response.setContentType("application/xml");
+        renderer.serializeJqtiObject(itemResult, response.getOutputStream());
+    }
+
+    /** FIXME: Separate out GET and POST
+     * @throws NoItemInSessionException */
     @RequestMapping(value="/itemSession", method={ RequestMethod.GET, RequestMethod.POST })
     @ResponseBody
-    public String sampleItemSession(HttpServletRequest request, HttpSession httpSession) {
+    public String sampleItemSession(final HttpServletRequest request, final HttpSession httpSession)
+            throws NoItemInSessionException {
         /* TEMP: Extract current item & state from HTTP session */
-        ResolvedAssessmentItem resolvedAssessmentItem = (ResolvedAssessmentItem) httpSession.getAttribute(CURRENT_ITEM);
-        ItemSessionState itemSessionState = (ItemSessionState) httpSession.getAttribute(CURRENT_ITEM_SESSION_STATE);
-        /* FIXME: Handle nulls in the lines above! */
-        
+        final SampleItemHandle sampleItemHandle = getCurrentSampleItemHandle(httpSession);
+        final ResolvedAssessmentItem resolvedAssessmentItem = sampleItemHandle.resolvedSampleItem;
+        final ItemSessionState itemSessionState = sampleItemHandle.itemSessionState;
+
         String pageContent = null;
         try {
             if (!itemSessionState.isInitialized()) {
@@ -212,26 +277,26 @@ public class CandidateController {
                 pageContent = handleResponseSubmission(request, resolvedAssessmentItem, itemSessionState);
             }
         }
-        catch (RuntimeValidationException e) {
+        catch (final RuntimeValidationException e) {
             throw new QtiLogicException("Unexpected RuntimeValidationException encountered", e);
         }
         return pageContent;
     }
-    
-    private String serveFreshItem(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState)
+
+    private String serveFreshItem(final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState)
             throws RuntimeValidationException {
-        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         itemController.initialize();
-        
-        Map<String, Object> renderingParameters = createRenderingParameters();
+
+        final Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
-    
-    private String handleResponseSubmission(HttpServletRequest request, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState)
+
+    private String handleResponseSubmission(final HttpServletRequest request, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState)
             throws RuntimeValidationException {
         /* First need to extract responses */
-        Map<String, ResponseData> responseMap = new HashMap<String, ResponseData>();
+        final Map<String, ResponseData> responseMap = new HashMap<String, ResponseData>();
         extractStringResponseData(request, responseMap);
         if (request instanceof MultipartHttpServletRequest) {
             extractFileResponseData((MultipartHttpServletRequest) request, responseMap);
@@ -239,9 +304,9 @@ public class CandidateController {
         logger.debug("Extracted responses {}", responseMap);
 
         /* Bind responses */
-        ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         List<Identifier> invalidResponseIdentifiers = null;
-        List<Identifier> badResponseIdentifiers = itemController.bindResponses(responseMap);
+        final List<Identifier> badResponseIdentifiers = itemController.bindResponses(responseMap);
         if (badResponseIdentifiers.isEmpty()) {
             logger.debug("Responses bound successfully, so continuing to response validation step");
             invalidResponseIdentifiers = itemController.validateResponses();
@@ -256,26 +321,27 @@ public class CandidateController {
         else {
             logger.debug("Bad responses submitted to {}, so no response processing invoked", badResponseIdentifiers);
         }
-        
-        Map<String, Object> renderingParameters = createRenderingParameters();
+
+        final Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderRespondedStandaloneItem(resolvedAssessmentItem, itemSessionState,
                 responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
 
     private Map<String, Object> createRenderingParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<String, Object>();
         return result;
     }
-    
-    public void extractFileResponseData(MultipartHttpServletRequest multipartRequest, Map<String, ResponseData> responseMap) {
+
+    public void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<String, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
+        final
         Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
-        for (String name : parameterNames) {
+        for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_uploadpresented_")) {
-                String responseIdentifier = name.substring("qtiworks_uploadpresented_".length());
+                final String responseIdentifier = name.substring("qtiworks_uploadpresented_".length());
                 FileResponseData fileResponseData = null;
-                MultipartFile multipartFile = multipartRequest.getFile("qtiworks_uploadresponse_" + responseIdentifier);
+                final MultipartFile multipartFile = multipartRequest.getFile("qtiworks_uploadresponse_" + responseIdentifier);
                 if (multipartFile!=null) {
                     fileResponseData = candidateUploadService.importData(multipartFile);
                 }
@@ -283,40 +349,76 @@ public class CandidateController {
             }
         }
     }
-    
-    public void extractStringResponseData(HttpServletRequest request, Map<String, ResponseData> responseMap) {
+
+    public void extractStringResponseData(final HttpServletRequest request, final Map<String, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
+        final
         Set<String> parameterNames = request.getParameterMap().keySet();
-        for (String name : parameterNames) {
+        for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_presented_")) {
-                String responseIdentifier = name.substring("qtiworks_presented_".length());
-                String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifier);
-                StringResponseData stringResponseData = new StringResponseData(responseValues);
+                final String responseIdentifier = name.substring("qtiworks_presented_".length());
+                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifier);
+                final StringResponseData stringResponseData = new StringResponseData(responseValues);
                 responseMap.put(responseIdentifier, stringResponseData);
             }
         }
     }
-    
+
     /**
      * FIXME: This currently can be used to serve up anything within the ClassPath.
      * This needs to be integrated with a proper sandboxed URI.
-     * 
+     *
      * FIXME: Would be nice to allow this to be cached at some point.
      */
     @RequestMapping(value="/assessmentResource", method=RequestMethod.GET)
-    public void assessmentResource(@RequestParam("uri") URI uri, HttpServletResponse response) throws IOException {
-        ResourceLocator resourceLocator = getSampleResourceLocator();
-        InputStream resourceStream = resourceLocator.findResource(uri);
+    public void assessmentResource(@RequestParam("uri") final URI uri, final HttpServletResponse response) throws IOException {
+        final ResourceLocator resourceLocator = getSampleResourceLocator();
+        final InputStream resourceStream = resourceLocator.findResource(uri);
         if (resourceStream==null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        String contentType = getResourceContentType(uri);
+        final String contentType = getResourceContentType(uri);
         response.setContentType(contentType);
         IOUtilities.transfer(resourceStream, response.getOutputStream(), false);
     }
-    
-    private String getResourceContentType(URI uri) {
+
+    private String getResourceContentType(final URI uri) {
         return URLConnection.getFileNameMap().getContentTypeFor(uri.toString());
+    }
+
+    /**
+     * TEMP! Thrown if there is no item currently stored within the HTTP session.
+     *
+     * @author David McKain
+     */
+    @ResponseStatus(value=HttpStatus.NOT_FOUND)
+    public static final class NoItemInSessionException extends Exception {
+
+        private static final long serialVersionUID = 5304107064642640157L;
+
+    }
+
+    /**
+     * TEMP! Encapsulates details about the item currently being played within the
+     * current HTTP session.
+     *
+     * @author David McKain
+     */
+    protected static final class SampleItemHandle implements Serializable {
+
+        private static final long serialVersionUID = 2271804020181344518L;
+
+        public int setIndex;
+        public int itemIndex;
+        public ResolvedAssessmentItem resolvedSampleItem;
+        public ItemSessionState itemSessionState;
+
+        public SampleItemHandle(final int setIndex, final int itemIndex, final ResolvedAssessmentItem resolvedSampleItem, final ItemSessionState itemSessionState) {
+            this.setIndex = setIndex;
+            this.itemIndex = itemIndex;
+            this.resolvedSampleItem = resolvedSampleItem;
+            this.itemSessionState = itemSessionState;
+        }
     }
 }

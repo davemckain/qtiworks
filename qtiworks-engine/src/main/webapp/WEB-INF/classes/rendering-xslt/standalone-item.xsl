@@ -109,11 +109,11 @@ Renders a standalone assessmentItem
             <ul>
               <li><a href="{$webappContextPath}/dispatcher/resetItemSession">Reset and replay</a></li>
               <li><a href="{$webappContextPath}/dispatcher/endItemSession">Exit and return</a></li>
+              <li><a href="{$webappContextPath}/dispatcher/itemResult">View ItemResult</a></li>
             </ul>
             <h2>Author tools</h2>
             <ul>
-              <li>View item source (coming soon)</li>
-              <li>View item report (coming soon)</li>
+              <li><a href="{$webappContextPath}/dispatcher/itemSource">View Item source</a></li>
             </ul>
           </div>
           <!-- Author debugging information -->
