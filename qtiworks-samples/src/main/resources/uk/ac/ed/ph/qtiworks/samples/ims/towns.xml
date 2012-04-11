@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
     identifier="matchTowns" title="Towns" adaptive="false" timeDependent="false">
 
     <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
@@ -11,18 +11,18 @@
             <mapEntry mapKey="M D" mappedValue="1"/>
             <mapEntry mapKey="H Y" mappedValue="1"/>
             <mapEntry mapKey="N NTH" mappedValue="1"/>
-            <mapEntry mapKey="N S" mappedValue="1"/>
+            <mapEntry mapKey="N ST" mappedValue="1"/>
             <mapEntry mapKey="B NTH" mappedValue="1"/>
 
             <mapEntry mapKey="H NTH" mappedValue="-0.5"/>
-            <mapEntry mapKey="H S" mappedValue="-0.5"/>
+            <mapEntry mapKey="H ST" mappedValue="-0.5"/>
             <mapEntry mapKey="H NTS" mappedValue="-0.5"/>
             <mapEntry mapKey="H D" mappedValue="-0.5"/>
             <mapEntry mapKey="B Y" mappedValue="-0.5"/>
-            <mapEntry mapKey="B S" mappedValue="-0.5"/>
+            <mapEntry mapKey="B ST" mappedValue="-0.5"/>
             <mapEntry mapKey="B D" mappedValue="-0.5"/>
             <mapEntry mapKey="S NTH" mappedValue="-0.5"/>
-            <mapEntry mapKey="S S" mappedValue="-0.5"/>
+            <mapEntry mapKey="S ST" mappedValue="-0.5"/>
             <mapEntry mapKey="S NTS" mappedValue="-0.5"/>
             <mapEntry mapKey="S D" mappedValue="-0.5"/>
             <mapEntry mapKey="N Y" mappedValue="-0.5"/>
@@ -30,14 +30,14 @@
             <mapEntry mapKey="N D" mappedValue="-0.5"/>
             <mapEntry mapKey="M NTH" mappedValue="-0.5"/>
             <mapEntry mapKey="M Y" mappedValue="-0.5"/>
-            <mapEntry mapKey="M S" mappedValue="-0.5"/>
+            <mapEntry mapKey="M ST" mappedValue="-0.5"/>
             <mapEntry mapKey="M NTS" mappedValue="-0.5"/>
         </mapping>
 
         <!-- <correctResponse>
             <value>B NTH</value>
             <value>B NTS</value>
-            <value>N S</value>
+            <value>N ST</value>
             <value>N NTH</value>
             <value>M D</value>
             <value>H Y</value>
@@ -62,7 +62,7 @@
             <simpleMatchSet>
                 <simpleAssociableChoice identifier="NTH" matchMax="5">Northumberland</simpleAssociableChoice>
                 <simpleAssociableChoice identifier="Y" matchMax="5">Yorkshire</simpleAssociableChoice>
-                <simpleAssociableChoice identifier="S" matchMax="5">Staffordshire</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="ST" matchMax="5">Staffordshire</simpleAssociableChoice>
                 <simpleAssociableChoice identifier="NTS" matchMax="5">Nottinghamshire</simpleAssociableChoice>
                 <simpleAssociableChoice identifier="D" matchMax="5">Derbyshire</simpleAssociableChoice>
             </simpleMatchSet>
@@ -85,7 +85,7 @@
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
-                        <baseValue baseType="directedPair">N S</baseValue>
+                        <baseValue baseType="directedPair">N ST</baseValue>
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
@@ -124,7 +124,7 @@
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
-                        <baseValue baseType="directedPair">B S</baseValue>
+                        <baseValue baseType="directedPair">B ST</baseValue>
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
@@ -136,7 +136,7 @@
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
-                        <baseValue baseType="directedPair">S S</baseValue>
+                        <baseValue baseType="directedPair">S ST</baseValue>
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
@@ -156,7 +156,7 @@
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
-                        <baseValue baseType="directedPair">M S</baseValue>
+                        <baseValue baseType="directedPair">M ST</baseValue>
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
@@ -168,7 +168,7 @@
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
-                        <baseValue baseType="directedPair">H S</baseValue>
+                        <baseValue baseType="directedPair">H ST</baseValue>
                         <variable identifier="RESPONSE"/>
                     </member>
                     <member>
