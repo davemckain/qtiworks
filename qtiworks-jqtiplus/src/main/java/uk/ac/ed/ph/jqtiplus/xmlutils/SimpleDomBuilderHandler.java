@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This coalesces adjacent runs of characters into single text Nodes.
  * <p>
  * Usage: not thread safe, not reusable.
- * 
+ *
  * @author David McKain
  */
 public final class SimpleDomBuilderHandler extends DefaultHandler {
@@ -61,7 +61,7 @@ public final class SimpleDomBuilderHandler extends DefaultHandler {
 
     /** Current DOM Node being built */
     private Node currentNode;
-    
+
     /** Coalesces SAX character events */
     private final StringBuilder textNodeBuilder;
 
@@ -111,7 +111,7 @@ public final class SimpleDomBuilderHandler extends DefaultHandler {
         addAnyCoalescedText();
         currentNode = currentNode.getParentNode();
     }
-    
+
     private void addAnyCoalescedText() {
         if (textNodeBuilder.length()>0) {
             final Text textNode = document.createTextNode(textNodeBuilder.toString());
@@ -127,7 +127,7 @@ public final class SimpleDomBuilderHandler extends DefaultHandler {
             throw new IllegalStateException("Inconsistent state at endDocument: currentNode=" + currentNode);
         }
         if (textNodeBuilder.length() > 0) {
-            throw new IllegalStateException("Inconsistent state at endDocument: textNodeBuilder contains " + textNodeBuilder.toString());            
+            throw new IllegalStateException("Inconsistent state at endDocument: textNodeBuilder contains " + textNodeBuilder.toString());
         }
     }
 

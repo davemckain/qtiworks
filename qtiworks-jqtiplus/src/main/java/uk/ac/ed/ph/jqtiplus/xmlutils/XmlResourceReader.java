@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -465,9 +466,9 @@ public final class XmlResourceReader {
         return inputStream;
     }
 
-    public static XmlSourceLocationInformation extractLocationInformation(Element element) {
+    public static XmlSourceLocationInformation extractLocationInformation(Node elementOrTextNode) {
         XmlSourceLocationInformation result = null;
-        final Object locationData = element.getUserData(LOCATION_INFORMATION_NAME);
+        final Object locationData = elementOrTextNode.getUserData(LOCATION_INFORMATION_NAME);
         if (locationData != null && locationData instanceof XmlSourceLocationInformation) {
             result = (XmlSourceLocationInformation) locationData;
         }

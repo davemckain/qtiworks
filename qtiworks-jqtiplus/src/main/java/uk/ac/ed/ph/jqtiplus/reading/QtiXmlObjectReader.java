@@ -64,6 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Default implementation of {@link RootObjectProvider}, which uses a {@link QtiXmlReader} to
@@ -194,9 +195,9 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         }
 
         @Override
-        public void modelBuildingError(QtiModelException exception, Element owner) {
-            qtiModelBuildingErrors.add(new QtiModelBuildingError(exception, owner.getLocalName(),
-                    owner.getNamespaceURI(), XmlResourceReader.extractLocationInformation(owner)));
+        public void modelBuildingError(QtiModelException exception, Node errorNode) {
+            qtiModelBuildingErrors.add(new QtiModelBuildingError(exception, errorNode.getLocalName(),
+                    errorNode.getNamespaceURI(), XmlResourceReader.extractLocationInformation(errorNode)));
         }
     }
 

@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -197,25 +196,20 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
         final NodeList childNodes = node.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
-            if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
-                try {
+            try {
+                if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
                     final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
                     getChildren().add(child);
                     child.load((Element) childNode, context);
                 }
-                catch (final QtiModelException e) {
-                    context.modelBuildingError(e, (Element) childNode);
-                }
-            }
-            else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
-                try {
+                else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
                     final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
                     getChildren().add((C) child);
                     child.load((Text) childNode);
                 }
-                catch (final Exception e) {
-                    throw new QtiLogicException("Expected to be able to add a " + TextRun.class + " here");
-                }
+            }
+            catch (final QtiModelException e) {
+                context.modelBuildingError(e, childNode);
             }
         }
     }

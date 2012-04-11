@@ -37,18 +37,19 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Callback interface passed to {@link AbstractNode#load(Element, LoadingContext)}
  * and related methods that provides access to JQTI extensions, and a way of reporting
  * model building errors.
- * 
+ *
  * @author David McKain
  */
 public interface LoadingContext {
 
     JqtiExtensionManager getJqtiExtensionManager();
 
-    void modelBuildingError(QtiModelException exception, Element element);
+    void modelBuildingError(QtiModelException exception, Node Node);
 
 }

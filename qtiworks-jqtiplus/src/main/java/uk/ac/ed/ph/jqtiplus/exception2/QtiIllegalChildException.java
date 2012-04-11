@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
  * Exception thrown when trying to add an inappropriate child to a Node.
- * 
+ *
  * @author David McKain
  */
 public final class QtiIllegalChildException extends QtiModelException {
@@ -45,20 +45,19 @@ public final class QtiIllegalChildException extends QtiModelException {
     private static final long serialVersionUID = 8810282210478664633L;
 
     private final XmlNode parent;
+    private final String childLocalName;
 
-    private final String childClassTag;
-
-    public QtiIllegalChildException(XmlNode parent, String childClassTag) {
-        super("Illegal child class " + childClassTag + " for parent " + parent.getClassTag());
+    public QtiIllegalChildException(XmlNode parent, String childLocalName) {
+        super("Illegal child with local name " + childLocalName + " for parent " + parent.getLocalName());
         this.parent = parent;
-        this.childClassTag = childClassTag;
+        this.childLocalName = childLocalName;
     }
 
     public XmlNode getParent() {
         return parent;
     }
 
-    public String getChildClassTag() {
-        return childClassTag;
+    public String getChildLocalName() {
+        return childLocalName;
     }
 }
