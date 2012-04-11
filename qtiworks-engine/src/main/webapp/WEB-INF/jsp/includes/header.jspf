@@ -21,6 +21,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<c:set var="qtiWorksVersion" value="1.0-DEV3"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +29,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
     <meta charset="UTF-8">
     <meta name="author" content="David McKain">
     <meta name="publisher" content="The University of Edinburgh">
-    <title>QTI - <c:out value="${title}" default="QTI Experimental"/></title>
+    <title>QTIWorks - <c:out value="${title}" default="QTI 2.1 Delivery"/></title>
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/webapp-base.css'/>">
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/content-styles.css'/>">
     <link rel="stylesheet" type="text/css" href="<c:url value='/includes/qtiworks.css'/>">
@@ -70,7 +71,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
       </div>
       <div id="sectionHeader">
         <div id="sectionHeaderTitle">
-           <a href="${utils:encodePageLink(pageContext, 'HOME')}">QTIWorks</a>
+          <a href="${utils:encodePageLink(pageContext, 'HOME')}">QTIWorks ${qtiWorksVersion}</a>
         </div>
       </div>
       <div id="contentArea">

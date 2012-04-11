@@ -20,7 +20,7 @@ JSP Page Footer
         <div id="footer-text">
           <%-- Usual Copyright stuff --%>
           <p>
-            QTIWorks
+            QTIWorks ${qtiWorksVersion} &#x2012; <a href="release-notes.jsp">Release notes</a>
             <br />
             Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
             <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
