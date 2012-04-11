@@ -42,11 +42,12 @@ import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Response variables are declared by response declarations.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ResponseVariable extends ItemVariable {
@@ -81,8 +82,14 @@ public class ResponseVariable extends ItemVariable {
             setCandidateResponse(response);
 
             if (shuffledInteractionChoiceIdentifiers != null) {
-                final List<Identifier> choiceSequence = getChoiceSequence();
-                choiceSequence.clear();
+                List<Identifier> choiceSequence = getChoiceSequence();
+                if (choiceSequence==null) {
+                    choiceSequence = new ArrayList<Identifier>();
+                    setChoiceSequence(choiceSequence);
+                }
+                else {
+                    choiceSequence.clear();
+                }
                 choiceSequence.addAll(shuffledInteractionChoiceIdentifiers);
             }
         }
@@ -90,20 +97,20 @@ public class ResponseVariable extends ItemVariable {
 
     /**
      * Gets value of choiceSequence attribute.
-     * 
+     *
      * @return value of choiceSequence attribute
      */
     public List<Identifier> getChoiceSequence() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getComputedValue();
     }
-    
+
     public void setChoiceSequence(List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).setValue(value);
     }
 
     /**
      * Gets correctResponse child.
-     * 
+     *
      * @return correctResponse child
      * @see #setCorrectResponse
      */
@@ -113,7 +120,7 @@ public class ResponseVariable extends ItemVariable {
 
     /**
      * Sets new correctResponse child.
-     * 
+     *
      * @param correctResponse new correctResponse child
      * @see #getCorrectResponse
      */
@@ -123,7 +130,7 @@ public class ResponseVariable extends ItemVariable {
 
     /**
      * Gets candidateResponse child.
-     * 
+     *
      * @return candidateResponse child
      * @see #setCandidateResponse
      */
@@ -133,7 +140,7 @@ public class ResponseVariable extends ItemVariable {
 
     /**
      * Sets new candidateResponse child.
-     * 
+     *
      * @param candidateResponse new candidateResponse child
      * @see #getCandidateResponse
      */
