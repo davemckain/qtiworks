@@ -33,66 +33,53 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import java.util.Properties;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
+import javax.sql.DataSource;
 
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
-
-import org.qtitools.mathassess.MathAssessExtensionPackage;
-
-import javax.annotation.Resource;
-
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 /**
- * Defines webapp-scoped beans
+ * Domain-level configuration (DB, JPA etc.)
  *
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.web"})
-public class ApplicationConfiguration {
+@ImportResource("classpath:/qtiworks-config.xml")
+public class ApplicationDomainConfiguration {
 
-    @Resource
-    private WebApplicationContext webApplicationContext;
+    private @Value("${qtiworks.jdbc.driver}") String jdbcDriverClassName;
+    private @Value("${qtiworks.jdbc.url}") String jdbcUrl;
+    private @Value("${qtiworks.jdbc.username}") String jdbcUsername;
+    private @Value("${qtiworks.jdbc.password}") String jdbcPassword;
+    private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
 
-    @Bean
-    public String contextPath() {
-        return webApplicationContext.getServletContext().getContextPath();
+    /** FIXME: Parameterize this! */
+    @Bean(destroyMethod="close")
+    public DataSource dataSource() {
+        final BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(jdbcDriverClassName);
+        dataSource.setUrl(jdbcUrl);
+        dataSource.setUsername(jdbcUsername);
+        dataSource.setPassword(jdbcPassword);
+        return dataSource;
     }
 
     @Bean
-    public StylesheetCache stylesheetCache() {
-        return new SimpleStylesheetCache();
+    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
+        final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPersistenceXmlLocation("classpath:/META-INF/persistence.xml");
+        emf.setDataSource(dataSource());
+
+        final Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", hibernateDialect);
+        emf.setJpaProperties(jpaProperties);
+        return emf;
     }
 
-    @Bean
-    public MathAssessExtensionPackage mathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(stylesheetCache());
-    }
-
-    @Bean(initMethod="init", destroyMethod="destroy")
-    public JqtiExtensionManager jqtiExtensionManager() {
-        return new JqtiExtensionManager(mathAssessExtensionPackage());
-    }
-
-    @Bean
-    public QtiXmlReader qtiXmlReader() {
-        final SimpleSchemaCache schemaCache = new SimpleSchemaCache();
-        return new QtiXmlReader(jqtiExtensionManager(), schemaCache);
-    }
-
-    @Bean
-    public AssessmentRenderer renderer() {
-        final SimpleXsltStylesheetCache xsltStylesheetCache = new SimpleXsltStylesheetCache();
-        return new AssessmentRenderer(contextPath(), xsltStylesheetCache);
-    }
 }
