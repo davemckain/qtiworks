@@ -198,7 +198,7 @@
   text-align: center;
 }
 
-.qtiworksRendering .assessmentItem div.upConversionAJAXControlMessage {
+.qtiworksRendering .assessmentItem div.upConversionAjaxControlMessage {
   width: auto;
   text-align: center;
   display: inline;
@@ -221,10 +221,10 @@
   background: url(../images/exclamation.png) no-repeat center left;
 }
 
-.qtiworksRendering .assessmentItem div.upConversionAJAXControlError {
+.qtiworksRendering .assessmentItem div.upConversionAjaxControlError {
 }
 
-.qtiworksRendering .assessmentItem div.upConversionAJAXControlPreview {
+.qtiworksRendering .assessmentItem div.upConversionAjaxControlPreview {
   margin: 0.5em 0;
   font-size: 110%;
 }

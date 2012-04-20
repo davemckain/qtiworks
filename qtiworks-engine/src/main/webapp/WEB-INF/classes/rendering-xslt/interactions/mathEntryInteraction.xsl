@@ -40,8 +40,8 @@
           var previewContainerId = 'qtiworks_id_mathEntryPreview_<xsl:value-of select="@responseIdentifier"/>';
           var helpContainerId = 'qtiworks_id_mathEntryHelp_<xsl:value-of select="@responseIdentifier"/>';
 
-          var upConversionAJAXControl = UpConversionAJAXController.createUpConversionAJAXControl(messageContainerId, previewContainerId);
-          var widget = ASCIIMathInputController.bindInputWidget(inputControlId, upConversionAJAXControl);
+          var upConversionAjaxControl = UpConversionAjaxController.createUpConversionAjaxControl(messageContainerId, previewContainerId);
+          var widget = AsciiMathInputController.bindInputWidget(inputControlId, upConversionAjaxControl);
           widget.setHelpButtonId(helpContainerId);
           widget.init();
           <xsl:choose>

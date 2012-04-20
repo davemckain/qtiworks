@@ -52,11 +52,11 @@ Renders a standalone assessmentItem
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$webappContextPath}/rendering/javascript/UpConversionAJAXController.js" type="text/javascript"/>
-          <script src="{$webappContextPath}/rendering/javascript/ASCIIMathInputController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js" type="text/javascript"/>
           <script type="text/javascript">
-            UpConversionAJAXController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/dispatcher/verifyAsciiMath');
-            UpConversionAJAXController.setDelay(300);
+            UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/dispatcher/verifyAsciiMath');
+            UpConversionAjaxController.setDelay(300);
           </script>
         </xsl:if>
 

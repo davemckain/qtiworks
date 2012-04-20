@@ -3,12 +3,10 @@
  * Requirements:
  *
  * jquery.js (at least version 1.5.0)
- * UpConversionAJAXController.js
- * ASCIIMathParser.js (optional - only needed for geek previews)
+ * UpConversionAjaxController.js
+ * AsciiMathParser.js (optional - only needed for geek previews)
  *
  * Author: David McKain
- *
- * $Id: ASCIIMathInputController.js 2608 2011-04-14 09:44:15Z davemckain $
  *
  * Copyright (c) 2008-2011, The University of Edinburgh
  * All Rights Reserved
@@ -16,17 +14,17 @@
 
 /************************************************************/
 
-var ASCIIMathInputController = (function() {
+var AsciiMathInputController = (function() {
 
     var helpDialog = null; /* (Created on first use) */
 
-    /* See if ASCIIMathParser.js was loaded in order to provide live raw
+    /* See if AsciiMathParser.js was loaded in order to provide live raw
      * previews ACIIMath input.
      */
     var asciiMathParserLoaded = false;
     var asciiMathParser = null;
     try {
-        asciiMathParser = new ASCIIMathParser(ASCIIMathParserBrowserUtilities.createXMLDocument());
+        asciiMathParser = new AsciiMathParser(AsciiMathParserBrowserUtilities.createXmlDocument());
         asciiMathParserLoaded = true;
     }
     catch (e) {
@@ -34,13 +32,13 @@ var ASCIIMathInputController = (function() {
 
     /************************************************************/
 
-    var callASCIIMath = function(mathModeInput) {
-        var mathElement = asciiMathParser.parseASCIIMathInput(mathModeInput, {
+    var callAsciiMath = function(mathModeInput) {
+        var mathElement = asciiMathParser.parseAsciiMathInput(mathModeInput, {
             displayMode: true,
             addSourceAnnotation: true
         });
-        var mathml = ASCIIMathParserBrowserUtilities.serializeXMLNode(mathElement);
-        return ASCIIMathParserBrowserUtilities.indentMathMLString(mathml);
+        var mathml = AsciiMathParserBrowserUtilities.serializeXmlNode(mathElement);
+        return AsciiMathParserBrowserUtilities.indentMathmlString(mathml);
     };
 
     var showHelpDialog = function(helpAElement) {
@@ -102,19 +100,19 @@ var ASCIIMathInputController = (function() {
          * verification.
          */
         this._userInputChanged = function() {
-            var asciiMathInput = this._getASCIIMathInput();
+            var asciiMathInput = this._getAsciiMathInput();
             if (lastInput==null || asciiMathInput!=lastInput) {
                 lastInput = asciiMathInput;
                 this._processInput(asciiMathInput);
             }
         };
 
-        this._getASCIIMathInput = function() {
+        this._getAsciiMathInput = function() {
             var inputSelector = jQuery("#" + this.asciiMathInputControlId);
             return inputSelector.get(0).value;
         };
 
-        this._setASCIIMathInput = function(asciiMathInput) {
+        this._setAsciiMathInput = function(asciiMathInput) {
             var inputSelector = jQuery("#" + this.asciiMathInputControlId);
             inputSelector.get(0).value = asciiMathInput || '';
             lastInput = asciiMathInput;
@@ -130,7 +128,7 @@ var ASCIIMathInputController = (function() {
 
         this._processInput = function(asciiMathInput) {
             /* Update live ASCIIMath preview (if used) */
-            var asciiMathInput = widget._updateASCIIMathPreview(asciiMathInput);
+            var asciiMathInput = widget._updateAsciiMathPreview(asciiMathInput);
 
             /* Call up verifier (if used) */
             if (this.verifierControl!=null) {
@@ -143,16 +141,16 @@ var ASCIIMathInputController = (function() {
             }
         };
 
-        this._updateASCIIMathPreview = function(asciiMathInput) {
+        this._updateAsciiMathPreview = function(asciiMathInput) {
             /* Get ASCIIMathML to generate a <math> element */
             var mathmlSource = null;
             var message = null;
             if (asciiMathInput.match(/\S/)) {
                 if (asciiMathParserLoaded) {
-                    mathmlSource = callASCIIMath(this.getASCIIMathInput());
+                    mathmlSource = callAsciiMath(this.getAsciiMathInput());
                 }
                 else {
-                    message = "(ASCIIMathParser.js not loaded)";
+                    message = "(AsciiMathParser.js not loaded)";
                 }
             }
             else {
@@ -161,15 +159,15 @@ var ASCIIMathInputController = (function() {
             /* Update preview elements */
             if (this.rawRenderingContainerId!=null) {
                 if (mathmlSource!=null) {
-                    UpConversionAJAXController.replaceContainerMathMLContent(jQuery("#" + this.rawRenderingContainerId), mathmlSource);
+                    UpConversionAjaxController.replaceContainerMathMLContent(jQuery("#" + this.rawRenderingContainerId), mathmlSource);
                 }
                 else {
-                    UpConversionAJAXController.replaceContainerMathMLContent(jQuery("#" + this.rawRenderingContainerId),
+                    UpConversionAjaxController.replaceContainerMathMLContent(jQuery("#" + this.rawRenderingContainerId),
                     "<math><mtext>" + message + "</mtext></math>");
                 }
             }
             if (this.rawSourceContainerId!=null) {
-                UpConversionAJAXController.replaceContainerPreformattedText(jQuery("#" + this.rawSourceContainerId), mathmlSource || message);
+                UpConversionAjaxController.replaceContainerPreformattedText(jQuery("#" + this.rawSourceContainerId), mathmlSource || message);
             }
             return asciiMathInput;
         };
@@ -193,15 +191,15 @@ var ASCIIMathInputController = (function() {
     };
 
     Widget.prototype.syncWithInput = function() {
-        this._processInput(this._getASCIIMathInput());
+        this._processInput(this._getAsciiMathInput());
     };
 
-    Widget.prototype.getASCIIMathInput = function() {
-        return this._getASCIIMathInput();
+    Widget.prototype.getAsciiMathInput = function() {
+        return this._getAsciiMathInput();
     };
 
-    Widget.prototype.setASCIIMathInput = function(asciiMathInput) {
-        this._setASCIIMathInput(asciiMathInput);
+    Widget.prototype.setAsciiMathInput = function(asciiMathInput) {
+        this._setAsciiMathInput(asciiMathInput);
     };
 
     Widget.prototype.show = function(asciiMathInput, jsonData) {
@@ -209,7 +207,7 @@ var ASCIIMathInputController = (function() {
     };
 
     Widget.prototype.reset = function() {
-        this._setASCIIMathInput(null);
+        this._setAsciiMathInput(null);
     };
 
     return {

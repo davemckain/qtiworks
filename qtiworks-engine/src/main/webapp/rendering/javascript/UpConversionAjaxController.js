@@ -6,7 +6,7 @@
  *
  * Author: David McKain
  *
- * $Id: UpConversionAJAXController.js 2608 2011-04-14 09:44:15Z davemckain $
+ * $Id$
  *
  * Copyright (c) 2008-2011, The University of Edinburgh
  * All Rights Reserved
@@ -14,7 +14,7 @@
 
 /************************************************************/
 
-var UpConversionAJAXController = (function() {
+var UpConversionAjaxController = (function() {
 
     var upConversionServiceUrl = null; /* Caller must fill in */
     var delay = 500;
@@ -32,14 +32,14 @@ var UpConversionAJAXController = (function() {
 
     /************************************************************/
 
-    var UpConversionAJAXControl = function(_messageContainerId, _bracketedRenderingContainerId) {
+    var UpConversionAjaxControl = function(_messageContainerId, _bracketedRenderingContainerId) {
         this.messageContainerId = _messageContainerId;
         this.bracketedRenderingContainerId = _bracketedRenderingContainerId;
         this.pmathSemanticSourceContainerId = null;
         this.pmathBracketedSourceContainerId = null;
         this.cmathSourceContainerId = null;
         this.maximaSourceContainerId = null;
-        var currentXHR = null;
+        var currentXhr = null;
         var currentTimeoutId = null;
         var thisControl = this;
 
@@ -83,18 +83,18 @@ var UpConversionAJAXController = (function() {
          * Use null input to signify "empty input". The UI will be updated instantly.
          */
         this._callVerifier = function(verifyInputData) {
-            currentXHR = jQuery.ajax({
+            currentXhr = jQuery.ajax({
                 type: 'POST',
                 url: upConversionServiceUrl,
                 dataType: 'json',
                 data: {input: verifyInputData },
-                success: function(data, textStatus, jqXHR) {
-                    if (currentXHR==jqXHR) {
-                        currentXHR = null;
+                success: function(data, textStatus, jqXhr) {
+                    if (currentXhr==jqXhr) {
+                        currentXhr = null;
                         thisControl._showVerificationResult(data);
                     }
                 },
-                error: function(jqXHR, textStatus, error) {
+                error: function(jqXhr, textStatus, error) {
                     thisControl._updateUpConversionContainer(STATUS_AJAX_ERROR, error);
                 }
             });
@@ -113,7 +113,7 @@ var UpConversionAJAXController = (function() {
             else if (jsonData['errors']!=null) {
                 var html = '<ul>';
                 for (var i in jsonData['errors']) {
-                    html += '<li>' + jsonData['errors'][i] + '</li>'
+                    html += '<li>' + jsonData['errors'][i] + '</li>';
                 }
                 html += '</ul>';
                 this._updateUpConversionContainer(STATUS_PARSE_ERROR, null, html);
@@ -162,9 +162,9 @@ var UpConversionAJAXController = (function() {
             var messageContainer = jQuery("#" + this.messageContainerId);
             /* Set up if not done already */
             if (messageContainer.children().size()==0) {
-                messageContainer.html("<div class='upConversionAJAXControlMessage'></div>"
-                    + "<div class='upConversionAJAXControlError'></div>");
-                bracketedRenderingContainer.attr('class', 'upConversionAJAXControlPreview');
+                messageContainer.html("<div class='upConversionAjaxControlMessage'></div>"
+                    + "<div class='upConversionAjaxControlError'></div>");
+                bracketedRenderingContainer.attr('class', 'upConversionAjaxControlPreview');
             }
             var statusContainer = messageContainer.children().first();
             var errorContainer = statusContainer.next();
@@ -173,7 +173,7 @@ var UpConversionAJAXController = (function() {
                     errorContainer.hide();
                     bracketedRenderingContainer.hide();
                     statusContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage');
                     this._showMessage(statusContainer, '\xa0');
                     break;
 
@@ -181,14 +181,14 @@ var UpConversionAJAXController = (function() {
                 case STATUS_WAITING_SERVER:
                     errorContainer.hide();
                     bracketedRenderingContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage waiting');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage waiting');
                     this._showMessage(statusContainer, 'Verifying your input...');
                     statusContainer.show();
                     break;
 
                 case STATUS_SUCCESS:
                     errorContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage success');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage success');
                     this._showMessage(statusContainer, 'I have interpreted your input as:');
                     this._showMathML(bracketedRenderingContainer, mathElementString);
                     statusContainer.show();
@@ -197,7 +197,7 @@ var UpConversionAJAXController = (function() {
 
                 case STATUS_PARSE_ERROR:
                     bracketedRenderingContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage failure');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage failure');
                     this._showMessage(statusContainer, 'SnuggleTeX could not parse your input:');
                     this._showMessage(errorContainer, errorContent);
                     statusContainer.show();
@@ -207,7 +207,7 @@ var UpConversionAJAXController = (function() {
                 case STATUS_UPCONVERSION_FAILED:
                     errorContainer.hide();
                     bracketedRenderingContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage failure');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage failure');
                     this._showMessage(statusContainer, 'Sorry, I could not make sense of your input');
                     this._showMessage(errorContainer, null);
                     statusContainer.show();
@@ -216,7 +216,7 @@ var UpConversionAJAXController = (function() {
                 case STATUS_UNKNOWN_ERROR:
                     errorContainer.hide();
                     bracketedRenderingContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage error');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage error');
                     this._showMessage(statusContainer, 'Unexpected error');
                     this._showMessage(errorContainer, null);
                     statusContainer.show();
@@ -224,7 +224,7 @@ var UpConversionAJAXController = (function() {
 
                 case STATUS_AJAX_ERROR:
                     bracketedRenderingContainer.hide();
-                    statusContainer.attr('class', 'upConversionAJAXControlMessage error');
+                    statusContainer.attr('class', 'upConversionAjaxControlMessage error');
                     this._showMessage(statusContainer, 'Communication error');
                     this._showMessage(errorContainer, errorContent);
                     statusContainer.show();
@@ -234,43 +234,43 @@ var UpConversionAJAXController = (function() {
         };
 
         this._showMessage = function(containerQuery, html) {
-            UpConversionAJAXController.replaceContainerContent(containerQuery, html || "\xa0");
+            UpConversionAjaxController.replaceContainerContent(containerQuery, html || "\xa0");
         };
 
         this._showMathML = function(containerQuery, mathmlString) {
-            UpConversionAJAXController.replaceContainerMathMLContent(containerQuery, mathmlString);
+            UpConversionAjaxController.replaceContainerMathMLContent(containerQuery, mathmlString);
         };
 
         this._showPreformatted = function(containerQuery, text) {
-            UpConversionAJAXController.replaceContainerPreformattedText(containerQuery, text);
+            UpConversionAjaxController.replaceContainerPreformattedText(containerQuery, text);
         };
     };
 
-    UpConversionAJAXControl.prototype.setPMathSemanticSourceContainerId = function(id) {
+    UpConversionAjaxControl.prototype.setPMathSemanticSourceContainerId = function(id) {
         this.pmathSemanticSourceContainerId = id;
     };
 
-    UpConversionAJAXControl.prototype.setPMathBracketedSourceContainerId = function(id) {
+    UpConversionAjaxControl.prototype.setPMathBracketedSourceContainerId = function(id) {
         this.pmathBracketedSourceContainerId = id;
     };
 
-    UpConversionAJAXControl.prototype.setCMathSourceContainerId = function(id) {
+    UpConversionAjaxControl.prototype.setCMathSourceContainerId = function(id) {
         this.cmathSourceContainerId = id;
     };
 
-    UpConversionAJAXControl.prototype.setMaximaSourceContainerId = function(id) {
+    UpConversionAjaxControl.prototype.setMaximaSourceContainerId = function(id) {
         this.maximaSourceContainerId = id;
     };
 
-    UpConversionAJAXControl.prototype.showVerificationResult = function(jsonData) {
+    UpConversionAjaxControl.prototype.showVerificationResult = function(jsonData) {
         this._showVerificationResult(jsonData);
     };
 
-    UpConversionAJAXControl.prototype.verifyLater = function(verifyInputData) {
+    UpConversionAjaxControl.prototype.verifyLater = function(verifyInputData) {
         this._verifyLater(verifyInputData);
     };
 
-    UpConversionAJAXControl.prototype.clear = function() {
+    UpConversionAjaxControl.prototype.clear = function() {
         this._clear();
     };
 
@@ -301,21 +301,21 @@ var UpConversionAJAXController = (function() {
             });
         },
 
-        createUpConversionAJAXControl: function(messageContainerId, bracketedRenderingContainerId) {
+        createUpConversionAjaxControl: function(messageContainerId, bracketedRenderingContainerId) {
             if (messageContainerId==null) {
                 throw new Error("messageContainerId must not be null");
             }
             if (bracketedRenderingContainerId==null) {
                 throw new Error("bracketedRenderingContainerId must not be null");
             }
-            return new UpConversionAJAXControl(messageContainerId, bracketedRenderingContainerId);
+            return new UpConversionAjaxControl(messageContainerId, bracketedRenderingContainerId);
         },
 
-        getUpConversionServiceUrl: function() { return upConversionServiceUrl },
-        setUpConversionServiceUrl: function(url) { upConversionServiceUrl = url },
+        getUpConversionServiceUrl: function() { return upConversionServiceUrl; },
+        setUpConversionServiceUrl: function(url) { upConversionServiceUrl = url; },
 
-        getDelay: function() { return delay },
-        setDelay: function(newDelay) { delay = newDelay }
+        getDelay: function() { return delay; },
+        setDelay: function(newDelay) { delay = newDelay; }
     };
 
 })();
