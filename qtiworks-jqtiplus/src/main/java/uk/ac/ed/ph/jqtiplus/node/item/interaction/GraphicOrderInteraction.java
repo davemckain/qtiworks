@@ -216,7 +216,7 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
 
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

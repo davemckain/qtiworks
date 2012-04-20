@@ -258,7 +258,7 @@ public class SliderInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         if (responseValue.isNull()) {
             /* Null responses are considered to be invalid, as far as I'm interpreting things */
             return false;

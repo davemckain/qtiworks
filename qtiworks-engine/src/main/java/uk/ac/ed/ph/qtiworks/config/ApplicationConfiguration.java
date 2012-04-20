@@ -93,6 +93,6 @@ public class ApplicationConfiguration {
     @Bean
     public AssessmentRenderer renderer() {
         final SimpleXsltStylesheetCache xsltStylesheetCache = new SimpleXsltStylesheetCache();
-        return new AssessmentRenderer(contextPath(), xsltStylesheetCache);
+        return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), xsltStylesheetCache);
     }
 }

@@ -231,19 +231,19 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     }
 
     @Override
-    public void initialize(final ItemSessionController itemController) {
-        super.initialize(itemController);
+    public void initialize(final ItemSessionController itemSessionController) {
+        super.initialize(itemSessionController);
 
         final List<SimpleMatchSet> simpleMatchSets = getSimpleMatchSets();
         final List<List<SimpleAssociableChoice>> choiceLists = new ArrayList<List<SimpleAssociableChoice>>(simpleMatchSets.size());
         for (final SimpleMatchSet simpleMatchSet : simpleMatchSets) {
             choiceLists.add(simpleMatchSet.getSimpleAssociableChoices());
         }
-        itemController.shuffleInteractionChoiceOrders(this, choiceLists);
+        itemSessionController.shuffleInteractionChoiceOrders(this, choiceLists);
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

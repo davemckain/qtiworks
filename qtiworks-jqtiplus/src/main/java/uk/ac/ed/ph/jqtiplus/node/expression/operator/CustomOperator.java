@@ -38,8 +38,14 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The custom operator provides an extension mechanism for defining operations not currently supported
@@ -48,12 +54,16 @@ import java.net.URI;
  * use the class attr to point to A java class (fully qualified) that implements Expression (and possibly extends AbstractExpression). If you do extend
  * AbstractExpression, set the QTI_CLASS_NAME to "customOperator", or override relevant methods required for validation that might call getType() to stop
  * unsupportedExpression exceptions at runtime.
- * 
+ *
+ * @param <E> {@link JqtiExtensionPackage} providing the implementation of this operator
+ *
  * @author Jonathon Hare
  */
-public abstract class CustomOperator extends AbstractExpression {
+public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends AbstractExpression {
 
     private static final long serialVersionUID = -3800871694273961417L;
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomOperator.class);
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "customOperator";
@@ -64,27 +74,15 @@ public abstract class CustomOperator extends AbstractExpression {
     /** Name of the definition attribute in xml schema. */
     public static final String ATTR_DEFINITION_NAME = "definition";
 
-    /** The {@link JqtiExtensionPackage} that defines this operator */
-    private JqtiExtensionPackage jqtiExtensionPackage;
-
-    protected CustomOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
+    protected CustomOperator(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
-        this.jqtiExtensionPackage = jqtiExtensionPackage;
         getAttributes().add(new StringAttribute(this, ATTR_CLASS_NAME, false)); //allow .'s, so use String
         getAttributes().add(new UriAttribute(this, ATTR_DEFINITION_NAME, false));
     }
 
-    public JqtiExtensionPackage getJqtiExtensionPackage() {
-        return jqtiExtensionPackage;
-    }
-
-    public void setJqtiExtensionPackage(JqtiExtensionPackage jqtiExtensionPackage) {
-        this.jqtiExtensionPackage = jqtiExtensionPackage;
-    }
-
     /**
      * Gets value of class attribute.
-     * 
+     *
      * @return value of class attribute
      */
     public String getClassAttr() {
@@ -94,13 +92,13 @@ public abstract class CustomOperator extends AbstractExpression {
     /**
      * Sets value of class attribute.
      */
-    public void setClassAttr(String name) {
+    public void setClassAttr(final String name) {
         getAttributes().getStringAttribute(ATTR_CLASS_NAME).setValue(name);
     }
 
     /**
      * Gets value of definition attribute.
-     * 
+     *
      * @return value of definition attribute
      */
     public URI getDefinition() {
@@ -110,7 +108,30 @@ public abstract class CustomOperator extends AbstractExpression {
     /**
      * Sets value of definition attribute.
      */
-    public void setDefinition(URI name) {
+    public void setDefinition(final URI name) {
         getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).setValue(name);
     }
+
+    @Override
+    protected final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        final E jqtiExtensionPackage = getOwningExtensionPackage(context);
+        if (jqtiExtensionPackage!=null) {
+            return evaluateSelf(jqtiExtensionPackage, context, childValues, depth);
+        }
+        else {
+            logger.debug("Extension package for this operator is not found - returning NULL");
+            return NullValue.INSTANCE;
+        }
+    }
+
+    protected E getOwningExtensionPackage(final ProcessingContext context) {
+        return context.getJqtiExtensionManager().getJqtiExtensionPackageImplementingOperator(this);
+    }
+
+    /**
+     * customOperators should implement this to evaluate themselves. This is the same as
+     * {@link #evaluateSelf(ProcessingContext, Value[], int)}, but is also passed the
+     * owning {@link JqtiExtensionPackage}
+     */
+    protected abstract Value evaluateSelf(E jqtiExtensionPackage, ProcessingContext context, Value[] childValues, int depth);
 }

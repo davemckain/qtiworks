@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -48,12 +49,17 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 /**
  * Callback interface used when {@link XmlNode}s validate themselves.
- * 
+ *
  * @author David McKain
  */
 public interface ValidationContext {
-    
-    /** 
+
+    /**
+     * Provides access to the underlying {@link JqtiExtensionManager} behind this process
+     */
+    JqtiExtensionManager getJqtiExtensionManager();
+
+    /**
      * Returns true if validating an {@link AssessmentItem}, false otherwise.
      */
     boolean isValidatingItem();
@@ -62,40 +68,40 @@ public interface ValidationContext {
      * Returns true of validating an {@link AssessmentTest}, false otherwise.
      */
     boolean isValidatingTest();
-    
+
     /**
      * Returns the {@link AssessmentObject} being validated, which will not be null.
      */
     AssessmentObject getSubject();
-    
+
     /**
      * Returns the {@link AssessmentItem} being validated, if this is the case.
-     * 
+     *
      * @throws QtiLogicException if not validating an item
      */
     AssessmentItem getSubjectItem();
 
     /**
      * Returns the {@link AssessmentTest} being validated, if this is the case.
-     * 
+     *
      * @throws QtiLogicException if not validating a test
      */
     AssessmentTest getSubjectTest();
-    
+
     ResolvedAssessmentObject<?> getResolvedAssessmentObject();
-    
+
     ResolvedAssessmentItem getResolvedAssessmentItem();
-    
+
     ResolvedAssessmentTest getResolvedAssessmentTest();
-    
+
     void add(ValidationItem item);
-    
+
     AbstractValidationResult getValidationResult();
-    
+
     //------------------------------------------------------
-    
+
     VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... requiredTypes);
-    
+
     VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes);
-    
+
 }

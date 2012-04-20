@@ -150,7 +150,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         /* No validation to do here */
         return true;
     }

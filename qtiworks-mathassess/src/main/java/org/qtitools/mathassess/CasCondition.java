@@ -37,7 +37,6 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_CODE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -59,17 +58,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the <tt>org.qtitools.mathassess.CasCondition</tt> customOperator
- * 
+ *
  * @author Jonathon Hare
  */
-public class CasCondition extends MathAssessOperator {
+public final class CasCondition extends MathAssessOperator {
 
     private static final long serialVersionUID = -7534979343475172387L;
 
     private static final Logger logger = LoggerFactory.getLogger(CasCondition.class);
 
-    public CasCondition(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(jqtiExtensionPackage, parent);
+    public CasCondition(final ExpressionParent parent) {
+        super(parent);
 
         getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, false));
@@ -77,7 +76,7 @@ public class CasCondition extends MathAssessOperator {
 
     /**
      * Gets value of code attribute.
-     * 
+     *
      * @return value of code attribute
      * @see #setCode
      */
@@ -88,18 +87,18 @@ public class CasCondition extends MathAssessOperator {
 
     /**
      * Sets new value of code attribute.
-     * 
+     *
      * @param code new value of code attribute
      * @see #getCode
      */
-    public void setCode(String code) {
+    public void setCode(final String code) {
         ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(code);
     }
 
     /**
      * Gets value of simplify attribute.
-     * 
+     *
      * @return value of simplify attribute
      * @see #setSimplify
      */
@@ -110,22 +109,22 @@ public class CasCondition extends MathAssessOperator {
 
     /**
      * Sets new value of simplify attribute.
-     * 
+     *
      * @param simplify new value of simplify attribute
      * @see #getSimplify
      */
-    public void setSimplify(Boolean simplify) {
+    public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(simplify);
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context) {
+    protected void doAdditionalValidation(final ValidationContext context) {
         /* Nothing to do here */
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException {
         final boolean simplify = getSimplify();
         final String code = getCode().trim();
 
@@ -136,25 +135,24 @@ public class CasCondition extends MathAssessOperator {
 
         final Value[] values = new Value[childValues.length];
         for (int i=0; i<childValues.length; i++) {
-            Value v = childValues[i];
+            final Value v = childValues[i];
             if (CasTypeGlue.isMathsContentRecord(v) && ((RecordValue) v).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
                 return NullValue.INSTANCE;
             }
             values[i] = v;
         }
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
         return BooleanValue.valueOf(qtiMaximaSession.executeCasCondition(code, simplify, CasTypeGlue.convertFromJQTI(values)));
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 }

@@ -37,7 +37,6 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_RETURN_TYPE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
@@ -62,17 +61,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the <tt>org.qtitools.mathassess.CasProcess</tt> customOperator
- * 
+ *
  * @author Jonathon Hare
  */
-public class CasProcess extends MathAssessOperator {
+public final class CasProcess extends MathAssessOperator {
 
     private static final long serialVersionUID = -2916041095499411867L;
 
     private static final Logger logger = LoggerFactory.getLogger(CasProcess.class);
 
-    public CasProcess(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(jqtiExtensionPackage, parent);
+    public CasProcess(final ExpressionParent parent) {
+        super(parent);
 
         getAttributes().add(new ReturnTypeAttribute(this, ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI));
         getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, false));
@@ -84,7 +83,7 @@ public class CasProcess extends MathAssessOperator {
 
     /**
      * Gets value of returnType attribute.
-     * 
+     *
      * @return value of returnType attribute
      * @see #setReturnType
      */
@@ -95,18 +94,18 @@ public class CasProcess extends MathAssessOperator {
 
     /**
      * Sets new value of returnType attribute.
-     * 
+     *
      * @param returnTypeType new value of returnType attribute
      * @see #getReturnType
      */
-    public void setReturnType(ReturnTypeType returnTypeType) {
+    public void setReturnType(final ReturnTypeType returnTypeType) {
         ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(returnTypeType);
     }
 
     /**
      * Gets value of simplify attribute.
-     * 
+     *
      * @return value of simplify attribute
      * @see #setSimplify
      */
@@ -117,28 +116,27 @@ public class CasProcess extends MathAssessOperator {
 
     /**
      * Sets new value of simplify attribute.
-     * 
+     *
      * @param simplify new value of simplify attribute
      * @see #getSimplify
      */
-    public void setSimplify(Boolean simplify) {
+    public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(simplify);
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context) {
+    protected void doAdditionalValidation(final ValidationContext context) {
         /* Nothing to do here */
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
         final boolean simplify = getSimplify();
         final String code = childValues[0].toQtiString().trim();
 
         logger.debug("Performing casProcess: code={}, simplify={}", code, simplify);
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         /* Pass variables to Maxima */
@@ -184,7 +182,7 @@ public class CasProcess extends MathAssessOperator {
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getReturnType() != null) {
             final BaseType type = getBaseType();
             return type != null ? new BaseType[] { type } : BaseType.values();
@@ -222,7 +220,7 @@ public class CasProcess extends MathAssessOperator {
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         if (getReturnType() != null) {
             return new Cardinality[] { getCardinality() };
         }
@@ -230,12 +228,12 @@ public class CasProcess extends MathAssessOperator {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.STRING };
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 

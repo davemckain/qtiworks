@@ -38,7 +38,6 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_PRINT_IDENTIFIER_
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
@@ -77,14 +76,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jonathon Hare
  */
-public final class MathEntryInteraction extends CustomInteraction {
+public final class MathEntryInteraction extends CustomInteraction<MathAssessExtensionPackage> {
 
     private static final long serialVersionUID = -7450990903827581043L;
 
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
-    public MathEntryInteraction(final JqtiExtensionPackage jqtiExtensionPackage, final XmlNode parent) {
-        super(jqtiExtensionPackage, parent);
+    public MathEntryInteraction(final XmlNode parent) {
+        super(parent);
 
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, MATHASSESS_NAMESPACE_URI, false));
@@ -145,9 +144,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateCustomInteractionAttributes(final MathAssessExtensionPackage jqtiExtensionPackaage, final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
@@ -171,7 +168,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
+    public void bindResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
             throw new ResponseBindingException("mathEntryInteraction must be bound to string response data");
         }
@@ -188,7 +185,6 @@ public final class MathEntryInteraction extends CustomInteraction {
         if (asciiMathInput.length() != 0) {
             /* Convert the ASCIIMath input to the appropriate Math Context
              * variable */
-            final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
             final ASCIIMathMLHelper helper = new ASCIIMathMLHelper(mathAssessExtensionPackage.getStylesheetCache());
             final MathsContentInputValueWrapper resultWrapper = helper.createMathsContentFromASCIIMath(asciiMathInput);
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
@@ -207,7 +203,7 @@ public final class MathEntryInteraction extends CustomInteraction {
         }
 
         /* Now bind the variables */
-        final ItemSessionState itemState = itemController.getItemSessionState();
+        final ItemSessionState itemState = itemSessionController.getItemSessionState();
         itemState.setResponseValue(getResponseDeclaration(), responseValue);
         if (getPrintIdentifier() != null) {
             /* handle stringIdentifier binding if required */
@@ -216,7 +212,7 @@ public final class MathEntryInteraction extends CustomInteraction {
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    protected boolean validateResponse(final MathAssessExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
         /* Currently, a successful binding is considered the same as a response
          * being valid */
         return true;

@@ -224,7 +224,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

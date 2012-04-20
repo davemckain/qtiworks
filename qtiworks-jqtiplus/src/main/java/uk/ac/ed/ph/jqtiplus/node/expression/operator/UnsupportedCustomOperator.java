@@ -33,39 +33,35 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-
+import uk.ac.ed.ph.jqtiplus.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents an unsupported customOperator. This belongs to no {@link JqtiExtensionPackage}
- * 
+ *
  * @author David McKain
  */
-public final class UnsupportedCustomOperator extends CustomOperator {
+public final class UnsupportedCustomOperator extends CustomOperator<FallbackExtensionPackage> {
 
     private static final long serialVersionUID = -8733871136419512506L;
 
-    private static Logger logger = LoggerFactory.getLogger(UnsupportedCustomOperator.class);
-
-    public UnsupportedCustomOperator(ExpressionParent parent) {
-        super(null, parent);
+    public UnsupportedCustomOperator(final ExpressionParent parent) {
+        super(parent);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
+        /* Nothing to do */
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
-        logger.warn("customOperator with class attribute {} is not supported - returning NULL", getClassAttr());
-        return NullValue.INSTANCE;
+    protected Value evaluateSelf(final FallbackExtensionPackage jqtiExtensionPackage, final ProcessingContext context, final Value[] childValues, final int depth) {
+        /* We should not have got this far! */
+        throw new QtiLogicException("Unexpected method call");
     }
 }

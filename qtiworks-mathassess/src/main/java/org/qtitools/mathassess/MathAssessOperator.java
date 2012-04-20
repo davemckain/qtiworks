@@ -36,7 +36,6 @@ package org.qtitools.mathassess;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SYNTAX_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
@@ -62,24 +61,24 @@ import java.util.List;
 
 /**
  * Abstract superclass for all MathAssess customOperators
- * 
+ *
  * @author Jonathon Hare
  * @author David McKain
  */
-public abstract class MathAssessOperator extends CustomOperator {
+public abstract class MathAssessOperator extends CustomOperator<MathAssessExtensionPackage> {
 
     private static final long serialVersionUID = 1275749269462837686L;
 
     private static String IDENTIFIER_REGEX_VALUE = "[a-zA-Z][a-zA-Z0-9]*";
 
-    public MathAssessOperator(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(jqtiExtensionPackage, parent);
+    public MathAssessOperator(final ExpressionParent parent) {
+        super(parent);
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
     }
 
     /**
      * Get the syntax value of the expression.
-     * 
+     *
      * @return the value of the syntax attribute
      */
     public SyntaxType getSyntax() {
@@ -89,22 +88,22 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     /**
      * Set the syntax attribute of the expression.
-     * 
+     *
      * @param syntax value to set
      */
-    public void setSyntax(SyntaxType syntax) {
+    public void setSyntax(final SyntaxType syntax) {
         ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    public final Value evaluateSelf(final MathAssessExtensionPackage mathAssessExtensionPackage, final ProcessingContext context, final Value[] childValues, final int depth) {
         switch (getSyntax()) {
             case MAXIMA:
                 try {
                     /* FIXME: These operators are legal in test contexts too. We
                      * need to support this eventually. */
-                    return maximaEvaluate((ItemProcessingContext) context, childValues);
+                    return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
                 }
                 catch (final MaximaProcessTerminatedException e) {
                     throw new QtiEvaluationException("Maxima process was terminated earlier while processing this item", e);
@@ -124,13 +123,13 @@ public abstract class MathAssessOperator extends CustomOperator {
         }
     }
 
-    protected abstract Value maximaEvaluate(ItemProcessingContext context, Value[] childValues)
+    protected abstract Value maximaEvaluate(MathAssessExtensionPackage mathAssessExtensionPackage, ItemProcessingContext context, Value[] childValues)
             throws MaximaTimeoutException, MathsContentTooComplexException;
 
     /**
      * Gets a list of all the variables that can be read by a cas
      * implementation.
-     * 
+     *
      * @return readable variables
      */
     public List<VariableDeclaration> getAllCASReadableVariableDeclarations() {
@@ -163,7 +162,7 @@ public abstract class MathAssessOperator extends CustomOperator {
 
     /**
      * Gets a list of all the variables assigned to by the cas implementation.
-     * 
+     *
      * @return writable variables
      */
     public List<VariableDeclaration> getAllCASWriteableVariableDeclarations() {
@@ -194,7 +193,7 @@ public abstract class MathAssessOperator extends CustomOperator {
     }
 
     @Override
-    public final void validate(ValidationContext context) {
+    public final void validate(final ValidationContext context) {
         super.validate(context);
 
         /* First make sure that variable names are all acceptable */

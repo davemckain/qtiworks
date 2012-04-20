@@ -200,7 +200,7 @@ public class HottextInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseHottextIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

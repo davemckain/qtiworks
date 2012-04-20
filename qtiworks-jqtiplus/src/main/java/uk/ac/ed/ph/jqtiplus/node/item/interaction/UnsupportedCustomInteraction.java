@@ -33,33 +33,41 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
+import uk.ac.ed.ph.jqtiplus.FallbackExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Placeholder implementation of {@link CustomInteraction} used when the required extension
  * is not supported.
- * 
+ *
  * @author David McKain
  */
-public final class UnsupportedCustomInteraction extends CustomInteraction {
+public final class UnsupportedCustomInteraction extends CustomInteraction<FallbackExtensionPackage> {
 
     private static final long serialVersionUID = -2114615308065207715L;
 
-    public UnsupportedCustomInteraction(XmlNode parent) {
-        super(null, parent);
+    public UnsupportedCustomInteraction(final XmlNode parent) {
+        super(parent);
     }
 
     @Override
-    public void validate(ValidationContext context) {
-        context.add(new ValidationWarning(this, "customInteraction with class attribute " + getClassAttr() + " is not supported"));
+    protected void validateCustomInteractionAttributes(final FallbackExtensionPackage jqtiExtensionPackaage, final ValidationContext context) {
+        /* Nothing more to do */
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    protected boolean validateResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
         return false;
+    }
+
+    @Override
+    protected void bindResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
+            throws ResponseBindingException {
+        /* Do nothing */
     }
 }

@@ -213,13 +213,13 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     }
 
     @Override
-    public void initialize(ItemSessionController itemController) {
-        super.initialize(itemController);
-        itemController.shuffleInteractionChoiceOrder(this, getGapChoices());
+    public void initialize(ItemSessionController itemSessionController) {
+        super.initialize(itemSessionController);
+        itemSessionController.shuffleInteractionChoiceOrder(this, getGapChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -42,13 +43,19 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 /**
  * Callback for common tasks during item/test processing,
  * e.g. in template, response and outcome processing.
- * 
+ *
  * @see ItemProcessingContext
  * @see TestProcessingContext
- * 
+ *
  * @author David McKain
  */
 public interface ProcessingContext {
+
+    /**
+     * Provides access to the owning {@link JqtiExtensionManager} so that extensions
+     * can access their package's logic.
+     */
+    JqtiExtensionManager getJqtiExtensionManager();
 
     /**
      * NB: This is guaranteed to return non-null
@@ -56,14 +63,14 @@ public interface ProcessingContext {
     AssessmentObject getSubject();
 
     /**
-     * Convenience method to look up the value of the variable having the 
+     * Convenience method to look up the value of the variable having the
      * given {@link Identifier} and having the given permitted types.
      * <p>
      * If permittedTypes is empty, then it looks up ANY type of variable.
-     * 
+     *
      * @throws QtiEvaluationException if no variable (of the permitted type) has
      *   the given identifier.
-     * 
+     *
      * @param identifier
      * @param permittedTypes
      */

@@ -117,6 +117,6 @@ public abstract class AbstractIntegrationTest {
     protected ItemSessionController createItemSessionController() {
         final ResolvedAssessmentItem resolvedAssessmentItem = createAssessmentObjectManager().resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);
         final ItemSessionState itemSessionState = new ItemSessionState();
-        return new ItemSessionController(resolvedAssessmentItem, itemSessionState);
+        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
     }
 }

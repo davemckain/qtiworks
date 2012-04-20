@@ -182,14 +182,14 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public final void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(itemController, responseData);
+    public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(itemSessionController, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
             final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
-            itemController.getItemSessionState().setResponseValue(stringIdentifierResponseDeclaration, value);
+            itemSessionController.getItemSessionState().setResponseValue(stringIdentifierResponseDeclaration, value);
         }
     }
 
@@ -227,7 +227,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         if (getPatternMask() != null) {
             if (!responseValue.toQtiString().matches(getPatternMask())) {
                 return false;

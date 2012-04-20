@@ -41,8 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.operator.UnsupportedCustomOperator;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.UnsupportedCustomInteraction;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
@@ -50,8 +48,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -65,8 +61,6 @@ import org.w3c.dom.Text;
 public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<C> {
 
     private static final long serialVersionUID = 903238011893494959L;
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractNodeGroup.class);
 
     private final XmlNode parent;
     private final String name;
@@ -225,23 +219,11 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
             /* See if required operator has been registered and instantiate if it so */
             final ExpressionParent expressionParent = (ExpressionParent) parent;
             final String operatorClass = childElement.getAttribute("class");
-            if (jqtiExtensionManager!=null) {
-                child = (C) jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
-            }
-            else {
-                logger.warn("No JqtiExtensionManager registered, so no support for any customOperators");
-                child = (C) new UnsupportedCustomOperator(expressionParent);
-            }
+            child = (C) jqtiExtensionManager.createCustomOperator(expressionParent, operatorClass);
         }
         else if ("customInteraction".equals(localName)) {
             final String interactionClass = childElement.getAttribute("class");
-            if (jqtiExtensionManager!=null) {
-                child = (C) jqtiExtensionManager.createCustomInteraction(parent, interactionClass);
-            }
-            else {
-                logger.warn("No JqtiExtensionManager registered, so no support for any customInteractions");
-                child = (C) new UnsupportedCustomInteraction(parent);
-            }
+            child = (C) jqtiExtensionManager.createCustomInteraction(parent, interactionClass);
         }
         else {
             child = create(localName);

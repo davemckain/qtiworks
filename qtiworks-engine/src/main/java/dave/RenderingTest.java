@@ -25,29 +25,29 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import java.net.URI;
 
 public class RenderingTest {
-    
-    public static void main(String[] args) throws RuntimeValidationException {
-        URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
-        
+
+    public static void main(final String[] args) throws RuntimeValidationException {
+        final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
+
         System.out.println("Reading");
-        JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         jqtiExtensionManager.init();
         try {
-            QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-            
-            AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
-            ItemSessionState itemSessionState = new ItemSessionState();
-            ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-            
+            final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
+            final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+
+            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ItemSessionState itemSessionState = new ItemSessionState();
+            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+
             System.out.println("\nInitialising");
             itemController.initialize();
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-            AssessmentRenderer renderer = new AssessmentRenderer("/ENGINE", new SimpleXsltStylesheetCache());
-            String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState, 
+            final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, "/ENGINE", new SimpleXsltStylesheetCache());
+            final String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
                     null, SerializationMethod.HTML5_MATHJAX);
             System.out.println("Rendered page: " + rendered);
         }

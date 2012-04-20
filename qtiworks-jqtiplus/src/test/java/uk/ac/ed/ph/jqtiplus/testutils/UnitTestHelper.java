@@ -59,9 +59,12 @@ import java.net.URISyntaxException;
  */
 public final class UnitTestHelper {
 
+    public static JqtiExtensionManager createJqtiExtensionManager() {
+        return new JqtiExtensionManager();
+    }
+
     public static QtiXmlReader createUnitTestXmlReader() {
-        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
-        return new QtiXmlReader(jqtiExtensionManager);
+        return new QtiXmlReader(createJqtiExtensionManager());
     }
 
     public static QtiXmlObjectReader createUnitTestXmlObjectReader() {
@@ -74,37 +77,37 @@ public final class UnitTestHelper {
         return new AssessmentObjectManager(qtiXmlObjectReader);
     }
 
-    public static <E extends RootObject> E loadUnitTestRootObject(Class<?> baseClass, String fileName, ModelRichness modelRichness, Class<E> requiredResultClass)
+    public static <E extends RootObject> E loadUnitTestRootObject(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness, final Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
         final URI fileUri = createTestFileUri(baseClass, fileName);
         final QtiXmlObjectReadResult<E> rootObjectLookup = createUnitTestXmlObjectReader().lookupRootObject(fileUri, modelRichness, requiredResultClass);
         return rootObjectLookup.getRootObject();
     }
 
-    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(Class<?> baseClass, String fileName, ModelRichness modelRichness) {
-        AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
+    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
+        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
         final URI fileUri = createTestFileUri(baseClass, fileName);
         return objectManager.resolveAssessmentItem(fileUri, modelRichness);
     }
 
-    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(Class<?> baseClass, String fileName, ModelRichness modelRichness) {
+    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
         final QtiXmlObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlObjectReader);
         final URI fileUri = createTestFileUri(baseClass, fileName);
         return objectManager.resolveAssessmentTest(fileUri, modelRichness);
     }
 
-    public static ItemSessionController loadUnitTestAssessmentItemForControl(String fileName, Class<?> baseClass) {
+    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass) {
         final ResolvedAssessmentItem resolvedItem = resolveUnitTestAssessmentItem(baseClass, fileName, ModelRichness.EXECUTION_ONLY);
         final ItemSessionState itemSessionState = new ItemSessionState();
-        return new ItemSessionController(resolvedItem, itemSessionState);
+        return new ItemSessionController(createJqtiExtensionManager(), resolvedItem, itemSessionState);
     }
 
-    public static URI createTestFileUri(Class<?> baseClass, String fileName) {
+    public static URI createTestFileUri(final Class<?> baseClass, final String fileName) {
         try {
             return baseClass.getResource(fileName).toURI();
         }
-        catch (URISyntaxException e) {
+        catch (final URISyntaxException e) {
             throw new RuntimeException("Unexpected Exception", e);
         }
     }

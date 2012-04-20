@@ -165,7 +165,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         final List<PointValue> responsePoints = new ArrayList<PointValue>();
         if (responseValue.isNull()) {
             /* (Empty response) */

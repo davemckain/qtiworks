@@ -185,13 +185,13 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     }
 
     @Override
-    public void initialize(ItemSessionController itemController) {
-        super.initialize(itemController);
-        itemController.shuffleInteractionChoiceOrder(this, getInlineChoices());
+    public void initialize(ItemSessionController itemSessionController) {
+        super.initialize(itemSessionController);
+        itemSessionController.shuffleInteractionChoiceOrder(this, getInlineChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         if (responseValue.isNull()) {
             if (getRequired()) {
                 return false;

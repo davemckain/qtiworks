@@ -278,13 +278,13 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     }
 
     @Override
-    public void initialize(final ItemSessionController itemController) {
-        super.initialize(itemController);
-        itemController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
+    public void initialize(final ItemSessionController itemSessionController) {
+        super.initialize(itemSessionController);
+        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

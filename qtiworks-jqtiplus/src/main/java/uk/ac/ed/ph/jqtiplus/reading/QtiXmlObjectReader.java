@@ -79,7 +79,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
     private final ResourceLocator inputResourceLocator;
     private final QtiXmlReader qtiXmlReader;
 
-    QtiXmlObjectReader(QtiXmlReader qtiXmlReader, ResourceLocator inputResourceLocator) {
+    QtiXmlObjectReader(final QtiXmlReader qtiXmlReader, final ResourceLocator inputResourceLocator) {
         this.qtiXmlReader = qtiXmlReader;
         this.inputResourceLocator = inputResourceLocator;
     }
@@ -94,6 +94,11 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
 
     //--------------------------------------------------------------------------
 
+    @Override
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return qtiXmlReader.getJqtiExtensionManager();
+    }
+
     /**
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the current {@link #inputResourceLocator}
@@ -103,7 +108,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
      *             if any of the required schemas could not be located.
      */
     @Override
-    public <E extends RootObject> QtiXmlObjectReadResult<E> lookupRootObject(URI systemId, ModelRichness requiredModelRichness, Class<E> requiredResultClass)
+    public <E extends RootObject> QtiXmlObjectReadResult<E> lookupRootObject(final URI systemId, final ModelRichness requiredModelRichness, final Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
         logger.debug("Attempting to read QTI Object at system ID {} for use {}, requiring result class {}",
                 new Object[] { systemId, requiredModelRichness, requiredResultClass });
@@ -115,7 +120,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         final ChainedResourceLocator resourceLocator = new ChainedResourceLocator(QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
 
         /* We will only schema validate the XML if we are going to be validating this resource */
-        boolean schemaValidating = requiredModelRichness==ModelRichness.FOR_VALIDATION;
+        final boolean schemaValidating = requiredModelRichness==ModelRichness.FOR_VALIDATION;
 
         /* Parse XML */
         final XmlReadResult xmlReadResult = qtiXmlReader.read(systemId, resourceLocator, schemaValidating);
@@ -169,7 +174,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         }
 
         /* Success! */
-        QtiXmlObjectReadResult<E> result = new QtiXmlObjectReadResult<E>(requiredResultClass,
+        final QtiXmlObjectReadResult<E> result = new QtiXmlObjectReadResult<E>(requiredResultClass,
                 requiredResultClass.cast(rootObject), xmlParseResult);
         logger.debug("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
@@ -195,7 +200,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         }
 
         @Override
-        public void modelBuildingError(QtiModelException exception, Node errorNode) {
+        public void modelBuildingError(final QtiModelException exception, final Node errorNode) {
             qtiModelBuildingErrors.add(new QtiModelBuildingError(exception, errorNode.getLocalName(),
                     errorNode.getNamespaceURI(), XmlResourceReader.extractLocationInformation(errorNode)));
         }

@@ -74,39 +74,41 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class MathAssessTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         final URI inputUri = URI.create("classpath:/MAD01-SRinCO-demo.xml");
 
         final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage(new SimpleStylesheetCache());
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(mathAssessPackage);
         try {
             jqtiExtensionManager.init();
-            
+
             System.out.println("Reading " + inputUri);
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
             final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-            AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            
-            ItemValidationResult validationResult = objectManager.resolveAndValidateItem(inputUri);
-            ResolvedAssessmentItem resolvedAssessmentItem = validationResult.getResolvedAssessmentItem();
+            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+
+            final ItemValidationResult validationResult = objectManager.resolveAndValidateItem(inputUri);
+            final ResolvedAssessmentItem resolvedAssessmentItem = validationResult.getResolvedAssessmentItem();
             System.out.println("Validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));
-            System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(resolvedAssessmentItem));
+            System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(jqtiExtensionManager, resolvedAssessmentItem));
             System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful()));
-            
-            XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
+
+            assert validationResult.isValid();
+
+            final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
             serializationOptions.setIndenting(true);
-            
-            XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
-            TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
-            
-            StringWriter serializedXmlWriter = new StringWriter();
+
+            final XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
+            final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
+
+            final StringWriter serializedXmlWriter = new StringWriter();
             serializerHandler.setResult(new StreamResult(serializedXmlWriter));
-            
-            QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+
+            final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, new SaxFiringOptions());
             saxEventFirer.fireSaxDocument(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful());
-            
+
             System.out.println("\n\nSerailized XML:\n" + serializedXmlWriter.toString());
-            
+
             final ItemSessionState itemSessionState = new ItemSessionState();
             final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
 
@@ -119,8 +121,8 @@ public class MathAssessTest {
             System.out.println("\n\nBinding Math responses");
             final Map<String, ResponseData> responses = new HashMap<String, ResponseData>();
             responses.put("RESPONSE", new StringResponseData("1+x"));
-            List<Identifier> badResponses = itemController.bindResponses(responses);
-            List<Identifier> invalidResponses = itemController.validateResponses();
+            final List<Identifier> badResponses = itemController.bindResponses(responses);
+            final List<Identifier> invalidResponses = itemController.validateResponses();
             System.out.println("Bad responses: " + badResponses);
             System.out.println("Invalid response: " + invalidResponses);
             System.out.println("Response Values: " + itemSessionState.getResponseValues());

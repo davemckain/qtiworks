@@ -38,16 +38,18 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 
-import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Interface for connecting QTI extensions, such as MathAssess. 
- * 
+ * Interface for connecting QTI extensions, such as MathAssess.
+ *
+ * @param <E> the final implementation of this class
+ *
  * @author David McKain
  */
-public interface JqtiExtensionPackage extends LifecycleListener, Serializable {
-    
+public interface JqtiExtensionPackage<E extends JqtiExtensionPackage<E>> extends LifecycleListener {
+
     /**
      * Returns a displayable name for this extension package.
      * <p>
@@ -66,19 +68,27 @@ public interface JqtiExtensionPackage extends LifecycleListener, Serializable {
      */
     Map<String, ExtensionNamespaceInfo> getNamespaceInfoMap();
 
+    boolean implementsCustomOperator(String operatorClassName);
+
+    boolean implementsCustomInteraction(String interactionClassName);
+
+    Set<String> getImplementedCustomOperatorClasses();
+
+    Set<String> getImplementedCustomInteractionClasses();
+
     /**
      * Instantiate and return a new {@link CustomOperator} corresponding to the given class name,
      * returning null if this package does not support the stated class.
-     * 
+     *
      * @param expressionParent
      * @param operatorClassName
      */
-    CustomOperator createCustomOperator(ExpressionParent expressionParent, String operatorClassName);
+    CustomOperator<E> createCustomOperator(ExpressionParent expressionParent, String operatorClassName);
 
     /**
      * Instantiate and return a new {@link CustomInteraction} corresponding to the given class name,
      * returning null if this package does not support the stated class.
      */
-    CustomInteraction createCustomInteraction(XmlNode parentObject, String interactionClassName);
+    CustomInteraction<E> createCustomInteraction(XmlNode parentObject, String interactionClassName);
 
 }

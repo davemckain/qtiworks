@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.utils;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
@@ -72,11 +73,11 @@ public final class QueryUtils {
      * @param nodes {@link XmlNode}(s) to start searching from
      * @return List of all Nodes found
      */
-    public static <E extends XmlNode> List<E> search(final Class<E> searchClass, Iterable<? extends XmlNode> nodes) {
+    public static <E extends XmlNode> List<E> search(final Class<E> searchClass, final Iterable<? extends XmlNode> nodes) {
         final List<E> results = new ArrayList<E>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(XmlNode node) {
+            public boolean handleNode(final XmlNode node) {
                 if (searchClass.isInstance(node)) {
                     results.add(searchClass.cast(node));
                 }
@@ -97,15 +98,15 @@ public final class QueryUtils {
      * @param nodes
      * @return true if such a Node is found, false otherwise.
      */
-    public static <E extends XmlNode> boolean hasDescendant(final Class<E> searchClass, Iterable<? extends XmlNode> nodes) {
-        DescendentSearchHandler<E> handler = new DescendentSearchHandler<E>(searchClass);
+    public static <E extends XmlNode> boolean hasDescendant(final Class<E> searchClass, final Iterable<? extends XmlNode> nodes) {
+        final DescendentSearchHandler<E> handler = new DescendentSearchHandler<E>(searchClass);
         walkChildNodes(handler, nodes);
         return handler.wasSuccessful();
     }
 
     private static final class DescendentSearchHandler<E extends XmlNode> implements TreeWalkNodeHandler {
 
-        public DescendentSearchHandler(Class<E> searchClass) {
+        public DescendentSearchHandler(final Class<E> searchClass) {
             this.searchClass = searchClass;
         }
 
@@ -113,7 +114,7 @@ public final class QueryUtils {
         private boolean found = false;
 
         @Override
-        public boolean handleNode(XmlNode node) {
+        public boolean handleNode(final XmlNode node) {
             if (found || searchClass.isInstance(node)) {
                 /* Found, so stop searching */
                 found = true;
@@ -128,11 +129,11 @@ public final class QueryUtils {
         }
     }
 
-    public static Set<JqtiExtensionPackage> findExtensionsUsed(ResolvedAssessmentItem resolvedItem) {
-        Set<JqtiExtensionPackage> resultSet = findExtensionsWithin(resolvedItem.getItemLookup().extractAssumingSuccessful());
-        RootObjectLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
+    public static Set<JqtiExtensionPackage<?>> findExtensionsUsed(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedItem) {
+        final Set<JqtiExtensionPackage<?>> resultSet = findExtensionsWithin(jqtiExtensionManager, resolvedItem.getItemLookup().extractAssumingSuccessful());
+        final RootObjectLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
         if (rpTemplateLookup!=null) {
-            resultSet.addAll(findExtensionsWithin(rpTemplateLookup.extractAssumingSuccessful()));
+            resultSet.addAll(findExtensionsWithin(jqtiExtensionManager, rpTemplateLookup.extractAssumingSuccessful()));
         }
         return resultSet;
     }
@@ -143,16 +144,22 @@ public final class QueryUtils {
      *
      * @param node
      */
-    public static Set<JqtiExtensionPackage> findExtensionsWithin(Iterable<? extends XmlNode> nodes) {
-        final Set<JqtiExtensionPackage> resultSet = new HashSet<JqtiExtensionPackage>();
+    public static Set<JqtiExtensionPackage<?>> findExtensionsWithin(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends XmlNode> nodes) {
+        final Set<JqtiExtensionPackage<?>> resultSet = new HashSet<JqtiExtensionPackage<?>>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(XmlNode node) {
+            public boolean handleNode(final XmlNode node) {
                 if (node instanceof CustomOperator) {
-                    resultSet.add(((CustomOperator) node).getJqtiExtensionPackage());
+                    final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingOperator((CustomOperator<?>) node);
+                    if (jqtiExtensionPackage!=null) {
+                        resultSet.add(jqtiExtensionPackage);
+                    }
                 }
                 else if (node instanceof CustomInteraction) {
-                    resultSet.add(((CustomInteraction) node).getJqtiExtensionPackage());
+                    final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingInteraction((CustomInteraction<?>) node);
+                    if (jqtiExtensionPackage!=null) {
+                        resultSet.add(jqtiExtensionPackage);
+                    }
                 }
                 /* Keep descending */
                 return true;
@@ -161,12 +168,12 @@ public final class QueryUtils {
         return resultSet;
     }
 
-    public static ForeignNamespaceSummary findForeignNamespaces(Iterable<? extends XmlNode> nodes) {
+    public static ForeignNamespaceSummary findForeignNamespaces(final Iterable<? extends XmlNode> nodes) {
         final Set<String> elementNamespaceUris = new HashSet<String>();
         final Set<String> attributeNamespaceUris = new HashSet<String>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(XmlNode node) {
+            public boolean handleNode(final XmlNode node) {
                 /* Consider node itself */
                 if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
                     elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
@@ -175,7 +182,7 @@ public final class QueryUtils {
                     elementNamespaceUris.add(((ForeignElement) node).getNamespaceUri());
                 }
                 /* Now do attributes */
-                for (Attribute<?> attribute : node.getAttributes()) {
+                for (final Attribute<?> attribute : node.getAttributes()) {
                     if (attribute instanceof ForeignAttribute) {
                         attributeNamespaceUris.add(attribute.getNamespaceUri());
                     }
@@ -188,31 +195,31 @@ public final class QueryUtils {
         return new ForeignNamespaceSummary(elementNamespaceUris, attributeNamespaceUris);
     }
 
-    public static void walkTree(TreeWalkNodeHandler handler, Iterable<? extends XmlNode> startNodes) {
+    public static void walkTree(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
         ConstraintUtilities.ensureNotNull(startNodes);
         ConstraintUtilities.ensureNotNull(handler);
-        for (XmlNode startNode : startNodes) {
+        for (final XmlNode startNode : startNodes) {
             doWalkTree(handler, startNode);
         }
     }
 
-    public static void walkChildNodes(TreeWalkNodeHandler handler, Iterable<? extends XmlNode> startNodes) {
+    public static void walkChildNodes(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
         ConstraintUtilities.ensureNotNull(startNodes);
         ConstraintUtilities.ensureNotNull(handler);
-        for (XmlNode startNode : startNodes) {
-            for (NodeGroup<?> nodeGroup : startNode.getNodeGroups()) {
-                for (XmlNode childNode : nodeGroup.getChildren()) {
+        for (final XmlNode startNode : startNodes) {
+            for (final NodeGroup<?> nodeGroup : startNode.getNodeGroups()) {
+                for (final XmlNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
             }
         }
     }
 
-    private static void doWalkTree(TreeWalkNodeHandler handler, XmlNode currentNode) {
-        boolean descend = handler.handleNode(currentNode);
+    private static void doWalkTree(final TreeWalkNodeHandler handler, final XmlNode currentNode) {
+        final boolean descend = handler.handleNode(currentNode);
         if (descend) {
-            for (NodeGroup<?> nodeGroup : currentNode.getNodeGroups()) {
-                for (XmlNode childNode : nodeGroup.getChildren()) {
+            for (final NodeGroup<?> nodeGroup : currentNode.getNodeGroups()) {
+                for (final XmlNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
             }

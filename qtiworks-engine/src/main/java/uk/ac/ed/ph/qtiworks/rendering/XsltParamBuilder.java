@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
@@ -84,9 +85,11 @@ public final class XsltParamBuilder {
     /** Prefix to use for QTIWorks Rendering XSLT that we'll use for certain custom elements/attrs */
     public static final String QTIWORKS_NAMESPACE_PREFIX = "qw";
 
+    private final JqtiExtensionManager jqtiExtensionManager;
     private final DocumentBuilder documentBuilder;
 
-    public XsltParamBuilder() {
+    public XsltParamBuilder(final JqtiExtensionManager jqtiExtensionManager) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         try {
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilderFactory.setNamespaceAware(true);
@@ -237,7 +240,7 @@ public final class XsltParamBuilder {
     }
 
     public NodeList rubricsToNodeList(final List<List<RubricBlock>> values) {
-        return new XsltParamDocumentBuilder(new SaxFirerCallback() {
+        return new XsltParamDocumentBuilder(jqtiExtensionManager,new SaxFirerCallback() {
 
             @Override
             public List<? extends XmlNode> getQtiNodes() {
@@ -270,7 +273,7 @@ public final class XsltParamBuilder {
     }
 
     private NodeList buildNodeList(final List<? extends XmlNode> values) {
-        return new XsltParamDocumentBuilder(new SaxFirerCallback() {
+        return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
             @Override
             public List<? extends XmlNode> getQtiNodes() {
                 return values;

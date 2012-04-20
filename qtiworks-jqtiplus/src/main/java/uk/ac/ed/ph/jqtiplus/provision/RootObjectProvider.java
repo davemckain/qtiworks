@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.provision;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootObject;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -47,10 +48,12 @@ import java.net.URI;
  * <p>
  * Developers may want to create their own implementation of this if creating QTI
  * Object dynamically.
- * 
+ *
  * @author David McKain
  */
 public interface RootObjectProvider {
+
+    JqtiExtensionManager getJqtiExtensionManager();
 
     <E extends RootObject> RootObjectHolder<E> lookupRootObject(URI systemId,
             ModelRichness requiredModelRichness, Class<E> requiredResultClass)

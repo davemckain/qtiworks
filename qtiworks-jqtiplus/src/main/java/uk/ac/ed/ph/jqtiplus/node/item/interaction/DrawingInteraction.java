@@ -125,7 +125,7 @@ public class DrawingInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemController, Value responseValue) {
+    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
         /* We assume anything is valid here */
         return true;
     }

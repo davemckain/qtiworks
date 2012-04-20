@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.serialization;
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -49,63 +50,65 @@ import org.xml.sax.SAXException;
 
 /**
  * Fires a QTI {@link XmlNode} as a standalone SAX Document
- * 
+ *
  * TODO-LATER: Would be nice to be able to specify how to output MathML elements, i.e. using a
  * prefix instead of changing the default namespace.
- * 
+ *
  * TODO: Do we really need to keep support for printing default values? It gets stupidly complicated in
  * classes like {@link ItemSessionControl} and I'm not sure I see the value in doing this.
  *
  * @author David McKain
  */
 public final class QtiSaxDocumentFirer {
-    
+
+    private final JqtiExtensionManager jqtiExtensionManager;
     private final ContentHandler targetHandler;
     private final SaxFiringOptions saxFiringOptions;
-    
-    public QtiSaxDocumentFirer(ContentHandler targetHandler, SaxFiringOptions saxFiringOptions) {
+
+    public QtiSaxDocumentFirer(final JqtiExtensionManager jqtiExtensionManager, final ContentHandler targetHandler, final SaxFiringOptions saxFiringOptions) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.targetHandler = targetHandler;
         this.saxFiringOptions = saxFiringOptions;
     }
-    
-    public void fireSaxDocument(XmlNode node) throws SAXException {
+
+    public void fireSaxDocument(final XmlNode node) throws SAXException {
         /* First, we'll reserve 'xsi' for schema instances */
-        NamespacePrefixMappings attrNamespacePrefixMappings = new NamespacePrefixMappings();
+        final NamespacePrefixMappings attrNamespacePrefixMappings = new NamespacePrefixMappings();
         attrNamespacePrefixMappings.registerSchemaInstanceMapping();
-        
+
         /* Next let each extension package that has been used have a shot */
-        Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(node);
+        final Set<JqtiExtensionPackage<?>> usedExtensionPackages = QueryUtils.findExtensionsWithin(jqtiExtensionManager, node);
         attrNamespacePrefixMappings.registerExtensionPrefixMappings(usedExtensionPackages);
-        
+
         /* Register prefixes for each foreign attribute in non-default namespace */
         attrNamespacePrefixMappings.registerForeignAttributeNamespaces(node);
-        
-        SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
+
+        final SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
                 createSchemaLocationMap(usedExtensionPackages), targetHandler, saxFiringOptions);
-        
+
         /* Put namespace prefixes in scope and fire start of document */
         saxEventFirer.fireStartDocumentAndPrefixMappings();
 
         /* Create callback for nodes */
-        QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
-        
+        final QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
+
         /* Get document Node to fire itself off */
         node.fireSaxEvents(saxFiringContext);
-        
+
         /* Remove namespace prefixes from scope and end document */
         saxEventFirer.fireEndDocumentAndPrefixMappings();
     }
-    
-    public static Map<String, String> createSchemaLocationMap(Set<JqtiExtensionPackage> usedExtensionPackages) {
-        Map<String, String> result = new HashMap<String, String>();
-        
+
+    public static Map<String, String> createSchemaLocationMap(final Set<JqtiExtensionPackage<?>> usedExtensionPackages) {
+        final Map<String, String> result = new HashMap<String, String>();
+
         /* First do QTI 2.1 namespace */
         /* TODO: If we add support for APIP, we'll need to change namespace here */
         result.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
-        
+
         /* Then do each extension */
-        for (JqtiExtensionPackage jqtiExtensionPackage : usedExtensionPackages) {
-            for (ExtensionNamespaceInfo extensionNamespaceInfo : jqtiExtensionPackage.getNamespaceInfoMap().values()) {
+        for (final JqtiExtensionPackage<?> jqtiExtensionPackage : usedExtensionPackages) {
+            for (final ExtensionNamespaceInfo extensionNamespaceInfo : jqtiExtensionPackage.getNamespaceInfoMap().values()) {
                 result.put(extensionNamespaceInfo.getNamespaceUri(), extensionNamespaceInfo.getSchemaUri());
             }
         }

@@ -334,13 +334,13 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
 
 
     @Override
-    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(itemController, responseData);
+    public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(itemSessionController, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final Value value = parseResponse(getStringIdentifierResponseDeclaration(), responseData);
-            itemController.getItemSessionState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
+            itemSessionController.getItemSessionState().setResponseValue(getStringIdentifierResponseDeclaration(), value);
         }
     }
 
@@ -394,7 +394,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemController, final Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Gather up the values */
         final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {

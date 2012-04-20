@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -51,11 +52,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Wraps around {@link XmlResourceReader} to provide unified JQTI+ reader for QTI (and
- * some related IMS) resources.
+ * Wraps around {@link XmlResourceReader} to provide unified reader for QTI (and
+ * some related IMS) XML resources.
  * <p>
  * It uses the following conventions:
- * 
+ *
  * <ul>
  *   <li>
  *     Schema resources are loaded using {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR}.
@@ -68,11 +69,11 @@ import java.util.Map.Entry;
  *     to be maintained internally for performance reasons, before using the standard input locator.
  *   </li>
  * </ul>
- * 
+ *
  * @author David McKain
  */
 public final class QtiXmlReader {
-    
+
     /**
      * Base path within ClassPath to search in for schema and
      * {@link ClassPathHttpResourceLocator} instance of {@link #parserResourceLocator}.
@@ -86,32 +87,32 @@ public final class QtiXmlReader {
     public static final ResourceLocator JQTIPLUS_PARSER_RESOURCE_LOCATOR = new ClassPathHttpResourceLocator(JQTIPLUS_PARSER_RESOURCE_CLASSPATH_BASE_PATH);
 
     private final JqtiExtensionManager jqtiExtensionManager;
-    
+
     /** Delegating {@link XmlResourceReader} */
     private final XmlResourceReader xmlResourceReader;
-    
+
     public QtiXmlReader() {
-        this(null, null);
+        this(new JqtiExtensionManager(), null);
     }
-    
-    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager) {
+
+    public QtiXmlReader(final JqtiExtensionManager jqtiExtensionManager) {
         this(jqtiExtensionManager, null);
     }
-    
-    public QtiXmlReader(JqtiExtensionManager jqtiExtensionManager, SchemaCache schemaCache) {
+
+    public QtiXmlReader(final JqtiExtensionManager jqtiExtensionManager, final SchemaCache schemaCache) {
+        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+
         /* Merge extension schemas with core QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
-        if (jqtiExtensionManager!=null) {
-            for (Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
-                resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaUri());
-            }
+        for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
+            resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaUri());
         }
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.xmlResourceReader = new XmlResourceReader(JQTIPLUS_PARSER_RESOURCE_LOCATOR, resultingSchemaMapTemplate, schemaCache);
     }
-    
+
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }
@@ -128,17 +129,17 @@ public final class QtiXmlReader {
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(URI systemIdUri, ResourceLocator inputResourceLocator, boolean schemaValidating)
+    public XmlReadResult read(final URI systemIdUri, final ResourceLocator inputResourceLocator, final boolean schemaValidating)
             throws XmlResourceNotFoundException {
-        ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
+        final ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
         return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, schemaValidating);
     }
-    
+
     /**
-     * Creates a new {@link QtiXmlObjectReader} from this reader and the given 
+     * Creates a new {@link QtiXmlObjectReader} from this reader and the given
      * input {@link ResourceLocator}.
      */
-    public QtiXmlObjectReader createQtiXmlObjectReader(ResourceLocator inputResourceLocator) {
+    public QtiXmlObjectReader createQtiXmlObjectReader(final ResourceLocator inputResourceLocator) {
         return new QtiXmlObjectReader(this, inputResourceLocator);
     }
 

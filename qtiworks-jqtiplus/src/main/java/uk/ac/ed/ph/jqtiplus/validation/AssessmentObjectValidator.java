@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
@@ -72,10 +73,10 @@ public final class AssessmentObjectValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectValidator.class);
 
-    private final RootObjectProvider resourceProvider;
+    private final RootObjectProvider rootObjectProvider;
 
     public AssessmentObjectValidator(final RootObjectProvider resourceProvider) {
-        this.resourceProvider = resourceProvider;
+        this.rootObjectProvider = resourceProvider;
     }
 
     public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
@@ -83,7 +84,7 @@ public final class AssessmentObjectValidator {
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
-        logger.info("Validating {}", resolvedAssessmentItem);
+        logger.debug("Validating {}", resolvedAssessmentItem);
         final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
         if (item!=null) {
@@ -104,7 +105,7 @@ public final class AssessmentObjectValidator {
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
-        logger.info("Validating {}", resolvedAssessmentTest);
+        logger.debug("Validating {}", resolvedAssessmentTest);
         final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
         final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         if (test!=null) {
@@ -126,11 +127,11 @@ public final class AssessmentObjectValidator {
                     result.addItemValidationResult(itemValidationResult);
                     if (itemValidationResult.hasErrors()) {
                         result.add(new ValidationError(test, messageBuilder.toString()
-                                + " has errors. Please see the attached validation result for this item for further information."));
+                                + " has errors. Please see the attached validation result for this item for further debugrmation."));
                     }
                     if (itemValidationResult.hasWarnings()) {
                         result.add(new ValidationError(test, messageBuilder.toString()
-                                + " has warnings. Please see the attached validation result for this item for further information."));
+                                + " has warnings. Please see the attached validation result for this item for further debugrmation."));
                     }
                 }
                 else {
@@ -248,6 +249,11 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
+        public JqtiExtensionManager getJqtiExtensionManager() {
+            return rootObjectProvider.getJqtiExtensionManager();
+        }
+
+        @Override
         public ResolvedAssessmentItem getResolvedAssessmentItem() {
             return (ResolvedAssessmentItem) resolvedAssessmentObject;
         }
@@ -291,6 +297,11 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
+        public JqtiExtensionManager getJqtiExtensionManager() {
+            return rootObjectProvider.getJqtiExtensionManager();
+        }
+
+        @Override
         public ResolvedAssessmentItem getResolvedAssessmentItem() {
             throw fail();
         }
@@ -331,7 +342,7 @@ public final class AssessmentObjectValidator {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(resourceProvider=" + resourceProvider
+                + "(resourceProvider=" + rootObjectProvider
                 + ")";
     }
 }

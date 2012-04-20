@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.serialization.NamespacePrefixMappings;
@@ -58,7 +59,7 @@ import org.xml.sax.SAXException;
  *
  * @author David McKain
  */
-public class XsltParamDocumentBuilder {
+public final class XsltParamDocumentBuilder {
 
     public interface SaxFirerCallback {
 
@@ -68,9 +69,11 @@ public class XsltParamDocumentBuilder {
                 throws SAXException;
     }
 
+    private final JqtiExtensionManager jqtiExtensionManager;
     private final SaxFirerCallback saxFirerCallback;
 
-    public XsltParamDocumentBuilder(final SaxFirerCallback saxFirerCallback) {
+    public XsltParamDocumentBuilder(final JqtiExtensionManager jqtiExtensionManager, final SaxFirerCallback saxFirerCallback) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.saxFirerCallback = saxFirerCallback;
     }
 
@@ -94,7 +97,7 @@ public class XsltParamDocumentBuilder {
 
             /* Next let each extension package that has been used have a shot */
             final List<? extends XmlNode> qtiNodes = saxFirerCallback.getQtiNodes();
-            final Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(qtiNodes);
+            final Set<JqtiExtensionPackage<?>> usedExtensionPackages = QueryUtils.findExtensionsWithin(jqtiExtensionManager, qtiNodes);
             attrNamespacePrefixMappings.registerExtensionPrefixMappings(usedExtensionPackages);
 
             /* Register prefixes for each foreign attribute in non-default namespace */

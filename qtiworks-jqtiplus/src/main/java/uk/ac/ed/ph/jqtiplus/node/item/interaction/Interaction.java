@@ -130,7 +130,7 @@ public abstract class Interaction extends BodyElement {
      * Initialize the interaction.
      * Subclasses should override this method as required.
      */
-    public void initialize(@SuppressWarnings("unused") final ItemSessionController itemController) {
+    public void initialize(@SuppressWarnings("unused") final ItemSessionController itemSessionController) {
         /* Let subclasses override as required */
     }
 
@@ -148,12 +148,12 @@ public abstract class Interaction extends BodyElement {
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(final ItemSessionController itemController, final ResponseData responseData)
+    public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
         ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
-        itemController.getItemSessionState().setResponseValue(this, value);
+        itemSessionController.getItemSessionState().setResponseValue(this, value);
     }
 
     /**
@@ -220,5 +220,5 @@ public abstract class Interaction extends BodyElement {
      *
      * @return true if the response is valid, false otherwise
      */
-    public abstract boolean validateResponse(ItemSessionController itemController, Value responseValue);
+    public abstract boolean validateResponse(ItemSessionController itemSessionController, Value responseValue);
 }

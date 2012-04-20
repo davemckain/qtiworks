@@ -106,11 +106,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
 
-    public ItemSessionController(ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) {
-        this(null, resolvedAssessmentItem, itemSessionState);
-    }
-
-    public ItemSessionController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentItem resolvedAssessmentItem, ItemSessionState itemSessionState) {
+    public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
         ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         ConstraintUtilities.ensureNotNull(itemSessionState, "itemSessionState");
         this.jqtiExtensionManager = jqtiExtensionManager;
@@ -119,6 +115,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         this.itemSessionState = itemSessionState;
     }
 
+    @Override
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }
@@ -162,7 +159,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * @throws RuntimeValidationException if a runtime validation error is detected during template
      *             processing.
      */
-    public void initialize(List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
+    public void initialize(final List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemSessionState.isInitialized()) {
             throw new IllegalStateException("Item state has already been initialized");
@@ -206,7 +203,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
     }
 
-    private boolean doTemplateProcessing(List<TemplateDefault> templateDefaults, int attemptNumber)
+    private boolean doTemplateProcessing(final List<TemplateDefault> templateDefaults, final int attemptNumber)
             throws RuntimeValidationException {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
@@ -279,7 +276,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public List<Identifier> bindResponses(Map<String, ResponseData> responseMap) {
+    public List<Identifier> bindResponses(final Map<String, ResponseData> responseMap) {
         ConstraintUtilities.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
@@ -298,11 +295,11 @@ public final class ItemSessionController implements ItemProcessingContext {
         /* Now bind response values for each incoming response. (Note that this may be a subset
          * of all responses, since adaptive items will only present certain interactions at certain
          * times.) */
-        Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
+        final Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
         final List<Identifier> badResponses = new ArrayList<Identifier>();
         for (final Entry<String, ResponseData> responseEntry : responseMap.entrySet()) {
-            Identifier responseIdentifier = new Identifier(responseEntry.getKey());
-            ResponseData responseData = responseEntry.getValue();
+            final Identifier responseIdentifier = new Identifier(responseEntry.getKey());
+            final ResponseData responseData = responseEntry.getValue();
             ConstraintUtilities.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
                 final Interaction interaction = interactionMap.get(responseIdentifier);
@@ -447,7 +444,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     //-------------------------------------------------------------------
 
     @Override
-    public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
+    public Value lookupVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifier);
         Value value = null;
         if (permittedTypes.length==0) {
@@ -482,23 +479,23 @@ public final class ItemSessionController implements ItemProcessingContext {
         return value;
     }
 
-    public Value lookupVariableValue(String identifierString, VariableType... permittedTypes) {
+    public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return lookupVariableValue(new Identifier(identifierString), permittedTypes);
     }
 
     @Override
-    public Value computeDefaultValue(Identifier identifier) {
+    public Value computeDefaultValue(final Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
 
-    public Value computeDefaultValue(String identifierString) {
+    public Value computeDefaultValue(final String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
     }
 
-    public Value computeDefaultValue(VariableDeclaration declaration) {
+    public Value computeDefaultValue(final VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
         if (result == null) {
@@ -513,7 +510,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         return result;
     }
 
-    private VariableDeclaration ensureVariableDeclaration(Identifier identifier) {
+    private VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         final VariableDeclaration result = item.getVariableDeclaration(identifier);
         if (result == null) {
@@ -522,7 +519,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         return result;
     }
 
-    private ResponseDeclaration ensureResponseDeclaration(Identifier responseIdentifier) {
+    private ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
         ConstraintUtilities.ensureNotNull(responseIdentifier);
         final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
         if (result == null) {
@@ -532,17 +529,17 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     @Override
-    public Value computeCorrectResponse(Identifier identifier) {
+    public Value computeCorrectResponse(final Identifier identifier) {
         ConstraintUtilities.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
 
-    public Value computeCorrectResponse(String identifierString) {
+    public Value computeCorrectResponse(final String identifierString) {
         ConstraintUtilities.ensureNotNull(identifierString);
         return computeCorrectResponse(new Identifier(identifierString));
     }
 
-    public Value computeCorrectResponse(ResponseDeclaration declaration) {
+    public Value computeCorrectResponse(final ResponseDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
         if (result == null) {
@@ -564,7 +561,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      *
      * @return true if the associated correctResponse matches the value; false or null otherwise.
      */
-    public Boolean isCorrectResponse(ResponseDeclaration responseDeclaration) {
+    public Boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
         final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
         if (correctResponseValue.isNull()) {
             return null;
@@ -574,16 +571,16 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     //-------------------------------------------------------------------
 
-    private void initValue(VariableDeclaration declaration) {
+    private void initValue(final VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
     }
 
-    private Value computeInitialValue(Identifier identifier) {
+    private Value computeInitialValue(final Identifier identifier) {
         return computeDefaultValue(identifier);
     }
 
-    private Value computeInitialValue(VariableDeclaration declaration) {
+    private Value computeInitialValue(final VariableDeclaration declaration) {
         ConstraintUtilities.ensureNotNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
     }
@@ -597,9 +594,9 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
     }
 
-    private void fireLifecycleEvent(LifecycleEventType eventType) {
+    private void fireLifecycleEvent(final LifecycleEventType eventType) {
         if (jqtiExtensionManager!=null) {
-            for (final JqtiExtensionPackage extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
                 extensionPackage.lifecycleEvent(this, eventType);
             }
         }
@@ -617,8 +614,8 @@ public final class ItemSessionController implements ItemProcessingContext {
         return result;
     }
 
-    void recordItemVariables(ItemResult result) {
-        List<ItemVariable> itemVariables = result.getItemVariables();
+    void recordItemVariables(final ItemResult result) {
+        final List<ItemVariable> itemVariables = result.getItemVariables();
         itemVariables.clear();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
             final OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
@@ -626,7 +623,7 @@ public final class ItemSessionController implements ItemProcessingContext {
             final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
             itemVariables.add(variable);
         }
-        Map<Identifier, Interaction> interactionMap = item.getItemBody().getInteractionMap();
+        final Map<Identifier, Interaction> interactionMap = item.getItemBody().getInteractionMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
             final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(mapEntry.getKey());
             final Value value = mapEntry.getValue();

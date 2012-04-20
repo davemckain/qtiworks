@@ -55,8 +55,12 @@ import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 import org.qtitools.mathassess.tools.glue.extras.pooling.PooledQTIMaximaSessionManager;
 import org.qtitools.mathassess.tools.qticasbridge.maxima.QTIMaximaSession;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,40 +70,51 @@ import org.slf4j.LoggerFactory;
  * up the package of MathAssess QTI extensions.
  * <p>
  * Note the lifecycle {@link #startMaximaPool()} and {@link #shutdown()} methods here.
- * 
+ *
  * @author David McKain
  */
-public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
-
-    private static final long serialVersionUID = -5817285044862817737L;
+public final class MathAssessExtensionPackage implements JqtiExtensionPackage<MathAssessExtensionPackage> {
 
     private static final Logger logger = LoggerFactory.getLogger(MathAssessExtensionPackage.class);
-    
+
     public static final String DISPLAY_NAME = "MathAssess QTI Extensions";
 
     private final Map<String, ExtensionNamespaceInfo> namespaceInfoMap;
     private final ThreadLocal<QTIMaximaSession> sessionThreadLocal;
     private final StylesheetCache stylesheetCache;
+    private final Set<String> customOperatorClasses;
+    private final Set<String> customInteractionClasses;
 
     private PooledQTIMaximaSessionManager pooledQTIMaximaSessionManager;
 
-    public MathAssessExtensionPackage(StylesheetCache stylesheetCache) {
+    public MathAssessExtensionPackage(final StylesheetCache stylesheetCache) {
         this.stylesheetCache = stylesheetCache;
-        
+
         /* Build up namespace info */
-        ExtensionNamespaceInfo extensionNamespaceInfo = new ExtensionNamespaceInfo(MATHASSESS_NAMESPACE_URI, MATHASSESS_SCHEMA_LOCATION, MATHASSESS_DEFAULT_NAMESPACE_PREFIX);
-        Map<String, ExtensionNamespaceInfo> namespaceInfoMapSource = new HashMap<String, ExtensionNamespaceInfo>();
+        final ExtensionNamespaceInfo extensionNamespaceInfo = new ExtensionNamespaceInfo(MATHASSESS_NAMESPACE_URI, MATHASSESS_SCHEMA_LOCATION, MATHASSESS_DEFAULT_NAMESPACE_PREFIX);
+        final Map<String, ExtensionNamespaceInfo> namespaceInfoMapSource = new HashMap<String, ExtensionNamespaceInfo>();
         namespaceInfoMapSource.put(extensionNamespaceInfo.getNamespaceUri(), extensionNamespaceInfo);
         this.namespaceInfoMap = ObjectUtilities.unmodifiableMap(namespaceInfoMapSource);
-        
+
+        /* Document supported operators & interactions */
+        this.customInteractionClasses = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+                MathAssessConstants.MATH_ENTRY_INTERACTION_CLASS
+        )));
+        this.customOperatorClasses = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
+                MathAssessConstants.CAS_COMPARE_CLASS,
+                MathAssessConstants.CAS_CONDITION_CLASS,
+                MathAssessConstants.CAS_PROCESS_CLASS,
+                MathAssessConstants.SCRIPT_RULE_CLASS
+        )));
+
         /* Create ThreadLocal for communicating with maxima */
         this.sessionThreadLocal = new ThreadLocal<QTIMaximaSession>();
     }
-    
+
     public StylesheetCache getStylesheetCache() {
         return stylesheetCache;
     }
-    
+
     @Override
     public String getDisplayName() {
         return DISPLAY_NAME;
@@ -111,26 +126,46 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
     }
 
     @Override
-    public CustomOperator createCustomOperator(ExpressionParent expressionParent, String operatorClassName) {
+    public boolean implementsCustomInteraction(final String interactionClassName) {
+        return customInteractionClasses.contains(interactionClassName);
+    }
+
+    @Override
+    public boolean implementsCustomOperator(final String operatorClassName) {
+        return customOperatorClasses.contains(operatorClassName);
+    }
+
+    @Override
+    public Set<String> getImplementedCustomInteractionClasses() {
+        return customInteractionClasses;
+    }
+
+    @Override
+    public Set<String> getImplementedCustomOperatorClasses() {
+        return customOperatorClasses;
+    }
+
+    @Override
+    public CustomOperator<MathAssessExtensionPackage> createCustomOperator(final ExpressionParent expressionParent, final String operatorClassName) {
         if (MathAssessConstants.CAS_COMPARE_CLASS.equals(operatorClassName)) {
-            return new CasCompare(this, expressionParent);
+            return new CasCompare(expressionParent);
         }
         else if (MathAssessConstants.CAS_CONDITION_CLASS.equals(operatorClassName)) {
-            return new CasCondition(this, expressionParent);
+            return new CasCondition(expressionParent);
         }
         else if (MathAssessConstants.CAS_PROCESS_CLASS.equals(operatorClassName)) {
-            return new CasProcess(this, expressionParent);
+            return new CasProcess(expressionParent);
         }
         else if (MathAssessConstants.SCRIPT_RULE_CLASS.equals(operatorClassName)) {
-            return new ScriptRule(this, expressionParent);
+            return new ScriptRule(expressionParent);
         }
         return null;
     }
 
     @Override
-    public CustomInteraction createCustomInteraction(XmlNode parentObject, String interactionClassName) {
+    public CustomInteraction<MathAssessExtensionPackage> createCustomInteraction(final XmlNode parentObject, final String interactionClassName) {
         if (MathAssessConstants.MATH_ENTRY_INTERACTION_CLASS.equals(interactionClassName)) {
-            return new MathEntryInteraction(this, parentObject);
+            return new MathEntryInteraction(parentObject);
         }
         return null;
     }
@@ -139,17 +174,17 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
     // ------------------------------------------------------------------------
 
     @Override
-    public void lifecycleEvent(Object source, LifecycleEventType eventType) {
+    public void lifecycleEvent(final Object source, final LifecycleEventType eventType) {
         logger.trace("Received lifecycle event {}", eventType);
         switch (eventType) {
             case MANAGER_INITIALISED:
                 startMaximaPool();
                 break;
-                
+
             case MANAGER_DESTROYED:
                 closeMaximaPool();
                 break;
-                
+
             case ITEM_INITIALISATION_STARTING:
             case ITEM_RESPONSE_PROCESSING_STARTING:
                 /* Rather than creating a Maxima session at this point that may
@@ -166,7 +201,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
                 break;
         }
     }
-    
+
     private void startMaximaPool() {
         try {
             final MaximaConfiguration maximaConfiguration = JacomaxSimpleConfigurator.configure();
@@ -221,7 +256,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

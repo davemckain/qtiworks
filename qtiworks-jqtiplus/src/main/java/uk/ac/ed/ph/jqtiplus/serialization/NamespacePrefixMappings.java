@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.serialization;
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.utils.ForeignNamespaceSummary;
@@ -76,23 +77,23 @@ public final class NamespacePrefixMappings implements Serializable {
         return prefixToNamespaceUriMap.entrySet();
     }
 
-    public boolean isPrefixRegistered(String prefix) {
+    public boolean isPrefixRegistered(final String prefix) {
         return prefixToNamespaceUriMap.containsKey(prefix);
     }
 
-    public boolean isNamespaceUriRegistered(String namespaceUri) {
+    public boolean isNamespaceUriRegistered(final String namespaceUri) {
         return namespaceUriToPrefixMap.containsKey(namespaceUri);
     }
 
-    public String getPrefix(String namespaceUri) {
+    public String getPrefix(final String namespaceUri) {
         return namespaceUriToPrefixMap.get(namespaceUri);
     }
 
-    public String getNamespaceUri(String prefix) {
+    public String getNamespaceUri(final String prefix) {
         return namespaceUriToPrefixMap.get(prefix);
     }
 
-    public void register(String namespaceUri, String prefix) {
+    public void register(final String namespaceUri, final String prefix) {
         if (namespaceUriToPrefixMap.containsKey(namespaceUri)) {
             throw new IllegalArgumentException("Namespace URI " + namespaceUri + " has already been registered");
         }
@@ -112,23 +113,23 @@ public final class NamespacePrefixMappings implements Serializable {
 
     /**
      * Registers prefix mappings for all of the extensions used by the given {@link XmlNode}s
-     * and their descendents.
+     * and their descendants.
      */
-    public void registerExtensionPrefixMappings(Iterable<? extends XmlNode> nodes) {
-        Set<JqtiExtensionPackage> usedExtensionPackages = QueryUtils.findExtensionsWithin(nodes);
+    public void registerExtensionPrefixMappings(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends XmlNode> nodes) {
+        final Set<JqtiExtensionPackage<?>> usedExtensionPackages = QueryUtils.findExtensionsWithin(jqtiExtensionManager, nodes);
         registerExtensionPrefixMappings(usedExtensionPackages);
     }
 
     /**
      * Registers prefix mappings for all of the given extensions
      */
-    public void registerExtensionPrefixMappings(Set<JqtiExtensionPackage> qtiExtensionPackages) {
-        for (JqtiExtensionPackage jqtiExtensionPackage : qtiExtensionPackages) {
-            for (Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionPackage.getNamespaceInfoMap().entrySet()) {
-                String namespaceUri = entry.getKey();
-                ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
-                String defaultPrefix = extensionNamespaceInfo.getDefaultPrefix();
-                String actualPrefix = makeUniquePrefix(defaultPrefix);
+    public void registerExtensionPrefixMappings(final Set<JqtiExtensionPackage<?>> qtiExtensionPackages) {
+        for (final JqtiExtensionPackage<?> jqtiExtensionPackage : qtiExtensionPackages) {
+            for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionPackage.getNamespaceInfoMap().entrySet()) {
+                final String namespaceUri = entry.getKey();
+                final ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
+                final String defaultPrefix = extensionNamespaceInfo.getDefaultPrefix();
+                final String actualPrefix = makeUniquePrefix(defaultPrefix);
                 register(namespaceUri, actualPrefix);
             }
         }
@@ -138,22 +139,22 @@ public final class NamespacePrefixMappings implements Serializable {
      * Registers prefix mappings for all namespaced foreign attributes used by the given
      * {@link XmlNode}s and their descendents.
      */
-    public void registerForeignAttributeNamespaces(Iterable<? extends XmlNode> nodes) {
-        ForeignNamespaceSummary foreignNamespaces = QueryUtils.findForeignNamespaces(nodes);
-        for (String attributeNamespaceUri : foreignNamespaces.getAttributeNamespaceUris()) {
+    public void registerForeignAttributeNamespaces(final Iterable<? extends XmlNode> nodes) {
+        final ForeignNamespaceSummary foreignNamespaces = QueryUtils.findForeignNamespaces(nodes);
+        for (final String attributeNamespaceUri : foreignNamespaces.getAttributeNamespaceUris()) {
             /* TODO-LATER: Maybe allow some more control over this choice of prefix? */
-            String resultingPrefix = makeUniquePrefix("ns");
+            final String resultingPrefix = makeUniquePrefix("ns");
             register(attributeNamespaceUri, resultingPrefix);
         }
     }
 
-    public String makeUniquePrefix(String requestedPrefix) {
+    public String makeUniquePrefix(final String requestedPrefix) {
         if (!prefixToNamespaceUriMap.containsKey(requestedPrefix)) {
             return requestedPrefix;
         }
         int i=0;
         while (true) {
-            String prefix = requestedPrefix + i;
+            final String prefix = requestedPrefix + i;
             if (!prefixToNamespaceUriMap.containsKey(prefix)) {
                 return prefix;
             }
@@ -161,7 +162,7 @@ public final class NamespacePrefixMappings implements Serializable {
         }
     }
 
-    public String getQName(String namespaceUri, String localName) {
+    public String getQName(final String namespaceUri, final String localName) {
         if (namespaceUri.isEmpty()) {
             return localName;
         }

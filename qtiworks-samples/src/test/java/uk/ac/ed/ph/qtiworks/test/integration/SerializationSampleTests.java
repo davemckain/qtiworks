@@ -110,7 +110,8 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         StringWriter serializedXmlWriter = new StringWriter();
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         
-        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+        QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(objectReader.getQtiXmlReader().getJqtiExtensionManager(), 
+                serializerHandler, new SaxFiringOptions());
         saxEventFirer.fireSaxDocument(item);
         String serializedXml = serializedXmlWriter.toString();
         

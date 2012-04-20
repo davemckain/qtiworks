@@ -38,7 +38,6 @@ import static org.qtitools.mathassess.MathAssessConstants.ATTR_CODE_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -66,10 +65,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the <tt>org.qtitools.mathassess.CasCompare</tt> customOperator
- * 
+ *
  * @author Jonathon Hare
  */
-public class CasCompare extends MathAssessOperator {
+public final class CasCompare extends MathAssessOperator {
 
     private static final long serialVersionUID = 197792404254247716L;
 
@@ -82,16 +81,16 @@ public class CasCompare extends MathAssessOperator {
         supportedActions.put(ActionType.SYNTEQUAL, QTIMaximaSession.MAXIMA_SYNTEQUAL_CODE);
     }
 
-    private static boolean isActionSupported(ActionType action) {
+    private static boolean isActionSupported(final ActionType action) {
         return supportedActions.containsKey(action);
     }
 
-    private static String getActionCode(ActionType action) {
+    private static String getActionCode(final ActionType action) {
         return supportedActions.get(action);
     }
 
-    public CasCompare(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(jqtiExtensionPackage, parent);
+    public CasCompare(final ExpressionParent parent) {
+        super(parent);
 
         getAttributes().add(new ActionAttribute(this, ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI, true));
         getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, false));
@@ -100,7 +99,7 @@ public class CasCompare extends MathAssessOperator {
 
     /**
      * Gets value of code attribute.
-     * 
+     *
      * @return value of code attribute
      * @see #setCode
      */
@@ -111,18 +110,18 @@ public class CasCompare extends MathAssessOperator {
 
     /**
      * Sets new value of code attribute.
-     * 
+     *
      * @param code new value of code attribute
      * @see #getCode
      */
-    public void setCode(String code) {
+    public void setCode(final String code) {
         ((StringAttribute) getAttributes().get(ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(code);
     }
 
     /**
      * Gets value of action attribute.
-     * 
+     *
      * @return value of action attribute
      * @see #setAction
      */
@@ -133,18 +132,18 @@ public class CasCompare extends MathAssessOperator {
 
     /**
      * Sets new value of action attribute.
-     * 
+     *
      * @param action new value of action attribute
      * @see #getAction
      */
-    public void setAction(ActionType action) {
+    public void setAction(final ActionType action) {
         ((ActionAttribute) getAttributes().get(ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(action);
     }
 
     /**
      * Gets value of simplify attribute.
-     * 
+     *
      * @return value of simplify attribute
      * @see #setSimplify
      */
@@ -155,17 +154,17 @@ public class CasCompare extends MathAssessOperator {
 
     /**
      * Sets new value of simplify attribute.
-     * 
+     *
      * @param simplify new value of simplify attribute
      * @see #getSimplify
      */
-    public void setSimplify(Boolean simplify) {
+    public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(simplify);
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context) {
+    protected void doAdditionalValidation(final ValidationContext context) {
         if (getAction() == ActionType.CODE && getCode() == null) {
             context.add(new ValidationError(this, "The " + ATTR_CODE_NAME + " attribute must be specified when the " + ATTR_ACTION_NAME + " is " + getAction()));
         }
@@ -185,7 +184,7 @@ public class CasCompare extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues) throws MaximaTimeoutException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException {
         final Value v1 = childValues[0];
         final Value v2 = childValues[1];
 
@@ -205,7 +204,6 @@ public class CasCompare extends MathAssessOperator {
             return NullValue.INSTANCE;
         }
 
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         return BooleanValue.valueOf(qtiMaximaSession.executeCasCompare(code,
@@ -215,12 +213,12 @@ public class CasCompare extends MathAssessOperator {
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 }

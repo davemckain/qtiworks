@@ -36,7 +36,6 @@ package org.qtitools.mathassess;
 import static org.qtitools.mathassess.MathAssessConstants.ATTR_SIMPLIFY_NAME;
 import static org.qtitools.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -61,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the <tt>org.qtitools.mathassess.ScriptRule</tt> customOperator
- * 
+ *
  * @author Jonathon Hare
  */
 public final class ScriptRule extends MathAssessOperator {
@@ -70,8 +69,8 @@ public final class ScriptRule extends MathAssessOperator {
 
     private static final Logger logger = LoggerFactory.getLogger(ScriptRule.class);
 
-    public ScriptRule(JqtiExtensionPackage jqtiExtensionPackage, ExpressionParent parent) {
-        super(jqtiExtensionPackage, parent);
+    public ScriptRule(final ExpressionParent parent) {
+        super(parent);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, false));
 
@@ -82,7 +81,7 @@ public final class ScriptRule extends MathAssessOperator {
 
     /**
      * Gets value of simplify attribute.
-     * 
+     *
      * @return value of simplify attribute
      * @see #setSimplify
      */
@@ -93,23 +92,22 @@ public final class ScriptRule extends MathAssessOperator {
 
     /**
      * Sets new value of simplify attribute.
-     * 
+     *
      * @param simplify new value of simplify attribute
      * @see #getSimplify
      */
-    public void setSimplify(Boolean simplify) {
+    public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI)).setValue(simplify);
     }
 
     @Override
-    protected void doAdditionalValidation(ValidationContext context) {
+    protected void doAdditionalValidation(final ValidationContext context) {
         /* Nothing to do here */
     }
 
     @Override
-    protected Value maximaEvaluate(ItemProcessingContext context, Value[] childValues)
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues)
             throws MaximaTimeoutException, MathsContentTooComplexException {
-        final MathAssessExtensionPackage mathAssessExtensionPackage = (MathAssessExtensionPackage) getJqtiExtensionPackage();
         final QTIMaximaSession qtiMaximaSession = mathAssessExtensionPackage.obtainMaximaSessionForThread();
         final String code = childValues[0].toQtiString().trim();
         final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();
@@ -149,22 +147,22 @@ public final class ScriptRule extends MathAssessOperator {
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.STRING };
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 }

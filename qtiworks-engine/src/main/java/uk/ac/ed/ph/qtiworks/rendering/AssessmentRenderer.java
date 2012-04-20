@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -87,9 +88,11 @@ public final class AssessmentRenderer {
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
 
     private final String webappContextPath;
+    private final JqtiExtensionManager jqtiExtensionManager;
     private final XsltStylesheetManager stylesheetManager;
 
-    public AssessmentRenderer(final String webappContextPath, final XsltStylesheetCache stylesheetCache) {
+    public AssessmentRenderer(final JqtiExtensionManager jqtiExtensionManager, final String webappContextPath, final XsltStylesheetCache stylesheetCache) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.webappContextPath = webappContextPath;
         this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), stylesheetCache);
     }
@@ -120,7 +123,7 @@ public final class AssessmentRenderer {
 
         final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
         serializerHandler.setResult(result);
-        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(serializerHandler, new SaxFiringOptions());
+        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, new SaxFiringOptions());
         try {
             saxEventFirer.fireSaxDocument(jqtiObject);
         }
@@ -194,7 +197,7 @@ public final class AssessmentRenderer {
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(invalidResponseIdentifiers));
 
         /* Convert template, response and outcome values into parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToElements(itemSessionState.getTemplateValues()));
         xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(itemSessionState.getResponseValues()));
         xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
@@ -311,7 +314,7 @@ public final class AssessmentRenderer {
         /* Finally fire the QTI Object at the XSLT handler */
         final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
         serializationOptions.setIndenting(true);
-        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(transformerHandler, new SaxFiringOptions());
+        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, transformerHandler, new SaxFiringOptions());
         try {
             saxEventFirer.fireSaxDocument(resolvedAssessmentObject.getRootObjectLookup().extractAssumingSuccessful());
         }
