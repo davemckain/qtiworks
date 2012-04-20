@@ -43,10 +43,12 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.UnsupportedCustomInteraction;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,12 +133,9 @@ public final class JqtiExtensionManager {
     // Custom operators and interactions
 
     /**
-     * Returns the {@link JqtiExtensionPackage} providing the customInteraction having the
+     * Returns the {@link JqtiExtensionPackage} providing the {@link CustomInteraction} having the
      * given class attribute, or null if no extension package has been registered to provide this
      * interaction.
-     *
-     * @param interactionClassName
-     * @return
      */
     public JqtiExtensionPackage<?> getJqtiExtensionPackageImplementingInteraction(final String interactionClassName) {
         for (final JqtiExtensionPackage<?> extensionPackage : extensionPackages) {
@@ -147,14 +146,16 @@ public final class JqtiExtensionManager {
         return null;
     }
 
+    /**
+     * Returns the {@link JqtiExtensionPackage} providing the given {@link CustomInteraction} having the
+     * given class attribute. Returns null for an {@link UnsupportedCustomInteraction} or if
+     * the interaction's class attribute contains multiple entries.
+     */
     @SuppressWarnings("unchecked")
     public <E extends JqtiExtensionPackage<E>> E getJqtiExtensionPackageImplementingInteraction(final CustomInteraction<E> customInteraction) {
-        if (customInteraction instanceof UnsupportedCustomInteraction) {
-            return (E) FallbackExtensionPackage.getInstance();
-        }
         /* NB: customInteraction/@class can contain multiple values. We ignore anything other than one value */
         final List<String> classes = customInteraction.getClassAttr();
-        if (classes.size()!=1) {
+        if (classes==null || classes.size()!=1) {
             return null;
         }
         return (E) getJqtiExtensionPackageImplementingInteraction(classes.get(0));
@@ -162,10 +163,10 @@ public final class JqtiExtensionManager {
 
     @SuppressWarnings("unchecked")
     public <E extends JqtiExtensionPackage<E>> E getJqtiExtensionPackageImplementingOperator(final CustomOperator<E> customOperator) {
-        if (customOperator instanceof UnsupportedCustomOperator) {
-            return (E) FallbackExtensionPackage.getInstance();
-        }
         final String classAttr = customOperator.getClassAttr();
+        if (classAttr==null) {
+            return null;
+        }
         return (E) getJqtiExtensionPackageImplementingOperator(classAttr);
     }
 
@@ -219,5 +220,76 @@ public final class JqtiExtensionManager {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(extensionPackages=" + extensionPackages
                 + ")";
+    }
+
+    //---------------------------------------------------------------------
+
+    /**
+     * Internal {@link JqtiExtensionPackage} that becomes the owner of any unsupported
+     * {@link CustomOperator}s and {@link CustomInteraction}s. This is never exposed via the API.
+     */
+    public static final class FallbackExtensionPackage implements JqtiExtensionPackage<FallbackExtensionPackage> {
+
+        private static final FallbackExtensionPackage instance = new FallbackExtensionPackage();
+
+        public static final String DISPLAY_NAME = "Fallback for unsupported customOperators and customInteractions";
+
+        FallbackExtensionPackage() {
+        }
+
+        public static FallbackExtensionPackage getInstance() {
+            return instance;
+        }
+
+        @Override
+        public void lifecycleEvent(final Object source, final LifecycleEventType eventType) {
+            /* Do nothing */
+        }
+
+        @Override
+        public String getDisplayName() {
+            return DISPLAY_NAME;
+        }
+
+        @Override
+        public Map<String, ExtensionNamespaceInfo> getNamespaceInfoMap() {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public boolean implementsCustomOperator(final String operatorClassName) {
+            return true;
+        }
+
+        @Override
+        public boolean implementsCustomInteraction(final String interactionClassName) {
+            return true;
+        }
+
+        @Override
+        public Set<String> getImplementedCustomOperatorClasses() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public Set<String> getImplementedCustomInteractionClasses() {
+            return Collections.emptySet();
+        }
+
+        @Override
+        public CustomOperator<FallbackExtensionPackage> createCustomOperator(final ExpressionParent expressionParent, final String operatorClassName) {
+            return new UnsupportedCustomOperator(expressionParent);
+        }
+
+        @Override
+        public CustomInteraction<FallbackExtensionPackage> createCustomInteraction(final XmlNode parentObject, final String interactionClassName) {
+            return new UnsupportedCustomInteraction(parentObject);
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this)) + "()";
+        }
+
     }
 }

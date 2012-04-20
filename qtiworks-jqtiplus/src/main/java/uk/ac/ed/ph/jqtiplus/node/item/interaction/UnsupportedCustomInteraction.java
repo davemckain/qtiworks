@@ -33,7 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.FallbackExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -47,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public final class UnsupportedCustomInteraction extends CustomInteraction<FallbackExtensionPackage> {
+public final class UnsupportedCustomInteraction extends CustomInteraction<JqtiExtensionManager.FallbackExtensionPackage> {
 
     private static final long serialVersionUID = -2114615308065207715L;
 

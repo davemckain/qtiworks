@@ -33,7 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.FallbackExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -46,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public final class UnsupportedCustomOperator extends CustomOperator<FallbackExtensionPackage> {
+public final class UnsupportedCustomOperator extends CustomOperator<JqtiExtensionManager.FallbackExtensionPackage> {
 
     private static final long serialVersionUID = -8733871136419512506L;
 
