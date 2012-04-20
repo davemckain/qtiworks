@@ -43,8 +43,8 @@ Renders a standalone assessmentItem
 
         <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions, as well as the debugging panel. -->
-        <script src="{$webappContextPath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
-        <script src="{$webappContextPath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
 
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
@@ -61,7 +61,7 @@ Renders a standalone assessmentItem
         </xsl:if>
 
         <!-- Styling for JQuery -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
+        <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks Item styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/common-rendering.css" type="text/css" media="screen"/>

@@ -76,8 +76,8 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
         <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
         <!-- The following are used for certain interactions and time limits -->
-        <script src="{$webappContextPath}/rendering/javascript/jquery.min.js" type="text/javascript"/>
-        <script src="{$webappContextPath}/rendering/javascript/jquery-ui.custom.min.js" type="text/javascript"/>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
 
         <!-- Timer setup (requires controls to be displayed) -->
         <xsl:if test="$displayControls and $timeRemaining >= 0">
@@ -104,7 +104,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         </xsl:if>
 
         <!-- Styling for JQuery dialog -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/redmond/jquery-ui.custom.css" type="text/css"/>
+        <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
         <!-- Stylesheet(s) for this item -->
         <link rel="stylesheet" href="{$webappContextPath}/css/item-rendering.css" type="text/css" media="screen"/>
