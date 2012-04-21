@@ -24,14 +24,14 @@ All Rights Reserved
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.qtitools.mathassess</groupId>
-      <artifactId>MathAssessTools-Glue</artifactId>
-      <version>${mathassess-tools.version}</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>qtiworks-mathassess-glue</artifactId>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.qtitools.mathassess</groupId>
-      <artifactId>MathAssessTools-Glue-Extras</artifactId>
-      <version>${mathassess-tools.version}</version>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <version>${commons-pool.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

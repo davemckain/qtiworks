@@ -16,6 +16,7 @@ All Rights Reserved
   <packaging>pom</packaging>
   <modules>
     <module>qtiworks-jqtiplus</module>
+    <module>qtiworks-mathassess-glue</module>
     <module>qtiworks-mathassess</module>
     <module>qtiworks-samples</module>
     <module>qtiworks-engine</module>
@@ -23,7 +24,10 @@ All Rights Reserved
     <module>qtiworks-unrefactored</module>
   </modules>
   <properties>
-    <mathassess-tools.version>1.4-SNAPSHOT</mathassess-tools.version>
+    <asciimath-parser.version>1.0</asciimath-parser.version>
+    <snuggletex.version>1.3-EXP-SNAPSHOT</snuggletex.version>
+    <jacomax.version>0.2-SNAPSHOT</jacomax.version>
+    <commons-pool.version>1.5.4</commons-pool.version>
     <slf4j.version>1.6.4</slf4j.version>
     <log4j.version>1.2.16</log4j.version>
     <saxon9.version>9.1.0.8</saxon9.version>

@@ -1,0 +1,161 @@
+# Defines simple tests of Maxima input -> MathML output -> Maxima input
+# to verify the "circularity" of the process (modulo extra brackets!)
+#
+# Input format is:
+#
+# Original Maxima input
+# Up-converted Maxima input
+# ==== (divider)
+#
+# Lines starting with '#' are documentation and are stripped out when running tests
+#
+# Note that Maxima will rearrange certain expressions into its canonical form
+# on output!
+#
+##
+0
+0
+====
+1
+1
+====
+-1
+-1
+====
+x
+x
+====
+-x
+-x
+====
+x=1
+x = 1
+====
+1#x
+1 # x
+====
+x+1
+x + 1
+====
+1+x
+1 + x
+====
+x+y+z
+x + y + z
+====
+x-1
+x - 1
+====
+-1+x
+(-1) + x
+====
+1-x
+1 - x
+====
+-x+1
+(-x) + 1
+====
+x*y
+x * y
+====
+x/2
+x / 2
+====
+(x/y)/z
+(x / y) / z
+====
+x^2
+x^2
+====
+x^(y^2)
+x^(y^2)
+====
+x!
+x!
+====
+(x!)!
+(x!)!
+====
+%pi
+%pi
+====
+%alpha
+%alpha
+====
+## NB: This doesn't attempt to generate a <ci><mi>x</mi><mn>1</mn></ci> or anything like that
+x_1
+x[1]
+====
+-x*(4*a*c-b^2)
+(-x) * ((4 * a * c) - (b^2))
+====
+sin(x-y)
+sin((x - y))
+====
+asin(x)
+asin(x)
+====
+#exp(x)
+#exp(x)
+#====
+log(x)
+log(x)
+====
+sqrt(b^2-4*a*c)
+sqrt(((b^2) - (4 * a * c)))
+====
+maOperator("+")
+maOperator("+")
+====
+maOperator("-")
+maOperator("-")
+====
+maOperator("*")
+maOperator("*")
+====
+maOperator("/")
+maOperator("/")
+====
+maOperator("=")
+maOperator("=")
+====
+maOperator("#")
+maOperator("#")
+====
+## Gah! Maxima's raw output of these doesn't escape the characters so
+## we end up with invalid XML. I think the best solution would be to path
+## mathml.lisp, which is something I've been trying to avoid...
+#maOperator("<")
+#maOperator("<")
+#====
+#maOperator(">")
+#maOperator(">")
+#====
+maOperator("=")
+maOperator("=")
+====
+#maOperator("<=")
+#maOperator("<=")
+#====
+#maOperator(">=")
+#maOperator(">=")
+#====
+maOperator("=")
+maOperator("=")
+====
+[1,2]
+[1, 2]
+====
+{a,b}
+{a, b}
+====
+maUnits("kg")
+maUnits("kg")
+====
+## DODGY: These next ones show string outputs being "promoted"
+#"x"
+#x
+#====
+#"2"
+#2
+#====

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!--
+
+$Id: pom.xml 2603 2011-04-12 14:56:07Z davemckain $
+
+Copyright (c) 2011, The University of Edinburgh
+All Rights Reserved
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>QTIWorks MathAssessTools Glue Module</name>
+  <artifactId>qtiworks-mathassess-glue</artifactId>
+  <packaging>jar</packaging>
+  <parent>
+    <groupId>uk.ac.ed.ph.qtiworks</groupId>
+    <artifactId>qtiworks</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>uk.ac.ed.ph.asciimath</groupId>
+      <artifactId>asciimath-parser</artifactId>
+      <version>${asciimath-parser.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.ac.ed.ph.jacomax</groupId>
+      <artifactId>jacomax</artifactId>
+      <version>${jacomax.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.ac.ed.ph.snuggletex</groupId>
+      <artifactId>snuggletex-core</artifactId>
+      <version>${snuggletex.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.ac.ed.ph.snuggletex</groupId>
+      <artifactId>snuggletex-upconversion</artifactId>
+      <version>${snuggletex.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon9</artifactId>
+      <version>${saxon9.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>saxon9-dom</artifactId>
+      <version>${saxon9.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
