@@ -31,43 +31,41 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentOutputValueWrapper;
 
 /**
- * Helper utilities for integration tests
+ * This Exception is thrown if a MathsContent value encoded inside a 
+ * {@link MathsContentOutputValueWrapper} does not have the required amount of semantics
+ * to be handled in the appropriate way.
+ * <p>
+ * Normally this will be thrown if some MathML output cannot be up-converted to being
+ * Maxima input again.
+ * <p>
+ * This one's a bit awkward as the underlying problem could be:
+ * <ul>
+ *   <li>The up-conversion process isn't clever enough.</li>
+ *   <li>The content was authored directly and is genuinely outside the scope of what we support.</li>
+ *   <li>The content arose as part of a Maxima call and has now gone outside the scope of what we support.</li>
+ * <ul>
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class MathsContentTooComplexException extends Exception {
+
+    private static final long serialVersionUID = -3121152232236067772L;
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
+    private final MathsContentOutputValueWrapper valueWrapper;
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    public MathsContentTooComplexException(final MathsContentOutputValueWrapper valueWrapper) {
+        super("MathsContent based on PMathML "
+                + valueWrapper.getPMathML()
+                + " cannot be up-converted into Maxima input format... probably too complex");
+        this.valueWrapper = valueWrapper;
     }
 
+    public MathsContentOutputValueWrapper getMathsContentValueWrapper() {
+        return valueWrapper;
+    }
 }

@@ -31,43 +31,29 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import uk.ac.ed.ph.snuggletex.upconversion.UpConversionOptionDefinitions;
+import uk.ac.ed.ph.snuggletex.upconversion.UpConversionOptions;
 
 /**
- * Helper utilities for integration tests
+ * Some internal constants for the up-conversion process.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class UpConversionConstants {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
+    public static UpConversionOptions UP_CONVERSION_OPTIONS;
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    static {
+        UP_CONVERSION_OPTIONS = new UpConversionOptions();
+        UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.MAXIMA_OPERATOR_FUNCTION_NAME, "maOperator");
+        UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.MAXIMA_UNITS_FUNCTION_NAME, "maUnits");
+        
+        /* We want bracketed PMathML for feedback */
+        UP_CONVERSION_OPTIONS.setSpecifiedOption(UpConversionOptionDefinitions.DO_BRACKETED_PRESENTATION_MATHML, "true");
+        
+        /* FIXME: Do we want any other things here? */
+        
     }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
-
 }

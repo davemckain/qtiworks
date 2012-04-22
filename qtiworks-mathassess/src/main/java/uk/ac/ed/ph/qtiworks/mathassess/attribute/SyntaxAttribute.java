@@ -31,43 +31,43 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.attribute;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
+import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Helper utilities for integration tests
+ * Attribute with syntaxType value.
  *
- * @author David McKain
+ * @author Jonathon Hare
  */
-public final class TestUtils {
-    
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
+
+    private static final long serialVersionUID = 8834496656714809174L;
+
+    public SyntaxAttribute(final XmlNode parent, final String localName, final String namespaceUri) {
+        super(parent, localName, namespaceUri, true);
     }
 
+    @Override
+    protected SyntaxType parseQtiString(final String value) {
+        return SyntaxType.parseSyntaxType(value);
+    }
+
+    /**
+     * Gets all supported values of this attribute.
+     *
+     * @return all supported values of this attribute
+     */
+    @Override
+    public List<SyntaxType> getSupportedValues() {
+        return Collections.unmodifiableList(Arrays.asList(SyntaxType.values()));
+    }
 }

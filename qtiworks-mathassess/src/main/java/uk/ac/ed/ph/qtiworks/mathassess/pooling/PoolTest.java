@@ -31,43 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.pooling;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
+import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
- * Helper utilities for integration tests
+ * Standalone test class. This should end up as a unit test...
  *
  * @author David McKain
  */
-public final class TestUtils {
+public class PoolTest {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    public static void main(String[] args) throws Exception {
+        QtiMaximaProcessPoolManager manager = new QtiMaximaProcessPoolManager();
+        manager.setMaximaConfiguration(JacomaxSimpleConfigurator.configure());
+        manager.setStylesheetCache(new SimpleStylesheetCache());
+        manager.init();
+        
+        QtiMaximaProcess session = manager.obtainProcess();
+        System.out.println("Math 1: " + session.executeMathOutput("1", false));
+        
+        session.reset();
+        
+        System.out.println("Math 2: " + session.executeMathOutput("1", false));
+        
+        manager.returnProcess(session);
+        manager.shutdown();
     }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
-
 }

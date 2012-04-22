@@ -31,43 +31,66 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
- * Helper utilities for integration tests
+ * Abstract base class for values with "ordered" cardinality, i.e. lists.
+ * 
+ * @param <S> underlying {@link ValueWrapper} type of the {@link SingleValueWrapper} 
+ *   for the elements in this List
+ * @param <B> underlying Java type of the elements in this List
  *
  * @author David McKain
  */
-public final class TestUtils {
+public abstract class OrderedValueWrapper<B, S extends SingleValueWrapper<B>> 
+        extends ArrayList<S> implements CompoundValueWrapper<B,S> {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
+    private static final long serialVersionUID = -1943487267906694745L;
+    
+    @Override
+    public ValueCardinality getCardinality() {
+        return ValueCardinality.ORDERED;
+    }
+    
+    @Override
+    public boolean add(S e) {
+        ensureNotNull(e);
+        return super.add(e);
+    }
+    
+    @Override
+    public void add(int index, S e) {
+        ensureNotNull(e);
+        super.add(index, e);
+    }
+    
+    @Override
+    public boolean addAll(Collection<? extends S> c) {
+        for (S e : c) {
+            ensureNotNull(e);
         }
-        return result;
+        return super.addAll(c);
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    @Override
+    public boolean addAll(int index, Collection<? extends S> c) {
+        for (S e : c) {
+            ensureNotNull(e);
+        }
+        return super.addAll(index, c);
     }
     
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    @Override
+    public boolean isNull() {
+        return false;
     }
-
+    
+    private void ensureNotNull(S e) {
+        if (e==null) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + " must not contain null entries");
+        }
+    }
 }

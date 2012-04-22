@@ -31,43 +31,27 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * Helper utilities for integration tests
+ * Wrapper that represents a QTI baseValue expression.
+ * 
+ * @see SingleValueWrapper
+ * @see MultipleValueWrapper
+ * @see OrderedValueWrapper
+ * @see MathsContentValueWrapper
  *
  * @author David McKain
  */
-public final class TestUtils {
+public interface ValueWrapper extends ValueOrVariableWrapper {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
+    /** Returns the QTI cardinality of the given value. */
+    ValueCardinality getCardinality();
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
-
+    /** 
+     * Tests whether the value represented by this wrapper is null or not.
+     * 
+     * @return true if null, false otherwise.
+     */
+    boolean isNull();
 }

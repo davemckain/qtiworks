@@ -33,6 +33,8 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
@@ -55,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 
-import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import java.io.StringWriter;
 import java.net.URI;

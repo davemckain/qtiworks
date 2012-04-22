@@ -31,43 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * Helper utilities for integration tests
+ * Wrapper representing a QTI point value.
+ * <p>
+ * This one is slightly polymorphic in that it's essentially equivalent to an
+ * {@link IntegerOrderedValueWrapper}, so we have methods here to convert to and from that form.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class PointValueWrapper extends SingleValueWrapper<Integer[]> {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    public static final Integer[] ZERO_VALUE = new Integer[] { Integer.valueOf(0), Integer.valueOf(0) };
+    
+    public PointValueWrapper() {
+        super(ZERO_VALUE);
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    public PointValueWrapper(final Integer[] value) {
+        super(value);
     }
     
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    public IntegerOrderedValueWrapper toIntegerOrderedValueWrapper() {
+        return WrapperUtilities.createCompoundValue(IntegerOrderedValueWrapper.class,
+                IntegerValueWrapper.class, getValue());
     }
-
+    
+    public void fromIntegerOrderedValueWrapper(IntegerOrderedValueWrapper valueWrapper) {
+        setValue(valueWrapper.toArray(new Integer[valueWrapper.size()]));
+    }
+    
+    @Override
+    public ValueBaseType getBaseType() {
+        return ValueBaseType.POINT;
+    }
 }

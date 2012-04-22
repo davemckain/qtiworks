@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -42,8 +43,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
-
-import org.qtitools.mathassess.MathAssessExtensionPackage;
 
 import javax.annotation.Resource;
 

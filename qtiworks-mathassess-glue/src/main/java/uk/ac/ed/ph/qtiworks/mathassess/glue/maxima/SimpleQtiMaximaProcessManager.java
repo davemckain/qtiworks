@@ -31,43 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
+import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
+import uk.ac.ed.ph.jacomax.MaximaConfiguration;
+import uk.ac.ed.ph.jacomax.MaximaInteractiveProcess;
+import uk.ac.ed.ph.jacomax.MaximaProcessLauncher;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
 /**
- * Helper utilities for integration tests
+ * Simplest possible implementation of {@link QtiMaximaProcessManager}.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public class SimpleQtiMaximaProcessManager implements QtiMaximaProcessManager {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
+    private final StylesheetCache stylesheetCache;
+    private final MaximaProcessLauncher maximaProcessLauncher;
+    
+    public SimpleQtiMaximaProcessManager() {
+        this(JacomaxSimpleConfigurator.configure());
+    }
+    
+    public SimpleQtiMaximaProcessManager(MaximaConfiguration maximaConfiguration) {
+        this.maximaProcessLauncher = new MaximaProcessLauncher(maximaConfiguration);
+        this.stylesheetCache = new SimpleStylesheetCache();
+    }
+    
+    @Override
+    public QtiMaximaProcess obtainProcess() {
+        MaximaInteractiveProcess process = maximaProcessLauncher.launchInteractiveProcess();
+        QtiMaximaProcess session = new QtiMaximaProcess(process, stylesheetCache);
+        try {
+            session.init();
         }
-        return result;
+        catch (Exception e) {
+            throw new MathAssessCasException("Failed to start and fully initialise Maxima process for use with MathAssess QTI", e);
+        }
+        return session;
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    @Override
+    public void returnProcess(QtiMaximaProcess process) {
+        process.terminate();
     }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
-
 }

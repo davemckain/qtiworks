@@ -31,43 +31,57 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.value;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Helper utilities for integration tests
+ * Defines the values for the action attribute.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public enum ActionType implements Stringifiable {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
+    EQUAL("equal"),
+    SYNTEQUAL("syntequal"),
+    CODE("code");
+
+    /** Name of this class in xml schema. */
+    public static final String QTI_CLASS_NAME = "actionType";
+
+    private static Map<String, ActionType> actionTypes = new HashMap<String, ActionType>();
+    static {
+        for (final ActionType type : ActionType.values()) {
+            actionTypes.put(type.getActionType(), type);
         }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
     }
 
+    private String actionType;
+
+    ActionType(String actionType) {
+        this.actionType = actionType;
+    }
+
+    public String getActionType() {
+        return actionType;
+    }
+
+    public static ActionType parseActionType(String actionType) {
+        final ActionType result = actionTypes.get(actionType);
+
+        if (result == null) {
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + actionType + "'.");
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toQtiString() {
+        return actionType;
+    }
 }

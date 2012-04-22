@@ -31,43 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasAuthoringException;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 /**
- * Helper utilities for integration tests
+ * This Exception is thrown when attempting to extract and convert a Maxima
+ * output into a QTI value having an incompatible type.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class QtiMaximaTypeConversionException extends MathAssessCasAuthoringException {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    private static final long serialVersionUID = 5940754810506417594L;
+    
+    private final String maximaInput;
+    private final String maximaOutput;
+    private final Class<? extends ValueWrapper> badTypeClass;
+
+    public QtiMaximaTypeConversionException(final String maximaInput, final String maximaOutput,
+            final Class<? extends ValueWrapper> badTypeClass) {
+        super("Could not convert Maxima output to type " + badTypeClass
+                + "\nMaxima input was: " + maximaInput
+                + "\nMaxima output was: " + maximaOutput);
+        this.maximaInput = maximaInput;
+        this.maximaOutput = maximaOutput;
+        this.badTypeClass = badTypeClass;
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    public String getMaximaInput() {
+        return maximaInput;
     }
     
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    public String getMaximaOutput() {
+        return maximaOutput;
     }
 
+    public Class<? extends ValueWrapper> getBadTypeClass() {
+        return badTypeClass;
+    }
 }

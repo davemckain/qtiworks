@@ -31,43 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue;
 
 /**
- * Helper utilities for integration tests
+ * Represents a failure caused by bad CAS code in the QTI, which should ultimately
+ * be fixed by the QTI author.
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class MathAssessBadCasCodeException extends MathAssessCasAuthoringException {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    private static final long serialVersionUID = 5940754810506417594L;
+    
+    /** Short reason */
+    private final String reason;
+    
+    /** The CAS input deemed bad */
+    private final String maximaInput;
+    
+    /** The raw response from the CAS */
+    private final String maximaOutput;
+
+    public MathAssessBadCasCodeException(final String reason, final String maximaInput, final String maximaOutput) {
+        super(reason
+                + "\nMaxima Input was: '" + maximaInput
+                + "'\nMaxima Output was: '" + maximaOutput
+                + "'");
+        this.reason = reason;
+        this.maximaInput = maximaInput;
+        this.maximaOutput = maximaOutput;
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    public String getReason() {
+        return reason;
     }
 
+    public String getMaximaInput() {
+        return maximaInput;
+    }
+
+    public String getMaximaOutput() {
+        return maximaOutput;
+    }
 }

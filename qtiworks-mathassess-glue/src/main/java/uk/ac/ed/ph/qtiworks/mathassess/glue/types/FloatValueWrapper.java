@@ -31,43 +31,33 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * Helper utilities for integration tests
+ * Wrapper representing a QTI float value.
+ * <p>
+ * (NOTE: This is a 64-bit IEEE Double precision float, which corresponds to a Java
+ * <tt>double</tt> rather than a <float>.)
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class FloatValueWrapper extends SingleValueWrapper<Double> {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    public FloatValueWrapper() {
+        this(Double.valueOf(0.0));
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    public FloatValueWrapper(final double value) {
+        super(Double.valueOf(value));
     }
     
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    
+    public FloatValueWrapper(final Double value) {
+        super(value);
     }
-
+    
+    @Override
+    public ValueBaseType getBaseType() {
+        return ValueBaseType.FLOAT;
+    }
 }

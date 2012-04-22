@@ -31,43 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue;
 
 /**
- * Helper utilities for integration tests
- *
+ * This Exception is thrown if something is attempted that has been
+ * defined in the MathAssess spec but has not yet been unimplemented.
+ * 
  * @author David McKain
  */
-public final class TestUtils {
-    
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+public class MathAssessSpecUnimplementedException extends MathAssessCasException {
+
+    private static final long serialVersionUID = 3890296776080082123L;
+
+    public MathAssessSpecUnimplementedException() {
+        super();
     }
 
+    public MathAssessSpecUnimplementedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MathAssessSpecUnimplementedException(String message) {
+        super(message);
+    }
+
+    public MathAssessSpecUnimplementedException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -31,43 +31,60 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
 
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Helper utilities for integration tests
+ * Extension of {@link MathsContentValueWrapper} that includes some other bits and pieces
+ * of "internal" information that you are free to ignore if you want!
+ * <p>
+ * You will get one of these coming out of the QTI/CAS layer as a response variable bound to
+ * a <tt>mathEntryInteraction</tt>.
+ * 
+ * @see AsciiMathHelper#createMathsContentFromASCIIMath(String)
+ * @see WrapperUtilities
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class MathsContentInputValueWrapper extends MathsContentValueWrapper {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    /** Bracketed Presentation MathML, used to echo the input back to the user */
+    private String pMathMLBracketed;
+    
+    /** Details of any up-conversion failures, null or empty if none occurred. */
+    private List<UpConversionFailure> upConversionFailures;
+
+
+    public String getPMathMLBracketed() {
+        return pMathMLBracketed;
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    public void setPMathMLBracketed(String pMathMLBracketed) {
+        this.pMathMLBracketed = pMathMLBracketed;
     }
 
+    public List<UpConversionFailure> getUpConversionFailures() {
+        return upConversionFailures;
+    }
+    
+    public void setUpConversionFailures(List<UpConversionFailure> upConversionFailures) {
+        this.upConversionFailures = upConversionFailures;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+            + "(asciiMathInput=" + asciiMathInput
+            + ",pMathML=" + pMathML
+            + ",pMathMLBracketed=" + pMathMLBracketed
+            + ",cMathML=" + cMathML
+            + ",maximaInput=" + maximaInput
+            + ",upConversionFailures=" + upConversionFailures
+            + ")";
+    }
 }

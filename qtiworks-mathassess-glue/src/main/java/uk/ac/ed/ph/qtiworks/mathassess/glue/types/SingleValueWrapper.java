@@ -31,43 +31,59 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
-
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * Helper utilities for integration tests
+ * Base class for wrappers holding single-cardinality QTI values.
+ * 
+ * @param <B> Java type corresponding to the QTI base value being wrapped up
  *
  * @author David McKain
  */
-public final class TestUtils {
+public abstract class SingleValueWrapper<B> implements ValueWrapper {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
+    private B value;
+    
+    public SingleValueWrapper(final B value) {
+        setValue(value);
+    }
+    
+    public B getValue() {
+        return value;
+    }
+    
+    public void setValue(B value) {
+        this.value = value;
+    }
+    
+    @Override
+    public final ValueCardinality getCardinality() {
+        return ValueCardinality.SINGLE;
+    }
+    
+    public abstract ValueBaseType getBaseType();
+    
+    @Override
+    public boolean isNull() {
+        return value==null;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + value + ")";
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SingleValueWrapper<?>)) {
+            return false;
         }
-        return result;
+        SingleValueWrapper<?> other = (SingleValueWrapper<?>) obj;
+        return value.equals(other.value);
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    @Override
+    public int hashCode() {
+        return value!=null ? value.hashCode() : 0;
     }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
-
 }

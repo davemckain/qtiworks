@@ -31,43 +31,60 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
 
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 /**
- * Helper utilities for integration tests
+ * Extension of {@link MathsContentValueWrapper} that includes some other bits and pieces
+ * of "internal" information that you are free to ignore if you want!
+ * <p>
+ * You will get one of these coming out of the QTI/CAS layer as the result of a query that
+ * runs Maxima code. Note that the {@link #getAsciiMathInput()} field is not used here.
+ * 
+ * @see QtiMaximaProcess#executeMathOutput(String, boolean)
+ * @see WrapperUtilities
  *
  * @author David McKain
  */
-public final class TestUtils {
+public final class MathsContentOutputValueWrapper extends MathsContentValueWrapper {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
+    /** Up-converted PMathML, as a DOM {@link Element} for convenience when performing substitutions. */
+    private Element pMathMLElement;
 
+    /** Details of any up-conversion failures, null or empty if none occurred. */
+    private List<UpConversionFailure> upConversionFailures;
+
+    public Element getPMathMLElement() {
+        return pMathMLElement;
+    }
+    
+    public void setPMathMLElement(Element mathMLElement) {
+        pMathMLElement = mathMLElement;
+    }
+    
+    
+    public List<UpConversionFailure> getUpConversionFailures() {
+        return upConversionFailures;
+    }
+    
+    public void setUpConversionFailures(List<UpConversionFailure> upConversionFailures) {
+        this.upConversionFailures = upConversionFailures;
+    }
+    
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+            + "(pMathML=" + pMathML
+            + ",cMathML=" + cMathML
+            + ",maximaInput=" + maximaInput
+            + ",upConversionFailures=" + upConversionFailures
+            + ")";
+    }
 }

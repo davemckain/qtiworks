@@ -85,7 +85,7 @@ ensure no -ve coeffs
     <templateProcessing>
         <!-- now do the randomisation and mathematical calculations, using maxima -->
         <setTemplateValue identifier="dummy">
-            <customOperator class="org.qtitools.mathassess.ScriptRule"  ma:syntax="text/x-maxima">
+            <customOperator class="uk.ac.ed.ph.qtiworks.mathassess.ScriptRule"  ma:syntax="text/x-maxima">
               <baseValue baseType="string">
               <![CDATA[
                 simp:true;
@@ -144,7 +144,7 @@ ensure no -ve coeffs
                 <tbody>
                     <tr>
                         <td>
-                            <customInteraction class="org.qtitools.mathassess.MathEntryInteraction" responseIdentifier="RESPONSE" ma:syntax="text/x-maxima" ma:expectedLength="20" ma:printIdentifier="printMath" />
+                            <customInteraction class="uk.ac.ed.ph.qtiworks.mathassess.MathEntryInteraction" responseIdentifier="RESPONSE" ma:syntax="text/x-maxima" ma:expectedLength="20" ma:printIdentifier="printMath" />
                         </td>
                         <td>
                             <feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
@@ -307,7 +307,7 @@ ensure no -ve coeffs
                         </setOutcomeValue>
                     </responseIf>
                     <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                                <variable identifier = "mAns"/>
                            </customOperator>
@@ -319,7 +319,7 @@ ensure no -ve coeffs
                             </setOutcomeValue>
                    </responseElseIf>
                    <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad1"/>
                            </customOperator>
@@ -331,7 +331,7 @@ ensure no -ve coeffs
                             </setOutcomeValue>
                     </responseElseIf>
                     <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad2"/>
                            </customOperator>
@@ -343,7 +343,7 @@ ensure no -ve coeffs
                             </setOutcomeValue>
                     </responseElseIf>
                     <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad3"/>
                            </customOperator>
@@ -355,7 +355,7 @@ ensure no -ve coeffs
                             </setOutcomeValue>
                     </responseElseIf>
                     <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad4"/>
                            </customOperator>
@@ -367,7 +367,7 @@ ensure no -ve coeffs
                         </setOutcomeValue>
                     </responseElseIf>
                     <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad5"/>
                            </customOperator>
@@ -379,7 +379,7 @@ ensure no -ve coeffs
                             </setOutcomeValue>
                     </responseElseIf>
                    <responseElseIf>
-                        <customOperator class ="org.qtitools.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
+                        <customOperator class ="uk.ac.ed.ph.qtiworks.mathassess.CasCompare" ma:syntax="text/x-maxima" ma:action="syntequal" ma:simplify="false">
                             <variable identifier = "RESPONSE"/>
                             <variable identifier = "mBad6"/>
                            </customOperator>

@@ -31,43 +31,55 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.value;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Helper utilities for integration tests
+ * Enumerates the values of the syntax attribute
  *
  * @author David McKain
  */
-public final class TestUtils {
+public enum SyntaxType implements Stringifiable {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
+    MAXIMA("text/x-maxima");
+
+    /** Name of this class in xml schema. */
+    public static final String QTI_CLASS_NAME = "casType";
+
+    private static Map<String, SyntaxType> syntaxTypes = new HashMap<String, SyntaxType>();
+    static {
+        for (final SyntaxType type : SyntaxType.values()) {
+            syntaxTypes.put(type.getSyntaxType(), type);
         }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
     }
 
+    private String syntaxType;
+
+    SyntaxType(String syntaxType) {
+        this.syntaxType = syntaxType;
+    }
+
+    public String getSyntaxType() {
+        return syntaxType;
+    }
+
+    public static SyntaxType parseSyntaxType(String syntaxType) {
+        final SyntaxType result = syntaxTypes.get(syntaxType);
+
+        if (result == null) {
+            throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + syntaxType + "'.");
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toQtiString() {
+        return syntaxType;
+    }
 }

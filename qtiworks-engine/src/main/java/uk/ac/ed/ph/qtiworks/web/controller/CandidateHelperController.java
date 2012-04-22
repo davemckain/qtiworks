@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller;
 
-import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
 
-import org.qtitools.mathassess.tools.qticasbridge.ASCIIMathMLHelper;
+import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
 import java.util.Map;
 
@@ -54,21 +54,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class CandidateHelperController {
-    
+
     @Resource
     private StylesheetCache stylesheetCache;
 
     /**
      * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
      * JSON.
-     * 
+     *
      * Accept: application/json from client expected
      */
     @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
     @ResponseBody
-    public Map<String, String>  verifyASCIIMath(@RequestParam("input") String asciiMathInput) {
-        ASCIIMathMLHelper asciiMathHelper = new ASCIIMathMLHelper(stylesheetCache);
-        Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
+    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
+        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(stylesheetCache);
+        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
         return upConvertedASCIIMathInput;
     }
 

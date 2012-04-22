@@ -31,43 +31,27 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
- * Helper utilities for integration tests
+ * Abstract base class for "compound" types, i.e. QTI types with multiple or ordered cardinality.
+ * 
+ * @param <S> underlying {@link ValueWrapper} type of the {@link SingleValueWrapper} 
+ *   for the elements in this Collection.
+ * @param <B> underlying Java type of the elements in this collection
  *
  * @author David McKain
  */
-public final class TestUtils {
+public interface CompoundValueWrapper<B, S extends SingleValueWrapper<B>> 
+        extends Collection<S>, ValueWrapper {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
-    }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
-    }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
-    }
+    /**
+     * Returns the underlying class of the items in this {@link Collection}.
+     * <p>
+     * (This is slightly annoying, but is handy for instantiation purposes.)
+     */
+    Class<S> getItemClass();
 
 }

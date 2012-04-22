@@ -31,43 +31,45 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.test.utils;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaDataBinder;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Helper utilities for integration tests
+ * Performs circular tests going from {@link ValueWrapper} to Maxima then back.
  *
  * @author David McKain
  */
-public final class TestUtils {
+@RunWith(Parameterized.class)
+public class MaximaDataBinderToMaximaAndBackTests {
     
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
-            }
-        }
-        return result;
+    @Parameters
+    public static Collection<Object[]> data() throws Exception {
+        return MaximaDataBindingSamples.CIRCULAR_EXAMPLES;
     }
     
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(new SimpleStylesheetCache());
+    private final String maximaRepresentation;
+    private final ValueWrapper valueWrapper;
+    
+    public MaximaDataBinderToMaximaAndBackTests(String maximaRepresentation, ValueWrapper valueWrapper) {
+        this.maximaRepresentation = maximaRepresentation;
+        this.valueWrapper = valueWrapper;
     }
     
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+    @Test
+    public void runTest() {
+        MaximaDataBinder binder = new MaximaDataBinder();
+        String maximaExpression = binder.toMaximaExpression(valueWrapper);
+        Assert.assertEquals(maximaRepresentation, maximaExpression);
     }
-
 }
