@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
-
 import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
 import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
 

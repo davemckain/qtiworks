@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
-
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
 import uk.ac.ed.ph.snuggletex.upconversion.MathMLUpConverter;
 import uk.ac.ed.ph.snuggletex.upconversion.UpConversionUtilities;
@@ -63,17 +62,17 @@ public final class WrapperUtilities {
         result.setAsciiMathInput(asciiMathInput);
         
         /* Extract semantic PMathML */
-        Document pMathMLDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
-        result.setPMathML(MathMLUtilities.serializeDocument(pMathMLDocument));
+        Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
+        result.setPMathML(MathMLUtilities.serializeDocument(pMathDocument));
         
         /* Extract bracketed PMathML */
-        Document pMathMLBracketedDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.BRACKETED_PRESENTATION_MATHML_ANNOTATION_NAME);
-        result.setPMathMLBracketed(MathMLUtilities.serializeDocument(pMathMLBracketedDocument));
+        Document pMathBracketedDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.BRACKETED_PRESENTATION_MATHML_ANNOTATION_NAME);
+        result.setPMathMLBracketed(MathMLUtilities.serializeDocument(pMathBracketedDocument));
 
         /* Extract up-converted information */
-        Document cMathMLDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
-        if (cMathMLDocument!=null) {
-            result.setCMathML(MathMLUtilities.serializeDocument(cMathMLDocument));
+        Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
+        if (cMathDocument!=null) {
+            result.setCMathML(MathMLUtilities.serializeDocument(cMathDocument));
         }
         result.setMaximaInput(unwrappedDocument.getTextAnnotations().get(MathMLUpConverter.MAXIMA_ANNOTATION_NAME));
         
@@ -94,14 +93,14 @@ public final class WrapperUtilities {
         MathsContentOutputValueWrapper result = new MathsContentOutputValueWrapper();
         
         /* Extract semantic PMathML */
-        Document pMathMLDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
-        result.setPMathML(MathMLUtilities.serializeDocument(pMathMLDocument));
-        result.setPMathMLElement(pMathMLDocument.getDocumentElement());
+        Document pMathDocument = MathMLUtilities.isolateFirstSemanticsBranch(unwrappedDocument);
+        result.setPMathML(MathMLUtilities.serializeDocument(pMathDocument));
+        result.setPMathMLElement(pMathDocument.getDocumentElement());
 
         /* Extract up-converted information */
-        Document cMathMLDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
-        if (cMathMLDocument!=null) {
-            result.setCMathML(MathMLUtilities.serializeDocument(cMathMLDocument));
+        Document cMathDocument = MathMLUtilities.isolateAnnotationXML(unwrappedDocument, MathMLUpConverter.CONTENT_MATHML_ANNOTATION_NAME);
+        if (cMathDocument!=null) {
+            result.setCMathML(MathMLUtilities.serializeDocument(cMathDocument));
         }
         result.setMaximaInput(unwrappedDocument.getTextAnnotations().get(MathMLUpConverter.MAXIMA_ANNOTATION_NAME));
         
