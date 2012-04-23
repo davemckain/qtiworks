@@ -56,12 +56,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the <tt>uk.ac.ed.ph.qtiworks.mathassess.CasProcess</tt> customOperator
+ * Defines the <tt>org.qtitools.mathassess.CasProcess</tt> customOperator
  *
  * @author Jonathon Hare
  */

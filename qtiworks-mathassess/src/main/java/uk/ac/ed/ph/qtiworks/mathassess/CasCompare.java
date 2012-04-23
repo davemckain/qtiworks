@@ -57,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the <tt>uk.ac.ed.ph.qtiworks.mathassess.CasCompare</tt> customOperator
+ * Defines the <tt>org.qtitools.mathassess.CasCompare</tt> customOperator
  *
  * @author Jonathon Hare
  */

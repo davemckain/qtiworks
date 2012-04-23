@@ -53,14 +53,13 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
 
-
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the <tt>uk.ac.ed.ph.qtiworks.mathassess.ScriptRule</tt> customOperator
+ * Defines the <tt>org.qtitools.mathassess.ScriptRule</tt> customOperator
  *
  * @author Jonathon Hare
  */
