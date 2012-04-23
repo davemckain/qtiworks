@@ -132,7 +132,7 @@ public final class QtiMaximaProcess {
     // Session lifecycle methods - do not call these directly
     
     public void init() {
-        logger.info("Initialising new QtiMaximaProcess");
+        logger.debug("Initialising new QtiMaximaProcess");
         try {
             /* Load the MathML module */
             maximaInteractiveProcess.executeCallDiscardOutput("load(mathml)$");
@@ -171,7 +171,7 @@ public final class QtiMaximaProcess {
      * @throws MaximaProcessTerminatedException
      */
     public void passQTIVariableToMaxima(final String variableIdentifier, final ValueWrapper valueWrapper) {
-        logger.info("passQTIVariableToMaxima: var={}, value={}", variableIdentifier, valueWrapper);
+        logger.debug("passQTIVariableToMaxima: var={}, value={}", variableIdentifier, valueWrapper);
         checkVariableIdentifier(variableIdentifier);
         if (valueWrapper==null || valueWrapper.isNull()) {
             /* Nullify variable using kill() */
@@ -268,7 +268,7 @@ public final class QtiMaximaProcess {
             throw new MathAssessCasException("Unexpected timeout occurred while extracting the value of variable "
                     + variableIdentifier, e);
         }
-        logger.info("queryMaximaVariable: {} => {}", variableIdentifier, result);
+        logger.debug("queryMaximaVariable: {} => {}", variableIdentifier, result);
         return result;
     }
     
@@ -320,7 +320,7 @@ public final class QtiMaximaProcess {
     public String executeStringOutput(final String maximaExpression, final boolean simplify)
             throws MaximaTimeoutException {
         ConstraintUtilities.ensureNotNull(maximaExpression, "Maxima expression");
-        logger.debug("executeStringOutput: expr={}, simp={}", maximaExpression, simplify);
+        logger.trace("executeStringOutput: expr={}, simp={}", maximaExpression, simplify);
         
         /* Strip off any terminator, if provided */
         String withoutTerminator = stripTrailingTerminator(maximaExpression);
@@ -345,7 +345,7 @@ public final class QtiMaximaProcess {
             final String stringOutput, final Class<V> resultClass) {
         V result = maximaDataBinder.parseMaximaLinearOutput(stringOutput, resultClass);
         if (result==null) {
-            logger.warn("Could not bind raw string(" + maximaExpression
+            logger.debug("Could not bind raw string(" + maximaExpression
                     + ") output '" + stringOutput
                     + "' into result type " + resultClass.getSimpleName());
             throw new QtiMaximaTypeConversionException(maximaExpression, stringOutput, resultClass);
@@ -382,7 +382,7 @@ public final class QtiMaximaProcess {
     public MathsContentOutputValueWrapper executeMathOutput(final String maximaExpression, final boolean simplify)
             throws MaximaTimeoutException, MathsContentTooComplexException {
         ConstraintUtilities.ensureNotNull(maximaExpression, "Maxima expression");
-        logger.debug("executeMathOutput: expr={}, simp={}", maximaExpression, simplify);
+        logger.trace("executeMathOutput: expr={}, simp={}", maximaExpression, simplify);
         
         /* Do MathML output and up-convert */
         MathsContentOutputValueWrapper result = doExecuteMathOutput(maximaExpression, simplify);
@@ -390,10 +390,10 @@ public final class QtiMaximaProcess {
         /* Fail fast if any up-conversion failures were found */
         List<UpConversionFailure> upConversionFailures = result.getUpConversionFailures();
         if (upConversionFailures!=null && !upConversionFailures.isEmpty()) {
-            logger.warn("MathsContent output from Maxima expression " + maximaExpression
-                    + " is too complex: failures are " + upConversionFailures);
-            logger.warn("Up-converted PMathML was: " + result.getPMathML());
-            logger.warn("Content MathML was: " + result.getCMathML());
+            logger.debug("MathsContent output from Maxima expression " + maximaExpression
+                    + " is too complex: failures are {}", upConversionFailures);
+            logger.debug("Too complex up-converted PMathML was: {}", result.getPMathML());
+            logger.debug("Too complex Content MathML was: {}", result.getCMathML());
             throw new MathsContentTooComplexException(result);
         }
         return result;
@@ -434,7 +434,7 @@ public final class QtiMaximaProcess {
      */
     public void executeScriptRule(final String maximaCode, final boolean simplify)
             throws MaximaTimeoutException {
-        logger.info("executeScriptRule: code={}, simp={}", maximaCode, simplify);
+        logger.debug("executeScriptRule: code={}, simp={}", maximaCode, simplify);
         ConstraintUtilities.ensureNotNull(maximaCode, "maximaCode");
         maximaInteractiveProcess.executeCallDiscardOutput("simp:" + simplify + "$ " + maximaCode);
     }
@@ -464,7 +464,7 @@ public final class QtiMaximaProcess {
             final boolean simplify, final Class<V> resultClass)
             throws MaximaTimeoutException, MathsContentTooComplexException {
         if (logger.isInfoEnabled()) {
-            logger.info("executeCasProcess: code={}, simp={}, resultClass={}",
+            logger.debug("executeCasProcess: code={}, simp={}, resultClass={}",
                     new Object[] { maximaCode, simplify, resultClass });
         }
         ConstraintUtilities.ensureNotNull(maximaCode, "maximaCode");
@@ -572,7 +572,7 @@ public final class QtiMaximaProcess {
         /* Log result on exit */
         boolean result = compareResult.getValue().booleanValue();
         if (logger.isInfoEnabled()) {
-            logger.info("executeCasCondition: code={}, simp={}, args={} => {}", 
+            logger.debug("executeCasCondition: code={}, simp={}, args={} => {}", 
                     new Object[] { comparisonCode, simplify, Arrays.toString(arguments), result });
         }
         return result;

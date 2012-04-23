@@ -55,7 +55,6 @@ import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -234,7 +233,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
         QtiMaximaProcess maximaSession = sessionThreadLocal.get();
         if (maximaSession == null) {
             if (qtiMaximaProcessPoolManager != null) {
-                logger.info("Obtaining new maxima process from pool for this request");
+                logger.debug("Obtaining new maxima process from pool for this request");
                 /* Need to get a new process from pool */
                 maximaSession = qtiMaximaProcessPoolManager.obtainProcess();
                 sessionThreadLocal.set(maximaSession);
@@ -250,7 +249,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     private void releaseMaximaSessionForThread() {
         final QtiMaximaProcess maximaSession = sessionThreadLocal.get();
         if (maximaSession != null && qtiMaximaProcessPoolManager != null) {
-            logger.info("Finished with maxima process for this request - returning to pool");
+            logger.debug("Finished with maxima process for this request - returning to pool");
             qtiMaximaProcessPoolManager.returnProcess(maximaSession);
             sessionThreadLocal.set(null);
         }

@@ -177,7 +177,7 @@ final class MaximaMathmlFixer {
             mathmlDocument = MathMLUtilities.parseMathMLDocumentString(entityFreeMathmlString);
         }
         catch (Exception e) {
-            logger.warn("Could not parse Maxima MathML output; raw output was {}; entity fixed was {}", maximaMathmlOutput, entityFreeMathmlString);
+            logger.debug("Could not parse Maxima MathML output; raw output was {}; entity fixed was {}", maximaMathmlOutput, entityFreeMathmlString);
             throw new MathAssessCasException("Failed to parse raw MathML output from Maxima", e);
         }
         
