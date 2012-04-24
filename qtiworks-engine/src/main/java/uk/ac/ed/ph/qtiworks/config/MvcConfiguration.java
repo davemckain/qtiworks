@@ -63,20 +63,20 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web"})
 public class MvcConfiguration extends WebMvcConfigurerAdapter {
-    
+
     public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
-    
+
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
      * (I'm setting up message converters explicitly. One reason is that
      * @ResponseBody doesn't allow you to set an explicit content type,
      * which can lead to problems. I suppose it's nice and tidy being explicit, so
-     * here we are!) 
+     * here we are!)
      */
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-      StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
+    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+      final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
       stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
               new MediaType("text", "html", UTF8),
               new MediaType("text", "plain", UTF8),
@@ -84,26 +84,26 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
       converters.add(stringConverter);
       converters.add(new MappingJacksonHttpMessageConverter());
     }
-    
+
     @Bean
     MultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        final CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
         return resolver;
     }
-    
+
     @Bean
     ViewResolver viewResolver() {
-        UrlBasedViewResolver result = new UrlBasedViewResolver();
+        final UrlBasedViewResolver result = new UrlBasedViewResolver();
         result.setViewClass(JstlView.class);
         result.setPrefix("/WEB-INF/jsp/views/");
         result.setSuffix(".jsp");
         return result;
     }
-    
+
     @Bean
     MessageSource messageSource() {
-        ResourceBundleMessageSource result = new ResourceBundleMessageSource();
+        final ResourceBundleMessageSource result = new ResourceBundleMessageSource();
         result.setBasename("messages");
         return result;
     }

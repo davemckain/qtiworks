@@ -52,13 +52,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Defines webapp-scoped beans
+ * Defines webapp-level configuration
+ *
+ * FIXME: This is not hooked up to the domain-level config yet!
  *
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.web"})
-public class ApplicationConfiguration {
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services"})
+public class WebApplicationConfiguration {
 
     @Resource
     private WebApplicationContext webApplicationContext;
