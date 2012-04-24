@@ -34,6 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.exception2;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 
 /**
  * Exception thrown when a response cannot be bound to an interaction
@@ -42,7 +45,40 @@ public final class ResponseBindingException extends QtiException {
 
     private static final long serialVersionUID = 1727673548938417208L;
 
-    public ResponseBindingException(String message) {
-        super(message);
+    private final ResponseDeclaration responseDeclaration;
+    private final ResponseData responseData;
+    private final String reason;
+    private final QtiParseException qtiParseException;
+
+    public ResponseBindingException(final ResponseDeclaration responseDeclaration, final ResponseData responseData, final String reason) {
+        super("Failed to bind data " + responseData + " to response " + responseDeclaration + ": " + reason);
+        this.responseDeclaration = responseDeclaration;
+        this.responseData = responseData;
+        this.reason = reason;
+        this.qtiParseException = null;
+    }
+
+    public ResponseBindingException(final ResponseDeclaration responseDeclaration, final ResponseData responseData, final QtiParseException qtiParseException) {
+        super("Failed to bind data " + responseData + " to response " + responseDeclaration + ": " + qtiParseException);
+        this.responseDeclaration = responseDeclaration;
+        this.responseData = responseData;
+        this.reason = "Failed to parse string data to required Value";
+        this.qtiParseException = qtiParseException;
+    }
+
+    public ResponseDeclaration getResponseDeclaration() {
+        return responseDeclaration;
+    }
+
+    public ResponseData getResponseData() {
+        return responseData;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public QtiParseException getQtiParseException() {
+        return qtiParseException;
     }
 }

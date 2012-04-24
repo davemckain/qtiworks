@@ -45,7 +45,6 @@ import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -60,11 +59,11 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.snuggletex.upconversion.UpConversionFailure;
-
 
 import java.util.List;
 
@@ -72,10 +71,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the <tt>uk.ac.ed.ph.qtiworks.mathassess.MathEntryInteraction</tt>
- * customInteraction
+ * Defines the <tt>org.qtitools.mathassess.MathEntryInteraction</tt> customInteraction
  *
  * @author Jonathon Hare
+ * @author David McKain
  */
 public final class MathEntryInteraction extends CustomInteraction<MathAssessExtensionPackage> {
 
@@ -169,19 +168,36 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
     }
 
     @Override
-    public void bindResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
+    protected void bindResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
+            throws ResponseBindingException {
+        /* Bind response value as normal */
+        final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        final Value value = parseResponse(mathAssessExtensionPackage, responseDeclaration, responseData);
+        final ItemSessionState itemState = itemSessionController.getItemSessionState();
+        itemState.setResponseValue(this, value);
+
+        final Identifier printIdentifier = getPrintIdentifier();
+        if (printIdentifier != null) {
+            /* handle stringIdentifier binding as well, if requested */
+            final Value printResponseValue = value.isNull() ? NullValue.INSTANCE : (StringValue) ((RecordValue) value).get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER);
+            itemState.setResponseValue(printIdentifier, printResponseValue);
+        }
+    }
+
+    @Override
+    protected Value parseResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final ResponseDeclaration responseDeclaration, final ResponseData responseData)
+            throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
-            throw new ResponseBindingException("mathEntryInteraction must be bound to string response data");
+            throw new ResponseBindingException(responseDeclaration, responseData, "mathEntryInteraction must be bound to string response data");
         }
         final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
         if (stringResponseData.size() != 1) {
-            throw new ResponseBindingException("Expected one string value to be bound to this response.");
+            throw new ResponseBindingException(responseDeclaration, responseData, "Expected one string value to be bound to this response.");
         }
 
         /* Parse the raw ASCIIMath input */
         final String asciiMathInput = stringResponseData.get(0).trim();
         Value responseValue;
-        Value printResponseValue;
         logger.debug("Attempting to bind raw ASCIIMath input '{}' from mathEntryInteraction", asciiMathInput);
         if (asciiMathInput.length() != 0) {
             /* Convert the ASCIIMath input to the appropriate Math Context
@@ -191,25 +207,15 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             final List<UpConversionFailure> upConversionFailures = resultWrapper.getUpConversionFailures();
             if (upConversionFailures != null && !upConversionFailures.isEmpty()) {
                 logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
-                throw new QtiParseException("Error: Math content is too complex for current implementation");
+                throw new ResponseBindingException(responseDeclaration, responseData, "Math content is too complex for current implementation");
             }
             responseValue = CasTypeGlue.convertToJQTI(resultWrapper);
-            printResponseValue = new StringValue(resultWrapper.getPMathML());
-
         }
         else {
             /* Blank input, so easy */
             responseValue = NullValue.INSTANCE;
-            printResponseValue = NullValue.INSTANCE;
         }
-
-        /* Now bind the variables */
-        final ItemSessionState itemState = itemSessionController.getItemSessionState();
-        itemState.setResponseValue(getResponseDeclaration(), responseValue);
-        if (getPrintIdentifier() != null) {
-            /* handle stringIdentifier binding if required */
-            itemState.setResponseValue(getPrintIdentifier(), printResponseValue);
-        }
+        return responseValue;
     }
 
     @Override

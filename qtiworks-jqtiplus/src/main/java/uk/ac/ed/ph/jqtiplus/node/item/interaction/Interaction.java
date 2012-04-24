@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -163,14 +164,16 @@ public abstract class Interaction extends BodyElement {
      * but may need overridden for certain types of Interactions.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
+     * <p>
+     * OVERRIDE NOTE: Make sure you catch all {@link QtiParseException}s when parsing the raw data, and
+     * convert them to a {@link ResponseBindingException}.
      *
-     * @param responseData Response to process, which must not be null
-     * @param resposneDeclaration underlying response declaration
+     * @param responseData Response to process, which will never be null
+     * @param responseDeclaration underlying response declaration
      * @see #bindResponse(ItemSessionController, ResponseData)
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    @SuppressWarnings("static-method")
     protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData)
             throws ResponseBindingException {
         Value value = null;
@@ -179,36 +182,42 @@ public abstract class Interaction extends BodyElement {
 
         if (responseBaseType==BaseType.FILE) {
             if (responseData.getType()!=ResponseDataType.FILE) {
-                throw new ResponseBindingException("Attempted to bind non-file response data to a file response");
+                throw new ResponseBindingException(responseDeclaration, responseData, "Attempted to bind non-file response data to a file response");
             }
             final FileResponseData fileResponseData = (FileResponseData) responseData;
             value = new FileValue(fileResponseData);
         }
         else {
             if (responseData.getType()!=ResponseDataType.STRING) {
-                throw new ResponseBindingException("Attempted to bind non-string response data to response with baseType " + responseBaseType);
+                throw new ResponseBindingException(responseDeclaration, responseData, "Attempted to bind non-string response data to response with baseType " + responseBaseType);
             }
-            final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
-            if (responseCardinality == Cardinality.SINGLE) {
-                if (stringResponseData.isEmpty() || stringResponseData.get(0).trim().length() == 0) {
-                    value = NullValue.INSTANCE;
+            try {
+                final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
+                if (responseCardinality == Cardinality.SINGLE) {
+                    if (stringResponseData.isEmpty() || stringResponseData.get(0).trim().length() == 0) {
+                        value = NullValue.INSTANCE;
+                    }
+                    else {
+                        value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData.get(0));
+                    }
                 }
-                else {
-                    value = responseDeclaration.getBaseType().parseSingleValue(stringResponseData.get(0));
-                }
-            }
-            else if (!(responseCardinality == Cardinality.RECORD)) {
-                final List<SingleValue> values = new ArrayList<SingleValue>(stringResponseData.size());
-                for (String stringResponseDatum : stringResponseData) {
-                    values.add(responseBaseType.parseSingleValue(stringResponseDatum));
-                }
+                else if (!(responseCardinality == Cardinality.RECORD)) {
+                    final List<SingleValue> values = new ArrayList<SingleValue>(stringResponseData.size());
+                    for (final String stringResponseDatum : stringResponseData) {
+                        values.add(responseBaseType.parseSingleValue(stringResponseDatum));
+                    }
 
-                if (responseCardinality == Cardinality.MULTIPLE) {
-                    value = new MultipleValue(values);
+                    if (responseCardinality == Cardinality.MULTIPLE) {
+                        value = new MultipleValue(values);
+                    }
+                    else {
+                        value = new OrderedValue(values);
+                    }
                 }
-                else {
-                    value = new OrderedValue(values);
-                }
+            }
+            catch (final QtiParseException e) {
+                throw new ResponseBindingException(responseDeclaration, responseData,
+                        "Failed to parse string response data to required value");
             }
         }
         return value;

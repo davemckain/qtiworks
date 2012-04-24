@@ -35,10 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -63,10 +66,10 @@ import java.util.List;
  * be "Hint". For example, in A graphical environment it would be presented as the label
  * on A button that, when pressed, ends the attempt.
  * Attribute: countAttempt [0..1]: boolean = true
- * 
+ *
  * @author Jonathon Hare
  */
-public class EndAttemptInteraction extends InlineInteraction {
+public final class EndAttemptInteraction extends InlineInteraction {
 
     private static final long serialVersionUID = -4043944468486325265L;
 
@@ -84,10 +87,10 @@ public class EndAttemptInteraction extends InlineInteraction {
 
     /**
      * Construct new interaction.
-     * 
+     *
      * @param parent Parent node
      */
-    public EndAttemptInteraction(XmlNode parent) {
+    public EndAttemptInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
@@ -101,17 +104,17 @@ public class EndAttemptInteraction extends InlineInteraction {
 
     /**
      * Sets new value of title attribute.
-     * 
+     *
      * @param title new value of title attribute
      * @see #getTitle
      */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
     /**
      * Gets value of title attribute.
-     * 
+     *
      * @return value of title attribute
      * @see #setTitle
      */
@@ -120,7 +123,7 @@ public class EndAttemptInteraction extends InlineInteraction {
     }
 
 
-    public void setCountAttempt(Boolean countAttempt) {
+    public void setCountAttempt(final Boolean countAttempt) {
         getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).setValue(countAttempt);
     }
 
@@ -130,7 +133,7 @@ public class EndAttemptInteraction extends InlineInteraction {
 
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -144,13 +147,25 @@ public class EndAttemptInteraction extends InlineInteraction {
         }
     }
 
+    /**
+     * The parsing {@link ResponseData} for this interaction is slightly artificial in order to
+     * make it easy to implement in a web form:
+     *
+     * - We accept {@link StringResponseData} only.
+     * - An empty list is treated as false, anything else is treated as true.
+     */
     @Override
-    protected Value parseResponse(ResponseDeclaration responseDeclaration, ResponseData responseData) {
-        return BooleanValue.TRUE;
+    protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData)
+            throws ResponseBindingException {
+        if (responseData.getType()!=ResponseDataType.STRING) {
+            throw new ResponseBindingException(responseDeclaration, responseData, "ResponseData for endAttemptInteraction must be of string type");
+        }
+        final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
+        return BooleanValue.valueOf(!stringResponseData.isEmpty());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* No validation to do here */
         return true;
     }

@@ -37,9 +37,11 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -62,13 +64,19 @@ public final class UnsupportedCustomInteraction extends CustomInteraction<JqtiEx
     }
 
     @Override
-    protected boolean validateResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
-        return false;
-    }
-
-    @Override
     protected void bindResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
         /* Do nothing */
     }
+
+    @Override
+    protected Value parseResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ResponseDeclaration responseDeclaration, final ResponseData responseData) {
+        return NullValue.INSTANCE;
+    }
+
+    @Override
+    protected boolean validateResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
+        return false;
+    }
+
 }

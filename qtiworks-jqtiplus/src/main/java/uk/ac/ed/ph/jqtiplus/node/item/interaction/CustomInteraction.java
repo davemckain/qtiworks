@@ -34,10 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -93,17 +96,33 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     protected abstract void validateCustomInteractionAttributes(final E jqtiExtensionPackaage, final ValidationContext context);
 
     @Override
-    public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
+    public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
+            throws ResponseBindingException {
+        ConstraintUtilities.ensureNotNull(responseData, "responseData");
         final E jqtiExtensionPackage = getOwningExtensionPackage(itemSessionController);
         if (jqtiExtensionPackage!=null) {
             bindResponse(jqtiExtensionPackage, itemSessionController, responseData);
         }
         else {
-            logger.debug("JqtiExtensionPackage owning this customInteraction is not registered, so not binding");
+            logger.debug("JqtiExtensionPackage owning this customInteraction is not registered, so not binding response");
         }
     }
 
-    protected abstract void bindResponse(E jqtiExtensionPackage, ItemSessionController itemSessionController, ResponseData responseData)
+    protected void bindResponse(final E jqtiExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
+            throws ResponseBindingException {
+        final ResponseDeclaration responseDeclaration = getResponseDeclaration();
+        final Value value = parseResponse(jqtiExtensionPackage, responseDeclaration, responseData);
+        itemSessionController.getItemSessionState().setResponseValue(this, value);
+    }
+
+    @Override
+    protected final Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData)
+            throws ResponseBindingException {
+        /* This is not used in its current form here */
+        throw new QtiLogicException("This method should not be overridden");
+    }
+
+    protected abstract Value parseResponse(final E jqtiExtensionPackage, final ResponseDeclaration responseDeclaration, final ResponseData responseData)
             throws ResponseBindingException;
 
     @Override
@@ -119,6 +138,8 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     }
 
     protected abstract boolean validateResponse(E jqtiExtensionPackage, ItemSessionController itemController, Value responseValue);
+
+    //------------------------------------------------------------------------
 
     protected final E getOwningExtensionPackage(final ItemSessionController itemSessionController) {
         return itemSessionController.getJqtiExtensionManager().getJqtiExtensionPackageImplementingInteraction(this);

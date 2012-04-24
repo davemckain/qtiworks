@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.TextFormatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -347,49 +348,55 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     @Override
     protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
-            throw new ResponseBindingException("extendedTextInteraction must be bound to string response data");
+            throw new ResponseBindingException(responseDeclaration, responseData, "extendedTextInteraction must be bound to string response data");
         }
         final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
         final Cardinality responseCardinality = responseDeclaration.getCardinality();
         final BaseType responseBaseType = responseDeclaration.getBaseType();
         final int base = getBase();
 
-        //handle record special case
+        /* Handle record special case */
         Value result;
-        if (responseCardinality.isRecord()) {
-            String responseString;
-            if (stringResponseData != null) {
-                if (stringResponseData.size() > 1) {
-                    throw new ResponseBindingException("Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
-                }
-                responseString = stringResponseData.get(0);
-            }
-            else {
-                responseString = "";
-            }
-            result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
-        }
-        else if (responseBaseType.isInteger()) {
-            if (responseCardinality.isList()) {
-                final List<IntegerValue> values = new ArrayList<IntegerValue>(stringResponseData.size());
-                for (String stringResponseDatum : stringResponseData) {
-                    values.add(new IntegerValue(stringResponseDatum, base));
-                }
-
-                if (responseCardinality == Cardinality.MULTIPLE) {
-                    result = new MultipleValue(values);
+        try {
+            if (responseCardinality.isRecord()) {
+                String responseString;
+                if (stringResponseData != null) {
+                    if (stringResponseData.size() > 1) {
+                        throw new ResponseBindingException(responseDeclaration, responseData, "Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
+                    }
+                    responseString = stringResponseData.get(0);
                 }
                 else {
-                    result = new OrderedValue(values);
+                    responseString = "";
+                }
+                result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
+            }
+            else if (responseBaseType.isInteger()) {
+                if (responseCardinality.isList()) {
+                    final List<IntegerValue> values = new ArrayList<IntegerValue>(stringResponseData.size());
+                    for (final String stringResponseDatum : stringResponseData) {
+                        values.add(new IntegerValue(stringResponseDatum, base));
+                    }
+
+                    if (responseCardinality == Cardinality.MULTIPLE) {
+                        result = new MultipleValue(values);
+                    }
+                    else {
+                        result = new OrderedValue(values);
+                    }
+                }
+                else {
+                    result = new IntegerValue(stringResponseData.get(0), base);
                 }
             }
             else {
-                result = new IntegerValue(stringResponseData.get(0), base);
+                result = super.parseResponse(responseDeclaration, responseData);
             }
         }
-        else {
-            result = super.parseResponse(responseDeclaration, responseData);
+        catch (final QtiParseException e) {
+            throw new ResponseBindingException(responseDeclaration, responseData, e);
         }
+
         return result;
     }
 

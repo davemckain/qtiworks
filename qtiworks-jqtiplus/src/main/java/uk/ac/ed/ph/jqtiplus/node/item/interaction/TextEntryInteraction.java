@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -196,11 +197,11 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
     @Override
     protected Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData) throws ResponseBindingException {
         if (responseData.getType()!=ResponseDataType.STRING) {
-            throw new ResponseBindingException("textInteraction must be bound to string response data");
+            throw new ResponseBindingException(responseDeclaration, responseData, "textInteraction must be bound to string response data");
         }
         final List<String> stringResponseData = ((StringResponseData) responseData).getResponseData();
         if (stringResponseData.size() > 1) {
-            throw new ResponseBindingException("Response to textEntryInteraction should contain at most 1 element");
+            throw new ResponseBindingException(responseDeclaration, responseData, "Response to textEntryInteraction should contain at most 1 element");
         }
 
         final Cardinality responseCardinality = responseDeclaration.getCardinality();
@@ -209,19 +210,24 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         final int base = getBase();
 
         Value result;
-        if (responseCardinality.isRecord()) {
-            result = TextEntryInteraction.parseRecordValueResponse(responseString, base);
-        }
-        else if (responseBaseType.isInteger()) {
-            if (responseString == null || responseString.trim().length() == 0) {
-                result = NullValue.INSTANCE;
+        try {
+            if (responseCardinality.isRecord()) {
+                result = TextEntryInteraction.parseRecordValueResponse(responseString, base);
+            }
+            else if (responseBaseType.isInteger()) {
+                if (responseString == null || responseString.trim().length() == 0) {
+                    result = NullValue.INSTANCE;
+                }
+                else {
+                    result = new IntegerValue(responseString, base);
+                }
             }
             else {
-                result = new IntegerValue(responseString, base);
+                result = super.parseResponse(responseDeclaration, responseData);
             }
         }
-        else {
-            result = super.parseResponse(responseDeclaration, responseData);
+        catch (final QtiParseException e) {
+            throw new ResponseBindingException(responseDeclaration, responseData, e);
         }
         return result;
     }
@@ -237,7 +243,10 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         return true;
     }
 
-    protected static RecordValue parseRecordValueResponse(String responseString, final int base) {
+    /**
+     * @throws QtiParseException
+     */
+    protected static RecordValue parseRecordValueResponse(final String responseString, final int base) {
         final RecordValue value = new RecordValue();
 
         value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
@@ -252,15 +261,15 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         }
 
         final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : null;
-        responseString = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
-        final String rightPart = responseString.contains(".") ? responseString.substring(responseString.indexOf(".") + 1) : null;
-        final String leftPart = responseString.contains(".") ? responseString.substring(0, responseString.indexOf(".")) : responseString;
+        final String responseStringAfterExp = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
+        final String rightPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(responseStringAfterExp.indexOf(".") + 1) : null;
+        final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp;
 
-        if (exponentIndicator != null || responseString.contains(".")) {
+        if (exponentIndicator != null || responseStringAfterExp.contains(".")) {
             value.add(KEY_INTEGER_VALUE_NAME, null);
         }
         else {
-            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseString, base));
+            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseStringAfterExp, base));
         }
 
         value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
