@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="false" identifier="MAC02-SR" timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify " toolName="Mathqurate" toolVersion="0.9.5" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
+<?xml version="1.0" encoding="UTF-8"?><assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="true" identifier="MAC02-SR" timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify " toolName="Mathqurate" toolVersion="0.9.7b" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
     <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE">
         <correctResponse>
             <value>ChoiceA</value>
@@ -7,12 +6,13 @@
     </responseDeclaration>
     <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
     <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
+    <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
     <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0" normalMinimum="0.0">
         <defaultValue>
             <value>0.0</value>
         </defaultValue>
     </outcomeDeclaration>
-    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="FEEDBACK"/>
     <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
         <defaultValue>
             <value>false</value>
@@ -23,12 +23,12 @@
             <value>false</value>
         </defaultValue>
     </outcomeDeclaration>
-    <outcomeDeclaration identifier="ASKHINT" cardinality="single" baseType="identifier">
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
         <defaultValue>
             <value>askhint</value>
         </defaultValue>
     </outcomeDeclaration>
-    <outcomeDeclaration identifier="ASKSOLUTION" cardinality="single" baseType="identifier">
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
         <defaultValue>
             <value>asksolution</value>
         </defaultValue>
@@ -66,6 +66,28 @@
         <setTemplateValue identifier="dummy">
             <customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
                 <baseValue baseType="string"><![CDATA[
+
+ s1 : make_random_state(true)$ set_random_state(s1);
+
+ for iI:1 step 1 unless (not(equal((iA+iC),0)) and not(equal(abs(iA+iC),1)) and gcd(iA*iB,iA+iC)=1) do block( iA: ev((random(9)+2)*(random(2)*2-1),simp), iB: ev((random(9)+1)*(random(2)*2-1),simp), iC: ev((random(9)+2)*(random(2)*2-1),simp));
+
+ iAbsA: ev(abs(iA),simp);
+
+ iAbsB: ev(abs(iB),simp);
+
+ iAbsC: ev(abs(iC),simp);
+
+ iAB: ev(iA*iB,simp);
+
+ iApC: ev(iA+iC,simp);
+
+ iAbsAB: ev(abs(iAB),simp);
+
+ array(aarr,19);
+
+ fillarray(aarr,[a,b,c,d,g,h,k,m,n,p,q,r,s,t,u,v,w,x,y,z]);
+
+ mX:aarr[random(19)];
 
  s1 : make_random_state(true)$ set_random_state(s1);
 
@@ -151,7 +173,7 @@
     </templateProcessing>
     <itemBody class="">
         <div class="">
-            <p class="">Expand the brackets in<m:math id="mathML0">
+            <p class="">Expand the brackets in <m:math id="mathML0">
                     <m:semantics>
                         <m:mrow>
                             <m:mi>iA</m:mi>
@@ -164,7 +186,7 @@
                             <m:mi>iAbsC</m:mi>
                             <m:mi>mX</m:mi>
                         </m:mrow>
-                        <m:annotation encoding="SnuggleTeX">\[\qv{iA}(\qv{mX}						\qv{sSignB} \qv{iAbs}) \qv{sSignC} \qv{iAbsC} \qv{mX}\]					</m:annotation>
+                        <m:annotation encoding="LaTeX">\[\qv{iA}(\qv{mX} \qv{sSignB} \qv{iAbs})						\qv{sSignC} \qv{iAbsC} \qv{mX}\] </m:annotation>
                     </m:semantics>
                 </m:math>and simplify the result.</p>
             <choiceInteraction id="choiceInteraction0" maxChoices="1" responseIdentifier="RESPONSE" shuffle="true">
@@ -177,10 +199,10 @@
                                 <m:mi>sSignAB</m:mi>
                                 <m:mi>iAbsAB</m:mi>
                             </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[\qv{iApC} \qv{mX}							\qv{sSignAB} \qv{iAbsAB}\]</m:annotation>
+                            <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sSignAB}							\qv{iAbsAB}\]</m:annotation>
                         </m:semantics>
                     </m:math>
-                    <feedbackInline id="feedbackInline0" identifier="ChoiceA" outcomeIdentifier="FEEDBACK" showHide="show">Well done - you got the					correct answer. Two marks.</feedbackInline>			</simpleChoice>
+                    <feedbackInline id="feedbackInline0" identifier="ChoiceA" outcomeIdentifier="FEEDBACK" showHide="show">Well done - you got the correct answer. Two marks.</feedbackInline>			</simpleChoice>
                 <simpleChoice id="simpleChoice1" identifier="ChoiceB">
                     <m:math display="block" id="mathML2">
                         <m:semantics>
@@ -190,10 +212,10 @@
                                 <m:mi>sSignB</m:mi>
                                 <m:mi>iAbsB</m:mi>
                             </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[\qv{iApC} \qv{mX}							\qv{sSignB} \qv{iAbsB}\]</m:annotation>
+                            <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sSignB}							\qv{iAbsB}\]</m:annotation>
                         </m:semantics>
                     </m:math>
-                    <feedbackInline id="feedbackInline1" identifier="ChoiceB" outcomeIdentifier="FEEDBACK" showHide="show">Remember that, when					expanding brackets, all terms inside must be multiplied by					whatever is outside. However, you got one term in the answer correct, so 1					mark.</feedbackInline>			</simpleChoice>
+                    <feedbackInline id="feedbackInline1" identifier="ChoiceB" outcomeIdentifier="FEEDBACK" showHide="show">Remember that, when expanding brackets, all terms inside must be multiplied by					whatever is outside. However, you got one term in the answer correct, so 1					mark.</feedbackInline>			</simpleChoice>
                 <simpleChoice id="simpleChoice2" identifier="ChoiceC">
                     <m:math display="block" id="mathML3">
                         <m:semantics>
@@ -203,10 +225,10 @@
                                 <m:mi>sBadSignAB</m:mi>
                                 <m:mi>iAbsAB</m:mi>
                             </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[\qv{iApC} \qv{mX}							\qv{sBadSignAB} \qv{iAbsAB}\]</m:annotation>
+                            <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sBadSignAB}							\qv{iAbsAB}\]</m:annotation>
                         </m:semantics>
                     </m:math>
-                    <feedbackInline id="feedbackInline2" identifier="ChoiceC" outcomeIdentifier="FEEDBACK" showHide="show">					When expanding the bracket the product of					<printedVariable id="printedVariable0" identifier="iA"/>					and					<printedVariable id="printedVariable1" identifier="iB"/>					is					<printedVariable id="printedVariable2" identifier="iAB"/>					.					However, you got one term in the answer correct.				</feedbackInline>			</simpleChoice>
+                    <feedbackInline id="feedbackInline2" identifier="ChoiceC" outcomeIdentifier="FEEDBACK" showHide="show">					When expanding the bracket the product of <printedVariable id="printedVariable0" identifier="iA"/> and						<printedVariable id="printedVariable1" identifier="iB"/> is <printedVariable id="printedVariable2" identifier="iAB"/> .					However, you got one term in the answer correct. </feedbackInline>			</simpleChoice>
                 <simpleChoice id="simpleChoice3" identifier="ChoiceD">
                     <m:math display="block" id="mathML4">
                         <m:semantics>
@@ -216,17 +238,17 @@
                                 <m:mi>sSignAB</m:mi>
                                 <m:mi>iAbsAB</m:mi>
                             </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[\qv{iA} \qv{mX}							\qv{sSignAB} \qv{iAbsAB}\]</m:annotation>
+                            <m:annotation encoding="LaTeX">\[\qv{iA} \qv{mX} \qv{sSignAB}							\qv{iAbsAB}\]</m:annotation>
                         </m:semantics>
                     </m:math>
-                    <feedbackInline id="feedbackInline3" identifier="ChoiceD" outcomeIdentifier="FEEDBACK" showHide="show">					Remember to include both of the terms in					<m:math id="mathML5">
+                    <feedbackInline id="feedbackInline3" identifier="ChoiceD" outcomeIdentifier="FEEDBACK" showHide="show">					Remember to include both of the terms in <m:math id="mathML5">
                             <m:semantics>
                                 <m:mrow>
                                     <m:mi>mX</m:mi>
                                 </m:mrow>
-                                <m:annotation encoding="SnuggleTeX">\[mX\]</m:annotation>
+                                <m:annotation encoding="LaTeX">\[mX\]</m:annotation>
                             </m:semantics>
-                        </m:math>					. However, you got one term in the answer correct.				</feedbackInline>			</simpleChoice>
+                        </m:math> . However, you got one term in the answer correct. </feedbackInline>			</simpleChoice>
                 <simpleChoice id="simpleChoice4" identifier="ChoiceE">
                     <m:math display="block" id="mathML6">
                         <m:semantics>
@@ -236,13 +258,13 @@
                                 <m:mi>sSignB</m:mi>
                                 <m:mi>iAbsB</m:mi>
                             </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[\qv{iA} \qv{mX}							\qv{sSignB} \qv{iAbsB}\]</m:annotation>
+                            <m:annotation encoding="LaTeX">\[\qv{iA} \qv{mX} \qv{sSignB}							\qv{iAbsB}\]</m:annotation>
                         </m:semantics>
                     </m:math>
-                    <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show">You should ask for tutor					help on this question.</feedbackInline>			</simpleChoice>
+                    <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show">You should ask for tutor help on this question.</feedbackInline>			</simpleChoice>
             </choiceInteraction>
-            <feedbackBlock class="" id="feedbackBlock5" identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
-                <div class="">
+            <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+                <div>
                     <m:math display="block" id="mathML7">
                         <m:semantics>
                             <m:mtable>
@@ -290,37 +312,41 @@
                                     </m:mtd>
                                 </m:mtr>
                             </m:mtable>
-                            <m:annotation encoding="SnuggleTeX">\begin{eqnarray} \qv{iA}(\qv{mX}\qv{sSignB} \qv{iAbsB}) \qv{sSignC} \qv{iAbsC} \qv{mX} &amp;=&amp;  \qv{iA} \times \qv{mX} \qv{sSignAB} \qv{iAbsA} \times \qv{iAbsB} \qv{sSignC}	\qv{iAbsC} \times \qv{mX}  \\    &amp;=&amp; \qv{iApC} \qv{mX} \qv{sSignAB} \qv{iAbsAB} \end{eqnarray}</m:annotation>
+                            <m:annotation encoding="SnuggleTeX">\begin{eqnarray*}\qv{iA}(\qv{mX} \qv{sSignB} \qv{iAbsB}) \qv{sSignC} \qv{iAbsC} \qv{mX} &amp;=&amp; \qv{iA} \times \qv{mX} \qv{sSignAB} \qv{iAbsA} \times \qv{iAbsB} \qv{sSignC} \qv{iAbsC} \times \qv{mX}\\ &amp;=&amp; \qv{iApC} \qv{mX} \qv{sSignAB} \qv{iAbsAB}\end{eqnarray*}</m:annotation>
                         </m:semantics>
                     </m:math>    </div>
             </feedbackBlock>
             <feedbackBlock id="feedbackBlock6" identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
                 <p>Expand the bracket and collect like terms.</p>
             </feedbackBlock>
-            <feedbackBlock outcomeIdentifier="ASKHINT" identifier="askhint" showHide="show">
-                <p>
-                    <strong>
-                        <endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST" title="Show Hint"/>
-                    </strong>
-                </p>
+            <feedbackBlock id="feedbackBlock7" identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+                <p> Since you have viewed the solution, your score for this question will be 0. </p>
             </feedbackBlock>
-            
-            <feedbackBlock outcomeIdentifier="ASKSOLUTION" identifier="asksolution" showHide="show">
-                <p>
-                    <strong>
-                        <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST" title="Show Solution"/>  
-                    </strong>
-                </p>
+            <feedbackBlock id="feedbackBlock8" identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show">
+                <p> Since you have viewed the hint, your score for this question will be halved. </p>
             </feedbackBlock>
-            
-        </div>
+            <feedbackBlock id="feedbackBlock9" identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show">
+                <p>
+                    <endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST" title="Show Hint"/>			</p>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock10" identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show">
+                <p>
+                    <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST" title="Show Solution"/>			</p>
+            </feedbackBlock>    </div>
     </itemBody>
     <responseProcessing>
+        <setOutcomeValue identifier="FEEDBACK">
+            <multiple>
+                <variable identifier="EMPTY"/>
+            </multiple>
+        </setOutcomeValue>
         <responseCondition>
             <responseIf>
                 <variable identifier="HINTREQUEST"/>
                 <setOutcomeValue identifier="FEEDBACK">
-                    <baseValue baseType="identifier">HINT</baseValue>
+                    <multiple>
+                        <baseValue baseType="identifier">HINT</baseValue>
+                    </multiple>
                 </setOutcomeValue>
                 <setOutcomeValue identifier="seenHint">
                     <baseValue baseType="boolean">true</baseValue>
@@ -329,7 +355,9 @@
             <responseElseIf>
                 <variable identifier="SOLREQUEST"/>
                 <setOutcomeValue identifier="FEEDBACK">
-                    <baseValue baseType="identifier">SOLUTION</baseValue>
+                    <multiple>
+                        <baseValue baseType="identifier">SOLUTION</baseValue>
+                    </multiple>
                 </setOutcomeValue>
                 <setOutcomeValue identifier="seenSolution">
                     <baseValue baseType="boolean">true</baseValue>
@@ -347,89 +375,91 @@
             <responseElse>
                 <responseCondition>
                     <responseIf>
-                        <isNull>
+                        <match>
                             <variable identifier="RESPONSE"/>
-                        </isNull>
+                            <correct identifier="RESPONSE"/>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">2</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceB</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceC</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <match>
+                            <variable identifier="RESPONSE"/>
+                            <baseValue baseType="identifier">ChoiceD</baseValue>
+                        </match>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">1</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElse>
                         <setOutcomeValue identifier="SCORE">
                             <baseValue baseType="float">0</baseValue>
                         </setOutcomeValue>
-                    </responseIf>
-                    <responseElse>
-                        <responseCondition>
-                            <responseIf>
-                                <match>
-                                    <variable identifier="RESPONSE"/>
-                                    <correct identifier="RESPONSE"/>
-                                </match>
-                                <setOutcomeValue identifier="SCORE">
-                                    <baseValue baseType="float">2</baseValue>
-                                </setOutcomeValue>
-                            </responseIf>
-                            <responseElseIf>
-                                <match>
-                                    <variable identifier="RESPONSE"/>
-                                    <baseValue baseType="identifier">ChoiceB</baseValue>
-                                </match>
-                                <setOutcomeValue identifier="SCORE">
-                                    <baseValue baseType="float">1</baseValue>
-                                </setOutcomeValue>
-                            </responseElseIf>
-                            <responseElseIf>
-                                <match>
-                                    <variable identifier="RESPONSE"/>
-                                    <baseValue baseType="identifier">ChoiceC</baseValue>
-                                </match>
-                                <setOutcomeValue identifier="SCORE">
-                                    <baseValue baseType="float">1</baseValue>
-                                </setOutcomeValue>
-                            </responseElseIf>
-                            <responseElseIf>
-                                <match>
-                                    <variable identifier="RESPONSE"/>
-                                    <baseValue baseType="identifier">ChoiceD</baseValue>
-                                </match>
-                                <setOutcomeValue identifier="SCORE">
-                                    <baseValue baseType="float">1</baseValue>
-                                </setOutcomeValue>
-                            </responseElseIf>
-                            <responseElse>
-                                <setOutcomeValue identifier="SCORE">
-                                    <baseValue baseType="float">0</baseValue>
-                                </setOutcomeValue>
-                            </responseElse>
-                        </responseCondition>
-                        <setOutcomeValue identifier="FEEDBACK">
-                            <variable identifier="RESPONSE"/>
-                        </setOutcomeValue>
-                        <setOutcomeValue identifier="completionStatus">
-                            <baseValue baseType="identifier">completed</baseValue>
-                        </setOutcomeValue>
-                        <setOutcomeValue identifier="ASKHINT">
-                            <baseValue baseType="identifier">null</baseValue>
-                        </setOutcomeValue>
-                        <setOutcomeValue identifier="ASKSOLUTION">
-                            <baseValue baseType="identifier">null</baseValue>
-                        </setOutcomeValue>
                     </responseElse>
                 </responseCondition>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <variable identifier="RESPONSE"/>
+                    </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">completed</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="ASKHINT">
+                    <baseValue baseType="identifier">null</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="ASKSOLUTION">
+                    <baseValue baseType="identifier">null</baseValue>
+                </setOutcomeValue>
+                <responseCondition>
+            		<responseIf>
+            			<variable identifier="seenSolution"/>
+            			<setOutcomeValue identifier="FEEDBACK">
+            				<multiple>
+            					<variable identifier="FEEDBACK"/>
+            					<baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
+            				</multiple>
+            			</setOutcomeValue>
+            			<setOutcomeValue identifier="SCORE">
+            				<baseValue baseType="float">0.0</baseValue>
+            			</setOutcomeValue>
+            		</responseIf>
+            		<responseElseIf>
+            			<variable identifier="seenHint"/>
+            			<setOutcomeValue identifier="FEEDBACK">
+            				<multiple>
+            					<variable identifier="FEEDBACK"/>
+            					<baseValue baseType="identifier">SEEN-HINT</baseValue>
+            				</multiple>
+            			</setOutcomeValue>
+            			<setOutcomeValue identifier="SCORE">
+            				<divide>
+            					<variable identifier="SCORE"/>
+            					<baseValue baseType="float">2.0</baseValue>
+            				</divide>
+            			</setOutcomeValue>
+            		</responseElseIf>
+            	</responseCondition>
             </responseElse>
-        </responseCondition>
-        <responseCondition>
-            <responseIf>
-                <variable identifier="seenSolution"/>
-                <setOutcomeValue identifier="SCORE">
-                    <baseValue baseType="float">0.0</baseValue>
-                </setOutcomeValue>
-            </responseIf>
-            <responseElseIf>
-                <variable identifier="seenHint"/>
-                <setOutcomeValue identifier="SCORE">
-                    <divide>
-                        <variable identifier="SCORE"/>
-                        <baseValue baseType="float">2.0</baseValue>
-                    </divide>
-                </setOutcomeValue>
-            </responseElseIf>
         </responseCondition>
     </responseProcessing>
 </assessmentItem>

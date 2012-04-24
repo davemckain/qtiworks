@@ -53,7 +53,6 @@ public final class MathAssessSampleSet {
             new QtiSampleResource(Type.ITEM, "mathassess/MAD01-SRinCO-demo.xml"),
             new QtiSampleResource(Type.ITEM, "mathassess/MAD01-SRinRP.xml"),
             new QtiSampleResource(Type.ITEM, "mathassess/MAD01-newSRinRP.xml"),
-            new QtiSampleResource(Type.ITEM, "mathassess/MAD02-SRnoRand.xml"),
             new QtiSampleResource(Type.ITEM, "mathassess/MAD03a.xml"),
             new QtiSampleResource(Type.ITEM, "mathassess/MAD04-ltgt-tVars.xml"),
             new QtiSampleResource(Type.ITEM, "mathassess/MAD05-Factors-CC.xml"),
