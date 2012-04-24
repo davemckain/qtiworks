@@ -38,27 +38,27 @@ package uk.ac.ed.ph.qtiworks;
  *
  * @author David McKain
  */
-public final class EngineException extends RuntimeException {
+public final class QtiWorksLogicException extends RuntimeException {
 
     private static final long serialVersionUID = 2526848963219875046L;
     
-    public static EngineException unexpectedException(Throwable cause) {
-        return new EngineException("Unexpected Exception", cause);
+    public static QtiWorksLogicException unexpectedException(Throwable cause) {
+        return new QtiWorksLogicException("Unexpected Exception", cause);
     }
 
-    public EngineException() {
+    public QtiWorksLogicException() {
         super();
     }
 
-    public EngineException(String message, Throwable cause) {
+    public QtiWorksLogicException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public EngineException(String message) {
+    public QtiWorksLogicException(String message) {
         super(message);
     }
 
-    public EngineException(Throwable cause) {
+    public QtiWorksLogicException(Throwable cause) {
         super(cause);
     }
 }

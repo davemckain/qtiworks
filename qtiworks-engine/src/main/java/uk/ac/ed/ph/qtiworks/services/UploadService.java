@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.UploadException;
 import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage;
@@ -153,7 +153,7 @@ public class UploadService {
             IOUtilities.transfer(inputStream, new FileOutputStream(resultFile));
         }
         catch (IOException e) {
-            throw EngineException.unexpectedException(e);
+            throw QtiWorksLogicException.unexpectedException(e);
         }
         
         AssessmentPackage assessmentPackage = new AssessmentPackage();
@@ -189,7 +189,7 @@ public class UploadService {
             
         }
         catch (IOException e) {
-            throw EngineException.unexpectedException(e);
+            throw QtiWorksLogicException.unexpectedException(e);
         }
         
         /* Expand content package */
@@ -255,7 +255,7 @@ public class UploadService {
             result = (E) objectManager.resolveAndValidateTest(objectSystemId);
         }
         else {
-            throw new EngineException("Unexpected switch case " + resultClass);
+            throw new QtiWorksLogicException("Unexpected switch case " + resultClass);
         }
         return result;
     }
@@ -274,7 +274,7 @@ public class UploadService {
         String sandboxName = Thread.currentThread().getName() + "-" + System.currentTimeMillis();
         File sandboxDirectory = new File(sandboxRootDirectory, sandboxName);
         if (!sandboxDirectory.mkdir()) {
-            throw new EngineException("Could not create sandbox directory " + sandboxDirectory);
+            throw new QtiWorksLogicException("Could not create sandbox directory " + sandboxDirectory);
         }
         return sandboxDirectory;
     }

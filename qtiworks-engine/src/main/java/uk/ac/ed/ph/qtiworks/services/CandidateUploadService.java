@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
@@ -78,7 +78,7 @@ public class CandidateUploadService {
             IOUtilities.transfer(multipartFile.getInputStream(), new FileOutputStream(uploadFile));
         }
         catch (Exception e) {
-            throw new EngineException("Unexpected Exception uploading file submission", e);
+            throw new QtiWorksLogicException("Unexpected Exception uploading file submission", e);
         }
         return new FileResponseData(uploadFile, multipartFile.getContentType(), multipartFile.getOriginalFilename());
     }

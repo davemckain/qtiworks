@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -180,7 +180,7 @@ public final class WebUtilities {
             public Object get(Object key) {
                 Object result = super.get(key);
                 if (result==null) {
-                    throw new EngineException("No exposed field '" + key + "' found");
+                    throw new QtiWorksLogicException("No exposed field '" + key + "' found");
                 }
                 return result;
             }
@@ -191,7 +191,7 @@ public final class WebUtilities {
             }
         }
         catch (Exception e) {
-            throw new EngineException("Could not expose all static fields in class " + globalClass, e);
+            throw new QtiWorksLogicException("Could not expose all static fields in class " + globalClass, e);
         }
         return Collections.unmodifiableMap(targetMap);
     }

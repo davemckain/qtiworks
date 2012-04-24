@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.view;
 
-import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 
@@ -66,7 +66,7 @@ public final class ExposeStaticFieldsTag extends SimpleTagSupport {
                 globalClass = Class.forName(className);
             }
             catch (ClassNotFoundException e) {
-                throw new EngineException("Could not find class " + className, e);
+                throw new QtiWorksLogicException("Could not find class " + className, e);
             }
             Map<String, Object> staticFields = WebUtilities.exposeStaticFields(globalClass);
             jspContext.setAttribute(targetName, staticFields);

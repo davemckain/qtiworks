@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.view;
 
-import uk.ac.ed.ph.qtiworks.EngineException;
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -52,7 +52,7 @@ public class ViewUtilities {
             return Page.valueOf(pageName);
         }
         catch (IllegalArgumentException e) {
-            throw new EngineException("Enumerated page name " + pageName + " was not found");
+            throw new QtiWorksLogicException("Enumerated page name " + pageName + " was not found");
         }
     }
     
@@ -129,7 +129,7 @@ public class ViewUtilities {
             }
         }
         catch (UnsupportedEncodingException e) {
-            throw EngineException.unexpectedException(e);
+            throw QtiWorksLogicException.unexpectedException(e);
         }
         
         /* That's it */
