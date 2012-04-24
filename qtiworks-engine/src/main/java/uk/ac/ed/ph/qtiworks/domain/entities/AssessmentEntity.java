@@ -33,72 +33,72 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Represents an "instructor" user
+ * Represents each {@link AssessmentItem} or {@link AssessmentTest} handled by the system
  *
  * @author David McKain
  */
 @Entity
-@Table(name="instructor_users")
-@SequenceGenerator(name="instructorUserSequence", sequenceName="instructor_user_sequence", initialValue=1000, allocationSize=10)
-public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String> {
+@Table(name="assessment_entities")
+@SequenceGenerator(name="assessmentEntitySequence", sequenceName="assessment_entity_sequence", initialValue=1, allocationSize=10)
+public class AssessmentEntity implements BaseEntity {
 
-    private static final long serialVersionUID = 7821803746245696405L;
+    private static final long serialVersionUID = -4330181851974184912L;
 
     @Id
-    @GeneratedValue(generator="instructorUserSequence")
-    @Column(name="id")
+    @GeneratedValue(generator="assessmentEntitySequence")
     private Long id;
 
-    @Basic(optional=false)
-    @Column(name="login_name", length=DomainGlobals.LOGIN_NAME_MAX_LENGTH, updatable=false, unique=true)
-    private String loginName;
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="owner_user_id", updatable=false)
+    private InstructorUser owner;
 
     @Basic(optional=false)
-    @Column(name="disabled", updatable=true)
-    private boolean disabled;
+    @Column(name="type", updatable=false, length=15)
+    @Enumerated(EnumType.STRING)
+    private AssessmentObjectType assessmentType;
+
+    @Lob
+    @Basic(optional=false)
+    @Column(name="base_path")
+    private String basePath;
+
+    @Lob
+    @Basic(optional=false)
+    @Column(name="object_href")
+    private String objectHref;
 
     @Basic(optional=false)
-    @Column(name="sysadmin", updatable=true)
-    private boolean sysAdmin;
+    @Column(name="validated")
+    private boolean validated;
 
     @Basic(optional=false)
-    @Column(name="email_address", length=DomainGlobals.EMAIL_ADDRESS_MAX_LENGTH)
-    private String emailAddress;
+    @Column(name="valid")
+    private boolean valid;
 
     @Basic(optional=false)
-    @Column(name="pasword_digest", length=DomainGlobals.SHA1_DIGEST_LENGTH)
-    private String passwordDigest;
+    @Column(name="title")
+    private String title; /* (Would take this from QTI) */
 
-    @Basic(optional=false)
-    @Column(name="first_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
-    private String firstName;
-
-    @Basic(optional=false)
-    @Column(name="last_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
-    private String lastName;
-
-
-    @Override
-    protected Class<InstructorUser> getEntityClass() {
-        return InstructorUser.class;
-    }
-
-    @Override
-    protected String getBusinessKey() {
-        return loginName;
-    }
-
+//  private List<AssessmentDelivery> deliveries;
 
     @Override
     public Long getId() {
@@ -111,65 +111,65 @@ public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String
     }
 
 
-    public String getLoginName() {
-        return loginName;
+    public InstructorUser getOwner() {
+        return owner;
     }
 
-    public void setLoginName(final String loginName) {
-        this.loginName = loginName;
-    }
-
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(final String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setOwner(final InstructorUser owner) {
+        this.owner = owner;
     }
 
 
-    public String getPasswordDigest() {
-        return passwordDigest;
+    public AssessmentObjectType getAssessmentType() {
+        return assessmentType;
     }
 
-    public void setPasswordDigest(final String passwordDigest) {
-        this.passwordDigest = passwordDigest;
-    }
-
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
+    public void setAssessmentType(final AssessmentObjectType assessmentType) {
+        this.assessmentType = assessmentType;
     }
 
 
-    public String getLastName() {
-        return lastName;
+    public String getBasePath() {
+        return basePath;
     }
 
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(final boolean disabled) {
-        this.disabled = disabled;
+    public void setBasePath(final String basePath) {
+        this.basePath = basePath;
     }
 
 
-    public boolean isSysAdmin() {
-        return sysAdmin;
+    public String getObjectHref() {
+        return objectHref;
     }
 
-    public void setSysAdmin(final boolean sysAdmin) {
-        this.sysAdmin = sysAdmin;
+    public void setObjectHref(final String objectHref) {
+        this.objectHref = objectHref;
+    }
+
+
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(final boolean validated) {
+        this.validated = validated;
+    }
+
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(final boolean valid) {
+        this.valid = valid;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
     }
 }

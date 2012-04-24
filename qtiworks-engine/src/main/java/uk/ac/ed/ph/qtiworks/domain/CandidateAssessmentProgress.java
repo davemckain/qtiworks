@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 /**
@@ -41,10 +42,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
  * @author David McKain
  */
 public class CandidateAssessmentProgress {
-    
+
     private Long id;
-    
+
     private AssessmentDelivery assessmentDelivery;
+
+    /* FIXME: This is now wrong! */
     private InstructorUser candidate;
 
 }

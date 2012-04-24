@@ -31,34 +31,73 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-
-import java.net.URI;
-import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
- * Represents each {@link AssessmentItem} or {@link AssessmentTest} handled by the system
+ * Corresponds to a particular "delivery" of an Assessment to a group of candidates.
+ * <p>
+ * To think about in future...
+ *
+ * * Do we want to control who is permitted to do this?
+ * * Can we set time limits rather than having a manual on/off toggle?
  *
  * @author David McKain
  */
-public class AssessmentEntity {
-    
-    private Long id;
-    private AssessmentObjectType assessmentType;
-    private URI packageBaseUri;
-    private String objectHref;
-    
-    private boolean valid; /* (This should be set each time a create/modify operation is performed) */
-    
-    private String title; /* (Would take this from QTI) */
-    
-    /* TODO: May make sense to cache a resolved copy of the entity to make lookups quicker */
-    
-    
-    private List<AssessmentDelivery> deliveries;
+@Entity
+@Table(name="assessment_deliveries")
+@SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
+public class AssessmentDelivery implements BaseEntity {
 
+    private static final long serialVersionUID = 7693569112981982946L;
+
+    @Id
+    @GeneratedValue(generator="assessmentDeliverySequence")
+    private Long id;
+
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="assessment_id")
+    private AssessmentEntity assessmentEntity;
+
+    @Basic(optional=false)
+    @Column(name="open")
+    private boolean open;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+
+    public AssessmentEntity getAssessmentEntity() {
+        return assessmentEntity;
+    }
+
+    public void setAssessmentEntity(final AssessmentEntity assessmentEntity) {
+        this.assessmentEntity = assessmentEntity;
+    }
+
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(final boolean open) {
+        this.open = open;
+    }
 }
