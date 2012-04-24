@@ -333,10 +333,9 @@ public class CandidateController {
         return result;
     }
 
-    public void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<String, ResponseData> responseMap) {
+    private void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<String, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
-        final
-        Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
+        final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
         for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_uploadpresented_")) {
                 final String responseIdentifier = name.substring("qtiworks_uploadpresented_".length());
@@ -350,10 +349,9 @@ public class CandidateController {
         }
     }
 
-    public void extractStringResponseData(final HttpServletRequest request, final Map<String, ResponseData> responseMap) {
+    private void extractStringResponseData(final HttpServletRequest request, final Map<String, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
-        final
-        Set<String> parameterNames = request.getParameterMap().keySet();
+        final Set<String> parameterNames = request.getParameterMap().keySet();
         for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_presented_")) {
                 final String responseIdentifier = name.substring("qtiworks_presented_".length());
