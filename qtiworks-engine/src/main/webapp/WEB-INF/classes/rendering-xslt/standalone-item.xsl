@@ -18,6 +18,8 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
+  <xsl:variable name="completionStatus" select="qw:extract-single-cardinality-value(qw:get-outcome-value('completionStatus'))" as="xs:string"/>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -131,10 +133,14 @@ Renders a standalone assessmentItem
         onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
         onreset="QtiWorks.reset()" autocomplete="off">
         <xsl:apply-templates/>
-        <div class="controls">
-          <input type="reset" value="RESET"/>
-          <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
-        </div>
+
+        <!-- Maybe show controls -->
+        <xsl:if test="$completionStatus!='completed'">
+          <div class="controls">
+            <input type="reset" value="RESET INPUT"/>
+            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+          </div>
+        </xsl:if>
       </form>
     </div>
   </xsl:template>
