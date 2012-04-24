@@ -33,51 +33,44 @@
  */
 package uk.ac.ed.ph.qtiworks.tools;
 
-import uk.ac.ed.ph.qtiworks.config.ApplicationDomainConfiguration;
-import uk.ac.ed.ph.qtiworks.domain.User;
+import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PersistenceConfiguration;
+import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 /**
- * Entry point that sets up the DB schema and then exits.
- * <p>
- * <strong>DANGER:</strong> Do not run this on a production server as it WILL delete all of the
- * existing data!!!
+ * Dev utility class for running arbitrary JPA code
  *
- * @author  David McKain
+ * @author David McKain
  */
-public final class JpaTest {
-
-    public static void mainFROMCST(final String[] args) {
-        /* Use ApplicationContext that automatically rebuilds the DB schema */
-        final ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[] {
-                "classpath:applicationContext.xml",
-                "classpath:applicationContext-setup.xml"
-        });
-        ctx.getBean("entityManagerFactory");
-    }
+public final class JpaRunner {
 
     public static void main(final String[] args) {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ApplicationDomainConfiguration.class);
+        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(JpaProductionConfiguration.class, PersistenceConfiguration.class);
+        ctx.refresh();
 
         final LocalContainerEntityManagerFactoryBean emf = ctx.getBean(LocalContainerEntityManagerFactoryBean.class);
         final EntityManagerFactory entityManagerFactory = emf.getObject();
         final EntityManager em = entityManagerFactory.createEntityManager();
         final EntityTransaction transaction = em.getTransaction();
         transaction.begin();
-        final User user = new User();
+
+        final InstructorUser user = new InstructorUser();
+        user.setLoginName("dmckain2");
         user.setFirstName("David");
         user.setLastName("McKain");
         user.setEmailAddress("david.mckain@ed.ac.uk");
         user.setPasswordDigest("X");
+        user.setSysAdmin(true);
         em.persist(user);
+
         em.flush();
         transaction.commit();
         entityManagerFactory.close();

@@ -31,20 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import java.io.Serializable;
 
 /**
- * Tracks the state of an instance of an Assignment delivered to a single candidate
+ * Trivial (and possibly pointless) base class for an Entity Object.
  *
  * @author David McKain
  */
-public class CandidateAssessmentProgress {
+public interface BaseEntity extends Serializable {
     
-    private Long id;
+    Long getId();
     
-    private AssessmentDelivery assessmentDelivery;
-    private InstructorUser candidate;
-
+    void setId(Long id);
 }

@@ -5,10 +5,9 @@
 
   <persistence-unit name="qtiworks" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <class>uk.ac.ed.ph.qtiworks.domain.User</class>
+    <class>uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser</class>
     <properties>
-      <!-- Recreate the schema -->
-      <property name="hibernate.hbm2ddl.auto" value="create"/>
+      <property name="hibernate.id.new_generator_mappings" value="true"/>
     </properties>
   </persistence-unit>
 

@@ -35,51 +35,20 @@ package uk.ac.ed.ph.qtiworks.config;
 
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 /**
- * Domain-level configuration (DB, JPA etc.)
+ * Hibernate/JPA properties for use in production setting
  *
  * @author David McKain
  */
 @Configuration
-@ImportResource("classpath:/qtiworks-config.xml")
-public class ApplicationDomainConfiguration {
+public class JpaProductionConfiguration {
 
-    private @Value("${qtiworks.jdbc.driver}") String jdbcDriverClassName;
-    private @Value("${qtiworks.jdbc.url}") String jdbcUrl;
-    private @Value("${qtiworks.jdbc.username}") String jdbcUsername;
-    private @Value("${qtiworks.jdbc.password}") String jdbcPassword;
-    private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
-
-    /** FIXME: Parameterize this! */
-    @Bean(destroyMethod="close")
-    public DataSource dataSource() {
-        final BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(jdbcDriverClassName);
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(jdbcUsername);
-        dataSource.setPassword(jdbcPassword);
-        return dataSource;
-    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
-        final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPersistenceXmlLocation("classpath:/META-INF/persistence.xml");
-        emf.setDataSource(dataSource());
-
-        final Properties jpaProperties = new Properties();
-        jpaProperties.put("hibernate.dialect", hibernateDialect);
-        emf.setJpaProperties(jpaProperties);
-        return emf;
+    @Bean(name="extraJpaProperties")
+    public Properties extraJpaProperties() {
+        return new Properties();
     }
 
 }

@@ -31,20 +31,29 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import java.util.Properties;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Tracks the state of an instance of an Assignment delivered to a single candidate
+ * Hibernate/JPA properties to be used when setting up the DB
  *
  * @author David McKain
  */
-public class CandidateAssessmentProgress {
-    
-    private Long id;
-    
-    private AssessmentDelivery assessmentDelivery;
-    private InstructorUser candidate;
+@Configuration
+public class JpaSetupConfiguration {
+
+    @Bean(name="extraJpaProperties")
+    public Properties extraJpaProperties() {
+        final Properties extraJpaProperties = new Properties();
+
+        /* Tell Hibernate to recreate the DB schema */
+        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
+
+        return extraJpaProperties;
+    }
 
 }

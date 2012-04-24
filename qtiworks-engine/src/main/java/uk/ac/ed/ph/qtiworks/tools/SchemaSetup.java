@@ -31,20 +31,26 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.tools;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PersistenceConfiguration;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Tracks the state of an instance of an Assignment delivered to a single candidate
+ * Entry point that sets up the DB schema and then exits.
+ * <p>
+ * <strong>DANGER:</strong> Do not run this on a production server as it WILL delete all of the
+ * existing data!!!
  *
  * @author David McKain
  */
-public class CandidateAssessmentProgress {
-    
-    private Long id;
-    
-    private AssessmentDelivery assessmentDelivery;
-    private InstructorUser candidate;
+public final class SchemaSetup {
 
+    public static void main(final String[] args) {
+        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(JpaSetupConfiguration.class, PersistenceConfiguration.class);
+        ctx.refresh();
+    }
 }

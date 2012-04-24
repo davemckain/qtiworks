@@ -33,18 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-
 /**
- * Tracks the state of an instance of an Assignment delivered to a single candidate
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public class CandidateAssessmentProgress {
-    
-    private Long id;
-    
-    private AssessmentDelivery assessmentDelivery;
-    private InstructorUser candidate;
+public final class DomainGlobals {
+
+    public static final int LOGIN_NAME_MAX_LENGTH = 32;
+    public static final int EMAIL_ADDRESS_MAX_LENGTH = 128;
+    public static final int NAME_COMPONENT_MAX_LENGTH = 64;
+    public static final int SHA1_DIGEST_LENGTH = 40;
 
 }

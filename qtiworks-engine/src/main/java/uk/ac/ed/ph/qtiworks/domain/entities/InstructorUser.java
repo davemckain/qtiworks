@@ -31,7 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
+
+import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
 
 import java.io.Serializable;
 
@@ -40,50 +42,83 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * FIXME: Document this type
+ * Represents an "instructor" user
  *
  * @author David McKain
  */
 @Entity
-@Table(name="users")
-public class User implements Serializable {
+@Table(name="instructor_users")
+@SequenceGenerator(name="instructorUserSequence", sequenceName="instructor_user_sequence", initialValue=1000, allocationSize=10)
+public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String> implements Serializable {
 
     private static final long serialVersionUID = 7821803746245696405L;
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(generator="instructorUserSequence")
     @Column(name="id")
     private Long id;
 
     @Basic(optional=false)
-    @Column(name="email_address", length=128, updatable=false, unique=true)
+    @Column(name="login_name", length=DomainGlobals.LOGIN_NAME_MAX_LENGTH, updatable=false, unique=true)
+    private String loginName;
+
+    @Basic(optional=false)
+    @Column(name="disabled", updatable=true)
+    private boolean disabled;
+
+    @Basic(optional=false)
+    @Column(name="sysadmin", updatable=true)
+    private boolean sysAdmin;
+
+    @Basic(optional=false)
+    @Column(name="email_address", length=DomainGlobals.EMAIL_ADDRESS_MAX_LENGTH)
     private String emailAddress;
 
     @Basic(optional=false)
-    @Column(name="pasword_digest", length=64)
+    @Column(name="pasword_digest", length=DomainGlobals.SHA1_DIGEST_LENGTH)
     private String passwordDigest;
 
     @Basic(optional=false)
-    @Column(name="first_name",length=128)
+    @Column(name="first_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
     private String firstName;
 
     @Basic(optional=false)
-    @Column(name="last_name",length=128)
+    @Column(name="last_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
     private String lastName;
 
-    @Basic(optional=false)
-    @Column(name="disabled",updatable=true)
-    private boolean disabled;
+
+    @Override
+    protected Class<InstructorUser> getEntityClass() {
+        return InstructorUser.class;
+    }
+
+    @Override
+    protected String getBusinessKey() {
+        return loginName;
+    }
 
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(final String loginName) {
+        this.loginName = loginName;
     }
 
 
@@ -129,5 +164,14 @@ public class User implements Serializable {
 
     public void setDisabled(final boolean disabled) {
         this.disabled = disabled;
+    }
+
+
+    public boolean isSysAdmin() {
+        return sysAdmin;
+    }
+
+    public void setSysAdmin(final boolean sysAdmin) {
+        this.sysAdmin = sysAdmin;
     }
 }
