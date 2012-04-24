@@ -7,6 +7,18 @@ All Rights Reserved
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<h2>1.0-DEV4 (24/04/2012)</h2>
+
+<p>
+  Fixed bug introduced when refactoring endAttemptInteraction,
+  which prevented it from working correctly. Also added some experimental
+  stlying on feedback elements, which will need further work.
+  Further significant refactoring work has been done on JQTI+, in particular
+  the API for extensions (customOperator/customInteraction). I have also
+  started laying the ORM pipework for the webapp domain model.
+</p>
+
+
 <h2>1.0-DEV3 (11/04/2012)</h2>
 
 <p>
