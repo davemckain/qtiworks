@@ -259,20 +259,3 @@
 .qtiworksRendering .assessmentItem table.inputHelp .longComma {
   margin-right: 0.5em;
 }
-
-/************************************************************/
-/* Feedback */
-
-.qtiworksRendering .feedbackInline,
-.qtiworksRendering .feedbackBlock,
-.qtiworksRendering .modalFeedback {
-  background-color: #cad8e5;
-  border: 1px solid #ffd8e5;
-  margin: 0.5em 0;
-  padding: 0.5em;
-}
-
-.qtiworksRendering .feedbackInline {
-  line-height: 2.5em;
-}
-
