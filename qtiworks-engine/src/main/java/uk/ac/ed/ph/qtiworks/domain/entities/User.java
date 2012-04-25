@@ -106,6 +106,10 @@ public abstract class User implements BaseEntity {
 
     //------------------------------------------------------------
 
+    public abstract String getBusinessKey();
+
+    //------------------------------------------------------------
+
     public boolean isInstructor() {
         return userType==UserType.INSTRUCTOR;
     }

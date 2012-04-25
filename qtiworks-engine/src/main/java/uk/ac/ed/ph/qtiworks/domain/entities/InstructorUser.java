@@ -85,6 +85,14 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     //------------------------------------------------------------
 
+    @Override
+    public String getBusinessKey() {
+        ensureLoginName(this);
+        return "instructor/" + loginName;
+    }
+
+    //------------------------------------------------------------
+
     public String getLoginName() {
         return loginName;
     }

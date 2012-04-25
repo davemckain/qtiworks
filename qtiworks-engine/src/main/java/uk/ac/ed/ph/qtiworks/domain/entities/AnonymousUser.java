@@ -65,6 +65,14 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
     //------------------------------------------------------------
 
     @Override
+    public String getBusinessKey() {
+        ensureSessionId(this);
+        return "anonymous/" + sessionId;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
     public final boolean equals(final Object obj) {
         if (!(obj instanceof AnonymousUser)) {
             return false;
