@@ -31,55 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Dev utility class for running arbitrary JPA code
+ * DAO implementation for the {@link InstructorUser} entity.
  *
  * @author David McKain
  */
-public final class JpaRunner {
+@Repository
+@Transactional(readOnly=true,propagation=Propagation.SUPPORTS)
+public class InstructorUserDao extends GenericDao<InstructorUser> {
 
-    public static void main(final String[] args) {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, DomainServicesConfiguration.class);
-        ctx.refresh();
+    @PersistenceContext
+    private EntityManager em;
 
-        final LocalContainerEntityManagerFactoryBean emf = ctx.getBean(LocalContainerEntityManagerFactoryBean.class);
-        final EntityManagerFactory entityManagerFactory = emf.getObject();
-        final EntityManager em = entityManagerFactory.createEntityManager();
-        final EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
+    public InstructorUserDao() {
+        super(InstructorUser.class);
+    }
 
-        final InstructorUser user = new InstructorUser();
-        user.setLoginName("dmckain3");
-        user.setFirstName("David");
-        user.setLastName("McKain");
-        user.setEmailAddress("david.mckain@ed.ac.uk");
-        user.setPasswordDigest("X");
-        user.setSysAdmin(true);
-        em.persist(user);
-
+    public InstructorUser findByLoginName(final String loginName) {
         final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", "dmckain3");
-        System.out.println("GOT " + query.getResultList());
+        query.setParameter("loginName", loginName);
+        return extractFindResult(query);
+    }
 
-        em.flush();
-        transaction.commit();
-        entityManagerFactory.close();
-
-        ctx.close();
+    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
+        final InstructorUser result = findByLoginName(loginName);
+        ensureFindSuccess(result, loginName);
+        return result;
     }
 }

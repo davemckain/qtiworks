@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.ThreadLocalIdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.services.SystemEmailService;
 
@@ -56,11 +59,16 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.domain.services"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.domain.services", "uk.ac.ed.ph.qtiworks.domain.dao"})
 public class DomainServicesConfiguration {
 
     @Resource
     private QtiWorksSettings qtiWorksSettings;
+
+    @Bean
+    public IdentityContext identityContext() {
+        return new ThreadLocalIdentityContext();
+    }
 
     @Bean
     public LocalValidatorFactoryBean jsr303Validator() {
@@ -108,5 +116,10 @@ public class DomainServicesConfiguration {
         emf.setDataSource(dataSource());
         emf.setJpaProperties(jpaProperties());
         return emf;
+    }
+
+    @Bean
+    public InstructorUserDao instructorUserDao() {
+        return new InstructorUserDao();
     }
 }

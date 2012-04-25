@@ -39,6 +39,8 @@ import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -48,6 +50,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="instructor_users")
+@NamedQueries({
+    /* Looks up the User having the given loginName */
+    @NamedQuery(name="InstructorUser.findByLoginName",
+            query="SELECT u"
+                + "  FROM InstructorUser u"
+                +"   WHERE u.loginName = :loginName")
+})
 public class InstructorUser extends User implements BaseEntity, Comparable<InstructorUser> {
 
     private static final long serialVersionUID = 7821803746245696405L;

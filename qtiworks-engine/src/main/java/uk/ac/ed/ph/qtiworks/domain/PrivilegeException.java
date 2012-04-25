@@ -37,8 +37,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.BaseEntity;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Concrete "not allowed" {@link Exception} thrown when a {@link User} does
@@ -52,14 +53,14 @@ public final class PrivilegeException extends NotAllowedException {
     private static final long serialVersionUID = 963799679125087234L;
 
     protected final User user;
-    protected final List<Privilege> privileges;
-    protected final List<BaseEntity> targetEntities;
+    protected final ImmutableList<Privilege> privileges;
+    protected final ImmutableList<BaseEntity> targetEntities;
 
     public PrivilegeException(final User user, final Privilege privilege) {
         super("User " + user.getBusinessKey()
                 + " does not have the required Privilege " + privilege);
         this.user = user;
-        this.privileges = Arrays.asList(privilege);
+        this.privileges = ImmutableList.of(privilege);
         this.targetEntities = null;
     }
 
@@ -67,7 +68,7 @@ public final class PrivilegeException extends NotAllowedException {
         super("User " + user.getBusinessKey()
                 + " does not have any of the required Privilege(s) " + Arrays.toString(privileges));
         this.user = user;
-        this.privileges = Arrays.asList(privileges);
+        this.privileges = ImmutableList.copyOf(privileges);
         this.targetEntities = null;
     }
 
@@ -76,8 +77,8 @@ public final class PrivilegeException extends NotAllowedException {
                 + " does not have any of the required Privilege(s) " + Arrays.toString(privileges)
                 + " on target entity " + describeEntities(targetEntity));
         this.user = user;
-        this.privileges = Arrays.asList(privileges);
-        this.targetEntities = Arrays.asList(targetEntity);
+        this.privileges = ImmutableList.copyOf(privileges);
+        this.targetEntities = ImmutableList.of(targetEntity);
     }
 
     public PrivilegeException(final User user, final Privilege privilege, final BaseEntity... targetEntities) {
@@ -85,8 +86,8 @@ public final class PrivilegeException extends NotAllowedException {
                 + " does not have the required Privilege " + privilege
                 + " on target entities " + describeEntities(targetEntities));
         this.user = user;
-        this.privileges = Arrays.asList(privilege);
-        this.targetEntities = Arrays.asList(targetEntities);
+        this.privileges = ImmutableList.of(privilege);
+        this.targetEntities = ImmutableList.copyOf(targetEntities);
     }
 
     public PrivilegeException(final User user, final BaseEntity[] targetEntities, final Privilege... privileges) {
@@ -94,8 +95,8 @@ public final class PrivilegeException extends NotAllowedException {
                 + " does not have any of the required Privilege(s) " + Arrays.toString(privileges)
                 + " on target entities " +  describeEntities(targetEntities));
         this.user = user;
-        this.privileges = Arrays.asList(privileges);
-        this.targetEntities = Arrays.asList(targetEntities);
+        this.privileges = ImmutableList.copyOf(privileges);
+        this.targetEntities = ImmutableList.copyOf(targetEntities);
     }
 
     private static String describeEntities(final BaseEntity... targetEntities) {
@@ -113,10 +114,10 @@ public final class PrivilegeException extends NotAllowedException {
     }
 
     public List<Privilege> getPrivileges() {
-        return Collections.unmodifiableList(privileges);
+        return privileges;
     }
 
     public List<BaseEntity> getTargetEntities() {
-        return Collections.unmodifiableList(targetEntities);
+        return targetEntities;
     }
 }

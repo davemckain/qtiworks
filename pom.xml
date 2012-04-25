@@ -34,7 +34,10 @@ All Rights Reserved
     <xerces.version>2.9.1</xerces.version>
     <spring.version>3.1.1.RELEASE</spring.version>
     <hibernate.version>4.1.2</hibernate.version>
+    <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
     <postgresql-jdbc.version>9.1-901.jdbc4</postgresql-jdbc.version>
+    <javax-mail.version>1.4</javax-mail.version>
+    <javax-activation.version>1.1.1</javax-activation.version>
     <jackson.version>1.9.4</jackson.version>
     <cglib.version>2.2.2</cglib.version>
     <commons-lang.version>2.1</commons-lang.version>
@@ -42,7 +45,7 @@ All Rights Reserved
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <oauth.version>20100601</oauth.version>
-    <guava.version>11.0.1</guava.version>
+    <guava.version>11.0.2</guava.version>
     <junit.version>4.10</junit.version>
     <xmlunit.version>1.3</xmlunit.version>
   </properties>
