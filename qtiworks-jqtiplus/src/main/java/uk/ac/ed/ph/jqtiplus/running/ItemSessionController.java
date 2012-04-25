@@ -659,18 +659,18 @@ public final class ItemSessionController implements ItemProcessingContext {
      * @return true if a further attempt is allowed, false otherwise.
      */
     public boolean isAttemptAllowed(final int maxAttempts) {
-        boolean attemptAlllowed;
+        boolean attemptAllowed;
         if (item.getAdaptive()) {
             /* For adaptive items, attempts are limited by the value of the completion status variable */
             final String completionStatus = itemSessionState.getCompletionStatus();
-            attemptAlllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+            attemptAllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
         }
         else {
             /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
             final int numAttempts = itemSessionState.getNumAttempts();
-            attemptAlllowed = (maxAttempts==0 || numAttempts < maxAttempts);
+            attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
         }
-        return attemptAlllowed;
+        return attemptAllowed;
     }
 
     /**
