@@ -654,21 +654,23 @@ public final class ItemSessionController implements ItemProcessingContext {
      * FIXME: This is not integrated into tests yet
      * (New in JQTI+)
      *
-     * @param maxAttempts maximum number of attempts
+     * @param maxAttempts maximum number of attempts. This is only used for non-adaptive items,
+     *   and 0 is treated as "unlimited".
      * @return true if a further attempt is allowed, false otherwise.
      */
     public boolean isAttemptAllowed(final int maxAttempts) {
-        boolean result;
+        boolean attemptAlllowed;
         if (item.getAdaptive()) {
             /* For adaptive items, attempts are limited by the value of the completion status variable */
             final String completionStatus = itemSessionState.getCompletionStatus();
-            result = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+            attemptAlllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
         }
         else {
+            /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
             final int numAttempts = itemSessionState.getNumAttempts();
-            result = (numAttempts < maxAttempts);
+            attemptAlllowed = (maxAttempts==0 || numAttempts < maxAttempts);
         }
-        return result;
+        return attemptAlllowed;
     }
 
     /**
