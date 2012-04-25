@@ -7,6 +7,16 @@ All Rights Reserved
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<h2>1.0-DEV5 (25/04/2012)</h2>
+
+<p>
+  Further tweaks to logic determining whether submit button should
+  appear in item rendering, in light of discussion with Sue.
+  Removed automated feedback styling added in DEV4 as it can't
+  determine between real feedback and selective content.
+  I've also hidden the RESET button to see if anyone misses it...
+</p>
+
 <h2>1.0-DEV4 (24/04/2012)</h2>
 
 <p>

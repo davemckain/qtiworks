@@ -21,7 +21,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<c:set var="qtiWorksVersion" value="1.0-DEV4"/>
+<c:set var="qtiWorksVersion" value="1.0-DEV5"/>
 
 <!DOCTYPE html>
 <html lang="en">
