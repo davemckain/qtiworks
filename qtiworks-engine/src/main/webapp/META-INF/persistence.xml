@@ -5,9 +5,10 @@
 
   <persistence-unit name="qtiworks" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <class>uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser</class>
+    <class>uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser</class>
     <class>uk.ac.ed.ph.qtiworks.domain.entities.AssessmentEntity</class>
     <class>uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery</class>
+    <class>uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser</class>
     <properties>
       <property name="hibernate.id.new_generator_mappings" value="true"/>
     </properties>

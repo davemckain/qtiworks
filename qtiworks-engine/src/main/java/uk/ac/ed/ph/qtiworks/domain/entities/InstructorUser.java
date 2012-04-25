@@ -33,14 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -50,23 +48,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="instructor_users")
-@SequenceGenerator(name="instructorUserSequence", sequenceName="instructor_user_sequence", initialValue=1000, allocationSize=10)
-public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String> {
+public class InstructorUser extends User implements BaseEntity, Comparable<InstructorUser> {
 
     private static final long serialVersionUID = 7821803746245696405L;
-
-    @Id
-    @GeneratedValue(generator="instructorUserSequence")
-    @Column(name="id")
-    private Long id;
 
     @Basic(optional=false)
     @Column(name="login_name", length=DomainGlobals.LOGIN_NAME_MAX_LENGTH, updatable=false, unique=true)
     private String loginName;
-
-    @Basic(optional=false)
-    @Column(name="disabled", updatable=true)
-    private boolean disabled;
 
     @Basic(optional=false)
     @Column(name="sysadmin", updatable=true)
@@ -88,28 +76,14 @@ public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String
     @Column(name="last_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
     private String lastName;
 
+    //------------------------------------------------------------
 
-    @Override
-    protected Class<InstructorUser> getEntityClass() {
-        return InstructorUser.class;
+    public InstructorUser() {
+        super();
+        setUserType(UserType.INSTRUCTOR);
     }
 
-    @Override
-    protected String getBusinessKey() {
-        return loginName;
-    }
-
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
+    //------------------------------------------------------------
 
     public String getLoginName() {
         return loginName;
@@ -156,20 +130,48 @@ public class InstructorUser extends BusinessKeyBaseEntity<InstructorUser, String
     }
 
 
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(final boolean disabled) {
-        this.disabled = disabled;
-    }
-
-
+    @Override
     public boolean isSysAdmin() {
         return sysAdmin;
     }
 
     public void setSysAdmin(final boolean sysAdmin) {
         this.sysAdmin = sysAdmin;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public final boolean equals(final Object obj) {
+        if (!(obj instanceof InstructorUser)) {
+            return false;
+        }
+        final InstructorUser other = (InstructorUser) obj;
+        return loginName.equals(other.loginName);
+    }
+
+    @Override
+    public int hashCode() {
+        ensureLoginName(this);
+        return loginName.hashCode();
+    }
+
+    @Override
+    public final int compareTo(final InstructorUser o) {
+        ensureLoginName(this);
+        ensureLoginName(o);
+        return loginName.compareTo(o.loginName);
+    }
+
+    private void ensureLoginName(final InstructorUser user) {
+        if (user.loginName==null) {
+            throw new QtiWorksRuntimeException("Current logic branch requires loginName to be non-null on " + user);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(loginName=" + loginName + ")";
     }
 }
