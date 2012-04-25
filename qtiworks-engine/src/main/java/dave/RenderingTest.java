@@ -39,15 +39,16 @@ public class RenderingTest {
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
             final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
             final ItemSessionState itemSessionState = new ItemSessionState();
-            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
 
             System.out.println("\nInitialising");
-            itemController.initialize();
+            itemSessionController.initialize();
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-            final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, "/ENGINE", new SimpleXsltStylesheetCache());
-            final String rendered = renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
+            final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, "/qtiworks",
+                    new SimpleXsltStylesheetCache());
+            final String rendered = renderer.renderFreshStandaloneItem(itemSessionController,
                     null, SerializationMethod.HTML5_MATHJAX);
             System.out.println("Rendered page: " + rendered);
         }

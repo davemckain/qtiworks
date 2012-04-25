@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -136,17 +137,14 @@ public final class AssessmentRenderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
      * fashion, and not part of an assessment.
      */
-    public String renderFreshStandaloneItem(final ResolvedAssessmentItem resolvedAssessmentItem,
-            final ItemSessionState itemSessionState,
+    public String renderFreshStandaloneItem(final ItemSessionController itemSessionController,
             final Map<String, Object> renderingParameters, final SerializationMethod serializationMethod) {
-        logger.debug("renderFreshStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
-                + "renderingParameters={} serializationMethod={}",
+        logger.debug("renderFreshStandaloneItem(itemSessionController={}, renderingParameters={}, serializationMethod={}",
                 new Object[] {
-                        resolvedAssessmentItem, itemSessionState,
-                        renderingParameters, serializationMethod
+                        itemSessionController, renderingParameters, serializationMethod
                 });
 
-        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState,
+        return doRenderStandaloneItem(itemSessionController,
                 null, null, null, renderingParameters, serializationMethod);
     }
 
@@ -154,19 +152,19 @@ public final class AssessmentRenderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
      * fashion, and not part of an assessment.
      */
-    public String renderRespondedStandaloneItem(final ResolvedAssessmentItem resolvedAssessmentItem,
-            final ItemSessionState itemSessionState, final Map<String, ResponseData> responseInputs,
+    public String renderRespondedStandaloneItem(final ItemSessionController itemSessionController,
+            final Map<String, ResponseData> responseInputs,
             final List<Identifier> badResponseIdentifiers, final List<Identifier> invalidResponseIdentifiers,
             final Map<String, Object> renderingParameters, final SerializationMethod serializationMethod) {
-        logger.debug("renderStandaloneItem(resolvedAssessmentItem={}, itemSessionState={}, "
+        logger.debug("renderStandaloneItem(itemSessionController={}, "
                 + "responseInputs={}, unboundResponseIdentifiers={}, "
-                + "invalidResponseIdentifiers={}, enderingParameters={} serializationMethod={}",
+                + "invalidResponseIdentifiers={}, renderingParameters={}, serializationMethod={}",
                 new Object[] {
-                        resolvedAssessmentItem, itemSessionState,
+                        itemSessionController,
                         responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                         renderingParameters, serializationMethod
                 });
-        return doRenderStandaloneItem(resolvedAssessmentItem, itemSessionState,
+        return doRenderStandaloneItem(itemSessionController,
                 responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, serializationMethod);
     }
@@ -175,11 +173,14 @@ public final class AssessmentRenderer {
      * This is possibly temporary. It renders an {@link AssessmentItem} in a standalone
      * fashion, and not part of an assessment.
      */
-    private String doRenderStandaloneItem(final ResolvedAssessmentItem resolvedAssessmentItem,
-            final ItemSessionState itemSessionState, final Map<String, ResponseData> responseInputs,
+    private String doRenderStandaloneItem(final ItemSessionController itemSessionController,
+            final Map<String, ResponseData> responseInputs,
             final List<Identifier> badResponseIdentifiers, final List<Identifier> invalidResponseIdentifiers,
             final Map<String, Object> renderingParameters,
             final SerializationMethod serializationMethod) {
+        final ResolvedAssessmentItem resolvedAssessmentItem = itemSessionController.getResolvedAssessmentItem();
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+
         /* Set provided item & rendering parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         if (renderingParameters!=null) {
@@ -195,6 +196,11 @@ public final class AssessmentRenderer {
         xsltParameters.put("isResponded", responseInputs!=null);
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(badResponseIdentifiers));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(invalidResponseIdentifiers));
+
+        /* FIXME: I've hard-coded maxAttempts=1 (for non-adaptive) items here. In future, this
+         * should be settable by the instructor.
+         */
+        xsltParameters.put("furtherAttemptsAllowed", Boolean.valueOf(itemSessionController.isAttemptAllowed(1)));
 
         /* Convert template, response and outcome values into parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);

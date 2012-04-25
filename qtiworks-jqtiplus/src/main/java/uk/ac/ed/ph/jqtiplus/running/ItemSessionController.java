@@ -66,6 +66,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
@@ -646,6 +647,33 @@ public final class ItemSessionController implements ItemProcessingContext {
     //-------------------------------------------------------------------
 
     /**
+     * Determines whether a further attempt is allowed on this item.
+     *
+     * FIXME: Ideally, this should be called with something resembling {@link ItemSessionControl}
+     *   that could be used in both standalone and within-test fashion.
+     * FIXME: This is not integrated into tests yet
+     * (New in JQTI+)
+     *
+     * @param maxAttempts maximum number of attempts
+     * @return true if a further attempt is allowed, false otherwise.
+     */
+    public boolean isAttemptAllowed(final int maxAttempts) {
+        boolean result;
+        if (item.getAdaptive()) {
+            /* For adaptive items, attempts are limited by the value of the completion status variable */
+            final String completionStatus = itemSessionState.getCompletionStatus();
+            result = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+        }
+        else {
+            final int numAttempts = itemSessionState.getNumAttempts();
+            result = (numAttempts < maxAttempts);
+        }
+        return result;
+    }
+
+    /**
+     * FIXME: Returning Boolean is dodgy. Fix this API!
+     *
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
      * Returns true if this item reference was correctly responded;
@@ -689,6 +717,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     /**
+     * FIXME: Returning Boolean is dodgy. Fix this API!
+     *
      * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
      * is in general not simply a case of comparing with <correctResponse/>
      * Returns true if this item reference was incorrectly responded;

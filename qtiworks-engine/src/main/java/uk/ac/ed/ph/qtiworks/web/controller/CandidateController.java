@@ -285,11 +285,11 @@ public class CandidateController {
 
     private String serveFreshItem(final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState)
             throws RuntimeValidationException {
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-        itemController.initialize();
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        itemSessionController.initialize();
 
         final Map<String, Object> renderingParameters = createRenderingParameters();
-        return renderer.renderFreshStandaloneItem(resolvedAssessmentItem, itemSessionState,
+        return renderer.renderFreshStandaloneItem(itemSessionController,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }
 
@@ -304,15 +304,15 @@ public class CandidateController {
         logger.debug("Extracted responses {}", responseMap);
 
         /* Bind responses */
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         List<Identifier> invalidResponseIdentifiers = null;
-        final List<Identifier> badResponseIdentifiers = itemController.bindResponses(responseMap);
+        final List<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
         if (badResponseIdentifiers.isEmpty()) {
             logger.debug("Responses bound successfully, so continuing to response validation step");
-            invalidResponseIdentifiers = itemController.validateResponses();
+            invalidResponseIdentifiers = itemSessionController.validateResponses();
             if (invalidResponseIdentifiers.isEmpty()) {
                 logger.debug("Responses validated successfully, so invoking response processing");
-                itemController.processResponses();
+                itemSessionController.processResponses();
             }
             else {
                 logger.debug("Invalid responses submitted to {}, not invoking response processing", invalidResponseIdentifiers);
@@ -323,7 +323,7 @@ public class CandidateController {
         }
 
         final Map<String, Object> renderingParameters = createRenderingParameters();
-        return renderer.renderRespondedStandaloneItem(resolvedAssessmentItem, itemSessionState,
+        return renderer.renderRespondedStandaloneItem(itemSessionController,
                 responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
                 renderingParameters, SerializationMethod.HTML5_MATHJAX);
     }

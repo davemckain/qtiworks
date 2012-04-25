@@ -18,7 +18,7 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <xsl:variable name="completionStatus" select="qw:extract-single-cardinality-value(qw:get-outcome-value('completionStatus'))" as="xs:string"/>
+  <xsl:param name="furtherAttemptsAllowed" as="xs:boolean"/>
 
   <!-- ************************************************************ -->
 
@@ -135,9 +135,9 @@ Renders a standalone assessmentItem
         <xsl:apply-templates/>
 
         <!-- Maybe show controls -->
-        <xsl:if test="$completionStatus!='completed'">
+        <xsl:if test="$furtherAttemptsAllowed">
           <div class="controls">
-            <input type="reset" value="RESET INPUT"/>
+            <!--<input type="reset" value="RESET INPUT"/>-->
             <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
           </div>
         </xsl:if>
