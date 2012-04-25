@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PersistenceConfiguration;
+import uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 import javax.persistence.EntityManager;
@@ -53,7 +53,7 @@ public final class JpaRunner {
 
     public static void main(final String[] args) {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, PersistenceConfiguration.class);
+        ctx.register(JpaProductionConfiguration.class, DomainServicesConfiguration.class);
         ctx.refresh();
 
         final LocalContainerEntityManagerFactoryBean emf = ctx.getBean(LocalContainerEntityManagerFactoryBean.class);

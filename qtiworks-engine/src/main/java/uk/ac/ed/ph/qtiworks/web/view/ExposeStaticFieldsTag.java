@@ -33,9 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web.view;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
-
 
 import java.util.Map;
 
@@ -53,31 +52,31 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
  * @author David McKain
  */
 public final class ExposeStaticFieldsTag extends SimpleTagSupport {
-    
+
     private String className;
     private String targetName;
-    
+
     @Override
     public void doTag() {
-        JspContext jspContext = getJspContext();
+        final JspContext jspContext = getJspContext();
         if (jspContext.getAttribute(targetName)==null) {
             Class<?> globalClass;
             try {
                 globalClass = Class.forName(className);
             }
-            catch (ClassNotFoundException e) {
-                throw new QtiWorksLogicException("Could not find class " + className, e);
+            catch (final ClassNotFoundException e) {
+                throw new QtiWorksRuntimeException("Could not find class " + className, e);
             }
-            Map<String, Object> staticFields = WebUtilities.exposeStaticFields(globalClass);
+            final Map<String, Object> staticFields = WebUtilities.exposeStaticFields(globalClass);
             jspContext.setAttribute(targetName, staticFields);
         }
     }
 
-    public void setClassName(String className) {
+    public void setClassName(final String className) {
         this.className = className;
     }
 
-    public void setTargetName(String targetName) {
+    public void setTargetName(final String targetName) {
         this.targetName = targetName;
     }
 }

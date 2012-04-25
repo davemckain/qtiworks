@@ -31,55 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services;
-
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
-import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.io.Files;
+package uk.ac.ed.ph.qtiworks;
 
 /**
- * Draft of service for handling uploaded candidate data
- *
- * TODO: This needs to store stuff properly into the DB.
+ * Generic {@link RuntimeException} for QTIWorks, used when something unexpected happens
  *
  * @author David McKain
  */
-@Service
-public class CandidateUploadService {
+public class QtiWorksRuntimeException extends RuntimeException {
 
-    private static final Logger logger = LoggerFactory.getLogger(CandidateUploadService.class);
+    private static final long serialVersionUID = 5565515563116696270L;
 
-    private File sandboxRootDirectory;
-
-    @PostConstruct
-    public void init() {
-        sandboxRootDirectory = Files.createTempDir();
-        logger.info("Created candidate upload directory at {}", sandboxRootDirectory);
+    public static QtiWorksRuntimeException unexpectedException(final Throwable cause) {
+        return new QtiWorksRuntimeException("Unexpected Exception", cause);
     }
 
-    public FileResponseData importData(final MultipartFile multipartFile) {
-        logger.debug("Importing candidate file upload {}", multipartFile);
-        final String uploadName = "fileupload-" + Thread.currentThread().getName() + "-" + System.currentTimeMillis();
-        final File uploadFile = new File(sandboxRootDirectory, uploadName);
-        try {
-            IOUtilities.transfer(multipartFile.getInputStream(), new FileOutputStream(uploadFile));
-        }
-        catch (final Exception e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception uploading file submission", e);
-        }
-        return new FileResponseData(uploadFile, multipartFile.getContentType(), multipartFile.getOriginalFilename());
+    public QtiWorksRuntimeException() {
+        super();
+    }
+
+    public QtiWorksRuntimeException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public QtiWorksRuntimeException(final String message) {
+        super(message);
+    }
+
+    public QtiWorksRuntimeException(final Throwable cause) {
+        super(cause);
     }
 }

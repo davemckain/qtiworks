@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 
 /**
  * Trivial base class for entities which possess simple "business key"
@@ -75,7 +75,7 @@ public abstract class BusinessKeyBaseEntity<E extends BusinessKeyBaseEntity<E,K>
     protected K ensureBusinessKey(final E object, final String methodName) {
         final K businessKey = object.getBusinessKey();
         if (businessKey==null) {
-            throw new QtiWorksLogicException("Business key for entity " + object.toString()
+            throw new QtiWorksRuntimeException("Business key for entity " + object.toString()
                     + " was null when " + methodName + " was called");
         }
         return businessKey;

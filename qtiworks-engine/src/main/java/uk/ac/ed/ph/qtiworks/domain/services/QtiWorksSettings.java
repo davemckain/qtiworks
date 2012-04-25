@@ -31,64 +31,66 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.domain.services;
 
-import java.util.Properties;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.stereotype.Component;
 
 /**
- * Persistence-level configuration
+ * Bean injected with the settings from <code>qtiworks.properties</code>
  *
  * @author David McKain
  */
-@Configuration
+@Component
 @ImportResource("classpath:/qtiworks-config.xml")
-public class PersistenceConfiguration {
+public final class QtiWorksSettings {
 
     private @Value("${qtiworks.jdbc.driver}") String jdbcDriverClassName;
     private @Value("${qtiworks.jdbc.url}") String jdbcUrl;
     private @Value("${qtiworks.jdbc.username}") String jdbcUsername;
     private @Value("${qtiworks.jdbc.password}") String jdbcPassword;
+    private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
+    private @Value("${qtiworks.email.admin.name}") String emailAdminName;
+    private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
+    private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
 
-    @Value("${qtiworks.hibernate.dialect}")
-    private String hibernateDialect;
-
-    @Resource(name="extraJpaProperties")
-    private Properties extraJpaProperties;
-
-    @Bean(destroyMethod="close")
-    public DataSource dataSource() {
-        final BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(jdbcDriverClassName);
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setUsername(jdbcUsername);
-        dataSource.setPassword(jdbcPassword);
-        return dataSource;
+    public String getJdbcDriverClassName() {
+        return jdbcDriverClassName;
     }
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
-        final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPersistenceXmlLocation("classpath:/META-INF/persistence.xml");
-        emf.setDataSource(dataSource());
-        emf.setJpaProperties(jpaProperties());
-        return emf;
+    public String getJdbcUrl() {
+        return jdbcUrl;
     }
 
-    @Bean
-    public Properties jpaProperties() {
-        final Properties jpaProperties = new Properties();
-        jpaProperties.put("hibernate.dialect", hibernateDialect);
-        jpaProperties.putAll(extraJpaProperties);
-        return jpaProperties;
+    public String getJdbcUsername() {
+        return jdbcUsername;
+    }
+
+    public String getJdbcPassword() {
+        return jdbcPassword;
+    }
+
+    public String getHibernateDialect() {
+        return hibernateDialect;
+    }
+
+    public String getEmailAdminName() {
+        return emailAdminName;
+    }
+
+    public String getEmailAdminAddress() {
+        return emailAdminAddress;
+    }
+
+    public String getEmailSmtpHost() {
+        return emailSmtpHost;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

@@ -50,36 +50,36 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Some general servlet-related utility methods.
- * 
+ *
  * @author David McKain
  */
 public final class WebUtilities {
-    
-    /** 
+
+    /**
      * Name of request Attribute that any custom error messages will be stored in when passing
      * to error JSPs.
-     * 
+     *
      * @see #sendErrorMessagePage(ServletRequest, HttpServletResponse, int, String)
      */
-    public static final String ERROR_MESSAGE_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiengine.web.errorMessage";
-    
-    public static final String WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiengine.web.WithinContextRequestUrl";
-    
-    public static final String FULL_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiengine.web.FullRequestUrl";
-    
+    public static final String ERROR_MESSAGE_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.errorMessage";
+
+    public static final String WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.WithinContextRequestUrl";
+
+    public static final String FULL_REQUEST_URL_ATTRIBUTE_NAME = "uk.ac.ed.ph.qtiworks.web.FullRequestUrl";
+
     /**
      * Returns the URL for the given request, starting from AFTER the context path and
      * including path info and query parameters.
      * <p>
      * The result is stored in the {@link HttpServletRequest} as an Attribute for later
      * retrieval so as to avoid needed recalculation.
-     * 
+     *
      * @param request
      */
-    public static String getWithinContextRequestUrl(HttpServletRequest request) {
+    public static String getWithinContextRequestUrl(final HttpServletRequest request) {
         String result = (String) request.getAttribute(WITHIN_CONTEXT_REQUEST_URL_ATTRIBUTE_NAME);
         if (result==null) {
-            StringBuilder builder = new StringBuilder(request.getServletPath());
+            final StringBuilder builder = new StringBuilder(request.getServletPath());
             if (request.getPathInfo()!=null) {
                 builder.append(request.getPathInfo());
             }
@@ -91,20 +91,20 @@ public final class WebUtilities {
         }
         return result;
     }
-    
+
     /**
      * Returns the URL for the given request, including context path and
      * including path info and query parameters.
      * <p>
      * The result is stored in the {@link HttpServletRequest} as an Attribute for later
      * retrieval so as to avoid needed recalculation.
-     * 
+     *
      * @param request
      */
-    public static String getFullRequestUrl(HttpServletRequest request) {
+    public static String getFullRequestUrl(final HttpServletRequest request) {
         String result = (String) request.getAttribute(FULL_REQUEST_URL_ATTRIBUTE_NAME);
         if (result==null) {
-            StringBuilder builder = new StringBuilder(request.getContextPath())
+            final StringBuilder builder = new StringBuilder(request.getContextPath())
                 .append(request.getServletPath());
             if (request.getPathInfo()!=null) {
                 builder.append(request.getPathInfo());
@@ -121,14 +121,14 @@ public final class WebUtilities {
     /**
      * Wrapper round {@link ServletContext#getInitParameter(String)} that throws a
      * {@link ServletException} if the parameter could not be found.
-     * 
+     *
      * @param context
      * @param paramName
      * @throws ServletException
      */
-    public static String getRequiredInitParameter(ServletContext context, String paramName)
+    public static String getRequiredInitParameter(final ServletContext context, final String paramName)
             throws ServletException {
-        String result = context.getInitParameter(paramName);
+        final String result = context.getInitParameter(paramName);
         if (result==null) {
             throw new ServletException("Could not look up servlet context <init-param/> " + paramName);
         }
@@ -138,14 +138,14 @@ public final class WebUtilities {
     /**
      * Wrapper round {@link FilterConfig#getInitParameter(String)} that throws a
      * {@link ServletException} if the parameter could not be found.
-     * 
+     *
      * @param config
      * @param paramName
      * @throws ServletException
      */
-    public static String getRequiredInitParameter(FilterConfig config, String paramName)
+    public static String getRequiredInitParameter(final FilterConfig config, final String paramName)
             throws ServletException {
-        String result = config.getInitParameter(paramName);
+        final String result = config.getInitParameter(paramName);
         if (result == null) {
             throw new ServletException("Could not look up <init-param/> " + paramName
                     + " for filter " + config.getFilterName());
@@ -158,27 +158,27 @@ public final class WebUtilities {
      * using custom error JSPs. (The message parameter is usually ignored in this case, which is
      * annoying!) This method stores the required error message as a request attribute called
      * {@link #ERROR_MESSAGE_ATTRIBUTE_NAME} which can then be picked up by the JSP.
-     * 
+     *
      * @see #ERROR_MESSAGE_ATTRIBUTE_NAME
-     * 
+     *
      * @param request
      * @param response
      * @param message
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void sendErrorMessagePage(ServletRequest request, HttpServletResponse response,
-            int responseCode, String message) throws IOException {
+    public static void sendErrorMessagePage(final ServletRequest request, final HttpServletResponse response,
+            final int responseCode, final String message) throws IOException {
         request.setAttribute(ERROR_MESSAGE_ATTRIBUTE_NAME, message);
         response.sendError(responseCode, message);
     }
-    
-    public static Map<String,Object> exposeStaticFields(Class<?> globalClass) {
-        Map<String, Object> targetMap = new HashMap<String, Object>() {
+
+    public static Map<String,Object> exposeStaticFields(final Class<?> globalClass) {
+        final Map<String, Object> targetMap = new HashMap<String, Object>() {
             private static final long serialVersionUID = -5029839848191296643L;
 
             @Override
-            public Object get(Object key) {
-                Object result = super.get(key);
+            public Object get(final Object key) {
+                final Object result = super.get(key);
                 if (result==null) {
                     throw new QtiWorksLogicException("No exposed field '" + key + "' found");
                 }
@@ -186,11 +186,11 @@ public final class WebUtilities {
             }
         };
         try {
-            for (Field field : globalClass.getFields()) {
+            for (final Field field : globalClass.getFields()) {
                 targetMap.put(field.getName(), field.get(globalClass));
             }
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new QtiWorksLogicException("Could not expose all static fields in class " + globalClass, e);
         }
         return Collections.unmodifiableMap(targetMap);

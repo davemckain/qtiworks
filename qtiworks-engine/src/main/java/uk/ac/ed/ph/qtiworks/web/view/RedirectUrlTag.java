@@ -51,6 +51,6 @@ public final class RedirectUrlTag extends AbstractUrlTag {
     @Override
     protected final String createUrl(final HttpServletRequest request, Page page,
             final String pathInfo, final String fragment, final Object[] params) {
-        return ELFunctions.escapeLink(ViewUtilities.createRedirectLink(request, page, pathInfo, fragment, params));
+        return ElFunctions.escapeLink(ViewUtilities.createRedirectLink(request, page, pathInfo, fragment, params));
     }
 }

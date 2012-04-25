@@ -38,27 +38,23 @@ package uk.ac.ed.ph.qtiworks;
  *
  * @author David McKain
  */
-public final class QtiWorksLogicException extends RuntimeException {
+public final class QtiWorksLogicException extends QtiWorksRuntimeException {
 
     private static final long serialVersionUID = 2526848963219875046L;
-    
-    public static QtiWorksLogicException unexpectedException(Throwable cause) {
-        return new QtiWorksLogicException("Unexpected Exception", cause);
-    }
 
     public QtiWorksLogicException() {
         super();
     }
 
-    public QtiWorksLogicException(String message, Throwable cause) {
+    public QtiWorksLogicException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public QtiWorksLogicException(String message) {
+    public QtiWorksLogicException(final String message) {
         super(message);
     }
 
-    public QtiWorksLogicException(Throwable cause) {
+    public QtiWorksLogicException(final Throwable cause) {
         super(cause);
     }
 }

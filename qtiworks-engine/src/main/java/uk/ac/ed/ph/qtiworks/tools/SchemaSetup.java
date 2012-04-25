@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PersistenceConfiguration;
+import uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -50,7 +50,7 @@ public final class SchemaSetup {
 
     public static void main(final String[] args) {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaSetupConfiguration.class, PersistenceConfiguration.class);
+        ctx.register(JpaSetupConfiguration.class, DomainServicesConfiguration.class);
         ctx.refresh();
     }
 }

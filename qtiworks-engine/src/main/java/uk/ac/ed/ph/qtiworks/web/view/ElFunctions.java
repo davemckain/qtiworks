@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
 import java.net.URI;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -48,27 +49,43 @@ import javax.servlet.jsp.PageContext;
  *
  * @author David McKain
  */
-public final class ELFunctions {
-    
-    public static String extractContentPackagePath(URI uri) {
-        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+public final class ElFunctions {
+
+    public static String extractContentPackagePath(final URI uri) {
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         return packageUriScheme.uriToPath(uri);
     }
-    
-    public static String encodePageLink(PageContext pageContext, String pageName) {
+
+    public static String encodePageLink(final PageContext pageContext, final String pageName) {
         return escapeLink(ViewUtilities.createPageLink(getRequest(pageContext),
                 ViewUtilities.decodePathName(pageName), null, null));
     }
-    
-    static String escapeLink(String link) {
+
+    static String escapeLink(final String link) {
         return link.replace("&", "&amp;");
     }
-    
-    public static String dumpObject(Object object) {
+
+    public static String dumpObject(final Object object) {
         return ObjectDumper.dumpObject(object, DumpMode.DEEP);
     }
-    
-    private static HttpServletRequest getRequest(PageContext pageContext) {
+
+    public static String formatTime(final Date time) {
+        return ViewUtilities.getTimeFormat().format(time);
+    }
+
+    public static String formatDate(final Date time) {
+        return ViewUtilities.getDateFormat().format(time);
+    }
+
+    public static String formatDateAndTime(final Date time) {
+        return ViewUtilities.getDateAndTimeFormat().format(time);
+    }
+
+    public static String formatDayDateAndTime(final Date time) {
+        return ViewUtilities.getDayDateAndTimeFormat().format(time);
+    }
+
+    private static HttpServletRequest getRequest(final PageContext pageContext) {
         return (HttpServletRequest) pageContext.getRequest();
     }
 }

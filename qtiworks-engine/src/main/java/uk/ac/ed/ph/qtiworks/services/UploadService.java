@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.UploadException;
 import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage.AssessmentType;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload.UploadType;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
@@ -57,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -82,24 +81,24 @@ import com.google.common.io.Files;
  */
 @Service
 public class UploadService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
-    
+
     public static final String SINGLE_FILE_NAME = "qti.xml";
-    
+
     private File sandboxRootDirectory;
-    
+
     @Resource
     private QtiXmlReader qtiXmlReader;
-    
+
     @PostConstruct
     public void init() {
         sandboxRootDirectory = Files.createTempDir();
         logger.info("Created sandbox root directory at {}", sandboxRootDirectory);
     }
-    
-    public AssessmentUpload importData(InputStream inputStream, String contentType) throws UploadException {
-        File sandboxDirectory = createRequestSandbox();
+
+    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws UploadException {
+        final File sandboxDirectory = createRequestSandbox();
         AssessmentUpload result = null;
         try {
             if ("application/zip".equals(contentType)) {
@@ -115,67 +114,67 @@ public class UploadService {
                 throw new UploadException(UploadFailureReason.NOT_XML_OR_ZIP);
             }
         }
-        catch (UploadException e) {
+        catch (final UploadException e) {
             logger.info("Upload resulted in an Exception, so deleting sandbox", e);
             deleteSandbox(sandboxDirectory);
             throw e;
         }
-        catch (RuntimeException e) {
+        catch (final RuntimeException e) {
             logger.info("Upload resulted in a RuntimeException, so deleting sandbox", e);
             deleteSandbox(sandboxDirectory);
             throw e;
         }
         return result;
     }
-    
-    public void deleteUpload(AssessmentUpload assessmentUpload) {
+
+    public void deleteUpload(final AssessmentUpload assessmentUpload) {
         logger.info("Deleting sandbox for upload {}", assessmentUpload);
         try {
             IOUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             logger.error("Could not delete upload {}", assessmentUpload);
         }
     }
-    
-    public void deleteSandbox(File sandboxDirectory) {
+
+    public void deleteSandbox(final File sandboxDirectory) {
         try {
             IOUtilities.recursivelyDelete(sandboxDirectory);
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             logger.error("Could not delete sandbox {}", sandboxDirectory.getAbsolutePath());
         }
     }
-    
-    private AssessmentUpload importXml(InputStream inputStream, File importSandboxDirectory) {
-        File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
+
+    private AssessmentUpload importXml(final InputStream inputStream, final File importSandboxDirectory) {
+        final File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
         try {
             IOUtilities.transfer(inputStream, new FileOutputStream(resultFile));
         }
-        catch (IOException e) {
-            throw QtiWorksLogicException.unexpectedException(e);
+        catch (final IOException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        
-        AssessmentPackage assessmentPackage = new AssessmentPackage();
+
+        final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setAssessmentType(AssessmentType.ITEM);
         assessmentPackage.setAssessmentObjectHref(SINGLE_FILE_NAME);
         assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
-        
+
         /* Attempt to validate as an item */
-        ItemValidationResult validationResult = validate(importSandboxDirectory, SINGLE_FILE_NAME, ItemValidationResult.class);
-        
+        final ItemValidationResult validationResult = validate(importSandboxDirectory, SINGLE_FILE_NAME, ItemValidationResult.class);
+
         return new AssessmentUpload(assessmentPackage, UploadType.STANDALONE, validationResult);
     }
-    
-    private AssessmentUpload extractZipFile(InputStream inputStream, File importSandboxDirectory)
+
+    private AssessmentUpload extractZipFile(final InputStream inputStream, final File importSandboxDirectory)
             throws UploadException {
         /* Extract ZIP contents */
         logger.info("Expanding ZIP file from stream {} to sandbox {}", inputStream, importSandboxDirectory);
         ZipEntry zipEntry;
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         try {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                File destFile = new File(importSandboxDirectory, zipEntry.getName());
+                final File destFile = new File(importSandboxDirectory, zipEntry.getName());
                 if (!zipEntry.isDirectory()) {
                     IOUtilities.ensureFileCreated(destFile);
                     IOUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
@@ -184,30 +183,30 @@ public class UploadService {
             }
             zipInputStream.close();
         }
-        catch (ZipException e) {
+        catch (final ZipException e) {
             throw new UploadException(UploadFailureReason.BAD_ZIP, e);
-            
+
         }
-        catch (IOException e) {
-            throw QtiWorksLogicException.unexpectedException(e);
+        catch (final IOException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        
+
         /* Expand content package */
-        QtiContentPackageExtractor contentPackageExtractor = new QtiContentPackageExtractor(importSandboxDirectory);
+        final QtiContentPackageExtractor contentPackageExtractor = new QtiContentPackageExtractor(importSandboxDirectory);
         QtiContentPackageSummary contentPackageSummary;
         try {
             contentPackageSummary = contentPackageExtractor.parse();
         }
-        catch (XmlResourceNotFoundException e) {
+        catch (final XmlResourceNotFoundException e) {
             throw new UploadException(UploadFailureReason.NOT_CONTENT_PACKAGE, e);
         }
-        catch (ImsManifestException e) {
+        catch (final ImsManifestException e) {
             throw new UploadException(UploadFailureReason.BAD_IMS_MANIFEST, e);
         }
-        int testCount = contentPackageSummary.getTestResourceHrefs().size();
-        int itemCount = contentPackageSummary.getItemResourceHrefs().size();
-        
-        AssessmentPackage assessmentPackage = new AssessmentPackage();
+        final int testCount = contentPackageSummary.getTestResourceHrefs().size();
+        final int itemCount = contentPackageSummary.getItemResourceHrefs().size();
+
+        final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
         AssessmentObjectValidationResult<?> validationResult;
         if (testCount==1) {
@@ -231,22 +230,22 @@ public class UploadService {
             logger.warn("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
             throw new UploadException(UploadFailureReason.UNSUPPORTED_PACKAGE_CONTENTS);
         }
-        
+
         /* Validate and wrap up */
         return new AssessmentUpload(assessmentPackage, UploadType.CONTENT_PACKAGE, validationResult);
     }
-    
-    private <E extends AssessmentObjectValidationResult<?>> E validate(AssessmentPackage assessmentPackage, Class<E> resultClass) {
+
+    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackage assessmentPackage, final Class<E> resultClass) {
         return validate(new File(assessmentPackage.getSandboxPath()), assessmentPackage.getAssessmentObjectHref(), resultClass);
     }
-    
+
     @SuppressWarnings("unchecked")
-    private <E extends AssessmentObjectValidationResult<?>> E validate(File importSandboxDirectory, String assessmentObjectHref, Class<E> resultClass) {
-        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
-        QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
-        AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
+    private <E extends AssessmentObjectValidationResult<?>> E validate(final File importSandboxDirectory, final String assessmentObjectHref, final Class<E> resultClass) {
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        final ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
+        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
+        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+        final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
         E result;
         if (resultClass.equals(ItemValidationResult.class)) {
             result = (E) objectManager.resolveAndValidateItem(objectSystemId);
@@ -255,26 +254,26 @@ public class UploadService {
             result = (E) objectManager.resolveAndValidateTest(objectSystemId);
         }
         else {
-            throw new QtiWorksLogicException("Unexpected switch case " + resultClass);
+            throw new QtiWorksRuntimeException("Unexpected switch case " + resultClass);
         }
         return result;
     }
-    
-    private ResourceLocator createInputResourceLocator(File importSandboxDirectory) {
-        CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        ChainedResourceLocator result = new ChainedResourceLocator(
+
+    private ResourceLocator createInputResourceLocator(final File importSandboxDirectory) {
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        final ChainedResourceLocator result = new ChainedResourceLocator(
                 new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
                 QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
                 new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
         );
         return result;
     }
-    
+
     private File createRequestSandbox() {
-        String sandboxName = Thread.currentThread().getName() + "-" + System.currentTimeMillis();
-        File sandboxDirectory = new File(sandboxRootDirectory, sandboxName);
+        final String sandboxName = Thread.currentThread().getName() + "-" + System.currentTimeMillis();
+        final File sandboxDirectory = new File(sandboxRootDirectory, sandboxName);
         if (!sandboxDirectory.mkdir()) {
-            throw new QtiWorksLogicException("Could not create sandbox directory " + sandboxDirectory);
+            throw new QtiWorksRuntimeException("Could not create sandbox directory " + sandboxDirectory);
         }
         return sandboxDirectory;
     }
