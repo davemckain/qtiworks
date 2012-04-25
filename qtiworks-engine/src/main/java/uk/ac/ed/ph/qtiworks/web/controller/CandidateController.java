@@ -288,9 +288,7 @@ public class CandidateController {
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         itemSessionController.initialize();
 
-        final Map<String, Object> renderingParameters = createRenderingParameters();
-        return renderer.renderFreshStandaloneItem(itemSessionController,
-                renderingParameters, SerializationMethod.HTML5_MATHJAX);
+        return renderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
     }
 
     private String handleResponseSubmission(final HttpServletRequest request, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState)
@@ -322,15 +320,9 @@ public class CandidateController {
             logger.debug("Bad responses submitted to {}, so no response processing invoked", badResponseIdentifiers);
         }
 
-        final Map<String, Object> renderingParameters = createRenderingParameters();
         return renderer.renderRespondedStandaloneItem(itemSessionController,
                 responseMap, badResponseIdentifiers, invalidResponseIdentifiers,
-                renderingParameters, SerializationMethod.HTML5_MATHJAX);
-    }
-
-    private Map<String, Object> createRenderingParameters() {
-        final Map<String, Object> result = new HashMap<String, Object>();
-        return result;
+                SerializationMethod.HTML5_MATHJAX);
     }
 
     private void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<String, ResponseData> responseMap) {

@@ -49,7 +49,7 @@ public class RenderingTest {
             final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, "/qtiworks",
                     new SimpleXsltStylesheetCache());
             final String rendered = renderer.renderFreshStandaloneItem(itemSessionController,
-                    null, SerializationMethod.HTML5_MATHJAX);
+                    SerializationMethod.HTML5_MATHJAX);
             System.out.println("Rendered page: " + rendered);
         }
         finally {

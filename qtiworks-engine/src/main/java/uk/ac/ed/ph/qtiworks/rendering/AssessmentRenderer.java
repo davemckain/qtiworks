@@ -138,14 +138,14 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderFreshStandaloneItem(final ItemSessionController itemSessionController,
-            final Map<String, Object> renderingParameters, final SerializationMethod serializationMethod) {
-        logger.debug("renderFreshStandaloneItem(itemSessionController={}, renderingParameters={}, serializationMethod={}",
+            final SerializationMethod serializationMethod) {
+        logger.debug("renderFreshStandaloneItem(itemSessionController={}, serializationMethod={}",
                 new Object[] {
-                        itemSessionController, renderingParameters, serializationMethod
+                        itemSessionController, serializationMethod
                 });
 
         return doRenderStandaloneItem(itemSessionController,
-                null, null, null, renderingParameters, serializationMethod);
+                null, null, null, serializationMethod);
     }
 
     /**
@@ -153,20 +153,18 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderRespondedStandaloneItem(final ItemSessionController itemSessionController,
-            final Map<String, ResponseData> responseInputs,
-            final List<Identifier> badResponseIdentifiers, final List<Identifier> invalidResponseIdentifiers,
-            final Map<String, Object> renderingParameters, final SerializationMethod serializationMethod) {
+            final Map<String, ResponseData> responseInputs, final List<Identifier> badResponseIdentifiers,
+            final List<Identifier> invalidResponseIdentifiers, final SerializationMethod serializationMethod) {
         logger.debug("renderStandaloneItem(itemSessionController={}, "
                 + "responseInputs={}, unboundResponseIdentifiers={}, "
-                + "invalidResponseIdentifiers={}, renderingParameters={}, serializationMethod={}",
+                + "invalidResponseIdentifiers={}, serializationMethod={}",
                 new Object[] {
-                        itemSessionController,
-                        responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
-                        renderingParameters, serializationMethod
+                        itemSessionController, responseInputs, badResponseIdentifiers,
+                        invalidResponseIdentifiers, serializationMethod
                 });
         return doRenderStandaloneItem(itemSessionController,
                 responseInputs, badResponseIdentifiers, invalidResponseIdentifiers,
-                renderingParameters, serializationMethod);
+                serializationMethod);
     }
 
     /**
@@ -176,21 +174,13 @@ public final class AssessmentRenderer {
     private String doRenderStandaloneItem(final ItemSessionController itemSessionController,
             final Map<String, ResponseData> responseInputs,
             final List<Identifier> badResponseIdentifiers, final List<Identifier> invalidResponseIdentifiers,
-            final Map<String, Object> renderingParameters,
             final SerializationMethod serializationMethod) {
         final ResolvedAssessmentItem resolvedAssessmentItem = itemSessionController.getResolvedAssessmentItem();
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
-        /* Set provided item & rendering parameters */
+        /* Set various control parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        if (renderingParameters!=null) {
-            xsltParameters.putAll(renderingParameters);
-        }
-
-        /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
-
-        /* Set other control parameters */
+        xsltParameters.put("webappContextPath", webappContextPath);
         xsltParameters.put("serializationMethod", serializationMethod.toString());
         xsltParameters.put("itemSystemId", resolvedAssessmentItem.getItemLookup().getSystemId());
         xsltParameters.put("isResponded", responseInputs!=null);
@@ -241,7 +231,7 @@ public final class AssessmentRenderer {
         }
 
         /* (Re)set control parameters, allowing restricted safe override via RenderingParameters */
-        xsltParameters.put("webappContextPath", extractPathOverride(renderingParameters, "webappContextPath", webappContextPath));
+        xsltParameters.put("webappContextPath", webappContextPath);
 
         /* Set other control parameters */
         xsltParameters.put("itemHref", itemHref);
@@ -262,27 +252,6 @@ public final class AssessmentRenderer {
 //        }
 
         return doTransform(resolvedAssessmentItem, testItemXsltUri, xsltParameters, serializationMethod);
-    }
-
-    /**
-     * FIXME: Will we still allow this?
-     *
-     * Looks in the given {@link Map} of renderingParameters for that having the give name. If found, and
-     * its valued is deemed legal, then its value is returned. Otherwise, the provided default is returned.
-     */
-    private String extractPathOverride(final Map<String, Object> renderingParameters, final String parameterName, final String defaultValue) {
-        String value = null;
-        if (renderingParameters!=null) {
-            value = (String) renderingParameters.get(parameterName);
-            if (value!=null && value.matches(".*[^\\w/\\.-].*")) {
-                logger.warn("Value for rendering parameter {} must contain only alphanumeric characters, '_', '.', '/' or '-'", parameterName, value);
-                value = null;
-            }
-        }
-        if (value==null) {
-            value = defaultValue;
-        }
-        return value;
     }
 
     private String doTransform(final ResolvedAssessmentObject<?> resolvedAssessmentObject, final URI stylesheetUri,
