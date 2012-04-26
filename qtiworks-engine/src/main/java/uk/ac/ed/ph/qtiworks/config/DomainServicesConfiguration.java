@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.config;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.ThreadLocalIdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.services.SystemEmailService;
 
@@ -116,6 +117,11 @@ public class DomainServicesConfiguration {
         emf.setDataSource(dataSource());
         emf.setJpaProperties(jpaProperties());
         return emf;
+    }
+
+    @Bean
+    public UserDao userDao() {
+        return new UserDao();
     }
 
     @Bean

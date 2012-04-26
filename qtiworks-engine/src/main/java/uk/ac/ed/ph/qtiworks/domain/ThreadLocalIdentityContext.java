@@ -50,7 +50,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 public final class ThreadLocalIdentityContext implements IdentityContext {
 
     private final ThreadLocal<User> currentIdentityThreadLocal = new ThreadLocal<User>();
-    private final ThreadLocal<User> currentUnderlyingIdentityThreadLocal = new ThreadLocal<User>();
+    private final ThreadLocal<InstructorUser> currentUnderlyingIdentityThreadLocal = new ThreadLocal<InstructorUser>();
 
     @Override
     public User getCurrentThreadEffectiveIdentity() {
@@ -64,12 +64,12 @@ public final class ThreadLocalIdentityContext implements IdentityContext {
 
 
     @Override
-    public User getCurrentThreadUnderlyingIdentity() {
+    public InstructorUser getCurrentThreadUnderlyingIdentity() {
         return currentUnderlyingIdentityThreadLocal.get();
     }
 
     @Override
-    public void setCurrentThreadUnderlyingIdentity(final User user) {
+    public void setCurrentThreadUnderlyingIdentity(final InstructorUser user) {
         currentUnderlyingIdentityThreadLocal.set(user);
     }
 

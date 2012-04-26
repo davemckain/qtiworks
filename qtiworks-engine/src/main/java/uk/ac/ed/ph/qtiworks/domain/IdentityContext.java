@@ -55,8 +55,8 @@ public interface IdentityContext {
     User getCurrentThreadEffectiveIdentity();
     void setCurrentThreadEffectiveIdentity(User user);
 
-    User getCurrentThreadUnderlyingIdentity();
-    void setCurrentThreadUnderlyingIdentity(User user);
+    InstructorUser getCurrentThreadUnderlyingIdentity();
+    void setCurrentThreadUnderlyingIdentity(InstructorUser user);
 
     //-----------------------------------------------------------
     // Convenience methods for ensuring caller has appropriate identity

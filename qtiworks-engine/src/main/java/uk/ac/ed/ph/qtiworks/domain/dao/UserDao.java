@@ -31,48 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.web.WebUtilities;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
- * assumes a configured identity for the current User.
- * <p>
- * This is extremely useful when debugging as it saves having to log in over and over again!
+ * DAO implementation for the {@link User} entity.
  *
  * @author David McKain
  */
-public final class FakeWebAuthenticationFilter extends AbstractWebAuthenticationFilter {
+@Repository
+@Transactional(readOnly=true,propagation=Propagation.SUPPORTS)
+public class UserDao extends GenericDao<User> {
 
-    /** Filter init parameter specifying the Login Name of the assumed User */
-    public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
+    @SuppressWarnings("unused")
+    @PersistenceContext
+    private EntityManager em;
 
-    /** Login Name for the assumed User */
-    private String fakeLoginName;
-
-    @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
-        fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
-    }
-
-    @Override
-    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
-        if (user==null) {
-            throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);
-        }
-        else if (user.isDisabled()) {
-            throw new QtiWorksLogicException("Fake InstructorUser " + fakeLoginName + " has their account marked as disabled");
-        }
-        return user;
+    public UserDao() {
+        super(User.class);
     }
 }

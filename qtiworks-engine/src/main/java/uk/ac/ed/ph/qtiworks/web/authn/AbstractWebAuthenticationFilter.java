@@ -33,8 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.io.IOException;
@@ -49,9 +52,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
@@ -68,35 +71,39 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 public abstract class AbstractWebAuthenticationFilter implements Filter {
 
-    private static final Log log = LogFactory.getLog(AbstractWebAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractWebAuthenticationFilter.class);
+
+    /** Name of request Attribute that will contain the underlying identity of the client */
+    public static final String UNDERLYING_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.underlyingIdentity";
 
     /**
      * Name of session Attribute containing the user ID for the chosen identity of the client.
      * This is ignored if the underlying identity is not that of a system administrator.
      */
-    public static final String REQUESTED_EFFECTIVE_LOGIN_NAME_ATTRIBUTE_NAME = "qtiworks.web.authn.requestedIdentityLoginName";
+    public static final String REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME = "qtiworks.web.authn.requestedIdentityId";
 
     /** Name of request Attribute that will contain the effective identity of the client */
     public static final String EFFECTIVE_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.effectiveIdentity";
 
-    /** Name of request Attribute that will contain the underlying identity of the client */
-    public static final String UNDERLYING_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.underlyingIdentity";
-
-    /** Spring {@link ApplicationContext} */
-    protected ApplicationContext applicationContext;
+    /** Spring {@link WebApplicationContext} */
+    protected WebApplicationContext applicationContext;
 
     /** Bean specifying the identity of the current User */
     protected IdentityContext identityContext;
 
-    /** Access to {@link InstructorUserDao} in case any User details need to be looked up */
+    protected UserDao userDao;
     protected InstructorUserDao instructorUserDao;
 
+    /**
+     * @throws ServletException
+     */
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         /* Get main business Objects */
         applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
-        identityContext = (IdentityContext) applicationContext.getBean("identityContext");
-        instructorUserDao = (InstructorUserDao) applicationContext.getBean("instructorUserDao");
+        identityContext = applicationContext.getBean(IdentityContext.class);
+        userDao = applicationContext.getBean(UserDao.class);
+        instructorUserDao = applicationContext.getBean(InstructorUserDao.class);
     }
 
     @Override
@@ -104,41 +111,55 @@ public abstract class AbstractWebAuthenticationFilter implements Filter {
             throws IOException, ServletException {
         /* This filter can only HTTP stuff */
         if (!(request instanceof HttpServletRequest)) {
-            throw new ServletException("Expected request to be a HttpServletRequest");
+            throw new QtiWorksLogicException("Expected request to be a HttpServletRequest");
         }
         if (!(response instanceof HttpServletResponse)) {
-            throw new ServletException("Expected response to be a HttpServletResponse");
+            throw new QtiWorksLogicException("Expected response to be a HttpServletResponse");
         }
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
+        final HttpSession session = httpRequest.getSession();
 
-        /* Ask subclass to perform is required to either provide authenticated User details or set
-         * up the HTTP Response to do whatever is required.
-         */
-        final User underlyingUser = doAuthentication(httpRequest, httpResponse);
+        /* Try to extract existing authenticated User Object from Session */
+        InstructorUser underlyingUser = (InstructorUser) session.getAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME);
+        logger.trace("Extracted User from Session: {}", underlyingUser);
         if (underlyingUser==null) {
-            /* Not authenticated. Subclass will have set the Response Object up to ensure the right
-             * thing happens next so we return now.
+            /* If there are no User details, we ask subclass to do whatever is required to
+             * authenticate
              */
-            return;
+            underlyingUser = doAuthentication(httpRequest, httpResponse);
+            if (underlyingUser!=null) {
+                /* Store back into Session so that we can avoid later lookups, and allow things
+                 * further down the chain to access
+                 */
+                session.setAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME, underlyingUser);
+            }
+            else {
+                /* Not authenticated. Subclass will have Response Object set up to ensure the right
+                 * thing happens next so we return now.
+                 */
+                return;
+            }
         }
 
         /* Work out the effective User ID, which is normally the same as the underlying User
          * but can be overridden by SysAdmins */
         User effectiveUser = underlyingUser;
-        final HttpSession session = httpRequest.getSession();
-        final String requestedEffectiveLoginName = (String) session.getAttribute(REQUESTED_EFFECTIVE_LOGIN_NAME_ATTRIBUTE_NAME);
-        if (requestedEffectiveLoginName!=null) {
+        final Long requestedEffectiveUserId = (Long) session.getAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME);
+        if (requestedEffectiveUserId!=null) {
             if (underlyingUser.isSysAdmin()) {
-                effectiveUser = instructorUserDao.findByLoginName(requestedEffectiveLoginName);
-                if (effectiveUser==null) {
-                    log.warn("Request effective User ID " + requestedEffectiveLoginName + " was not found; clearing state");
-                    session.setAttribute(REQUESTED_EFFECTIVE_LOGIN_NAME_ATTRIBUTE_NAME, null);
+                final User resultingUser = userDao.findById(requestedEffectiveUserId);
+                if (resultingUser!=null) {
+                    effectiveUser = resultingUser;
+                }
+                else {
+                    logger.warn("Requested effective User with ID {} was not found; clearing state", requestedEffectiveUserId);
+                    session.setAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME, null);
                 }
             }
             else {
-                log.warn("Requested identity is not null but current identity does not have required privileges; clearing state");
-                session.setAttribute(REQUESTED_EFFECTIVE_LOGIN_NAME_ATTRIBUTE_NAME, null);
+                logger.warn("Requested identity is not null but current identity does not have required privileges; clearing state");
+                session.setAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME, null);
             }
         }
 
@@ -172,7 +193,7 @@ public abstract class AbstractWebAuthenticationFilter implements Filter {
 
     /**
      * Subclasses should fill in to "do" the actual authentication work. Return a non-null
-     * {@link User} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
+     * {@link InstructorUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
      * appropriate (e.g. redirect to login page) and return null.
      *
      * @param request
@@ -180,6 +201,6 @@ public abstract class AbstractWebAuthenticationFilter implements Filter {
      * @throws IOException
      * @throws ServletException
      */
-    protected abstract User doAuthentication(HttpServletRequest request, HttpServletResponse response)
+    protected abstract InstructorUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException;
 }
