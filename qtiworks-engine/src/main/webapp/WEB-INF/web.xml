@@ -11,8 +11,8 @@ All Rights Reserved
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <display-name>QTIEngine</display-name>
-  <description>New QTIEngine</description>
+  <display-name>QTIWorks</display-name>
+  <description>QTIWorks Delivery Engine</description>
 
   <!-- Root ApplicationContext bootstrap -->
   <context-param>
