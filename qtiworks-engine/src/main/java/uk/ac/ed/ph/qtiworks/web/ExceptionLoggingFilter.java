@@ -31,65 +31,56 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.web.WebUtilities;
+import uk.ac.ed.ph.qtiworks.domain.services.Auditor;
 
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
- * assumes a configured identity for the current User.
- * <p>
- * This is extremely useful when debugging as it saves having to log in over and over again!
+ * Filter that intercepts any {@link Exception}s and logs them in an appropriate way.
  *
  * @author David McKain
  */
-public final class FakeWebAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class ExceptionLoggingFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(FakeWebAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionLoggingFilter.class);
 
-    /** Filter init parameter specifying the Login Name of the assumed User */
-    public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
-
-    /** Login Name for the assumed User */
-    private String fakeLoginName;
+    private Auditor auditor;
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
-        this.fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
-        try {
-            final InstructorUser fakeUser = lookupFakeUser();
-            logger.info("Set up fake authentication filter mapped to user {}", fakeUser);
-        }
-        catch (final Exception e) {
-            logger.error("init() failed on " + this.getClass().getSimpleName(), e);
-            throw new ServletException(e);
-        }
+        final WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
+        auditor = applicationContext.getBean(Auditor.class);
     }
 
     @Override
-    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        return lookupFakeUser();
+    public void destroy() {
+        /* Nothing to do here */
     }
 
-    private InstructorUser lookupFakeUser() {
-        final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
-        if (user==null) {
-            throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
+            throws IOException, ServletException {
+        try {
+            filterChain.doFilter(request, response);
         }
-        else if (user.isDisabled()) {
-            throw new QtiWorksLogicException("Fake InstructorUser " + fakeLoginName + " has their account marked as disabled");
+        catch (final RuntimeException e) {
+            logger.warn("Intercepted Exception", e);
+            auditor.recordEvent("Intercepted Exception: " + e.getMessage());
+            throw e;
         }
-        return user;
     }
 }
