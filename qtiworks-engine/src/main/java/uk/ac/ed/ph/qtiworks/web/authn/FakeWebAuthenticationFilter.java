@@ -42,6 +42,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
  * assumes a configured identity for the current User.
@@ -51,6 +54,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author David McKain
  */
 public final class FakeWebAuthenticationFilter extends AbstractWebAuthenticationFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(FakeWebAuthenticationFilter.class);
 
     /** Filter init parameter specifying the Login Name of the assumed User */
     public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
@@ -62,10 +67,16 @@ public final class FakeWebAuthenticationFilter extends AbstractWebAuthentication
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
+        final InstructorUser fakeUser = lookupFakeUser();
+        logger.info("Set up fake authentication filter mapped to user {}", fakeUser);
     }
 
     @Override
     protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
+        return lookupFakeUser();
+    }
+
+    private InstructorUser lookupFakeUser() {
         final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
         if (user==null) {
             throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);

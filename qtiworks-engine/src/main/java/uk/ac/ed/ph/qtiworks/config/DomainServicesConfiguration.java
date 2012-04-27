@@ -113,7 +113,6 @@ public class DomainServicesConfiguration {
     @Bean
     public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
         final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPersistenceXmlLocation("classpath:/META-INF/persistence.xml");
         emf.setDataSource(dataSource());
         emf.setJpaProperties(jpaProperties());
         return emf;
