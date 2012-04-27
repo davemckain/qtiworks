@@ -35,15 +35,10 @@ package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -57,28 +52,20 @@ public final class JpaRunner {
         ctx.register(JpaProductionConfiguration.class, DomainServicesConfiguration.class);
         ctx.refresh();
 
-        final LocalContainerEntityManagerFactoryBean emf = ctx.getBean(LocalContainerEntityManagerFactoryBean.class);
-        final EntityManagerFactory entityManagerFactory = emf.getObject();
-        final EntityManager em = entityManagerFactory.createEntityManager();
-        final EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
+        final InstructorUserDao instructorUserDao = ctx.getBean(InstructorUserDao.class);
 
         final InstructorUser user = new InstructorUser();
-        user.setLoginName("dmckain3");
+        user.setLoginName("dmckain");
         user.setFirstName("David");
         user.setLastName("McKain");
         user.setEmailAddress("david.mckain@ed.ac.uk");
         user.setPasswordDigest("X");
         user.setSysAdmin(true);
-        em.persist(user);
 
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", "dmckain3");
-        System.out.println("GOT " + query.getResultList());
+        instructorUserDao.persist(user);
 
-        em.flush();
-        transaction.commit();
-        entityManagerFactory.close();
+        final InstructorUser verify = instructorUserDao.findByLoginName(user.getLoginName());
+        System.out.println("Got back " + verify);
 
         ctx.close();
     }

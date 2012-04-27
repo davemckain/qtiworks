@@ -35,8 +35,6 @@ package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.ThreadLocalIdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.services.SystemEmailService;
 
@@ -49,9 +47,13 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -61,6 +63,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  */
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.domain.services", "uk.ac.ed.ph.qtiworks.domain.dao"})
+@EnableTransactionManagement /* (New Spring annotation-based TX management, replaces <tx:annotation-driven/>) */
 public class DomainServicesConfiguration {
 
     @Resource
@@ -118,13 +121,23 @@ public class DomainServicesConfiguration {
         return emf;
     }
 
+    /**
+     * Translates persistence Exceptions thrown by {@link Repository} classes like DAOs.
+     * See section 12.6.4 of Spring documentation.
+     * You don't need to use this bean anywhere.
+     */
     @Bean
-    public UserDao userDao() {
-        return new UserDao();
+    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    /**
+     * (See also use of {@link EnableTransactionManagement} above)
+     */
     @Bean
-    public InstructorUserDao instructorUserDao() {
-        return new InstructorUserDao();
+    public JpaTransactionManager jpaTransactionManager() {
+        final JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setEntityManagerFactory(localContainerEntityManagerFactoryBean().getObject());
+        return jpaTransactionManager;
     }
 }
