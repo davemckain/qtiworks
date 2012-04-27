@@ -193,11 +193,60 @@ All Rights Reserved
     </dependency>
   </dependencies>
   <build>
+    <resources>
+      <resource>
+        <!-- Filter files in src/main/resources (as defined below) -->
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <!-- Filtering configuration for src/main/resources (as defined above) -->
+          <filters>
+            <filter>qtiworks.properties</filter>
+          </filters>
+          <nonFilteredFileExtensions>
+            <nonFileteredFileExtension>png</nonFileteredFileExtension>
+            <nonFileteredFileExtension>gif</nonFileteredFileExtension>
+            <nonFileteredFileExtension>jpg</nonFileteredFileExtension>
+            <nonFileteredFileExtension>zip</nonFileteredFileExtension>
+          </nonFilteredFileExtensions>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warName>qtiworks</warName>
+          <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+          <filters>
+            <filter>qtiworks.properties</filter>
+          </filters>
+          <nonFilteredFileExtensions>
+            <nonFileteredFileExtension>png</nonFileteredFileExtension>
+            <nonFileteredFileExtension>gif</nonFileteredFileExtension>
+            <nonFileteredFileExtension>jpg</nonFileteredFileExtension>
+            <nonFileteredFileExtension>zip</nonFileteredFileExtension>
+          </nonFilteredFileExtensions>
+          <webResources>
+            <!-- Filter webapp content -->
+            <resource>
+              <filtering>true</filtering>
+              <directory>src/main/webapp</directory>
+              <targetPath>.</targetPath>
+            </resource>
+            <!-- Copy qtiworks.properties into WEB-INF/classes -->
+            <resource>
+              <filtering>false</filtering>
+              <directory>.</directory>
+              <includes>
+                <include>qtiworks.properties</include>
+              </includes>
+              <targetPath>WEB-INF/classes</targetPath>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
     </plugins>
