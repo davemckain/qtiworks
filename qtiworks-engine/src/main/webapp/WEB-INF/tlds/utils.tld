@@ -97,7 +97,7 @@ All Rights Reserved.
   <function>
     <description>Converts internal CP URI scheme to path</description>
     <name>extractContentPackagePath</name>
-    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String extractContentPackagePath(
       java.net.URI
     )</function-signature>
@@ -105,7 +105,7 @@ All Rights Reserved.
   <function>
     <description>Object Dump</description>
     <name>dumpObject</name>
-    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String dumpObject(
       java.lang.Object
     )</function-signature>
@@ -113,7 +113,7 @@ All Rights Reserved.
   <function>
     <description>Encodes a link to another CST page</description>
     <name>encodePageLink</name>
-    <function-class>uk.ac.ed.ph.qtiworks.web.view.ELFunctions</function-class>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String encodePageLink(
       javax.servlet.jsp.PageContext,
       java.lang.String
