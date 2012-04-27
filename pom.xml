@@ -142,6 +142,10 @@ All Rights Reserved
           </configuration>
         </plugin>
         <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.0.1</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.12</version>
         </plugin>

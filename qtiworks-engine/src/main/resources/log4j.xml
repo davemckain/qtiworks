@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-$Id: log4j.xml 2764 2011-07-21 16:08:31Z davemckain $
-
-${qtiworks.jdbc.driver}
+Webapp logging configuration
 
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <!-- Create usual appender sending messages to STDOUT -->
+
+  <!-- Create basic appender sending messages to STDOUT -->
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
@@ -20,10 +19,38 @@ ${qtiworks.jdbc.driver}
     </filter>
   </appender>
 
+  <!-- Main file logger -->
+  <appender name="QTIWORKS"  class="org.apache.log4j.RollingFileAppender">
+    <param name="File" value="${qtiworks.logging.general}"/>
+    <param name="MaxFileSize" value="500KB" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p [%d{ISO8601}] (%t) [%c{1}/%L#%M()] - %m%n"/>
+    </layout>
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+      <param name="LevelMin" value="DEBUG"/>
+      <param name="LevelMax" value="FATAL"/>
+    </filter>
+  </appender>
+
+  <!-- Appender for logging audit messages -->
+  <appender name="AUDITOR" class="org.apache.log4j.FileAppender">
+    <param name="File" value="${qtiworks.logging.auditing}"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{ISO8601}] %m%n"/>
+    </layout>
+  </appender>
+
+  <!-- Auditing log -->
+  <logger name="Auditor" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="AUDITOR"/>
+  </logger>
+
   <!-- Root logger -->
   <root>
     <level value="INFO"/>
     <appender-ref ref="STDOUT"/>
+    <appender-ref ref="QTIWORKS"/>
   </root>
 
 </log4j:configuration>

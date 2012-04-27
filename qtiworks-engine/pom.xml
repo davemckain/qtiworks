@@ -194,19 +194,51 @@ All Rights Reserved
   </dependencies>
   <build>
     <resources>
+      <!-- Filter files in src/main/resources (as defined below) -->
       <resource>
-        <!-- Filter files in src/main/resources (as defined below) -->
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
+      <!-- Copy qtiworks.properties into target/classes -->
+      <resource>
+        <directory>.</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>qtiworks.properties</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
+      <plugin>
+        <!-- Make sure user has created qtiworks.properties -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-files-exist</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireFilesExist>
+                  <message>Please first create qtiworks.properties using default.qtiworks.properties as a template!</message>
+                  <files>
+                   <file>${basedir}/qtiworks.properties</file>
+                  </files>
+                </requireFilesExist>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <!-- Filtering configuration for src/main/resources (as defined above) -->
           <filters>
-            <filter>qtiworks.properties</filter>
+            <filter>${basedir}/qtiworks.properties</filter>
           </filters>
           <nonFilteredFileExtensions>
             <nonFileteredFileExtension>png</nonFileteredFileExtension>
@@ -222,31 +254,8 @@ All Rights Reserved
           <warName>qtiworks</warName>
           <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
           <filters>
-            <filter>qtiworks.properties</filter>
+            <filter>${basedir}/qtiworks.properties</filter>
           </filters>
-          <nonFilteredFileExtensions>
-            <nonFileteredFileExtension>png</nonFileteredFileExtension>
-            <nonFileteredFileExtension>gif</nonFileteredFileExtension>
-            <nonFileteredFileExtension>jpg</nonFileteredFileExtension>
-            <nonFileteredFileExtension>zip</nonFileteredFileExtension>
-          </nonFilteredFileExtensions>
-          <webResources>
-            <!-- Filter webapp content -->
-            <resource>
-              <filtering>true</filtering>
-              <directory>src/main/webapp</directory>
-              <targetPath>.</targetPath>
-            </resource>
-            <!-- Copy qtiworks.properties into WEB-INF/classes -->
-            <resource>
-              <filtering>false</filtering>
-              <directory>.</directory>
-              <includes>
-                <include>qtiworks.properties</include>
-              </includes>
-              <targetPath>WEB-INF/classes</targetPath>
-            </resource>
-          </webResources>
         </configuration>
       </plugin>
     </plugins>
