@@ -94,16 +94,19 @@ public abstract class AbstractWebAuthenticationFilter implements Filter {
     protected UserDao userDao;
     protected InstructorUserDao instructorUserDao;
 
-    /**
-     * @throws ServletException
-     */
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         /* Get main business Objects */
-        applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
-        identityContext = applicationContext.getBean(IdentityContext.class);
-        userDao = applicationContext.getBean(UserDao.class);
-        instructorUserDao = applicationContext.getBean(InstructorUserDao.class);
+        try {
+            applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
+            identityContext = applicationContext.getBean(IdentityContext.class);
+            userDao = applicationContext.getBean(UserDao.class);
+            instructorUserDao = applicationContext.getBean(InstructorUserDao.class);
+        }
+        catch (final Exception e) {
+            logger.error("init() failed on " + this.getClass().getSimpleName(), e);
+            throw new ServletException(e);
+        }
     }
 
     @Override

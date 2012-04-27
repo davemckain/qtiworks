@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +55,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import com.google.common.hash.Hashing;
 
 /**
- * Servlet to handle the incoming userId/password data from the form log-in process and determine
+ * Servlet to handle the incoming userId/password data from the form log-in
+ * process and determine
  * what to do next.
  *
  * @see FormAuthenticationFilter
- *
  * @author David McKain
  */
 public final class FormAuthenticationServlet extends HttpServlet {
@@ -67,27 +68,45 @@ public final class FormAuthenticationServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(FormAuthenticationServlet.class);
 
+    /**
+     * Name of parameter providing the location of the Form Login JSP (when
+     * used)
+     */
+    public static final String FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME = "formLoginErrorJspPath";
+
     public static final String USER_ID_PARAM = "userId";
+
     public static final String PASSWORD_PARAM = "password";
+
     public static final String PROTECTED_REQUEST_URL_PARAM = "protectedRequestUrl";
 
     /**
-     * Location of form login error JSP page, passed via  context <init-param/>.
+     * Location of form login error JSP page, passed via context <init-param/>.
      * If authentication fails, the user will be forwarded to this page.
      * The <tt>errors</tt> attribute contains details about what went wrong.
      */
-    private String loginErrorJSP;
+    private String loginErrorJspPath;
 
     private InstructorUserDao instructorUserDao;
 
     @Override
     public void init(final ServletConfig config) throws ServletException {
-        loginErrorJSP = AardvarkWebappUtilities.getRequiredInitParameter(config.getServletContext(),
-                AardvarkWebappContextParams.FORM_LOGIN_ERROR_JSP);
+        /* Check required <init-param>s */
+        loginErrorJspPath = config.getInitParameter(FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME);
+        if (loginErrorJspPath==null) {
+            logger.error("Required <init-param/> {} has not been passed to {}", FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME, getClass().getName());
+            throw new ServletException("Required <init-param/> was not set for servlet");
+        }
 
         /* Extract relevant business Objects */
-        final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
-        instructorUserDao = appContext.getBean(InstructorUserDao.class);
+        try {
+            final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+            instructorUserDao = appContext.getBean(InstructorUserDao.class);
+        }
+        catch (final Exception e) {
+            logger.error("init() failed on " + this.getClass().getSimpleName(), e);
+            throw new ServletException(e);
+        }
     }
 
     @Override
@@ -95,7 +114,7 @@ public final class FormAuthenticationServlet extends HttpServlet {
             throws ServletException, IOException {
         /* Recover the URL of the original protected resource. We'll redirect to this on success */
         final String protectedRequestUrl = request.getParameter(PROTECTED_REQUEST_URL_PARAM);
-        if (protectedRequestUrl==null) {
+        if (protectedRequestUrl == null) {
             /* Hmmm.... not supplied. Let's fail appropriately */
             logger.warn("Parameter {} not found", PROTECTED_REQUEST_URL_PARAM);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -107,7 +126,7 @@ public final class FormAuthenticationServlet extends HttpServlet {
         final String password = request.getParameter(PASSWORD_PARAM);
         final List<String> errors = new ArrayList<String>();
         final InstructorUser authenticatedUser = tryAuthentication(userId, password, errors);
-        if (authenticatedUser!=null) {
+        if (authenticatedUser != null) {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
@@ -117,28 +136,28 @@ public final class FormAuthenticationServlet extends HttpServlet {
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
-            logger.debug("Authentication failed - redirecting to {}", loginErrorJSP);
+            logger.debug("Authentication failed - redirecting to {}", loginErrorJspPath);
             request.setAttribute("errors", errors);
-            request.getRequestDispatcher(loginErrorJSP).forward(request, response);
+            request.getRequestDispatcher(loginErrorJspPath).forward(request, response);
         }
     }
 
     protected InstructorUser tryAuthentication(final String loginName, final String password, final List<String> errors) {
         /* Make sure details have been specified */
-        if (loginName==null) {
+        if (loginName == null) {
             errors.add("No user ID specified");
         }
-        if (password==null) {
+        if (password == null) {
             errors.add("No password specified");
         }
         /* Then look up user */
         final InstructorUser user = instructorUserDao.findByLoginName(loginName);
-        if (user==null) {
-            errors.add("User '"+ loginName + " ' does not exist");
+        if (user == null) {
+            errors.add("User '" + loginName + " ' does not exist");
             return null;
         }
         /* Then check password */
-        final String passwordDigest = Hashing.sha1().hashString(password).toString();
+        final String passwordDigest = Hashing.sha1().hashString(password, Charset.forName("UTF-8")).toString();
         if (!passwordDigest.equals(user.getPasswordDigest())) {
             errors.add("Invalid Password");
             return null;

@@ -46,13 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Concrete implementation of {@link AbstractAuthenticationFilter} that uses a simple form-based
+ * Concrete implementation of {@link AbstractWebAuthenticationFilter} that uses a simple form-based
  * log-in process to authenticate the current user.
  *
  * <h2>How it works</h2>
  *
  * If authentication is deemed required (by the superclass), then the user is forwarded to
- * a JSP at {@link #loginJsp}. This JSP should contain a form containing the following
+ * a JSP at {@link #loginFormJspPath}. This JSP should contain a form containing the following
  * parameters to fill in:
  *
  * <ul>
@@ -80,16 +80,23 @@ public final class FormAuthenticationFilter extends AbstractWebAuthenticationFil
      */
     public static final String PROTECTED_REQUEST_URL_NAME = "qtiworks.web.authn.protectedRequestUrl";
 
+    /** Name of parameter providing the path of the form login page */
+    public static final String FORM_LOGIN_JSP_PATH_PARAMETER_NAME = "formLoginJspPath";
+
     /** Location of form login JSP page, supplied via context <init-param/> */
-    private String loginJsp;
+    private String loginFormJspPath;
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
 
-        /* Look up location of loginJSP */
-        loginJsp = AardvarkWebappUtilities.getRequiredInitParameter(filterConfig.getServletContext(),
-                AardvarkWebappContextParams.FORM_LOGIN_JSP);
+        /* Look up location of login form */
+        loginFormJspPath = filterConfig.getInitParameter(FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
+        if (loginFormJspPath==null) {
+            logger.error("Required <init-param/> {} has not been passed to {}", FORM_LOGIN_JSP_PATH_PARAMETER_NAME, getClass().getName());
+            throw new ServletException("Required <init-param/> was not set for filter");
+        }
+        logger.info("Form login JSP has been set to {}", loginFormJspPath);
     }
 
     @Override
@@ -109,9 +116,9 @@ public final class FormAuthenticationFilter extends AbstractWebAuthenticationFil
         if (queryString!=null) {
             requestUrl += "?" + queryString;
         }
-        logger.debug("Forwarding to login page at " + loginJsp);
+        logger.debug("Forwarding to login page at " + loginFormJspPath);
         request.setAttribute(PROTECTED_REQUEST_URL_NAME, requestUrl);
-        request.getRequestDispatcher(loginJsp).forward(request, response);
+        request.getRequestDispatcher(loginFormJspPath).forward(request, response);
         return null;
     }
 }

@@ -38,13 +38,20 @@ Web deployment descriptor
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- Authentication and protected of instructor-only resources -->
+  <!-- Authentication filter for instructor-only resources -->
   <filter>
     <filter-name>InstructorAuthenticationFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.FormAuthenticationFilter</filter-class>
+    <!--
     <filter-class>uk.ac.ed.ph.qtiworks.web.authn.FakeWebAuthenticationFilter</filter-class>
+    -->
     <init-param>
       <param-name>fakeLoginName</param-name>
-      <param-value>dmckain66</param-value>
+      <param-value>dmckain</param-value>
+    </init-param>
+    <init-param>
+      <param-name>formLoginJspPath</param-name>
+      <param-value>/WEB-INF/jsp/login/instructorLogin.jsp</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -52,7 +59,22 @@ Web deployment descriptor
     <url-pattern>/instructor/*</url-pattern>
   </filter-mapping>
 
-  <!-- Dispatcher for initial demos. This will die off soon. -->
+  <!-- Servlet to handle instructor authentication (when using form) -->
+  <servlet>
+    <servlet-name>InstructorFormAuthenticator</servlet-name>
+    <servlet-class>uk.ac.ed.ph.qtiworks.web.authn.FormAuthenticationServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+    <init-param>
+      <param-name>formLoginErrorJspPath</param-name>
+      <param-value>/WEB-INF/jsp/login/instructorLoginError.jsp</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InstructorFormAuthenticator</servlet-name>
+    <url-pattern>/instructorFormAuthenticator</url-pattern>
+  </servlet-mapping>
+
+  <!-- Dispatcher for initial demos. This will die off eventually -->
   <servlet>
     <servlet-name>dispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
