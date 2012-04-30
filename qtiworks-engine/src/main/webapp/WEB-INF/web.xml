@@ -38,6 +38,16 @@ Web deployment descriptor
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <!-- This filter sets a timestamp for the current request -->
+  <filter>
+    <filter-name>RequestTimestampFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.RequestTimestampFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>RequestTimestampFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <!-- Authentication filter for instructor-only resources -->
   <filter>
     <filter-name>InstructorAuthenticationFilter</filter-name>

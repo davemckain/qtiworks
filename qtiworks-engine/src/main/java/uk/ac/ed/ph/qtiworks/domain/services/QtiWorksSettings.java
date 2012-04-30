@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.domain.services;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
+import java.io.Serializable;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Component;
@@ -46,7 +48,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ImportResource("classpath:/qtiworks-config.xml")
-public final class QtiWorksSettings {
+public final class QtiWorksSettings implements Serializable {
+
+    private static final long serialVersionUID = -8920166056971525690L;
 
     private @Value("${qtiworks.jdbc.driver}") String jdbcDriverClassName;
     private @Value("${qtiworks.jdbc.url}") String jdbcUrl;
@@ -58,6 +62,7 @@ public final class QtiWorksSettings {
     private @Value("${qtiworks.email.admin.name}") String emailAdminName;
     private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
+    private @Value("${qtiworks.filesystem.base}") String filesystemBase;
 
     public String getJdbcDriverClassName() {
         return jdbcDriverClassName;
@@ -97,6 +102,10 @@ public final class QtiWorksSettings {
 
     public String getEmailSmtpHost() {
         return emailSmtpHost;
+    }
+
+    public String getFilesystemBase() {
+        return filesystemBase;
     }
 
     @Override
