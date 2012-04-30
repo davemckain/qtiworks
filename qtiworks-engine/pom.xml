@@ -47,7 +47,6 @@ All Rights Reserved
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>${hibernate.version}</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>postgresql</groupId>
