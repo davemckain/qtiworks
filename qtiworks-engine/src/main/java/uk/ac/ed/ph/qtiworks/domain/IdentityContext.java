@@ -36,10 +36,11 @@ package uk.ac.ed.ph.qtiworks.domain;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
 /**
  * Encapsulates the identity of the user who initiated operations being carried
- * out by the current Thread.
+ * out by the current Thread, using a {@link ThreadLocal} to track state.
  * <p>
  * This has two components:
  * <ul>
@@ -50,20 +51,43 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
  *
  * @author David McKain
  */
-public interface IdentityContext {
+public final class IdentityContext {
 
-    User getCurrentThreadEffectiveIdentity();
-    void setCurrentThreadEffectiveIdentity(User user);
+    private final ThreadLocal<User> currentIdentityThreadLocal = new ThreadLocal<User>();
+    private final ThreadLocal<InstructorUser> currentUnderlyingIdentityThreadLocal = new ThreadLocal<InstructorUser>();
 
-    InstructorUser getCurrentThreadUnderlyingIdentity();
-    void setCurrentThreadUnderlyingIdentity(InstructorUser user);
+    public User getCurrentThreadEffectiveIdentity() {
+        return currentIdentityThreadLocal.get();
+    }
 
-    //-----------------------------------------------------------
-    // Convenience methods for ensuring caller has appropriate identity
+    public void setCurrentThreadEffectiveIdentity(final User user) {
+        currentIdentityThreadLocal.set(user);
+    }
 
-    InstructorUser ensureEffectiveIdentityIsInstructor()
-        throws PrivilegeException;
 
-    AnonymousUser ensureEffectiveIdentityIsAnonymous()
-        throws PrivilegeException;
+    public InstructorUser getCurrentThreadUnderlyingIdentity() {
+        return currentUnderlyingIdentityThreadLocal.get();
+    }
+
+    public void setCurrentThreadUnderlyingIdentity(final InstructorUser user) {
+        currentUnderlyingIdentityThreadLocal.set(user);
+    }
+
+    //-------------------------------------------------------------------------
+
+    public InstructorUser ensureEffectiveIdentityIsInstructor() throws PrivilegeException {
+        final User user = getCurrentThreadEffectiveIdentity();
+        if (user.getUserType()==UserType.INSTRUCTOR) {
+            return (InstructorUser) user;
+        }
+        throw new PrivilegeException(user, Privilege.USER_INSTRUCTOR);
+    }
+
+    public AnonymousUser ensureEffectiveIdentityIsAnonymous() throws PrivilegeException {
+        final User user = getCurrentThreadEffectiveIdentity();
+        if (user.getUserType()==UserType.ANONYMOUS) {
+            return (AnonymousUser) user;
+        }
+        throw new PrivilegeException(user, Privilege.USER_ANONYMOUS);
+    }
 }
