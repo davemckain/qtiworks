@@ -38,6 +38,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.validation.BindingResult;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -68,6 +70,10 @@ public class EnumerableClientFailure<E extends Enum<E>> implements Serializable 
 
     public List<?> getArguments() {
         return arguments;
+    }
+
+    public void registerErrors(final BindingResult bindingResult, final String errorCodePrefix) {
+        bindingResult.reject(errorCodePrefix + "." + reason, arguments.toArray(), toString());
     }
 
     @Override

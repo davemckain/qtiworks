@@ -26,7 +26,7 @@ assessmentUpload
 <c:set var="title" value="QTI Validator" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
-<p>You uploaded a ${assessmentType}, uploaded as ${assessmentUpload.uploadType}.</p>
+<p>You uploaded a ${assessmentType}, uploaded as ${assessmentPackage.importType}.</p>
 
 <div class="validationResult">
   <c:choose>

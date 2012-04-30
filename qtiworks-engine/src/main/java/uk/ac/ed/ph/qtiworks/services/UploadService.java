@@ -33,40 +33,29 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.UploadException;
-import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1.AssessmentType;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload.UploadType;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.ImsManifestException;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageSummary;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -83,7 +72,7 @@ import com.google.common.io.Files;
  * @author David McKain
  */
 @Service
-@ToRemove
+@ToRefactor
 public class UploadService {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
@@ -95,30 +84,22 @@ public class UploadService {
     @Resource
     private QtiXmlReader qtiXmlReader;
 
+    @Resource
+    private AssessmentPackageImporter assessmentPackageImporter;
+
     @PostConstruct
     public void init() {
         sandboxRootDirectory = Files.createTempDir();
         logger.info("Created sandbox root directory at {}", sandboxRootDirectory);
     }
 
-    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws UploadException {
+    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws AssessmentPackageImportException {
         final File sandboxDirectory = createRequestSandbox();
-        AssessmentUpload result = null;
+        final AssessmentPackage importedPackage;
         try {
-            if ("application/zip".equals(contentType)) {
-                logger.info("Attempting to unpack ZIP to {}", sandboxDirectory);
-                result = extractZipFile(inputStream, sandboxDirectory);
-            }
-            else if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
-                logger.info("Upload uses a known XML MIME type {} so saving to {} and treating as XML", contentType, sandboxDirectory);
-                result = importXml(inputStream, sandboxDirectory);
-            }
-            else {
-                logger.info("Don't know how to handle MIME type {}", contentType);
-                throw new UploadException(UploadFailureReason.NOT_XML_OR_ZIP);
-            }
+            importedPackage = assessmentPackageImporter.importData(sandboxDirectory, inputStream, contentType);
         }
-        catch (final UploadException e) {
+        catch (final AssessmentPackageImportException e) {
             logger.info("Upload resulted in an Exception, so deleting sandbox", e);
             deleteSandbox(sandboxDirectory);
             throw e;
@@ -128,13 +109,14 @@ public class UploadService {
             deleteSandbox(sandboxDirectory);
             throw e;
         }
-        return result;
+        final AssessmentObjectValidationResult<?> validationResult = validate(importedPackage);
+        return new AssessmentUpload(importedPackage, validationResult);
     }
 
     public void deleteUpload(final AssessmentUpload assessmentUpload) {
         logger.info("Deleting sandbox for upload {}", assessmentUpload);
         try {
-            IoUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
+            IoUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getBasePath()));
         }
         catch (final IOException e) {
             logger.error("Could not delete upload {}", assessmentUpload);
@@ -150,115 +132,25 @@ public class UploadService {
         }
     }
 
-    private AssessmentUpload importXml(final InputStream inputStream, final File importSandboxDirectory) {
-        final File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
-        try {
-            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile));
-        }
-        catch (final IOException e) {
-            throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-
-        final AssessmentPackageV1 assessmentPackageV1 = new AssessmentPackageV1();
-        assessmentPackageV1.setAssessmentType(AssessmentType.ITEM);
-        assessmentPackageV1.setAssessmentObjectHref(SINGLE_FILE_NAME);
-        assessmentPackageV1.setSandboxPath(importSandboxDirectory.getAbsolutePath());
-
-        /* Attempt to validate as an item */
-        final ItemValidationResult validationResult = validate(importSandboxDirectory, SINGLE_FILE_NAME, ItemValidationResult.class);
-
-        return new AssessmentUpload(assessmentPackageV1, UploadType.STANDALONE, validationResult);
-    }
-
-    private AssessmentUpload extractZipFile(final InputStream inputStream, final File importSandboxDirectory)
-            throws UploadException {
-        /* Extract ZIP contents */
-        logger.info("Expanding ZIP file from stream {} to sandbox {}", inputStream, importSandboxDirectory);
-        ZipEntry zipEntry;
-        final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-        try {
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                final File destFile = new File(importSandboxDirectory, zipEntry.getName());
-                if (!zipEntry.isDirectory()) {
-                    IoUtilities.ensureFileCreated(destFile);
-                    IoUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
-                    zipInputStream.closeEntry();
-                }
-            }
-            zipInputStream.close();
-        }
-        catch (final ZipException e) {
-            throw new UploadException(UploadFailureReason.BAD_ZIP, e);
-
-        }
-        catch (final IOException e) {
-            throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-
-        /* Expand content package */
-        final QtiContentPackageExtractor contentPackageExtractor = new QtiContentPackageExtractor(importSandboxDirectory);
-        QtiContentPackageSummary contentPackageSummary;
-        try {
-            contentPackageSummary = contentPackageExtractor.parse();
-        }
-        catch (final XmlResourceNotFoundException e) {
-            throw new UploadException(UploadFailureReason.NOT_CONTENT_PACKAGE, e);
-        }
-        catch (final ImsManifestException e) {
-            throw new UploadException(UploadFailureReason.BAD_IMS_MANIFEST, e);
-        }
-        final int testCount = contentPackageSummary.getTestResourceHrefs().size();
-        final int itemCount = contentPackageSummary.getItemResourceHrefs().size();
-
-        final AssessmentPackageV1 assessmentPackageV1 = new AssessmentPackageV1();
-        assessmentPackageV1.setSandboxPath(importSandboxDirectory.getAbsolutePath());
-        AssessmentObjectValidationResult<?> validationResult;
-        if (testCount==1) {
-            /* Treat as a test */
-            logger.info("Package contains 1 test resource, so treating this as an AssessmentTest");
-            assessmentPackageV1.setAssessmentType(AssessmentType.TEST);
-            assessmentPackageV1.setAssessmentObjectHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
-            assessmentPackageV1.setFileHrefs(contentPackageSummary.getFileHrefs());
-            validationResult = validate(assessmentPackageV1, TestValidationResult.class);
-        }
-        else if (testCount==0 && itemCount==1) {
-            /* Treat as an item */
-            logger.info("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
-            assessmentPackageV1.setAssessmentType(AssessmentType.ITEM);
-            assessmentPackageV1.setAssessmentObjectHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
-            assessmentPackageV1.setFileHrefs(contentPackageSummary.getFileHrefs());
-            validationResult = validate(assessmentPackageV1, ItemValidationResult.class);
-        }
-        else {
-            /* Barf */
-            logger.warn("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
-            throw new UploadException(UploadFailureReason.UNSUPPORTED_PACKAGE_CONTENTS);
-        }
-
-        /* Validate and wrap up */
-        return new AssessmentUpload(assessmentPackageV1, UploadType.CONTENT_PACKAGE, validationResult);
-    }
-
-    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackageV1 assessmentPackageV1, final Class<E> resultClass) {
-        return validate(new File(assessmentPackageV1.getSandboxPath()), assessmentPackageV1.getAssessmentObjectHref(), resultClass);
-    }
-
     @SuppressWarnings("unchecked")
-    private <E extends AssessmentObjectValidationResult<?>> E validate(final File importSandboxDirectory, final String assessmentObjectHref, final Class<E> resultClass) {
+    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackage assessmentPackage) {
+        final File importSandboxDirectory = new File(assessmentPackage.getBasePath());
+        final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         final ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
         E result;
-        if (resultClass.equals(ItemValidationResult.class)) {
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
             result = (E) objectManager.resolveAndValidateItem(objectSystemId);
         }
-        else if (resultClass.equals(TestValidationResult.class)) {
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
             result = (E) objectManager.resolveAndValidateTest(objectSystemId);
         }
         else {
-            throw new QtiWorksRuntimeException("Unexpected switch case " + resultClass);
+            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
         }
         return result;
     }

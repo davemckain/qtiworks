@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
@@ -43,6 +45,8 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 import java.io.Serializable;
 
 /**
+ * FIXME: This is from the initial sketch of the upload/validation functionality
+ *
  * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
  *
  * TODO: This will eventually become a persisted Object so needs to stick to convention.
@@ -54,29 +58,17 @@ public class AssessmentUpload implements Serializable {
 
     private static final long serialVersionUID = -8906026282623891941L;
 
-    public static enum UploadType {
-        STANDALONE,
-        CONTENT_PACKAGE,
-        ;
-    }
-
-    private final AssessmentPackageV1 assessmentPackageV1;
-    private final UploadType uploadType;
+    private final AssessmentPackage assessmentPackage;
     private final AbstractValidationResult validationResult;
 
-    public AssessmentUpload(final AssessmentPackageV1 assessmentPackageV1, final UploadType uploadType, final AbstractValidationResult validationResult) {
-        this.assessmentPackageV1 = assessmentPackageV1;
-        this.uploadType = uploadType;
+    public AssessmentUpload(final AssessmentPackage assessmentPackage, final AbstractValidationResult validationResult) {
+        this.assessmentPackage = assessmentPackage;
         this.validationResult = validationResult;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentPackageV1 getAssessmentPackage() {
-        return assessmentPackageV1;
-    }
-
-    public UploadType getUploadType() {
-        return uploadType;
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)

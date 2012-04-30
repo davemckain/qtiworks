@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller;
 
-import uk.ac.ed.ph.qtiworks.UploadException;
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageImportException;
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageImportException.FailureReason;
+import uk.ac.ed.ph.qtiworks.services.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.UploadService;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.ValidateCommand;
@@ -77,7 +79,7 @@ public class ValidationController {
     @RequestMapping(value="/ws/validate", method=RequestMethod.POST)
     @ResponseBody
     public String validate(@RequestHeader("Content-Type") final String contentType, final HttpServletRequest request)
-            throws UploadException, IOException {
+            throws IOException, AssessmentPackageImportException {
         final ServletInputStream uploadStream = request.getInputStream();
         AssessmentUpload assessmentUpload = null;
         try {
@@ -103,7 +105,7 @@ public class ValidationController {
     }
 
     /**
-     * TODO: Maybe add Exception handler to deal with {@link UploadException}.
+     * TODO: Maybe add Exception handler to deal with {@link AssessmentPackageImportException}.
      * @param model
      * @param command
      * @param errors
@@ -131,8 +133,9 @@ public class ValidationController {
             model.addAttribute("assessmentUpload", assessmentUpload);
             return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
         }
-        catch (final UploadException e) {
-            errors.reject("validator.uploadException." + e.getReason());
+        catch (final AssessmentPackageImportException e) {
+            final EnumerableClientFailure<FailureReason> failure = e.getFailure();
+            failure.registerErrors(errors, "validator.assessmentPackageImportException");
             return "validator-uploadForm";
         }
         finally {
