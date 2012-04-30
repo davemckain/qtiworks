@@ -44,6 +44,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -109,6 +110,7 @@ public class DomainServicesConfiguration {
     public Properties jpaProperties() {
         final Properties jpaProperties = new Properties();
         jpaProperties.put("hibernate.dialect", qtiWorksSettings.getHibernateDialect());
+        jpaProperties.put("hibernate.id.new_generator_mappings", Boolean.TRUE);
         jpaProperties.putAll(extraJpaProperties);
         return jpaProperties;
     }
@@ -116,8 +118,10 @@ public class DomainServicesConfiguration {
     @Bean
     public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
         final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPersistenceProviderClass(HibernatePersistence.class);
         emf.setDataSource(dataSource());
         emf.setJpaProperties(jpaProperties());
+        emf.setPackagesToScan("uk.ac.ed.ph.qtiworks.domain.entities");
         return emf;
     }
 
