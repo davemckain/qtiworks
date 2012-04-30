@@ -42,12 +42,12 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.services.CandidateUploadService;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.exception.QtiSampleNotFoundException;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -140,7 +140,7 @@ public class CandidateController {
         final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
         final InputStream sampleInputStream = sampleResourceLocator.findResource(qtiSampleResource.toClassPathUri());
         response.setContentType("application/xml");
-        IOUtilities.transfer(sampleInputStream, response.getOutputStream(), false);
+        IoUtilities.transfer(sampleInputStream, response.getOutputStream(), false);
     }
 
     private QtiSampleResource findSampleResource(final int setIndex, final int itemIndex) {
@@ -370,7 +370,7 @@ public class CandidateController {
         }
         final String contentType = getResourceContentType(uri);
         response.setContentType(contentType);
-        IOUtilities.transfer(resourceStream, response.getOutputStream(), false);
+        IoUtilities.transfer(resourceStream, response.getOutputStream(), false);
     }
 
     private String getResourceContentType(final URI uri) {

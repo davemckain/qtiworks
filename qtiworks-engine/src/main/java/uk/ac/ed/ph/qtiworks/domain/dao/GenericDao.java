@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author David McKain
  */
 @Repository
-@Transactional(readOnly=true,propagation=Propagation.SUPPORTS)
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public abstract class GenericDao<E extends BaseEntity> {
 
     private final Class<E> entityClass;
@@ -105,23 +105,23 @@ public abstract class GenericDao<E extends BaseEntity> {
         return ((Long) query.getSingleResult()).longValue();
     }
 
-    @Transactional(readOnly=false,propagation=Propagation.REQUIRED)
+    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public E update(final E entity) {
         return em.merge(entity);
     }
 
-    @Transactional(readOnly=false,propagation=Propagation.REQUIRED)
+    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public E persist(final E entity) {
         em.persist(entity);
         return entity;
     }
 
-    @Transactional(readOnly=false,propagation=Propagation.REQUIRED)
+    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public void remove(final E entity) {
         em.remove(entity);
     }
 
-    @Transactional(readOnly=false,propagation=Propagation.REQUIRED)
+    @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public void flush() {
         em.flush();
     }

@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -77,7 +77,7 @@ public class CandidateUploadService {
         final String uploadName = "fileupload-" + Thread.currentThread().getName() + "-" + System.currentTimeMillis();
         final File uploadFile = new File(sandboxRootDirectory, uploadName);
         try {
-            IOUtilities.transfer(multipartFile.getInputStream(), new FileOutputStream(uploadFile));
+            IoUtilities.transfer(multipartFile.getInputStream(), new FileOutputStream(uploadFile));
         }
         catch (final Exception e) {
             throw new QtiWorksRuntimeException("Unexpected Exception uploading file submission", e);

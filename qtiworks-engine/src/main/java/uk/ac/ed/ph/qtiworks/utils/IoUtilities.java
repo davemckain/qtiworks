@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.internal.util;
+package uk.ac.ed.ph.qtiworks.utils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -49,11 +49,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 
 /**
- * (Copied from PhCommons)
+ * NOTE: Consider using Google Guava instead of this where possible.
  *
  * @author David McKain
  */
-public final class IOUtilities {
+public final class IoUtilities {
 
     /** Buffer size when transferring streams */
     public static final int BUFFER_SIZE = 32 * 1024;
@@ -69,7 +69,7 @@ public final class IOUtilities {
      *
      * @throws IOException if creation could not succeed for some reason.
      */
-    public static File ensureDirectoryCreated(File directory) throws IOException {
+    public static File ensureDirectoryCreated(final File directory) throws IOException {
         if (!directory.isDirectory()) {
             if (!directory.mkdirs()) {
                 throw new IOException("Could not create directory " + directory);
@@ -85,9 +85,9 @@ public final class IOUtilities {
      *
      * @throws IOException if creation could not succeed for some reason.
      */
-    public static File ensureFileCreated(File file) throws IOException {
+    public static File ensureFileCreated(final File file) throws IOException {
         /* Make sure parent exists */
-        File parentDirectory = file.getParentFile();
+        final File parentDirectory = file.getParentFile();
         if (parentDirectory!=null) {
             ensureDirectoryCreated(parentDirectory);
         }
@@ -111,14 +111,14 @@ public final class IOUtilities {
      * @param streams "streams" to close
      * @throws IOException
      */
-    public static void ensureClose(Closeable... streams) throws IOException {
+    public static void ensureClose(final Closeable... streams) throws IOException {
         IOException firstException = null;
-        for (Closeable stream : streams) {
+        for (final Closeable stream : streams) {
             if (stream!=null) {
                 try {
                     stream.close();
                 }
-                catch (IOException e) {
+                catch (final IOException e) {
                     firstException = e;
                 }
             }
@@ -142,7 +142,7 @@ public final class IOUtilities {
      * @param outStream
      * @throws IOException
      */
-    public static void transfer(InputStream inStream, OutputStream outStream) throws IOException {
+    public static void transfer(final InputStream inStream, final OutputStream outStream) throws IOException {
         if (inStream instanceof FileInputStream && outStream instanceof FileOutputStream) {
             transfer((FileInputStream) inStream, (FileOutputStream) outStream);
         }
@@ -155,13 +155,13 @@ public final class IOUtilities {
      * Version of {@link #transfer(InputStream, OutputStream)} for File streams that uses
      * NIO to do a hopefully more efficient transfer.
      */
-    public static void transfer(FileInputStream fileInStream, FileOutputStream fileOutStream)
+    public static void transfer(final FileInputStream fileInStream, final FileOutputStream fileOutStream)
             throws IOException {
-        FileChannel fileInChannel = fileInStream.getChannel();
-        FileChannel fileOutChannel = fileOutStream.getChannel();
-        long fileInSize = fileInChannel.size();
+        final FileChannel fileInChannel = fileInStream.getChannel();
+        final FileChannel fileOutChannel = fileOutStream.getChannel();
+        final long fileInSize = fileInChannel.size();
         try {
-            long transferred = fileInChannel.transferTo(0, fileInSize, fileOutChannel);
+            final long transferred = fileInChannel.transferTo(0, fileInSize, fileOutChannel);
             if (transferred!=fileInSize) {
                 /* Hmmm... need to rethink this algorithm if something goes wrong */
                 throw new IOException("transfer() did not complete");
@@ -181,7 +181,7 @@ public final class IOUtilities {
      * @param outStream
      * @throws IOException
      */
-    public static void transfer(InputStream inStream, OutputStream outStream, boolean closeOutputStream)
+    public static void transfer(final InputStream inStream, final OutputStream outStream, final boolean closeOutputStream)
             throws IOException {
         transfer(inStream, outStream, true, closeOutputStream);
     }
@@ -197,9 +197,9 @@ public final class IOUtilities {
      * @param outStream
      * @throws IOException
      */
-    public static void transfer(InputStream inStream, OutputStream outStream,
-            boolean closeInputStream, boolean closeOutputStream) throws IOException {
-        byte [] buffer = new byte[BUFFER_SIZE];
+    public static void transfer(final InputStream inStream, final OutputStream outStream,
+            final boolean closeInputStream, final boolean closeOutputStream) throws IOException {
+        final byte [] buffer = new byte[BUFFER_SIZE];
         int count;
         try {
             while ((count = inStream.read(buffer)) != -1) {
@@ -222,8 +222,8 @@ public final class IOUtilities {
     //----------------------------------------------------------------------------
     // Reading methods
 
-    public static byte[] readBinaryStream(InputStream stream) throws IOException {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    public static byte[] readBinaryStream(final InputStream stream) throws IOException {
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         transfer(stream, outStream);
         return outStream.toByteArray();
     }
@@ -239,11 +239,11 @@ public final class IOUtilities {
      * @return String representing the data read
      * @throws IOException
      */
-    public static String readCharacterStream(Reader reader) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(reader);
+    public static String readCharacterStream(final Reader reader) throws IOException {
+        final BufferedReader bufferedReader = new BufferedReader(reader);
         String line;
         int size = 0;
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         while ((line = bufferedReader.readLine()) != null) {
             size += line.length() + 1;
             if (size > MAX_TEXT_STREAM_SIZE) {
@@ -264,7 +264,7 @@ public final class IOUtilities {
      * @return String representing the data read in
      * @throws IOException
      */
-    public static String readUnicodeStream(InputStream in) throws IOException {
+    public static String readUnicodeStream(final InputStream in) throws IOException {
         return readCharacterStream(new InputStreamReader(in, "UTF-8"));
     }
 
@@ -276,8 +276,8 @@ public final class IOUtilities {
      * @return String representing the data we read in
      * @throws IOException
      */
-    public static String readUnicodeFile(File file) throws IOException {
-        InputStream inStream = new FileInputStream(file);
+    public static String readUnicodeFile(final File file) throws IOException {
+        final InputStream inStream = new FileInputStream(file);
         try {
             return readUnicodeStream(inStream);
         }
@@ -298,7 +298,7 @@ public final class IOUtilities {
      *
      * @throws IOException if the usual bad things happen
      */
-    public static void writeUnicodeFile(File outputFile, String data) throws IOException {
+    public static void writeUnicodeFile(final File outputFile, final String data) throws IOException {
         writeFile(outputFile, data, "UTF-8");
     }
 
@@ -313,8 +313,8 @@ public final class IOUtilities {
      * @throws UnsupportedEncodingException if the given encoding
      *   is not supported.
      */
-    public static void writeFile(File outputFile, String data, String encoding) throws IOException {
-        FileOutputStream outStream = new FileOutputStream(outputFile);
+    public static void writeFile(final File outputFile, final String data, final String encoding) throws IOException {
+        final FileOutputStream outStream = new FileOutputStream(outputFile);
         OutputStreamWriter writer = null;
         try {
             writer = new OutputStreamWriter(outStream, encoding);
@@ -343,10 +343,10 @@ public final class IOUtilities {
      * @throws IOException if something goes wrong, which may leave things
      *   in an inconsistent state.
      */
-    public static void recursivelyDelete(File root, boolean deleteRoot) throws IOException {
+    public static void recursivelyDelete(final File root, final boolean deleteRoot) throws IOException {
         if (root.isDirectory()) {
-            File [] contents = root.listFiles();
-            for (File child : contents) {
+            final File [] contents = root.listFiles();
+            for (final File child : contents) {
                 recursivelyDelete(child, true);
             }
         }
@@ -361,7 +361,7 @@ public final class IOUtilities {
      * Convenience version of {@link #recursivelyDelete(File, boolean)} that
      * deletes the given root directory as well.
      */
-    public static void recursivelyDelete(File root) throws IOException {
+    public static void recursivelyDelete(final File root) throws IOException {
         recursivelyDelete(root, true);
     }
 }

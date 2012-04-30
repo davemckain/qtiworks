@@ -31,44 +31,17 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
-
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * DAO implementation for the {@link InstructorUser} entity.
+ * Encapsulates how an {@link AssessmentPackage} was imported.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class InstructorUserDao extends GenericDao<InstructorUser> {
+public enum AssessmentPackageImportType {
 
-    @PersistenceContext
-    private EntityManager em;
+    CONTENT_PACKAGE,
+    STANDALONE_ITEM_XML,
+    ;
 
-    public InstructorUserDao() {
-        super(InstructorUser.class);
-    }
-
-    public InstructorUser findByLoginName(final String loginName) {
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", loginName);
-        return extractFindResult(query);
-    }
-
-    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
-        final InstructorUser result = findByLoginName(loginName);
-        ensureFindSuccess(result, loginName);
-        return result;
-    }
 }

@@ -52,11 +52,9 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-
 
 import java.io.StringWriter;
 import java.net.URI;
@@ -78,7 +76,7 @@ public class MathAssessTest {
     public static void main(final String[] args) throws Exception {
         final URI inputUri = URI.create("classpath:/MAD01-SRinCO-demo.xml");
 
-        final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage(new SimpleStylesheetCache());
+        final MathAssessExtensionPackage mathAssessPackage = new MathAssessExtensionPackage(new SimpleXsltStylesheetCache());
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager(mathAssessPackage);
         try {
             jqtiExtensionManager.init();

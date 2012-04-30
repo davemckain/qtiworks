@@ -33,13 +33,21 @@
  */
 package uk.ac.ed.ph.qtiworks;
 
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageImportException;
+
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
+
 /**
- * FIXME: Document this!
+ * This was used in the first sketch of assessment uploading. It should no longer be used
+ * in its current form
+ *
+ * @see AssessmentPackageImportException
  *
  * @author David McKain
  */
+@ToRemove
 public class UploadException extends Exception {
-    
+
     private static final long serialVersionUID = -699513250898841731L;
 
     public static enum UploadFailureReason {
@@ -50,19 +58,19 @@ public class UploadException extends Exception {
         UNSUPPORTED_PACKAGE_CONTENTS,
         ;
     }
-    
+
     private final UploadFailureReason reason;
-    
-    public UploadException(UploadFailureReason reason) {
+
+    public UploadException(final UploadFailureReason reason) {
         super("Unsupported upload " + reason);
         this.reason = reason;
     }
-    
-    public UploadException(UploadFailureReason reason, Throwable cause) {
+
+    public UploadException(final UploadFailureReason reason, final Throwable cause) {
         super("Unsupported upload " + reason, cause);
         this.reason = reason;
     }
-    
+
     public UploadFailureReason getReason() {
         return reason;
     }

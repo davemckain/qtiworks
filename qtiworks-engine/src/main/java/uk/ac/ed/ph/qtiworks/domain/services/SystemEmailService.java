@@ -36,9 +36,9 @@ package uk.ac.ed.ph.qtiworks.domain.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.SystemMailMessage;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.view.ElFunctions;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
@@ -116,7 +116,7 @@ public final class SystemEmailService {
         }
         String template;
         try {
-            template = IOUtilities.readUnicodeStream(templateStream);
+            template = IoUtilities.readUnicodeStream(templateStream);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);

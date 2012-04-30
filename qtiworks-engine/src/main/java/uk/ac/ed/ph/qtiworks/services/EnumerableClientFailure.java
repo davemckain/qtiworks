@@ -31,44 +31,47 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.io.Serializable;
+import java.util.List;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import com.google.common.collect.ImmutableList;
 
 /**
- * DAO implementation for the {@link InstructorUser} entity.
+ * FIXME: Document this!
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class InstructorUserDao extends GenericDao<InstructorUser> {
+public class EnumerableClientFailure<E extends Enum<E>> implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = -455216616220981136L;
 
-    public InstructorUserDao() {
-        super(InstructorUser.class);
+    private final E reason;
+    private final List<?> arguments;
+
+    public EnumerableClientFailure(final E reason) {
+        this.reason = reason;
+        this.arguments = ImmutableList.of();
     }
 
-    public InstructorUser findByLoginName(final String loginName) {
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", loginName);
-        return extractFindResult(query);
+    public EnumerableClientFailure(final E reason, final Object... arguments) {
+        this.reason = reason;
+        this.arguments = ImmutableList.of(arguments);
     }
 
-    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
-        final InstructorUser result = findByLoginName(loginName);
-        ensureFindSuccess(result, loginName);
-        return result;
+    public E getReason() {
+        return reason;
+    }
+
+    public List<?> getArguments() {
+        return arguments;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

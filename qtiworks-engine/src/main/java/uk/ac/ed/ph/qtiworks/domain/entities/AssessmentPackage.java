@@ -79,7 +79,7 @@ public class AssessmentPackage implements BaseEntity {
     @Id
     @GeneratedValue(generator="assessmentPackageSequence")
     @Column(name="aid")
-    private Long id;
+    private Long aid;
 
     @Basic(optional=false)
     @Column(name="creation_time",updatable=false)
@@ -97,7 +97,16 @@ public class AssessmentPackage implements BaseEntity {
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 
-    /** Title of this item/test. Used for listings and other stuff. We take this from the QTI on import */
+    /** Content Package or standalone? */
+    @Basic(optional=false)
+    @Column(name="import_type", length=15)
+    @Enumerated(EnumType.STRING)
+    private AssessmentPackageImportType importType;
+
+    /**
+     * Title of this item/test. Used for listings and other stuff.
+     * We take this from the QTI just after import.
+     */
     @Basic(optional=false)
     @Column(name="title")
     private String title;
@@ -147,12 +156,12 @@ public class AssessmentPackage implements BaseEntity {
 
     @Override
     public Long getId() {
-        return id;
+        return aid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.aid = id;
     }
 
 
@@ -180,6 +189,15 @@ public class AssessmentPackage implements BaseEntity {
 
     public void setAssessmentType(final AssessmentObjectType assessmentType) {
         this.assessmentType = assessmentType;
+    }
+
+
+    public AssessmentPackageImportType getImportType() {
+        return importType;
+    }
+
+    public void setImportType(final AssessmentPackageImportType importType) {
+        this.importType = importType;
     }
 
 

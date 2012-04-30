@@ -31,44 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import java.io.InputStream;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
 
 /**
- * DAO implementation for the {@link InstructorUser} entity.
+ * Services for managing {@link AssessmentPackage}s
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class InstructorUserDao extends GenericDao<InstructorUser> {
+@Service
+public class AssessmentPackageServices {
 
-    @PersistenceContext
-    private EntityManager em;
+    @Resource
+    AssessmentPackageDao assessmentPackageDao;
 
-    public InstructorUserDao() {
-        super(InstructorUser.class);
+    public void createAssessmentPackage(final InputStream inputStream, final String contentType) {
+        /* TODO */
     }
 
-    public InstructorUser findByLoginName(final String loginName) {
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", loginName);
-        return extractFindResult(query);
+    /**
+     * NOTE: Not allowed to go item->test or test->item.
+     *
+     * @param inputStream
+     * @param contentType
+     */
+    public void replaceAssessmentPackage(final Long aid, final InputStream inputStream, final String contentType) {
+
     }
 
-    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
-        final InstructorUser result = findByLoginName(loginName);
-        ensureFindSuccess(result, loginName);
-        return result;
-    }
 }

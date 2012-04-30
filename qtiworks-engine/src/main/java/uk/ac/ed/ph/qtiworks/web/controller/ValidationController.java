@@ -40,7 +40,7 @@ import uk.ac.ed.ph.qtiworks.web.domain.ValidateCommand;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.IOException;
 
@@ -59,25 +59,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * FIXME: Document this type
+ * Sketch validation controller, as used in early dev snapshots
  *
  * @author David McKain
  */
+@ToRefactor
 @Controller
 public class ValidationController {
-    
+
     @Resource
     private UploadService uploadService;
-    
-    /** 
+
+    /**
      * Validates a raw payload sent via POST, returning a Java Object dump.
      * (This could become something better in due course...)
      */
     @RequestMapping(value="/ws/validate", method=RequestMethod.POST)
     @ResponseBody
-    public String validate(@RequestHeader("Content-Type") String contentType, HttpServletRequest request)
+    public String validate(@RequestHeader("Content-Type") final String contentType, final HttpServletRequest request)
             throws UploadException, IOException {
-        ServletInputStream uploadStream = request.getInputStream();
+        final ServletInputStream uploadStream = request.getInputStream();
         AssessmentUpload assessmentUpload = null;
         try {
             assessmentUpload = uploadService.importData(uploadStream, contentType);
@@ -89,18 +90,18 @@ public class ValidationController {
             }
         }
     }
-    
+
     //------------------------------------------------------
-    
+
     @RequestMapping(value="/validator", method=RequestMethod.GET)
-    public String showValidatorForm(Model model) {
-        ValidateCommand command = new ValidateCommand();
+    public String showValidatorForm(final Model model) {
+        final ValidateCommand command = new ValidateCommand();
         command.setReportType("HTML");
-        
+
         model.addAttribute("validateCommand", command);
         return "validator-uploadForm";
     }
-    
+
     /**
      * TODO: Maybe add Exception handler to deal with {@link UploadException}.
      * @param model
@@ -110,27 +111,27 @@ public class ValidationController {
      * @throws IOException
      */
     @RequestMapping(value="/validator", method=RequestMethod.POST)
-    public String handleValidatorForm(Model model, @ModelAttribute ValidateCommand command, BindingResult errors)
+    public String handleValidatorForm(final Model model, @ModelAttribute final ValidateCommand command, final BindingResult errors)
             throws IOException {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
             return "validator-uploadForm";
         }
-        
+
         /* Make sure something was submitted */
-        MultipartFile uploadFile = command.getUploadFile();
+        final MultipartFile uploadFile = command.getUploadFile();
         if (uploadFile!=null && uploadFile.getSize()==0L) {
             errors.reject("validator.nofile");
             return "validator-uploadForm";
         }
-        
+
         AssessmentUpload assessmentUpload = null;
         try {
             assessmentUpload = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
             model.addAttribute("assessmentUpload", assessmentUpload);
             return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
         }
-        catch (UploadException e) {
+        catch (final UploadException e) {
             errors.reject("validator.uploadException." + e.getReason());
             return "validator-uploadForm";
         }

@@ -36,12 +36,12 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.UploadException;
 import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1.AssessmentType;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload.UploadType;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -57,7 +57,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,10 +78,12 @@ import org.springframework.stereotype.Service;
 import com.google.common.io.Files;
 
 /**
+ * Temporary service for uploading assessments, as used in first few snapshots of QTIWorks
+ *
  * @author David McKain
  */
 @Service
-@ToRefactor
+@ToRemove
 public class UploadService {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
@@ -132,7 +134,7 @@ public class UploadService {
     public void deleteUpload(final AssessmentUpload assessmentUpload) {
         logger.info("Deleting sandbox for upload {}", assessmentUpload);
         try {
-            IOUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
+            IoUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
         }
         catch (final IOException e) {
             logger.error("Could not delete upload {}", assessmentUpload);
@@ -141,7 +143,7 @@ public class UploadService {
 
     public void deleteSandbox(final File sandboxDirectory) {
         try {
-            IOUtilities.recursivelyDelete(sandboxDirectory);
+            IoUtilities.recursivelyDelete(sandboxDirectory);
         }
         catch (final IOException e) {
             logger.error("Could not delete sandbox {}", sandboxDirectory.getAbsolutePath());
@@ -151,7 +153,7 @@ public class UploadService {
     private AssessmentUpload importXml(final InputStream inputStream, final File importSandboxDirectory) {
         final File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
         try {
-            IOUtilities.transfer(inputStream, new FileOutputStream(resultFile));
+            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile));
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -178,8 +180,8 @@ public class UploadService {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
                 if (!zipEntry.isDirectory()) {
-                    IOUtilities.ensureFileCreated(destFile);
-                    IOUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
+                    IoUtilities.ensureFileCreated(destFile);
+                    IoUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
                     zipInputStream.closeEntry();
                 }
             }

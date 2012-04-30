@@ -31,44 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
-
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+package uk.ac.ed.ph.qtiworks.services;
 
 /**
- * DAO implementation for the {@link InstructorUser} entity.
+ * FIXME: Document this!
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class InstructorUserDao extends GenericDao<InstructorUser> {
+public final class AssessmentPackageImportException extends Exception {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = -699513250898841731L;
 
-    public InstructorUserDao() {
-        super(InstructorUser.class);
+    public static enum FailureReason {
+        NOT_XML_OR_ZIP,
+        BAD_ZIP,
+        NOT_CONTENT_PACKAGE,
+        BAD_IMS_MANIFEST,
+        UNSUPPORTED_PACKAGE_CONTENTS,
+        ;
     }
 
-    public InstructorUser findByLoginName(final String loginName) {
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
-        query.setParameter("loginName", loginName);
-        return extractFindResult(query);
+    private final EnumerableClientFailure<FailureReason> failure;
+
+    public AssessmentPackageImportException(final EnumerableClientFailure<FailureReason> failure) {
+        super(failure.toString());
+        this.failure = failure;
     }
 
-    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
-        final InstructorUser result = findByLoginName(loginName);
-        ensureFindSuccess(result, loginName);
-        return result;
+    public AssessmentPackageImportException(final EnumerableClientFailure<FailureReason> failure, final Throwable cause) {
+        super(failure.toString(), cause);
+        this.failure = failure;
+    }
+
+    public EnumerableClientFailure<FailureReason> getFailure() {
+        return failure;
     }
 }

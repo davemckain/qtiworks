@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author David McKain
  */
 @Repository
-@Transactional(readOnly=true,propagation=Propagation.SUPPORTS)
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class UserDao extends GenericDao<User> {
 
     @SuppressWarnings("unused")

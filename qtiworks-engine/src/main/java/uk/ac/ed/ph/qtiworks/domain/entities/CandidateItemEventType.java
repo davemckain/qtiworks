@@ -42,5 +42,6 @@ public enum CandidateItemEventType {
 
     STARTED,
     ATTEMPT_MADE,
+    ;
 
 }
