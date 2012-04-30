@@ -27,50 +27,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller;
-
-import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+package uk.ac.ed.ph.qtiworks.mathassess;
 
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
-import java.util.Map;
+import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import javax.xml.transform.Templates;
 
 /**
- * Controller for candidate helpers, such as math input verifiers.
+ * Trivial adapter that allows a JQTI+ {@link XsltStylesheetCache} to be
+ * used as a SnuggleTeX {@link StylesheetCache}
  *
  * @author David McKain
  */
-@Controller
-public class CandidateHelperController {
+public final class XsltStylesheetCacheAdapter implements StylesheetCache {
 
-    @Resource
-    private XsltStylesheetCache stylesheetCache;
+    private final XsltStylesheetCache targetCache;
 
-    /**
-     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
-     * JSON.
-     *
-     * Accept: application/json from client expected
-     */
-    @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
-        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
-        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
-        return upConvertedASCIIMathInput;
+    public XsltStylesheetCacheAdapter(final XsltStylesheetCache targetCache) {
+        this.targetCache = targetCache;
+    }
+
+    @Override
+    public Templates getStylesheet(final String key) {
+        return targetCache.getStylesheet(key);
+    }
+
+    @Override
+    public void putStylesheet(final String key, final Templates stylesheet) {
+        targetCache.putStylesheet(key, stylesheet);
     }
 
 }

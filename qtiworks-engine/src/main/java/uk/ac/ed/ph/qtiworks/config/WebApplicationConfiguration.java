@@ -38,11 +38,10 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
-
-import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
-import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
 import javax.annotation.Resource;
 
@@ -53,8 +52,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Defines webapp-level configuration
- *
- * FIXME: This is not hooked up to the domain-level config yet!
  *
  * @author David McKain
  */
@@ -71,8 +68,13 @@ public class WebApplicationConfiguration {
     }
 
     @Bean
-    public StylesheetCache stylesheetCache() {
-        return new SimpleStylesheetCache();
+    public SchemaCache schemaCache() {
+        return new SimpleSchemaCache();
+    }
+
+    @Bean
+    public XsltStylesheetCache stylesheetCache() {
+        return new SimpleXsltStylesheetCache();
     }
 
     @Bean
@@ -87,13 +89,11 @@ public class WebApplicationConfiguration {
 
     @Bean
     public QtiXmlReader qtiXmlReader() {
-        final SimpleSchemaCache schemaCache = new SimpleSchemaCache();
-        return new QtiXmlReader(jqtiExtensionManager(), schemaCache);
+        return new QtiXmlReader(jqtiExtensionManager(), schemaCache());
     }
 
     @Bean
     public AssessmentRenderer renderer() {
-        final SimpleXsltStylesheetCache xsltStylesheetCache = new SimpleXsltStylesheetCache();
-        return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), xsltStylesheetCache);
+        return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), stylesheetCache());
     }
 }

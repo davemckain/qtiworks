@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
 import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
 import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
@@ -81,14 +82,16 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
     private final Map<String, ExtensionNamespaceInfo> namespaceInfoMap;
     private final ThreadLocal<QtiMaximaProcess> sessionThreadLocal;
-    private final StylesheetCache stylesheetCache;
+    private final XsltStylesheetCache xsltStylesheetCache;
+    private final StylesheetCache snuggleStylesheetCache;
     private final Set<String> customOperatorClasses;
     private final Set<String> customInteractionClasses;
 
     private QtiMaximaProcessPoolManager qtiMaximaProcessPoolManager;
 
-    public MathAssessExtensionPackage(final StylesheetCache stylesheetCache) {
-        this.stylesheetCache = stylesheetCache;
+    public MathAssessExtensionPackage(final XsltStylesheetCache xsltStylesheetCache) {
+        this.xsltStylesheetCache = xsltStylesheetCache;
+        this.snuggleStylesheetCache = new XsltStylesheetCacheAdapter(xsltStylesheetCache);
 
         /* Build up namespace info */
         final ExtensionNamespaceInfo extensionNamespaceInfo = new ExtensionNamespaceInfo(MATHASSESS_NAMESPACE_URI, MATHASSESS_SCHEMA_LOCATION, MATHASSESS_DEFAULT_NAMESPACE_PREFIX);
@@ -112,7 +115,11 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     }
 
     public StylesheetCache getStylesheetCache() {
-        return stylesheetCache;
+        return snuggleStylesheetCache;
+    }
+
+    public XsltStylesheetCache getXsltStylesheetCache() {
+        return xsltStylesheetCache;
     }
 
     @Override
@@ -208,7 +215,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             qtiMaximaProcessPoolManager = new QtiMaximaProcessPoolManager();
             qtiMaximaProcessPoolManager.setMaximaConfiguration(maximaConfiguration);
-            qtiMaximaProcessPoolManager.setStylesheetCache(stylesheetCache);
+            qtiMaximaProcessPoolManager.setStylesheetCache(snuggleStylesheetCache);
             qtiMaximaProcessPoolManager.init();
 
             logger.info("MathAssessExtensionPackage successfully initiated using {} to handle communication with Maxima for MathAssess extensions", QtiMaximaProcessPoolManager.class.getSimpleName());
@@ -261,7 +268,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(displayName=" + getDisplayName()
-                + ",stylesheetCache=" + stylesheetCache
+                + ",stylesheetCache=" + xsltStylesheetCache
                 + ",sessionThreadLocal=" + sessionThreadLocal
                 + ",qtiMaximaProcessPoolManager=" + qtiMaximaProcessPoolManager
                 + ")";
