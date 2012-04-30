@@ -38,41 +38,43 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.Serializable;
 
 /**
  * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
- * 
+ *
  * TODO: This will eventually become a persisted Object so needs to stick to convention.
  *
  * @author David McKain
  */
+@ToRefactor
 public class AssessmentUpload implements Serializable {
-    
+
     private static final long serialVersionUID = -8906026282623891941L;
-    
+
     public static enum UploadType {
         STANDALONE,
         CONTENT_PACKAGE,
         ;
     }
-    
-    private final AssessmentPackage assessmentPackage;
+
+    private final AssessmentPackageV1 assessmentPackageV1;
     private final UploadType uploadType;
     private final AbstractValidationResult validationResult;
 
-    public AssessmentUpload(AssessmentPackage assessmentPackage, UploadType uploadType, AbstractValidationResult validationResult) {
-        this.assessmentPackage = assessmentPackage;
+    public AssessmentUpload(final AssessmentPackageV1 assessmentPackageV1, final UploadType uploadType, final AbstractValidationResult validationResult) {
+        this.assessmentPackageV1 = assessmentPackageV1;
         this.uploadType = uploadType;
         this.validationResult = validationResult;
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
+    public AssessmentPackageV1 getAssessmentPackage() {
+        return assessmentPackageV1;
     }
-    
+
     public UploadType getUploadType() {
         return uploadType;
     }

@@ -31,23 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.jqtiplus.node.result.CandidateResponse;
+
+import java.util.List;
 
 /**
- * Tracks the state of an instance of an Assignment delivered to a single candidate
+ * Tracks details about each attempt made to a delivered item by a candidate
  *
  * @author David McKain
  */
-public class CandidateAssessmentProgress {
+public class CandidateItemAttempt {
 
-    private Long id;
+    private Long xaid;
 
-    private AssessmentDelivery assessmentDelivery;
+    private CandidateItemRecord owner;
 
-    /* FIXME: This is now wrong! */
-    private InstructorUser candidate;
+    /* (These would be copied from state object after response processing is finished) */
+    private double score;
+    private String completionStatus;
+    private int numAttempts;
+
+    /* Serialized somehow? */
+    private Object itemSessionState;
+
+    private List<CandidateResponse> candidateResponses;
 
 }

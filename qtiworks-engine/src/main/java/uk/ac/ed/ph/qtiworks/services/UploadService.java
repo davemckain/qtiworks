@@ -36,8 +36,8 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.UploadException;
 import uk.ac.ed.ph.qtiworks.UploadException.UploadFailureReason;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackage.AssessmentType;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1;
+import uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1.AssessmentType;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload.UploadType;
 
@@ -57,6 +57,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,6 +81,7 @@ import com.google.common.io.Files;
  * @author David McKain
  */
 @Service
+@ToRefactor
 public class UploadService {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
@@ -155,15 +157,15 @@ public class UploadService {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
 
-        final AssessmentPackage assessmentPackage = new AssessmentPackage();
-        assessmentPackage.setAssessmentType(AssessmentType.ITEM);
-        assessmentPackage.setAssessmentObjectHref(SINGLE_FILE_NAME);
-        assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
+        final AssessmentPackageV1 assessmentPackageV1 = new AssessmentPackageV1();
+        assessmentPackageV1.setAssessmentType(AssessmentType.ITEM);
+        assessmentPackageV1.setAssessmentObjectHref(SINGLE_FILE_NAME);
+        assessmentPackageV1.setSandboxPath(importSandboxDirectory.getAbsolutePath());
 
         /* Attempt to validate as an item */
         final ItemValidationResult validationResult = validate(importSandboxDirectory, SINGLE_FILE_NAME, ItemValidationResult.class);
 
-        return new AssessmentUpload(assessmentPackage, UploadType.STANDALONE, validationResult);
+        return new AssessmentUpload(assessmentPackageV1, UploadType.STANDALONE, validationResult);
     }
 
     private AssessmentUpload extractZipFile(final InputStream inputStream, final File importSandboxDirectory)
@@ -206,24 +208,24 @@ public class UploadService {
         final int testCount = contentPackageSummary.getTestResourceHrefs().size();
         final int itemCount = contentPackageSummary.getItemResourceHrefs().size();
 
-        final AssessmentPackage assessmentPackage = new AssessmentPackage();
-        assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
+        final AssessmentPackageV1 assessmentPackageV1 = new AssessmentPackageV1();
+        assessmentPackageV1.setSandboxPath(importSandboxDirectory.getAbsolutePath());
         AssessmentObjectValidationResult<?> validationResult;
         if (testCount==1) {
             /* Treat as a test */
             logger.info("Package contains 1 test resource, so treating this as an AssessmentTest");
-            assessmentPackage.setAssessmentType(AssessmentType.TEST);
-            assessmentPackage.setAssessmentObjectHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
-            assessmentPackage.setFileHrefs(contentPackageSummary.getFileHrefs());
-            validationResult = validate(assessmentPackage, TestValidationResult.class);
+            assessmentPackageV1.setAssessmentType(AssessmentType.TEST);
+            assessmentPackageV1.setAssessmentObjectHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
+            assessmentPackageV1.setFileHrefs(contentPackageSummary.getFileHrefs());
+            validationResult = validate(assessmentPackageV1, TestValidationResult.class);
         }
         else if (testCount==0 && itemCount==1) {
             /* Treat as an item */
             logger.info("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
-            assessmentPackage.setAssessmentType(AssessmentType.ITEM);
-            assessmentPackage.setAssessmentObjectHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
-            assessmentPackage.setFileHrefs(contentPackageSummary.getFileHrefs());
-            validationResult = validate(assessmentPackage, ItemValidationResult.class);
+            assessmentPackageV1.setAssessmentType(AssessmentType.ITEM);
+            assessmentPackageV1.setAssessmentObjectHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
+            assessmentPackageV1.setFileHrefs(contentPackageSummary.getFileHrefs());
+            validationResult = validate(assessmentPackageV1, ItemValidationResult.class);
         }
         else {
             /* Barf */
@@ -232,11 +234,11 @@ public class UploadService {
         }
 
         /* Validate and wrap up */
-        return new AssessmentUpload(assessmentPackage, UploadType.CONTENT_PACKAGE, validationResult);
+        return new AssessmentUpload(assessmentPackageV1, UploadType.CONTENT_PACKAGE, validationResult);
     }
 
-    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackage assessmentPackage, final Class<E> resultClass) {
-        return validate(new File(assessmentPackage.getSandboxPath()), assessmentPackage.getAssessmentObjectHref(), resultClass);
+    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackageV1 assessmentPackageV1, final Class<E> resultClass) {
+        return validate(new File(assessmentPackageV1.getSandboxPath()), assessmentPackageV1.getAssessmentObjectHref(), resultClass);
     }
 
     @SuppressWarnings("unchecked")

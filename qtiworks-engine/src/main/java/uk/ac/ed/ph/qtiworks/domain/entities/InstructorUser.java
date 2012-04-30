@@ -88,8 +88,7 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     //------------------------------------------------------------
 
     public InstructorUser() {
-        super();
-        setUserType(UserType.INSTRUCTOR);
+        super(UserType.INSTRUCTOR);
     }
 
     //------------------------------------------------------------

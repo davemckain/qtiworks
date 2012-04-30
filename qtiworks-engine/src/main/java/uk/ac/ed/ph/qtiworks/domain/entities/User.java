@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,6 +46,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Base class for the different types of Users we support
@@ -60,8 +64,13 @@ public abstract class User implements BaseEntity {
 
     @Id
     @GeneratedValue(generator="userSequence")
-    @Column(name="id")
+    @Column(name="uid")
     private Long id;
+
+    @Basic(optional=false)
+    @Column(name="creation_time",updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
 
     @Basic(optional=false)
     @Column(name="disabled",updatable=true)
@@ -70,11 +79,15 @@ public abstract class User implements BaseEntity {
     @Basic(optional=false)
     @Column(name="user_type",updatable=false,length=10)
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private final UserType userType;
 
-    protected User() {
-        /* (Empty) */
+    //------------------------------------------------------------
+
+    protected User(final UserType userType) {
+        this.userType = userType;
     }
+
+    //------------------------------------------------------------
 
     @Override
     public Long getId() {
@@ -84,6 +97,15 @@ public abstract class User implements BaseEntity {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
 
@@ -98,10 +120,6 @@ public abstract class User implements BaseEntity {
 
     public UserType getUserType() {
         return userType;
-    }
-
-    protected void setUserType(final UserType type) {
-        this.userType = type;
     }
 
     //------------------------------------------------------------

@@ -31,18 +31,53 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
+
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+
 /**
- * Tracks the overall state of a candidate's progress through the delivery
- * of a single assessment item.
+ * Represents a file response to a particular interaction
  *
  * @author David McKain
  */
-public class CandidateItemProgress extends CandidateAssessmentProgress {
-    
-    private List<CandidateItemAttempt> attempts;
-    
+@Entity
+@Table(name="candidate_string_responses")
+public class CandidateStringResponse extends CandidateResponse {
+
+    private static final long serialVersionUID = -4310598861282271053L;
+
+    /** Raw response string data */
+    @Lob
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="candidate_string_response_items", joinColumns=@JoinColumn(name="xrid"))
+    @Column(name="string")
+    private List<String> strings;
+
+    //------------------------------------------------------------
+
+    public CandidateStringResponse() {
+        super(ResponseDataType.STRING);
+    }
+
+    //------------------------------------------------------------
+
+    public List<String> getStrings() {
+        return strings;
+    }
+
+
+    public void setStrings(final List<String> strings) {
+        this.strings = strings;
+    }
 }

@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,6 +45,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Corresponds to a particular "delivery" of an Assessment to a group of candidates.
@@ -63,15 +67,23 @@ public class AssessmentDelivery implements BaseEntity {
 
     @Id
     @GeneratedValue(generator="assessmentDeliverySequence")
+    @Column(name="did")
     private Long id;
 
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="assessment_id")
-    private AssessmentEntity assessmentEntity;
+    @JoinColumn(name="aid")
+    private AssessmentPackage assessmentPackage;
+
+    @Basic(optional=false)
+    @Column(name="creation_time",updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
 
     @Basic(optional=false)
     @Column(name="open")
     private boolean open;
+
+    //------------------------------------------------------------
 
     @Override
     public Long getId() {
@@ -84,12 +96,21 @@ public class AssessmentDelivery implements BaseEntity {
     }
 
 
-    public AssessmentEntity getAssessmentEntity() {
-        return assessmentEntity;
+    public Date getCreationTime() {
+        return creationTime;
     }
 
-    public void setAssessmentEntity(final AssessmentEntity assessmentEntity) {
-        this.assessmentEntity = assessmentEntity;
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        this.assessmentPackage = assessmentPackage;
     }
 
 

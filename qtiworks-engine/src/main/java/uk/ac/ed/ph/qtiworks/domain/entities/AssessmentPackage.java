@@ -37,8 +37,16 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -48,57 +56,89 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
- * Represents each {@link AssessmentItem} or {@link AssessmentTest} handled by the system
+ * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored within
+ * the system. All such objects are treated as IMS Content Packages.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="assessment_entities")
-@SequenceGenerator(name="assessmentEntitySequence", sequenceName="assessment_entity_sequence", initialValue=1, allocationSize=10)
-public class AssessmentEntity implements BaseEntity {
+@Table(name="assessment_packages")
+@SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
+public class AssessmentPackage implements BaseEntity {
 
     private static final long serialVersionUID = -4330181851974184912L;
 
     @Id
-    @GeneratedValue(generator="assessmentEntitySequence")
+    @GeneratedValue(generator="assessmentPackageSequence")
+    @Column(name="aid")
     private Long id;
 
+    @Basic(optional=false)
+    @Column(name="creation_time",updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
+    /** {@link InstructorUser} who uploaded this package */
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="owner_user_id", updatable=false)
+    @JoinColumn(name="owner_uid", updatable=false)
     private InstructorUser owner;
 
+    /** Item or Test? */
     @Basic(optional=false)
     @Column(name="type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 
+    /** Title of this item/test. Used for listings and other stuff. We take this from the QTI on import */
+    @Basic(optional=false)
+    @Column(name="title")
+    private String title;
+
+    /** Base path where this package's files belong. Treated as a sandbox */
     @Lob
     @Basic(optional=false)
     @Column(name="base_path")
     private String basePath;
 
+    /** Href of the assessment item/test within this package */
     @Lob
     @Basic(optional=false)
-    @Column(name="object_href")
-    private String objectHref;
+    @Column(name="assessment_href")
+    private String assessmentHref;
 
+    /** Has this item/test been validated? */
     @Basic(optional=false)
     @Column(name="validated")
     private boolean validated;
 
+    /** If validated, was this item/test found to be valid? */
     @Basic(optional=false)
     @Column(name="valid")
     private boolean valid;
 
-    @Basic(optional=false)
-    @Column(name="title")
-    private String title; /* (Would take this from QTI) */
+    /**
+     * Hrefs of all file resources declared within this package.
+     * Used to determine what resources are allowed to be served up
+     */
+    @Lob
+    @ElementCollection
+    @CollectionTable(name="assessment_files", joinColumns=@JoinColumn(name="aid"))
+    @Column(name="href")
+    private Set<String> fileHrefs = new HashSet<String>();
 
-//  private List<AssessmentDelivery> deliveries;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="assessmentPackage")
+    @OrderColumn(name="order_index")
+    private final List<AssessmentDelivery> assessmentDeliveries = new ArrayList<AssessmentDelivery>();
+
+    //------------------------------------------------------------
 
     @Override
     public Long getId() {
@@ -108,6 +148,15 @@ public class AssessmentEntity implements BaseEntity {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
 
@@ -138,12 +187,12 @@ public class AssessmentEntity implements BaseEntity {
     }
 
 
-    public String getObjectHref() {
-        return objectHref;
+    public String getAssessmentHref() {
+        return assessmentHref;
     }
 
-    public void setObjectHref(final String objectHref) {
-        this.objectHref = objectHref;
+    public void setAssessmentHref(final String assessmentHref) {
+        this.assessmentHref = assessmentHref;
     }
 
 
@@ -172,4 +221,19 @@ public class AssessmentEntity implements BaseEntity {
     public void setTitle(final String title) {
         this.title = title;
     }
+
+
+    public List<AssessmentDelivery> getDeliveries() {
+        return assessmentDeliveries;
+    }
+
+
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
+    }
+
+    public void setFileHrefs(final Set<String> fileHrefs) {
+        this.fileHrefs = fileHrefs;
+    }
+
 }

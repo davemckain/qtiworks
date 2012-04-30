@@ -59,13 +59,16 @@ import org.springframework.validation.Validator;
 
 /**
  * System email service
+ * <p>
+ * This can be enabled or disabled within {@link QtiWorksSettings}; it falls back
+ * to logging the messages when disabled.
  *
  * @author David McKain
  */
 @Service
 public final class SystemEmailService {
 
-    private static final Logger log = LoggerFactory.getLogger(SystemEmailService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemEmailService.class);
 
     @Resource
     private QtiWorksSettings qtiWorksSettings;
@@ -75,18 +78,6 @@ public final class SystemEmailService {
 
     @Resource
     private MailSender mailSender;
-
-    private boolean developerMode;
-
-    //-------------------------------------------------
-
-    public boolean isDeveloperMode() {
-        return developerMode;
-    }
-
-    public void setDeveloperMode(final boolean developerMode) {
-        this.developerMode = developerMode;
-    }
 
     //-------------------------------------------------
 
@@ -99,17 +90,24 @@ public final class SystemEmailService {
         }
 
         /* Construct Spring SimpleMailMessage */
-        final SimpleMailMessage springMessage = constructSpringMessage(message);
-        try {
-            mailSender.send(springMessage);
+        final SimpleMailMessage simpleMailMessage = constructSimpleMailMessage(message);
+
+        /* Send email (if turned on) */
+        if (qtiWorksSettings.isEmailEnabled()) {
+            try {
+                mailSender.send(simpleMailMessage);
+            }
+            catch (final Exception e) {
+                logger.error("Could not send message " + simpleMailMessage, e);
+                throw new QtiWorksRuntimeException("Exception sending mail message", e);
+            }
         }
-        catch (final Exception e) {
-            log.error("Could not send message " + springMessage, e);
-            throw new QtiWorksRuntimeException("Exception sending mail message", e);
+        else {
+            logger.warn("Email sending has been disabled within the application configuration, so not sending {}", simpleMailMessage);
         }
     }
 
-    protected SimpleMailMessage constructSpringMessage(final SystemMailMessage message) {
+    private SimpleMailMessage constructSimpleMailMessage(final SystemMailMessage message) {
         /* Read in message */
         final String templateResourceName = message.getTemplateResourceName();
         final InputStream templateStream = getClass().getClassLoader().getResourceAsStream(templateResourceName);
@@ -144,7 +142,7 @@ public final class SystemEmailService {
         for (int i=0; i<toUsersAsStrings.length; i++) {
             toUsersAsStrings[i] = formatEmailAddress(toUsers.get(i));
         }
-        if (developerMode) {
+        if (qtiWorksSettings.isEmailDevMode()) {
             final String adminAddress = qtiWorksSettings.getEmailAdminName() + " <" + qtiWorksSettings.getEmailAdminAddress() + ">";
             result.setText("(Developer Mode is on - this would have been sent to "
                     + StringUtilities.join(toUsersAsStrings, " ")
@@ -160,7 +158,7 @@ public final class SystemEmailService {
         return result;
     }
 
-    protected String formatString(final Object object) {
+    private String formatString(final Object object) {
         String result;
         if (object instanceof InstructorUser) {
             final InstructorUser user = (InstructorUser) object;
@@ -176,7 +174,7 @@ public final class SystemEmailService {
         return result;
     }
 
-    protected String formatEmailAddress(final InstructorUser user) {
+    private String formatEmailAddress(final InstructorUser user) {
         return user.getFirstName() + " " + user.getLastName()
             + " <" + user.getEmailAddress() + ">";
     }

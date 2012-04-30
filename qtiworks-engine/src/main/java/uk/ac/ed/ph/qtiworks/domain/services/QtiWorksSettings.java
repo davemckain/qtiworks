@@ -53,6 +53,8 @@ public final class QtiWorksSettings {
     private @Value("${qtiworks.jdbc.username}") String jdbcUsername;
     private @Value("${qtiworks.jdbc.password}") String jdbcPassword;
     private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
+    private @Value("${qtiworks.email.enabled}") boolean emailEnabled;
+    private @Value("${qtiworks.email.devmode}") boolean emailDevMode;
     private @Value("${qtiworks.email.admin.name}") String emailAdminName;
     private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
@@ -75,6 +77,14 @@ public final class QtiWorksSettings {
 
     public String getHibernateDialect() {
         return hibernateDialect;
+    }
+
+    public boolean isEmailEnabled() {
+        return emailEnabled;
+    }
+
+    public boolean isEmailDevMode() {
+        return emailDevMode;
     }
 
     public String getEmailAdminName() {

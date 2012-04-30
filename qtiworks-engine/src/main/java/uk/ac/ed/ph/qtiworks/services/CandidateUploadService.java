@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.IOUtilities;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,6 +58,7 @@ import com.google.common.io.Files;
  *
  * @author David McKain
  */
+@ToRefactor
 @Service
 public class CandidateUploadService {
 

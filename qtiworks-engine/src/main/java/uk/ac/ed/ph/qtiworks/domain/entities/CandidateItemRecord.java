@@ -31,79 +31,37 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import java.util.List;
 
-import java.io.Serializable;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
- * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
- * 
- * TODO: This will eventually become a persisted Object so needs to stick to convention.
+ * Records a candidate's complete record of a session with a
+ * delivery of a particular item.
  *
  * @author David McKain
  */
-public class AssessmentPackage implements Serializable {
-    
-    private static final long serialVersionUID = -8906026282623891941L;
-    
-    public static enum AssessmentType {
-        ITEM,
-        TEST,
-        ;
-    }
-    
-    private AssessmentType assessmentType;
-    private String sandboxPath;
-    private String assessmentObjectHref;
-    private Set<String> fileHrefs;
-    
-    public AssessmentPackage() {
-    }
+@Entity
+@Table(name="candidate_item_record")
+@SequenceGenerator(name="candidateRecordSequence", sequenceName="candidte_record_sequence", initialValue=1, allocationSize=50)
+public class CandidateItemRecord {
 
-    
-    public AssessmentType getAssessmentType() {
-        return assessmentType;
-    }
-    
-    public void setAssessmentType(AssessmentType assessmentType) {
-        this.assessmentType = assessmentType;
-    }
-    
-    
-    public String getSandboxPath() {
-        return sandboxPath;
-    }
-    
-    public void setSandboxPath(String sandboxPath) {
-        this.sandboxPath = sandboxPath;
-    }
+    @Id
+    @GeneratedValue(generator="candidateRecordSequence")
+    @Column(name="xid")
+    private Long id;
 
-    
-    public String getAssessmentObjectHref() {
-        return assessmentObjectHref;
-    }
+    private AssessmentDelivery assessmentDelivery;
 
-    public void setAssessmentObjectHref(String assessmentObjectHref) {
-        this.assessmentObjectHref = assessmentObjectHref;
-    }
+    private User candidate;
 
-    
-    public Set<String> getFileHrefs() {
-        return fileHrefs;
-    }
-
-    public void setFileHrefs(Set<String> fileHrefs) {
-        this.fileHrefs = fileHrefs;
-    }
-    
-    
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
+    private List<CandidateItemAttempt> attempts;
 
 }

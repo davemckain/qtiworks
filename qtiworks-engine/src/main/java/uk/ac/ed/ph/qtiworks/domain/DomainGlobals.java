@@ -44,5 +44,9 @@ public final class DomainGlobals {
     public static final int EMAIL_ADDRESS_MAX_LENGTH = 128;
     public static final int NAME_COMPONENT_MAX_LENGTH = 64;
     public static final int SHA1_DIGEST_LENGTH = 40;
+    public static final int FILE_CONTENT_TYPE_LENGTH = 64;
+
+    /** FIXME: What limit should we use here? */
+    public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
 
 }

@@ -31,30 +31,81 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web.domain;
 
-import uk.ac.ed.ph.jqtiplus.node.result.CandidateResponse;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
- * Tracks details about each attempt made to a delivered item by a candidate
+ * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
+ *
+ * TODO: This will eventually become a persisted Object so needs to stick to convention.
  *
  * @author David McKain
  */
-public class CandidateItemAttempt {
-    
-    private Long id;
-    private CandidateItemProgress itemProgress;
-    
-    /* (These would be copied from state object after response processing is finished) */
-    private double score;
-    private String completionStatus;
-    private int numAttempts;
-    
-    /* Serialized somehow? */
-    private Object itemSessionState;
-    
-    private Set<CandidateResponse> candidateResponses;
+@ToRefactor
+public class AssessmentPackageV1 implements Serializable {
+
+    private static final long serialVersionUID = -8906026282623891941L;
+
+    public static enum AssessmentType {
+        ITEM,
+        TEST,
+        ;
+    }
+
+    private AssessmentType assessmentType;
+    private String sandboxPath;
+    private String assessmentObjectHref;
+    private Set<String> fileHrefs;
+
+    public AssessmentPackageV1() {
+    }
+
+
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+
+    public void setAssessmentType(final AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
+    }
+
+
+    public String getSandboxPath() {
+        return sandboxPath;
+    }
+
+    public void setSandboxPath(final String sandboxPath) {
+        this.sandboxPath = sandboxPath;
+    }
+
+
+    public String getAssessmentObjectHref() {
+        return assessmentObjectHref;
+    }
+
+    public void setAssessmentObjectHref(final String assessmentObjectHref) {
+        this.assessmentObjectHref = assessmentObjectHref;
+    }
+
+
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
+    }
+
+    public void setFileHrefs(final Set<String> fileHrefs) {
+        this.fileHrefs = fileHrefs;
+    }
+
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 
 }

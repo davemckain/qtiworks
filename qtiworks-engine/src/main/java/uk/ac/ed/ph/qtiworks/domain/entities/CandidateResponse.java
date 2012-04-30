@@ -33,75 +33,83 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
+
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Represents an anonymous user in the system
+ * Represents a file response to a particular interaction
  *
  * @author David McKain
  */
 @Entity
-@Table(name="anonymous_users")
-public class AnonymousUser extends User implements BaseEntity, Comparable<AnonymousUser> {
+@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name="candidate_responses")
+@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
+public abstract class CandidateResponse implements BaseEntity {
 
-    private static final long serialVersionUID = 7821803746245696405L;
+    private static final long serialVersionUID = -4310598861282271053L;
+
+    @Id
+    @GeneratedValue(generator="candidateResponseSequence")
+    @Column(name="xrid")
+    private Long id;
+
+    /** Attempt in which this response was made */
+    @ManyToOne
+    private CandidateItemAttempt attempt;
 
     @Basic(optional=false)
-    @Column(name="session_id", unique=true)
-    private String sessionId;
+    @Column(name="response_identifier", updatable=false, length=DomainGlobals.QTI_IDENTIFIER_MAX_LENGTH)
+    private String responseIdentifier;
+
+    @Basic(optional=false)
+    @Column(name="response_type", updatable=false, length=5)
+    @Enumerated(EnumType.STRING)
+    private final ResponseDataType responseType;
 
     //------------------------------------------------------------
 
-    public AnonymousUser() {
-        super(UserType.ANONYMOUS);
-    }
-
-    //------------------------------------------------------------
-
-    @Override
-    public String getBusinessKey() {
-        ensureSessionId(this);
-        return "anonymous/" + sessionId;
+    protected CandidateResponse(final ResponseDataType responseType) {
+        this.responseType = responseType;
     }
 
     //------------------------------------------------------------
 
     @Override
-    public final boolean equals(final Object obj) {
-        if (!(obj instanceof AnonymousUser)) {
-            return false;
-        }
-        final AnonymousUser other = (AnonymousUser) obj;
-        return sessionId.equals(other.sessionId);
+    public Long getId() {
+        return id;
     }
 
     @Override
-    public int hashCode() {
-        ensureSessionId(this);
-        return sessionId.hashCode();
+    public void setId(final Long id) {
+        this.id = id;
     }
 
-    @Override
-    public final int compareTo(final AnonymousUser o) {
-        ensureSessionId(this);
-        ensureSessionId(o);
-        return sessionId.compareTo(o.sessionId);
+
+    public String getResponseIdentifier() {
+        return responseIdentifier;
     }
 
-    private void ensureSessionId(final AnonymousUser user) {
-        if (user.sessionId==null) {
-            throw new QtiWorksRuntimeException("Current logic branch requires sessionId to be non-null on " + user);
-        }
+    public void setResponseIdentifier(final String responseIdentifier) {
+        this.responseIdentifier = responseIdentifier;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(sessionId=" + sessionId + ")";
+
+    public ResponseDataType getResponseType() {
+        return responseType;
     }
 }
