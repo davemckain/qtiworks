@@ -33,51 +33,19 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
-
-import java.util.List;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-
 /**
- * Represents a file response to a particular interaction
+ * FIXME: Think about how best to implement this. Full tabular, XML, JSON or Serializable? Hmmm...
  *
  * @author David McKain
  */
-@Entity
-@Table(name="candidate_string_responses")
-public class CandidateStringResponse extends CandidateItemResponse {
+@SuppressWarnings("unused")
+public class CandidateItemSessionState {
 
-    private static final long serialVersionUID = -4310598861282271053L;
+    private double score;
+    private String completionStatus;
+    private int numAttempts;
 
-    /** Raw response string data */
-    @Lob
-    @ElementCollection(fetch=FetchType.EAGER)
-    @CollectionTable(name="candidate_string_response_items", joinColumns=@JoinColumn(name="xrid"))
-    @Column(name="string")
-    private List<String> strings;
+    /* Serialized somehow? */
+    private Object itemSessionState;
 
-    //------------------------------------------------------------
-
-    public CandidateStringResponse() {
-        super(ResponseDataType.STRING);
-    }
-
-    //------------------------------------------------------------
-
-    public List<String> getStrings() {
-        return strings;
-    }
-
-
-    public void setStrings(final List<String> strings) {
-        this.strings = strings;
-    }
 }

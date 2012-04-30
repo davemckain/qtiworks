@@ -33,9 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
-
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -46,46 +44,49 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
- * Represents a file response to a particular interaction
+ * FIXME: Document this!
+ * FIXME: Link to {@link CandidateItemSessionState}, which I reckon we need to record for
+ * each event
  *
  * @author David McKain
  */
 @Entity
+@Table(name="candidate_item_events")
 @Inheritance(strategy=InheritanceType.JOINED)
-@Table(name="candidate_responses")
-@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
-public abstract class CandidateResponse implements BaseEntity {
+@SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
+public class CandidateItemEvent implements BaseEntity {
 
-    private static final long serialVersionUID = -4310598861282271053L;
+    private static final long serialVersionUID = -4620030911222629913L;
 
     @Id
-    @GeneratedValue(generator="candidateResponseSequence")
-    @Column(name="xrid")
+    @GeneratedValue(generator="candidateEventSequence")
+    @Column(name="xeid")
     private Long id;
 
-    /** Attempt in which this response was made */
-    @ManyToOne
-    private CandidateItemAttempt attempt;
+    /** {@link CandidateItemRecord} owning this event */
+    @ManyToOne(optional=false)
+    @JoinColumn(name="xid")
+    private CandidateItemRecord candidateItemRecord;
 
+    /** Timestamp for this event */
     @Basic(optional=false)
-    @Column(name="response_identifier", updatable=false, length=DomainGlobals.QTI_IDENTIFIER_MAX_LENGTH)
-    private String responseIdentifier;
+    @Column(name="timestamp",updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
 
+    /** Type of event */
     @Basic(optional=false)
-    @Column(name="response_type", updatable=false, length=5)
+    @Column(name="event_type",updatable=false,length=32)
     @Enumerated(EnumType.STRING)
-    private final ResponseDataType responseType;
-
-    //------------------------------------------------------------
-
-    protected CandidateResponse(final ResponseDataType responseType) {
-        this.responseType = responseType;
-    }
+    private CandidateItemEventType eventType;
 
     //------------------------------------------------------------
 
@@ -100,16 +101,29 @@ public abstract class CandidateResponse implements BaseEntity {
     }
 
 
-    public String getResponseIdentifier() {
-        return responseIdentifier;
+    public CandidateItemRecord getCandidateItemRecord() {
+        return candidateItemRecord;
     }
 
-    public void setResponseIdentifier(final String responseIdentifier) {
-        this.responseIdentifier = responseIdentifier;
+    public void setCandidateItemRecord(final CandidateItemRecord candidateItemRecord) {
+        this.candidateItemRecord = candidateItemRecord;
     }
 
 
-    public ResponseDataType getResponseType() {
-        return responseType;
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(final Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+
+    public CandidateItemEventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(final CandidateItemEventType eventType) {
+        this.eventType = eventType;
     }
 }

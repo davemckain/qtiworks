@@ -134,9 +134,14 @@ public class AssessmentPackage implements BaseEntity {
     @Column(name="href")
     private Set<String> fileHrefs = new HashSet<String>();
 
+    /**
+     * All deliveries of this assessment
+     *
+     * FIXME: So far we're only allowing items to be delivered!
+     */
     @OneToMany(fetch=FetchType.LAZY, mappedBy="assessmentPackage")
     @OrderColumn(name="order_index")
-    private final List<AssessmentDelivery> assessmentDeliveries = new ArrayList<AssessmentDelivery>();
+    private final List<AssessmentItemDelivery> assessmentDeliveries = new ArrayList<AssessmentItemDelivery>();
 
     //------------------------------------------------------------
 
@@ -223,7 +228,7 @@ public class AssessmentPackage implements BaseEntity {
     }
 
 
-    public List<AssessmentDelivery> getDeliveries() {
+    public List<AssessmentItemDelivery> getAssessmentDeliveries() {
         return assessmentDeliveries;
     }
 

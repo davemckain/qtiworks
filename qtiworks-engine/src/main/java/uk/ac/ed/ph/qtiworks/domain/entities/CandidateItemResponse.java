@@ -33,55 +33,62 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
 
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Records a candidate's complete record of a session with a
- * delivery of a particular item.
+ * Encapsulates a response to an {@link Interaction} within a particular {@link AssessmentItem}
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_record")
-@SequenceGenerator(name="candidateRecordSequence", sequenceName="candidte_record_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemRecord implements BaseEntity {
+@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name="candidate_item_responses")
+@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
+public abstract class CandidateItemResponse implements BaseEntity {
 
-    private static final long serialVersionUID = -3537558551866726398L;
+    private static final long serialVersionUID = -4310598861282271053L;
 
     @Id
-    @GeneratedValue(generator="candidateRecordSequence")
-    @Column(name="xid")
+    @GeneratedValue(generator="candidateResponseSequence")
+    @Column(name="xrid")
     private Long id;
 
+    /** Attempt in which this response was made */
     @ManyToOne(optional=false)
-    @JoinColumn(name="did")
-    private AssessmentItemDelivery assessmentDelivery;
+    @JoinColumn(name="xid")
+    private CandidateItemAttempt attempt;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="uid")
-    private User candidate;
+    @Basic(optional=false)
+    @Column(name="response_identifier", updatable=false, length=DomainGlobals.QTI_IDENTIFIER_MAX_LENGTH)
+    private String responseIdentifier;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemRecord")
-    @OrderColumn(name="attempt_index")
-    private final List<CandidateItemEvent> events;
+    @Basic(optional=false)
+    @Column(name="response_type", updatable=false, length=5)
+    @Enumerated(EnumType.STRING)
+    private final ResponseDataType responseType;
 
     //------------------------------------------------------------
 
-    public CandidateItemRecord() {
-        this.events = new ArrayList<CandidateItemEvent>();
+    protected CandidateItemResponse(final ResponseDataType responseType) {
+        this.responseType = responseType;
     }
 
     //------------------------------------------------------------
@@ -97,25 +104,25 @@ public class CandidateItemRecord implements BaseEntity {
     }
 
 
-    public AssessmentItemDelivery getAssessmentDelivery() {
-        return assessmentDelivery;
+    public CandidateItemAttempt getAttempt() {
+        return attempt;
     }
 
-    public void setAssessmentDelivery(final AssessmentItemDelivery assessmentDelivery) {
-        this.assessmentDelivery = assessmentDelivery;
-    }
-
-
-    public User getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(final User candidate) {
-        this.candidate = candidate;
+    public void setAttempt(final CandidateItemAttempt attempt) {
+        this.attempt = attempt;
     }
 
 
-    public List<CandidateItemEvent> getEvents() {
-        return events;
+    public String getResponseIdentifier() {
+        return responseIdentifier;
+    }
+
+    public void setResponseIdentifier(final String responseIdentifier) {
+        this.responseIdentifier = responseIdentifier;
+    }
+
+
+    public ResponseDataType getResponseType() {
+        return responseType;
     }
 }

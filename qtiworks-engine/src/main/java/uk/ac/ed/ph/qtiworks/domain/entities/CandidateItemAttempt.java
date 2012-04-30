@@ -33,29 +33,37 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.node.result.CandidateResponse;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Tracks details about each attempt made to a delivered item by a candidate
  *
  * @author David McKain
  */
-public class CandidateItemAttempt {
+@Entity
+@Table(name="candidate_item_attempts")
+public class CandidateItemAttempt extends CandidateItemEvent {
 
-    private Long xaid;
+    private static final long serialVersionUID = 8067928101392143228L;
 
-    private CandidateItemRecord owner;
+    @OneToMany(mappedBy="attempt", fetch=FetchType.LAZY)
+    private final Set<CandidateItemResponse> candidateItemResponses;
 
-    /* (These would be copied from state object after response processing is finished) */
-    private double score;
-    private String completionStatus;
-    private int numAttempts;
+    //------------------------------------------------------------
 
-    /* Serialized somehow? */
-    private Object itemSessionState;
+    public CandidateItemAttempt() {
+        this.candidateItemResponses = new HashSet<CandidateItemResponse>();
+    }
 
-    private List<CandidateResponse> candidateResponses;
+    //------------------------------------------------------------
 
+    public Set<CandidateItemResponse> getResponses() {
+        return candidateItemResponses;
+    }
 }

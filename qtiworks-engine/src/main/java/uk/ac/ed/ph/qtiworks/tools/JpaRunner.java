@@ -59,7 +59,7 @@ public final class JpaRunner {
         user.setFirstName("David");
         user.setLastName("McKain");
         user.setEmailAddress("david.mckain@ed.ac.uk");
-        user.setPasswordDigest("X");
+        user.setPasswordDigest("d141f4ded32ac968c2112bcc74cf70fcbc770957");
         user.setSysAdmin(true);
 
         instructorUserDao.persist(user);

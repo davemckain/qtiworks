@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -41,6 +43,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -49,21 +53,24 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Corresponds to a particular "delivery" of an Assessment to a group of candidates.
+ * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
  * <p>
- * To think about in future...
+ * This is going to be very simple in the first instance, but will get more complicated in future.
  *
- * * Do we want to control who is permitted to do this?
- * * Can we set time limits rather than having a manual on/off toggle?
+ * FIXME: Will need to generalise and split out for item/test delivery in future.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="assessment_deliveries")
+@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name="assessment_item_deliveries")
 @SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
-public class AssessmentDelivery implements BaseEntity {
+public abstract class AssessmentItemDelivery implements BaseEntity {
 
     private static final long serialVersionUID = 7693569112981982946L;
+
+    //------------------------------------------------------------
+    // Common item/test stuff
 
     @Id
     @GeneratedValue(generator="assessmentDeliverySequence")
@@ -82,6 +89,14 @@ public class AssessmentDelivery implements BaseEntity {
     @Basic(optional=false)
     @Column(name="open")
     private boolean open;
+
+    //------------------------------------------------------------
+    // Item-specific stuff
+
+    /** Maximum number of attempts, as defined by {@link ItemSesessionControl} */
+    @Basic(optional=false)
+    @Column(name="max_attempts")
+    private Integer maxAttempts;
 
     //------------------------------------------------------------
 
@@ -121,4 +136,16 @@ public class AssessmentDelivery implements BaseEntity {
     public void setOpen(final boolean open) {
         this.open = open;
     }
+
+    //------------------------------------------------------------
+
+    public Integer getMaxAttempts() {
+        return maxAttempts;
+    }
+
+
+    public void setMaxAttempts(final Integer maxAttempts) {
+        this.maxAttempts = maxAttempts;
+    }
+
 }

@@ -50,7 +50,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="candidate_file_responses")
-public class CandidateFileResponse extends CandidateResponse {
+public class CandidateFileResponse extends CandidateItemResponse {
 
     private static final long serialVersionUID = -4310598861282271053L;
 
