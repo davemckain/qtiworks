@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.ImsManifestException;
@@ -50,7 +51,10 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,35 +64,50 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
- * Helper class for importing {@link AssessmentPackage} data
+ * Helper service for importing {@link AssessmentPackage} data into the filesystem
  *
  * @author David McKain
  */
-public final class AssessmentPackageImporter {
+@Service
+public class AssessmentPackageImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageImporter.class);
 
     public static final String SINGLE_FILE_NAME = "qti.xml";
 
     /**
+     * Imports the assessment data from the given {@link InputStream} into the given
+     * sandbox directory.
+     * <p>
+     * It is up to the caller to close the {@link InputStream}
+     *
      * @throws AssessmentPackageImportException
+     * @throws IllegalArgumentException if any of the provided arguments are null
      * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
      *   an {@link IOException}
      */
-    public AssessmentPackage importData(final File importSandboxDirectory, final InputStream inputStream, final String contentType)
+    public AssessmentPackage importData(@Nonnull final File importSandboxDirectory,
+            @Nonnull final InputStream inputStream,
+            @Nonnull final String contentType)
             throws AssessmentPackageImportException {
+        ConstraintUtilities.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
+        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
+        ConstraintUtilities.ensureNotNull(contentType, "contentType");
         AssessmentPackage result = null;
         if ("application/zip".equals(contentType)) {
             logger.debug("Import is ZIP. Attempting to unpack into {}", importSandboxDirectory);
-            result = extractZipFile(inputStream, importSandboxDirectory);
+            result = unpackZipFile(importSandboxDirectory, inputStream);
         }
         else if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
             logger.debug("Import uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);
-            result = importXml(inputStream, importSandboxDirectory);
+            result = importXml(importSandboxDirectory, inputStream);
         }
         else {
             logger.debug("Don't know how to handle MIME type {}", contentType);
@@ -97,11 +116,11 @@ public final class AssessmentPackageImporter {
         return result;
     }
 
-    private AssessmentPackage importXml(final InputStream inputStream, final File importSandboxDirectory) {
+    private AssessmentPackage importXml(final File importSandboxDirectory, final InputStream inputStream) {
         /* Save XML */
         final File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
         try {
-            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile));
+            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile), false, true);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -109,12 +128,13 @@ public final class AssessmentPackageImporter {
 
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
+        assessmentPackage.setImportType(AssessmentPackageImportType.STANDALONE_ITEM_XML);
         assessmentPackage.setAssessmentHref(SINGLE_FILE_NAME);
         assessmentPackage.setBasePath(importSandboxDirectory.getAbsolutePath());
         return assessmentPackage;
     }
 
-    private AssessmentPackage extractZipFile(final InputStream inputStream, final File importSandboxDirectory)
+    private AssessmentPackage unpackZipFile(final File importSandboxDirectory, final InputStream inputStream)
             throws AssessmentPackageImportException {
         /* Extract ZIP contents */
         ZipEntry zipEntry;
@@ -128,11 +148,13 @@ public final class AssessmentPackageImporter {
                     zipInputStream.closeEntry();
                 }
             }
-            zipInputStream.close();
+        }
+        catch (final EOFException e) {
+            /* (Might get this if the ZIP file is truncated for some reason) */
+            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
         }
         catch (final ZipException e) {
             throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
-
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -159,19 +181,19 @@ public final class AssessmentPackageImporter {
         assessmentPackage.setFileHrefs(contentPackageSummary.getFileHrefs());
         if (testCount==1) {
             /* Treat as a test */
-            logger.info("Package contains 1 test resource, so treating this as an AssessmentTest");
+            logger.debug("Package contains 1 test resource, so treating this as an AssessmentTest");
             assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_TEST);
             assessmentPackage.setAssessmentHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
         }
         else if (testCount==0 && itemCount==1) {
             /* Treat as an item */
-            logger.info("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
+            logger.debug("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
             assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
             assessmentPackage.setAssessmentHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
         }
         else {
             /* Barf */
-            logger.warn("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
+            logger.debug("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
             throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount));
         }
 
@@ -179,6 +201,7 @@ public final class AssessmentPackageImporter {
         return assessmentPackage;
     }
 
+    @ToRefactor
     public ResourceLocator createAssessmentResourceLocator(final File importSandboxDirectory) {
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         final ChainedResourceLocator result = new ChainedResourceLocator(
@@ -189,6 +212,7 @@ public final class AssessmentPackageImporter {
         return result;
     }
 
+    @ToRemove
     public URI createAssessmentResourceUri(final String assessmentHref) {
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         return packageUriScheme.pathToUri(assessmentHref);

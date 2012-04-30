@@ -59,7 +59,7 @@ public class EnumerableClientFailure<E extends Enum<E>> implements Serializable 
 
     public EnumerableClientFailure(final E reason, final Object... arguments) {
         this.reason = reason;
-        this.arguments = ImmutableList.of(arguments);
+        this.arguments = ImmutableList.copyOf(arguments);
     }
 
     public E getReason() {
