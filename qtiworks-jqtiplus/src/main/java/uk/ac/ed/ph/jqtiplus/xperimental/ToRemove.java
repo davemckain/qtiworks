@@ -40,11 +40,11 @@ import java.lang.annotation.Target;
 
 /**
  * Temporary annotation for things that should be removed
- * 
+ *
  * @author David McKain
  */
 @Retention(RetentionPolicy.SOURCE)
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR })
 public @interface ToRemove {
 
 }
