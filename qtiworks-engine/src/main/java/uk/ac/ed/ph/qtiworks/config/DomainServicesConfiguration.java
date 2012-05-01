@@ -33,13 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.services.SystemEmailService;
 
-import java.io.File;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -150,18 +148,5 @@ public class DomainServicesConfiguration {
         final JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(localContainerEntityManagerFactoryBean().getObject());
         return jpaTransactionManager;
-    }
-
-    /**
-     * Gets the base directory where QTIWorks will store user-submitted data
-     */
-    @Bean
-    public File qtiworksFilesystemBase() {
-        final String filesystemBaseString = qtiWorksSettings.getFilesystemBase();
-        final File result = new File(filesystemBaseString);
-        if (!result.isDirectory()) {
-            throw new QtiWorksRuntimeException("Filesystem base path " + filesystemBaseString + " is not a directory");
-        }
-        return result;
     }
 }
