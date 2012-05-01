@@ -74,7 +74,7 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     private String emailAddress;
 
     @Basic(optional=false)
-    @Column(name="pasword_digest", length=DomainGlobals.SHA1_DIGEST_LENGTH)
+    @Column(name="password_digest", length=DomainGlobals.SHA1_DIGEST_LENGTH)
     private String passwordDigest;
 
     @Basic(optional=false)
