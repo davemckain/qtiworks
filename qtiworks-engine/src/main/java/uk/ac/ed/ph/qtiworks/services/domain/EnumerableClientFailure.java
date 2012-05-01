@@ -31,26 +31,56 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
+import java.util.List;
+
+import org.springframework.validation.BindingResult;
+
+import com.google.common.collect.ImmutableList;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Encapsulates details about a failure in a particular service process in a
+ * way that is easy to unit test and easy to convert to a nice message.
+ * <p>
+ * This normally gets wrapped in a suitable {@link Exception}
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class EnumerableClientFailure<E extends Enum<E>> implements Serializable {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = -455216616220981136L;
 
-    OWNER,
+    private final E reason;
+    private final List<?> arguments;
 
-    ;
+    public EnumerableClientFailure(final E reason) {
+        this.reason = reason;
+        this.arguments = ImmutableList.of();
+    }
 
+    public EnumerableClientFailure(final E reason, final Object... arguments) {
+        this.reason = reason;
+        this.arguments = ImmutableList.copyOf(arguments);
+    }
+
+    public E getReason() {
+        return reason;
+    }
+
+    public List<?> getArguments() {
+        return arguments;
+    }
+
+    public void registerErrors(final BindingResult bindingResult, final String errorCodePrefix) {
+        bindingResult.reject(errorCodePrefix + "." + reason, arguments.toArray(), toString());
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.qtiworks.web.controller;
 
 import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException.FailureReason;
-import uk.ac.ed.ph.qtiworks.services.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.ValidateCommand;
 

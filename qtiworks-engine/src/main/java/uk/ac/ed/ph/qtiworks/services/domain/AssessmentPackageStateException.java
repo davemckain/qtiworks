@@ -31,26 +31,45 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Client exception thrown when attempting to perform a change to an
+ * {@link AssessmentPackage} that its current state does not support.
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class AssessmentPackageStateException extends Exception {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = -699513250898841731L;
 
-    OWNER,
+    public static enum APSFailureReason {
 
-    ;
+        DELIVERIES_EXIST,
+        CANNOT_CHANGE_ASSESSMENT_TYPE,
 
+        ;
+    }
+
+    private final EnumerableClientFailure<APSFailureReason> failure;
+
+    public AssessmentPackageStateException(final APSFailureReason reason) {
+        this(new EnumerableClientFailure<APSFailureReason>(reason));
+    }
+
+    public AssessmentPackageStateException(final EnumerableClientFailure<APSFailureReason> failure) {
+        super(failure.toString());
+        this.failure = failure;
+    }
+
+    public AssessmentPackageStateException(final EnumerableClientFailure<APSFailureReason> failure, final Throwable cause) {
+        super(failure.toString(), cause);
+        this.failure = failure;
+    }
+
+    public EnumerableClientFailure<APSFailureReason> getFailure() {
+        return failure;
+    }
 }

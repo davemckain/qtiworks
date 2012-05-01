@@ -47,6 +47,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +65,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public abstract class GenericDao<E extends BaseEntity> {
+
+    private static final Logger logger = LoggerFactory.getLogger(GenericDao.class);
 
     private final Class<E> entityClass;
 
@@ -113,7 +117,13 @@ public abstract class GenericDao<E extends BaseEntity> {
 
     @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public E update(final E entity) {
-        return em.merge(entity);
+        try {
+            return em.merge(entity);
+        }
+        catch (final RuntimeException e) {
+            logger.warn("update() failed on entity {}", entity, e);
+            throw e;
+        }
     }
 
     @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -125,17 +135,35 @@ public abstract class GenericDao<E extends BaseEntity> {
                 timestampedEntity.setCreationTime(requestTimestampContext.getCurrentRequestTimestamp());
             }
         }
-        em.persist(entity);
+        try {
+            em.persist(entity);
+        }
+        catch (final RuntimeException e) {
+            logger.warn("persist() failed on entity {}", entity, e);
+            throw e;
+        }
         return entity;
     }
 
     @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public void remove(final E entity) {
-        em.remove(entity);
+        try {
+            em.remove(entity);
+        }
+        catch (final RuntimeException e) {
+            logger.warn("remove() failed on entity {}", entity, e);
+            throw e;
+        }
     }
 
     @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public void flush() {
-        em.flush();
+        try {
+            em.flush();
+        }
+        catch (final RuntimeException e) {
+            logger.warn("flush() failed on DAO for {}", entityClass.getSimpleName(), e);
+            throw e;
+        }
     }
 }

@@ -89,7 +89,7 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             logger.debug("Created AnonymousUser {} for his/her session", anonymousUser);
         }
 
-        identityContext.setCurrentThreadUnderlyingIdentity(null);
+        identityContext.setCurrentThreadUnderlyingIdentity(anonymousUser);
         identityContext.setCurrentThreadEffectiveIdentity(anonymousUser);
         try {
             chain.doFilter(httpRequest, httpResponse);

@@ -37,10 +37,8 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -56,12 +54,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 /**
  * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored within
@@ -81,15 +78,19 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="aid")
     private Long aid;
 
+    @Version
+    @Column(name="lock_version")
+    private Long version;
+
     @Basic(optional=false)
     @Column(name="creation_time",updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** {@link InstructorUser} who uploaded this package */
+    /** {@link User} who uploaded this package */
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     @JoinColumn(name="owner_uid", updatable=false)
-    private InstructorUser owner;
+    private User owner;
 
     /** Item or Test? */
     @Basic(optional=false)
@@ -143,15 +144,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="href")
     private Set<String> fileHrefs = new HashSet<String>();
 
-    /**
-     * All deliveries of this assessment
-     *
-     * FIXME: So far we're only allowing items to be delivered!
-     */
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="assessmentPackage")
-    @OrderColumn(name="order_index")
-    private final List<AssessmentItemDelivery> assessmentDeliveries = new ArrayList<AssessmentItemDelivery>();
-
     //------------------------------------------------------------
 
     @Override
@@ -162,6 +154,15 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setId(final Long id) {
         this.aid = id;
+    }
+
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
     }
 
 
@@ -176,11 +177,11 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public InstructorUser getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(final InstructorUser owner) {
+    public void setOwner(final User owner) {
         this.owner = owner;
     }
 
@@ -245,11 +246,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public List<AssessmentItemDelivery> getAssessmentDeliveries() {
-        return assessmentDeliveries;
     }
 
 

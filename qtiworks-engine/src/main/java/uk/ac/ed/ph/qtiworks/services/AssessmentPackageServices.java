@@ -33,18 +33,31 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException.APSFailureReason;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,6 +67,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AssessmentPackageServices {
+
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageServices.class);
 
     @Resource
     IdentityContext identityContext;
@@ -67,8 +82,42 @@ public class AssessmentPackageServices {
     @Resource
     AssessmentPackageDao assessmentPackageDao;
 
-    public void createAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType) {
-        /* Do something! Throw something at us! */
+    @Resource
+    AssessmentDeliveryDao assessmentDeliveryDao;
+
+    /**
+     * Creates and persists a new {@link AssessmentPackage} from the data provided by the given
+     * {@link InputStream} and having the given content type.
+     * <p>
+     * Success post-conditions:
+     * - the {@link InputStream} is left open
+     * - a new {@link AssessmentPackage} is persisted, and its data is safely stored in a sandbox
+     *
+     * @param inputStream
+     * @param contentType
+     *
+     * @throws PrivilegeException
+     * @throws AssessmentPackageFileImportException
+     * @throws QtiWorksRuntimeException
+     */
+    public AssessmentPackage createAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType)
+            throws PrivilegeException, AssessmentPackageFileImportException {
+        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
+        ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        ensureCallerCanUploadPackages();
+
+        /* First, upload the data into a sandbox */
+        final AssessmentPackage assessmentPackage = importPackageFiles(inputStream, contentType);
+        try {
+            assessmentPackageDao.persist(assessmentPackage);
+        }
+        catch (final Exception e) {
+            logger.warn("Persistence of AssessmentPackage failed - deleting its sandbox", assessmentPackage);
+            deleteAssessmentPackageSandbox(assessmentPackage);
+            throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
+        }
+        logger.info("Created new AssessmentPackage {}", assessmentPackage);
+        return assessmentPackage;
     }
 
     /**
@@ -76,17 +125,94 @@ public class AssessmentPackageServices {
      *
      * @param inputStream
      * @param contentType
+     * @throws AssessmentPackageStateException
+     * @throws PrivilegeException
+     * @throws AssessmentPackageFileImportException
      */
-    public void replaceAssessmentPackage(@Nonnull final Long aid, @Nonnull final InputStream inputStream, @Nonnull final String contentType) {
-        /* Do something */
+    public AssessmentPackage replaceAssessmentPackageFiles(@Nonnull final AssessmentPackage assessmentPackage,
+            @Nonnull final InputStream inputStream, @Nonnull final String contentType)
+            throws AssessmentPackageStateException, PrivilegeException,
+            AssessmentPackageFileImportException {
+        ConstraintUtilities.ensureNotNull(assessmentPackage, "assessmentPackage");
+        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
+        ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        ensureCallerMayChange(assessmentPackage);
+        ensureNoDeliveries(assessmentPackage);
+
+        /* Upload data into a new sandbox */
+        final AssessmentPackage replacedAssessmentPackage = importPackageFiles(inputStream, contentType);
+
+        /* Make sure we haven't gone item->test or test->item */
+        if (replacedAssessmentPackage.getAssessmentType()!=assessmentPackage.getAssessmentType()) {
+            throw new AssessmentPackageStateException(APSFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE);
+        }
+
+        /* Merge data in */
+        assessmentPackage.setAssessmentHref(replacedAssessmentPackage.getAssessmentHref());
+        assessmentPackage.setFileHrefs(replacedAssessmentPackage.getFileHrefs());
+        assessmentPackage.setImportType(replacedAssessmentPackage.getImportType());
+        assessmentPackage.setSandboxPath(replacedAssessmentPackage.getSandboxPath());
+        assessmentPackage.setValidated(false);
+        assessmentPackage.setValid(false);
+
+        /* Finally update DB */
+        try {
+            assessmentPackageDao.update(assessmentPackage);
+        }
+        catch (final Exception e) {
+            logger.warn("Failed to update state of AssessmentPackage {} after file replacement - deleting new sandbox", e);
+            deleteAssessmentPackageSandbox(replacedAssessmentPackage);
+            throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessmentPackage, e);
+        }
+        return assessmentPackage;
     }
 
-    private AssessmentPackage importPackageData(final InputStream inputStream, final String contentType)
+    public void deleteAssessmentPackage(@Nonnull final AssessmentPackage assessmentPackage)
+            throws AssessmentPackageStateException, PrivilegeException {
+        ConstraintUtilities.ensureNotNull(assessmentPackage, "assessmentPackage");
+        ensureNoDeliveries(assessmentPackage); /* FIXME: This is too strict, but will require a lot more logic to relax */
+        ensureCallerMayChange(assessmentPackage);
+
+        /* Delete entity from DB */
+        try {
+            assessmentPackageDao.remove(assessmentPackage);
+        }
+        catch (final Exception e) {
+            throw new QtiWorksRuntimeException("Failed to delete AssessmentPackage entity " + assessmentPackage, e);
+        }
+        finally {
+            deleteAssessmentPackage(assessmentPackage);
+        }
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * @throws QtiWorksLogicException if sandboxPath is already null
+     */
+    private void deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
+        final String sandboxPath = assessmentPackage.getSandboxPath();
+        if (sandboxPath==null) {
+            throw new QtiWorksLogicException("AssessmentPackage sandbox is null");
+        }
+        filespaceManager.deleteSandbox(new File(sandboxPath));
+        assessmentPackage.setSandboxPath(null);
+    }
+
+
+    /**
+     * @throws PrivilegeException
+     * @throws AssessmentPackageFileImportException
+     * @throws QtiWorksRuntimeException
+     */
+    private AssessmentPackage importPackageFiles(final InputStream inputStream, final String contentType)
             throws PrivilegeException, AssessmentPackageFileImportException {
-        final User owner = ensureCallerCanUploadPackages();
+        final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
         try {
-            return assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+            assessmentPackage.setOwner(owner);
+            return assessmentPackage;
         }
         catch (final AssessmentPackageFileImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
@@ -94,8 +220,28 @@ public class AssessmentPackageServices {
         }
     }
 
+    //-------------------------------------------------
+
+    private void ensureNoDeliveries(final AssessmentPackage assessmentPackage)
+            throws AssessmentPackageStateException {
+        final List<AssessmentDelivery> deliveries = assessmentDeliveryDao.getForAssessmentPackage(assessmentPackage);
+        if (!deliveries.isEmpty()) {
+            throw new AssessmentPackageStateException(APSFailureReason.DELIVERIES_EXIST);
+        }
+    }
+
+    private User ensureCallerMayChange(final AssessmentPackage assessmentPackage)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessmentPackage.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.OWNER);
+        }
+        return caller;
+    }
+
     /**
-     * FIXME: Currently we are only allowing instructors to upload packages
+     * TODO: Currently we are only allowing instructors to upload packages. We may choose
+     * to let anonymous users do the same in future.
      *
      * @throws PrivilegeException
      */

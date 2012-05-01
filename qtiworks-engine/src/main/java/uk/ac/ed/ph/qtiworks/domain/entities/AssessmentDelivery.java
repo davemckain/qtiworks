@@ -33,57 +33,69 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 
-import javax.persistence.CascadeType;
+import java.util.Date;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
- * Records a candidate's complete record of a session with a
- * delivery of a particular item.
+ * Corresponds to a particular "delivery" of an {@link AssessmentObject} to a group of candidates.
+ * <p>
+ * This is going to be very simple in the first instance, but will get more complicated in future.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_record")
-@SequenceGenerator(name="candidateRecordSequence", sequenceName="candidte_record_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemRecord implements BaseEntity {
+@Inheritance(strategy=InheritanceType.JOINED)
+@Table(name="assessment_deliveries")
+@SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
+@NamedQueries({
+    @NamedQuery(name="AssessmentDelivery.getForAssessmentPackage",
+            query="SELECT d"
+                + "  FROM AssessmentDelivery d"
+                + "  WHERE d.assessmentPackage = :assessmentPackage"),
+})
+public abstract class AssessmentDelivery implements BaseEntity, TimestampedOnCreation {
 
-    private static final long serialVersionUID = -3537558551866726398L;
+    private static final long serialVersionUID = 7693569112981982946L;
 
     @Id
-    @GeneratedValue(generator="candidateRecordSequence")
-    @Column(name="xid")
+    @GeneratedValue(generator="assessmentDeliverySequence")
+    @Column(name="did")
     private Long id;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="did")
-    private AssessmentItemDelivery assessmentItemDelivery;
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    @JoinColumn(name="aid")
+    private AssessmentPackage assessmentPackage;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="uid")
-    private User candidate;
+    @Basic(optional=false)
+    @Column(name="title")
+    private String title;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemRecord", cascade=CascadeType.REMOVE)
-    @OrderColumn(name="attempt_index")
-    private final List<CandidateItemEvent> events;
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
 
-    //------------------------------------------------------------
-
-    public CandidateItemRecord() {
-        this.events = new ArrayList<CandidateItemEvent>();
-    }
+    @Basic(optional=false)
+    @Column(name="open")
+    private boolean open;
 
     //------------------------------------------------------------
 
@@ -98,25 +110,40 @@ public class CandidateItemRecord implements BaseEntity {
     }
 
 
-    public AssessmentItemDelivery getAssessmentItemDelivery() {
-        return assessmentItemDelivery;
+    @Override
+    public Date getCreationTime() {
+        return creationTime;
     }
 
-    public void setAssessmentDelivery(final AssessmentItemDelivery assessmentItemDelivery) {
-        this.assessmentItemDelivery = assessmentItemDelivery;
-    }
-
-
-    public User getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(final User candidate) {
-        this.candidate = candidate;
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
 
-    public List<CandidateItemEvent> getEvents() {
-        return events;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    public void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        this.assessmentPackage = assessmentPackage;
+    }
+
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(final boolean open) {
+        this.open = open;
     }
 }

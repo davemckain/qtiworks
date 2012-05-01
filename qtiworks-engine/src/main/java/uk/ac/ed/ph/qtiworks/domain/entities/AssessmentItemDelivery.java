@@ -35,22 +35,13 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 
-import java.util.Date;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
@@ -65,33 +56,9 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="assessment_item_deliveries")
 @SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
-public abstract class AssessmentItemDelivery implements BaseEntity, TimestampedOnCreation {
+public class AssessmentItemDelivery extends AssessmentDelivery {
 
     private static final long serialVersionUID = 7693569112981982946L;
-
-    //------------------------------------------------------------
-    // Common item/test stuff
-
-    @Id
-    @GeneratedValue(generator="assessmentDeliverySequence")
-    @Column(name="did")
-    private Long id;
-
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="aid")
-    private AssessmentPackage assessmentPackage;
-
-    @Basic(optional=false)
-    @Column(name="creation_time",updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationTime;
-
-    @Basic(optional=false)
-    @Column(name="open")
-    private boolean open;
-
-    //------------------------------------------------------------
-    // Item-specific stuff
 
     /** Maximum number of attempts, as defined by {@link ItemSesessionControl} */
     @Basic(optional=false)
@@ -100,51 +67,9 @@ public abstract class AssessmentItemDelivery implements BaseEntity, TimestampedO
 
     //------------------------------------------------------------
 
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-
-    @Override
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    @Override
-    public void setCreationTime(final Date creationTime) {
-        this.creationTime = creationTime;
-    }
-
-
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
-    }
-
-    void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        this.assessmentPackage = assessmentPackage;
-    }
-
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(final boolean open) {
-        this.open = open;
-    }
-
-    //------------------------------------------------------------
-
     public Integer getMaxAttempts() {
         return maxAttempts;
     }
-
 
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;

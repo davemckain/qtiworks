@@ -31,56 +31,41 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 
-import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.validation.BindingResult;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
-import com.google.common.collect.ImmutableList;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates details about a failure in a particular service process in a
- * way that is easy to unit test and easy to convert to a nice message.
- * <p>
- * This normally gets wrapped in a suitable {@link Exception}
+ * DAO implementation for the {@link AssessmentDelivery} entity.
  *
  * @author David McKain
  */
-public class EnumerableClientFailure<E extends Enum<E>> implements Serializable {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class AssessmentDeliveryDao extends GenericDao<AssessmentDelivery> {
 
-    private static final long serialVersionUID = -455216616220981136L;
+    @PersistenceContext
+    private EntityManager em;
 
-    private final E reason;
-    private final List<?> arguments;
-
-    public EnumerableClientFailure(final E reason) {
-        this.reason = reason;
-        this.arguments = ImmutableList.of();
+    public AssessmentDeliveryDao() {
+        super(AssessmentDelivery.class);
     }
 
-    public EnumerableClientFailure(final E reason, final Object... arguments) {
-        this.reason = reason;
-        this.arguments = ImmutableList.copyOf(arguments);
-    }
-
-    public E getReason() {
-        return reason;
-    }
-
-    public List<?> getArguments() {
-        return arguments;
-    }
-
-    public void registerErrors(final BindingResult bindingResult, final String errorCodePrefix) {
-        bindingResult.reject(errorCodePrefix + "." + reason, arguments.toArray(), toString());
-    }
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    @SuppressWarnings("unchecked")
+    public List<AssessmentDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        final Query query = em.createNamedQuery("AssessmentDelivery.getForAssessmentPackage");
+        query.setParameter("assessmentPackage", assessmentPackage);
+        return query.getResultList();
     }
 }

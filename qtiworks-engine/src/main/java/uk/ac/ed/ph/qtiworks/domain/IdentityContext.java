@@ -56,7 +56,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 public final class IdentityContext {
 
     private final ThreadLocal<User> currentIdentityThreadLocal = new ThreadLocal<User>();
-    private final ThreadLocal<InstructorUser> currentUnderlyingIdentityThreadLocal = new ThreadLocal<InstructorUser>();
+    private final ThreadLocal<User> currentUnderlyingIdentityThreadLocal = new ThreadLocal<User>();
 
     public User getCurrentThreadEffectiveIdentity() {
         return currentIdentityThreadLocal.get();
@@ -67,11 +67,11 @@ public final class IdentityContext {
     }
 
 
-    public InstructorUser getCurrentThreadUnderlyingIdentity() {
+    public User getCurrentThreadUnderlyingIdentity() {
         return currentUnderlyingIdentityThreadLocal.get();
     }
 
-    public void setCurrentThreadUnderlyingIdentity(final InstructorUser user) {
+    public void setCurrentThreadUnderlyingIdentity(final User user) {
         currentUnderlyingIdentityThreadLocal.set(user);
     }
 

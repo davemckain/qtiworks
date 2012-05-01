@@ -33,10 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -53,20 +51,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
 
-    @Resource
-    private RequestTimestampContext requestTimestampContext;
-
     @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public AssessmentPackageDao() {
         super(AssessmentPackage.class);
-    }
-
-    @Override
-    public AssessmentPackage persist(final AssessmentPackage entity) {
-        entity.setCreationTime(requestTimestampContext.getCurrentRequestTimestamp());
-        return super.persist(entity);
     }
 }

@@ -36,7 +36,9 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException.FailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;

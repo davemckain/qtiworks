@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.domain.services;
 
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import javax.annotation.Resource;
@@ -62,7 +61,7 @@ public final class Auditor {
     }
 
     private String createEventLogEntry(final String message) {
-        final InstructorUser currentThreadUnderlyingIdentity = identityContext.getCurrentThreadUnderlyingIdentity();
+        final User currentThreadUnderlyingIdentity = identityContext.getCurrentThreadUnderlyingIdentity();
         final User currentThreadEffectiveIdentity = identityContext.getCurrentThreadEffectiveIdentity();
         final String underlyingIdentity = currentThreadUnderlyingIdentity!=null ? currentThreadUnderlyingIdentity.getBusinessKey() : "<unknown>";
         final String effectiveIdentity = currentThreadEffectiveIdentity!=null ? currentThreadEffectiveIdentity.getBusinessKey() : "<unknown>";
