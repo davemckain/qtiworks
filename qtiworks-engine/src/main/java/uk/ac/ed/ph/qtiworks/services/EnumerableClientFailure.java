@@ -43,7 +43,10 @@ import org.springframework.validation.BindingResult;
 import com.google.common.collect.ImmutableList;
 
 /**
- * FIXME: Document this!
+ * Encapsulates details about a failure in a particular service process in a
+ * way that is easy to unit test and easy to convert to a nice message.
+ * <p>
+ * This normally gets wrapped in a suitable {@link Exception}
  *
  * @author David McKain
  */
