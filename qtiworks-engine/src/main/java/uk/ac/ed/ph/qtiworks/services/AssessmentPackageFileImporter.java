@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageImportException.FailureReason;
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
@@ -71,14 +71,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Helper service for importing {@link AssessmentPackage} data into the filesystem
+ * Helper service for importing assessment package data into the filesystem
+ * 
+ * @see AssessmentPackageServices
+ * @see FilespaceManager
  *
  * @author David McKain
  */
 @Service
-public class AssessmentPackageImporter {
+public class AssessmentPackageFileImporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageImporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageFileImporter.class);
 
     public static final String SINGLE_FILE_NAME = "qti.xml";
 
@@ -88,15 +91,15 @@ public class AssessmentPackageImporter {
      * <p>
      * It is up to the caller to close the {@link InputStream}
      *
-     * @throws AssessmentPackageImportException
+     * @throws AssessmentPackageFileImportException
      * @throws IllegalArgumentException if any of the provided arguments are null
      * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
      *   an {@link IOException}
      */
-    public AssessmentPackage importData(@Nonnull final File importSandboxDirectory,
+    public AssessmentPackage importAssessmentPackageData(@Nonnull final File importSandboxDirectory,
             @Nonnull final InputStream inputStream,
             @Nonnull final String contentType)
-            throws AssessmentPackageImportException {
+            throws AssessmentPackageFileImportException {
         ConstraintUtilities.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
         ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
         ConstraintUtilities.ensureNotNull(contentType, "contentType");
@@ -111,7 +114,7 @@ public class AssessmentPackageImporter {
         }
         else {
             logger.debug("Don't know how to handle MIME type {}", contentType);
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_XML_OR_ZIP));
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_XML_OR_ZIP));
         }
         return result;
     }
@@ -135,7 +138,7 @@ public class AssessmentPackageImporter {
     }
 
     private AssessmentPackage unpackZipFile(final File importSandboxDirectory, final InputStream inputStream)
-            throws AssessmentPackageImportException {
+            throws AssessmentPackageFileImportException {
         /* Extract ZIP contents */
         ZipEntry zipEntry;
         final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -151,10 +154,10 @@ public class AssessmentPackageImporter {
         }
         catch (final EOFException e) {
             /* (Might get this if the ZIP file is truncated for some reason) */
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
         }
         catch (final ZipException e) {
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -167,10 +170,10 @@ public class AssessmentPackageImporter {
             contentPackageSummary = contentPackageExtractor.parse();
         }
         catch (final XmlResourceNotFoundException e) {
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_CONTENT_PACKAGE), e);
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_CONTENT_PACKAGE), e);
         }
         catch (final ImsManifestException e) {
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_IMS_MANIFEST), e);
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_IMS_MANIFEST), e);
         }
         final int testCount = contentPackageSummary.getTestResourceHrefs().size();
         final int itemCount = contentPackageSummary.getItemResourceHrefs().size();
@@ -194,7 +197,7 @@ public class AssessmentPackageImporter {
         else {
             /* Barf */
             logger.debug("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
-            throw new AssessmentPackageImportException(new EnumerableClientFailure<FailureReason>(FailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount));
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount));
         }
 
         /* Validate and wrap up */

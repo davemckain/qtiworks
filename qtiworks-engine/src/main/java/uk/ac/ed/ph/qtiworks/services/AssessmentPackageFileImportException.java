@@ -34,31 +34,43 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 /**
- * FIXME: Document this!
+ * Client exception thrown if submitted assessment package data does not conform
+ * to what is expected.
+ *
+ * NOTE: Validation of the actual QTI data is not to be encapsulated here.
  *
  * @author David McKain
  */
-public final class AssessmentPackageImportException extends Exception {
+public final class AssessmentPackageFileImportException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
 
     public static enum FailureReason {
+        /** We expect a standalone XML file, or a ZIP Content Package */
         NOT_XML_OR_ZIP,
+
+        /** Problem processing ZIP file */
         BAD_ZIP,
+
+        /** ZIP is not an IMS Content Package */
         NOT_CONTENT_PACKAGE,
+
+        /** IMS manifest could not be parsed */
         BAD_IMS_MANIFEST,
+
+        /** IMS Content Package did not contain a supported combination of tests & items */
         UNSUPPORTED_PACKAGE_CONTENTS,
         ;
     }
 
     private final EnumerableClientFailure<FailureReason> failure;
 
-    public AssessmentPackageImportException(final EnumerableClientFailure<FailureReason> failure) {
+    public AssessmentPackageFileImportException(final EnumerableClientFailure<FailureReason> failure) {
         super(failure.toString());
         this.failure = failure;
     }
 
-    public AssessmentPackageImportException(final EnumerableClientFailure<FailureReason> failure, final Throwable cause) {
+    public AssessmentPackageFileImportException(final EnumerableClientFailure<FailureReason> failure, final Throwable cause) {
         super(failure.toString(), cause);
         this.failure = failure;
     }
