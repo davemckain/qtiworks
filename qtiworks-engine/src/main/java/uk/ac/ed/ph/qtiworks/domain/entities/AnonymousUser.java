@@ -38,6 +38,8 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
@@ -47,6 +49,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="anonymous_users")
+@NamedQueries({
+    /* Looks up the User having the given sessionId */
+    @NamedQuery(name="AnonymousUser.findBySessionId",
+            query="SELECT u"
+                + "  FROM AnonymousUser u"
+                +"   WHERE u.sessionId = :sessionId")
+})
 public class AnonymousUser extends User implements BaseEntity, Comparable<AnonymousUser> {
 
     private static final long serialVersionUID = 7821803746245696405L;
@@ -60,6 +69,17 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
     public AnonymousUser() {
         super(UserType.ANONYMOUS);
     }
+
+    //------------------------------------------------------------
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(final String sessionId) {
+        this.sessionId = sessionId;
+    }
+
 
     //------------------------------------------------------------
 

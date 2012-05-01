@@ -72,7 +72,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
-public class AssessmentPackage implements BaseEntity {
+public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4330181851974184912L;
 
@@ -165,10 +165,12 @@ public class AssessmentPackage implements BaseEntity {
     }
 
 
+    @Override
     public Date getCreationTime() {
         return creationTime;
     }
 
+    @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = creationTime;
     }

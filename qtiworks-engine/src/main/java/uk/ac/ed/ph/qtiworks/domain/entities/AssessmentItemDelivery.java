@@ -65,7 +65,7 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="assessment_item_deliveries")
 @SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
-public abstract class AssessmentItemDelivery implements BaseEntity {
+public abstract class AssessmentItemDelivery implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = 7693569112981982946L;
 
@@ -111,10 +111,12 @@ public abstract class AssessmentItemDelivery implements BaseEntity {
     }
 
 
+    @Override
     public Date getCreationTime() {
         return creationTime;
     }
 
+    @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = creationTime;
     }

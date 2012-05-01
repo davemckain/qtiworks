@@ -58,7 +58,7 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="users")
 @SequenceGenerator(name="userSequence", sequenceName="user_sequence", initialValue=1000, allocationSize=10)
-public abstract class User implements BaseEntity {
+public abstract class User implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;
 
@@ -100,10 +100,12 @@ public abstract class User implements BaseEntity {
     }
 
 
+    @Override
     public Date getCreationTime() {
         return creationTime;
     }
 
+    @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = creationTime;
     }

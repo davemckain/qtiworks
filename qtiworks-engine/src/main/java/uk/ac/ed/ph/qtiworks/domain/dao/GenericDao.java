@@ -34,12 +34,15 @@
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.BaseEntity;
+import uk.ac.ed.ph.qtiworks.domain.entities.TimestampedOnCreation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -65,6 +68,9 @@ public abstract class GenericDao<E extends BaseEntity> {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
 
     protected GenericDao(final Class<E> entityClass) {
         this.entityClass = entityClass;
@@ -112,6 +118,13 @@ public abstract class GenericDao<E extends BaseEntity> {
 
     @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
     public E persist(final E entity) {
+        /* Set timestamp if not done by caller */
+        if (entity instanceof TimestampedOnCreation) {
+            final TimestampedOnCreation timestampedEntity = (TimestampedOnCreation) entity;
+            if (timestampedEntity.getCreationTime()==null) {
+                timestampedEntity.setCreationTime(requestTimestampContext.getCurrentRequestTimestamp());
+            }
+        }
         em.persist(entity);
         return entity;
     }
