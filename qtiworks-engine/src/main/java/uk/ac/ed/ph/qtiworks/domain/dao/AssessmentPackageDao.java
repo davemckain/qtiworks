@@ -34,9 +34,13 @@
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,11 +55,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public AssessmentPackageDao() {
         super(AssessmentPackage.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<AssessmentPackage> getForOwner(final User user) {
+        final Query query = em.createNamedQuery("AssessmentPackage.getForOwner");
+        query.setParameter("user", user);
+        return query.getResultList();
     }
 }

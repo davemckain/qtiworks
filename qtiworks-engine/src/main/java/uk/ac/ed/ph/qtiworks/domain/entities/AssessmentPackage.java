@@ -54,6 +54,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -69,6 +71,12 @@ import javax.persistence.Version;
 @Entity
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
+@NamedQueries({
+    @NamedQuery(name="AssessmentPackage.getForOwner",
+            query="SELECT a"
+                + "  FROM AssessmentPackage a"
+                + "  WHERE a.owner = :user")
+})
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4330181851974184912L;
