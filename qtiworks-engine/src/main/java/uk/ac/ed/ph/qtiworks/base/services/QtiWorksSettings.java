@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.services;
+package uk.ac.ed.ph.qtiworks.base.services;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 

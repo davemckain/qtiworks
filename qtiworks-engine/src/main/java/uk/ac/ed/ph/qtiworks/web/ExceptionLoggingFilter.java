@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.domain.services.Auditor;
+import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 
 import java.io.IOException;
 

@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.SystemEmailService;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
-import uk.ac.ed.ph.qtiworks.domain.services.SystemEmailService;
 
 import java.util.Properties;
 
@@ -63,9 +63,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.domain.services", "uk.ac.ed.ph.qtiworks.domain.dao"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.base.services", "uk.ac.ed.ph.qtiworks.domain.dao"})
 @EnableTransactionManagement /* (New Spring annotation-based TX management, replaces <tx:annotation-driven/>) */
-public class DomainServicesConfiguration {
+public class BaseServicesConfiguration {
 
     @Resource
     private QtiWorksSettings qtiWorksSettings;

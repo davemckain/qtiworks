@@ -20,7 +20,7 @@ Web deployment descriptor
     <param-name>contextConfigLocation</param-name>
     <param-value>
       uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration
-      uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration
+      uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration
       uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration
     </param-value>
   </context-param>
@@ -110,11 +110,6 @@ Web deployment descriptor
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>
-        <!--
-        uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration
-        uk.ac.ed.ph.qtiworks.config.DomainServicesConfiguration
-        uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration
-        -->
         uk.ac.ed.ph.qtiworks.config.MvcConfiguration
       </param-value>
     </init-param>
