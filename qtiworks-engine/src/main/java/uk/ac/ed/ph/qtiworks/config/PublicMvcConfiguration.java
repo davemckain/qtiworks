@@ -37,17 +37,13 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -55,16 +51,14 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Defines beans for the MVC layer
+ * Defines beans for the public web MVC layer
  *
  * @author David McKain
  */
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web"})
-public class MvcConfiguration extends WebMvcConfigurerAdapter {
-
-    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.pub"})
+public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -86,13 +80,6 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    MultipartResolver multipartResolver() {
-        final CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
-        return resolver;
-    }
-
-    @Bean
     ViewResolver viewResolver() {
         final UrlBasedViewResolver result = new UrlBasedViewResolver();
         result.setViewClass(JstlView.class);
@@ -100,12 +87,4 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
         result.setSuffix(".jsp");
         return result;
     }
-
-    @Bean
-    MessageSource messageSource() {
-        final ResourceBundleMessageSource result = new ResourceBundleMessageSource();
-        result.setBasename("messages");
-        return result;
-    }
-
 }

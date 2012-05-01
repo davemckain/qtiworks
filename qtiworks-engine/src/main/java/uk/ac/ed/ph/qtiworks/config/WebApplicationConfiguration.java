@@ -45,10 +45,14 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
 import javax.annotation.Resource;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 /**
  * Defines webapp-level configuration
@@ -58,6 +62,8 @@ import org.springframework.web.context.WebApplicationContext;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services"})
 public class WebApplicationConfiguration {
+
+    public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
 
     @Resource
     private WebApplicationContext webApplicationContext;
@@ -95,5 +101,19 @@ public class WebApplicationConfiguration {
     @Bean
     public AssessmentRenderer renderer() {
         return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), stylesheetCache());
+    }
+
+    @Bean
+    MessageSource messageSource() {
+        final ResourceBundleMessageSource result = new ResourceBundleMessageSource();
+        result.setBasename("messages");
+        return result;
+    }
+
+    @Bean
+    MultipartResolver multipartResolver() {
+        final CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
+        return resolver;
     }
 }

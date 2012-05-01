@@ -90,6 +90,27 @@ Web deployment descriptor
     <url-pattern>/instructorFormAuthenticator</url-pattern>
   </servlet-mapping>
 
+  <!-- Dispatcher for instructor functionality -->
+  <servlet>
+    <servlet-name>InstructorDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+    <init-param>
+      <param-name>contextClass</param-name>
+      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </init-param>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+        uk.ac.ed.ph.qtiworks.config.InstructorMvcConfiguration
+      </param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InstructorDispatcher</servlet-name>
+    <url-pattern>/idispatcher/*</url-pattern>
+  </servlet-mapping>
+
   <!-- ========== PUBLIC ACCESS SERVICES ========== -->
 
   <!-- "Authentication" filter for anonymous/public services -->
@@ -114,7 +135,7 @@ Web deployment descriptor
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>
-        uk.ac.ed.ph.qtiworks.config.MvcConfiguration
+        uk.ac.ed.ph.qtiworks.config.PublicMvcConfiguration
       </param-value>
     </init-param>
   </servlet>

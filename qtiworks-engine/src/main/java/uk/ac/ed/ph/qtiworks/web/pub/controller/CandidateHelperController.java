@@ -31,55 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.domain;
+package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
-import java.io.Serializable;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * FIXME: This is from the initial sketch of the upload/validation functionality
- *
- * Encapsulates a {@link AssessmentObject} that has been uploaded into the engine.
- *
- * TODO: This will eventually become a persisted Object so needs to stick to convention.
+ * Controller for candidate helpers, such as math input verifiers.
  *
  * @author David McKain
  */
-@ToRefactor
-public class AssessmentUpload implements Serializable {
+@Controller
+public class CandidateHelperController {
 
-    private static final long serialVersionUID = -8906026282623891941L;
+    @Resource
+    private XsltStylesheetCache stylesheetCache;
 
-    private final AssessmentPackage assessmentPackage;
-    private final AbstractValidationResult validationResult;
-
-    public AssessmentUpload(final AssessmentPackage assessmentPackage, final AbstractValidationResult validationResult) {
-        this.assessmentPackage = assessmentPackage;
-        this.validationResult = validationResult;
-    }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
-    }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AbstractValidationResult getValidationResult() {
-        return validationResult;
-    }
-
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    /**
+     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
+     * JSON.
+     *
+     * Accept: application/json from client expected
+     */
+    @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
+        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
+        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
+        return upConvertedASCIIMathInput;
     }
 
 }
