@@ -8,7 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<utils:exposeStaticFields className="uk.ac.ed.ph.qtiworks.web.domain.AssessmentPackageV1$AssessmentType" targetName="AssessmentType" />
+<utils:exposeStaticFields className="uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType" targetName="AssessmentObjectType" />
 <%--
 
 Validator submission form
@@ -30,10 +30,10 @@ assessmentUpload
 
 <div class="validationResult">
   <c:choose>
-    <c:when test="${assessmentType==AssessmentType.ITEM}">
+    <c:when test="${assessmentType==AssessmentObjectType.ASSESSMENT_ITEM}">
       <%@ include file="validator-item-result.jspf" %>
     </c:when>
-    <c:when test="${assessmentType==AssessmentType.TEST}">
+    <c:when test="${assessmentType==AssessmentObjectType.ASSESSMENT_TEST}">
       <c:set var="testValidationResult" value="${validationResult}"/>
       <%@ include file="validator-test-result.jspf" %>
     </c:when>
