@@ -41,6 +41,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -51,7 +53,9 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
-public final class FakeWebAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+public final class InstructorFakeAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticationFilter.class);
 
     /** Filter init parameter specifying the Login Name of the assumed User */
     public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
@@ -63,7 +67,9 @@ public final class FakeWebAuthenticationFilter extends AbstractInstructorAuthent
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
         super.initWithApplicationContext(filterConfig, webApplicationContext);
         this.fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
-        lookupFakeUser(); /* (Make sure user exists now) */
+        final InstructorUser fakeUser = lookupFakeUser(); /* (Make sure user exists now) */
+        logger.warn("Fake authentication is enabled and attached to user {}. This should not be used in production deployments!",
+                fakeUser);
     }
 
     @Override

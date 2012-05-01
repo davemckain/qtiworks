@@ -59,14 +59,14 @@ import com.google.common.hash.Hashing;
  * process and determine
  * what to do next.
  *
- * @see FormAuthenticationFilter
+ * @see InstructorFormAuthenticationFilter
  * @author David McKain
  */
-public final class FormAuthenticationServlet extends HttpServlet {
+public final class InstructorFormAuthenticationServlet extends HttpServlet {
 
     private static final long serialVersionUID = -4786390063305269269L;
 
-    private static final Logger logger = LoggerFactory.getLogger(FormAuthenticationServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticationServlet.class);
 
     /**
      * Name of parameter providing the location of the Form Login JSP (when

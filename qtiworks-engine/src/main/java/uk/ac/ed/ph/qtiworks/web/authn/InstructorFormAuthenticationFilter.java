@@ -58,22 +58,22 @@ import org.springframework.web.context.WebApplicationContext;
  * parameters to fill in:
  *
  * <ul>
- *   <li>{@link FormAuthenticationServlet#USER_ID_PARAM}: user ID</li>
- *   <li>{@link FormAuthenticationServlet#PASSWORD_PARAM}: password</li>
- *   <li>{@link FormAuthenticationServlet#PROTECTED_REQUEST_URL_PARAM}: the URL of "this" Resource</li>
+ *   <li>{@link InstructorFormAuthenticationServlet#USER_ID_PARAM}: user ID</li>
+ *   <li>{@link InstructorFormAuthenticationServlet#PASSWORD_PARAM}: password</li>
+ *   <li>{@link InstructorFormAuthenticationServlet#PROTECTED_REQUEST_URL_PARAM}: the URL of "this" Resource</li>
  * </ul>
  *
- * The JSP should submit to the {@link FormAuthenticationServlet} to check the provided user ID
+ * The JSP should submit to the {@link InstructorFormAuthenticationServlet} to check the provided user ID
  * and password. The URL of the current Resource is also passed so that the user can be redirected
  * to it once authentication and authorisation has succeeded.
  *
- * @see FormAuthenticationServlet
+ * @see InstructorFormAuthenticationServlet
  *
  * @author David McKain
  */
-public final class FormAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+public final class InstructorFormAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(FormAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticationFilter.class);
 
     /**
      * Name of attribute used to store request URL if we need to go to login form so that
