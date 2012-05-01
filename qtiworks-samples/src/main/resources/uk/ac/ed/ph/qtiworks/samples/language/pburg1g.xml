@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author:	Sarah Hudspith/Graham Smith     					-->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="CyrillictextEntry" title="Saint Petersburg 1" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="FIB01" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>город</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="FIB02" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>году</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="FIB03" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>Первый</value>
+        </correctResponse>
+  </responseDeclaration>
+ <responseDeclaration identifier="FIB04" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>России</value>
+        </correctResponse>
+    </responseDeclaration>
+    <responseDeclaration identifier="FIB05" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>реки</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="FIB06" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>от</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="FIB07" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>назвал</value>
+        </correctResponse>
+    </responseDeclaration>
+
+ <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+
+<outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+  
+  <itemBody>
+        <h2>Fill in the blanks in the passage below:</h2>
+<blockquote>
+<p>
+Санкт-Петербург – очень красивый и интересный
+<textEntryInteraction responseIdentifier="FIB01" expectedLength="8"/>
+. Его основал в 1703 
+<textEntryInteraction responseIdentifier="FIB02" expectedLength="8"/>
+ царь Пётр 
+ <textEntryInteraction responseIdentifier="FIB03" expectedLength="8"/>
+ как новую столицу  
+<textEntryInteraction responseIdentifier="FIB04" expectedLength="8"/>
+ . Памятник Петру можно увидеть на берегу 
+<textEntryInteraction responseIdentifier="FIB05" expectedLength="8"/>
+ Невы недалеко 
+<textEntryInteraction responseIdentifier="FIB06" expectedLength="8"/>
+ Исаакиевкого собора. Пётр 
+<textEntryInteraction responseIdentifier="FIB07" expectedLength="8"/>
+ новый город Санкт-Петербург.
+</p>
+</blockquote>
+</itemBody>
+   <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB01"/>
+                    <correct identifier="FIB01"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+       <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB02"/>
+                    <correct identifier="FIB02"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB03"/>
+                    <correct identifier="FIB03"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB04"/>
+                    <correct identifier="FIB04"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB05"/>
+                    <correct identifier="FIB05"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB06"/>
+                    <correct identifier="FIB06"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="FIB07"/>
+                    <correct identifier="FIB07"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                   <sum>
+                   <variable identifier="SCORE"/>
+	<baseValue baseType="integer">1</baseValue>
+	</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+
+<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="SCORE"/>
+                   <baseValue baseType="integer">7</baseValue>
+                </match>
+                <setOutcomeValue identifier="FEEDBACK">
+			<multiple>
+                 		<baseValue baseType="identifier">ALLCORRECT</baseValue>
+			</multiple>
+	 </setOutcomeValue>
+            </responseIf>
+<responseElseIf>
+           <gte>
+                    <variable identifier="SCORE"/>
+                   <baseValue baseType="integer">4</baseValue>
+            </gte>
+	<setOutcomeValue identifier="FEEDBACK">
+		<multiple>
+			<baseValue baseType="identifier">MOSTCORRECT</baseValue>
+			<baseValue baseType="identifier">PASSAGE</baseValue>
+		</multiple>
+	</setOutcomeValue>
+</responseElseIf>
+<responseElse>
+	 <setOutcomeValue identifier="FEEDBACK">
+                   	<multiple>
+			<baseValue baseType="identifier">WRONG</baseValue>
+			<baseValue baseType="identifier">PASSAGE</baseValue>
+		</multiple>
+	 </setOutcomeValue>
+</responseElse>
+</responseCondition>
+ </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ALLCORRECT" showHide="show">
+	Yes, you have filled all the gaps correctly.</modalFeedback>
+   <modalFeedback outcomeIdentifier="FEEDBACK" identifier="MOSTCORRECT" showHide="show">
+	You have filled most of  the gaps correctly.</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="WRONG" showHide="show">
+	You have filled fewer than four gaps correctly .</modalFeedback>
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="PASSAGE" showHide="show">
+	Here is the full passage
+	<blockquote>
+ 	<p>
+Санкт-Петербург – очень красивый и интересный город. Его основал в 1703 году царь Пётр Первый как новую столицу  
+	России. Памятник Петру можно увидеть на берегу реки Невы недалеко от Исаакиевкого собора. Пётр назвал новый город Санкт-Петербург.
+	</p></blockquote>
+.</modalFeedback>
+
+   
+</assessmentItem>
+

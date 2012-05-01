@@ -35,12 +35,15 @@ package uk.ac.ed.ph.qtiworks.test.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 
@@ -64,7 +67,8 @@ public class QtiXmlReaderSampleTests extends AbstractIntegrationTest {
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance(),
-                MathAssessSampleSet.instance()
+                MathAssessSampleSet.instance(),
+                LanguageSampleSet.instance()
         );
     }
     
@@ -76,6 +80,11 @@ public class QtiXmlReaderSampleTests extends AbstractIntegrationTest {
     @Test
     public void test() throws Exception {
         XmlReadResult xmlReadResult = readSampleXml();
-        assertEquals(!qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
+        if (!xmlReadResult.isSchemaValid() && !qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID)) {
+            System.out.println("Schema validation expected success but failed. Details are: "
+                    + ObjectDumper.dumpObject(xmlReadResult, DumpMode.DEEP));
+        }
+        assertEquals("Schema validation assertion failed on " + xmlReadResult.getXmlParseResult().getSystemId(),
+                !qtiSampleResource.hasFeature(Feature.NOT_SCHEMA_VALID), xmlReadResult.isSchemaValid());
     }
 }

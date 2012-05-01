@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.test.integration;
 
+import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
@@ -62,7 +63,8 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
         );
     }
     
