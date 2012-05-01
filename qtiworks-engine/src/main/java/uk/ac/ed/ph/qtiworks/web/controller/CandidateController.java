@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.controller;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
@@ -107,7 +108,8 @@ public class CandidateController {
 
     public static final QtiSampleCollection demoSampleCollection = new QtiSampleCollection(
             StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-            MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
+            MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
+            LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
     );
 
     private static final String CURRENT_ITEM_HANDLE = "currentItemHandle";
