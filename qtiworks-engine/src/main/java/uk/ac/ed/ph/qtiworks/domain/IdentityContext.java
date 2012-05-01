@@ -38,6 +38,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
 /**
  * Encapsulates the identity of the user who initiated operations being carried
  * out by the current Thread, using a {@link ThreadLocal} to track state.
@@ -90,4 +92,12 @@ public final class IdentityContext {
         }
         throw new PrivilegeException(user, Privilege.USER_ANONYMOUS);
     }
+
+    //-------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
+
 }
