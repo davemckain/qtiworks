@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import java.io.IOException;
 
@@ -44,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Concrete implementation of {@link AbstractWebAuthenticationFilter} that uses a simple form-based
@@ -69,7 +71,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class FormAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class FormAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(FormAuthenticationFilter.class);
 
@@ -87,15 +89,11 @@ public final class FormAuthenticationFilter extends AbstractWebAuthenticationFil
     private String loginFormJspPath;
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
+    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
+        super.initWithApplicationContext(filterConfig, webApplicationContext);
 
         /* Look up location of login form */
-        loginFormJspPath = filterConfig.getInitParameter(FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
-        if (loginFormJspPath==null) {
-            logger.error("Required <init-param/> {} has not been passed to {}", FORM_LOGIN_JSP_PATH_PARAMETER_NAME, getClass().getName());
-            throw new ServletException("Required <init-param/> was not set for filter");
-        }
+        loginFormJspPath = WebUtilities.getRequiredInitParameter(filterConfig, FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
         logger.info("Form login JSP has been set to {}", loginFormJspPath);
     }
 

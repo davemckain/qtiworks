@@ -28,7 +28,7 @@ Web deployment descriptor
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-  <!-- This filter makes sure we carefully log any Exceptions that might happen -->
+  <!-- This global filter makes sure we carefully log any Exceptions that might happen -->
   <filter>
     <filter-name>ExceptionLoggingFilter</filter-name>
     <filter-class>uk.ac.ed.ph.qtiworks.web.ExceptionLoggingFilter</filter-class>
@@ -38,7 +38,7 @@ Web deployment descriptor
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- This filter sets a timestamp for the current request -->
+  <!-- This global filter sets a timestamp for the current request -->
   <filter>
     <filter-name>RequestTimestampFilter</filter-name>
     <filter-class>uk.ac.ed.ph.qtiworks.web.RequestTimestampFilter</filter-class>
@@ -47,6 +47,8 @@ Web deployment descriptor
     <filter-name>RequestTimestampFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <!-- ========== INSTRUCTOR SERVICES ========== -->
 
   <!-- Authentication filter for instructor-only resources -->
   <filter>
@@ -83,6 +85,18 @@ Web deployment descriptor
     <servlet-name>InstructorFormAuthenticator</servlet-name>
     <url-pattern>/instructorFormAuthenticator</url-pattern>
   </servlet-mapping>
+
+  <!-- ========== PUBLIC ACCESS SERVICES ========== -->
+
+  <!-- "Authentication" filter for anonymous/public services -->
+  <filter>
+    <filter-name>AnonymousAuthenticationFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.AnonymousAuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AnonymousAuthenticationFilter</filter-name>
+    <url-pattern>/dispatcher/*</url-pattern>
+  </filter-mapping>
 
   <!-- Dispatcher for initial demos. This will die off eventually -->
   <servlet>

@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.domain.services.Auditor;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -47,28 +46,22 @@ import javax.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Filter that intercepts any {@link Exception}s and logs them in an appropriate way.
  *
  * @author David McKain
  */
-public final class ExceptionLoggingFilter implements Filter {
+public final class ExceptionLoggingFilter extends AbstractFilterUsingApplicationContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ExceptionLoggingFilter.class);
 
     private Auditor auditor;
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        final WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
+    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
+            throws Exception {
         auditor = applicationContext.getBean(Auditor.class);
-    }
-
-    @Override
-    public void destroy() {
-        /* Nothing to do here */
     }
 
     @Override

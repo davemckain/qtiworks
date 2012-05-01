@@ -131,7 +131,7 @@ public final class FormAuthenticationServlet extends HttpServlet {
              * going originally, and remove referral details from session
              */
             logger.debug("Authentication succeeded - redirecting to {}", protectedRequestUrl);
-            request.getSession().setAttribute(AbstractWebAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
+            request.getSession().setAttribute(AbstractInstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedRequestUrl);
         }
         else {

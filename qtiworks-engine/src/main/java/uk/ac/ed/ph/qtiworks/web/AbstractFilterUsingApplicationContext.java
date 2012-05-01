@@ -31,54 +31,56 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.web.WebUtilities;
-
+import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
- * assumes a configured identity for the current User.
- * <p>
- * This is extremely useful when debugging as it saves having to log in over and over again!
+ * Trivial convenience base class for filters which need access to the {@link WebApplicationContext}
+ * when initialising themselves.
  *
  * @author David McKain
  */
-public final class FakeWebAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+public abstract class AbstractFilterUsingApplicationContext implements Filter {
 
-    /** Filter init parameter specifying the Login Name of the assumed User */
-    public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
+    private static final Logger logger = LoggerFactory.getLogger(AbstractFilterUsingApplicationContext.class);
 
-    /** Login Name for the assumed User */
-    private String fakeLoginName;
-
-    @Override
-    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
-        super.initWithApplicationContext(filterConfig, webApplicationContext);
-        this.fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
-        lookupFakeUser(); /* (Make sure user exists now) */
-    }
+    /** Spring {@link WebApplicationContext} */
+    protected WebApplicationContext applicationContext;
 
     @Override
-    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        return lookupFakeUser();
+    public final void init(final FilterConfig filterConfig) throws ServletException {
+        /* Get main business Objects */
+        try {
+            applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
+            initWithApplicationContext(filterConfig, applicationContext);
+        }
+        catch (final Exception e) {
+            logger.error("initWithApplicationContext() failed on " + this.getClass().getSimpleName(), e);
+            throw (e instanceof ServletException) ? (ServletException) e : new ServletException(e);
+        }
     }
 
-    private InstructorUser lookupFakeUser() {
-        final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
-        if (user==null) {
-            throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);
-        }
-        else if (user.isDisabled()) {
-            throw new QtiWorksLogicException("Fake InstructorUser " + fakeLoginName + " has their account marked as disabled");
-        }
-        return user;
+    /**
+     * Subclasses should fill in to access anything they need from the {@link WebApplicationContext}.
+     * Any {@link Exception} thrown will be converted into a {@link ServletException}
+     *
+     * @param webApplicationContext
+     */
+    protected abstract void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
+        throws Exception;
+
+    /**
+     * Convenience noop. Subclasses can override as required.
+     */
+    @Override
+    public void destroy() {
     }
 }

@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -46,7 +45,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Filter that sets and subsequently clears a timestamp for the current HTTP request
@@ -54,19 +52,14 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author David McKain
  */
-public final class RequestTimestampFilter implements Filter {
+public final class RequestTimestampFilter extends AbstractFilterUsingApplicationContext {
 
     private RequestTimestampContext requestTimestampContext;
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        final WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
+    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
+            throws Exception {
         requestTimestampContext = applicationContext.getBean(RequestTimestampContext.class);
-    }
-
-    @Override
-    public void destroy() {
-        /* Nothing to do here */
     }
 
     @Override
