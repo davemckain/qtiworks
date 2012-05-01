@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -46,60 +46,52 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.google.common.io.Files;
-
 /**
- * Temporary service for uploading assessments, as used in first few snapshots of QTIWorks
+ * Temporary service for uploading and validating assessments, as used in first few
+ * snapshots of QTIWorks
  *
  * @author David McKain
  */
 @Service
 @ToRefactor
-public class UploadService {
+public class AnonymousUploadAndValidationServiceV1 {
 
-    private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnonymousUploadAndValidationServiceV1.class);
 
     public static final String SINGLE_FILE_NAME = "qti.xml";
 
-    private File sandboxRootDirectory;
+    @Resource
+    private IdentityContext identityContext;
 
     @Resource
     private QtiXmlReader qtiXmlReader;
 
     @Resource
-    private AssessmentPackageImporter assessmentPackageImporter;
+    private AssessmentPackageFileImporter assessmentPackageImporter;
 
-    @PostConstruct
-    public void init() {
-        sandboxRootDirectory = Files.createTempDir();
-        logger.info("Created sandbox root directory at {}", sandboxRootDirectory);
-    }
+    @Resource
+    private FilespaceManager filespaceManager;
 
-    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws AssessmentPackageImportException {
+    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
         final File sandboxDirectory = createRequestSandbox();
         final AssessmentPackage importedPackage;
         try {
-            importedPackage = assessmentPackageImporter.importData(sandboxDirectory, inputStream, contentType);
+            importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, inputStream, contentType);
         }
-        catch (final AssessmentPackageImportException e) {
+        catch (final AssessmentPackageFileImportException e) {
             logger.info("Upload resulted in an Exception, so deleting sandbox", e);
             deleteSandbox(sandboxDirectory);
             throw e;
@@ -115,30 +107,20 @@ public class UploadService {
 
     public void deleteUpload(final AssessmentUpload assessmentUpload) {
         logger.info("Deleting sandbox for upload {}", assessmentUpload);
-        try {
-            IoUtilities.recursivelyDelete(new File(assessmentUpload.getAssessmentPackage().getBasePath()));
-        }
-        catch (final IOException e) {
-            logger.error("Could not delete upload {}", assessmentUpload);
-        }
+        deleteSandbox(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
     }
 
     public void deleteSandbox(final File sandboxDirectory) {
-        try {
-            IoUtilities.recursivelyDelete(sandboxDirectory);
-        }
-        catch (final IOException e) {
-            logger.error("Could not delete sandbox {}", sandboxDirectory.getAbsolutePath());
-        }
+        filespaceManager.deleteSandbox(sandboxDirectory);
     }
 
     @SuppressWarnings("unchecked")
     private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackage assessmentPackage) {
-        final File importSandboxDirectory = new File(assessmentPackage.getBasePath());
+        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
         final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ResourceLocator inputResourceLocator = createInputResourceLocator(importSandboxDirectory);
+        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
@@ -155,22 +137,8 @@ public class UploadService {
         return result;
     }
 
-    private ResourceLocator createInputResourceLocator(final File importSandboxDirectory) {
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ChainedResourceLocator result = new ChainedResourceLocator(
-                new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
-                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
-                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
-        );
-        return result;
-    }
-
     private File createRequestSandbox() {
-        final String sandboxName = Thread.currentThread().getName() + "-" + System.currentTimeMillis();
-        final File sandboxDirectory = new File(sandboxRootDirectory, sandboxName);
-        if (!sandboxDirectory.mkdir()) {
-            throw new QtiWorksRuntimeException("Could not create sandbox directory " + sandboxDirectory);
-        }
-        return sandboxDirectory;
+        final AnonymousUser caller = (AnonymousUser) identityContext.getCurrentThreadEffectiveIdentity();
+        return filespaceManager.createAssessmentPackageSandbox(caller);
     }
 }

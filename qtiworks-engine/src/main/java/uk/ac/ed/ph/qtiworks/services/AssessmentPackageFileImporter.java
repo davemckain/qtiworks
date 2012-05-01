@@ -72,7 +72,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Helper service for importing assessment package data into the filesystem
- * 
+ *
  * @see AssessmentPackageServices
  * @see FilespaceManager
  *
@@ -133,7 +133,7 @@ public class AssessmentPackageFileImporter {
         assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
         assessmentPackage.setImportType(AssessmentPackageImportType.STANDALONE_ITEM_XML);
         assessmentPackage.setAssessmentHref(SINGLE_FILE_NAME);
-        assessmentPackage.setBasePath(importSandboxDirectory.getAbsolutePath());
+        assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
         return assessmentPackage;
     }
 
@@ -180,7 +180,7 @@ public class AssessmentPackageFileImporter {
 
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setImportType(AssessmentPackageImportType.CONTENT_PACKAGE);
-        assessmentPackage.setBasePath(importSandboxDirectory.getAbsolutePath());
+        assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
         assessmentPackage.setFileHrefs(contentPackageSummary.getFileHrefs());
         if (testCount==1) {
             /* Treat as a test */

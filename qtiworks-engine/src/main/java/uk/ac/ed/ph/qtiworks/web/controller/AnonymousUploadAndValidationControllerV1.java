@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller;
 
+import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.services.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.services.UploadService;
 import uk.ac.ed.ph.qtiworks.web.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.domain.ValidateCommand;
 
@@ -61,16 +61,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Sketch validation controller, as used in early dev snapshots
+ * Sketch anonymous upload & validation controller, as used in early dev snapshots
  *
  * @author David McKain
  */
 @ToRefactor
 @Controller
-public class ValidationController {
+public class AnonymousUploadAndValidationControllerV1 {
 
     @Resource
-    private UploadService uploadService;
+    private AnonymousUploadAndValidationServiceV1 uploadService;
 
     /**
      * Validates a raw payload sent via POST, returning a Java Object dump.

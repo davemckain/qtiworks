@@ -104,7 +104,7 @@ public class AssessmentPackageFileImporterTest {
         final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "text/xml");
-        Assert.assertEquals(importSandboxDirectory.getPath(), result.getBasePath());
+        Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.STANDALONE_ITEM_XML, result.getImportType());
     }
@@ -114,7 +114,7 @@ public class AssessmentPackageFileImporterTest {
         final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip");
 
         final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
-        Assert.assertEquals(importSandboxDirectory.getPath(), result.getBasePath());
+        Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
     }
@@ -124,7 +124,7 @@ public class AssessmentPackageFileImporterTest {
         final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1.zip");
 
         final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
-        Assert.assertEquals(importSandboxDirectory.getPath(), result.getBasePath());
+        Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_TEST, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
     }

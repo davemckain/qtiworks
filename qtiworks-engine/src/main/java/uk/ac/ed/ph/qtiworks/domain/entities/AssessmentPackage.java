@@ -114,8 +114,8 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     /** Base path where this package's files belong. Treated as a sandbox */
     @Lob
     @Basic(optional=false)
-    @Column(name="base_path")
-    private String basePath;
+    @Column(name="sandbox_path")
+    private String sandboxPath;
 
     /** Href of the assessment item/test within this package */
     @Lob
@@ -203,12 +203,12 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getBasePath() {
-        return basePath;
+    public String getSandboxPath() {
+        return sandboxPath;
     }
 
-    public void setBasePath(final String basePath) {
-        this.basePath = basePath;
+    public void setSandboxPath(final String sandboxPath) {
+        this.sandboxPath = sandboxPath;
     }
 
 

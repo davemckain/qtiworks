@@ -33,11 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
+import java.io.File;
 import java.io.InputStream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -51,10 +56,19 @@ import org.springframework.stereotype.Service;
 public class AssessmentPackageServices {
 
     @Resource
+    IdentityContext identityContext;
+
+    @Resource
+    FilespaceManager filespaceManager;
+
+    @Resource
+    AssessmentPackageFileImporter assessmentPackageFileImporter;
+
+    @Resource
     AssessmentPackageDao assessmentPackageDao;
 
-    public void createAssessmentPackage(final InputStream inputStream, final String contentType) {
-        /* TODO */
+    public void createAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType) {
+        /* Do something! Throw something at us! */
     }
 
     /**
@@ -63,8 +77,30 @@ public class AssessmentPackageServices {
      * @param inputStream
      * @param contentType
      */
-    public void replaceAssessmentPackage(final Long aid, final InputStream inputStream, final String contentType) {
+    public void replaceAssessmentPackage(@Nonnull final Long aid, @Nonnull final InputStream inputStream, @Nonnull final String contentType) {
+        /* Do something */
+    }
 
+    private AssessmentPackage importPackageData(final InputStream inputStream, final String contentType)
+            throws PrivilegeException, AssessmentPackageFileImportException {
+        final User owner = ensureCallerCanUploadPackages();
+        final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
+        try {
+            return assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            filespaceManager.deleteSandbox(packageSandbox);
+            throw e;
+        }
+    }
+
+    /**
+     * FIXME: Currently we are only allowing instructors to upload packages
+     *
+     * @throws PrivilegeException
+     */
+    private User ensureCallerCanUploadPackages() throws PrivilegeException {
+        return identityContext.ensureEffectiveIdentityIsInstructor();
     }
 
 }

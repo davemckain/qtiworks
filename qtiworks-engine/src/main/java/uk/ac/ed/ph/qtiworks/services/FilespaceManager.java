@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
@@ -92,6 +93,7 @@ public final class FilespaceManager {
     }
 
     public void deleteSandbox(final File sandboxDirectory) {
+        ConstraintUtilities.ensureNotNull(sandboxDirectory, "sandboxDirectory");
         try {
             IoUtilities.recursivelyDelete(sandboxDirectory);
         }
@@ -102,6 +104,7 @@ public final class FilespaceManager {
     }
 
     public File createAssessmentPackageSandbox(final User owner) {
+        ConstraintUtilities.ensureNotNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
                 + "/assessments/"
                 + owner.getBusinessKey()
@@ -109,10 +112,11 @@ public final class FilespaceManager {
         return createDirectoryPath(filespaceUri);
     }
 
-    public ResourceLocator createSandboxInputResourceLocator(final File importSandboxDirectory) {
+    public ResourceLocator createSandboxInputResourceLocator(final File sandboxDirectory) {
+        ConstraintUtilities.ensureNotNull(sandboxDirectory, "sandboxDirectory");
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         final ChainedResourceLocator result = new ChainedResourceLocator(
-                new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
+                new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */
                 QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
                 new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
         );
