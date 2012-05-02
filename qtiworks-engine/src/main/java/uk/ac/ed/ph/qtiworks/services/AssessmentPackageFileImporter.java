@@ -112,6 +112,7 @@ public class AssessmentPackageFileImporter {
             logger.debug("Don't know how to handle MIME type {}", contentType);
             throw new AssessmentPackageFileImportException(new EnumerableClientFailure<APFIFailureReason>(APFIFailureReason.NOT_XML_OR_ZIP));
         }
+        logger.debug("Successfully imported files for new {}", result);
         return result;
     }
 
@@ -172,8 +173,7 @@ public class AssessmentPackageFileImporter {
         catch (final ImsManifestException e) {
             throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_IMS_MANIFEST, e);
         }
-        logger.debug("Submitted content package as successfully expanded as {}", contentPackageSummary);
-        System.out.println("GOT " + contentPackageSummary);
+        logger.trace("Submitted content package was successfully expanded as {}", contentPackageSummary);
 
         /* Check each file and convert URI -> String */
         final Set<String> fileHrefs = new HashSet<String>();
