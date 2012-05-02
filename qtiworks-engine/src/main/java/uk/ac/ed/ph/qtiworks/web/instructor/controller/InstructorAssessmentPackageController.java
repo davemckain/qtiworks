@@ -76,8 +76,6 @@ public class InstructorAssessmentPackageController {
     public String handleValidatorForm(final @ModelAttribute UploadAssessmentCommand command, final BindingResult result)
             throws IOException, PrivilegeException {
         /* Make sure something was submitted */
-        System.out.println("COMMAND IS: " + command);
-        System.out.println("BINDING RESULT IS: " + result);
         final MultipartFile uploadFile = command.getFile();
         if (uploadFile==null || uploadFile.isEmpty()) {
             result.reject("uploadAssessmentCommand.noFile");

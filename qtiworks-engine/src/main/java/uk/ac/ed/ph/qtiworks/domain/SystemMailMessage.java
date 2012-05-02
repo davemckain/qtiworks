@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -57,9 +56,7 @@ import org.springframework.mail.SimpleMailMessage;
  *
  * @author David McKain
  */
-public final class SystemMailMessage implements Serializable {
-
-    private static final long serialVersionUID = -9091250577718191561L;
+public final class SystemMailMessage {
 
     @Nonnull
     private InstructorUser fromUser;

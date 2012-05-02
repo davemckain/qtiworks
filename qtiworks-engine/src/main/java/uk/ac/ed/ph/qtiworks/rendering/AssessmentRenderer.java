@@ -59,6 +59,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -260,8 +261,8 @@ public final class AssessmentRenderer {
         final TransformerHandler transformerHandler = stylesheetManager.getCompiledStylesheetHandler(stylesheetUri);
         final Transformer transformer = transformerHandler.getTransformer();
         transformer.clearParameters();
-        for (final String name : parameters.keySet()) {
-            transformer.setParameter(name, parameters.get(name));
+        for (final Entry<String, Object> paramEntry : parameters.entrySet()) {
+            transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
         }
 
         /* Configure requested serialization */

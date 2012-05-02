@@ -232,7 +232,7 @@ public class AssessmentPackageServices {
             throw new QtiWorksRuntimeException("Failed to delete AssessmentPackage entity " + assessmentPackage, e);
         }
         finally {
-            deleteAssessmentPackage(assessmentPackage);
+            deleteAssessmentPackageSandbox(assessmentPackage);
         }
     }
 

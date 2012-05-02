@@ -125,7 +125,7 @@ public class AnonymousUploadAndValidationControllerV1 {
 
         /* Make sure something was submitted */
         final MultipartFile uploadFile = command.getUploadFile();
-        if (uploadFile!=null && uploadFile.getSize()==0L) {
+        if (uploadFile==null || uploadFile.isEmpty()) {
             errors.reject("validator.noFile");
             return "validator-uploadForm";
         }
