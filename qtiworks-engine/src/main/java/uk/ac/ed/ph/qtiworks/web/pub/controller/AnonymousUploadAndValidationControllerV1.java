@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.web.pub.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.pub.domain.ValidateCommand;
 
@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
@@ -59,6 +60,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.io.Closeables;
 
 /**
  * Sketch anonymous upload & validation controller, as used in early dev snapshots
@@ -128,17 +131,19 @@ public class AnonymousUploadAndValidationControllerV1 {
         }
 
         AssessmentUpload assessmentUpload = null;
+        final InputStream uploadStream = uploadFile.getInputStream();
         try {
-            assessmentUpload = uploadService.importData(uploadFile.getInputStream(), uploadFile.getContentType());
+            assessmentUpload = uploadService.importData(uploadStream, uploadFile.getContentType());
             model.addAttribute("assessmentUpload", assessmentUpload);
             return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
         }
         catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<FailureReason> failure = e.getFailure();
+            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "validator.assessmentPackageImportException");
             return "validator-uploadForm";
         }
         finally {
+            Closeables.closeQuietly(uploadStream);
             if (assessmentUpload!=null) {
                 uploadService.deleteUpload(assessmentUpload);
             }
