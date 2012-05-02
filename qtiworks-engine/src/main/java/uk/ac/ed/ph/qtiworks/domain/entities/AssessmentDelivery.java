@@ -69,7 +69,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name="AssessmentDelivery.getForAssessmentPackage",
             query="SELECT d"
                 + "  FROM AssessmentDelivery d"
-                + "  WHERE d.assessmentPackage = :assessmentPackage"),
+                + "  WHERE d.assessmentPackage = :assessmentPackage")
 })
 public abstract class AssessmentDelivery implements BaseEntity, TimestampedOnCreation {
 
