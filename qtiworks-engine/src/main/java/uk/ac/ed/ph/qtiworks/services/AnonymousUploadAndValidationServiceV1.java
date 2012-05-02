@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.web.pub.domain.AssessmentUpload;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -86,7 +86,7 @@ public class AnonymousUploadAndValidationServiceV1 {
     @Resource
     private FilespaceManager filespaceManager;
 
-    public AssessmentUpload importData(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
+    public AssessmentUploadAndValidationResultV1 importData(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
         final File sandboxDirectory = createRequestSandbox();
         final AssessmentPackage importedPackage;
         try {
@@ -103,10 +103,10 @@ public class AnonymousUploadAndValidationServiceV1 {
             throw e;
         }
         final AssessmentObjectValidationResult<?> validationResult = validate(importedPackage);
-        return new AssessmentUpload(importedPackage, validationResult);
+        return new AssessmentUploadAndValidationResultV1(importedPackage, validationResult);
     }
 
-    public void deleteUpload(final AssessmentUpload assessmentUpload) {
+    public void deleteUpload(final AssessmentUploadAndValidationResultV1 assessmentUpload) {
         logger.info("Deleting sandbox for upload {}", assessmentUpload);
         deleteSandbox(new File(assessmentUpload.getAssessmentPackage().getSandboxPath()));
     }

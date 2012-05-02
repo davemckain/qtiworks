@@ -15,12 +15,12 @@ Validator submission form
 
 Model attributes:
 
-assessmentUpload
+assessmentUploadAndValidationResultV1
 
 --%>
-<c:set var="assessmentPackage" value="${assessmentUpload.assessmentPackage}"/>
+<c:set var="assessmentPackage" value="${assessmentUploadAndValidationResultV1.assessmentPackage}"/>
 <c:set var="assessmentType" value="${assessmentPackage.assessmentType}"/>
-<c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
+<c:set var="validationResult" value="${assessmentUploadAndValidationResultV1.validationResult}"/>
 
 <%-- Generate header --%>
 <c:set var="title" value="QTI Validator" />

@@ -14,12 +14,12 @@ Validator submission form
 
 Model attributes:
 
-assessmentUpload
+assessmentUploadAndValidationResultV1
 
 --%>
-<c:set var="assessmentPackage" value="${assessmentUpload.assessmentPackage}"/>
+<c:set var="assessmentPackage" value="${assessmentUploadAndValidationResultV1.assessmentPackage}"/>
 <c:set var="assessmentType" value="${assessmentPackage.assessmentType}"/>
-<c:set var="validationResult" value="${assessmentUpload.validationResult}"/>
+<c:set var="validationResult" value="${assessmentUploadAndValidationResultV1.validationResult}"/>
 
 <%-- Generate header --%>
 <c:set var="title" value="QTI Validator" />
@@ -32,7 +32,7 @@ assessmentUpload
   which will be useful for developers and geeky types.
 </p>
 <pre>
-<c:out value="${utils:dumpObject(assessmentUpload)}"/>
+<c:out value="${utils:dumpObject(assessmentUploadAndValidationResultV1)}"/>
 </pre>
 
 <%@ include file="/WEB-INF/jsp/includes/footer.jspf" %>

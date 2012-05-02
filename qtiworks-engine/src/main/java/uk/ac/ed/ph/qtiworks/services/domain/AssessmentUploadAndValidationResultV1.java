@@ -31,16 +31,56 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.instructor;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import org.springframework.stereotype.Controller;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
+import java.io.Serializable;
 
 /**
- * FIXME: Document this type
+ * FIXME: This is from the initial sketch of the upload/validation functionality
+ *
+ * Encapsulates an {@link AssessmentObject} that has been uploaded into the engine
+ * and validated, as implemented in the first iteration of the webapp.
+ *
+ * TODO: This will eventually become a persisted Object so needs to stick to convention.
  *
  * @author David McKain
  */
-@Controller
-public class InstructorAssessmentPackageController {
+@ToRefactor
+public class AssessmentUploadAndValidationResultV1 implements Serializable {
+
+    private static final long serialVersionUID = -8906026282623891941L;
+
+    private final AssessmentPackage assessmentPackage;
+    private final AbstractValidationResult validationResult;
+
+    public AssessmentUploadAndValidationResultV1(final AssessmentPackage assessmentPackage, final AbstractValidationResult validationResult) {
+        this.assessmentPackage = assessmentPackage;
+        this.validationResult = validationResult;
+    }
+
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    @ObjectDumperOptions(DumpMode.DEEP)
+    public AbstractValidationResult getValidationResult() {
+        return validationResult;
+    }
+
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 
 }

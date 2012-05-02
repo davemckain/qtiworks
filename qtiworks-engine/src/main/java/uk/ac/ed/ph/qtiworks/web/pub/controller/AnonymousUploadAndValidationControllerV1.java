@@ -35,9 +35,9 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.web.pub.domain.AssessmentUpload;
 import uk.ac.ed.ph.qtiworks.web.pub.domain.ValidateCommand;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -84,7 +84,7 @@ public class AnonymousUploadAndValidationControllerV1 {
     public String validate(@RequestHeader("Content-Type") final String contentType, final HttpServletRequest request)
             throws IOException, AssessmentPackageFileImportException {
         final ServletInputStream uploadStream = request.getInputStream();
-        AssessmentUpload assessmentUpload = null;
+        AssessmentUploadAndValidationResultV1 assessmentUpload = null;
         try {
             assessmentUpload = uploadService.importData(uploadStream, contentType);
             return ObjectDumper.dumpObject(assessmentUpload, DumpMode.DEEP);
@@ -130,7 +130,7 @@ public class AnonymousUploadAndValidationControllerV1 {
             return "validator-uploadForm";
         }
 
-        AssessmentUpload assessmentUpload = null;
+        AssessmentUploadAndValidationResultV1 assessmentUpload = null;
         final InputStream uploadStream = uploadFile.getInputStream();
         try {
             assessmentUpload = uploadService.importData(uploadStream, uploadFile.getContentType());
