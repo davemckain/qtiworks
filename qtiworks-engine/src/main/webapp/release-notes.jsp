@@ -7,6 +7,19 @@ All Rights Reserved
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<h2>1.0-DEV6 (02/05/2012)</h2>
+
+<p>
+  The only real visible change in this snapshot is the addition of
+  Graham Smith's sample questions on languages. However, this release
+  includes some of the new foundations and pipework that will support
+  the webapp as development continues, including a first cut of the DB
+  schema, some of the service layer, and some of the authentication modules.
+  Note also that from now on, the public demo of QTIWorks will be accessed via
+  HTTPS instead of HTTP. (Users will be automatically switched to the correct
+  protocol if they come in via HTTP.)
+</p>
+
 <h2>1.0-DEV5 (25/04/2012)</h2>
 
 <p>
