@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-
 /**
  * Client exception thrown if submitted assessment package data does not conform
  * to what is expected.
@@ -46,7 +45,7 @@ public final class AssessmentPackageFileImportException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
 
-    public static enum FailureReason {
+    public static enum APFIFailureReason {
         /** We expect a standalone XML file, or a ZIP Content Package */
         NOT_XML_OR_ZIP,
 
@@ -59,24 +58,44 @@ public final class AssessmentPackageFileImportException extends Exception {
         /** IMS manifest could not be parsed */
         BAD_IMS_MANIFEST,
 
-        /** IMS Content Package did not contain a supported combination of tests & items */
+        /** IMS Content Package did not contain a supported combination of {0} items and {1} tests */
         UNSUPPORTED_PACKAGE_CONTENTS,
+
+        /** URI of a referenced File {0} resolved outside the package */
+        HREF_OUTSIDE_PACKAGE,
+
+        /** Refernece File with href {0} is missing */
+        FILE_MISSING,
+
         ;
     }
 
-    private final EnumerableClientFailure<FailureReason> failure;
+    private final EnumerableClientFailure<APFIFailureReason> failure;
 
-    public AssessmentPackageFileImportException(final EnumerableClientFailure<FailureReason> failure) {
+    public AssessmentPackageFileImportException(final EnumerableClientFailure<APFIFailureReason> failure) {
         super(failure.toString());
         this.failure = failure;
     }
 
-    public AssessmentPackageFileImportException(final EnumerableClientFailure<FailureReason> failure, final Throwable cause) {
+    public AssessmentPackageFileImportException(final EnumerableClientFailure<APFIFailureReason> failure, final Throwable cause) {
         super(failure.toString(), cause);
         this.failure = failure;
     }
 
-    public EnumerableClientFailure<FailureReason> getFailure() {
+    public AssessmentPackageFileImportException(final APFIFailureReason reason) {
+        this(new EnumerableClientFailure<APFIFailureReason>(reason));
+    }
+
+    public AssessmentPackageFileImportException(final APFIFailureReason reason, final Throwable cause) {
+        this(new EnumerableClientFailure<APFIFailureReason>(reason), cause);
+    }
+
+    public AssessmentPackageFileImportException(final APFIFailureReason reason, final Object... arguments) {
+        this(new EnumerableClientFailure<APFIFailureReason>(reason, arguments));
+    }
+
+
+    public EnumerableClientFailure<APFIFailureReason> getFailure() {
         return failure;
     }
 }

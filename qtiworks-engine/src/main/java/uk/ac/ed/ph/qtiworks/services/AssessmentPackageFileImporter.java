@@ -37,24 +37,16 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.FailureReason;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.ImsManifestException;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageSummary;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.EOFException;
 import java.io.File;
@@ -62,6 +54,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
@@ -116,7 +110,7 @@ public class AssessmentPackageFileImporter {
         }
         else {
             logger.debug("Don't know how to handle MIME type {}", contentType);
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_XML_OR_ZIP));
+            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<APFIFailureReason>(APFIFailureReason.NOT_XML_OR_ZIP));
         }
         return result;
     }
@@ -131,6 +125,7 @@ public class AssessmentPackageFileImporter {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
 
+        /* Create AssessmentPackage representing this */
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
         assessmentPackage.setImportType(AssessmentPackageImportType.STANDALONE_ITEM_XML);
@@ -156,10 +151,10 @@ public class AssessmentPackageFileImporter {
         }
         catch (final EOFException e) {
             /* (Might get this if the ZIP file is truncated for some reason) */
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
+            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_ZIP, e);
         }
         catch (final ZipException e) {
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_ZIP), e);
+            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_ZIP, e);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -172,55 +167,68 @@ public class AssessmentPackageFileImporter {
             contentPackageSummary = contentPackageExtractor.parse();
         }
         catch (final XmlResourceNotFoundException e) {
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.NOT_CONTENT_PACKAGE), e);
+            throw new AssessmentPackageFileImportException(APFIFailureReason.NOT_CONTENT_PACKAGE, e);
         }
         catch (final ImsManifestException e) {
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.BAD_IMS_MANIFEST), e);
+            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_IMS_MANIFEST, e);
         }
-        final int testCount = contentPackageSummary.getTestResourceHrefs().size();
-        final int itemCount = contentPackageSummary.getItemResourceHrefs().size();
+        logger.debug("Submitted content package as successfully expanded as {}", contentPackageSummary);
+        System.out.println("GOT " + contentPackageSummary);
 
+        /* Check each file and convert URI -> String */
+        final Set<String> fileHrefs = new HashSet<String>();
+        for (final URI fileHref : contentPackageSummary.getFileHrefs()) {
+            fileHrefs.add(checkPackageFileHref(importSandboxDirectory, fileHref));
+        }
+
+        /* Now build appropriate result based on number of item & test resources found */
+        final int testCount = contentPackageSummary.getTestResources().size();
+        final int itemCount = contentPackageSummary.getItemResources().size();
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setImportType(AssessmentPackageImportType.CONTENT_PACKAGE);
         assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
-        assessmentPackage.setFileHrefs(contentPackageSummary.getFileHrefs());
+        assessmentPackage.setFileHrefs(fileHrefs);
         if (testCount==1) {
             /* Treat as a test */
             logger.debug("Package contains 1 test resource, so treating this as an AssessmentTest");
+            final String testHref = checkPackageFileHref(importSandboxDirectory, contentPackageSummary.getTestResources().get(0).getHref());
             assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_TEST);
-            assessmentPackage.setAssessmentHref(contentPackageSummary.getTestResourceHrefs().iterator().next());
+            assessmentPackage.setAssessmentHref(testHref);
         }
         else if (testCount==0 && itemCount==1) {
             /* Treat as an item */
             logger.debug("Package contains 1 item resource and no test resources, so treating this as an AssessmentItem");
+            final String itemHref = checkPackageFileHref(importSandboxDirectory, contentPackageSummary.getItemResources().get(0).getHref());
             assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
-            assessmentPackage.setAssessmentHref(contentPackageSummary.getItemResourceHrefs().iterator().next());
+            assessmentPackage.setAssessmentHref(itemHref);
         }
         else {
             /* Barf */
             logger.debug("Package contains {} items and {} tests. Don't know how to deal with this", itemCount, testCount);
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<FailureReason>(FailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount));
+            throw new AssessmentPackageFileImportException(APFIFailureReason.UNSUPPORTED_PACKAGE_CONTENTS, itemCount, testCount);
         }
 
         /* Validate and wrap up */
         return assessmentPackage;
     }
 
-    @ToRefactor
-    public ResourceLocator createAssessmentResourceLocator(final File importSandboxDirectory) {
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ChainedResourceLocator result = new ChainedResourceLocator(
-                new FileSandboxResourceLocator(packageUriScheme, importSandboxDirectory), /* (to resolve things in this package) */
-                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
-                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
-        );
-        return result;
-    }
+    private String checkPackageFileHref(final File importSandboxDirectory, final URI href)
+            throws AssessmentPackageFileImportException {
+        final String hrefString = href.toString();
+        final URI sandboxUri = importSandboxDirectory.toURI();
+        final URI resolvedFileUri = sandboxUri.resolve(href);
 
-    @ToRemove
-    public URI createAssessmentResourceUri(final String assessmentHref) {
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        return packageUriScheme.pathToUri(assessmentHref);
-    }
+        /* Make sure href points to something within the sandbox */
+        if (!resolvedFileUri.toString().startsWith(sandboxUri.toString())) {
+            throw new AssessmentPackageFileImportException(APFIFailureReason.HREF_OUTSIDE_PACKAGE, hrefString);
+        }
 
+        /* Make sure file exists */
+        final File resolvedFile = new File(resolvedFileUri);
+        if (!resolvedFile.exists()) {
+            throw new AssessmentPackageFileImportException(APFIFailureReason.FILE_MISSING, hrefString);
+        }
+
+        return hrefString;
+    }
 }
