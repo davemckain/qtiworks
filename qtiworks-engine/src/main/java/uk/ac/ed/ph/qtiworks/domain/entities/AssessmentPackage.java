@@ -62,6 +62,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Type;
+
 /**
  * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored within
  * the system. All such objects are treated as IMS Content Packages.
@@ -108,9 +110,17 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     /** Content Package or standalone? */
     @Basic(optional=false)
-    @Column(name="import_type", length=15)
+    @Column(name="import_type", length=20)
     @Enumerated(EnumType.STRING)
     private AssessmentPackageImportType importType;
+
+    /**
+     * Short name for this item/test. Used for listings and other stuff.
+     * We try to infer this from the name of the imported file
+     */
+    @Basic(optional=false)
+    @Column(name="name")
+    private String name;
 
     /**
      * Title of this item/test. Used for listings and other stuff.
@@ -122,12 +132,14 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     /** Base path where this package's files belong. Treated as a sandbox */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="sandbox_path")
     private String sandboxPath;
 
     /** Href of the assessment item/test within this package */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="assessment_href")
     private String assessmentHref;
@@ -147,8 +159,9 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
      * Used to determine what resources are allowed to be served up
      */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @ElementCollection
-    @CollectionTable(name="assessment_files", joinColumns=@JoinColumn(name="aid"))
+    @CollectionTable(name="assessment_package_files", joinColumns=@JoinColumn(name="aid"))
     @Column(name="href")
     private Set<String> fileHrefs = new HashSet<String>();
 
@@ -245,6 +258,15 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     public void setValid(final boolean valid) {
         this.valid = valid;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 
 

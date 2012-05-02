@@ -39,6 +39,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -48,6 +51,7 @@ import com.google.common.collect.ImmutableList;
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.FORBIDDEN)
 public final class PrivilegeException extends NotAllowedException {
 
     private static final long serialVersionUID = 963799679125087234L;

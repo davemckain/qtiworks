@@ -56,7 +56,7 @@ public class InstructorMvcConfiguration extends WebMvcConfigurerAdapter {
     ViewResolver viewResolver() {
         final UrlBasedViewResolver result = new UrlBasedViewResolver();
         result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/instructor");
+        result.setPrefix("/WEB-INF/jsp/views/instructor/");
         result.setSuffix(".jsp");
         return result;
     }

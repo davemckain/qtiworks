@@ -33,28 +33,32 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * Base Exception for "not allowed" scenarios.
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.FORBIDDEN)
 public class NotAllowedException extends Exception {
 
     private static final long serialVersionUID = -4482468407595748218L;
-    
+
     public NotAllowedException() {
         super();
     }
-    
-    public NotAllowedException(String message) {
+
+    public NotAllowedException(final String message) {
         super(message);
     }
 
-    public NotAllowedException(Throwable cause) {
+    public NotAllowedException(final Throwable cause) {
         super(cause);
     }
-    
-    public NotAllowedException(String message, Throwable cause) {
+
+    public NotAllowedException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

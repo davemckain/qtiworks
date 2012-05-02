@@ -48,9 +48,21 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException.APSFailureReason;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -59,6 +71,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
 
 /**
  * Services for managing {@link AssessmentPackage}s
@@ -69,6 +82,8 @@ import org.springframework.stereotype.Service;
 public class AssessmentPackageServices {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageServices.class);
+
+    public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
     @Resource
     IdentityContext identityContext;
@@ -85,6 +100,13 @@ public class AssessmentPackageServices {
     @Resource
     AssessmentDeliveryDao assessmentDeliveryDao;
 
+    @Resource
+    QtiXmlReader qtiXmlReader;
+
+    public List<AssessmentPackage> getCallerAssessmentPackages() {
+        return assessmentPackageDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    }
+
     /**
      * Creates and persists a new {@link AssessmentPackage} from the data provided by the given
      * {@link InputStream} and having the given content type.
@@ -100,7 +122,7 @@ public class AssessmentPackageServices {
      * @throws AssessmentPackageFileImportException
      * @throws QtiWorksRuntimeException
      */
-    public AssessmentPackage createAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType)
+    public AssessmentPackage importAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType)
             throws PrivilegeException, AssessmentPackageFileImportException {
         ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
         ConstraintUtilities.ensureNotNull(contentType, "contentType");
@@ -108,6 +130,17 @@ public class AssessmentPackageServices {
 
         /* First, upload the data into a sandbox */
         final AssessmentPackage assessmentPackage = importPackageFiles(inputStream, contentType);
+
+        /* FIXME: Make this more clever */
+        assessmentPackage.setName("Assessment");
+
+        /* Guess a title */
+        final String guessedTitle = guessAssessmentTitle(assessmentPackage);
+        assessmentPackage.setTitle(!guessedTitle.isEmpty() ? guessedTitle : DEFAULT_IMPORT_TITLE);
+
+        System.out.println("PERSISTING " + assessmentPackage);
+
+        /* Persist date */
         try {
             assessmentPackageDao.persist(assessmentPackage);
         }
@@ -187,6 +220,24 @@ public class AssessmentPackageServices {
 
     //-------------------------------------------------
 
+    public ResourceLocator createAssessmentResourceLocator(final AssessmentPackage assessmentPackage) {
+        final File sandboxDirectory = new File(assessmentPackage.getSandboxPath());
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        final ChainedResourceLocator result = new ChainedResourceLocator(
+                new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */
+                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
+                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
+        );
+        return result;
+    }
+
+    public URI createAssessmentObjectUri(final AssessmentPackage assessmentPackage) {
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        return packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref().toString());
+    }
+
+    //-------------------------------------------------
+
     /**
      * @throws QtiWorksLogicException if sandboxPath is already null
      */
@@ -198,7 +249,6 @@ public class AssessmentPackageServices {
         filespaceManager.deleteSandbox(new File(sandboxPath));
         assessmentPackage.setSandboxPath(null);
     }
-
 
     /**
      * @throws PrivilegeException
@@ -218,6 +268,35 @@ public class AssessmentPackageServices {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
         }
+    }
+
+    /**
+     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
+     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
+     * <p>
+     * This performs a low level XML parse to save time; proper read/validation using JQTI+
+     * is expected to happen later on.
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    private String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        final URI assessmentSystemId = packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref());
+        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
+        XmlReadResult xmlReadResult;
+        try {
+            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
+        }
+        catch (final XmlResourceNotFoundException e) {
+            throw new QtiWorksLogicException("Assessment resource not found, which import process should have guarded against", e);
+        }
+        /* Let's simply extract the title attribute from the document element, and not worry about
+         * anything else at this point.
+         */
+        final Document document = xmlReadResult.getDocument();
+        return document.getDocumentElement().getAttribute("title");
     }
 
     //-------------------------------------------------
