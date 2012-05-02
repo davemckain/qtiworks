@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
 import java.io.Serializable;
@@ -39,37 +38,37 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Encapsulates the key data within a <code>resource</code> element and child
- * <code>file</code> elements in a Content Package.
+ * Encapsulates the key data encapsulated by an IMS Content Package <code>resource</code> element
+ * and its child <code>file</code> elements
  *
  * @author David McKain
  */
 public final class ContentPackageResource implements Serializable {
 
     private static final long serialVersionUID = 8850693671764183109L;
-    
+
     private final String type;
     private final URI href;
     private final List<URI> fileHrefs;
-    
-    public ContentPackageResource(String type, URI href, List<URI> fileHrefs) {
+
+    public ContentPackageResource(final String type, final URI href, final List<URI> fileHrefs) {
         this.type = type;
         this.href = href;
         this.fileHrefs = fileHrefs;
     }
-    
+
     public String getType() {
         return type;
     }
-    
+
     public URI getHref() {
         return href;
     }
-    
+
     public List<URI> getFileHrefs() {
         return fileHrefs;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

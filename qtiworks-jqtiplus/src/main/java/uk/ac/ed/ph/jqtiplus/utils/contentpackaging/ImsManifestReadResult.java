@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
@@ -53,22 +52,22 @@ import java.util.Map;
 public final class ImsManifestReadResult implements Serializable {
 
     private static final long serialVersionUID = -4113064947715847310L;
-    
+
     private final String manifestHref;
     private final XmlParseResult xmlParseResult;
     private final String namespaceUri;
     private final List<ContentPackageResource> resourceList;
     private final Map<String, List<ContentPackageResource>> resourcesByTypeMap;
-    
-    public ImsManifestReadResult(final String manifestHref, final XmlParseResult xmlParseResult, final String namespaceUri,
-            final List<ContentPackageResource> resources) {
+
+    public ImsManifestReadResult(final String manifestHref, final XmlParseResult xmlParseResult,
+            final String namespaceUri, final List<ContentPackageResource> resources) {
         this.manifestHref = manifestHref;
         this.xmlParseResult = xmlParseResult;
         this.namespaceUri = namespaceUri;
         this.resourceList = ObjectUtilities.unmodifiableList(resources);
-        
-        Map<String, List<ContentPackageResource>> builder = new HashMap<String, List<ContentPackageResource>>();
-        for (ContentPackageResource resource : resources) {
+
+        final Map<String, List<ContentPackageResource>> builder = new HashMap<String, List<ContentPackageResource>>();
+        for (final ContentPackageResource resource : resources) {
             List<ContentPackageResource> resourcesByType = builder.get(resource.getType());
             if (resourcesByType==null) {
                 resourcesByType = new ArrayList<ContentPackageResource>();
@@ -78,7 +77,7 @@ public final class ImsManifestReadResult implements Serializable {
         }
         this.resourcesByTypeMap = Collections.unmodifiableMap(builder);
     }
-    
+
     public ImsManifestReadResult(final String manifestHref, final XmlParseResult xmlParseResult) {
         this.manifestHref = manifestHref;
         this.xmlParseResult = xmlParseResult;
@@ -86,31 +85,31 @@ public final class ImsManifestReadResult implements Serializable {
         this.resourceList = Collections.emptyList();
         this.resourcesByTypeMap = Collections.emptyMap();
     }
-    
+
     public boolean isUnderstood() {
         return namespaceUri!=null;
     }
-    
+
     public String getManifestHref() {
         return manifestHref;
     }
-    
+
     public XmlParseResult getXmlParseResult() {
         return xmlParseResult;
     }
-    
+
     public String getNamespaceUri() {
         return namespaceUri;
     }
-    
+
     public List<ContentPackageResource> getResourceList() {
         return resourceList;
     }
-    
+
     public Map<String, List<ContentPackageResource>> getResourcesByTypeMap() {
         return resourcesByTypeMap;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
@@ -122,5 +121,4 @@ public final class ImsManifestReadResult implements Serializable {
                 + ",resourcesByTypeMap=" + resourcesByTypeMap
                 + ")";
     }
-
 }

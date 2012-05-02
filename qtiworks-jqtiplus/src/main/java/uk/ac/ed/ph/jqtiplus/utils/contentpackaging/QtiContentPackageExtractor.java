@@ -100,41 +100,36 @@ public final class QtiContentPackageExtractor {
     public QtiContentPackageSummary parse() throws XmlResourceNotFoundException, ImsManifestException {
         /* First parse the "top" IMS manifest, which should always be present */
         final ImsManifestReadResult manifest = readManifestFile(IMS_MANIFEST_FILE_NAME);
-        Set<String> testResourceHrefs = null;
-        Set<String> itemResourceHrefs = null;
-        Set<String> fileHrefs = null;
+        List<ContentPackageResource> testResources = null;
+        List<ContentPackageResource> itemResources = null;
+        Set<URI> fileHrefs = null;
         if (manifest.isUnderstood()) {
             /* Extract items & tests */
-            itemResourceHrefs = getResolvedResourceHrefsByTypes(manifest, ITEM_TYPES);
-            testResourceHrefs = getResolvedResourceHrefsByTypes(manifest, TEST_TYPES);
-            fileHrefs = getResolvedFileHrefs(manifest);
+            itemResources = getResourcesByTypes(manifest, ITEM_TYPES);
+            testResources = getResourcesByTypes(manifest, TEST_TYPES);
+            fileHrefs = getAllFileHrefs(manifest);
         }
-        return new QtiContentPackageSummary(manifest, testResourceHrefs, itemResourceHrefs, fileHrefs);
+        return new QtiContentPackageSummary(manifest, testResources, itemResources, fileHrefs);
     }
 
-    private Set<String> getResolvedResourceHrefsByTypes(final ImsManifestReadResult manifest, final String... types) {
-        final Set<String> result = new HashSet<String>();
+    private List<ContentPackageResource> getResourcesByTypes(final ImsManifestReadResult manifest, final String... types) {
         final Map<String, List<ContentPackageResource>> resourcesByTypeMap = manifest.getResourcesByTypeMap();
+        final List<ContentPackageResource> result = new ArrayList<ContentPackageResource>();
         for (final String type : types) {
             final List<ContentPackageResource> resourcesByType = resourcesByTypeMap.get(type);
             if (resourcesByType!=null) {
-                for (final ContentPackageResource resource : resourcesByType) {
-                    final URI resourceUri = resource.getHref();
-                    final URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(resourceUri);
-                    result.add(PACKAGE_URI_SCHEME.uriToPath(resolvedUri));
-                }
+                result.addAll(resourcesByType);
             }
 
         }
         return result;
     }
 
-    private Set<String> getResolvedFileHrefs(final ImsManifestReadResult manifest) {
-        final Set<String> result = new HashSet<String>();
+    private Set<URI> getAllFileHrefs(final ImsManifestReadResult manifest) {
+        final Set<URI> result = new HashSet<URI>();
         for (final ContentPackageResource resource : manifest.getResourceList()) {
             for (final URI fileHref : resource.getFileHrefs()) {
-                final URI resolvedUri = manifest.getXmlParseResult().getSystemId().resolve(fileHref);
-                result.add(PACKAGE_URI_SCHEME.uriToPath(resolvedUri));
+                result.add(fileHref);
             }
         }
         return result;

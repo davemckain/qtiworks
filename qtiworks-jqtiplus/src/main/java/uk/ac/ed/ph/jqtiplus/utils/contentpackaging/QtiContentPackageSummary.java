@@ -38,28 +38,39 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
+import java.net.URI;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Encapsulates details of the contents of a Content Package that are of interest to QTI.
- * 
+ *
  * @see QtiContentPackageExtractor
- * 
+ *
  * @author David McKain
  */
 public final class QtiContentPackageSummary implements Serializable {
-    
+
     private static final long serialVersionUID = 6791550769947268491L;
-    
+
+    /** Parsed IMS manifest details */
     private final ImsManifestReadResult packageManifestDetails;
-    private final Set<String> testResourceHrefs;
-    private final Set<String> itemResourceHrefs;
-    private final Set<String> fileHrefs;
-    
-    public QtiContentPackageSummary(ImsManifestReadResult packageManifestDetails, Set<String> testResourceHrefs, Set<String> itemResourceHrefs, Set <String> fileHrefs) {
+
+    /** Details of all QTI assessmentTest resources declared */
+    private final List<ContentPackageResource> testResources;
+
+    /** Details of all QTI assessmentItem resources declared */
+    private final List<ContentPackageResource> itemResources;
+
+    /** Convenience set of ALL file hrefs found within the package, with duplicates removed */
+    private final Set<URI> fileHrefs;
+
+    public QtiContentPackageSummary(final ImsManifestReadResult packageManifestDetails,
+            final List<ContentPackageResource> testResources,
+            final List<ContentPackageResource> itemResources, final Set<URI> fileHrefs) {
         this.packageManifestDetails = packageManifestDetails;
-        this.testResourceHrefs = ObjectUtilities.unmodifiableSet(testResourceHrefs);
-        this.itemResourceHrefs = ObjectUtilities.unmodifiableSet(itemResourceHrefs);
+        this.testResources = ObjectUtilities.unmodifiableList(testResources);
+        this.itemResources = ObjectUtilities.unmodifiableList(itemResources);
         this.fileHrefs = ObjectUtilities.unmodifiableSet(fileHrefs);
     }
 
@@ -67,25 +78,25 @@ public final class QtiContentPackageSummary implements Serializable {
     public ImsManifestReadResult getPackageManifestDetails() {
         return packageManifestDetails;
     }
-    
-    public Set<String> getTestResourceHrefs() {
-        return testResourceHrefs;
+
+    public List<ContentPackageResource> getTestResources() {
+        return testResources;
     }
-    
-    public Set<String> getItemResourceHrefs() {
-        return itemResourceHrefs;
+
+    public List<ContentPackageResource> getItemResources() {
+        return itemResources;
     }
-    
-    public Set<String> getFileHrefs() {
+
+    public Set<URI> getFileHrefs() {
         return fileHrefs;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(packageManifestDetails=" + packageManifestDetails
-                + ",testResourceHrefs=" + testResourceHrefs
-                + ",itemResourceHrefs=" + itemResourceHrefs
+                + ",testResources=" + testResources
+                + ",itemResources=" + itemResources
                 + ",fileHrefs=" + fileHrefs
                 + ")";
     }
