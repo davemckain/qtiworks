@@ -43,6 +43,8 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
  * Represents a file response to a particular interaction
  *
@@ -61,12 +63,14 @@ public class CandidateFileResponse extends CandidateItemResponse {
 
     /** Client name of submitted file, if provided */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
     @Column(name="file_name", updatable=false)
     private String fileName;
 
     /** Path where submitted file is stored in the system */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="stored_file_path", updatable=false)
     private String storedFilePath;

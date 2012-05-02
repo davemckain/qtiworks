@@ -46,6 +46,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
  * Represents a file response to a particular interaction
  *
@@ -59,6 +61,7 @@ public class CandidateStringResponse extends CandidateItemResponse {
 
     /** Raw response string data */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="candidate_string_response_items", joinColumns=@JoinColumn(name="xrid"))
     @Column(name="string")
