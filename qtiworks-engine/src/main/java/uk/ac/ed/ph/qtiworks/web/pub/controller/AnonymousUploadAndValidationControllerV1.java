@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
-import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.pub.domain.ValidateCommand;
 
@@ -126,7 +126,7 @@ public class AnonymousUploadAndValidationControllerV1 {
         /* Make sure something was submitted */
         final MultipartFile uploadFile = command.getUploadFile();
         if (uploadFile!=null && uploadFile.getSize()==0L) {
-            errors.reject("validator.nofile");
+            errors.reject("validator.noFile");
             return "validator-uploadForm";
         }
 

@@ -37,15 +37,15 @@ import java.util.Iterator;
 
 /**
  * Some random {@link String} utilities and helpers.
- * 
+ *
  * (Ported from SnuggleTeX for use in serialization. Some of this may have applications
  * elsewhere in JQTI. Another option is pulling in a 3rd party, but this stuff is
  * so trivial it's not worth it.)
- * 
+ *
  * @author David McKain
  */
 public final class StringUtilities {
-	
+
     /** Shared instance of an empty array of Strings, which is sometimes useful! */
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
@@ -61,8 +61,8 @@ public final class StringUtilities {
      * @return objects joined using the given separator.
      */
     public static String join(final Iterable<? extends Object> objects, final CharSequence separator) {
-        StringBuilder result = new StringBuilder();
-        for (Iterator<? extends Object> iter = objects.iterator(); iter.hasNext(); ) {
+        final StringBuilder result = new StringBuilder();
+        for (final Iterator<? extends Object> iter = objects.iterator(); iter.hasNext(); ) {
             result.append(iter.next().toString());
             if (iter.hasNext()) {
                 result.append(separator);
@@ -81,7 +81,7 @@ public final class StringUtilities {
     public static String join(final Object[] objects, final CharSequence separator) {
         return join(objects, separator, 0, objects.length);
     }
-    
+
     /**
      * Version of {@link #join(Object[], CharSequence)} that allows you to pass in
      * a {@link StringBuilder} that the result will be built up in. This is useful if you need
@@ -91,11 +91,11 @@ public final class StringUtilities {
      * @param objects array of Objects to join
      * @param separator separator to use
      */
-    public static void join(final StringBuilder resultBuilder, final Object[] objects, 
+    public static void join(final StringBuilder resultBuilder, final Object[] objects,
     		final CharSequence separator) {
         join(resultBuilder, objects, separator, 0, objects.length);
     }
-    
+
     /**
      * Version of {@link #join(Object[], CharSequence)} that allows you to specify a range of
      * indices in the array to join. This can be useful in some cases.
@@ -107,11 +107,11 @@ public final class StringUtilities {
      */
     public static String join(final Object[] objects, final CharSequence separator,
     		final int startIndex, final int endIndex) {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         join(result, objects, separator, startIndex, endIndex);
         return result.toString();
     }
-    
+
     /**
      * Version of {@link #join(Object[], CharSequence, int, int)} that allows you to pass in
      * a {@link StringBuilder} that the result will be built up in. This is useful if you need
@@ -134,14 +134,21 @@ public final class StringUtilities {
             hasDoneFirst = true;
         }
     }
-    
+
     //------------------------------------------------------------------------
-    
+
     /**
      * Tests whether the given String is null or empty ("").
      */
     public static boolean isNullOrEmpty(final String string) {
         return string==null || string.length()==0;
+    }
+
+    /**
+     * Tests whether the given String is null or blank (whitespace only).
+     */
+    public static boolean isNullOrBlank(final String string) {
+        return string==null || string.trim().length()==0;
     }
 
     /**
@@ -163,7 +170,7 @@ public final class StringUtilities {
     public static String emptyIfNull(final String string) {
         return string!=null ? string : "";
     }
-    
+
     //------------------------------------------------------------------------
 
     /**
@@ -176,7 +183,7 @@ public final class StringUtilities {
     public static String toYesNo(final boolean state) {
         return state ? "yes" : "no";
     }
-    
+
     /**
      * Trivial helper method to convert a boolean into either
      * "true" or "false" depending on its state.
@@ -217,7 +224,7 @@ public final class StringUtilities {
     public static boolean fromTrueFalse(final String value) {
     	return fromBinaryValues(value, "true", "false");
     }
-    
+
     /**
      * Converts the given String argument to a boolean using
      * the scheme trueValue => true, falseValue => false.
@@ -242,5 +249,5 @@ public final class StringUtilities {
         }
         throw new IllegalArgumentException("Argument must be "
         		+ trueValue + " or " + falseValue);
-    }    
+    }
 }

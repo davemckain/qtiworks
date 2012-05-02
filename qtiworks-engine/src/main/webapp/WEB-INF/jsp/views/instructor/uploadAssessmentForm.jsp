@@ -14,11 +14,11 @@ Instructor upload assessment package form
 
 <h2>Upload Assessment</h2>
 
-<form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data">
+<form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentCommand">
   <form:errors element="div" cssClass="error" path="*"/>
 
-  <label for="upload">Select a Content Package or Assessment Item XML file to upload:</label>
-  <input name="upload" type="file" />
+  <label for="file">Select a Content Package or Assessment Item XML file to upload:</label>
+  <input name="file" type="file" />
 
   <input type="submit" value="Upload" />
 

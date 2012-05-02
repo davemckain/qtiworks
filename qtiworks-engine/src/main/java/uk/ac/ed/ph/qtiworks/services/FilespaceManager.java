@@ -140,7 +140,7 @@ public final class FilespaceManager {
     private String createUniqueRequestComponent() {
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final long threadId = Thread.currentThread().getId();
-        return new SimpleDateFormat("yyyyMMdd-HHmmss-SSS").format(timestamp) + "-" + String.valueOf(threadId);
+        return new SimpleDateFormat("yyyyMMdd-HHmmssSSS").format(timestamp) + "-" + String.valueOf(threadId);
     }
 
 }

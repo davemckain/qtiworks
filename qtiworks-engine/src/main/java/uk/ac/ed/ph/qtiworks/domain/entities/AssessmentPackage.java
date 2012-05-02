@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -119,7 +121,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
      * We try to infer this from the name of the imported file
      */
     @Basic(optional=false)
-    @Column(name="name")
+    @Column(name="name", length=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH)
     private String name;
 
     /**
@@ -127,7 +129,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
      * We take this from the QTI just after import.
      */
     @Basic(optional=false)
-    @Column(name="title")
+    @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     private String title;
 
     /** Base path where this package's files belong. Treated as a sandbox */

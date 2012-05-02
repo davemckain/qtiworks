@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
@@ -48,6 +50,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageStateException.APSFailureReason;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -66,6 +70,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -86,22 +91,25 @@ public class AssessmentPackageServices {
     public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
     @Resource
-    IdentityContext identityContext;
+    private Auditor auditor;
 
     @Resource
-    FilespaceManager filespaceManager;
+    private IdentityContext identityContext;
 
     @Resource
-    AssessmentPackageFileImporter assessmentPackageFileImporter;
+    private FilespaceManager filespaceManager;
 
     @Resource
-    AssessmentPackageDao assessmentPackageDao;
+    private AssessmentPackageFileImporter assessmentPackageFileImporter;
 
     @Resource
-    AssessmentDeliveryDao assessmentDeliveryDao;
+    private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    QtiXmlReader qtiXmlReader;
+    private AssessmentDeliveryDao assessmentDeliveryDao;
+
+    @Resource
+    private QtiXmlReader qtiXmlReader;
 
     public List<AssessmentPackage> getCallerAssessmentPackages() {
         return assessmentPackageDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
@@ -117,12 +125,15 @@ public class AssessmentPackageServices {
      *
      * @param inputStream
      * @param contentType
+     * @param name for the resulting package. A default will be chosen if one is not provided.
+     *   The name will be silently truncated if it is too large for the underlying DB field.
      *
-     * @throws PrivilegeException
+     * @throws PrivilegeException if the caller is not allowed to perform this action
      * @throws AssessmentPackageFileImportException
      * @throws QtiWorksRuntimeException
      */
-    public AssessmentPackage importAssessmentPackage(@Nonnull final InputStream inputStream, @Nonnull final String contentType)
+    public AssessmentPackage importAssessmentPackage(@Nonnull final InputStream inputStream,
+            @Nonnull final String contentType, @Nullable final String name)
             throws PrivilegeException, AssessmentPackageFileImportException {
         ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
         ConstraintUtilities.ensureNotNull(contentType, "contentType");
@@ -131,16 +142,22 @@ public class AssessmentPackageServices {
         /* First, upload the data into a sandbox */
         final AssessmentPackage assessmentPackage = importPackageFiles(inputStream, contentType);
 
-        /* FIXME: Make this more clever */
-        assessmentPackage.setName("Assessment");
+        /* Decide on final name */
+        String resultingName;
+        if (StringUtilities.isNullOrBlank(name)) {
+            resultingName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
+        }
+        else {
+            resultingName = ServiceUtilities.trimString(name, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
+        }
+        assessmentPackage.setName(resultingName);
 
         /* Guess a title */
         final String guessedTitle = guessAssessmentTitle(assessmentPackage);
-        assessmentPackage.setTitle(!guessedTitle.isEmpty() ? guessedTitle : DEFAULT_IMPORT_TITLE);
+        final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
+        assessmentPackage.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
-        System.out.println("PERSISTING " + assessmentPackage);
-
-        /* Persist date */
+        /* Persist entity */
         try {
             assessmentPackageDao.persist(assessmentPackage);
         }
@@ -150,6 +167,7 @@ public class AssessmentPackageServices {
             throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
         }
         logger.info("Created new AssessmentPackage {}", assessmentPackage);
+        auditor.recordEvent("Created AssessmentPackage #" + assessmentPackage.getId());
         return assessmentPackage;
     }
 

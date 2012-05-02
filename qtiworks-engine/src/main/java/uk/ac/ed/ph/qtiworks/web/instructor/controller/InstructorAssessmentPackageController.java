@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageServices;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,10 +46,11 @@ import java.io.InputStream;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.DirectFieldBindingResult;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.io.Closeables;
@@ -66,36 +67,39 @@ public class InstructorAssessmentPackageController {
     private AssessmentPackageServices assessmentPackageServices;
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
-    public String showUploadAssessmentForm() {
+    public String showUploadAssessmentForm(final Model model) {
+        model.addAttribute(new UploadAssessmentCommand());
         return "uploadAssessmentForm";
     }
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.POST)
-    public String handleValidatorForm(final @RequestParam("upload") MultipartFile uploadFile)
+    public String handleValidatorForm(final @ModelAttribute UploadAssessmentCommand command, final BindingResult result)
             throws IOException, PrivilegeException {
         /* Make sure something was submitted */
-        final DirectFieldBindingResult errors = new DirectFieldBindingResult(uploadFile, "uploadFile");
-        if (uploadFile!=null && uploadFile.getSize()==0L) {
-            errors.reject("uploadAssessment.noFile");
+        System.out.println("COMMAND IS: " + command);
+        System.out.println("BINDING RESULT IS: " + result);
+        final MultipartFile uploadFile = command.getFile();
+        if (uploadFile==null || uploadFile.isEmpty()) {
+            result.reject("uploadAssessmentCommand.noFile");
             return "uploadAssessmentForm";
         }
 
         /* Attempt to import the package */
         final InputStream uploadStream = uploadFile.getInputStream();
         final String uploadContentType = uploadFile.getContentType();
+        final String uploadName = uploadFile.getOriginalFilename();
         try {
-            final AssessmentPackage assessmentPackage = assessmentPackageServices.importAssessmentPackage(uploadStream, uploadContentType);
+            assessmentPackageServices.importAssessmentPackage(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(errors, "uploadAssessment");
+            failure.registerErrors(result, "uploadAssessmentCommand");
             return "uploadAssessmentForm";
         }
         finally {
             Closeables.closeQuietly(uploadStream);
         }
-        /* FIXME! */
-        return "uploadAssessmentForm";
+        /* FIXME - Should redirect to page showing the file! */
+        return "redirect:/";
     }
-
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -77,7 +77,7 @@ public abstract class CandidateItemResponse implements BaseEntity {
     private CandidateItemAttempt attempt;
 
     @Basic(optional=false)
-    @Column(name="response_identifier", updatable=false, length=DomainGlobals.QTI_IDENTIFIER_MAX_LENGTH)
+    @Column(name="response_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
     private String responseIdentifier;
 
     @Basic(optional=false)

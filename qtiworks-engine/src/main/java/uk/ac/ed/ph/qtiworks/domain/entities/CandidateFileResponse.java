@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 
@@ -58,7 +58,7 @@ public class CandidateFileResponse extends CandidateItemResponse {
 
     /** Content type of submitted file */
     @Basic(optional=false)
-    @Column(name="content_type", updatable=false, length=DomainGlobals.FILE_CONTENT_TYPE_LENGTH)
+    @Column(name="content_type", updatable=false, length=DomainConstants.FILE_CONTENT_TYPE_LENGTH)
     private String contentType;
 
     /** Client name of submitted file, if provided */

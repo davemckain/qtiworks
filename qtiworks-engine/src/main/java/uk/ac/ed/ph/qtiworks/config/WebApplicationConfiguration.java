@@ -106,6 +106,7 @@ public class WebApplicationConfiguration {
     @Bean
     MessageSource messageSource() {
         final ResourceBundleMessageSource result = new ResourceBundleMessageSource();
+        result.setUseCodeAsDefaultMessage(true); /* Handy for debugging! */
         result.setBasename("messages");
         return result;
     }

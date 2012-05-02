@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.domain.DomainGlobals;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -62,7 +62,7 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     private static final long serialVersionUID = 7821803746245696405L;
 
     @Basic(optional=false)
-    @Column(name="login_name", length=DomainGlobals.LOGIN_NAME_MAX_LENGTH, updatable=false, unique=true)
+    @Column(name="login_name", length=DomainConstants.USER_LOGIN_NAME_MAX_LENGTH, updatable=false, unique=true)
     private String loginName;
 
     @Basic(optional=false)
@@ -70,19 +70,19 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     private boolean sysAdmin;
 
     @Basic(optional=false)
-    @Column(name="email_address", length=DomainGlobals.EMAIL_ADDRESS_MAX_LENGTH)
+    @Column(name="email_address", length=DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH)
     private String emailAddress;
 
     @Basic(optional=false)
-    @Column(name="password_digest", length=DomainGlobals.SHA1_DIGEST_LENGTH)
+    @Column(name="password_digest", length=DomainConstants.SHA1_DIGEST_LENGTH)
     private String passwordDigest;
 
     @Basic(optional=false)
-    @Column(name="first_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
+    @Column(name="first_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
     private String firstName;
 
     @Basic(optional=false)
-    @Column(name="last_name",length=DomainGlobals.NAME_COMPONENT_MAX_LENGTH)
+    @Column(name="last_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
     private String lastName;
 
     //------------------------------------------------------------
