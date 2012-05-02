@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="Conjugation_of_haben" title="Conjugation of haben" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="SINGLEFIRST" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>habe</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="SINGLESECOND" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>hast</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="SINGLETHIRD" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>hat</value>
+        </correctResponse>
+  </responseDeclaration>
+ <responseDeclaration identifier="PLURALFIRST" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>haben</value>
+        </correctResponse>
+    </responseDeclaration>
+    <responseDeclaration identifier="PLURALSECOND" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>haben</value>
+        </correctResponse>
+    </responseDeclaration>
+ <responseDeclaration identifier="PLURALTHIRD" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>haben</value>
+        </correctResponse>
+    </responseDeclaration>
+ 
+
+ <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+
+<outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+  
+  <itemBody>
+        <h2>Conjugate the verb 'haben': </h2>
+<h3>Single</h3>
+<p>
+<strong>ich</strong>
+<textEntryInteraction responseIdentifier="SINGLEFIRST" expectedLength="8" placeholderText = "haben"/><br /><br />
+<strong>du</strong>
+<textEntryInteraction responseIdentifier="SINGLESECOND" expectedLength="8" placeholderText = "haben"/><br /><br />
+<strong>er</strong>
+<textEntryInteraction responseIdentifier="SINGLETHIRD" expectedLength="8" placeholderText = "haben"/>
+</p>
+<h3>Plural</h3>
+<p>
+<strong>wir</strong>
+<textEntryInteraction responseIdentifier="PLURALFIRST" expectedLength="8" placeholderText = "haben" /><br />
+<br />
+<strong>Sie</strong>
+<textEntryInteraction responseIdentifier="PLURALSECOND" expectedLength="8" placeholderText = "haben" /><br />
+<br />
+<strong>sie</strong>
+<textEntryInteraction responseIdentifier="PLURALTHIRD" expectedLength="8" placeholderText = "haben" />
+</p>
+
+
+</itemBody>
+   <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="SINGLEFIRST"/>
+                    <correct identifier="SINGLEFIRST"/>
+                </match>
+		<setOutcomeValue identifier="SCORE">
+			<sum>
+				<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+       <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="SINGLESECOND"/>
+                    <correct identifier="SINGLESECOND"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+			<sum>
+                   		<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+	
+	<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="SINGLETHIRD"/>
+                    <correct identifier="SINGLETHIRD"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+			<sum>
+                   		<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        
+	<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PLURALFIRST"/>
+                    <correct identifier="PLURALFIRST"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                	<sum>
+                   		<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        
+	<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PLURALSECOND"/>
+                    <correct identifier="PLURALSECOND"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                	<sum>
+                   		<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+         </responseCondition>
+         
+	<responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PLURALTHIRD"/>
+                    <correct identifier="PLURALTHIRD"/>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                 	<sum>
+                   		<variable identifier="SCORE"/>
+				<baseValue baseType="float">1.0</baseValue>
+			</sum>
+                </setOutcomeValue>
+            </responseIf>
+          </responseCondition>
+          
+
+	<responseCondition>
+            <responseIf>
+                <equal toleranceMode = "exact">
+                   <variable identifier="SCORE"/>
+                   <baseValue baseType="float">6.0</baseValue>
+                </equal>
+                <setOutcomeValue identifier="FEEDBACK">
+			<multiple>
+				<baseValue baseType="identifier">ALLCORRECT</baseValue>
+			</multiple>
+	 	</setOutcomeValue>
+	    </responseIf>
+	    <responseElseIf>
+           	<gte>
+              		<variable identifier="SCORE"/>
+                 	<baseValue baseType="float">4.0</baseValue>
+            	</gte>
+		<setOutcomeValue identifier="FEEDBACK">
+			<multiple>
+				<baseValue baseType="identifier">MOSTCORRECT</baseValue>
+				<baseValue baseType="identifier">CONJUGATION</baseValue>
+			</multiple>
+		</setOutcomeValue>
+	    </responseElseIf>
+	    <responseElse>
+	 	<setOutcomeValue identifier="FEEDBACK">
+                   	<multiple>
+				<baseValue baseType="identifier">WRONG</baseValue>
+				<baseValue baseType="identifier">CONJUGATION</baseValue>
+			</multiple>
+	 	</setOutcomeValue>
+	   </responseElse>
+	</responseCondition>
+ </responseProcessing>
+    
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="ALLCORRECT" showHide="show">
+	Yes, you have all the forms correct.</modalFeedback>
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="MOSTCORRECT" showHide="show">
+	You have most of the forms correct.</modalFeedback>
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="WRONG" showHide="show">
+	You have fewer than four forms correct .</modalFeedback>
+
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="CONJUGATION" showHide="show">
+	Here is the conjugation of 'haben':
+<blockquote>
+
+ <h4>Singular</h4>
+<p><strong>ich habe<br />
+du hast<br />
+er hat
+</strong>
+</p>
+
+<h4>Plural</h4>
+
+<p>
+<strong>
+wir haben<br />
+Sie haben<br />
+sie haben
+</strong>
+</p>
+</blockquote>
+</modalFeedback>
+
+   
+</assessmentItem>
+

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This example adapted from the Sarah Hudspith, University of Leeds -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="choice" title="Saint Petersburg 2 " adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+    <itemBody>
+   <p><strong>Here is a passage of Cyrillic:</strong></p>
+<p>
+Санкт-Петербург - очень красивый и  [*******] город. Его основал в 1703 году царь Пётр Первый как новую столицу России. Памятник Петру можно увидеть на берегу реки Невы недалеко от Исаакиевкого собора. Пётр назвал новый город Санкт-Петербург.
+</p>
+ <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+            <prompt>
+           Which of the following choices best fits the blank [*******] ?
+    </prompt>  
+
+            <simpleChoice identifier="ChoiceA">интересный</simpleChoice>
+            <simpleChoice identifier="ChoiceB">красивый </simpleChoice>
+            <simpleChoice identifier="ChoiceC">недалеко</simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+   <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="RESPONSE"/>
+                    <correct identifier="RESPONSE"/>
+                </match>
+	 <setOutcomeValue identifier="SCORE">
+		<baseValue baseType="float">1.0</baseValue>
+	</setOutcomeValue>
+	 <setOutcomeValue identifier="FEEDBACK">
+            		<multiple>
+			<baseValue baseType="identifier">CORRECT</baseValue>
+			<baseValue baseType="identifier">COMMON</baseValue>
+		</multiple>
+	</setOutcomeValue>
+            </responseIf>
+            <responseElse>
+	 <setOutcomeValue identifier="SCORE">
+		 <baseValue baseType="float">0.0</baseValue>
+	 </setOutcomeValue>
+	<setOutcomeValue identifier="FEEDBACK">
+		<multiple>
+			<baseValue baseType="identifier">WRONG</baseValue>
+			<baseValue baseType="identifier">COMMON</baseValue>
+		</multiple>
+	</setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+        
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="CORRECT" showHide="show">Yes, that is correct.</modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="WRONG" showHide="show">No, the correct
+        answer is интересный.</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="COMMON" showHide="show">Here is  the complete
+       passage:
+<blockquote>
+<p>
+Санкт-Петербург - очень красивый и интересный город. Его основал в 1703 году царь Пётр Первый как новую столицу России. Памятник Петру можно увидеть на берегу реки Невы недалеко от Исаакиевкого собора. Пётр назвал новый город Санкт-Петербург.
+</p>
+</blockquote>
+.</modalFeedback>
+</assessmentItem>

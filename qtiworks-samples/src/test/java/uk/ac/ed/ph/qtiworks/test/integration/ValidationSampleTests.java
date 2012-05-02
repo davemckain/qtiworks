@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.test.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
@@ -65,7 +66,8 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance(),
-                MathAssessSampleSet.instance()
+                MathAssessSampleSet.instance(),
+                LanguageSampleSet.instance()
         );
     }
     
