@@ -205,8 +205,8 @@ public class AssessmentManagementServices {
             deleteAssessmentPackageSandbox(assessmentPackage);
             throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
         }
-        logger.info("Created new Assessment {} with package {}", assessment, assessmentPackage);
-        auditor.recordEvent("Created Assessment #" + assessment.getId());
+        logger.debug("Created new Assessment #{} with package #{}", assessment.getId(), assessmentPackage.getId());
+        auditor.recordEvent("Created Assessment #" + assessment.getId() + " and AssessmentPackage #" + assessmentPackage.getId());
         return assessment;
     }
 
@@ -256,6 +256,8 @@ public class AssessmentManagementServices {
             deleteAssessmentPackageSandbox(newAssessmentPackage);
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
         }
+        logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
+        auditor.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
     }
 

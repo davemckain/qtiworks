@@ -25,8 +25,8 @@ assessmentList
         <tr>
           <th>Name</th>
           <th>Title</th>
-          <th>Version</th>
           <th>Created</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -34,8 +34,8 @@ assessmentList
           <tr>
             <td><c:out value="${assessment.name}"/></td>
             <td><c:out value="${assessment.title}"/></td>
-            <td><c:out value="${assessment.packageImportVersion}"/></td>
             <td><c:out value="${assessment.creationTime}"/></td>
+            <td><a href="<c:url value='/web/instructor/assessment/${assessment.id}'/>">Show</a></td>
           </tr>
         </c:forEach>
       </tbody>
@@ -46,7 +46,7 @@ assessmentList
   </c:otherwise>
 </c:choose>
 
-<h3>Things to do</h3>
+<h3>Actions</h3>
 <ul>
   <li><a href="uploadAssessment">Upload a new assessment</a></li>
 </ul>

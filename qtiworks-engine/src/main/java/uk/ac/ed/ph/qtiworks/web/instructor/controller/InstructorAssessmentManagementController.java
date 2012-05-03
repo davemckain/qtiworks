@@ -68,7 +68,7 @@ import com.google.common.io.Closeables;
  * @author David McKain
  */
 @Controller
-public class InstructorAssessmentManagementController {
+public final class InstructorAssessmentManagementController {
 
     @Resource
     private AssessmentManagementServices assessmentManagementServices;
@@ -125,8 +125,7 @@ public class InstructorAssessmentManagementController {
         finally {
             Closeables.closeQuietly(uploadStream);
         }
-        /* FIXME - Should redirect to page showing the file! */
-        return "redirect:/web/instructor/myAssessments";
+        return "redirect:/web/instructor/assessment/{assessmentId}";
     }
 
     //------------------------------------------------------
