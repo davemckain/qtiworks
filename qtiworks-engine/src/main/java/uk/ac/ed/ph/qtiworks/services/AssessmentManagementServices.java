@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
@@ -77,6 +78,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 
 /**
@@ -84,10 +87,11 @@ import org.w3c.dom.Document;
  *
  * @author David McKain
  */
+@Transactional(readOnly=false)
 @Service
-public class AssessmentServices {
+public class AssessmentManagementServices {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentServices.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementServices.class);
 
     public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
@@ -112,6 +116,22 @@ public class AssessmentServices {
     @Resource
     private QtiXmlReader qtiXmlReader;
 
+    @Transactional(propagation=Propagation.REQUIRED)
+    public Assessment getAssessment(@Nonnull final Long assessmentId)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        ConstraintUtilities.ensureNotNull(assessmentId, "assessmentId");
+        final Assessment result = assessmentDao.requireFindById(assessmentId);
+        ensureCallerMayView(result);
+        return result;
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED)
+    public AssessmentPackage getCurrentAssessmentPackage(@Nonnull final Assessment assessment) {
+        ConstraintUtilities.ensureNotNull(assessment, "assessment");
+        return assessmentPackageDao.getCurrentAssessmentPackage(assessment);
+    }
+
+    @Transactional(propagation=Propagation.REQUIRED)
     public List<Assessment> getCallerAssessments() {
         return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
@@ -133,6 +153,7 @@ public class AssessmentServices {
      * @throws AssessmentPackageFileImportException
      * @throws QtiWorksRuntimeException
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment importAssessment(@Nonnull final InputStream inputStream,
             @Nonnull final String contentType, @Nullable final String name)
             throws PrivilegeException, AssessmentPackageFileImportException {
@@ -192,6 +213,7 @@ public class AssessmentServices {
      * @throws PrivilegeException
      * @throws AssessmentPackageFileImportException
      */
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment updateAssessmentPackageFiles(@Nonnull final Assessment assessment,
             @Nonnull final InputStream inputStream, @Nonnull final String contentType)
             throws AssessmentStateException, PrivilegeException,
@@ -228,6 +250,7 @@ public class AssessmentServices {
         return assessment;
     }
 
+    @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
     public void deleteAssessment(@Nonnull final Assessment assessment)
             throws AssessmentStateException, PrivilegeException {
@@ -237,6 +260,13 @@ public class AssessmentServices {
         throw new QtiLogicException("Not yet implemented!");
     }
 
+    /**
+     * DEV NOTES:
+     *
+     * - Forbid deletion of the only remaining package, as that ensures there's always a most
+     *   recent package
+     */
+    @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
     public void deleteAssessmentPackage(@Nonnull final AssessmentPackage assessmentPackage)
             throws AssessmentStateException, PrivilegeException {
@@ -329,11 +359,23 @@ public class AssessmentServices {
 
     //-------------------------------------------------
 
+    /**
+     * TODO: Currently only permitting people seeing their own Assessments
+     */
+    private User ensureCallerMayView(final Assessment assessment)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT);
+        }
+        return caller;
+    }
+
     private User ensureCallerMayChange(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.OWNER);
+            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT);
         }
         return caller;
     }
@@ -341,11 +383,13 @@ public class AssessmentServices {
     /**
      * TODO: Currently we are only allowing instructors to create Assessments.
      * We may choose to let anonymous users do the same in future.
-     *
-     * @throws PrivilegeException
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        return identityContext.ensureEffectiveIdentityIsInstructor();
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.isInstructor()) {
+            throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
+        }
+        return caller;
     }
 
 }

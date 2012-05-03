@@ -49,7 +49,9 @@ public enum Privilege {
     USER_CANDIDATE,
     USER_ANONYMOUS,
 
-    OWNER,
+    CREATE_ASSESSMENT,
+    VIEW_ASSESSMENT,
+    CHANGE_ASSESSMENT,
 
     ;
 

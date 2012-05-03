@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.services.AssessmentServices;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementServices;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
@@ -51,6 +53,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,16 +69,26 @@ import com.google.common.io.Closeables;
 public class InstructorAssessmentManagementController {
 
     @Resource
-    private AssessmentServices assessmentServices;
+    private AssessmentManagementServices assessmentManagementServices;
 
     @RequestMapping(value="/myAssessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
-        final List<Assessment> assessments = assessmentServices.getCallerAssessments();
+        final List<Assessment> assessments = assessmentManagementServices.getCallerAssessments();
         model.addAttribute(assessments);
         return "myAssessments";
     }
 
     //------------------------------------------------------
+
+    @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)
+    public String showAssessment(final Model model, final @PathVariable Long assessmentId)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementServices.getAssessment(assessmentId);
+        final AssessmentPackage assessmentPackage = assessmentManagementServices.getCurrentAssessmentPackage(assessment);
+        model.addAttribute(assessment);
+        model.addAttribute(assessmentPackage);
+        return "showAssessment";
+    }
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -98,7 +111,7 @@ public class InstructorAssessmentManagementController {
         final String uploadContentType = uploadFile.getContentType();
         final String uploadName = uploadFile.getOriginalFilename();
         try {
-            assessmentServices.importAssessment(uploadStream, uploadContentType, uploadName);
+            assessmentManagementServices.importAssessment(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();

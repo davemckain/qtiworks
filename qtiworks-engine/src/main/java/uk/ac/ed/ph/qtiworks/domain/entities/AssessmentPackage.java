@@ -73,11 +73,12 @@ import org.hibernate.annotations.Type;
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
-    @NamedQuery(name="AssessmentPackage.getNewestForAssessment",
+    @NamedQuery(name="AssessmentPackage.getCurrentForAssessment",
             query="SELECT ap"
                 + "  FROM AssessmentPackage ap"
-                + "  WHERE ap.importVersion = ("
-                + "    SELECT MAX(importVersion) FROM AssessmentPackage"
+                + "  WHERE ap.assessment = :assessment"
+                + "    AND ap.importVersion = ("
+                + "      SELECT MAX(importVersion) FROM AssessmentPackage"
                 + "  )")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
