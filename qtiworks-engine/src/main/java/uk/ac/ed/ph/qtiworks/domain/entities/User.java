@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -51,6 +53,9 @@ import javax.persistence.TemporalType;
 
 /**
  * Base class for the different types of Users we support
+ * <p>
+ * (This class is should be considered abstract, though has been made concrete to allow
+ * the underlying JPA reflection magic to work correctly.)
  *
  * @author David McKain
  */
@@ -135,8 +140,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
     //------------------------------------------------------------
 
     public String getBusinessKey() {
-//        throw new QtiWorksLogicException("This must be filled in by a subclass");
-        return "HEELO";
+        throw new QtiWorksLogicException("This must be filled in by a subclass");
     }
 
     //------------------------------------------------------------
@@ -153,4 +157,25 @@ public class User implements BaseEntity, TimestampedOnCreation {
         return userType==UserType.INSTRUCTOR && ((InstructorUser) this).isSysAdmin();
     }
 
+    //------------------------------------------------------------
+
+    @Override
+    public final String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(" + getBusinessKey() + ")";
+    }
+
+    @Override
+    public final int hashCode() {
+        return getBusinessKey().hashCode();
+    }
+
+    @Override
+    public final boolean equals(final Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        final User other = (User) obj;
+        return getBusinessKey().equals(other.getBusinessKey());
+    }
 }

@@ -92,21 +92,6 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
     //------------------------------------------------------------
 
     @Override
-    public final boolean equals(final Object obj) {
-        if (!(obj instanceof AnonymousUser)) {
-            return false;
-        }
-        final AnonymousUser other = (AnonymousUser) obj;
-        return sessionId.equals(other.sessionId);
-    }
-
-    @Override
-    public int hashCode() {
-        ensureSessionId(this);
-        return sessionId.hashCode();
-    }
-
-    @Override
     public final int compareTo(final AnonymousUser o) {
         ensureSessionId(this);
         ensureSessionId(o);
@@ -117,11 +102,5 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
         if (user.sessionId==null) {
             throw new QtiWorksRuntimeException("Current logic branch requires sessionId to be non-null on " + user);
         }
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(sessionId=" + sessionId + ")";
     }
 }

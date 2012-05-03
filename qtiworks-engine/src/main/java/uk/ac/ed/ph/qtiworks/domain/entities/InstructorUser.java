@@ -158,21 +158,6 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     //------------------------------------------------------------
 
     @Override
-    public final boolean equals(final Object obj) {
-        if (!(obj instanceof InstructorUser)) {
-            return false;
-        }
-        final InstructorUser other = (InstructorUser) obj;
-        return loginName.equals(other.loginName);
-    }
-
-    @Override
-    public int hashCode() {
-        ensureLoginName(this);
-        return loginName.hashCode();
-    }
-
-    @Override
     public final int compareTo(final InstructorUser o) {
         ensureLoginName(this);
         ensureLoginName(o);
@@ -183,11 +168,5 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
         if (user.loginName==null) {
             throw new QtiWorksRuntimeException("Current logic branch requires loginName to be non-null on " + user);
         }
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(loginName=" + loginName + ")";
     }
 }
