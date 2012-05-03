@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -58,16 +58,16 @@ import org.springframework.mail.SimpleMailMessage;
  */
 public final class SystemMailMessage {
 
-    @Nonnull
+    @NotNull
     private InstructorUser fromUser;
 
-    @Nonnull @Size(min=1)
+    @NotNull @Size(min=1)
     private final List<InstructorUser> toUsers;
 
-    @Nonnull @Size(min=1)
+    @NotNull @Size(min=1)
     private String subject;
 
-    @Nonnull
+    @NotNull
     private String templateResourceName;
 
     private final List<Pair<String,?>> patterns;
