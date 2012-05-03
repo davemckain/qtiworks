@@ -45,6 +45,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureR
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
 
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -114,8 +116,9 @@ public final class InstructorAssessmentManagementController {
         final InputStream uploadStream = uploadFile.getInputStream();
         final String uploadContentType = uploadFile.getContentType();
         final String uploadName = uploadFile.getOriginalFilename();
+        Assessment assessment;
         try {
-            assessmentManagementServices.importAssessment(uploadStream, uploadContentType, uploadName);
+            assessment = assessmentManagementServices.importAssessment(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -125,7 +128,7 @@ public final class InstructorAssessmentManagementController {
         finally {
             Closeables.closeQuietly(uploadStream);
         }
-        return "redirect:/web/instructor/assessment/{assessmentId}";
+        return "redirect:/web/instructor/assessment/" + assessment.getId();
     }
 
     //------------------------------------------------------
@@ -167,5 +170,16 @@ public final class InstructorAssessmentManagementController {
             Closeables.closeQuietly(uploadStream);
         }
         return "redirect:/web/instructor/assessment/{assessmentId}";
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/validate/{assessmentId}", method=RequestMethod.GET)
+    public String validateAssessment(final @PathVariable Long assessmentId, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementServices.validateAssessment(assessmentId);
+        model.addAttribute("assessmentId", assessmentId);
+        model.addAttribute("validationResult", validationResult);
+        return "validationResult";
     }
 }

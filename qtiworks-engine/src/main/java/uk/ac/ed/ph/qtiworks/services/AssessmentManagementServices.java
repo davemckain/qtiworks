@@ -56,8 +56,11 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -286,6 +289,60 @@ public class AssessmentManagementServices {
          */
         throw new QtiLogicException("Not yet implemented!");
     }
+
+    //-------------------------------------------------
+    // Validation
+
+    @Transactional(propagation=Propagation.REQUIRED)
+    public AssessmentObjectValidationResult<?> validateAssessment(@Nonnull final Long assessmentId)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = getAssessment(assessmentId);
+        final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
+
+        /* Run the validation process */
+        final AssessmentObjectValidationResult<?> validationResult = validateAssessment(currentAssessmentPackage);
+
+        /* Persist results */
+        currentAssessmentPackage.setValidated(true);
+        currentAssessmentPackage.setValid(validationResult.isValid());
+        assessmentPackageDao.update(currentAssessmentPackage);
+
+        return validationResult;
+
+    }
+
+    /**
+     * (This is not private as it is also called by the anonymous upload/validate action featured
+     * in the first iteration of QTI Works. TODO: Decide whether we'll keep this kind of
+     * functionality.)
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
+    validateAssessment(@Nonnull final AssessmentPackage assessmentPackage) {
+        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
+        final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
+        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
+        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+        final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
+        E result;
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
+            result = (E) objectManager.resolveAndValidateItem(objectSystemId);
+        }
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
+            result = (E) objectManager.resolveAndValidateTest(objectSystemId);
+        }
+        else {
+            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
+        }
+        return result;
+    }
+
 
     //-------------------------------------------------
 

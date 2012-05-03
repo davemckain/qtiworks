@@ -86,7 +86,7 @@ public class AnonymousUploadAndValidationControllerV1 {
         final ServletInputStream uploadStream = request.getInputStream();
         AssessmentUploadAndValidationResultV1 assessmentUpload = null;
         try {
-            assessmentUpload = uploadService.importData(uploadStream, contentType);
+            assessmentUpload = uploadService.importAndValidate(uploadStream, contentType);
             return ObjectDumper.dumpObject(assessmentUpload, DumpMode.DEEP);
         }
         finally {
@@ -133,7 +133,7 @@ public class AnonymousUploadAndValidationControllerV1 {
         AssessmentUploadAndValidationResultV1 assessmentUpload = null;
         final InputStream uploadStream = uploadFile.getInputStream();
         try {
-            assessmentUpload = uploadService.importData(uploadStream, uploadFile.getContentType());
+            assessmentUpload = uploadService.importAndValidate(uploadStream, uploadFile.getContentType());
             model.addAttribute("assessmentUpload", assessmentUpload);
             return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
         }

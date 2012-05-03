@@ -56,6 +56,8 @@ Model:
 
 <ul>
   <li><a href="<c:url value='/web/instructor/updateAssessmentPackage/${assessment.id}'/>">Upload and replace package files</a></li>
+  <li><a href="<c:url value='/web/instructor/validate/${assessment.id}'/>">Validate assessment</a></li>
+  <li><a href="<c:url value='/web/instructor/myAssessments'/>">My assessment list</a></li>
 </ul>
 
 <%@ include file="/WEB-INF/jsp/includes/footer.jspf" %>

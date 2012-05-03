@@ -33,26 +33,17 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 
 import javax.annotation.Resource;
 
@@ -78,15 +69,15 @@ public class AnonymousUploadAndValidationServiceV1 {
     private IdentityContext identityContext;
 
     @Resource
-    private QtiXmlReader qtiXmlReader;
-
-    @Resource
     private AssessmentPackageFileImporter assessmentPackageImporter;
 
     @Resource
     private FilespaceManager filespaceManager;
 
-    public AssessmentUploadAndValidationResultV1 importData(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
+    @Resource
+    private AssessmentManagementServices assessmentManagementServices;
+
+    public AssessmentUploadAndValidationResultV1 importAndValidate(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
         final File sandboxDirectory = createRequestSandbox();
         final AssessmentPackage importedPackage;
         try {
@@ -102,7 +93,7 @@ public class AnonymousUploadAndValidationServiceV1 {
             deleteSandbox(sandboxDirectory);
             throw e;
         }
-        final AssessmentObjectValidationResult<?> validationResult = validate(importedPackage);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementServices.validateAssessment(importedPackage);
         return new AssessmentUploadAndValidationResultV1(importedPackage, validationResult);
     }
 
@@ -113,29 +104,6 @@ public class AnonymousUploadAndValidationServiceV1 {
 
     public void deleteSandbox(final File sandboxDirectory) {
         filespaceManager.deleteSandbox(sandboxDirectory);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <E extends AssessmentObjectValidationResult<?>> E validate(final AssessmentPackage assessmentPackage) {
-        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
-        final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
-        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
-        final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
-        E result;
-        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAndValidateItem(objectSystemId);
-        }
-        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAndValidateTest(objectSystemId);
-        }
-        else {
-            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
-        }
-        return result;
     }
 
     private File createRequestSandbox() {
