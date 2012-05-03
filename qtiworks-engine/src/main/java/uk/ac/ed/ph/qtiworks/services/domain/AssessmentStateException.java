@@ -54,10 +54,6 @@ public final class AssessmentStateException extends Exception {
 
     private final EnumerableClientFailure<APSFailureReason> failure;
 
-    public AssessmentStateException(final APSFailureReason reason) {
-        this(new EnumerableClientFailure<APSFailureReason>(reason));
-    }
-
     public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure) {
         super(failure.toString());
         this.failure = failure;
@@ -66,6 +62,14 @@ public final class AssessmentStateException extends Exception {
     public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure, final Throwable cause) {
         super(failure.toString(), cause);
         this.failure = failure;
+    }
+
+    public AssessmentStateException(final APSFailureReason reason) {
+        this(new EnumerableClientFailure<APSFailureReason>(reason));
+    }
+
+    public AssessmentStateException(final APSFailureReason reason, final Object... arguments) {
+        this(new EnumerableClientFailure<APSFailureReason>(reason, arguments));
     }
 
     public EnumerableClientFailure<APSFailureReason> getFailure() {

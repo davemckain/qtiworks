@@ -52,5 +52,11 @@ Model:
   <dd>${assessmentPackage.valid}</dd>
 </dl>
 
+<h3>Actions</h3>
+
+<ul>
+  <li><a href="<c:url value='/web/instructor/updateAssessmentPackage/${assessment.id}'/>">Upload and replace package files</a></li>
+</ul>
+
 <%@ include file="/WEB-INF/jsp/includes/footer.jspf" %>
 

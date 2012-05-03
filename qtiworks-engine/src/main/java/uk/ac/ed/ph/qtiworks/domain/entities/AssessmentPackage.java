@@ -78,7 +78,8 @@ import org.hibernate.annotations.Type;
                 + "  FROM AssessmentPackage ap"
                 + "  WHERE ap.assessment = :assessment"
                 + "    AND ap.importVersion = ("
-                + "      SELECT MAX(importVersion) FROM AssessmentPackage"
+                + "      SELECT MAX(importVersion) FROM AssessmentPackage apInner"
+                + "        WHERE apInner.assessment = :assessment"
                 + "  )")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {

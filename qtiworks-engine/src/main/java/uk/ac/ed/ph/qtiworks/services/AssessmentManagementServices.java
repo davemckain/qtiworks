@@ -116,8 +116,10 @@ public class AssessmentManagementServices {
     @Resource
     private QtiXmlReader qtiXmlReader;
 
+    //-------------------------------------------------
+
     @Transactional(propagation=Propagation.REQUIRED)
-    public Assessment getAssessment(@Nonnull final Long assessmentId)
+    public @Nonnull Assessment getAssessment(@Nonnull final Long assessmentId)
             throws DomainEntityNotFoundException, PrivilegeException {
         ConstraintUtilities.ensureNotNull(assessmentId, "assessmentId");
         final Assessment result = assessmentDao.requireFindById(assessmentId);
@@ -126,13 +128,17 @@ public class AssessmentManagementServices {
     }
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public AssessmentPackage getCurrentAssessmentPackage(@Nonnull final Assessment assessment) {
+    public @Nonnull AssessmentPackage getCurrentAssessmentPackage(@Nonnull final Assessment assessment) {
         ConstraintUtilities.ensureNotNull(assessment, "assessment");
-        return assessmentPackageDao.getCurrentAssessmentPackage(assessment);
+        final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
+        if (result==null) {
+            throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
+        }
+        return result;
     }
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public List<Assessment> getCallerAssessments() {
+    public @Nonnull List<Assessment> getCallerAssessments() {
         return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
@@ -154,7 +160,7 @@ public class AssessmentManagementServices {
      * @throws QtiWorksRuntimeException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment importAssessment(@Nonnull final InputStream inputStream,
+    public @Nonnull Assessment importAssessment(@Nonnull final InputStream inputStream,
             @Nonnull final String contentType, @Nullable final String name)
             throws PrivilegeException, AssessmentPackageFileImportException {
         ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
@@ -212,15 +218,17 @@ public class AssessmentManagementServices {
      * @throws AssessmentStateException
      * @throws PrivilegeException
      * @throws AssessmentPackageFileImportException
+     * @throws DomainEntityNotFoundException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment updateAssessmentPackageFiles(@Nonnull final Assessment assessment,
+    public @Nonnull Assessment updateAssessmentPackageFiles(@Nonnull final Long assessmentId,
             @Nonnull final InputStream inputStream, @Nonnull final String contentType)
             throws AssessmentStateException, PrivilegeException,
-            AssessmentPackageFileImportException {
-        ConstraintUtilities.ensureNotNull(assessment, "assessment");
+            AssessmentPackageFileImportException, DomainEntityNotFoundException {
+        ConstraintUtilities.ensureNotNull(assessmentId, "assessmentId");
         ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
         ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        final Assessment assessment = assessmentDao.requireFindById(assessmentId);
         ensureCallerMayChange(assessment);
 
         /* Upload data into a new sandbox */
@@ -228,7 +236,8 @@ public class AssessmentManagementServices {
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
-            throw new AssessmentStateException(APSFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE);
+            throw new AssessmentStateException(APSFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
+                    assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
         }
 
         /* Join together */

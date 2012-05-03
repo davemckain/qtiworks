@@ -38,6 +38,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.BaseEntity;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -45,6 +48,7 @@ import com.google.common.collect.ImmutableList;
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.NOT_FOUND)
 public final class DomainEntityNotFoundException extends Exception {
 
     private static final long serialVersionUID = -8327590091694901976L;

@@ -38,11 +38,11 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Command for the "upload assessment" action
+ * Command for the "upload assessment package" action
  *
  * @author David McKain
  */
-public final class UploadAssessmentCommand {
+public final class UploadAssessmentPackageCommand {
 
     private MultipartFile file;
 

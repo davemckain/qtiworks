@@ -40,8 +40,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementServices;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentCommand;
+import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,14 +73,14 @@ public class InstructorAssessmentManagementController {
     @Resource
     private AssessmentManagementServices assessmentManagementServices;
 
+    //------------------------------------------------------
+
     @RequestMapping(value="/myAssessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
         final List<Assessment> assessments = assessmentManagementServices.getCallerAssessments();
         model.addAttribute(assessments);
         return "myAssessments";
     }
-
-    //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)
     public String showAssessment(final Model model, final @PathVariable Long assessmentId)
@@ -90,19 +92,21 @@ public class InstructorAssessmentManagementController {
         return "showAssessment";
     }
 
+    //------------------------------------------------------
+
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
-        model.addAttribute(new UploadAssessmentCommand());
+        model.addAttribute(new UploadAssessmentPackageCommand());
         return "uploadAssessmentForm";
     }
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.POST)
-    public String handleValidatorForm(final @ModelAttribute UploadAssessmentCommand command, final BindingResult result)
+    public String handleUploadAssessmentForm(final @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws IOException, PrivilegeException {
         /* Make sure something was submitted */
         final MultipartFile uploadFile = command.getFile();
         if (uploadFile==null || uploadFile.isEmpty()) {
-            result.reject("uploadAssessmentCommand.noFile");
+            result.reject("uploadAssessmentPackageCommand.noFile");
             return "uploadAssessmentForm";
         }
 
@@ -115,7 +119,7 @@ public class InstructorAssessmentManagementController {
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "uploadAssessmentCommand");
+            failure.registerErrors(result, "uploadAssessmentPackageCommand");
             return "uploadAssessmentForm";
         }
         finally {
@@ -123,5 +127,46 @@ public class InstructorAssessmentManagementController {
         }
         /* FIXME - Should redirect to page showing the file! */
         return "redirect:/web/instructor/myAssessments";
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/updateAssessmentPackage/{assessmentId}", method=RequestMethod.GET)
+    public String showUpdateAssessmentPackageForm(final @PathVariable Long assessmentId, final Model model) {
+        model.addAttribute(new UploadAssessmentPackageCommand());
+        return "updateAssessmentPackageForm";
+    }
+
+    @RequestMapping(value="/updateAssessmentPackage/{assessmentId}", method=RequestMethod.POST)
+    public String handleUploadAssessmentForm(final @PathVariable Long assessmentId,
+            final @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
+            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+        /* Make sure something was submitted */
+        final MultipartFile uploadFile = command.getFile();
+        if (uploadFile==null || uploadFile.isEmpty()) {
+            result.reject("uploadAssessmentPackageCommand.noFile");
+            return "updateAssessmentPackageForm";
+        }
+
+        /* Attempt to import the package */
+        final InputStream uploadStream = uploadFile.getInputStream();
+        final String uploadContentType = uploadFile.getContentType();
+        try {
+            assessmentManagementServices.updateAssessmentPackageFiles(assessmentId, uploadStream, uploadContentType);
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            failure.registerErrors(result, "uploadAssessmentPackageCommand");
+            return "updateAssessmentPackageForm";
+        }
+        catch (final AssessmentStateException e) {
+            final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
+            failure.registerErrors(result, "uploadAssessmentPackageCommand");
+            return "updateAssessmentPackageForm";
+        }
+        finally {
+            Closeables.closeQuietly(uploadStream);
+        }
+        return "redirect:/web/instructor/assessment/{assessmentId}";
     }
 }
