@@ -40,8 +40,27 @@ rootObjectLookup
         <div class="resultPanel failure">
           <h3>XML parse failed</h3>
           <div class="details">
-            <p>The QTI XML was not successfully parsed. Error details are listed below:</p>
-            <%@ include file="validator-xml-errors-table.jspf" %>
+            <c:choose>
+              <c:when test="${empty xmlParseResult.unresolvedEntitySystemIds}">
+                <p>The QTI XML was not successfully parsed. Error details are listed below:</p>
+                <%@ include file="validator-xml-errors-table.jspf" %>
+              </c:when>
+              <c:otherwise>
+                <p>
+                  The QTI XML was not successfully parsed as it referred to some external
+                  entities (e.g. DTD resources) that we chose not to resolve:
+                </p>
+                <ul>
+                  <c:forEach var="systemId" items="${xmlParseResult.unresolvedEntitySystemIds}">
+                    <li><c:out value="${systemId}"/></li>
+                  </c:forEach>
+                </ul>
+                <p>
+                  (This is not technically a validation error, but referring to external entities
+                  like this is a bad idea so is not supported by QTI Works.)
+                </p>
+              </c:otherwise>
+            </c:choose>
           </div>
         </div>
       </c:otherwise>
