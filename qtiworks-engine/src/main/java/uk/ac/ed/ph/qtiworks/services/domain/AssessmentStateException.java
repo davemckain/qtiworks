@@ -31,44 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link AssessmentPackage} entity.
+ * Client exception thrown when attempting to perform a change to an
+ * {@link Assessment} that its current state does not support.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
+public final class AssessmentStateException extends Exception {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = -699513250898841731L;
 
-    public AssessmentPackageDao() {
-        super(AssessmentPackage.class);
+    public static enum APSFailureReason {
+
+        CANNOT_CHANGE_ASSESSMENT_TYPE,
+
+        ;
     }
 
-    public long getNewestImportVersion(final Assessment assessment) {
-        final TypedQuery<Long> query = em.createNamedQuery("AssessmentPackage.getNewestImportVersion", Long.class);
-        query.setParameter("assessment", assessment);
-        return extractCountResult(query);
+    private final EnumerableClientFailure<APSFailureReason> failure;
+
+    public AssessmentStateException(final APSFailureReason reason) {
+        this(new EnumerableClientFailure<APSFailureReason>(reason));
     }
 
-    public AssessmentPackage getNewestAssessmentPackage(final Assessment assessment) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getNewestForAssessment", AssessmentPackage.class);
-        query.setParameter("assessment", assessment);
-        return extractFindResult(query);
+    public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure) {
+        super(failure.toString());
+        this.failure = failure;
+    }
+
+    public AssessmentStateException(final EnumerableClientFailure<APSFailureReason> failure, final Throwable cause) {
+        super(failure.toString(), cause);
+        this.failure = failure;
+    }
+
+    public EnumerableClientFailure<APSFailureReason> getFailure() {
+        return failure;
     }
 }

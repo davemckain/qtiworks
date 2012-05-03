@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -62,12 +60,11 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
 
 /**
- * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored within
+ * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored
  * the system. All such objects are treated as IMS Content Packages.
  *
  * @author David McKain
@@ -76,10 +73,12 @@ import org.hibernate.annotations.Type;
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
-    @NamedQuery(name="AssessmentPackage.getForOwner",
-            query="SELECT a"
-                + "  FROM AssessmentPackage a"
-                + "  WHERE a.owner = :user")
+    @NamedQuery(name="AssessmentPackage.getNewestForAssessment",
+            query="SELECT ap"
+                + "  FROM AssessmentPackage ap"
+                + "  WHERE ap.importVersion = ("
+                + "    SELECT MAX(importVersion) FROM AssessmentPackage"
+                + "  )")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
@@ -87,22 +86,26 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     @Id
     @GeneratedValue(generator="assessmentPackageSequence")
-    @Column(name="aid")
-    private Long aid;
+    @Column(name="apid")
+    private Long apid;
 
-    @Version
-    @Column(name="lock_version")
-    private Long version;
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    @JoinColumn(name="aid", updatable=false)
+    private Assessment assessment;
 
     @Basic(optional=false)
-    @Column(name="creation_time",updatable=false)
+    @Column(name="import_version", updatable=false)
+    private Long importVersion;
+
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** {@link User} who uploaded this package */
+    /** {@link User} who imported this Assessment */
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="owner_uid", updatable=false)
-    private User owner;
+    @JoinColumn(name="importer_uid", updatable=false)
+    private User importer;
 
     /** Item or Test? */
     @Basic(optional=false)
@@ -115,22 +118,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="import_type", length=20)
     @Enumerated(EnumType.STRING)
     private AssessmentPackageImportType importType;
-
-    /**
-     * Short name for this item/test. Used for listings and other stuff.
-     * We try to infer this from the name of the imported file
-     */
-    @Basic(optional=false)
-    @Column(name="name", length=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH)
-    private String name;
-
-    /**
-     * Title of this item/test. Used for listings and other stuff.
-     * We take this from the QTI just after import.
-     */
-    @Basic(optional=false)
-    @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
-    private String title;
 
     /** Base path where this package's files belong. Treated as a sandbox */
     @Lob
@@ -171,21 +158,30 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Long getId() {
-        return aid;
+        return apid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.aid = id;
+        this.apid = id;
     }
 
 
-    public Long getVersion() {
-        return version;
+    public Assessment getAssessment() {
+        return assessment;
     }
 
-    public void setVersion(final Long version) {
-        this.version = version;
+    public void setAssessment(final Assessment assessment) {
+        this.assessment = assessment;
+    }
+
+
+    public Long getImportVersion() {
+        return importVersion;
+    }
+
+    public void setImportVersion(final Long importVersion) {
+        this.importVersion = importVersion;
     }
 
 
@@ -200,12 +196,12 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public User getOwner() {
-        return owner;
+    public User getImporter() {
+        return importer;
     }
 
-    public void setOwner(final User owner) {
-        this.owner = owner;
+    public void setImporter(final User importer) {
+        this.importer = importer;
     }
 
 
@@ -260,24 +256,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     public void setValid(final boolean valid) {
         this.valid = valid;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
     }
 
 

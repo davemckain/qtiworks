@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -62,9 +62,8 @@ public class AssessmentDeliveryDao extends GenericDao<AssessmentDelivery> {
         super(AssessmentDelivery.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<AssessmentDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        final Query query = em.createNamedQuery("AssessmentDelivery.getForAssessmentPackage");
+        final TypedQuery<AssessmentDelivery> query = em.createNamedQuery("AssessmentDelivery.getForAssessmentPackage", AssessmentDelivery.class);
         query.setParameter("assessmentPackage", assessmentPackage);
         return query.getResultList();
     }

@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -61,7 +61,7 @@ public class InstructorUserDao extends GenericDao<InstructorUser> {
     }
 
     public InstructorUser findByLoginName(final String loginName) {
-        final Query query = em.createNamedQuery("InstructorUser.findByLoginName");
+        final TypedQuery<InstructorUser> query = em.createNamedQuery("InstructorUser.findByLoginName", InstructorUser.class);
         query.setParameter("loginName", loginName);
         return extractFindResult(query);
     }

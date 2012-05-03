@@ -31,45 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Client exception thrown when attempting to perform a change to an
- * {@link AssessmentPackage} that its current state does not support.
+ * DAO implementation for the {@link Assessment} entity.
  *
  * @author David McKain
  */
-public final class AssessmentPackageStateException extends Exception {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class AssessmentDao extends GenericDao<Assessment> {
 
-    private static final long serialVersionUID = -699513250898841731L;
+    @PersistenceContext
+    private EntityManager em;
 
-    public static enum APSFailureReason {
-
-        DELIVERIES_EXIST,
-        CANNOT_CHANGE_ASSESSMENT_TYPE,
-
-        ;
+    public AssessmentDao() {
+        super(Assessment.class);
     }
 
-    private final EnumerableClientFailure<APSFailureReason> failure;
-
-    public AssessmentPackageStateException(final APSFailureReason reason) {
-        this(new EnumerableClientFailure<APSFailureReason>(reason));
-    }
-
-    public AssessmentPackageStateException(final EnumerableClientFailure<APSFailureReason> failure) {
-        super(failure.toString());
-        this.failure = failure;
-    }
-
-    public AssessmentPackageStateException(final EnumerableClientFailure<APSFailureReason> failure, final Throwable cause) {
-        super(failure.toString(), cause);
-        this.failure = failure;
-    }
-
-    public EnumerableClientFailure<APSFailureReason> getFailure() {
-        return failure;
+    public List<Assessment> getForOwner(final User user) {
+        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
+        query.setParameter("user", user);
+        return query.getResultList();
     }
 }

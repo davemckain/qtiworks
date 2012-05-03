@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -60,7 +60,7 @@ public class AnonymousUserDao extends GenericDao<AnonymousUser> {
     }
 
     public AnonymousUser findBySessionId(final String sessionId) {
-        final Query query = em.createNamedQuery("AnonymousUser.findBySessionId");
+        final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.findBySessionId", AnonymousUser.class);
         query.setParameter("sessionId", sessionId);
         return extractFindResult(query);
     }

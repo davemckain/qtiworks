@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageServices;
+import uk.ac.ed.ph.qtiworks.services.AssessmentServices;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
@@ -64,7 +64,7 @@ import com.google.common.io.Closeables;
 public class InstructorAssessmentPackageController {
 
     @Resource
-    private AssessmentPackageServices assessmentPackageServices;
+    private AssessmentServices assessmentPackageServices;
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -87,7 +87,7 @@ public class InstructorAssessmentPackageController {
         final String uploadContentType = uploadFile.getContentType();
         final String uploadName = uploadFile.getOriginalFilename();
         try {
-            assessmentPackageServices.importAssessmentPackage(uploadStream, uploadContentType, uploadName);
+            assessmentPackageServices.importAssessment(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
