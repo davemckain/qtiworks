@@ -404,7 +404,7 @@ public class AssessmentManagementServices {
      * is expected to happen later on.
      *
      * @param assessmentPackage
-     * @return
+     * @return guessed title, or an empty String if nothing could be guessed.
      */
     private String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
         final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
@@ -422,7 +422,7 @@ public class AssessmentManagementServices {
          * anything else at this point.
          */
         final Document document = xmlReadResult.getDocument();
-        return document.getDocumentElement().getAttribute("title");
+        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
 
     //-------------------------------------------------
