@@ -22,8 +22,7 @@ import java.net.URI;
 public class TemplateConstraintTest {
 
     public static void main(final String[] args) throws RuntimeValidationException {
-//        URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
-        final URI inputUri = URI.create("classpath:/towns.xml");
+        final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
 
         System.out.println("Reading and validating");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
