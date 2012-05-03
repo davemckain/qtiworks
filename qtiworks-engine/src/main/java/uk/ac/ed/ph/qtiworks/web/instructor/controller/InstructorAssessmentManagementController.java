@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.services.AssessmentServices;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -42,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -56,15 +58,24 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.Closeables;
 
 /**
- * FIXME: Document this type
+ * Controller providing management functions for {@link Assessment}s
  *
  * @author David McKain
  */
 @Controller
-public class InstructorAssessmentPackageController {
+public class InstructorAssessmentManagementController {
 
     @Resource
-    private AssessmentServices assessmentPackageServices;
+    private AssessmentServices assessmentServices;
+
+    @RequestMapping(value="/myAssessments", method=RequestMethod.GET)
+    public String listCallerAssessments(final Model model) {
+        final List<Assessment> assessments = assessmentServices.getCallerAssessments();
+        model.addAttribute(assessments);
+        return "myAssessments";
+    }
+
+    //------------------------------------------------------
 
     @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -87,7 +98,7 @@ public class InstructorAssessmentPackageController {
         final String uploadContentType = uploadFile.getContentType();
         final String uploadName = uploadFile.getOriginalFilename();
         try {
-            assessmentPackageServices.importAssessment(uploadStream, uploadContentType, uploadName);
+            assessmentServices.importAssessment(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -98,6 +109,6 @@ public class InstructorAssessmentPackageController {
             Closeables.closeQuietly(uploadStream);
         }
         /* FIXME - Should redirect to page showing the file! */
-        return "redirect:/";
+        return "redirect:/web/instructor/myAssessments";
     }
 }

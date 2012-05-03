@@ -58,7 +58,7 @@ import javax.persistence.TemporalType;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="users")
 @SequenceGenerator(name="userSequence", sequenceName="user_sequence", initialValue=1000, allocationSize=10)
-public abstract class User implements BaseEntity, TimestampedOnCreation {
+public class User implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;
 
@@ -79,9 +79,13 @@ public abstract class User implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="user_type",updatable=false,length=10)
     @Enumerated(EnumType.STRING)
-    private final UserType userType;
+    private UserType userType;
 
     //------------------------------------------------------------
+
+    public User() {
+        /* (Don't use this in code - required when creating instances by reflection) */
+    }
 
     protected User(final UserType userType) {
         this.userType = userType;
@@ -124,9 +128,16 @@ public abstract class User implements BaseEntity, TimestampedOnCreation {
         return userType;
     }
 
+    protected void setUserType(final UserType userType) {
+        this.userType = userType;
+    }
+
     //------------------------------------------------------------
 
-    public abstract String getBusinessKey();
+    public String getBusinessKey() {
+//        throw new QtiWorksLogicException("This must be filled in by a subclass");
+        return "HEELO";
+    }
 
     //------------------------------------------------------------
 

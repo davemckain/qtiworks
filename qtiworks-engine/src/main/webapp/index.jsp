@@ -12,6 +12,7 @@ All Rights Reserved
 
 <h3>"Instructor" functions</h3>
 <ul>
+  <li><a href="web/instructor/myAssessments">Show your assessments</a></li>
   <li><a href="web/instructor/uploadAssessment">Upload new Assessment</a></li>
 </ul>
 
