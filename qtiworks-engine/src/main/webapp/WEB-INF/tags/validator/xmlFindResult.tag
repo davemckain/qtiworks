@@ -1,22 +1,16 @@
 <%--
 
+This fragment formats the result of locating a QTI resource.
+
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ tag body-content="empty" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<%--
-
-This fragment formats the result of finding a QTI resource.
-
-Model attributes:
-
-rootObjectLookup
-
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
+<%@ attribute name="rootObjectLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup" %>
 
 <c:set var="xmlResourceNotFoundException" value="${rootObjectLookup.notFoundException}"/>
 <c:set var="qtiXmlInterpretationException" value="${rootObjectLookup.badResourceException}"/>

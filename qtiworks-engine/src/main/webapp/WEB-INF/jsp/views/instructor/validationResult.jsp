@@ -8,6 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%--
 
 Validation results
@@ -35,11 +36,10 @@ assessmentId (Long)
 <div class="validationResult">
   <c:choose>
     <c:when test="${assessmentType=='ASSESSMENT_ITEM'}">
-      <%@ include file="../validator-item-result.jspf" %>
+      <validator:itemValidationResults validationResult="${validationResult}"/>
     </c:when>
     <c:when test="${assessmentType=='ASSESSMENT_TEST'}">
-      <c:set var="testValidationResult" value="${validationResult}"/>
-      <%@ include file="../validator-test-result.jspf" %>
+      <validator:testValidationResults validationResult="${validationResult}"/>
     </c:when>
     <c:otherwise>
       <%-- Blow up! --%>

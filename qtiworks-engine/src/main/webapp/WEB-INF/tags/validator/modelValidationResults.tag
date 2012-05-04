@@ -1,22 +1,18 @@
 <%--
 
+This fragment formats the model validation items recorded within an
+AbstractValidationResult
+
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ tag body-content="empty" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<%--
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
+<%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult" %>
 
-This fragment formats the items reported within AbstractValidationResult.
-
-Model attributes:
-
-validationResult - current validationResult
-
---%>
 <c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
 <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.rootObjectLookup}"/>
 <c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>

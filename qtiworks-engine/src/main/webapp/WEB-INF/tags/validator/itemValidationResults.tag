@@ -1,32 +1,27 @@
 <%--
 
+This fragment formats the results of validating an AssessmentItem
+
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ tag body-content="empty" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
-<%--
-
-This fragment formats an ItemValidationResult
-
-Model attributes:
-
-validationResult: itemValidationResult
-isTest: set to true if item is part of a test
-
---%>
-<c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
+<%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult" %>
+<%@ attribute name="test" required="false" type="java.lang.Boolean" %>
 
 <%-- Show overall result --%>
+<c:set var="resolvedAssessmentItem" value="${validationResult.resolvedAssessmentItem}"/>
+<c:set var="itemLookup" value="${resolvedAssessmentItem.rootObjectLookup}"/>
+<c:set var="itemSystemId" value="${itemLookup.systemId}"/>
 <div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
   <h3>
     <c:choose>
-      <c:when test="${isTest}">
-        Test Item at ${utils:extractContentPackagePath(resolvedAssessmentObject.rootObjectLookup.systemId)} validation
+      <c:when test="${test}">
+        Test Item at ${utils:extractContentPackagePath(itemSystemId)} validation
         ${validationResult.valid ? 'success' : 'failure'}
       </c:when>
       <c:otherwise>
@@ -38,8 +33,8 @@ isTest: set to true if item is part of a test
   <div class="details">
     <p>
       <c:choose>
-        <c:when test="${isTest}">
-          The item at path ${utils:extractContentPackagePath(resolvedAssessmentObject.rootObjectLookup.systemId)}
+        <c:when test="${test}">
+          The item at path ${utils:extractContentPackagePath(itemSystemId)}
           referenced by this test
           ${validationResult.valid ? 'passed' : 'did not pass'}
           all of our validation checks. Further details are provided below.
@@ -52,24 +47,23 @@ isTest: set to true if item is part of a test
         </c:otherwise>
       </c:choose>
     </p>
-    <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.rootObjectLookup}"/>
-    <c:if test="${isTest}">
-      <%@ include file="validator-xml-find-result.jspf" %>
+    <c:if test="${test}">
+      <validator:xmlFindResult rootObjectLookup="${itemLookup}"/>
     </c:if>
-    <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
-    <%@ include file="validator-xml-schema-result.jspf" %>
-    <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
+    <validator:xmlParseResults rootObjectLookup="${itemLookup}"/>
+    <validator:xmlSchemaValidationResults rootObjectLookup="${itemLookup}"/>
+    <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentItem.resolvedResponseProcessingTemplateLookup}"/>
     <c:if test="${resolvedResponseProcessingTemplateLookup!=null}">
-      <c:set var="rootObjectLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
+      <c:set var="templateLookup" value="${resolvedAssessmentItem.resolvedResponseProcessingTemplateLookup}"/>
       <c:choose>
-        <c:when test="${rootObjectLookup.rootObjectHolder!=null}">
+        <c:when test="${templateLookup.rootObjectHolder!=null}">
           <div class="resultPanel success">
             <h3>The referenced response processing template was successfully resolved</h3>
             <div class="details">
               <%-- (These are in context of RP) --%>
-              <%@ include file="validator-xml-find-result.jspf" %>
-              <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
-              <%@ include file="validator-xml-schema-result.jspf" %>
+              <validator:xmlFindResult rootObjectLookup="${templateLookup}"/>
+              <validator:xmlParseResults rootObjectLookup="${templateLookup}"/>
+              <validator:xmlSchemaValidationResults rootObjectLookup="${templateLookup}"/>
             </div>
           </div>
         </c:when>
@@ -82,16 +76,15 @@ isTest: set to true if item is part of a test
                 <b>${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}</b>.
               </p>
               <%-- (These are in context of RP) --%>
-              <%@ include file="validator-xml-find-result.jspf" %>
+              <validator:xmlFindResult rootObjectLookup="${rootObjectLookup}"/>
               <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
-              <%@ include file="validator-xml-schema-result.jspf" %>
+              <validator:xmlSchemaValidationResults rootObjectLookup="${rootObjectLookup}"/>
             </div>
           </div>
         </c:otherwise>
       </c:choose>
     </c:if>
-    <%@ include file="validator-model-build-result.jspf" %>
-    <%@ include file="validator-validation-result.jspf" %>
+    <validator:modelBuildResults rootObjectLookup="${rootObjectLookup}"/>
+    <validator:modelValidationResults validationResult="${validationResult}"/>
   </div>
 </div>
-

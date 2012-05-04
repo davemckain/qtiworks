@@ -1,23 +1,16 @@
 <%--
 
+This fragment formats the result of schema validation
+
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ tag body-content="empty" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
-<%--
-
-This fragment formats the result of XML schema validation
-
-Model attributes:
-
-rootObjectLookup
-
---%>
+<%@ attribute name="rootObjectLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup" %>
 
 <c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
 <c:set var="qtiXmlInterpretationException" value="${rootObjectLookup.badResourceException}"/>
