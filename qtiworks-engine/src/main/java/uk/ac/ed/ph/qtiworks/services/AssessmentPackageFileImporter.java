@@ -60,8 +60,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import javax.annotation.Nonnull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -92,9 +90,9 @@ public class AssessmentPackageFileImporter {
      * @throws QtiWorksRuntimeException if something unexpected happens, such as experiencing
      *   an {@link IOException}
      */
-    public AssessmentPackage importAssessmentPackageData(@Nonnull final File importSandboxDirectory,
-            @Nonnull final InputStream inputStream,
-            @Nonnull final String contentType)
+    public AssessmentPackage importAssessmentPackageData(final File importSandboxDirectory,
+            final InputStream inputStream,
+            final String contentType)
             throws AssessmentPackageFileImportException {
         Assert.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
         Assert.ensureNotNull(inputStream, "inputStream");

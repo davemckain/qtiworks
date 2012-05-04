@@ -56,7 +56,6 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -113,7 +112,7 @@ public final class FilespaceManager {
         return createDirectoryPath(filespaceUri);
     }
 
-    public ResourceLocator createSandboxInputResourceLocator(@Nonnull final File sandboxDirectory) {
+    public ResourceLocator createSandboxInputResourceLocator(final File sandboxDirectory) {
         Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         final ChainedResourceLocator result = new ChainedResourceLocator(

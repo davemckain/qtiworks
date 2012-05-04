@@ -74,8 +74,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -122,7 +120,7 @@ public class AssessmentManagementServices {
     //-------------------------------------------------
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public @Nonnull Assessment getAssessment(@Nonnull final Long assessmentId)
+    public Assessment getAssessment(final Long assessmentId)
             throws DomainEntityNotFoundException, PrivilegeException {
         Assert.ensureNotNull(assessmentId, "assessmentId");
         final Assessment result = assessmentDao.requireFindById(assessmentId);
@@ -131,7 +129,7 @@ public class AssessmentManagementServices {
     }
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public @Nonnull AssessmentPackage getCurrentAssessmentPackage(@Nonnull final Assessment assessment) {
+    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
         Assert.ensureNotNull(assessment, "assessment");
         final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
         if (result==null) {
@@ -141,7 +139,7 @@ public class AssessmentManagementServices {
     }
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public @Nonnull List<Assessment> getCallerAssessments() {
+    public List<Assessment> getCallerAssessments() {
         return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
@@ -163,8 +161,8 @@ public class AssessmentManagementServices {
      * @throws QtiWorksRuntimeException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public @Nonnull Assessment importAssessment(@Nonnull final InputStream inputStream,
-            @Nonnull final String contentType, @Nullable final String name)
+    public Assessment importAssessment(final InputStream inputStream,
+            final String contentType, final String name)
             throws PrivilegeException, AssessmentPackageFileImportException {
         Assert.ensureNotNull(inputStream, "inputStream");
         Assert.ensureNotNull(contentType, "contentType");
@@ -224,8 +222,8 @@ public class AssessmentManagementServices {
      * @throws DomainEntityNotFoundException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public @Nonnull Assessment updateAssessmentPackageFiles(@Nonnull final Long assessmentId,
-            @Nonnull final InputStream inputStream, @Nonnull final String contentType)
+    public Assessment updateAssessmentPackageFiles(final Long assessmentId,
+            final InputStream inputStream, final String contentType)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.ensureNotNull(assessmentId, "assessmentId");
@@ -266,7 +264,7 @@ public class AssessmentManagementServices {
 
     @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
-    public void deleteAssessment(@Nonnull final Assessment assessment)
+    public void deleteAssessment(final Assessment assessment)
             throws AssessmentStateException, PrivilegeException {
         /* In order to do this correctly, we need to delete all state that might have
          * been associated with this assessment as well, so we'll come back to this...
@@ -282,7 +280,7 @@ public class AssessmentManagementServices {
      */
     @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
-    public void deleteAssessmentPackage(@Nonnull final AssessmentPackage assessmentPackage)
+    public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage)
             throws AssessmentStateException, PrivilegeException {
         /* In order to do this correctly, we need to delete all state that might have
          * been associated with this package as well, so we'll come back to this...
@@ -294,7 +292,7 @@ public class AssessmentManagementServices {
     // Validation
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public AssessmentObjectValidationResult<?> validateAssessment(@Nonnull final Long assessmentId)
+    public AssessmentObjectValidationResult<?> validateAssessment(final Long assessmentId)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = getAssessment(assessmentId);
         final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
@@ -321,7 +319,7 @@ public class AssessmentManagementServices {
      */
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    validateAssessment(@Nonnull final AssessmentPackage assessmentPackage) {
+    validateAssessment(final AssessmentPackage assessmentPackage) {
         final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
         final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
