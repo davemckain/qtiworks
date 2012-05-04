@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
@@ -94,7 +94,7 @@ public final class FilespaceManager {
     }
 
     public void deleteSandbox(final File sandboxDirectory) {
-        ConstraintUtilities.ensureNotNull(sandboxDirectory, "sandboxDirectory");
+        Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
         try {
             IoUtilities.recursivelyDelete(sandboxDirectory);
         }
@@ -105,7 +105,7 @@ public final class FilespaceManager {
     }
 
     public File createAssessmentPackageSandbox(final User owner) {
-        ConstraintUtilities.ensureNotNull(owner, "owner");
+        Assert.ensureNotNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
                 + "/assessments/"
                 + owner.getBusinessKey()
@@ -114,7 +114,7 @@ public final class FilespaceManager {
     }
 
     public ResourceLocator createSandboxInputResourceLocator(@Nonnull final File sandboxDirectory) {
-        ConstraintUtilities.ensureNotNull(sandboxDirectory, "sandboxDirectory");
+        Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
         final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
         final ChainedResourceLocator result = new ChainedResourceLocator(
                 new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */

@@ -51,7 +51,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -124,7 +124,7 @@ public class AssessmentManagementServices {
     @Transactional(propagation=Propagation.REQUIRED)
     public @Nonnull Assessment getAssessment(@Nonnull final Long assessmentId)
             throws DomainEntityNotFoundException, PrivilegeException {
-        ConstraintUtilities.ensureNotNull(assessmentId, "assessmentId");
+        Assert.ensureNotNull(assessmentId, "assessmentId");
         final Assessment result = assessmentDao.requireFindById(assessmentId);
         ensureCallerMayView(result);
         return result;
@@ -132,7 +132,7 @@ public class AssessmentManagementServices {
 
     @Transactional(propagation=Propagation.REQUIRED)
     public @Nonnull AssessmentPackage getCurrentAssessmentPackage(@Nonnull final Assessment assessment) {
-        ConstraintUtilities.ensureNotNull(assessment, "assessment");
+        Assert.ensureNotNull(assessment, "assessment");
         final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
         if (result==null) {
             throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
@@ -166,8 +166,8 @@ public class AssessmentManagementServices {
     public @Nonnull Assessment importAssessment(@Nonnull final InputStream inputStream,
             @Nonnull final String contentType, @Nullable final String name)
             throws PrivilegeException, AssessmentPackageFileImportException {
-        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
-        ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        Assert.ensureNotNull(inputStream, "inputStream");
+        Assert.ensureNotNull(contentType, "contentType");
         final User caller = ensureCallerMayCreateAssessment();
 
         /* First, upload the data into a sandbox */
@@ -228,9 +228,9 @@ public class AssessmentManagementServices {
             @Nonnull final InputStream inputStream, @Nonnull final String contentType)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
-        ConstraintUtilities.ensureNotNull(assessmentId, "assessmentId");
-        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
-        ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        Assert.ensureNotNull(assessmentId, "assessmentId");
+        Assert.ensureNotNull(inputStream, "inputStream");
+        Assert.ensureNotNull(contentType, "contentType");
         final Assessment assessment = assessmentDao.requireFindById(assessmentId);
         ensureCallerMayChange(assessment);
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -189,7 +189,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @param item item to be added
      */
     public void add(ValidationItem item) {
-        ConstraintUtilities.ensureNotNull(item);
+        Assert.ensureNotNull(item);
         if (item instanceof ValidationError) {
             errors.add((ValidationError) item);
         }

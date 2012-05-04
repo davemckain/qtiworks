@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -69,9 +69,9 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
 
     public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue, boolean required) {
-        ConstraintUtilities.ensureNotNull(owner, "owner");
-        ConstraintUtilities.ensureNotNull(localName, "localName");
-        ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
+        Assert.ensureNotNull(owner, "owner");
+        Assert.ensureNotNull(localName, "localName");
+        Assert.ensureNotNull(namespaceUri, "namespaceUri");
         this.owner = owner;
         this.localName = localName;
         this.namespaceUri = namespaceUri;

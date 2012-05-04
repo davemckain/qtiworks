@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.BaseEntity;
 import uk.ac.ed.ph.qtiworks.domain.entities.TimestampedOnCreation;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public abstract class GenericDao<E extends BaseEntity> {
     }
 
     public E requireFindById(final Long id) throws DomainEntityNotFoundException {
-        ConstraintUtilities.ensureNotNull(id, "Entity ID");
+        Assert.ensureNotNull(id, "Entity ID");
         final E result = findById(id);
         ensureFindSuccess(result, id);
         return result;

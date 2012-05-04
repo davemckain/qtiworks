@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -80,7 +80,7 @@ public final class AssessmentObjectValidator {
     }
 
     public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentItem);
+        Assert.ensureNotNull(resolvedAssessmentItem);
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
@@ -101,7 +101,7 @@ public final class AssessmentObjectValidator {
     }
 
     public TestValidationResult validateTest(final ResolvedAssessmentTest resolvedAssessmentTest) {
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentTest);
+        Assert.ensureNotNull(resolvedAssessmentTest);
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.EntityResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.LoadSaveResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
@@ -137,7 +137,7 @@ public final class XmlResourceReader {
 
     public XmlResourceReader(ResourceLocator schemaResourceLocator, Map<String, String> registeredSchemaMapTemplate,
             SchemaCache schemaCache) {
-        ConstraintUtilities.ensureNotNull(schemaResourceLocator, "schemaResourceLocator");
+        Assert.ensureNotNull(schemaResourceLocator, "schemaResourceLocator");
         this.schemaResourceLocator = schemaResourceLocator;
         this.registeredSchemaMap = registeredSchemaMapTemplate != null ? Collections.unmodifiableMap(registeredSchemaMapTemplate) : null;
         this.schemaCache = schemaCache;
@@ -179,9 +179,9 @@ public final class XmlResourceReader {
     public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator,
             ResourceLocator entityResourceLocator, boolean schemaValidating)
             throws XmlResourceNotFoundException {
-        ConstraintUtilities.ensureNotNull(systemId, "systemId");
-        ConstraintUtilities.ensureNotNull(inputResourceLocator, "inputResourceLocator");
-        ConstraintUtilities.ensureNotNull(entityResourceLocator, "entityResourceLocator");
+        Assert.ensureNotNull(systemId, "systemId");
+        Assert.ensureNotNull(inputResourceLocator, "inputResourceLocator");
+        Assert.ensureNotNull(entityResourceLocator, "entityResourceLocator");
 
         try {
             logger.debug("read({}, {}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating });

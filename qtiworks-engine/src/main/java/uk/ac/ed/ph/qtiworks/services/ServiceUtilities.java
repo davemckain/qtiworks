@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 /**
  * Dumping ground for utilities that currently don't belong anywhere else.
@@ -45,7 +45,7 @@ public final class ServiceUtilities {
     public static final String ellipses = "...";
 
     public static String trimString(final String string, final int maxLength) {
-        ConstraintUtilities.ensureNotNull(string, "string");
+        Assert.ensureNotNull(string, "string");
         if (maxLength < 0) {
             throw new IllegalArgumentException("maxLength must not be negative");
         }
@@ -60,7 +60,7 @@ public final class ServiceUtilities {
      * size, without rejecting user input.
      */
     public static String trimSentence(final String sentence, final int maxLength) {
-        ConstraintUtilities.ensureNotNull(sentence, "sentence");
+        Assert.ensureNotNull(sentence, "sentence");
         if (maxLength < ellipses.length()) {
             throw new IllegalArgumentException("maxLength is clearly too short for a sentence!");
         }

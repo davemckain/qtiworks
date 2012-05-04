@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -146,30 +146,30 @@ public final class AssessmentTestState extends ControlObjectState<String> {
     //---------------------------------------------------------------
 
     public Value getOutcomeValue(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         return outcomeValues.get(identifier);
     }
 
     public Value getOutcomeValue(OutcomeDeclaration outcomeDeclaration) {
-        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
+        Assert.ensureNotNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
     public void setOutcomeValue(Identifier identifier, Value value) {
-        ConstraintUtilities.ensureNotNull(identifier);
-        ConstraintUtilities.ensureNotNull(value);
+        Assert.ensureNotNull(identifier);
+        Assert.ensureNotNull(value);
         outcomeValues.put(identifier, value);
     }
 
     public void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value) {
-        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
+        Assert.ensureNotNull(outcomeDeclaration);
+        Assert.ensureNotNull(value);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
     }
 
     public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
-        ConstraintUtilities.ensureNotNull(outcomeDeclaration);
-        ConstraintUtilities.ensureNotNull(value);
+        Assert.ensureNotNull(outcomeDeclaration);
+        Assert.ensureNotNull(value);
         Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value);
         if (targetValue == null) {
             targetValue = NullValue.INSTANCE;

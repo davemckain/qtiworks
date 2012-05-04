@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.reading;
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -100,7 +100,7 @@ public final class QtiXmlReader {
     }
 
     public QtiXmlReader(final JqtiExtensionManager jqtiExtensionManager, final SchemaCache schemaCache) {
-        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
 
         /* Merge extension schemas with core QTI 2.1 schema */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();

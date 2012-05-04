@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
@@ -59,10 +59,10 @@ public final class AssessmentItemRefAttemptController {
     AssessmentItemRefAttemptController(AssessmentTestAttemptController testAttemptController,
             ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemRef itemRef,
             AssessmentItemRefState itemRefState) {
-        ConstraintUtilities.ensureNotNull(testAttemptController, "testAttemptController");
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
-        ConstraintUtilities.ensureNotNull(itemRef, "itemRef");
-        ConstraintUtilities.ensureNotNull(itemRefState, "assessmentItemRefState");
+        Assert.ensureNotNull(testAttemptController, "testAttemptController");
+        Assert.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        Assert.ensureNotNull(itemRef, "itemRef");
+        Assert.ensureNotNull(itemRefState, "assessmentItemRefState");
         this.testAttemptController = testAttemptController;
         this.itemAttemptController = new ItemSessionController(testAttemptController.getJqtiExtensionManager(),
                 resolvedAssessmentItem, itemRefState.getItemState());

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -151,7 +151,7 @@ public abstract class Interaction extends BodyElement {
      */
     public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
-        ConstraintUtilities.ensureNotNull(responseData, "responseData");
+        Assert.ensureNotNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
         itemSessionController.getItemSessionState().setResponseValue(this, value);

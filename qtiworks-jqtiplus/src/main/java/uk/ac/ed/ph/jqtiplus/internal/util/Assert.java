@@ -36,14 +36,14 @@ package uk.ac.ed.ph.jqtiplus.internal.util;
 /**
  * Simple utility methods for enforcing various types of data constraints.
  * <p>
- * Some of the functionality here is reproduced in Spring (and in other 3rd party JARs), but we need this to work at the client-side too and may opt not to such
- * 3rd party products there. Regardless, this is trivial anyway! (This is copied from <tt>ph-commons-util</tt>.)
- * 
+ * Some of the functionality here is reproduced in Spring (and in other 3rd party JARs), but
+ * it's so trivial it's not worth bringing them in.
+ *
  * @author David McKain
  */
-public final class ConstraintUtilities {
+public final class Assert {
 
-    public static void ensureNotNull(Object value) {
+    public static void ensureNotNull(final Object value) {
         ensureNotNull(value, "Object");
     }
 
@@ -51,12 +51,12 @@ public final class ConstraintUtilities {
      * Checks that the given object is non-null, throwing an
      * IllegalArgumentException if the check fails. If the check succeeds then
      * nothing happens.
-     * 
+     *
      * @param value object to test
      * @param objectName name to give to supplied Object when constructing Exception message.
      * @throws IllegalArgumentException if an error occurs.
      */
-    public static void ensureNotNull(Object value, String objectName) {
+    public static void ensureNotNull(final Object value, final String objectName) {
         if (value == null) {
             throw new IllegalArgumentException(objectName + " must not be null");
         }

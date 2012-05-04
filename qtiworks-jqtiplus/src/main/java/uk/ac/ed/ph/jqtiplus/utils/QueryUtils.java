@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
@@ -196,16 +196,16 @@ public final class QueryUtils {
     }
 
     public static void walkTree(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
-        ConstraintUtilities.ensureNotNull(startNodes);
-        ConstraintUtilities.ensureNotNull(handler);
+        Assert.ensureNotNull(startNodes);
+        Assert.ensureNotNull(handler);
         for (final XmlNode startNode : startNodes) {
             doWalkTree(handler, startNode);
         }
     }
 
     public static void walkChildNodes(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
-        ConstraintUtilities.ensureNotNull(startNodes);
-        ConstraintUtilities.ensureNotNull(handler);
+        Assert.ensureNotNull(startNodes);
+        Assert.ensureNotNull(handler);
         for (final XmlNode startNode : startNodes) {
             for (final NodeGroup<?> nodeGroup : startNode.getNodeGroups()) {
                 for (final XmlNode childNode : nodeGroup.getChildren()) {

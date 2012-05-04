@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
@@ -260,7 +260,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
 
     @Override
     public OutcomeDeclaration getOutcomeDeclaration(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         for (final OutcomeDeclaration declaration : getOutcomeDeclarations()) {
             if (declaration.getIdentifier() != null && declaration.getIdentifier().equals(identifier)) {
                 return declaration;
@@ -271,7 +271,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
 
     @Override
     public VariableDeclaration getVariableDeclaration(Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         return getOutcomeDeclaration(identifier);
     }
 

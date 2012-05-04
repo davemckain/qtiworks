@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
@@ -57,10 +57,10 @@ public class AssessmentTestAttemptController {
     private final Timer timer;
 
     public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
-        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
-        ConstraintUtilities.ensureNotNull(assessmentTestState, "assessmentTestState");
-        ConstraintUtilities.ensureNotNull(timer, "timer");
+        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
+        Assert.ensureNotNull(assessmentTestState, "assessmentTestState");
+        Assert.ensureNotNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.utils.contentpackaging;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -92,7 +92,7 @@ public final class QtiContentPackageExtractor {
     private final FileSandboxResourceLocator packageResourceLocator;
 
     public QtiContentPackageExtractor(final File packageSandboxDirectory) {
-        ConstraintUtilities.ensureNotNull(packageSandboxDirectory);
+        Assert.ensureNotNull(packageSandboxDirectory);
         this.xmlResourceReader = new XmlResourceReader(new NullResourceLocator()); /* (Not doing schema validation so no XSDs to register) */
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }

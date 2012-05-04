@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.ImsManifestException;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
@@ -96,9 +96,9 @@ public class AssessmentPackageFileImporter {
             @Nonnull final InputStream inputStream,
             @Nonnull final String contentType)
             throws AssessmentPackageFileImportException {
-        ConstraintUtilities.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
-        ConstraintUtilities.ensureNotNull(inputStream, "inputStream");
-        ConstraintUtilities.ensureNotNull(contentType, "contentType");
+        Assert.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
+        Assert.ensureNotNull(inputStream, "inputStream");
+        Assert.ensureNotNull(contentType, "contentType");
         AssessmentPackage result = null;
         if ("application/zip".equals(contentType)) {
             logger.debug("Import is ZIP. Attempting to unpack into {}", importSandboxDirectory);

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
@@ -98,7 +98,7 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     @Override
     public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
-        ConstraintUtilities.ensureNotNull(responseData, "responseData");
+        Assert.ensureNotNull(responseData, "responseData");
         final E jqtiExtensionPackage = getOwningExtensionPackage(itemSessionController);
         if (jqtiExtensionPackage!=null) {
             bindResponse(jqtiExtensionPackage, itemSessionController, responseData);

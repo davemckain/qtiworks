@@ -5,7 +5,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -67,7 +67,7 @@ public final class XsltSerializationOptions implements Serializable {
      * @param serializationMethod {@link XsltSerializationMethod} to use, which must not be null.
      */
     public void setSerializationMethod(XsltSerializationMethod serializationMethod) {
-        ConstraintUtilities.ensureNotNull(serializationMethod, "serializationMethod");
+        Assert.ensureNotNull(serializationMethod, "serializationMethod");
         this.serializationMethod = serializationMethod;
     }
     
@@ -90,7 +90,7 @@ public final class XsltSerializationOptions implements Serializable {
      *   {@link TransformerFactory} that will end up doing the serialization.
      */
     public void setEncoding(String encoding) {
-        ConstraintUtilities.ensureNotNull(encoding, "encoding");
+        Assert.ensureNotNull(encoding, "encoding");
         this.encoding = encoding;
     }
     

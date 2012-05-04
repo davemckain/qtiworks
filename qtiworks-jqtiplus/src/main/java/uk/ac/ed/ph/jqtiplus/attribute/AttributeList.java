@@ -64,7 +64,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
@@ -100,7 +100,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      * @param owner parent of constructed container
      */
     public AttributeList(XmlNode owner) {
-        ConstraintUtilities.ensureNotNull(owner);
+        Assert.ensureNotNull(owner);
         this.owner = owner;
         this.attributes = new ArrayList<Attribute<?>>();
     }
@@ -284,8 +284,8 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      *             found
      */
     private Attribute<?> get(String localName, String namespaceUri, boolean silent) {
-        ConstraintUtilities.ensureNotNull(localName, "localName");
-        ConstraintUtilities.ensureNotNull(namespaceUri, "namespaceUri");
+        Assert.ensureNotNull(localName, "localName");
+        Assert.ensureNotNull(namespaceUri, "namespaceUri");
         for (final Attribute<?> attribute : attributes) {
             if (attribute.getLocalName().equals(localName) && attribute.getNamespaceUri().equals(namespaceUri)) {
                 return attribute;

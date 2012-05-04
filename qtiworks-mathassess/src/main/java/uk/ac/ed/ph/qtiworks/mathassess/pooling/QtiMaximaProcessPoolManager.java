@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcessManager;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
@@ -83,8 +83,8 @@ public final class QtiMaximaProcessPoolManager implements QtiMaximaProcessManage
     //---------------------------------------------------------
 
     public void init() {
-        ConstraintUtilities.ensureNotNull(maximaConfiguration, "maximaConfiguration");
-        ConstraintUtilities.ensureNotNull(stylesheetCache, "stylesheetCache");
+        Assert.ensureNotNull(maximaConfiguration, "maximaConfiguration");
+        Assert.ensureNotNull(stylesheetCache, "stylesheetCache");
         final PoolableQtiMaximaProcessFactory factory = new PoolableQtiMaximaProcessFactory();
         factory.setMaximaConfiguration(maximaConfiguration);
         factory.setStylesheetCache(stylesheetCache);

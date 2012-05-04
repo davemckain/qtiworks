@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.locators;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
 import java.io.File;
@@ -69,8 +69,8 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     private final File sandboxBaseDirectory;
     
     public FileSandboxResourceLocator(CustomUriScheme uriScheme, File sandboxBaseDirectory) {
-        ConstraintUtilities.ensureNotNull(uriScheme, "uriScheme");
-        ConstraintUtilities.ensureNotNull(sandboxBaseDirectory, "sandboxBaseDirectory");
+        Assert.ensureNotNull(uriScheme, "uriScheme");
+        Assert.ensureNotNull(sandboxBaseDirectory, "sandboxBaseDirectory");
         this.uriScheme = uriScheme;
         this.sandboxBaseDirectory = sandboxBaseDirectory;
     }

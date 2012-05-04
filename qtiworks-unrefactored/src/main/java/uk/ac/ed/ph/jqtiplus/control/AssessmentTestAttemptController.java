@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
@@ -128,10 +128,10 @@ public final class AssessmentTestAttemptController {
     private final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap;
     
     public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
-        ConstraintUtilities.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
-        ConstraintUtilities.ensureNotNull(assessmentTestState, "assessmentTestState");
-        ConstraintUtilities.ensureNotNull(timer, "timer");
+        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
+        Assert.ensureNotNull(assessmentTestState, "assessmentTestState");
+        Assert.ensureNotNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
@@ -176,7 +176,7 @@ public final class AssessmentTestAttemptController {
     }
 
     private void initValue(OutcomeDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
+        Assert.ensureNotNull(declaration);
         testState.setOutcomeValue(declaration, computeInitialValue(declaration));
     }
 
@@ -207,7 +207,7 @@ public final class AssessmentTestAttemptController {
      */
     public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
             VariableReferenceIdentifier variableReferenceIdentifier) {
-        ConstraintUtilities.ensureNotNull(variableReferenceIdentifier);
+        Assert.ensureNotNull(variableReferenceIdentifier);
         final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
         final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
         if (itemRefIdentifier == null || itemVarIdentifier == null) {
@@ -732,18 +732,18 @@ public final class AssessmentTestAttemptController {
 
         @Override
         public Value lookupVariableValue(VariableDeclaration variableDeclaration) {
-            ConstraintUtilities.ensureNotNull(variableDeclaration);
+            Assert.ensureNotNull(variableDeclaration);
             return getVariableValue(variableDeclaration.getIdentifier());
         }
 
         public Value getVariableValue(Identifier identifier) {
-            ConstraintUtilities.ensureNotNull(identifier);
+            Assert.ensureNotNull(identifier);
             return testState.getOutcomeValue(identifier);
         }
         
         @Override
         public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
-            ConstraintUtilities.ensureNotNull(identifier);
+            Assert.ensureNotNull(identifier);
             Value value = null;
             for (final VariableType type : permittedTypes) {
                 switch (type) {

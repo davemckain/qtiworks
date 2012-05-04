@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
@@ -91,8 +91,8 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
      * @param maximum maximum allowed children of created group
      */
     public AbstractNodeGroup(final XmlNode parent, final String name, final Integer minimum, final Integer maximum) {
-        ConstraintUtilities.ensureNotNull(parent);
-        ConstraintUtilities.ensureNotNull(name);
+        Assert.ensureNotNull(parent);
+        Assert.ensureNotNull(name);
         this.parent = parent;
         this.name = name;
         this.children = new ArrayList<C>();

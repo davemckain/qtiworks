@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -108,8 +108,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     private final ItemSessionState itemSessionState;
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
-        ConstraintUtilities.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
-        ConstraintUtilities.ensureNotNull(itemSessionState, "itemSessionState");
+        Assert.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        Assert.ensureNotNull(itemSessionState, "itemSessionState");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
@@ -278,7 +278,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      *   any key fails to map to an interaction
      */
     public List<Identifier> bindResponses(final Map<String, ResponseData> responseMap) {
-        ConstraintUtilities.ensureNotNull(responseMap, "responseMap");
+        Assert.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
 
@@ -301,7 +301,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         for (final Entry<String, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = new Identifier(responseEntry.getKey());
             final ResponseData responseData = responseEntry.getValue();
-            ConstraintUtilities.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
+            Assert.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
                 final Interaction interaction = interactionMap.get(responseIdentifier);
                 if (interaction != null) {
@@ -446,7 +446,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     @Override
     public Value lookupVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
@@ -481,23 +481,23 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {
-        ConstraintUtilities.ensureNotNull(identifierString);
+        Assert.ensureNotNull(identifierString);
         return lookupVariableValue(new Identifier(identifierString), permittedTypes);
     }
 
     @Override
     public Value computeDefaultValue(final Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
 
     public Value computeDefaultValue(final String identifierString) {
-        ConstraintUtilities.ensureNotNull(identifierString);
+        Assert.ensureNotNull(identifierString);
         return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
     }
 
     public Value computeDefaultValue(final VariableDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
+        Assert.ensureNotNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
         if (result == null) {
             final DefaultValue defaultValue = declaration.getDefaultValue();
@@ -512,7 +512,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         final VariableDeclaration result = item.getVariableDeclaration(identifier);
         if (result == null) {
             throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
@@ -521,7 +521,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
-        ConstraintUtilities.ensureNotNull(responseIdentifier);
+        Assert.ensureNotNull(responseIdentifier);
         final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
         if (result == null) {
             throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
@@ -531,17 +531,17 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     @Override
     public Value computeCorrectResponse(final Identifier identifier) {
-        ConstraintUtilities.ensureNotNull(identifier);
+        Assert.ensureNotNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
 
     public Value computeCorrectResponse(final String identifierString) {
-        ConstraintUtilities.ensureNotNull(identifierString);
+        Assert.ensureNotNull(identifierString);
         return computeCorrectResponse(new Identifier(identifierString));
     }
 
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
+        Assert.ensureNotNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
         if (result == null) {
             final CorrectResponse correctResponse = declaration.getCorrectResponse();
@@ -573,7 +573,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     //-------------------------------------------------------------------
 
     private void initValue(final VariableDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
+        Assert.ensureNotNull(declaration);
         itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
     }
 
@@ -582,7 +582,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private Value computeInitialValue(final VariableDeclaration declaration) {
-        ConstraintUtilities.ensureNotNull(declaration);
+        Assert.ensureNotNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
     }
 

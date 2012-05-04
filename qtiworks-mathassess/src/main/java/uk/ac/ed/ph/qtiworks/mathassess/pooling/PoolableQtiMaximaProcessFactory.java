@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.pooling;
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ConstraintUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.jacomax.MaximaInteractiveProcess;
@@ -80,8 +80,8 @@ final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
     //---------------------------------------------------------
 
     public void init() {
-        ConstraintUtilities.ensureNotNull(maximaConfiguration, "maximaConfiguration");
-        ConstraintUtilities.ensureNotNull(stylesheetCache, "stylesheetCache");
+        Assert.ensureNotNull(maximaConfiguration, "maximaConfiguration");
+        Assert.ensureNotNull(stylesheetCache, "stylesheetCache");
         maximaProcessLauncher = new MaximaProcessLauncher(maximaConfiguration);
     }
 
