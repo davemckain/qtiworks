@@ -43,7 +43,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
  */
 public final class PointValueWrapper extends SingleValueWrapper<Integer[]> {
     
-    public static final Integer[] ZERO_VALUE = new Integer[] { Integer.valueOf(0), Integer.valueOf(0) };
+    private static final Integer[] ZERO_VALUE = new Integer[] { Integer.valueOf(0), Integer.valueOf(0) };
     
     public PointValueWrapper() {
         super(ZERO_VALUE);

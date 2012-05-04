@@ -43,7 +43,7 @@ import uk.ac.ed.ph.snuggletex.upconversion.UpConversionOptions;
  */
 public final class UpConversionConstants {
     
-    public static UpConversionOptions UP_CONVERSION_OPTIONS;
+    public static final UpConversionOptions UP_CONVERSION_OPTIONS;
     
     static {
         UP_CONVERSION_OPTIONS = new UpConversionOptions();

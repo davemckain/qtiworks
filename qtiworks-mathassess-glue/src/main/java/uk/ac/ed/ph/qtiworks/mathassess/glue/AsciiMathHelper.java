@@ -74,7 +74,7 @@ public final class AsciiMathHelper {
     private final AsciiMathParserOptions asciiMathParserOptions;
     
     /** Location of our slightly modified version of ASCIIMathParser.js */
-    private final String ASCIIMATH_PARSER_JS_LOCATION = "uk/ac/ed/ph/qtiworks/mathassess/glue/AsciiMathParser.js";
+    private static final String ASCIIMATH_PARSER_JS_LOCATION = "uk/ac/ed/ph/qtiworks/mathassess/glue/AsciiMathParser.js";
     
     public AsciiMathHelper() {
         this(new SimpleStylesheetCache());
