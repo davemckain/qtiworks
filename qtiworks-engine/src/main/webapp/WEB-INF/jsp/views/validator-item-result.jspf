@@ -8,6 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%--
 
 This fragment formats an ItemValidationResult
@@ -55,7 +56,7 @@ isTest: set to true if item is part of a test
     <c:if test="${isTest}">
       <%@ include file="validator-xml-find-result.jspf" %>
     </c:if>
-    <%@ include file="validator-xml-parse-result.jspf" %>
+    <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
     <%@ include file="validator-xml-schema-result.jspf" %>
     <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentObject.resolvedResponseProcessingTemplateLookup}"/>
     <c:if test="${resolvedResponseProcessingTemplateLookup!=null}">
@@ -67,7 +68,7 @@ isTest: set to true if item is part of a test
             <div class="details">
               <%-- (These are in context of RP) --%>
               <%@ include file="validator-xml-find-result.jspf" %>
-              <%@ include file="validator-xml-parse-result.jspf" %>
+              <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
               <%@ include file="validator-xml-schema-result.jspf" %>
             </div>
           </div>
@@ -82,7 +83,7 @@ isTest: set to true if item is part of a test
               </p>
               <%-- (These are in context of RP) --%>
               <%@ include file="validator-xml-find-result.jspf" %>
-              <%@ include file="validator-xml-parse-result.jspf" %>
+              <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
               <%@ include file="validator-xml-schema-result.jspf" %>
             </div>
           </div>

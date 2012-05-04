@@ -8,6 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%--
 
 This fragment formats a TestValidationResult
@@ -28,7 +29,7 @@ testValidationResult: testValidationResult
       all of our validation checks. Further details are provided below:
     </p>
     <c:set var="rootObjectLookup" value="${resolvedAssessmentTest.rootObjectLookup}"/>
-    <%@ include file="validator-xml-parse-result.jspf" %>
+    <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
     <%@ include file="validator-xml-schema-result.jspf" %>
     <%@ include file="validator-model-build-result.jspf" %>
     <%@ include file="validator-validation-result.jspf" %>

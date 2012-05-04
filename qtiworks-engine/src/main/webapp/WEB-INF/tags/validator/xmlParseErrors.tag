@@ -15,8 +15,6 @@ All Rights Reserved
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="xmlParseResult" required="true" type="uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult" %>
 
-${utils:dumpObject(xmlParseResult)}
-
 <h4>Error summary</h4>
 <table>
   <thead>
