@@ -32,6 +32,9 @@ All Rights Reserved
     <log4j.version>1.2.16</log4j.version>
     <saxon9.version>9.1.0.8</saxon9.version>
     <xerces.version>2.9.1</xerces.version>
+    <servlet-api.version>2.5</servlet-api.version>
+    <jsp-api.version>2.1</jsp-api.version>
+    <jstl.version>1.2</jstl.version>
     <spring.version>3.1.1.RELEASE</spring.version>
     <hibernate.version>4.1.2</hibernate.version>
     <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
