@@ -31,17 +31,6 @@ All Rights Reserved
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
     <script type="text/javascript" src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}"></script>
     <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css"/>
-    <%-- Import additional CSS and JavaScript if requested --%>
-    <c:if test="${!empty css}">
-      <c:forEach var="cssUrl" items="${fn:split(css, ' ')}">
-      <link rel="stylesheet" type="text/css" href="${utils:internalLink(pageContext, '${cssUrl}')}">
-      </c:forEach>
-    </c:if>
-    <c:if test="${!empty javascript}">
-      <c:forEach var="jsUrl" items="${fn:split(javascript, ' ')}">
-      <script type="text/javascript" src="${utils:internalLink(pageContext, '${jsUrl}')}"></script>
-      </c:forEach>
-    </c:if>
   </head>
   <body>
     <div id="container">
