@@ -71,7 +71,7 @@ css: Optional space-separated list of extra CSS stylesheet URLs
       </div>
       <div id="sectionHeader">
         <div id="sectionHeaderTitle">
-          <a href="${utils:encodePageLink(pageContext, 'HOME')}">QTIWorks ${qtiWorksVersion}</a>
+          <a href="<c:url value='/'/>">QTIWorks ${qtiWorksVersion}</a>
         </div>
       </div>
       <div id="contentArea">

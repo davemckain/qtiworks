@@ -19,68 +19,6 @@ All Rights Reserved.
   <short-name>utils</short-name>
   <uri>http://www.ph.ed.ac.uk/utils</uri>
 
-  <tag>
-    <name>url</name>
-    <tag-class>uk.ac.ed.ph.qtiworks.web.view.UrlTag</tag-class>
-    <body-content>scriptless</body-content>
-    <attribute>
-      <name>var</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>pageName</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>pathInfo</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>fragment</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  <tag>
-    <name>redirectUrl</name>
-    <tag-class>uk.ac.ed.ph.qtiworks.web.view.RedirectUrlTag</tag-class>
-    <body-content>scriptless</body-content>
-    <attribute>
-      <name>var</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>pageName</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>pathInfo</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>fragment</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  <tag>
-    <name>param</name>
-    <tag-class>uk.ac.ed.ph.qtiworks.web.view.ParamTag</tag-class>
-    <body-content>empty</body-content>
-    <attribute>
-      <name>name</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>true</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.String</type>
-    </attribute>
-  </tag>
-
   <function>
     <description>Converts internal CP URI scheme to path</description>
     <name>extractContentPackagePath</name>
@@ -95,15 +33,6 @@ All Rights Reserved.
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String dumpObject(
       java.lang.Object
-    )</function-signature>
-  </function>
-  <function>
-    <description>Encodes a link to another CST page</description>
-    <name>encodePageLink</name>
-    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
-    <function-signature>String encodePageLink(
-      javax.servlet.jsp.PageContext,
-      java.lang.String
     )</function-signature>
   </function>
 

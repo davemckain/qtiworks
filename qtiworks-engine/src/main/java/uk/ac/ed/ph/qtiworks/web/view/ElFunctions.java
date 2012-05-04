@@ -39,8 +39,7 @@ import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Some convenience EL functions for the view/JSP layer.
@@ -56,17 +55,8 @@ public final class ElFunctions {
         return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToPath(uriString);
     }
 
-    public static String encodePageLink(final PageContext pageContext, final String pageName) {
-        return escapeLink(ViewUtilities.createPageLink(getRequest(pageContext),
-                ViewUtilities.decodePathName(pageName), null, null));
-    }
-
-    static String escapeLink(final String link) {
-        return link.replace("&", "&amp;");
-    }
-
     public static String dumpObject(final Object object) {
-        return ObjectDumper.dumpObject(object, DumpMode.DEEP);
+        return StringEscapeUtils.escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
     }
 
     public static String formatTime(final Date time) {
@@ -83,9 +73,5 @@ public final class ElFunctions {
 
     public static String formatDayDateAndTime(final Date time) {
         return ViewUtilities.getDayDateAndTimeFormat().format(time);
-    }
-
-    private static HttpServletRequest getRequest(final PageContext pageContext) {
-        return (HttpServletRequest) pageContext.getRequest();
     }
 }
