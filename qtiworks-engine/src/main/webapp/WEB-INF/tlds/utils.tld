@@ -80,26 +80,13 @@ All Rights Reserved.
       <type>java.lang.String</type>
     </attribute>
   </tag>
-  <tag>
-    <name>exposeStaticFields</name>
-    <tag-class>uk.ac.ed.ph.qtiworks.web.view.ExposeStaticFieldsTag</tag-class>
-    <body-content>empty</body-content>
-    <attribute>
-      <name>className</name>
-      <required>true</required>
-    </attribute>
-    <attribute>
-      <name>targetName</name>
-      <required>true</required>
-    </attribute>
-  </tag>
 
   <function>
     <description>Converts internal CP URI scheme to path</description>
     <name>extractContentPackagePath</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String extractContentPackagePath(
-      java.net.URI
+      java.lang.String
     )</function-signature>
   </function>
   <function>

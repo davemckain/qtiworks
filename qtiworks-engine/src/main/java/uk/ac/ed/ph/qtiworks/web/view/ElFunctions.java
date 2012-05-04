@@ -36,9 +36,7 @@ package uk.ac.ed.ph.qtiworks.web.view;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 
-import java.net.URI;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,9 +49,11 @@ import javax.servlet.jsp.PageContext;
  */
 public final class ElFunctions {
 
-    public static String extractContentPackagePath(final URI uri) {
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        return packageUriScheme.uriToPath(uri);
+    /* NB: We prefer String over URI here as it's more general, and takes advantage of
+     * stringification within the JSTL.
+     */
+    public static String extractContentPackagePath(final String uriString) {
+        return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToPath(uriString);
     }
 
     public static String encodePageLink(final PageContext pageContext, final String pageName) {

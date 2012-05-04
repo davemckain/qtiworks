@@ -34,52 +34,63 @@
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Trivial helper to deal with our custom hierarchic URI schemes of the form
- * 
+ *
  * <code>scheme:/path/to/something.xml</code>
- * 
+ *
  * which represents a resource at location
- * 
+ *
  * <code>path/to/something.xml</code>
- * 
+ *
  * in a filesystem subtree, sandbox or something similar.
  *
  * @author David McKain
  */
 public final class CustomUriScheme {
-    
+
     private final String schemeName;
-    
-    public CustomUriScheme(String schemeName) {
+
+    public CustomUriScheme(final String schemeName) {
         this.schemeName = schemeName;
     }
-    
-    public URI pathToUri(String path) {
+
+    public URI pathToUri(final String path) {
         return URI.create(schemeName + ":/" + path);
     }
-    
-    public boolean isInScheme(URI uri) {
-        String path = uri.getPath();
+
+    public boolean isInScheme(final URI uri) {
+        final String path = uri.getPath();
         return schemeName.equals(uri.getScheme())
                 && uri.getAuthority()==null
                 && path!=null
                 && path.length()>0
                 && path.charAt(0)=='/';
     }
-    
-    public String uriToPath(URI uri) {
+
+    public String uriToPath(final String uriString) {
+        try {
+            return uriToPath(new URI(uriString));
+        }
+        catch (final URISyntaxException e) {
+            /* Bad URI, so leave as-is */
+            return uriString;
+        }
+    }
+
+    public String uriToPath(final URI uri) {
         if (isInScheme(uri)) {
             return uri.getPath().substring(1);
         }
         return uri.toString();
     }
-    
+
     public String getSchemeName() {
         return schemeName;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

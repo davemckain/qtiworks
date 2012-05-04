@@ -8,7 +8,6 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
-<utils:exposeStaticFields className="uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException$InterpretationFailureReason" targetName="InterpretationFailureReason" />
 <%--
 
 This fragment formats the result of JQTI model building
@@ -34,10 +33,10 @@ rootObjectLookup
   <c:when test="${qtiXmlInterpretationException!=null}">
     <c:set var="failureReason" value="${qtiXmlInterpretationException.interpretationFailureReason}"/>
     <c:choose>
-      <c:when test="${failureReason==InterpretationFailureReason.XML_PARSE_FAILED || failureReason==InterpretationFailureReason.XML_SCHEMA_VALIDATION_FAILED}">
+      <c:when test="${failureReason=='XML_PARSE_FAILED' || failureReason=='XML_SCHEMA_VALIDATION_FAILED'}">
         <%-- Did not get as far as model building, so say nothing --%>
       </c:when>
-      <c:when test="${failureReason==InterpretationFailureReason.UNSUPPORTED_ROOT_NODE}">
+      <c:when test="${failureReason=='UNSUPPORTED_ROOT_NODE'}">
         <div class="resultPanel failure">
           <h3>Wrong XML</h3>
           <div class="details">
@@ -48,7 +47,7 @@ rootObjectLookup
           </div>
         </div>
       </c:when>
-      <c:when test="${failureReason==InterpretationFailureReason.WRONG_RESULT_TYPE}">
+      <c:when test="${failureReason=='WRONG_RESULT_TYPE'}">
         <div class="resultPanel failure">
           <h3>Wrong QTI Content</h3>
           <div class="details">
@@ -59,7 +58,7 @@ rootObjectLookup
           </div>
         </div>
       </c:when>
-      <c:when test="${failureReason==InterpretationFailureReason.JQTI_MODEL_BUILD_FAILED}">
+      <c:when test="${failureReason=='JQTI_MODEL_BUILD_FAILED'}">
         <c:set var="modelErrors" value="${qtiXmlInterpretationException.qtiModelBuildingErrors}"/>
         <div class="resultPanel failure">
           <h3>JQTI model building failure</h3>

@@ -33,13 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -53,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author David McKain
  */
+@ToRefactor
 public final class WebUtilities {
 
     /**
@@ -170,29 +167,5 @@ public final class WebUtilities {
             final int responseCode, final String message) throws IOException {
         request.setAttribute(ERROR_MESSAGE_ATTRIBUTE_NAME, message);
         response.sendError(responseCode, message);
-    }
-
-    public static Map<String,Object> exposeStaticFields(final Class<?> globalClass) {
-        final Map<String, Object> targetMap = new HashMap<String, Object>() {
-            private static final long serialVersionUID = -5029839848191296643L;
-
-            @Override
-            public Object get(final Object key) {
-                final Object result = super.get(key);
-                if (result==null) {
-                    throw new QtiWorksLogicException("No exposed field '" + key + "' found");
-                }
-                return result;
-            }
-        };
-        try {
-            for (final Field field : globalClass.getFields()) {
-                targetMap.put(field.getName(), field.get(globalClass));
-            }
-        }
-        catch (final Exception e) {
-            throw new QtiWorksLogicException("Could not expose all static fields in class " + globalClass, e);
-        }
-        return Collections.unmodifiableMap(targetMap);
     }
 }
