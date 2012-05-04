@@ -8,6 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%--
 
 This fragment formats the result of XML parsing
@@ -42,7 +43,7 @@ rootObjectLookup
             <c:choose>
               <c:when test="${empty xmlParseResult.unresolvedEntitySystemIds}">
                 <p>The QTI XML was not successfully parsed. Error details are listed below:</p>
-                <%@ include file="validator-xml-errors-table.jspf" %>
+                <validator:xmlParseErrors xmlParseResult="${xmlParseResult}"/>
               </c:when>
               <c:otherwise>
                 <p>

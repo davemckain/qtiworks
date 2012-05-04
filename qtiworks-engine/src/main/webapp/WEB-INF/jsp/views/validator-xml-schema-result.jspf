@@ -8,6 +8,7 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%--
 
 This fragment formats the result of XML schema validation
@@ -74,7 +75,7 @@ rootObjectLookup
             <p>
               Errors are listed below:
             </p>
-            <%@ include file="validator-xml-errors-table.jspf" %>
+            <validator:xmlParseErrors xmlParseResult="${xmlParseResult}"/>
           </c:otherwise>
         </c:choose>
       </div>
