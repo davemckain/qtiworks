@@ -5,8 +5,6 @@ Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <h2>1.0-DEV6 (02/05/2012)</h2>
 
 <p>

@@ -10,7 +10,7 @@ All Rights Reserved
 
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
-<form action="<c:url value='/instructorFormAuthenticator' />" method="post">
+<form action="${utils:internalLink(pageContext, '/instructorFormAuthenticator')}>" method="post">
   <h2>Instructor Login</h2>
 
   <c:if test="${!empty errors}">

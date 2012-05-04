@@ -33,11 +33,18 @@
  */
 package uk.ac.ed.ph.qtiworks.web.view;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -58,6 +65,27 @@ public final class ElFunctions {
     public static String dumpObject(final Object object) {
         return StringEscapeUtils.escapeXml(ObjectDumper.dumpObject(object, DumpMode.DEEP));
     }
+
+    //-------------------------------------------------
+
+    public static String internalLink(final PageContext pageContext, final String withinContextUrl) {
+        return escapeLink(ViewUtilities.createInternalLink(getRequest(pageContext), withinContextUrl));
+    }
+
+    private static HttpServletRequest getRequest(final PageContext pageContext) {
+        return (HttpServletRequest) pageContext.getRequest();
+    }
+
+    private static String escapeLink(final String link) {
+        try {
+            return new URI(link).toASCIIString();
+        }
+        catch (final URISyntaxException e) {
+            throw new QtiWorksRuntimeException("Bad URI link " + link);
+        }
+    }
+
+    //-------------------------------------------------
 
     public static String formatTime(final Date time) {
         return ViewUtilities.getTimeFormat().format(time);

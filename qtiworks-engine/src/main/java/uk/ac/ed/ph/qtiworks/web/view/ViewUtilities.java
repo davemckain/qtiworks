@@ -33,8 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.web.view;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Some potentially useful view-related utility methods.
@@ -42,6 +48,54 @@ import java.text.SimpleDateFormat;
  * @author David McKain
  */
 public final class ViewUtilities {
+
+    public static String createInternalLink(final HttpServletRequest request, final String withinContextPath) {
+        return buildPageLink(request.getContextPath(), withinContextPath, null, null);
+    }
+
+    public static String createInternalLink(final HttpServletRequest request, final String withinContextPath,
+            final String pathInfo, final String fragment, final Object... nameValueParams) {
+        return buildPageLink(request.getContextPath(), withinContextPath, pathInfo, fragment, nameValueParams);
+    }
+
+    private static String buildPageLink(final String base, final String withinContextPath,
+            final String pathInfo, final String fragment, final Object... nameValueParams) {
+        /* Build URL from context path up to page URL */
+        final StringBuilder resultBuilder = new StringBuilder(base).append(withinContextPath);
+        try {
+            /* Append pathInfo, if required. We'll URL-encode this too as it is often
+             * something like a client's file name or something potentially awful.
+             */
+            if (pathInfo!=null) {
+                resultBuilder.append('/').append(URLEncoder.encode(pathInfo, "UTF-8"));
+            }
+
+            /* Append query parameters */
+            Object name, value;
+            for (int i=0; i<nameValueParams.length; ) {
+                name = nameValueParams[i++];
+                value = nameValueParams[i++];
+                resultBuilder.append(i==2 ? '?' : '&')
+                    .append(name) /* (Assume name is already safe) */
+                    .append('=')
+                    .append(URLEncoder.encode(value.toString(), "UTF-8")); /* (Need to escape value) */
+            }
+
+            /* Append fragment, if requested. We're not encoding this as the fragment should
+             * include the '#' */
+            if (fragment!=null) {
+                resultBuilder.append(fragment);
+            }
+        }
+        catch (final UnsupportedEncodingException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+
+        /* That's it */
+        return resultBuilder.toString();
+    }
+
+    //-------------------------------------------------
 
     public static final DateFormat getTimeFormat() {
         return new SimpleDateFormat("HH:mm");
