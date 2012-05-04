@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.Serializable;
@@ -60,9 +60,9 @@ public class AssessmentUploadAndValidationResultV1 implements Serializable {
     private static final long serialVersionUID = -8906026282623891941L;
 
     private final AssessmentPackage assessmentPackage;
-    private final AbstractValidationResult validationResult;
+    private final AssessmentObjectValidationResult<?> validationResult;
 
-    public AssessmentUploadAndValidationResultV1(final AssessmentPackage assessmentPackage, final AbstractValidationResult validationResult) {
+    public AssessmentUploadAndValidationResultV1(final AssessmentPackage assessmentPackage, final AssessmentObjectValidationResult<?> validationResult) {
         this.assessmentPackage = assessmentPackage;
         this.validationResult = validationResult;
     }
@@ -73,7 +73,7 @@ public class AssessmentUploadAndValidationResultV1 implements Serializable {
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public AbstractValidationResult getValidationResult() {
+    public AssessmentObjectValidationResult<?> getValidationResult() {
         return validationResult;
     }
 

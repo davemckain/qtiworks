@@ -130,11 +130,11 @@ public class AnonymousUploadAndValidationControllerV1 {
             return "validator-uploadForm";
         }
 
-        AssessmentUploadAndValidationResultV1 assessmentUpload = null;
+        AssessmentUploadAndValidationResultV1 result = null;
         final InputStream uploadStream = uploadFile.getInputStream();
         try {
-            assessmentUpload = uploadService.importAndValidate(uploadStream, uploadFile.getContentType());
-            model.addAttribute("assessmentUpload", assessmentUpload);
+            result = uploadService.importAndValidate(uploadStream, uploadFile.getContentType());
+            model.addAttribute("result", result);
             return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -144,8 +144,8 @@ public class AnonymousUploadAndValidationControllerV1 {
         }
         finally {
             Closeables.closeQuietly(uploadStream);
-            if (assessmentUpload!=null) {
-                uploadService.deleteUpload(assessmentUpload);
+            if (result!=null) {
+                uploadService.deleteUpload(result);
             }
         }
 

@@ -15,18 +15,18 @@ Validator submission form
 
 Model attributes:
 
-assessmentUploadAndValidationResultV1
+result (AssessmentUploadAndValidationResultV1)
 
 --%>
-<c:set var="assessmentPackage" value="${assessmentUploadAndValidationResultV1.assessmentPackage}"/>
-<c:set var="assessmentType" value="${assessmentPackage.assessmentType}"/>
-<c:set var="validationResult" value="${assessmentUploadAndValidationResultV1.validationResult}"/>
+<c:set var="assessmentPackage" value="${result.assessmentPackage}"/>
+<c:set var="validationResult" value="${result.validationResult}"/>
+<c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
 
 <%-- Generate header --%>
 <c:set var="title" value="QTI Validator" />
 <%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 
-<p>You uploaded a ${assessmentType}, uploaded as ${assessmentPackage.importType}.</p>
+<p>You uploaded an ${assessmentType}, uploaded as ${assessmentPackage.importType}.</p>
 
 <div class="validationResult">
   <c:choose>
