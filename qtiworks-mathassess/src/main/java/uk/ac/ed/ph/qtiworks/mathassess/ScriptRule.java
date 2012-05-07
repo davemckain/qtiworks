@@ -114,7 +114,7 @@ public final class ScriptRule extends MathAssessOperator {
         final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         final boolean simplify = getSimplify();
 
-        logger.info("Performing scriptRule: code={}, simplify={}", code, simplify);
+        logger.debug("Performing scriptRule: code={}, simplify={}", code, simplify);
 
         /* Pass variables to Maxima */
         logger.debug("Passing variables to maxima");
