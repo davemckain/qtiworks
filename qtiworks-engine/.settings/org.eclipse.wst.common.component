@@ -10,6 +10,9 @@
         <dependent-module archiveName="qtiworks-mathassess-glue-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/qtiworks-mathassess-glue/qtiworks-mathassess-glue">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jacomax-0.2.3.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jacomax/jacomax">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="qtiworks-samples-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/qtiworks-samples/qtiworks-samples">
             <dependency-type>uses</dependency-type>
         </dependent-module>
