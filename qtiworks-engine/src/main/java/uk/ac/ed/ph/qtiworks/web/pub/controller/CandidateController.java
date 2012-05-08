@@ -129,7 +129,7 @@ public class CandidateController {
     @RequestMapping(value="/listSamples", method=RequestMethod.GET)
     public String listSamples(final Model model) {
         model.addAttribute("demoSampleCollection", demoSampleCollection);
-        return "listSamples";
+        return "public/listSamples";
     }
 
     /**

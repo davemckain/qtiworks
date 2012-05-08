@@ -104,7 +104,7 @@ public class AnonymousUploadAndValidationControllerV1 {
         command.setReportType("HTML");
 
         model.addAttribute("validateCommand", command);
-        return "validator-uploadForm";
+        return "public/validator/uploadForm";
     }
 
     /**
@@ -120,14 +120,14 @@ public class AnonymousUploadAndValidationControllerV1 {
             throws IOException {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
-            return "validator-uploadForm";
+            return "public/validator/uploadForm";
         }
 
         /* Make sure something was submitted */
         final MultipartFile uploadFile = command.getUploadFile();
         if (uploadFile==null || uploadFile.isEmpty()) {
             errors.reject("validator.noFile");
-            return "validator-uploadForm";
+            return "public/validator/uploadForm";
         }
 
         AssessmentUploadAndValidationResultV1 result = null;
@@ -135,12 +135,12 @@ public class AnonymousUploadAndValidationControllerV1 {
         try {
             result = uploadService.importAndValidate(uploadStream, uploadFile.getContentType());
             model.addAttribute("result", result);
-            return "HTML".equals(command.getReportType()) ? "validator-results-html" : "validator-results-java";
+            return "HTML".equals(command.getReportType()) ? "public/validator/htmlResult" : "public/validator/javaResult";
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "validator.assessmentPackageImportException");
-            return "validator-uploadForm";
+            return "public/validator/uploadForm";
         }
         finally {
             Closeables.closeQuietly(uploadStream);

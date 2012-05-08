@@ -77,11 +77,11 @@ public final class InstructorAssessmentManagementController {
 
     //------------------------------------------------------
 
-    @RequestMapping(value="/myAssessments", method=RequestMethod.GET)
+    @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
         final List<Assessment> assessments = assessmentManagementServices.getCallerAssessments();
         model.addAttribute(assessments);
-        return "myAssessments";
+        return "assessmentList";
     }
 
     @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)

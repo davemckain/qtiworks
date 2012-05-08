@@ -5,23 +5,20 @@ All Rights Reserved
 
 Validation results
 
-Model:
+Model attributes:
 
-* validationResult (AssessmentObjectValidationResult)
-* assessmentId (Long)
+result (AssessmentUploadAndValidationResultV1)
 
 --%>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Validation result">
+<page:page title="QTI Validator Result">
 
+  <c:set var="assessmentPackage" value="${result.assessmentPackage}"/>
+  <c:set var="validationResult" value="${result.validationResult}"/>
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
 
-  <h3>Actions</h3>
-  <ul>
-    <li><a href="<c:url value='/web/instructor/assessment/${assessmentId}'/>">Back to assessment</a></li>
-  </ul>
-
-  <h3>Results</h3>
+  <p>You uploaded an ${assessmentType}, uploaded as ${assessmentPackage.importType}.</p>
 
   <div class="validationResult">
     <c:choose>
