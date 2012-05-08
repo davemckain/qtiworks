@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <!--
 
-$Id: pom.xml 714 2011-03-31 16:41:29Z davemckain $
-
 Copyright (c) 2011, The University of Edinburgh
 All Rights Reserved
 
@@ -25,7 +23,7 @@ All Rights Reserved
   </modules>
   <properties>
     <asciimath-parser.version>1.0</asciimath-parser.version>
-    <snuggletex.version>1.3-EXP-SNAPSHOT</snuggletex.version>
+    <snuggletex.version>1.3-SNAPSHOT</snuggletex.version>
     <jacomax.version>0.2.3</jacomax.version>
     <commons-pool.version>1.5.4</commons-pool.version>
     <slf4j.version>1.6.4</slf4j.version>
@@ -64,7 +62,7 @@ All Rights Reserved
       </releases>
     </repository>
   </repositories>
-  <url>http://snuggletex.sourceforge.net</url>
+  <url>https://sourceforge.net/projects/qtiworks</url>
   <description>
     This is significant refactoring of JQTI and MathAssessEngine.
   </description>
@@ -85,7 +83,7 @@ All Rights Reserved
       <id>davemckain</id>
       <name>David McKain</name>
       <email>david.mckain&#xa0;[at]&#xa0;ed.ac.uk</email>
-      <url>http://www2.ph.ed.ac.uk/~dmckain/</url>
+      <url>http://www.ph.ed.ac.uk/people/david-mckain</url>
       <organization>School of Physics and Astronomy, University of Edinburgh</organization>
       <organizationUrl>http://www.ph.ed.ac.uk</organizationUrl>
       <roles>
@@ -96,14 +94,16 @@ All Rights Reserved
     </developer>
   </developers>
   <scm>
-    <connection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</connection>
-    <developerConnection>scm:svn:https://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</developerConnection>
-    <url>http://snuggletex.svn.sourceforge.net/svnroot/snuggletex/trunk</url>
+    <connection>scm:git:git@github.com:davemckain/qtiworks.git</connection>
+    <developerConnection>scm:git:git@github.com:davemckain/qtiworks.git</developerConnection>
+    <url>https://github.com/davemckain/qtiworks</url>
   </scm>
+  <!--
   <issueManagement>
     <system>sourceforge</system>
     <url>http://sourceforge.net/tracker/?group_id=221375</url>
   </issueManagement>
+  -->
   <distributionManagement>
     <!-- (This is not intended for general use!) -->
     <repository>
@@ -119,10 +119,10 @@ All Rights Reserved
       Reminder! Need to create a shell on sourceforge first before trying to do
       a site deployment.
 
-      ssh -t davemckain,snuggletex@shell.sourceforge.net create
+      ssh -t davemckain,qtiworks@shell.sourceforge.net create
       -->
       <id>sourceforge.net</id>
-      <url>scp://shell.sourceforge.net/home/groups/s/sn/snuggletex/htdocs/maven</url>
+      <url>scp://shell.sourceforge.net/home/project-web/qtiworks/htdocs/maven</url>
     </site>
   </distributionManagement>
   <build>
