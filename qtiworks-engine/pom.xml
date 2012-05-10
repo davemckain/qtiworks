@@ -209,18 +209,32 @@ All Rights Reserved
         <directory>.</directory>
         <filtering>false</filtering>
         <includes>
-          <include>${project.parent.basedir}/qtiworks.properties</include>
+          <include>qtiworks.properties</include>
         </includes>
       </resource>
     </resources>
     <plugins>
       <plugin>
-        <!-- (Do qtiworks.properties check at parent only) -->
+        <!-- Make sure user has created qtiworks.properties -->
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <execution>
-            <id>enforce-qtiworks-properties</id>
-            <phase>none</phase>
+            <id>enforce-files-exist</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireFilesExist>
+                  <message>Please first create qtiworks.properties using default.qtiworks.properties as a template!</message>
+                  <files>
+                   <file>${basedir}/qtiworks.properties</file>
+                  </files>
+                </requireFilesExist>
+              </rules>
+              <fail>true</fail>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -229,7 +243,7 @@ All Rights Reserved
         <configuration>
           <!-- Filtering configuration for src/main/resources (as defined above) -->
           <filters>
-            <filter>${project.parent.basedir}/qtiworks.properties</filter>
+            <filter>${basedir}/qtiworks.properties</filter>
           </filters>
           <nonFilteredFileExtensions>
             <nonFileteredFileExtension>png</nonFileteredFileExtension>
@@ -245,7 +259,7 @@ All Rights Reserved
           <warName>qtiworks</warName>
           <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
           <filters>
-            <filter>${project.parent.basedir}/qtiworks.properties</filter>
+            <filter>${basedir}/qtiworks.properties</filter>
           </filters>
         </configuration>
       </plugin>
