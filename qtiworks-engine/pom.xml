@@ -227,7 +227,14 @@ All Rights Reserved
             <configuration>
               <rules>
                 <requireFilesExist>
-                  <message>Please first create qtiworks.properties using default.qtiworks.properties as a template!</message>
+                  <message>
+======================================================================
+Please first create qtiworks.properties in order to configure your
+build for the QTIWorks Engine webapp.
+
+You should use default.qtiworks.properties as a template
+======================================================================
+                  </message>
                   <files>
                    <file>${basedir}/qtiworks.properties</file>
                   </files>
