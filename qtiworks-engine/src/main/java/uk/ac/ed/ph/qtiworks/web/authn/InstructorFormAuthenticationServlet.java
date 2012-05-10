@@ -161,7 +161,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
             return null;
         }
         /* Make sure account is not disabled */
-        if (user.isDisabled()) {
+        if (user.isLoginDisabled()) {
             errors.add("Sorry, your account is currently disabled");
             return null;
         }

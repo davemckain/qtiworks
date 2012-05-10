@@ -82,7 +82,7 @@ public final class InstructorFakeAuthenticationFilter extends AbstractInstructor
         if (user==null) {
             throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);
         }
-        else if (user.isDisabled()) {
+        else if (user.isLoginDisabled()) {
             throw new QtiWorksLogicException("Fake InstructorUser " + fakeLoginName + " has their account marked as disabled");
         }
         return user;

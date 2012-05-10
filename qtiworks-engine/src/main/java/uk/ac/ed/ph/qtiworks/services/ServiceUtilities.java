@@ -33,8 +33,23 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+
+import java.io.File;
+import java.net.URI;
 import java.nio.charset.Charset;
 
 import com.google.common.hash.Hashing;
@@ -45,6 +60,65 @@ import com.google.common.hash.Hashing;
  * @author David McKain
  */
 public final class ServiceUtilities {
+
+    /**
+     * Creates a {@link ResourceLocator} for reading in the resources associated with the given
+     * {@link AssessmentPackage}.
+     * <p>
+     * For an {@link AssessmentPackage} uploaded by a user, the resulting {@link ResourceLocator} will
+     * be restricted to the package's sandbox, plus bundled parser resources and external HTTP locations.
+     * <p>
+     * For the bundled samples, this will look within the ClassPath at the approptiate locations only.
+     */
+    public static ResourceLocator createAssessmentResourceLocator(final AssessmentPackage assessmentPackage) {
+        final ResourceLocator result;
+        if (assessmentPackage.getImportType()==AssessmentPackageImportType.BUNDLED_SAMPLE) {
+            /* This is a bundled sample, which lives in the ClassPath */
+            result = new ChainedResourceLocator(
+                    new ClassPathResourceLocator(), /* (to resolve things in the sample set) */
+                    QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR /* (to resolve internal HTTP resources, e.g. RP templates) */
+                    /* (No resolution of external resources, since the samples are all self-contained) */
+            );
+        }
+        else {
+            /* Uploaded by user, so resource lives in a sandbox within the filesystem */
+            final File sandboxDirectory = new File(assessmentPackage.getSandboxPath());
+            final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+            result = new ChainedResourceLocator(
+                    new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */
+                    QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
+                    new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
+            );
+        }
+        return result;
+    }
+
+    /**
+     * Generates a URI for the {@link AssessmentObject} within the given {@link AssessmentPackage}.
+     * <p>
+     * For an {@link AssessmentPackage} uploaded by a user, this will be a "package" URI that can
+     * access the package's sandbox directory.
+     * <p>
+     * For the bundled samples, this will be a ClassPath URI
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    public static URI createAssessmentObjectUri(final AssessmentPackage assessmentPackage) {
+        URI result;
+        if (assessmentPackage.getImportType()==AssessmentPackageImportType.BUNDLED_SAMPLE) {
+            result = QtiSampleAssessment.toClassPathUri(assessmentPackage.getAssessmentHref());
+        }
+        else {
+            final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
+            result = packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref().toString());
+        }
+        return result;
+
+    }
+
+    //-------------------------------------------------
+
 
     public static final String ellipses = "...";
 

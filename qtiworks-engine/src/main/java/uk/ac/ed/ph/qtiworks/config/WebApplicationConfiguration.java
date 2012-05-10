@@ -33,25 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
-
-import javax.annotation.Resource;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -61,49 +46,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services"})
-@EnableTransactionManagement
 public class WebApplicationConfiguration {
 
     public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
-
-    @Resource
-    private WebApplicationContext webApplicationContext;
-
-    @Bean
-    public String contextPath() {
-        return webApplicationContext.getServletContext().getContextPath();
-    }
-
-    @Bean
-    public SchemaCache schemaCache() {
-        return new SimpleSchemaCache();
-    }
-
-    @Bean
-    public XsltStylesheetCache stylesheetCache() {
-        return new SimpleXsltStylesheetCache();
-    }
-
-    @Bean
-    public MathAssessExtensionPackage mathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(stylesheetCache());
-    }
-
-    @Bean(initMethod="init", destroyMethod="destroy")
-    public JqtiExtensionManager jqtiExtensionManager() {
-        return new JqtiExtensionManager(mathAssessExtensionPackage());
-    }
-
-    @Bean
-    public QtiXmlReader qtiXmlReader() {
-        return new QtiXmlReader(jqtiExtensionManager(), schemaCache());
-    }
-
-    @Bean
-    public AssessmentRenderer renderer() {
-        return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), stylesheetCache());
-    }
 
     @Bean
     MessageSource messageSource() {

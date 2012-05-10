@@ -31,24 +31,29 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.tools;
+
+import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
+import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Encapsulates how an {@link AssessmentPackage} was imported.
+ * Imports all of the QTI sample resources
  *
  * @author David McKain
  */
-public enum AssessmentPackageImportType {
+public final class QtiSampleImport {
 
-    /** Uploaded as an IMS Content Package */
-    CONTENT_PACKAGE,
+    public static void main(final String[] args) {
+        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class);
+        ctx.refresh();
 
-    /** Uploaded as a standalone assessmentItem XML file */
-    STANDALONE_ITEM_XML,
+        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
+        sampleResourceImporter.importQtiSamples();
 
-    /** QTI sample bundled into the Engine */
-    BUNDLED_SAMPLE,
-
-    ;
-
+        ctx.close();
+    }
 }

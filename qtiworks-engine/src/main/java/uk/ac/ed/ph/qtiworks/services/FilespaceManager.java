@@ -42,13 +42,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,17 +85,6 @@ public final class FilespaceManager {
         }
     }
 
-    public void deleteSandbox(final File sandboxDirectory) {
-        Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
-        try {
-            IoUtilities.recursivelyDelete(sandboxDirectory);
-        }
-        catch (final IOException e) {
-            /* We won't fail here, but this is probably a bad sign so let's log it! */
-            logger.warn("Could not delete sandbox directory {}", sandboxDirectory, e);
-        }
-    }
-
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.ensureNotNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
@@ -112,15 +94,15 @@ public final class FilespaceManager {
         return createDirectoryPath(filespaceUri);
     }
 
-    public ResourceLocator createSandboxInputResourceLocator(final File sandboxDirectory) {
+    public void deleteSandbox(final File sandboxDirectory) {
         Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ChainedResourceLocator result = new ChainedResourceLocator(
-                new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */
-                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
-                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
-        );
-        return result;
+        try {
+            IoUtilities.recursivelyDelete(sandboxDirectory);
+        }
+        catch (final IOException e) {
+            /* We won't fail here, but this is probably a bad sign so let's log it! */
+            logger.warn("Could not delete sandbox directory {}", sandboxDirectory, e);
+        }
     }
 
     private File createDirectoryPath(final String uri) {

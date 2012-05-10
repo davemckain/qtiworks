@@ -103,6 +103,7 @@ public class QtiSampleAssessment implements Serializable {
     
     /**
      * Converts the href (relative file path) of a sample resource to a ClassPath URI
+     * that can be used to load the resource.
      */
     public static URI toClassPathUri(final String sampleResourceHref) {
         return URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/" + sampleResourceHref);

@@ -46,10 +46,17 @@ public final class DomainConstants {
     public static final int SHA1_DIGEST_LENGTH = 40;
     public static final int FILE_CONTENT_TYPE_LENGTH = 64;
 
-    public static final int ASSESSMENT_NAME_MAX_LENGTH = 32;
+    public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
     public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
 
     /** FIXME: What limit should we use here? */
     public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
+
+    //----------------------------------------------
+
+    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
+    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
+    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Works";
+    public static final String QTI_SAMPLE_OWNER_EMAIL_ADDRESS = "Works";
 
 }

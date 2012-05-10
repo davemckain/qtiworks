@@ -78,8 +78,8 @@ public class User implements BaseEntity, TimestampedOnCreation {
     private Date creationTime;
 
     @Basic(optional=false)
-    @Column(name="disabled",updatable=true)
-    private boolean disabled;
+    @Column(name="login_disabled",updatable=true)
+    private boolean loginDisabled;
 
     @Basic(optional=false)
     @Column(name="user_type",updatable=false,length=10)
@@ -120,12 +120,12 @@ public class User implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isDisabled() {
-        return disabled;
+    public boolean isLoginDisabled() {
+        return loginDisabled;
     }
 
-    public void setDisabled(final boolean disabled) {
-        this.disabled = disabled;
+    public void setLoginDisabled(final boolean loginDisabled) {
+        this.loginDisabled = loginDisabled;
     }
 
 

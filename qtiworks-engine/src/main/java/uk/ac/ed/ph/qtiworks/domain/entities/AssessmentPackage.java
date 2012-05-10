@@ -115,16 +115,23 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 
-    /** Content Package or standalone? */
+    /** Content Package, standalone or bundled sample? */
     @Basic(optional=false)
     @Column(name="import_type", length=20)
     @Enumerated(EnumType.STRING)
     private AssessmentPackageImportType importType;
 
-    /** Base path where this package's files belong. Treated as a sandbox */
+    /**
+     * Base path where this package's files belong.
+     * <p>
+     * This must be set to null for bundled packages, which are instead located
+     * within the ClassPath.
+     * <p>
+     * When not null, this path defines a private sandbox for the package.
+     */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=false)
+    @Basic(optional=true)
     @Column(name="sandbox_path")
     private String sandboxPath;
 

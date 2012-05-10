@@ -59,14 +59,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
@@ -320,20 +315,17 @@ public class AssessmentManagementServices {
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
     validateAssessment(final AssessmentPackage assessmentPackage) {
-        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
-        final String assessmentObjectHref = assessmentPackage.getAssessmentHref();
-        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
+        final ResourceLocator inputResourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        final URI objectSystemId = packageUriScheme.pathToUri(assessmentObjectHref);
         E result;
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
         if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAndValidateItem(objectSystemId);
+            result = (E) objectManager.resolveAndValidateItem(assessmentObjectSystemId);
         }
         else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAndValidateTest(objectSystemId);
+            result = (E) objectManager.resolveAndValidateTest(assessmentObjectSystemId);
         }
         else {
             throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
@@ -341,24 +333,6 @@ public class AssessmentManagementServices {
         return result;
     }
 
-
-    //-------------------------------------------------
-
-    public ResourceLocator createAssessmentResourceLocator(final AssessmentPackage assessmentPackage) {
-        final File sandboxDirectory = new File(assessmentPackage.getSandboxPath());
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final ChainedResourceLocator result = new ChainedResourceLocator(
-                new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory), /* (to resolve things in this package) */
-                QtiXmlReader.JQTIPLUS_PARSER_RESOURCE_LOCATOR, /* (to resolve internal HTTP resources, e.g. RP templates) */
-                new NetworkHttpResourceLocator() /* (to resolve external HTTP resources, e.g. RP templates, external items) */
-        );
-        return result;
-    }
-
-    public URI createAssessmentObjectUri(final AssessmentPackage assessmentPackage) {
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        return packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref().toString());
-    }
 
     //-------------------------------------------------
 
@@ -404,17 +378,16 @@ public class AssessmentManagementServices {
      * @param assessmentPackage
      * @return guessed title, or an empty String if nothing could be guessed.
      */
-    private String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
-        final File importSandboxDirectory = new File(assessmentPackage.getSandboxPath());
-        final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final URI assessmentSystemId = packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref());
-        final ResourceLocator inputResourceLocator = filespaceManager.createSandboxInputResourceLocator(importSandboxDirectory);
+    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+        Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
+        final URI assessmentSystemId = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
         XmlReadResult xmlReadResult;
         try {
             xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
         }
         catch (final XmlResourceNotFoundException e) {
-            throw new QtiWorksLogicException("Assessment resource not found, which import process should have guarded against", e);
+            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
         }
         /* Let's simply extract the title attribute from the document element, and not worry about
          * anything else at this point.

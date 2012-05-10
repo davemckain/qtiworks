@@ -21,6 +21,7 @@ Web deployment descriptor
     <param-value>
       uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration
       uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration
+      uk.ac.ed.ph.qtiworks.config.ServicesConfiguration
       uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration
     </param-value>
   </context-param>
