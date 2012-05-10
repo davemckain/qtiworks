@@ -183,6 +183,38 @@ All Rights Reserved
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <!-- Make sure user has created qtiworks.properties -->
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-qtiworks-properties</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireFilesExist>
+                  <message>
+======================================================================
+Please first create qtiworks.properties in order to configure your
+build for QTIWorks.
+
+You should use default.qtiworks.properties as a template
+======================================================================
+                  </message>
+                  <files>
+                   <file>${project.basedir}/qtiworks.properties</file>
+                  </files>
+                </requireFilesExist>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <reporting>
     <plugins>

@@ -64,6 +64,16 @@ All Rights Reserved
   <build>
     <plugins>
       <plugin>
+        <!-- (Do qtiworks.properties check at parent only) -->
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-qtiworks-properties</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
