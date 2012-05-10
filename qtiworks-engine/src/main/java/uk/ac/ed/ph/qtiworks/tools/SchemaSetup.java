@@ -36,12 +36,17 @@ package uk.ac.ed.ph.qtiworks.tools;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
+import uk.ac.ed.ph.qtiworks.tools.services.BootstrapServices;
 import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Entry point that sets up the DB schema and then exits.
+ * Entry point that sets up the DB schema, imports base data and then exits.
+ * <p>
+ * This will change as development proceeds.
  * <p>
  * <strong>DANGER:</strong> Do not run this on a production server as it WILL delete all of the
  * existing data!!!
@@ -50,13 +55,24 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public final class SchemaSetup {
 
+    private static final Logger logger = LoggerFactory.getLogger(SchemaSetup.class);
+
     public static void main(final String[] args) {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+
+        logger.info("Recreating the DB schema");
         ctx.register(JpaSetupConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
         ctx.refresh();
 
+        logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
         sampleResourceImporter.importQtiSamples();
+
+        logger.info("Creating accounts for project team");
+        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
+        bootstrapServices.createProjectTeamUser("dmckain", "David", "McKain", "david.mckain@ed.ac.uk");
+        bootstrapServices.createProjectTeamUser("sue", "Sue", "Milne", "sue@elandweb.co.uk");
+        bootstrapServices.createProjectTeamUser("niall", "Niall", "Barr", "niall.barr@glasgow.ac.uk");
 
         ctx.close();
     }

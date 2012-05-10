@@ -63,6 +63,7 @@ public final class QtiWorksSettings implements Serializable {
     private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
     private @Value("${qtiworks.filesystem.base}") String filesystemBase;
+    private @Value("${qtiworks.user.password}") String bootstrapUserPassword;
 
     public String getJdbcDriverClassName() {
         return jdbcDriverClassName;
@@ -106,6 +107,10 @@ public final class QtiWorksSettings implements Serializable {
 
     public String getFilesystemBase() {
         return filesystemBase;
+    }
+
+    public String getBootstrapUserPassword() {
+        return bootstrapUserPassword;
     }
 
     @Override

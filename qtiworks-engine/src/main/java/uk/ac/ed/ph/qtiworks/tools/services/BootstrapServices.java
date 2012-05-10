@@ -31,29 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.tools.services;
 
-import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
-import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Imports/updates all of the QTI sample resources
+ * Some useful (probably temporary) services used for bootstrapping the data model.
  *
  * @author David McKain
  */
-public final class QtiSampleImport {
+@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+@Service
+public class BootstrapServices {
 
-    public static void main(final String[] args) {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class);
-        ctx.refresh();
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapServices.class);
 
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
+    @Resource
+    private QtiWorksSettings qtiWorksSettings;
 
-        ctx.close();
+    @Resource
+    private InstructorUserDao instructorUserDao;
+
+    public InstructorUser createProjectTeamUser(final String loginName, final String firstName, final String lastName, final String emailAddress) {
+        final InstructorUser user = new InstructorUser();
+        user.setLoginName(loginName);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmailAddress(emailAddress);
+        user.setPasswordDigest(ServiceUtilities.computePasswordDigest(qtiWorksSettings.getBootstrapUserPassword()));
+        user.setSysAdmin(true);
+        instructorUserDao.persist(user);
+        logger.info("Creating sysadmi user {}", user);
+        return user;
+
     }
+
 }
