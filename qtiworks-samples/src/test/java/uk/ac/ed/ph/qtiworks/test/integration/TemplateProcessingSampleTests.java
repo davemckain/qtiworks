@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.test.integration;
 
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
@@ -68,8 +68,8 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
         );
     }
     
-    public TemplateProcessingSampleTests(QtiSampleResource qtiSampleResource) {
-        super(qtiSampleResource);
+    public TemplateProcessingSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+        super(qtiSampleAssessment);
     }
     
     @Test

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.test.integration;
 
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -60,22 +60,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * Base class for integration tests that run on a {@link QtiSampleResource}
+ * Base class for integration tests that run on a {@link QtiSampleAssessment}
  *
  * @author David McKain
  */
 @RunWith(Parameterized.class)
 public abstract class AbstractIntegrationTest {
     
-    protected final QtiSampleResource qtiSampleResource;
+    protected final QtiSampleAssessment qtiSampleAssessment;
     protected final URI sampleResourceUri;
     protected final ResourceLocator sampleResourceLocator;
     protected final QtiXmlReader sampleXmlReader;
     protected final JqtiExtensionManager jqtiExtensionManager;
     
-    protected AbstractIntegrationTest(QtiSampleResource qtiSampleResource) {
-        this.qtiSampleResource = qtiSampleResource;
-        this.sampleResourceUri = qtiSampleResource.toClassPathUri();
+    protected AbstractIntegrationTest(QtiSampleAssessment qtiSampleAssessment) {
+        this.qtiSampleAssessment = qtiSampleAssessment;
+        this.sampleResourceUri = qtiSampleAssessment.assessmentClassPathUri();
         this.jqtiExtensionManager = TestUtils.getJqtiExtensionManager();
         this.sampleResourceLocator = new ClassPathResourceLocator();
         this.sampleXmlReader = new QtiXmlReader(jqtiExtensionManager);

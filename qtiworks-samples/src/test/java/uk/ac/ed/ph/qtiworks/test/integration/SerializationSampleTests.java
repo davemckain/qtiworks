@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.test.integration;
 
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
@@ -95,15 +95,15 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         );
     }
     
-    public SerializationSampleTests(QtiSampleResource qtiSampleResource) {
-        super(qtiSampleResource);
+    public SerializationSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+        super(qtiSampleAssessment);
     }
     
     @Test
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         final QtiXmlObjectReader objectReader = createSampleObjectReader();
-        QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(qtiSampleResource.toClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
+        QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(qtiSampleAssessment.assessmentClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
         AssessmentItem item = itemReadResult.getRootObject();
         
         XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
@@ -124,7 +124,7 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         Diff diff = new Diff(new InputSource(originalXmlStream), new InputSource(new StringReader(serializedXml)));
         
         /* (We need to tell xmlunit to allow differences in namespace prefixes) */
-        diff.overrideDifferenceListener(new QtiDifferenceListener(qtiSampleResource));
+        diff.overrideDifferenceListener(new QtiDifferenceListener(qtiSampleAssessment));
         if (!diff.identical()) {
             System.out.println("Test failure for URI: " + sampleResourceUri);
             System.out.println("Difference information:" + diff);
@@ -144,9 +144,9 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
 
         private static final Logger logger = LoggerFactory.getLogger(QtiDifferenceListener.class);
         
-        private final QtiSampleResource qtiSampleResouce;
+        private final QtiSampleAssessment qtiSampleResouce;
         
-        public QtiDifferenceListener(QtiSampleResource qtiSampleResouce) {
+        public QtiDifferenceListener(QtiSampleAssessment qtiSampleResouce) {
             this.qtiSampleResouce = qtiSampleResouce;
         }
 

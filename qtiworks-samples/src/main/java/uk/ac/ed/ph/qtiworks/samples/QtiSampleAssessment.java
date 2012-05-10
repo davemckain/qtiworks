@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Arrays;
@@ -40,20 +42,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Encapsulates a sample QTI resource.
+ * Encapsulates a sample QTI Assessment
  *
  * @author David McKain
  */
-public class QtiSampleResource implements Serializable {
+public class QtiSampleAssessment implements Serializable {
     
     private static final long serialVersionUID = -1829298855881792575L;
-    
-    public static enum Type {
-        ITEM,
-        TEST,
-        RESPONSE_PROCESSING,
-        ;
-    }
     
     public static enum Feature {
         /* Add things here as required */
@@ -61,34 +56,33 @@ public class QtiSampleResource implements Serializable {
         NOT_FULLY_VALID,  /* Example isn't fully valid (according to our validation process) */
     }
     
-    private Type type;
-    private String relativePath;
+    private final AssessmentObjectType type;
+    private final String assessmentHref;
     private final Set<Feature> features;
+    private final Set<String> fileHrefs;
     
-    public QtiSampleResource(Type type, String relativePath, Feature... features) {
-        this.type = type;
-        this.relativePath = relativePath;
-        this.features = new HashSet<Feature>(Arrays.asList(features));
+    public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, Feature... features) {
+        this(type, assessmentHref, new String[0], features);
     }
-
     
-    public Type getType() {
+    public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, String[] fileHrefs, Feature... features) {
+        this.type = type;
+        this.assessmentHref = assessmentHref;
+        this.features = new HashSet<Feature>(Arrays.asList(features));
+        this.fileHrefs = new HashSet<String>(Arrays.asList(fileHrefs));
+    }
+    
+    public AssessmentObjectType getType() {
         return type;
     }
     
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    
-    public String getRelativePath() {
-        return relativePath;
+    public String getAssessmentHref() {
+        return assessmentHref;
     }
     
-    public void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
+    public Set<String> getFileHrefs() {
+        return fileHrefs;
     }
-    
     
     public Set<Feature> getFeatures() {
         return features;
@@ -99,8 +93,19 @@ public class QtiSampleResource implements Serializable {
     }
     
     
-    public URI toClassPathUri() {
-        return URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/" + relativePath);
+    public URI assessmentClassPathUri() {
+        return toClassPathUri(assessmentHref);
+    }
+    
+    public URI fileClassPathUri(final String href) {
+        return toClassPathUri(href);
+    }
+    
+    /**
+     * Converts the href (relative file path) of a sample resource to a ClassPath URI
+     */
+    public static URI toClassPathUri(final String sampleResourceHref) {
+        return URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/" + sampleResourceHref);
     }
     
     
@@ -108,7 +113,8 @@ public class QtiSampleResource implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(type=" + type
-                + ",relativePath=" + relativePath
+                + ",assessmentPath=" + assessmentHref
+                + ",fileHrefs=" + fileHrefs
                 + ",features=" + features
                 + ")";
     }

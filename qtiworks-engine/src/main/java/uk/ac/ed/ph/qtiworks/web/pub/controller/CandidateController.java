@@ -37,9 +37,9 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.services.CandidateUploadService;
@@ -138,20 +138,20 @@ public class CandidateController {
      */
     @RequestMapping(value="/source/{setIndex}/{itemIndex}", method=RequestMethod.GET)
     public void getSource(final HttpServletResponse response, @PathVariable final int setIndex, @PathVariable final int itemIndex) throws IOException {
-        final QtiSampleResource qtiSampleResource = findSampleResource(setIndex, itemIndex);
+        final QtiSampleAssessment qtiSampleAssessment = findSampleAssessment(setIndex, itemIndex);
         final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
-        final InputStream sampleInputStream = sampleResourceLocator.findResource(qtiSampleResource.toClassPathUri());
+        final InputStream sampleInputStream = sampleResourceLocator.findResource(qtiSampleAssessment.assessmentClassPathUri());
         response.setContentType("application/xml");
         IoUtilities.transfer(sampleInputStream, response.getOutputStream(), false);
     }
 
-    private QtiSampleResource findSampleResource(final int setIndex, final int itemIndex) {
+    private QtiSampleAssessment findSampleAssessment(final int setIndex, final int itemIndex) {
         final List<QtiSampleSet> demoSampleSets = demoSampleCollection.getQtiSampleSets();
         if (setIndex < 0 || setIndex >= demoSampleSets.size()) {
             throw new QtiSampleNotFoundException("Could not find demo sample set with index " + setIndex);
         }
         final QtiSampleSet demoSampleSet = demoSampleSets.get(setIndex);
-        final List<QtiSampleResource> demoSampleResources = demoSampleSet.getQtiSampleResources();
+        final List<QtiSampleAssessment> demoSampleResources = demoSampleSet.getQtiSampleAssessments();
         if (itemIndex <0 || itemIndex >= demoSampleResources.size()) {
             throw new QtiSampleNotFoundException("Could not find demo sample resource with index " + setIndex + " in set " + demoSampleSet);
         }
@@ -159,11 +159,11 @@ public class CandidateController {
     }
 
     private ResolvedAssessmentItem resolveSampleItem(final int setIndex, final int itemIndex) {
-        final QtiSampleResource demoSampleResource = findSampleResource(setIndex, itemIndex);
+        final QtiSampleAssessment demoSampleAssessment = findSampleAssessment(setIndex, itemIndex);
 
         /* Load and resolve item */
         final ResourceLocator sampleResourceLocator = getSampleResourceLocator();
-        final URI sampleResourceUri = demoSampleResource.toClassPathUri();
+        final URI sampleResourceUri = demoSampleAssessment.assessmentClassPathUri();
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         return objectManager.resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);

@@ -37,8 +37,8 @@ import static org.junit.Assert.assertEquals;
 
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Feature;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
@@ -71,15 +71,15 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
         );
     }
     
-    public ValidationSampleTests(QtiSampleResource qtiSampleResource) {
-        super(qtiSampleResource);
+    public ValidationSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+        super(qtiSampleAssessment);
     }
     
     @Test
     public void test() throws Exception {
         ItemValidationResult validationResult = validateSampleItem();
         
-        boolean expectedValid = !qtiSampleResource.hasFeature(Feature.NOT_FULLY_VALID);
+        boolean expectedValid = !qtiSampleAssessment.hasFeature(Feature.NOT_FULLY_VALID);
         if (expectedValid != validationResult.isValid()) {
             System.out.println("Expected validity: " + expectedValid);
             System.out.println("Actual validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));

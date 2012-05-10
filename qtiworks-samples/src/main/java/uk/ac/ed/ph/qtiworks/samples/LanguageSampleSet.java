@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 /**
  * Sample set containing Graham Smith's language examples
@@ -43,9 +43,9 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource.Type;
 public final class LanguageSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("Language examples",
-            new QtiSampleResource(Type.ITEM, "language/habenprompt.xml"),
-            new QtiSampleResource(Type.ITEM, "language/pburg1g.xml"),
-            new QtiSampleResource(Type.ITEM, "language/qcyril2gV2.xml")
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "language/habenprompt.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "language/pburg1g.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "language/qcyril2gV2.xml")
     );
     
     private LanguageSampleSet() {

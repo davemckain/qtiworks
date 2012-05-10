@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.test.utils;
 
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleResource;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -54,8 +54,8 @@ public final class TestUtils {
     public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
         List<Object[]> result = new ArrayList<Object[]>();
         for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleResource qtiSampleResource : qtiSampleSet) {
-                result.add(new Object[] { qtiSampleResource });
+            for (QtiSampleAssessment qtiSampleAssessment : qtiSampleSet) {
+                result.add(new Object[] { qtiSampleAssessment });
             }
         }
         return result;
