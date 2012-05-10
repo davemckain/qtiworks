@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.tools.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
@@ -54,6 +55,10 @@ import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -94,16 +99,17 @@ public class SampleResourceImporter {
 
     //-------------------------------------------------
 
+    /**
+     * Imports any (valid) QTI samples that are not already registered in the DB.
+     * This creates a user to own these samples if this hasn't been done so already.
+     */
     public void importQtiSamples() {
-        final InstructorUser sampleOwner = new InstructorUser();
-        sampleOwner.setLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
-        sampleOwner.setFirstName(DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME);
-        sampleOwner.setLastName(DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
-        sampleOwner.setEmailAddress(qtiWorksSettings.getEmailAdminAddress());
-        sampleOwner.setPasswordDigest(ServiceUtilities.computePasswordDigest("Doesn't matter as login to this account is disabled"));
-        sampleOwner.setLoginDisabled(true);
-        sampleOwner.setSysAdmin(false);
-        instructorUserDao.persist(sampleOwner);
+        /* Create sample owner if required */
+        final InstructorUser sampleOwner = importSampleOwnerUserIfRequired();
+
+        /* Find out what sample Assessments are already loaded in the DB */
+        final Map<String, Assessment> importedSampleAssessments = getImportedSampleAssessments(sampleOwner);
+        logger.info("Existing samples are {}", importedSampleAssessments);
 
         final QtiSampleCollection qtiSampleCollection = new QtiSampleCollection(
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
@@ -112,13 +118,46 @@ public class SampleResourceImporter {
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
             for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
-                importSampleAssessment(sampleOwner, qtiSampleAssessment);
+                if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
+                    importSampleAssessment(sampleOwner, qtiSampleAssessment);
+                }
             }
         }
     }
 
+    private InstructorUser importSampleOwnerUserIfRequired() {
+        InstructorUser sampleOwner = instructorUserDao.findByLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
+        if (sampleOwner==null) {
+            sampleOwner = new InstructorUser();
+            sampleOwner.setLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
+            sampleOwner.setFirstName(DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME);
+            sampleOwner.setLastName(DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
+            sampleOwner.setEmailAddress(qtiWorksSettings.getEmailAdminAddress());
+            sampleOwner.setPasswordDigest(ServiceUtilities.computePasswordDigest("Doesn't matter as login to this account is disabled"));
+            sampleOwner.setLoginDisabled(true);
+            sampleOwner.setSysAdmin(false);
+            instructorUserDao.persist(sampleOwner);
+            logger.info("Created User {} to own the sample assessments", sampleOwner);
+        }
+        return sampleOwner;
+    }
+
+    private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
+        final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
+        final Map<String, Assessment> result = new HashMap<String, Assessment>();
+        for (final Assessment sampleAssessment : sampleAssessments) {
+            final AssessmentPackage assessmentPackage = assessmentPackageDao.getCurrentAssessmentPackage(sampleAssessment);
+            if (assessmentPackage==null) {
+                throw new QtiWorksLogicException("Sample assessment " + sampleAssessment + " has no current AssessmentPackage");
+            }
+            result.put(assessmentPackage.getAssessmentHref(), sampleAssessment);
+        }
+        return result;
+    }
+
     private Assessment importSampleAssessment(final InstructorUser owner, final QtiSampleAssessment qtiSampleAssessment) {
         Assert.ensureNotNull(qtiSampleAssessment, "qtiSampleAssessment");
+        logger.info("Importing QTI sample {}", qtiSampleAssessment);
 
         /* Create AssessmentPackage entity */
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
@@ -128,6 +167,8 @@ public class SampleResourceImporter {
         assessmentPackage.setImportType(AssessmentPackageImportType.BUNDLED_SAMPLE);
         assessmentPackage.setSandboxPath(null);
         assessmentPackage.setImporter(owner);
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setValid(true); /* (We're only picking valid samples!) */
 
         /* Create owning Assessment entity */
         final Assessment assessment = new Assessment();
