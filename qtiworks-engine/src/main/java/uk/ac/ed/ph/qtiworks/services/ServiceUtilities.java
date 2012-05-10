@@ -35,6 +35,10 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
+import java.nio.charset.Charset;
+
+import com.google.common.hash.Hashing;
+
 /**
  * Dumping ground for utilities that currently don't belong anywhere else.
  *
@@ -78,5 +82,12 @@ public final class ServiceUtilities {
         final int lastVisibleSpace = longestPossibleText.lastIndexOf(' ');
         final String actualText = lastVisibleSpace!=-1 ? sentence.substring(0, lastVisibleSpace) : longestPossibleText;
         return actualText + ellipses;
+    }
+
+    /**
+     * Computes a hex-encoded SHA1 digest of the given password String
+     */
+    public static String computePasswordDigest(final String password) {
+        return Hashing.sha1().hashString(password, Charset.forName("UTF-8")).toString();
     }
 }

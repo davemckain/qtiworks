@@ -35,9 +35,9 @@ package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +51,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.google.common.hash.Hashing;
 
 /**
  * Servlet to handle the incoming userId/password data from the form log-in
@@ -157,7 +155,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
             return null;
         }
         /* Then check password */
-        final String passwordDigest = Hashing.sha1().hashString(password, Charset.forName("UTF-8")).toString();
+        final String passwordDigest = ServiceUtilities.computePasswordDigest(password);
         if (!passwordDigest.equals(user.getPasswordDigest())) {
             errors.add("Invalid Password");
             return null;
