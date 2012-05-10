@@ -197,6 +197,58 @@ All Rights Reserved
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <profiles>
+    <!-- To set up schema: "mvn -DSchemaSetup exec:exec" -->
+    <profile>
+      <id>SchemaSetup</id>
+      <activation>
+        <property>
+          <name>SchemaSetup</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>uk.ac.ed.ph.qtiworks.tools.SchemaSetup</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- To run JPA custom code: "mvn -DJpaRunner exec:exec" -->
+    <profile>
+      <id>JpaRunner</id>
+      <activation>
+        <property>
+          <name>JpaRunner</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>uk.ac.ed.ph.qtiworks.tools.JpaRunner</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <build>
     <resources>
       <!-- Filter files in src/main/resources (as defined below) -->
