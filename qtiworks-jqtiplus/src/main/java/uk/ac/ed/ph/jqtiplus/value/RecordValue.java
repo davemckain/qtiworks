@@ -37,6 +37,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -55,7 +57,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     private static final long serialVersionUID = -8055629924489632630L;
 
-    private TreeMap<Identifier, SingleValue> container;
+    private final TreeMap<Identifier, SingleValue> container;
 
     /**
      * Constructs empty (NULL) <code>RecordValue</code> container.
@@ -70,12 +72,12 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param identifier identifier of added <code>SingleValue</code>
      * @param value added <code>SingleValue</code>
      */
-    public RecordValue(Identifier identifier, SingleValue value) {
+    public RecordValue(final Identifier identifier, final SingleValue value) {
         container = new TreeMap<Identifier, SingleValue>();
         add(identifier, value);
     }
 
-    public RecordValue(String identifier, SingleValue value) {
+    public RecordValue(final String identifier, final SingleValue value) {
         this(new Identifier(identifier), value);
     }
 
@@ -84,7 +86,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      *
      * @param value added <code>RecordValue</code>
      */
-    public RecordValue(RecordValue value) {
+    public RecordValue(final RecordValue value) {
         container = new TreeMap<Identifier, SingleValue>();
         merge(value);
     }
@@ -121,7 +123,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param identifier given identifier
      * @return <code>SingleValue</code> for given identifier or null
      */
-    public SingleValue get(Identifier identifier) {
+    public SingleValue get(final Identifier identifier) {
         return container.get(identifier);
     }
 
@@ -131,7 +133,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param baseType given <code>BaseType</code>
      * @return true if this container contains any <code>SingleValue</code> with given <code>BaseType</code> or false otherwise
      */
-    public boolean containsBaseType(BaseType baseType) {
+    public boolean containsBaseType(final BaseType baseType) {
         return containsBaseType(new BaseType[] { baseType });
     }
 
@@ -141,7 +143,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param baseTypes given <code>BaseType</code>s
      * @return true if this container contains any <code>SingleValue</code> with any given <code>BaseType</code>s or false otherwise
      */
-    public boolean containsBaseType(BaseType[] baseTypes) {
+    public boolean containsBaseType(final BaseType[] baseTypes) {
         for (final SingleValue value : container.values()) {
             if (Arrays.asList(baseTypes).contains(value.getBaseType())) {
                 return true;
@@ -160,7 +162,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param value added <code>SingleValue</code>
      * @return true if value was added; false otherwise
      */
-    public boolean add(Identifier identifier, SingleValue value) {
+    public boolean add(final Identifier identifier, final SingleValue value) {
         if (value == null || value.isNull()) {
             return false;
         }
@@ -170,7 +172,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
         return true;
     }
 
-    public boolean add(String identifier, SingleValue value) {
+    public boolean add(final String identifier, final SingleValue value) {
         return add(new Identifier(identifier), value);
     }
 
@@ -184,7 +186,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
      * @param value added <code>RecordValue</code>
      * @return true if value was added; false otherwise
      */
-    public boolean merge(RecordValue value) {
+    public boolean merge(final RecordValue value) {
         if (value.isNull()) {
             return false;
         }
@@ -203,6 +205,10 @@ public final class RecordValue extends AbstractValue implements MultiValue {
         return container.keySet();
     }
 
+    public Set<Entry<Identifier, SingleValue>> entrySet() {
+        return container.entrySet();
+    }
+
     /**
      * Returns A collection view of the values contained in this container.
      *
@@ -213,7 +219,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof RecordValue)) {
             return false;
         }
@@ -227,8 +233,32 @@ public final class RecordValue extends AbstractValue implements MultiValue {
         return container.hashCode();
     }
 
+    /**
+     * NOTE: The QTI specification doesn't list a String format for record variables. Here
+     * we will use the format
+     * <pre>
+     * {
+     *   key1: value,
+     *   key2: value2
+     * }
+     * </pre>
+     */
     @Override
-    public String toQtiString() {
-        return container.toString();
+    public final String toQtiString() {
+        final StringBuilder stringBuilder = new StringBuilder("{\n");
+        final Iterator<Entry<Identifier, SingleValue>> iterator = container.entrySet().iterator();
+        while (iterator.hasNext()) {
+            final Entry<Identifier, SingleValue> entry = iterator.next();
+            stringBuilder.append("  ")
+                .append(entry.getKey().toString())
+                .append(": ")
+                .append(entry.getValue().toQtiString());
+            if (iterator.hasNext()) {
+                stringBuilder.append(',');
+            }
+            stringBuilder.append('\n');
+        }
+        stringBuilder.append('}');
+        return stringBuilder.toString();
     }
 }

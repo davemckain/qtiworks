@@ -71,7 +71,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      *
      * @param value added <code>SingleValue</code>
      */
-    public ListValue(SingleValue value) {
+    public ListValue(final SingleValue value) {
         container = new ArrayList<SingleValue>();
 
         add(value);
@@ -82,7 +82,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      *
      * @param values added <code>SingleValue</code>s
      */
-    public ListValue(Iterable<? extends SingleValue> values) {
+    public ListValue(final Iterable<? extends SingleValue> values) {
         container = new ArrayList<SingleValue>();
 
         for (final SingleValue value : values) {
@@ -127,7 +127,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @param value given <code>SingleValue</code>
      * @return true if this container contains given <code>SingleValue</code>; false otherwise
      */
-    public boolean contains(SingleValue value) {
+    public boolean contains(final SingleValue value) {
         return container.contains(value);
     }
 
@@ -137,7 +137,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @param value given <code>SingleValue</code>
      * @return number of occurrences of given <code>SingleValue</code>
      */
-    public int count(SingleValue value) {
+    public int count(final SingleValue value) {
         int count = 0;
 
         for (final SingleValue singleValue : container) {
@@ -155,7 +155,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @param index given index
      * @return <code>SingleValue</code> on given index
      */
-    public SingleValue get(int index) {
+    public SingleValue get(final int index) {
         return container.get(index);
     }
 
@@ -179,7 +179,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @return true if value was added; false otherwise
      * @throws QtiBaseTypeException if <code>BaseType</code> is not same
      */
-    public boolean add(SingleValue value) throws QtiBaseTypeException {
+    public boolean add(final SingleValue value) throws QtiBaseTypeException {
         if (value == null || value.isNull()) {
             return false;
         }
@@ -191,7 +191,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
         return container.add(value);
     }
 
-    public boolean merge(ListValue value) throws QtiBaseTypeException {
+    public boolean merge(final ListValue value) throws QtiBaseTypeException {
         if (value.isNull()) {
             return false;
         }
@@ -209,7 +209,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @param value given <code>SingleValue</code>
      * @return true if value was removed (container contained this value); false otherwise
      */
-    public boolean removeAll(SingleValue value) {
+    public boolean removeAll(final SingleValue value) {
         boolean result = false;
 
         while (container.remove(value)) {
@@ -238,8 +238,24 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
         return container.hashCode();
     }
 
+    /**
+     * This outputs this value in the format used when describing ordered and multiple
+     * cardinalities, i.e.
+     *
+     * <pre>[value1,value2,value3]</pre>
+     */
     @Override
     public final String toQtiString() {
-        return container.toString();
+        final StringBuilder stringBuilder = new StringBuilder('[');
+        final Iterator<SingleValue> iterator = container.iterator();
+        while (iterator.hasNext()) {
+            final SingleValue value = iterator.next();
+            stringBuilder.append(value.toQtiString());
+            if (iterator.hasNext()) {
+                stringBuilder.append(',');
+            }
+        }
+        stringBuilder.append(']');
+        return stringBuilder.toString();
     }
 }
