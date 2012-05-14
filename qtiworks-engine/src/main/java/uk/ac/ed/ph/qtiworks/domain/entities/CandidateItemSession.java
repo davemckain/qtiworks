@@ -33,83 +33,90 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import java.util.ArrayList;
+import java.util.List;
 
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
-
-import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
- * Represents a file response to a particular interaction
+ * Represents the "session" for a particular candidate {@link User} against a
+ * particular {@link ItemDelivery}
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_file_responses")
-public class CandidateFileResponse extends CandidateItemResponse {
+@Table(name="candidate_item_sessions")
+@SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidte_item_session_sequence", initialValue=1, allocationSize=50)
+public class CandidateItemSession implements BaseEntity {
 
-    private static final long serialVersionUID = -4310598861282271053L;
+    private static final long serialVersionUID = -3537558551866726398L;
 
-    /** Content type of submitted file */
-    @Basic(optional=false)
-    @Column(name="content_type", updatable=false, length=DomainConstants.FILE_CONTENT_TYPE_LENGTH)
-    private String contentType;
+    @Id
+    @GeneratedValue(generator="candidateItemSessionSequence")
+    @Column(name="xid")
+    private Long id;
 
-    /** Client name of submitted file, if provided */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="file_name", updatable=false)
-    private String fileName;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="did")
+    private ItemDelivery itemDelivery;
 
-    /** Path where submitted file is stored in the system */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=false)
-    @Column(name="stored_file_path", updatable=false)
-    private String storedFilePath;
+    @ManyToOne(optional=false)
+    @JoinColumn(name="uid")
+    private User candidate;
 
-    //------------------------------------------------------------
-
-    public CandidateFileResponse() {
-        super(ResponseDataType.FILE);
-    }
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemRecord", cascade=CascadeType.REMOVE)
+    @OrderColumn(name="attempt_index")
+    private final List<CandidateItemEvent> events;
 
     //------------------------------------------------------------
 
+    public CandidateItemSession() {
+        this.events = new ArrayList<CandidateItemEvent>();
+    }
 
-    public String getContentType() {
-        return contentType;
+    //------------------------------------------------------------
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(final Long id) {
+        this.id = id;
     }
 
 
-    public void setContentType(final String contentType) {
-        this.contentType = contentType;
+    public ItemDelivery getItemDelivery() {
+        return itemDelivery;
+    }
+
+    public void setItemDelivery(final ItemDelivery itemDelivery) {
+        this.itemDelivery = itemDelivery;
     }
 
 
-    public String getFileName() {
-        return fileName;
+    public User getCandidate() {
+        return candidate;
+    }
+
+    public void setCandidate(final User candidate) {
+        this.candidate = candidate;
     }
 
 
-    public void setFileName(final String fileName) {
-        this.fileName = fileName;
-    }
-
-
-    public String getStoredFilePath() {
-        return storedFilePath;
-    }
-
-
-    public void setStoredFilePath(final String storedFilePath) {
-        this.storedFilePath = storedFilePath;
+    public List<CandidateItemEvent> getEvents() {
+        return events;
     }
 }

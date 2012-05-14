@@ -40,8 +40,10 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum CandidateItemEventType {
 
-    STARTED,
-    ATTEMPT_MADE,
+    INIT,
+    ATTEMPT,
+    RESET,
+    EXIT,
     ;
 
 }

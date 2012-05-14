@@ -33,19 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -57,59 +53,51 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents each "event" generated during a {@link CandidateItemSession}
+ * Represents a file uploaded by a candidate
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_events")
-@Inheritance(strategy=InheritanceType.JOINED)
-@SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemEvent implements BaseEntity {
+@Table(name="candidate_file_submissions")
+@SequenceGenerator(name="candidateFileSubmissionSequence", sequenceName="candidate_file_submission_sequence", initialValue=1, allocationSize=50)
+public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreation {
 
-    private static final long serialVersionUID = -4620030911222629913L;
+    private static final long serialVersionUID = -4310598861282271053L;
 
     @Id
-    @GeneratedValue(generator="candidateEventSequence")
-    @Column(name="xeid")
+    @GeneratedValue(generator="candidateFileSessionSequence")
+    @Column(name="fid")
     private Long id;
 
-    /** {@link CandidateItemSession} owning this event */
+    /** {@link CandidateItemSession} in which this submission was made */
     @ManyToOne(optional=false)
     @JoinColumn(name="xid")
     private CandidateItemSession candidateItemSession;
 
-    /** Timestamp for this event */
+    /** Time of submission */
     @Basic(optional=false)
-    @Column(name="timestamp", updatable=false)
+    @Column(name="creation_time",updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private Date creationTime;
 
-    /** Type of event */
+    /** Content type of submitted file */
     @Basic(optional=false)
-    @Column(name="event_type", updatable=false, length=8)
-    @Enumerated(EnumType.STRING)
-    private CandidateItemEventType eventType;
+    @Column(name="content_type", updatable=false, length=DomainConstants.FILE_CONTENT_TYPE_LENGTH)
+    private String contentType;
 
-    /** Value of the <code>completionStatus</code> item variable */
-    @Basic(optional=false)
-    @Column(name="completion_status", updatable=false, length=11)
-    private String completionStatus;
+    /** Client name of submitted file, if provided */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="file_name", updatable=false)
+    private String fileName;
 
-    @Basic(optional=false)
-    @Column(name="duration", updatable=false)
-    private double duration;
-
-    @Basic(optional=false)
-    @Column(name="num_attempts", updatable=false)
-    private int numAttempts;
-
-    /** Serialized {@link ItemSessionState} */
+    /** Path where submitted file is stored in the system */
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="item_session_state_xml", updatable=false)
-    private String itemSessionStateXml;
+    @Column(name="stored_file_path", updatable=false)
+    private String storedFilePath;
 
     //------------------------------------------------------------
 
@@ -133,56 +121,40 @@ public class CandidateItemEvent implements BaseEntity {
     }
 
 
-    public Date getTimestamp() {
-        return timestamp;
+    @Override
+    public Date getCreationTime() {
+        return creationTime;
     }
 
-    public void setTimestamp(final Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-
-    public CandidateItemEventType getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(final CandidateItemEventType eventType) {
-        this.eventType = eventType;
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
 
-    public String getCompletionStatus() {
-        return completionStatus;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setCompletionStatus(final String completionStatus) {
-        this.completionStatus = completionStatus;
-    }
-
-
-    public double getDuration() {
-        return duration;
-    }
-
-    public void setDuration(final double duration) {
-        this.duration = duration;
+    public void setContentType(final String contentType) {
+        this.contentType = contentType;
     }
 
 
-    public int getNumAttempts() {
-        return numAttempts;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setNumAttempts(final int numAttempts) {
-        this.numAttempts = numAttempts;
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
     }
 
 
-    public String getItemSessionStateXml() {
-        return itemSessionStateXml;
+    public String getStoredFilePath() {
+        return storedFilePath;
     }
 
-    public void setItemSessionStateXml(final String itemSessionStateXml) {
-        this.itemSessionStateXml = itemSessionStateXml;
+    public void setStoredFilePath(final String storedFilePath) {
+        this.storedFilePath = storedFilePath;
     }
 }

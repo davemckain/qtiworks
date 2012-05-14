@@ -39,19 +39,27 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 
+import java.util.List;
+
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Encapsulates a response to an {@link Interaction} within a particular {@link AssessmentItem}
@@ -61,8 +69,8 @@ import javax.persistence.Table;
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="candidate_item_responses")
-@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
-public abstract class CandidateItemResponse implements BaseEntity {
+@SequenceGenerator(name="candidateItemResponseSequence", sequenceName="candidate_item_response_sequence", initialValue=1, allocationSize=50)
+public class CandidateItemResponse implements BaseEntity {
 
     private static final long serialVersionUID = -4310598861282271053L;
 
@@ -74,22 +82,31 @@ public abstract class CandidateItemResponse implements BaseEntity {
     /** Attempt in which this response was made */
     @ManyToOne(optional=false)
     @JoinColumn(name="xid")
-    private CandidateItemAttempt attempt;
+    private CandidateItemEvent attempt;
 
+    /** Identifier of the underlying response variable */
     @Basic(optional=false)
     @Column(name="response_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
     private String responseIdentifier;
 
+    /** Type of response */
     @Basic(optional=false)
     @Column(name="response_type", updatable=false, length=5)
     @Enumerated(EnumType.STRING)
-    private final ResponseDataType responseType;
+    private ResponseDataType responseType;
 
-    //------------------------------------------------------------
+    /** Raw response string data (only used for {@link ResponseDataType#STRING} */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="candidate_string_response_items", joinColumns=@JoinColumn(name="xrid"))
+    @Column(name="string")
+    private List<String> stringResponseData;
 
-    protected CandidateItemResponse(final ResponseDataType responseType) {
-        this.responseType = responseType;
-    }
+    /** File submission data (only used for {@link ResponseDataType#FILE} */
+    @ManyToOne(optional=true)
+    @JoinColumn(name="fid")
+    private CandidateFileSubmission fileSubmission;
 
     //------------------------------------------------------------
 
@@ -104,11 +121,11 @@ public abstract class CandidateItemResponse implements BaseEntity {
     }
 
 
-    public CandidateItemAttempt getAttempt() {
+    public CandidateItemEvent getAttempt() {
         return attempt;
     }
 
-    public void setAttempt(final CandidateItemAttempt attempt) {
+    public void setAttempt(final CandidateItemEvent attempt) {
         this.attempt = attempt;
     }
 
@@ -124,5 +141,28 @@ public abstract class CandidateItemResponse implements BaseEntity {
 
     public ResponseDataType getResponseType() {
         return responseType;
+    }
+
+    public void setResponseType(final ResponseDataType responseType) {
+        this.responseType = responseType;
+    }
+
+
+    public List<String> getStringResponseData() {
+        return stringResponseData;
+    }
+
+
+    public void setStringResponseData(final List<String> stringResponseData) {
+        this.stringResponseData = stringResponseData;
+    }
+
+
+    public CandidateFileSubmission getFileSubmission() {
+        return fileSubmission;
+    }
+
+    public void setFileSubmission(final CandidateFileSubmission fileSubmission) {
+        this.fileSubmission = fileSubmission;
     }
 }
