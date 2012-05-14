@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 
 import java.util.List;
 
@@ -47,23 +47,23 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link AssessmentDelivery} entity.
+ * DAO implementation for the {@link ItemDelivery} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentDeliveryDao extends GenericDao<AssessmentDelivery> {
+public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public AssessmentDeliveryDao() {
-        super(AssessmentDelivery.class);
+    public ItemDeliveryDao() {
+        super(ItemDelivery.class);
     }
 
-    public List<AssessmentDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        final TypedQuery<AssessmentDelivery> query = em.createNamedQuery("AssessmentDelivery.getForAssessmentPackage", AssessmentDelivery.class);
+    public List<ItemDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackage", ItemDelivery.class);
         query.setParameter("assessmentPackage", assessmentPackage);
         return query.getResultList();
     }

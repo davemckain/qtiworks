@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 
 import java.util.Date;
 
@@ -43,8 +43,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -55,28 +53,33 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Corresponds to a particular "delivery" of an {@link AssessmentObject} to a group of candidates.
+ * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
  * <p>
  * This is going to be very simple in the first instance, but will get more complicated in future.
+ *
+ * TODO: We'll eventually need one of these for a test, and probably an entity superclass containing
+ * the common aspects of both types of deliveries.
  *
  * @author David McKain
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@Table(name="assessment_deliveries")
-@SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
+@Table(name="item_deliveries")
+@SequenceGenerator(name="itemDeliverySequence", sequenceName="item_delivery_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
-    @NamedQuery(name="AssessmentDelivery.getForAssessmentPackage",
+    @NamedQuery(name="ItemDelivery.getForAssessmentPackage",
             query="SELECT d"
-                + "  FROM AssessmentDelivery d"
+                + "  FROM ItemDelivery d"
                 + "  WHERE d.assessmentPackage = :assessmentPackage")
 })
-public abstract class AssessmentDelivery implements BaseEntity, TimestampedOnCreation {
+public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = 7693569112981982946L;
 
+    //------------------------------------------------------------
+    // These properties would probably apply to both items and tests
+
     @Id
-    @GeneratedValue(generator="assessmentDeliverySequence")
+    @GeneratedValue(generator="itemDeliverySequence")
     @Column(name="did")
     private Long id;
 
@@ -96,6 +99,14 @@ public abstract class AssessmentDelivery implements BaseEntity, TimestampedOnCre
     @Basic(optional=false)
     @Column(name="open")
     private boolean open;
+
+    //------------------------------------------------------------
+    // Next ones are probably for items only
+
+    /** Maximum number of attempts, as defined by {@link ItemSesessionControl} */
+    @Basic(optional=false)
+    @Column(name="max_attempts")
+    private Integer maxAttempts;
 
     //------------------------------------------------------------
 
@@ -145,5 +156,14 @@ public abstract class AssessmentDelivery implements BaseEntity, TimestampedOnCre
 
     public void setOpen(final boolean open) {
         this.open = open;
+    }
+
+
+    public Integer getMaxAttempts() {
+        return maxAttempts;
+    }
+
+    public void setMaxAttempts(final Integer maxAttempts) {
+        this.maxAttempts = maxAttempts;
     }
 }
