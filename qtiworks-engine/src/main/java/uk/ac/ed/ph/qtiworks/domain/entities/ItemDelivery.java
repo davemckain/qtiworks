@@ -35,30 +35,73 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
  * <p>
  * This is going to be very simple in the first instance, but will get more complicated in future.
  *
- * FIXME: Will need to generalise and split out for item/test delivery in future.
+ * TODO: We'll eventually need one of these for a test, and probably an entity superclass containing
+ * the common aspects of both types of deliveries.
  *
  * @author David McKain
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@Table(name="assessment_item_deliveries")
-@SequenceGenerator(name="assessmentDeliverySequence", sequenceName="assessment_delivery_sequence", initialValue=1, allocationSize=5)
-public class AssessmentItemDelivery extends AssessmentDelivery {
+@Table(name="item_deliveries")
+@SequenceGenerator(name="itemDeliverySequence", sequenceName="item_delivery_sequence", initialValue=1, allocationSize=5)
+@NamedQueries({
+    @NamedQuery(name="ItemDelivery.getForAssessmentPackage",
+            query="SELECT d"
+                + "  FROM ItemDelivery d"
+                + "  WHERE d.assessmentPackage = :assessmentPackage")
+})
+public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = 7693569112981982946L;
+
+    //------------------------------------------------------------
+    // These properties would probably apply to both items and tests
+
+    @Id
+    @GeneratedValue(generator="itemDeliverySequence")
+    @Column(name="did")
+    private Long id;
+
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    @JoinColumn(name="aid")
+    private AssessmentPackage assessmentPackage;
+
+    @Basic(optional=false)
+    @Column(name="title")
+    private String title;
+
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
+    @Basic(optional=false)
+    @Column(name="open")
+    private boolean open;
+
+    //------------------------------------------------------------
+    // Next ones are probably for items only
 
     /** Maximum number of attempts, as defined by {@link ItemSesessionControl} */
     @Basic(optional=false)
@@ -67,6 +110,55 @@ public class AssessmentItemDelivery extends AssessmentDelivery {
 
     //------------------------------------------------------------
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+
+    @Override
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    public void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        this.assessmentPackage = assessmentPackage;
+    }
+
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(final boolean open) {
+        this.open = open;
+    }
+
+
     public Integer getMaxAttempts() {
         return maxAttempts;
     }
@@ -74,5 +166,4 @@ public class AssessmentItemDelivery extends AssessmentDelivery {
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
     }
-
 }

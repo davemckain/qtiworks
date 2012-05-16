@@ -35,26 +35,50 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
 
 /**
- * Represents a file response to a particular interaction
+ * Represents a file uploaded by a candidate
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_file_responses")
-public class CandidateFileResponse extends CandidateItemResponse {
+@Table(name="candidate_file_submissions")
+@SequenceGenerator(name="candidateFileSubmissionSequence", sequenceName="candidate_file_submission_sequence", initialValue=1, allocationSize=50)
+public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;
+
+    @Id
+    @GeneratedValue(generator="candidateFileSessionSequence")
+    @Column(name="fid")
+    private Long id;
+
+    /** {@link CandidateItemSession} in which this submission was made */
+    @ManyToOne(optional=false)
+    @JoinColumn(name="xid")
+    private CandidateItemSession candidateItemSession;
+
+    /** Time of submission */
+    @Basic(optional=false)
+    @Column(name="creation_time",updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
 
     /** Content type of submitted file */
     @Basic(optional=false)
@@ -77,17 +101,40 @@ public class CandidateFileResponse extends CandidateItemResponse {
 
     //------------------------------------------------------------
 
-    public CandidateFileResponse() {
-        super(ResponseDataType.FILE);
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    //------------------------------------------------------------
+    @Override
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+
+    public CandidateItemSession getCandidateItemSession() {
+        return candidateItemSession;
+    }
+
+    public void setCandidateItemSession(final CandidateItemSession candidateItemSession) {
+        this.candidateItemSession = candidateItemSession;
+    }
+
+
+    @Override
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
+    }
 
 
     public String getContentType() {
         return contentType;
     }
-
 
     public void setContentType(final String contentType) {
         this.contentType = contentType;
@@ -98,7 +145,6 @@ public class CandidateFileResponse extends CandidateItemResponse {
         return fileName;
     }
 
-
     public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
@@ -107,7 +153,6 @@ public class CandidateFileResponse extends CandidateItemResponse {
     public String getStoredFilePath() {
         return storedFilePath;
     }
-
 
     public void setStoredFilePath(final String storedFilePath) {
         this.storedFilePath = storedFilePath;

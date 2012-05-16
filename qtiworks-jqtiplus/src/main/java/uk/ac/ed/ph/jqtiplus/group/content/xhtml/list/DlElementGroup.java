@@ -49,13 +49,8 @@ public final class DlElementGroup extends AbstractNodeGroup<DlElement> {
 
     private static final long serialVersionUID = 1889833531495911861L;
 
-    public DlElementGroup(BodyElement parent) {
-        super(parent, BodyElement.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final DlElementType type : DlElementType.values()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public DlElementGroup(final BodyElement parent) {
+        super(parent, BodyElement.DISPLAY_NAME, DlElementType.getQtiClassNames(), null, null);
     }
 
     @Override
@@ -86,7 +81,7 @@ public final class DlElementGroup extends AbstractNodeGroup<DlElement> {
      * @return created child
      */
     @Override
-    public DlElement create(String classTag) {
+    public DlElement create(final String classTag) {
         return DlElementType.getInstance(getParent(), classTag);
     }
 }

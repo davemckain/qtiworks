@@ -31,21 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.domain.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * FIXME: Think about how best to implement this. Full tabular, XML, JSON or Serializable? Hmmm...
+ * DAO implementation for the {@link ItemDelivery} entity.
  *
  * @author David McKain
  */
-@SuppressWarnings("unused")
-public class CandidateItemSessionState {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
 
-    private double score;
-    private String completionStatus;
-    private int numAttempts;
+    @PersistenceContext
+    private EntityManager em;
 
-    /* Serialized somehow? */
-    private Object itemSessionState;
+    public ItemDeliveryDao() {
+        super(ItemDelivery.class);
+    }
 
+    public List<ItemDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackage", ItemDelivery.class);
+        query.setParameter("assessmentPackage", assessmentPackage);
+        return query.getResultList();
+    }
 }

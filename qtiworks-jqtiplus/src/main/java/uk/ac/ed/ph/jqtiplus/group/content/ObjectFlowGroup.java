@@ -53,13 +53,8 @@ public class ObjectFlowGroup extends AbstractContentNodeGroup<ObjectFlow> {
      *
      * @param parent parent of created group
      */
-    public ObjectFlowGroup(XmlNode parent) {
-        super(parent, ObjectFlow.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.objectFlowValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public ObjectFlowGroup(final XmlNode parent) {
+        super(parent, ObjectFlow.DISPLAY_NAME, ContentType.getObjectFlowQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public class ObjectFlowGroup extends AbstractContentNodeGroup<ObjectFlow> {
      * @return created child
      */
     @Override
-    public ObjectFlow create(String classTag) {
+    public ObjectFlow create(final String classTag) {
         return ContentType.getObjectFlowInstance(getParent(), classTag);
     }
 }

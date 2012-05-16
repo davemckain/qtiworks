@@ -54,13 +54,8 @@ public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateRule> {
      *
      * @param parent parent of created group
      */
-    public TemplateRuleGroup(XmlNode parent) {
-        super(parent, TemplateRule.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final TemplateRuleType templateRuleType : TemplateRuleType.values()) {
-            getAllSupportedClasses().add(templateRuleType.toString());
-        }
+    public TemplateRuleGroup(final XmlNode parent) {
+        super(parent, TemplateRule.DISPLAY_NAME, TemplateRuleType.getQtiClassNames(), null, null);
     }
 
     @Override
@@ -86,7 +81,7 @@ public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateRule> {
      * @return created child
      */
     @Override
-    public TemplateRule create(String classTag) {
+    public TemplateRule create(final String classTag) {
         return TemplateRuleType.getInstance(getParent(), classTag);
     }
 }

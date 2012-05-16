@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported response rules from given QTI_CLASS_NAME.
@@ -45,71 +46,71 @@ import java.util.Map;
  * Supported response rules: responseCondition, setOutcomeValue, responseProcessingFragment, responseCondition, exitResponse.
  * <p>
  * Not implemented response rules: include.
- * 
+ *
  * @author Jonathon Hare
  */
 public enum ResponseRuleType {
     /**
      * Creates lookupOutcomeValue response rule.
-     * 
+     *
      * @see LookupOutcomeValue
      */
     LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public ResponseRule create(XmlNode parent) {
+        public ResponseRule create(final XmlNode parent) {
             return new LookupOutcomeValue(parent);
         }
     },
 
     /**
      * Creates responseCondition response rule.
-     * 
+     *
      * @see ResponseCondition
      */
     RESPONSE_CONDITION(ResponseCondition.QTI_CLASS_NAME) {
 
         @Override
-        public ResponseRule create(XmlNode parent) {
+        public ResponseRule create(final XmlNode parent) {
             return new ResponseCondition(parent);
         }
     },
 
     /**
      * Creates responseProcessingFragment response rule.
-     * 
+     *
      * @see ResponseProcessingFragment
      */
     RESPONSE_PROCESSING_FRAGMENT(ResponseProcessingFragment.QTI_CLASS_NAME) {
 
         @Override
-        public ResponseRule create(XmlNode parent) {
+        public ResponseRule create(final XmlNode parent) {
             return new ResponseProcessingFragment(parent);
         }
     },
 
     /**
      * Creates setOutcomeValue response rule.
-     * 
+     *
      * @see SetOutcomeValue
      */
     SET_OUTCOME_VALUE(SetOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public ResponseRule create(XmlNode parent) {
+        public ResponseRule create(final XmlNode parent) {
             return new SetOutcomeValue(parent);
         }
     },
 
     /**
      * Creates exitResponse response rule.
-     * 
+     *
      * @see SetOutcomeValue
      */
     EXIT_RESPONSE(ExitResponse.QTI_CLASS_NAME) {
 
         @Override
-        public ResponseRule create(XmlNode parent) {
+        public ResponseRule create(final XmlNode parent) {
             return new ExitResponse(parent);
         }
     };
@@ -126,13 +127,13 @@ public enum ResponseRuleType {
 
     private String responseRuleType;
 
-    private ResponseRuleType(String responseRuleType) {
+    private ResponseRuleType(final String responseRuleType) {
         this.responseRuleType = responseRuleType;
     }
 
     /**
      * Creates response rule.
-     * 
+     *
      * @param parent parent of created response rule
      * @return created response rule
      */
@@ -145,12 +146,12 @@ public enum ResponseRuleType {
 
     /**
      * Creates response rule.
-     * 
+     *
      * @param parent parent of created response rule
      * @param classTag QTI_CLASS_NAME of created response rule
      * @return created response rule
      */
-    public static ResponseRule getInstance(XmlNode parent, String classTag) {
+    public static ResponseRule getInstance(final XmlNode parent, final String classTag) {
         final ResponseRuleType responseRuleType = responseRuleTypes.get(classTag);
 
         if (responseRuleType == null) {
@@ -158,5 +159,9 @@ public enum ResponseRuleType {
         }
 
         return responseRuleType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return responseRuleTypes.keySet();
     }
 }

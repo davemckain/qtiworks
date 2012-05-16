@@ -57,13 +57,7 @@ public final class ExpressionGroup extends AbstractNodeGroup<Expression> {
      * @param maximum maximum allowed children of created group
      */
     public ExpressionGroup(final ExpressionParent parent, final Integer minimum, final Integer maximum) {
-        super(parent, Expression.DISPLAY_NAME, minimum, maximum);
-
-        final List<String> supportedClasses = getAllSupportedClasses();
-        supportedClasses.clear();
-        for (final ExpressionType type : ExpressionType.values()) {
-            supportedClasses.add(type.getClassTag());
-        }
+        super(parent, Expression.DISPLAY_NAME,  ExpressionType.getQtiClassNames(), minimum, maximum);
     }
 
     public ExpressionGroup(final ExpressionParent parent, final int minimum, final int maximum) {

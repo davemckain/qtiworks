@@ -38,10 +38,11 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * dlElement types
- * 
+ *
  * @author Jonathon Hare
  */
 public enum DlElementType {
@@ -51,7 +52,7 @@ public enum DlElementType {
     DD(Dd.QTI_CLASS_NAME) {
 
         @Override
-        public DlElement create(BodyElement parent) {
+        public DlElement create(final BodyElement parent) {
             return new Dd(parent);
         }
     },
@@ -61,7 +62,7 @@ public enum DlElementType {
     DT(Dt.QTI_CLASS_NAME) {
 
         @Override
-        public DlElement create(BodyElement parent) {
+        public DlElement create(final BodyElement parent) {
             return new Dt(parent);
         }
     };
@@ -78,13 +79,13 @@ public enum DlElementType {
 
     private String dlElementType;
 
-    DlElementType(String inlineType) {
+    DlElementType(final String inlineType) {
         this.dlElementType = inlineType;
     }
 
     /**
      * Gets QTI_CLASS_NAME of this dlElement type.
-     * 
+     *
      * @return QTI_CLASS_NAME of this dlElement type
      */
     public String getClassTag() {
@@ -93,7 +94,7 @@ public enum DlElementType {
 
     /**
      * Creates dlElement element.
-     * 
+     *
      * @param parent parent of created dlElement
      * @return created dlElement
      */
@@ -106,22 +107,26 @@ public enum DlElementType {
 
     /**
      * Gets dlElement type for given QTI_CLASS_NAME.
-     * 
+     *
      * @param classTag QTI_CLASS_NAME
      * @return dlElement type for given QTI_CLASS_NAME
      */
-    public static DlElementType getType(String classTag) {
+    public static DlElementType getType(final String classTag) {
         return dlElementTypes.get(classTag);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return dlElementTypes.keySet();
     }
 
     /**
      * Creates dlElement element.
-     * 
+     *
      * @param parent parent of created dlElement
      * @param classTag QTI_CLASS_NAME of created dlElement
      * @return created expression
      */
-    public static DlElement getInstance(BodyElement parent, String classTag) {
+    public static DlElement getInstance(final BodyElement parent, final String classTag) {
         final DlElementType dlElementType = dlElementTypes.get(classTag);
 
         if (dlElementType == null) {

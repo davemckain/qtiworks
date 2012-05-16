@@ -65,12 +65,7 @@ public final class GapChoiceGroup extends AbstractContentNodeGroup<GapChoice> {
      * @param minimum minimum number of children
      */
     public GapChoiceGroup(final XmlNode parent, final int minimum) {
-        super(parent, GapChoice.DISPLAY_NAME, minimum, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.gapChoiceValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+        super(parent, GapChoice.DISPLAY_NAME, ContentType.getGapChoiceQtiClassNames(), minimum, null);
     }
 
     @Override

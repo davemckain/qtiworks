@@ -38,76 +38,77 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported template rules from given QTI_CLASS_NAME.
  * <p>
  * Supported template rules: templateCondition, setTemplateValue, exitTemplate, setCorrectResponse, setDefaultValue.
- * 
+ *
  * @author Jonathon Hare
  */
 public enum TemplateRuleType {
     /**
      * Creates templateCondition template rule.
-     * 
+     *
      * @see TemplateCondition
      */
     TEMPLATE_CONDITION(TemplateCondition.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(XmlNode parent) {
+        public TemplateRule create(final XmlNode parent) {
             return new TemplateCondition(parent);
         }
     },
 
     /**
      * Creates setTemplateValue template rule.
-     * 
+     *
      * @see SetTemplateValue
      */
     SET_TEMPLATE_VALUE(SetTemplateValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(XmlNode parent) {
+        public TemplateRule create(final XmlNode parent) {
             return new SetTemplateValue(parent);
         }
     },
 
     /**
      * Creates exitTemplate template rule.
-     * 
+     *
      * @see ExitTemplate
      */
     EXIT_TEMPLATE(ExitTemplate.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(XmlNode parent) {
+        public TemplateRule create(final XmlNode parent) {
             return new ExitTemplate(parent);
         }
     },
 
     /**
      * Creates setCorrectResponse template rule.
-     * 
+     *
      * @see SetCorrectResponse
      */
     SET_CORRECT_RESPONSE(SetCorrectResponse.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(XmlNode parent) {
+        public TemplateRule create(final XmlNode parent) {
             return new SetCorrectResponse(parent);
         }
     },
 
     /**
      * Creates setDefaultValue template rule.
-     * 
+     *
      * @see SetDefaultValue
      */
     SET_DEFAULT_VALUE(SetDefaultValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(XmlNode parent) {
+        public TemplateRule create(final XmlNode parent) {
             return new SetDefaultValue(parent);
         }
     };
@@ -124,13 +125,13 @@ public enum TemplateRuleType {
 
     private String templateRuleType;
 
-    private TemplateRuleType(String templateRuleType) {
+    private TemplateRuleType(final String templateRuleType) {
         this.templateRuleType = templateRuleType;
     }
 
     /**
      * Creates template rule.
-     * 
+     *
      * @param parent parent of created template rule
      * @return created template rule
      */
@@ -143,12 +144,12 @@ public enum TemplateRuleType {
 
     /**
      * Creates template rule.
-     * 
+     *
      * @param parent parent of created template rule
      * @param classTag QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
-    public static TemplateRule getInstance(XmlNode parent, String classTag) {
+    public static TemplateRule getInstance(final XmlNode parent, final String classTag) {
         final TemplateRuleType templateRuleType = templateRuleTypes.get(classTag);
 
         if (templateRuleType == null) {
@@ -156,5 +157,9 @@ public enum TemplateRuleType {
         }
 
         return templateRuleType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return templateRuleTypes.keySet();
     }
 }

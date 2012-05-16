@@ -37,6 +37,8 @@ import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 
+import java.util.Set;
+
 /**
  * Group of content children.
  *
@@ -50,19 +52,7 @@ public abstract class AbstractContentNodeGroup<C extends Content> extends Abstra
 
     private static final long serialVersionUID = -630489519873000102L;
 
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final boolean required) {
-        super(parent, name, required);
-    }
-
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Integer minimum, final Integer maximum) {
-        super(parent, name, minimum, maximum);
-    }
-
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
-        super(parent, name, minimum, maximum);
-    }
-
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
-        super(parent, name, minimum, maximum);
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Set<String> qtiClassNames, final Integer minimum, final Integer maximum) {
+        super(parent, name, qtiClassNames, minimum, maximum);
     }
 }

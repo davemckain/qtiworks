@@ -54,13 +54,8 @@ public final class ResponseRuleGroup extends AbstractNodeGroup<ResponseRule> {
      *
      * @param parent parent of created group
      */
-    public ResponseRuleGroup(XmlNode parent) {
-        super(parent, ResponseRule.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ResponseRuleType responseRuleType : ResponseRuleType.values()) {
-            getAllSupportedClasses().add(responseRuleType.toString());
-        }
+    public ResponseRuleGroup(final XmlNode parent) {
+        super(parent, ResponseRule.DISPLAY_NAME, ResponseRuleType.getQtiClassNames(), null, null);
     }
 
     @Override
@@ -86,7 +81,7 @@ public final class ResponseRuleGroup extends AbstractNodeGroup<ResponseRule> {
      * @return created child
      */
     @Override
-    public ResponseRule create(String classTag) {
+    public ResponseRule create(final String classTag) {
         return ResponseRuleType.getInstance(getParent(), classTag);
     }
 }

@@ -68,12 +68,7 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
      * @param minimum minimum number of children
      */
     public BlockStaticGroup(final XmlNode parent, final Integer minimum) {
-        super(parent, BlockStatic.DISPLAY_NAME, minimum, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.blockStaticValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+        super(parent, BlockStatic.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), minimum, null);
     }
 
     @Override

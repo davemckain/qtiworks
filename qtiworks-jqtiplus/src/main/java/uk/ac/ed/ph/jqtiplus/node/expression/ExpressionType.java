@@ -108,6 +108,7 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported expressions from given QTI_CLASS_NAME.
@@ -1257,7 +1258,6 @@ public enum ExpressionType {
 
     static {
         expressionTypes = new HashMap<String, ExpressionType>();
-
         for (final ExpressionType expressionType : ExpressionType.values()) {
             expressionTypes.put(expressionType.expressionType, expressionType);
         }
@@ -1397,6 +1397,10 @@ public enum ExpressionType {
      */
     public static ExpressionType getType(final String classTag) {
         return expressionTypes.get(classTag);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return expressionTypes.keySet();
     }
 
     @ToRemove

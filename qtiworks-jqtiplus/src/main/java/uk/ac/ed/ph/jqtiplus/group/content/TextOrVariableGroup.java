@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import java.util.List;
 
 /**
- * Group of flow children.
+ * Group of {@link TextOrVariable} children.
  *
  * @author Jonathon Hare
  */
@@ -53,13 +53,8 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
      *
      * @param parent parent of created group
      */
-    public TextOrVariableGroup(XmlNode parent) {
-        super(parent, TextOrVariable.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.objectFlowValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public TextOrVariableGroup(final XmlNode parent) {
+        super(parent, TextOrVariable.DISPLAY_NAME, ContentType.getTextOrVariableQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
      * @return created child
      */
     @Override
-    public TextOrVariable create(String classTag) {
+    public TextOrVariable create(final String classTag) {
         return ContentType.getTextOrVariableInstance(getParent(), classTag);
     }
 }

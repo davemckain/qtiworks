@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
@@ -54,12 +55,10 @@ public final class LookupTableGroup extends AbstractNodeGroup<LookupTable> {
      *
      * @param parent parent of created group
      */
-    public LookupTableGroup(OutcomeDeclaration parent) {
-        super(parent, LookupTable.DISPLAY_NAME, false);
-
-        getAllSupportedClasses().clear();
-        getAllSupportedClasses().add(MatchTable.QTI_CLASS_NAME);
-        getAllSupportedClasses().add(InterpolationTable.QTI_CLASS_NAME);
+    public LookupTableGroup(final OutcomeDeclaration parent) {
+        super(parent, LookupTable.DISPLAY_NAME,
+                ObjectUtilities.unmodifiableSet(MatchTable.QTI_CLASS_NAME, InterpolationTable.QTI_CLASS_NAME),
+                false);
     }
 
     @Override
@@ -83,7 +82,7 @@ public final class LookupTableGroup extends AbstractNodeGroup<LookupTable> {
      * @param lookupTable new child
      * @see #getLookupTable
      */
-    public void setLookupTable(LookupTable lookupTable) {
+    public void setLookupTable(final LookupTable lookupTable) {
         setChild(lookupTable);
     }
 
@@ -96,7 +95,7 @@ public final class LookupTableGroup extends AbstractNodeGroup<LookupTable> {
      * @return created child
      */
     @Override
-    public LookupTable create(String classTag) {
+    public LookupTable create(final String classTag) {
         if (classTag.equals(MatchTable.QTI_CLASS_NAME)) {
             return new MatchTable((OutcomeDeclaration) getParent());
         }

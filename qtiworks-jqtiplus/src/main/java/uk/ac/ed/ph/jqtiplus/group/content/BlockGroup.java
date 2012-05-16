@@ -53,13 +53,8 @@ public final class BlockGroup extends AbstractContentNodeGroup<Block> {
      *
      * @param parent parent of created group
      */
-    public BlockGroup(XmlNode parent) {
-        super(parent, Block.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.blockValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public BlockGroup(final XmlNode parent) {
+        super(parent, Block.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public final class BlockGroup extends AbstractContentNodeGroup<Block> {
      * @return created child
      */
     @Override
-    public Block create(String classTag) {
+    public Block create(final String classTag) {
         return ContentType.getBlockInstance(getParent(), classTag);
     }
 }

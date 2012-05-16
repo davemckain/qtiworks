@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -45,16 +47,17 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
+
 /**
- * FIXME: Document this!
- * FIXME: Link to {@link CandidateItemSessionState}, which I reckon we need to record for
- * each event
+ * Represents each "event" generated during a {@link CandidateItemSession}
  *
  * @author David McKain
  */
@@ -71,22 +74,42 @@ public class CandidateItemEvent implements BaseEntity {
     @Column(name="xeid")
     private Long id;
 
-    /** {@link CandidateItemRecord} owning this event */
+    /** {@link CandidateItemSession} owning this event */
     @ManyToOne(optional=false)
     @JoinColumn(name="xid")
-    private CandidateItemRecord candidateItemRecord;
+    private CandidateItemSession candidateItemSession;
 
     /** Timestamp for this event */
     @Basic(optional=false)
-    @Column(name="timestamp",updatable=false)
+    @Column(name="timestamp", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
 
     /** Type of event */
     @Basic(optional=false)
-    @Column(name="event_type",updatable=false,length=32)
+    @Column(name="event_type", updatable=false, length=8)
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType eventType;
+
+    /** Value of the <code>completionStatus</code> item variable */
+    @Basic(optional=false)
+    @Column(name="completion_status", updatable=false, length=11)
+    private String completionStatus;
+
+    @Basic(optional=false)
+    @Column(name="duration", updatable=false)
+    private double duration;
+
+    @Basic(optional=false)
+    @Column(name="num_attempts", updatable=false)
+    private int numAttempts;
+
+    /** Serialized {@link ItemSessionState} */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=false)
+    @Column(name="item_session_state_xml", updatable=false)
+    private String itemSessionStateXml;
 
     //------------------------------------------------------------
 
@@ -101,12 +124,12 @@ public class CandidateItemEvent implements BaseEntity {
     }
 
 
-    public CandidateItemRecord getCandidateItemRecord() {
-        return candidateItemRecord;
+    public CandidateItemSession getCandidateItemSession() {
+        return candidateItemSession;
     }
 
-    public void setCandidateItemRecord(final CandidateItemRecord candidateItemRecord) {
-        this.candidateItemRecord = candidateItemRecord;
+    public void setCandidateItemSession(final CandidateItemSession candidateItemSession) {
+        this.candidateItemSession = candidateItemSession;
     }
 
 
@@ -125,5 +148,41 @@ public class CandidateItemEvent implements BaseEntity {
 
     public void setEventType(final CandidateItemEventType eventType) {
         this.eventType = eventType;
+    }
+
+
+    public String getCompletionStatus() {
+        return completionStatus;
+    }
+
+    public void setCompletionStatus(final String completionStatus) {
+        this.completionStatus = completionStatus;
+    }
+
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(final double duration) {
+        this.duration = duration;
+    }
+
+
+    public int getNumAttempts() {
+        return numAttempts;
+    }
+
+    public void setNumAttempts(final int numAttempts) {
+        this.numAttempts = numAttempts;
+    }
+
+
+    public String getItemSessionStateXml() {
+        return itemSessionStateXml;
+    }
+
+    public void setItemSessionStateXml(final String itemSessionStateXml) {
+        this.itemSessionStateXml = itemSessionStateXml;
     }
 }

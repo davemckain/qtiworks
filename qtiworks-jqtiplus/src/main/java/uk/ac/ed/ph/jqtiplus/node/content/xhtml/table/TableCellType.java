@@ -37,10 +37,11 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * tableCell types
- * 
+ *
  * @author Jonathon Hare
  */
 public enum TableCellType {
@@ -50,7 +51,7 @@ public enum TableCellType {
     TD(Td.QTI_CLASS_NAME) {
 
         @Override
-        public TableCell create(Tr parent) {
+        public TableCell create(final Tr parent) {
             return new Td(parent);
         }
     },
@@ -60,7 +61,7 @@ public enum TableCellType {
     TH(Th.QTI_CLASS_NAME) {
 
         @Override
-        public TableCell create(Tr parent) {
+        public TableCell create(final Tr parent) {
             return new Th(parent);
         }
     };
@@ -77,13 +78,13 @@ public enum TableCellType {
 
     private String tableCellType;
 
-    TableCellType(String inlineType) {
+    TableCellType(final String inlineType) {
         this.tableCellType = inlineType;
     }
 
     /**
      * Gets QTI_CLASS_NAME of this tableCell type.
-     * 
+     *
      * @return QTI_CLASS_NAME of this tableCell type
      */
     public String getClassTag() {
@@ -92,7 +93,7 @@ public enum TableCellType {
 
     /**
      * Creates tableCell element.
-     * 
+     *
      * @param parent parent of created tableCell
      * @return created tableCell
      */
@@ -105,22 +106,22 @@ public enum TableCellType {
 
     /**
      * Gets tableCell type for given QTI_CLASS_NAME.
-     * 
+     *
      * @param classTag QTI_CLASS_NAME
      * @return tableCell type for given QTI_CLASS_NAME
      */
-    public static TableCellType getType(String classTag) {
+    public static TableCellType getType(final String classTag) {
         return tableCellTypes.get(classTag);
     }
 
     /**
      * Creates tableCell element.
-     * 
+     *
      * @param parent parent of created tableCell
      * @param classTag QTI_CLASS_NAME of created tableCell
      * @return created expression
      */
-    public static TableCell getInstance(Tr parent, String classTag) {
+    public static TableCell getInstance(final Tr parent, final String classTag) {
         final TableCellType tableCellType = tableCellTypes.get(classTag);
 
         if (tableCellType == null) {
@@ -128,5 +129,9 @@ public enum TableCellType {
         }
 
         return tableCellType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return tableCellTypes.keySet();
     }
 }

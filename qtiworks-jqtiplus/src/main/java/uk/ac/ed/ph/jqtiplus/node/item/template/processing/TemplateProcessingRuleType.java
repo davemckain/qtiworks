@@ -37,89 +37,90 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported template processing rules from given QTI_CLASS_NAME.
  * <p>
  * Supported template rules: templateConstraint, templateCondition, setTemplateValue, exitTemplate, setCorrectResponse, setDefaultValue.
- * 
+ *
  * @author Jonathon Hare
  */
 public enum TemplateProcessingRuleType {
     /**
      * Creates templateCondition template rule.
-     * 
+     *
      * @see TemplateCondition
      */
     TEMPLATE_CONSTRAINT(TemplateConstraint.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateConstraint create(TemplateProcessing parent) {
+        public TemplateConstraint create(final TemplateProcessing parent) {
             return new TemplateConstraint(parent);
         }
     },
 
     /**
      * Creates templateCondition template rule.
-     * 
+     *
      * @see TemplateCondition
      */
     TEMPLATE_CONDITION(TemplateCondition.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateCondition create(TemplateProcessing parent) {
+        public TemplateCondition create(final TemplateProcessing parent) {
             return new TemplateCondition(parent);
         }
     },
 
     /**
      * Creates setTemplateValue template rule.
-     * 
+     *
      * @see SetTemplateValue
      */
     SET_TEMPLATE_VALUE(SetTemplateValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateProcessingRule create(TemplateProcessing parent) {
+        public TemplateProcessingRule create(final TemplateProcessing parent) {
             return new SetTemplateValue(parent);
         }
     },
 
     /**
      * Creates exitTemplate template rule.
-     * 
+     *
      * @see ExitTemplate
      */
     EXIT_TEMPLATE(ExitTemplate.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateProcessingRule create(TemplateProcessing parent) {
+        public TemplateProcessingRule create(final TemplateProcessing parent) {
             return new ExitTemplate(parent);
         }
     },
 
     /**
      * Creates setCorrectResponse template rule.
-     * 
+     *
      * @see SetCorrectResponse
      */
     SET_CORRECT_RESPONSE(SetCorrectResponse.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateProcessingRule create(TemplateProcessing parent) {
+        public TemplateProcessingRule create(final TemplateProcessing parent) {
             return new SetCorrectResponse(parent);
         }
     },
 
     /**
      * Creates setDefaultValue template rule.
-     * 
+     *
      * @see SetDefaultValue
      */
     SET_DEFAULT_VALUE(SetDefaultValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateProcessingRule create(TemplateProcessing parent) {
+        public TemplateProcessingRule create(final TemplateProcessing parent) {
             return new SetDefaultValue(parent);
         }
     };
@@ -135,13 +136,13 @@ public enum TemplateProcessingRuleType {
 
     private String templateProcessingRuleType;
 
-    private TemplateProcessingRuleType(String templateProcessingRuleType) {
+    private TemplateProcessingRuleType(final String templateProcessingRuleType) {
         this.templateProcessingRuleType = templateProcessingRuleType;
     }
 
     /**
      * Creates template rule.
-     * 
+     *
      * @param parent parent of created template rule
      * @return created template rule
      */
@@ -154,12 +155,12 @@ public enum TemplateProcessingRuleType {
 
     /**
      * Creates template rule.
-     * 
+     *
      * @param parent parent of created template rule
      * @param classTag QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
-    public static TemplateProcessingRule getInstance(TemplateProcessing parent, String classTag) {
+    public static TemplateProcessingRule getInstance(final TemplateProcessing parent, final String classTag) {
         final TemplateProcessingRuleType templateRuleType = templateRuleTypes.get(classTag);
 
         if (templateRuleType == null) {
@@ -167,5 +168,9 @@ public enum TemplateProcessingRuleType {
         }
 
         return templateRuleType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return templateRuleTypes.keySet();
     }
 }

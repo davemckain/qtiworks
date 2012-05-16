@@ -53,13 +53,8 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
      *
      * @param parent parent of created group
      */
-    public FlowStaticGroup(XmlNode parent) {
-        super(parent, FlowStatic.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.flowStaticValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public FlowStaticGroup(final XmlNode parent) {
+        super(parent, FlowStatic.DISPLAY_NAME, ContentType.getFlowStaticQtiClassNames(), null, null);
     }
 
     @Override
@@ -83,7 +78,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
      * @param flow new child
      * @see #getFlowStatic
      */
-    public void setFlowStatic(FlowStatic flow) {
+    public void setFlowStatic(final FlowStatic flow) {
         getChildren().clear();
         getChildren().add(flow);
     }
@@ -107,7 +102,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
      * @return created child
      */
     @Override
-    public FlowStatic create(String classTag) {
+    public FlowStatic create(final String classTag) {
         return ContentType.getFlowStaticInstance(getParent(), classTag);
     }
 }
