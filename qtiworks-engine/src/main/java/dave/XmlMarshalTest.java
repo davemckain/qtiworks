@@ -48,44 +48,39 @@ import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
- * FIXME: Document this type
+ * Debugging for {@link ItemSesssionStateXmlMarshaller}. Needs to be made into a unit test...
  *
  * @author David McKain
  */
 public final class XmlMarshalTest {
 
-    public static void main(final String[] args) throws SAXException, IOException {
+    public static void main(final String[] args) {
         final ItemSessionState itemSessionState = new ItemSessionState();
-
         final RecordValue rv = new RecordValue();
         rv.add(new Identifier("PMathML"), new StringValue("Hello"));
         rv.add(new Identifier("Number"), new IntegerValue(5));
-
         itemSessionState.setShuffledInteractionChoiceOrder(new Identifier("dave"), Arrays.asList(new Identifier("a")));
         itemSessionState.setResponseValue(new Identifier("RESPONSE"), new MultipleValue(Arrays.asList(new StringValue("Bad"), new StringValue("Thing"))));
         itemSessionState.setTemplateValue(new Identifier("TEMPLATE"), NullValue.INSTANCE);
         itemSessionState.setOutcomeValue(new Identifier("RECORD"), rv);
 
-        /* OUTPUT */
+        /* Marshal */
         final Document document = ItemSesssionStateXmlMarshaller.marshal(itemSessionState);
-
-        /* Output XML */
         final XMLStringOutputOptions outputOptions = new XMLStringOutputOptions();
         outputOptions.setIndenting(true);
         final String serialized = XMLUtilities.serializeNode(document, outputOptions);
         System.out.println("XML Marshal is " + serialized);
 
-        /* READ BACK IN */
+        /* Unmarshal */
         final ItemSessionState parsed = ItemSesssionStateXmlMarshaller.unmarshal(serialized);
         System.out.println("Got back: " + ObjectDumper.dumpObject(parsed, DumpMode.DEEP));
-        System.out.println("Original: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+
+        /* Compare */
         System.out.println("Compare? " + parsed.equals(itemSessionState));
     }
 }
