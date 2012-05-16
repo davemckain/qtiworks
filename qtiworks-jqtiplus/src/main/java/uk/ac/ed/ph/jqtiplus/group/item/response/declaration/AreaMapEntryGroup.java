@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.AreaMapping;
 
 import java.util.List;
 
-
 /**
  * Group of AreaMapEntry elements
  *
@@ -54,7 +53,7 @@ public final class AreaMapEntryGroup extends AbstractNodeGroup<AreaMapEntry> {
      *
      * @param parent parent of created group
      */
-    public AreaMapEntryGroup(AreaMapping parent) {
+    public AreaMapEntryGroup(final AreaMapping parent) {
         super(parent, AreaMapEntry.QTI_CLASS_NAME, 1, null);
     }
 
@@ -76,7 +75,7 @@ public final class AreaMapEntryGroup extends AbstractNodeGroup<AreaMapEntry> {
      * @return created child
      */
     @Override
-    public AreaMapEntry create(String classTag) {
+    public AreaMapEntry create(final String classTag) {
         return new AreaMapEntry((AreaMapping) getParent());
     }
 

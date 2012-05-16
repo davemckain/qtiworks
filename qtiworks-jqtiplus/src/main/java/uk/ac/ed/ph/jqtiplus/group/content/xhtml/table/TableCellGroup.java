@@ -55,13 +55,8 @@ public class TableCellGroup extends AbstractNodeGroup<TableCell> {
      *
      * @param parent parent of created group
      */
-    public TableCellGroup(Tr parent) {
-        super(parent, TableCell.DISPLAY_NAME, 1, null);
-
-        getAllSupportedClasses().clear();
-        for (final TableCellType type : TableCellType.values()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public TableCellGroup(final Tr parent) {
+        super(parent, TableCell.DISPLAY_NAME, TableCellType.getQtiClassNames(), 1, null);
     }
 
     @Override
@@ -92,7 +87,7 @@ public class TableCellGroup extends AbstractNodeGroup<TableCell> {
      * @return created child
      */
     @Override
-    public TableCell create(String classTag) {
+    public TableCell create(final String classTag) {
         return TableCellType.getInstance(getParent(), classTag);
     }
 }

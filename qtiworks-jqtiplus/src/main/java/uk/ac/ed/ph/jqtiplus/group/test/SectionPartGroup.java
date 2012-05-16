@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
@@ -55,12 +56,10 @@ public final class SectionPartGroup extends AbstractNodeGroup<SectionPart> {
      *
      * @param parent parent of created group
      */
-    public SectionPartGroup(AssessmentSection parent) {
-        super(parent, SectionPart.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        getAllSupportedClasses().add(AssessmentSection.QTI_CLASS_NAME);
-        getAllSupportedClasses().add(AssessmentItemRef.QTI_CLASS_NAME);
+    public SectionPartGroup(final AssessmentSection parent) {
+        super(parent, SectionPart.DISPLAY_NAME,
+                ObjectUtilities.unmodifiableSet(AssessmentSection.QTI_CLASS_NAME, AssessmentItemRef.QTI_CLASS_NAME),
+                null, null);
     }
 
     @Override
@@ -86,7 +85,7 @@ public final class SectionPartGroup extends AbstractNodeGroup<SectionPart> {
      * @return created child
      */
     @Override
-    public SectionPart create(String classTag) {
+    public SectionPart create(final String classTag) {
         if (classTag.equals(AssessmentSection.QTI_CLASS_NAME)) {
             return new AssessmentSection((AssessmentSection) getParent());
         }

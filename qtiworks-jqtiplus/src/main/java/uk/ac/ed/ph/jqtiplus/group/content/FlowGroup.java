@@ -53,13 +53,8 @@ public final class FlowGroup extends AbstractContentNodeGroup<Flow> {
      *
      * @param parent parent of created group
      */
-    public FlowGroup(XmlNode parent) {
-        super(parent, Flow.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.flowValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public FlowGroup(final XmlNode parent) {
+        super(parent, Flow.DISPLAY_NAME, ContentType.getFlowQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public final class FlowGroup extends AbstractContentNodeGroup<Flow> {
      * @return created child
      */
     @Override
-    public Flow create(String classTag) {
+    public Flow create(final String classTag) {
         return ContentType.getFlowInstance(getParent(), classTag);
     }
 }

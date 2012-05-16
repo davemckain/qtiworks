@@ -37,10 +37,11 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported item variables from given QTI_CLASS_NAME.
- * 
+ *
  * @author Jonathon Hare
  */
 public enum ItemVariableType {
@@ -50,7 +51,7 @@ public enum ItemVariableType {
     OUTCOME_VARIABLE(OutcomeVariable.QTI_CLASS_NAME) {
 
         @Override
-        public ItemVariable create(AbstractResult parent) {
+        public ItemVariable create(final AbstractResult parent) {
             return new OutcomeVariable(parent);
         }
     },
@@ -60,7 +61,7 @@ public enum ItemVariableType {
     RESPONSE_VARIABLE(ResponseVariable.QTI_CLASS_NAME) {
 
         @Override
-        public ItemVariable create(AbstractResult parent) {
+        public ItemVariable create(final AbstractResult parent) {
             return new ResponseVariable(parent);
         }
     },
@@ -70,7 +71,7 @@ public enum ItemVariableType {
     TEMPLATE_VARIABLE(TemplateVariable.QTI_CLASS_NAME) {
 
         @Override
-        public ItemVariable create(AbstractResult parent) {
+        public ItemVariable create(final AbstractResult parent) {
             return new TemplateVariable(parent);
         }
     };
@@ -87,13 +88,13 @@ public enum ItemVariableType {
 
     private String itemVariableType;
 
-    private ItemVariableType(String itemVariableType) {
+    private ItemVariableType(final String itemVariableType) {
         this.itemVariableType = itemVariableType;
     }
 
     /**
      * Creates itemVariable.
-     * 
+     *
      * @param parent parent of created itemVariable
      * @return created itemVariable
      */
@@ -106,12 +107,12 @@ public enum ItemVariableType {
 
     /**
      * Creates itemVariable.
-     * 
+     *
      * @param parent parent of created itemVariable
      * @param classTag QTI_CLASS_NAME of created itemVariable
      * @return created itemVariable
      */
-    public static ItemVariable getInstance(AbstractResult parent, String classTag) {
+    public static ItemVariable getInstance(final AbstractResult parent, final String classTag) {
         final ItemVariableType itemVariableType = itemVariableTypes.get(classTag);
 
         if (itemVariableType == null) {
@@ -119,5 +120,9 @@ public enum ItemVariableType {
         }
 
         return itemVariableType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return itemVariableTypes.keySet();
     }
 }

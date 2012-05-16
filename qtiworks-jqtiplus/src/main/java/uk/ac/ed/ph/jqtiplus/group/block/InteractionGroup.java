@@ -55,13 +55,8 @@ public class InteractionGroup extends AbstractNodeGroup<Interaction> {
      *
      * @param parent parent of created group
      */
-    public InteractionGroup(BodyElement parent) {
-        super(parent, Interaction.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.interactionValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public InteractionGroup(final BodyElement parent) {
+        super(parent, Interaction.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), null, null);
     }
 
     @Override
@@ -92,7 +87,7 @@ public class InteractionGroup extends AbstractNodeGroup<Interaction> {
      * @return created child
      */
     @Override
-    public Interaction create(String classTag) {
+    public Interaction create(final String classTag) {
         return ContentType.getInteractionInstance(getParent(), classTag);
     }
 }

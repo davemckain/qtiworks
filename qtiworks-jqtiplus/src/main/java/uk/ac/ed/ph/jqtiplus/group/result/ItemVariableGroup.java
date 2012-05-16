@@ -54,13 +54,8 @@ public final class ItemVariableGroup extends AbstractNodeGroup<ItemVariable> {
      *
      * @param parent parent of created group
      */
-    public ItemVariableGroup(AbstractResult parent) {
-        super(parent, ItemVariable.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ItemVariableType itemVariableType : ItemVariableType.values()) {
-            getAllSupportedClasses().add(itemVariableType.toString());
-        }
+    public ItemVariableGroup(final AbstractResult parent) {
+        super(parent, ItemVariable.DISPLAY_NAME, ItemVariableType.getQtiClassNames(), null, null);
     }
 
     @Override
@@ -86,7 +81,7 @@ public final class ItemVariableGroup extends AbstractNodeGroup<ItemVariable> {
      * @return created child
      */
     @Override
-    public ItemVariable create(String classTag) {
+    public ItemVariable create(final String classTag) {
         return ItemVariableType.getInstance((AbstractResult) getParent(), classTag);
     }
 }

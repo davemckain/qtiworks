@@ -54,13 +54,8 @@ public final class OutcomeRuleGroup extends AbstractNodeGroup<OutcomeRule> {
      *
      * @param parent parent of created group
      */
-    public OutcomeRuleGroup(XmlNode parent) {
-        super(parent, OutcomeRule.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final OutcomeRuleType outcomeRuleType : OutcomeRuleType.values()) {
-            getAllSupportedClasses().add(outcomeRuleType.toString());
-        }
+    public OutcomeRuleGroup(final XmlNode parent) {
+        super(parent, OutcomeRule.DISPLAY_NAME, OutcomeRuleType.getQtiClassNames(), null, null);
     }
 
     @Override
@@ -86,7 +81,7 @@ public final class OutcomeRuleGroup extends AbstractNodeGroup<OutcomeRule> {
      * @return created child
      */
     @Override
-    public OutcomeRule create(String classTag) {
+    public OutcomeRule create(final String classTag) {
         return OutcomeRuleType.getInstance(getParent(), classTag);
     }
 }

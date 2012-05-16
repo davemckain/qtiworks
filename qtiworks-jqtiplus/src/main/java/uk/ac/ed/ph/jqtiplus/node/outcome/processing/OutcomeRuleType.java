@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class creates all supported outcome rules from given QTI_CLASS_NAME.
@@ -45,70 +46,70 @@ import java.util.Map;
  * Supported outcome rules: outcomeCondition, setOutcomeValue, exitTest.
  * <p>
  * Not implemented outcome rules: include.
- * 
+ *
  * @author Jiri Kajaba
  */
 public enum OutcomeRuleType {
     /**
      * Creates lookupOutcomeValue outcome rule.
-     * 
+     *
      * @see LookupOutcomeValue
      */
     LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(XmlNode parent) {
+        public OutcomeRule create(final XmlNode parent) {
             return new LookupOutcomeValue(parent);
         }
     },
 
     /**
      * Creates outcomeCondition outcome rule.
-     * 
+     *
      * @see OutcomeCondition
      */
     OUTCOME_CONDITION(OutcomeCondition.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(XmlNode parent) {
+        public OutcomeRule create(final XmlNode parent) {
             return new OutcomeCondition(parent);
         }
     },
 
     /**
      * Creates outcomeProcessingFragment outcome rule.
-     * 
+     *
      * @see OutcomeProcessingFragment
      */
     OUTCOME_PROCESSING_FRAGMENT(OutcomeProcessingFragment.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(XmlNode parent) {
+        public OutcomeRule create(final XmlNode parent) {
             return new OutcomeProcessingFragment(parent);
         }
     },
 
     /**
      * Creates setOutcomeValue outcome rule.
-     * 
+     *
      * @see SetOutcomeValue
      */
     SET_OUTCOME_VALUE(SetOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(XmlNode parent) {
+        public OutcomeRule create(final XmlNode parent) {
             return new SetOutcomeValue(parent);
         }
     },
     /**
      * Creates exitTest outcome rule.
-     * 
+     *
      * @see ExitTest
      */
     EXIT_TEST(ExitTest.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(XmlNode parent) {
+        public OutcomeRule create(final XmlNode parent) {
             return new ExitTest(parent);
         }
     };
@@ -125,13 +126,13 @@ public enum OutcomeRuleType {
 
     private String outcomeRuleType;
 
-    private OutcomeRuleType(String outcomeRuleType) {
+    private OutcomeRuleType(final String outcomeRuleType) {
         this.outcomeRuleType = outcomeRuleType;
     }
 
     /**
      * Creates outcome rule.
-     * 
+     *
      * @param parent parent of created outcome rule
      * @return created outcome rule
      */
@@ -144,12 +145,12 @@ public enum OutcomeRuleType {
 
     /**
      * Creates outcome rule.
-     * 
+     *
      * @param parent parent of created outcome rule
      * @param classTag QTI_CLASS_NAME of created outcome rule
      * @return created outcome rule
      */
-    public static OutcomeRule getInstance(XmlNode parent, String classTag) {
+    public static OutcomeRule getInstance(final XmlNode parent, final String classTag) {
         final OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(classTag);
 
         if (outcomeRuleType == null) {
@@ -157,5 +158,9 @@ public enum OutcomeRuleType {
         }
 
         return outcomeRuleType.create(parent);
+    }
+
+    public static Set<String> getQtiClassNames() {
+        return outcomeRuleTypes.keySet();
     }
 }

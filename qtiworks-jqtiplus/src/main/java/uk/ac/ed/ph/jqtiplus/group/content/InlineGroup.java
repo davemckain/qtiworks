@@ -53,13 +53,8 @@ public final class InlineGroup extends AbstractContentNodeGroup<Inline> {
      *
      * @param parent parent of created group
      */
-    public InlineGroup(XmlNode parent) {
-        super(parent, Inline.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.inlineValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public InlineGroup(final XmlNode parent) {
+        super(parent, Inline.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public final class InlineGroup extends AbstractContentNodeGroup<Inline> {
      * @return created child
      */
     @Override
-    public Inline create(String classTag) {
+    public Inline create(final String classTag) {
         return ContentType.getInlineInstance(getParent(), classTag);
     }
 }

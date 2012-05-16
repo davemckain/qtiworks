@@ -37,6 +37,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,10 +49,18 @@ import java.util.Set;
  */
 public final class ObjectUtilities {
 
+    public static <T> Set<T> unmodifiableSet(final T... items) {
+        final Set<T> result = new HashSet<T>();
+        for (final T item : items) {
+            result.add(item);
+        }
+        return Collections.unmodifiableSet(result);
+    }
+
     /**
      * Trivial convenience extension around {@link Collections#unmodifiableList(List)}
      */
-    public static <T> List<T> unmodifiableList(List<T> input) {
+    public static <T> List<T> unmodifiableList(final List<T> input) {
         List<T> result;
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableList(input);
@@ -62,7 +71,7 @@ public final class ObjectUtilities {
         return result;
     }
 
-    public static <T> Set<T> unmodifiableSet(Set<T> input) {
+    public static <T> Set<T> unmodifiableSet(final Set<T> input) {
         Set<T> result;
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableSet(input);
@@ -73,7 +82,7 @@ public final class ObjectUtilities {
         return result;
     }
 
-    public static <K,V> Map<K,V> unmodifiableMap(Map<K,V> input) {
+    public static <K,V> Map<K,V> unmodifiableMap(final Map<K,V> input) {
         Map<K,V> result;
         if (input!=null && !input.isEmpty()) {
             result = Collections.unmodifiableMap(input);
@@ -90,7 +99,7 @@ public final class ObjectUtilities {
      *
      * @param object
      */
-    public static String safeToString(Object object) {
+    public static String safeToString(final Object object) {
         return object != null ? object.toString() : null;
     }
 
@@ -103,7 +112,7 @@ public final class ObjectUtilities {
      * @param o2
      * @return true if either o1==o2 or (o1!=null and o1.equals(o2))
      */
-    public static boolean nullSafeEquals(Object o1, Object o2) {
+    public static boolean nullSafeEquals(final Object o1, final Object o2) {
         return o1 == o2 || o1 != null && o1.equals(o2);
     }
 
@@ -112,7 +121,7 @@ public final class ObjectUtilities {
      *
      * @return true array is either null or empty
      */
-    public static boolean isNullOrEmpty(Object[] array) {
+    public static boolean isNullOrEmpty(final Object[] array) {
         return array == null || array.length == 0;
     }
 
@@ -158,7 +167,7 @@ public final class ObjectUtilities {
      * @param bean
      * @return String representation of the form <code>className(p1=value,p2=value,...)</code>
      */
-    public static String beanToString(Object bean) {
+    public static String beanToString(final Object bean) {
         final Class<?> beanClass = bean.getClass();
 
         /* Output bean's hashCode and start of property list */

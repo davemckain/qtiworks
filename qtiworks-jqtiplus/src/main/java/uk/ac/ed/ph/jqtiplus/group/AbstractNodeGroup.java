@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
@@ -45,8 +46,10 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,13 +67,14 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
 
     private final XmlNode parent;
     private final String name;
-    private final List<String> supportedClasses;
+    private final Set<String> supportedQtiClasses;
     private final List<C> children;
     private final Integer minimum;
     private final Integer maximum;
 
     /**
-     * Constructs group with maximum set to 1.
+     * Constructs group with maximum set to 1 and only supporting QTI classes having the same
+     * name of the group.
      * <p>
      * This is convenient constructor for group with only one child.
      *
@@ -83,7 +87,28 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
     }
 
     /**
-     * Constructs group.
+     * Constructs group with maximum set to 1.
+     * <p>
+     * This is convenient constructor for group with only one child.
+     *
+     * @param parent parent of created group
+     * @param name name of created group
+     * @param required if true, minimum is set to 1, if false, minimum is set to 0
+     */
+    public AbstractNodeGroup(final XmlNode parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
+        this(parent, name, supportedQtiClasses, required ? 1 : 0, 1);
+    }
+
+    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
+        this(parent, name, Integer.valueOf(minimum), Integer.valueOf(maximum));
+    }
+
+    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
+        this(parent, name, Integer.valueOf(minimum), maximum);
+    }
+
+    /**
+     * Constructs group, only supporting QTI classes having the same name of the group.
      *
      * @param parent parent of created group
      * @param name name of created group
@@ -98,17 +123,20 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
         this.children = new ArrayList<C>();
         this.minimum = minimum;
         this.maximum = maximum;
-
-        supportedClasses = new ArrayList<String>();
-        supportedClasses.add(name);
+        supportedQtiClasses = ObjectUtilities.unmodifiableSet(name);
     }
 
-    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
-        this(parent, name, Integer.valueOf(minimum), Integer.valueOf(maximum));
-    }
-
-    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
-        this(parent, name, Integer.valueOf(minimum), maximum);
+    public AbstractNodeGroup(final XmlNode parent, final String name, final Set<String> supportedQtiClasses,
+            final Integer minimum, final Integer maximum) {
+        Assert.ensureNotNull(parent);
+        Assert.ensureNotNull(name);
+        Assert.ensureNotNull(supportedQtiClasses);
+        this.parent = parent;
+        this.name = name;
+        this.children = new ArrayList<C>();
+        this.minimum = minimum;
+        this.maximum = maximum;
+        this.supportedQtiClasses = Collections.unmodifiableSet(supportedQtiClasses);
     }
 
     @Override
@@ -132,8 +160,9 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
     }
 
     @Override
-    public List<String> getAllSupportedClasses() {
-        return supportedClasses;
+    public Set<String> getAllSupportedQtiClasses() {
+        /* NB: The underlying set is already unmodifiable */
+        return supportedQtiClasses;
     }
 
     /**
@@ -191,12 +220,12 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
             try {
-                if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedClasses().contains(childNode.getLocalName())) {
+                if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedQtiClasses().contains(childNode.getLocalName())) {
                     final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
                     getChildren().add(child);
                     child.load((Element) childNode, context);
                 }
-                else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedClasses().contains(TextRun.DISPLAY_NAME)) {
+                else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedQtiClasses().contains(TextRun.DISPLAY_NAME)) {
                     final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
                     getChildren().add((C) child);
                     child.load((Text) childNode);

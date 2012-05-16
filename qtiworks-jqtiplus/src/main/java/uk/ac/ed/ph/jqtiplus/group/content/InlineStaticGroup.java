@@ -53,13 +53,8 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
      *
      * @param parent parent of created group
      */
-    public InlineStaticGroup(XmlNode parent) {
-        super(parent, InlineStatic.DISPLAY_NAME, null, null);
-
-        getAllSupportedClasses().clear();
-        for (final ContentType type : ContentType.inlineStaticValues()) {
-            getAllSupportedClasses().add(type.getClassTag());
-        }
+    public InlineStaticGroup(final XmlNode parent) {
+        super(parent, InlineStatic.DISPLAY_NAME, ContentType.getInlineStaticQtiClassNames(), null, null);
     }
 
     @Override
@@ -85,7 +80,7 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
      * @return created child
      */
     @Override
-    public InlineStatic create(String classTag) {
+    public InlineStatic create(final String classTag) {
         return ContentType.getInlineStaticInstance(getParent(), classTag);
     }
 }
