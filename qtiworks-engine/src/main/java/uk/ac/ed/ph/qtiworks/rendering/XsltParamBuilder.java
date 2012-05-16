@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
+import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -62,8 +63,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,7 +72,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * This little helper class converts various types of JQTIPlus Objects into DOM elements.
+ * This little helper class converts various types of JQTIPlus Objects into DOM elements
+ *
+ * Usage: Not thread-safe
  *
  * @author  David McKain
  */
@@ -90,14 +91,7 @@ public final class XsltParamBuilder {
 
     public XsltParamBuilder(final JqtiExtensionManager jqtiExtensionManager) {
         this.jqtiExtensionManager = jqtiExtensionManager;
-        try {
-            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setNamespaceAware(true);
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        }
-        catch (final ParserConfigurationException e) {
-            throw new QtiRenderingException("Could not create DocumentBuilder for building XSLT parameters", e);
-        }
+        this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
     }
 
     public List<Node> responseValuesToElements(final Map<Identifier, Value> responseValues) {
