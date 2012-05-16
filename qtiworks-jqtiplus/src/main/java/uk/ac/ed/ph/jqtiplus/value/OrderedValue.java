@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-
 /**
  * Implementation of "sequence-type" container.
  * <p>
@@ -58,7 +57,7 @@ public final class OrderedValue extends ListValue {
      *
      * @param value added <code>SingleValue</code>
      */
-    public OrderedValue(SingleValue value) {
+    public OrderedValue(final SingleValue value) {
         super(value);
     }
 
@@ -67,7 +66,7 @@ public final class OrderedValue extends ListValue {
      *
      * @param values added <code>SingleValue</code>s
      */
-    public OrderedValue(Iterable<? extends SingleValue> values) {
+    public OrderedValue(final Iterable<? extends SingleValue> values) {
         super(values);
     }
 
@@ -76,7 +75,7 @@ public final class OrderedValue extends ListValue {
      *
      * @param value added <code>OrderedValue</code>
      */
-    public OrderedValue(OrderedValue value) {
+    public OrderedValue(final OrderedValue value) {
         super();
         merge(value);
     }
@@ -101,7 +100,7 @@ public final class OrderedValue extends ListValue {
      * @param orderedValue given <code>OrderedValue</code>
      * @return true if this container contains given <code>OrderedValue</code>; false otherwise
      */
-    public boolean contains(OrderedValue orderedValue) {
+    public boolean contains(final OrderedValue orderedValue) {
         if (orderedValue.isNull()) {
             return false;
         }
@@ -140,7 +139,7 @@ public final class OrderedValue extends ListValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (object == null) {
             return false;
         }

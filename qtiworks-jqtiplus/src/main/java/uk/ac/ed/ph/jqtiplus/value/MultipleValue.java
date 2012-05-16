@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-
 /**
  * Implementation of "bag-type" container.
  * <p>
@@ -58,7 +57,7 @@ public final class MultipleValue extends ListValue {
      *
      * @param value added <code>SingleValue</code>
      */
-    public MultipleValue(SingleValue value) {
+    public MultipleValue(final SingleValue value) {
         super(value);
     }
 
@@ -67,7 +66,7 @@ public final class MultipleValue extends ListValue {
      *
      * @param values added <code>SingleValue</code>s
      */
-    public MultipleValue(Iterable<? extends SingleValue> values) {
+    public MultipleValue(final Iterable<? extends SingleValue> values) {
         super(values);
     }
 
@@ -91,7 +90,7 @@ public final class MultipleValue extends ListValue {
      * @param multipleValue given <code>MultipleValue</code>
      * @return true if this container contains given <code>MultipleValue</code>; false otherwise
      */
-    public boolean contains(MultipleValue multipleValue) {
+    public boolean contains(final MultipleValue multipleValue) {
         if (multipleValue.isNull()) {
             return false;
         }
@@ -106,12 +105,12 @@ public final class MultipleValue extends ListValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof MultipleValue)) {
             return false;
         }
 
-        MultipleValue other = (MultipleValue) object;
+        final MultipleValue other = (MultipleValue) object;
         if (container.size() != other.container.size()) {
             return false;
         }

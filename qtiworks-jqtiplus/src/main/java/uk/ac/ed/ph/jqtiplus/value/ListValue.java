@@ -246,7 +246,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      */
     @Override
     public final String toQtiString() {
-        final StringBuilder stringBuilder = new StringBuilder('[');
+        final StringBuilder stringBuilder = new StringBuilder("[");
         final Iterator<SingleValue> iterator = container.iterator();
         while (iterator.hasNext()) {
             final SingleValue value = iterator.next();
