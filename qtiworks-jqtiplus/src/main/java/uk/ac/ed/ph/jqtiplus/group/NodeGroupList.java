@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.group;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNodeGroupException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
@@ -217,6 +218,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Container for all node groups of one node.
@@ -240,7 +243,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      *
      * @param parent parent of constructed container
      */
-    public NodeGroupList(XmlNode parent) {
+    public NodeGroupList(final XmlNode parent) {
         this.parent = parent;
         this.groups = new ArrayList<NodeGroup<? extends XmlNode>>();
     }
@@ -275,7 +278,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param group given group
      * @throws QtiNodeGroupException if container already contains group with same name
      */
-    public void add(NodeGroup<?> group) {
+    public void add(final NodeGroup<?> group) {
         for (final NodeGroup<?> child : groups) {
             if (child.getName().equals(group.getName())) {
                 final QtiNodeGroupException ex = new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
@@ -295,7 +298,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param group given group
      * @throws QtiEvaluationException if container already contains group with same name
      */
-    public void add(int index, NodeGroup<?> group) {
+    public void add(final int index, final NodeGroup<?> group) {
         groups.add(index, group);
     }
 
@@ -308,10 +311,31 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      *
      * @param element source node
      */
-    public void load(Element element, LoadingContext context) {
-        for (final NodeGroup<?> child : groups) {
-            child.getChildren().clear();
-            child.load(element, context);
+    public void load(final Element element, final LoadingContext context) {
+        for (final NodeGroup<?> group : groups) {
+            group.getChildren().clear();
+        }
+        final NodeList childNodes = element.getChildNodes();
+        for (int i=0; i<childNodes.getLength(); i++) {
+            final Node childNode = childNodes.item(i);
+            boolean childLoaded = false;
+            for (final NodeGroup<?> group : groups) {
+                if (group.loadChildIfSupported(childNode, context)) {
+                    childLoaded = true;
+                    break;
+                }
+            }
+            if (!childLoaded) {
+                /* No NodeGroup supports this child */
+                if (childNode.getNodeType()==Node.TEXT_NODE && childNode.getNodeValue().trim().isEmpty()) {
+                    /* Whitespace node, so we'll ignore this */
+                }
+                else {
+                    /* Register error */
+                    System.out.println("BAH " + childNode.getLocalName() + " " + childNode);
+                    context.modelBuildingError(new QtiIllegalChildException(parent, childNode.getLocalName()), childNode);
+                }
+            }
         }
     }
 
@@ -328,7 +352,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param index index of requested group
      * @return group at given index
      */
-    public NodeGroup<?> get(int index) {
+    public NodeGroup<?> get(final int index) {
         return groups.get(index);
     }
 
@@ -339,7 +363,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @return group with given name
      * @throws QtiNodeGroupException if group is not found
      */
-    public NodeGroup<?> get(String name) {
+    public NodeGroup<?> get(final String name) {
         for (final NodeGroup<?> child : groups) {
             if (child.getName().equals(name) || child.getAllSupportedQtiClasses().contains(name)) {
                 return child;
@@ -352,7 +376,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         for (final NodeGroup<?> child : groups) {
             child.validate(context);
         }

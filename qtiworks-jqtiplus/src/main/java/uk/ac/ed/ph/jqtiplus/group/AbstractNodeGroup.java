@@ -53,7 +53,6 @@ import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
@@ -215,26 +214,28 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
 
     @Override
     @SuppressWarnings("unchecked")
-    public void load(final Element node, final LoadingContext context) {
-        final NodeList childNodes = node.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            final Node childNode = childNodes.item(i);
-            try {
-                if (childNode.getNodeType() == Node.ELEMENT_NODE && getAllSupportedQtiClasses().contains(childNode.getLocalName())) {
-                    final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
-                    getChildren().add(child);
-                    child.load((Element) childNode, context);
-                }
-                else if (childNode.getNodeType() == Node.TEXT_NODE && getAllSupportedQtiClasses().contains(TextRun.DISPLAY_NAME)) {
-                    final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
-                    getChildren().add((C) child);
-                    child.load((Text) childNode);
-                }
+    public boolean loadChildIfSupported(final Node childNode, final LoadingContext context) {
+        boolean handled = false;
+        try {
+            final short nodeType = childNode.getNodeType();
+            if (nodeType==Node.ELEMENT_NODE && getAllSupportedQtiClasses().contains(childNode.getLocalName())) {
+                final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
+                child.load((Element) childNode, context);
+                children.add(child);
+                handled = true;
             }
-            catch (final QtiModelException e) {
-                context.modelBuildingError(e, childNode);
+            else if (nodeType==Node.TEXT_NODE && getAllSupportedQtiClasses().contains(TextRun.DISPLAY_NAME)) {
+                final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
+                child.load((Text) childNode);
+                children.add((C) child);
+                handled = true;
             }
         }
+        catch (final QtiModelException e) {
+            context.modelBuildingError(e, childNode);
+            handled = true;
+        }
+        return handled;
     }
 
     /**

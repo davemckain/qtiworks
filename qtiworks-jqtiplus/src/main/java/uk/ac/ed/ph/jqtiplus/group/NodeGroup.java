@@ -44,7 +44,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Container for one node type.
@@ -123,11 +123,18 @@ public interface NodeGroup<C extends XmlNode> extends Validatable, Serializable,
     Integer getMaximum();
 
     /**
-     * Loads children from given source node (DOM).
+     * Loads data from the given DOM {@link Node} if this {@link NodeGroup}
+     * supports it. Returns true if the Node is supported, false otherwise.
+     * <p>
+     * (Each DOM Node should be supported by 1 {@link NodeGroup} owned by
+     * a given parent {@link XmlNode}).
      *
-     * @param sourceElement source node (DOM)
+     * @param childNode
+     * @param context
+     * @return true if this DOM Node can be loaded by this {@link NodeGroup},
+     *   false otherwise.
      */
-    void load(Element sourceElement, LoadingContext context);
+    boolean loadChildIfSupported(final Node childNode, final LoadingContext context);
 
     /**
      * Creates child with given QTI class name.
