@@ -112,6 +112,11 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Enumerated(EnumType.STRING)
     private AssessmentObjectType assessmentType;
 
+    /** Public? (This allows the Assessment to be accessed by anyone) */
+    @Basic(optional=false)
+    @Column(name="public")
+    private boolean isPublic;
+
     /**
      * Short name for this Assessment.
      * Used for listings and other stuff.
@@ -185,6 +190,15 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setAssessmentType(final AssessmentObjectType assessmentType) {
         this.assessmentType = assessmentType;
+    }
+
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(final boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
 

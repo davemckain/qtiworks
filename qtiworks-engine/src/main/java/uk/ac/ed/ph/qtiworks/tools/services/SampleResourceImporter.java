@@ -39,10 +39,12 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
@@ -50,11 +52,12 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementServices;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,13 +86,16 @@ public class SampleResourceImporter {
     public static final String DEFAULT_IMPORT_TITLE = "QTI Sample";
 
     @Resource
-    private AssessmentManagementServices assessmentManagementServices;
+    private AssessmentManagementService assessmentManagementServices;
 
     @Resource
     private AssessmentDao assessmentDao;
 
     @Resource
     private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
     private InstructorUserDao instructorUserDao;
@@ -174,6 +180,7 @@ public class SampleResourceImporter {
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(owner);
+        assessment.setPublic(true);
 
         /* FIXME: This is not great! */
         assessment.setName(ServiceUtilities.trimString(qtiSampleAssessment.getAssessmentHref(), DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
@@ -191,6 +198,16 @@ public class SampleResourceImporter {
         /* Persist entities */
         assessmentDao.persist(assessment);
         assessmentPackageDao.persist(assessmentPackage);
+
+        /* TEMP! Create a default delivery */
+        if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM) {
+            final ItemDelivery defaultDelivery = new ItemDelivery();
+            defaultDelivery.setAssessmentPackage(assessmentPackage);
+            defaultDelivery.setMaxAttempts(Integer.valueOf(0));
+            defaultDelivery.setOpen(true);
+            defaultDelivery.setTitle("Temporary default bootstrap delivery");
+            itemDeliveryDao.persist(defaultDelivery);
+        }
 
         return assessment;
     }
