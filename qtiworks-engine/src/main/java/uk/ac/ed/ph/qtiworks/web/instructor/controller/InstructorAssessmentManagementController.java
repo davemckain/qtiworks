@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementServices;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -73,13 +73,13 @@ import com.google.common.io.Closeables;
 public final class InstructorAssessmentManagementController {
 
     @Resource
-    private AssessmentManagementServices assessmentManagementServices;
+    private AssessmentManagementService assessmentManagementService;
 
     //------------------------------------------------------
 
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
-        final List<Assessment> assessments = assessmentManagementServices.getCallerAssessments();
+        final List<Assessment> assessments = assessmentManagementService.getCallerAssessments();
         model.addAttribute(assessments);
         return "assessmentList";
     }
@@ -87,8 +87,8 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)
     public String showAssessment(final Model model, final @PathVariable Long assessmentId)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementServices.getAssessment(assessmentId);
-        final AssessmentPackage assessmentPackage = assessmentManagementServices.getCurrentAssessmentPackage(assessment);
+        final Assessment assessment = assessmentManagementService.getAssessment(assessmentId);
+        final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
         return "showAssessment";
@@ -118,7 +118,7 @@ public final class InstructorAssessmentManagementController {
         final String uploadName = uploadFile.getOriginalFilename();
         Assessment assessment;
         try {
-            assessment = assessmentManagementServices.importAssessment(uploadStream, uploadContentType, uploadName);
+            assessment = assessmentManagementService.importAssessment(uploadStream, uploadContentType, uploadName);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -154,7 +154,7 @@ public final class InstructorAssessmentManagementController {
         final InputStream uploadStream = uploadFile.getInputStream();
         final String uploadContentType = uploadFile.getContentType();
         try {
-            assessmentManagementServices.updateAssessmentPackageFiles(assessmentId, uploadStream, uploadContentType);
+            assessmentManagementService.updateAssessmentPackageFiles(assessmentId, uploadStream, uploadContentType);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -177,7 +177,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/validate/{assessmentId}", method=RequestMethod.GET)
     public String validateAssessment(final @PathVariable Long assessmentId, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementServices.validateAssessment(assessmentId);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessmentId);
         model.addAttribute("assessmentId", assessmentId);
         model.addAttribute("validationResult", validationResult);
         return "validationResult";

@@ -67,7 +67,7 @@ import org.springframework.stereotype.Service;
 /**
  * Helper service for importing assessment package data into the filesystem
  *
- * @see AssessmentManagementServices
+ * @see AssessmentManagementService
  * @see FilespaceManager
  *
  * @author David McKain

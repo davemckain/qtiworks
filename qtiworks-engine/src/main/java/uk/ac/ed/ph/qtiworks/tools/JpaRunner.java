@@ -35,8 +35,19 @@ package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+
+import java.util.Date;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -47,25 +58,28 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public final class JpaRunner {
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class);
+        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
         ctx.refresh();
 
+        final AssessmentCandidateService assessmentCandidateService = ctx.getBean(AssessmentCandidateService.class);
+        final RequestTimestampContext requestTimestampContext = ctx.getBean(RequestTimestampContext.class);
+        requestTimestampContext.setCurrentRequestTimestamp(new Date());
+
         final InstructorUserDao instructorUserDao = ctx.getBean(InstructorUserDao.class);
+        final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
+        final IdentityContext identityContext = ctx.getBean(IdentityContext.class);
+        identityContext.setCurrentThreadEffectiveIdentity(dave);
+        identityContext.setCurrentThreadUnderlyingIdentity(dave);
 
-        final InstructorUser user = new InstructorUser();
-        user.setLoginName("dmckain");
-        user.setFirstName("David");
-        user.setLastName("McKain");
-        user.setEmailAddress("david.mckain@ed.ac.uk");
-        user.setPasswordDigest("d141f4ded32ac968c2112bcc74cf70fcbc770957");
-        user.setSysAdmin(true);
+        final ItemDeliveryDao itemDeliveryDao = ctx.getBean(ItemDeliveryDao.class);
+        final ItemDelivery itemDelivery = itemDeliveryDao.findById(1L);
 
-        instructorUserDao.persist(user);
+        final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
+        final ItemSessionState itemSessionState = assessmentCandidateService.initialiseSession(candidateItemSession);
 
-        final InstructorUser verify = instructorUserDao.findByLoginName(user.getLoginName());
-        System.out.println("Got back " + verify);
+        System.out.println(itemSessionState);
 
         ctx.close();
     }

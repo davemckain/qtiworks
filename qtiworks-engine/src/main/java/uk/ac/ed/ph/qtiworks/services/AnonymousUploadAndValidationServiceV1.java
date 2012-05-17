@@ -75,7 +75,7 @@ public class AnonymousUploadAndValidationServiceV1 {
     private FilespaceManager filespaceManager;
 
     @Resource
-    private AssessmentManagementServices assessmentManagementServices;
+    private AssessmentManagementService assessmentManagementService;
 
     public AssessmentUploadAndValidationResultV1 importAndValidate(final InputStream inputStream, final String contentType) throws AssessmentPackageFileImportException {
         final File sandboxDirectory = createRequestSandbox();
@@ -93,7 +93,7 @@ public class AnonymousUploadAndValidationServiceV1 {
             deleteSandbox(sandboxDirectory);
             throw e;
         }
-        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementServices.validateAssessment(importedPackage);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(importedPackage);
         return new AssessmentUploadAndValidationResultV1(importedPackage, validationResult);
     }
 

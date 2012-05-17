@@ -53,6 +53,8 @@ public enum Privilege {
     VIEW_ASSESSMENT,
     CHANGE_ASSESSMENT,
 
+    ACCESS_CANDIDATE_SESSION,
+
     ;
 
 }

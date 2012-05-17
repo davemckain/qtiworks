@@ -43,8 +43,10 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -63,6 +65,7 @@ import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -83,11 +86,11 @@ import org.w3c.dom.Document;
  *
  * @author David McKain
  */
-@Transactional(readOnly=false)
 @Service
-public class AssessmentManagementServices {
+@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+public class AssessmentManagementService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementServices.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentManagementService.class);
 
     public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
@@ -110,11 +113,13 @@ public class AssessmentManagementServices {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
+    private ItemDeliveryDao itemDeliveryDao;
+
+    @Resource
     private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
 
-    @Transactional(propagation=Propagation.REQUIRED)
     public Assessment getAssessment(final Long assessmentId)
             throws DomainEntityNotFoundException, PrivilegeException {
         Assert.ensureNotNull(assessmentId, "assessmentId");
@@ -123,7 +128,6 @@ public class AssessmentManagementServices {
         return result;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED)
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
         Assert.ensureNotNull(assessment, "assessment");
         final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
@@ -133,7 +137,6 @@ public class AssessmentManagementServices {
         return result;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED)
     public List<Assessment> getCallerAssessments() {
         return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
@@ -257,8 +260,23 @@ public class AssessmentManagementServices {
         return assessment;
     }
 
+    //-------------------------------------------------
+    // Delivery stuff (not fully implemented)
+
+    public ItemDelivery getItemDelivery(final Long itemDeliveryId)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        Assert.ensureNotNull(itemDeliveryId, "itemDeliveryId");
+        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(itemDeliveryId);
+        ensureCallerMayView(itemDelivery.getAssessmentPackage().getAssessment());
+        return itemDelivery;
+    }
+
+    //-------------------------------------------------
+    // Not implemented
+
     @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
+    @ToRefactor
     public void deleteAssessment(final Assessment assessment)
             throws AssessmentStateException, PrivilegeException {
         /* In order to do this correctly, we need to delete all state that might have
@@ -275,6 +293,7 @@ public class AssessmentManagementServices {
      */
     @Transactional(propagation=Propagation.REQUIRED)
     @SuppressWarnings("unused")
+    @ToRefactor
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage)
             throws AssessmentStateException, PrivilegeException {
         /* In order to do this correctly, we need to delete all state that might have
@@ -399,12 +418,13 @@ public class AssessmentManagementServices {
     //-------------------------------------------------
 
     /**
-     * TODO: Currently only permitting people seeing their own Assessments
+     * TODO: Currently only permitting people to see either public Assessments, or
+     * their own Assessments.
      */
     private User ensureCallerMayView(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.getOwner().equals(caller)) {
+        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT);
         }
         return caller;

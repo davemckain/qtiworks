@@ -336,7 +336,7 @@ public class CandidateController {
                 FileResponseData fileResponseData = null;
                 final MultipartFile multipartFile = multipartRequest.getFile("qtiworks_uploadresponse_" + responseIdentifier);
                 if (multipartFile!=null) {
-                    fileResponseData = candidateUploadService.importData(multipartFile);
+                    fileResponseData = candidateUploadService.importDataV1(multipartFile);
                 }
                 responseMap.put(responseIdentifier, fileResponseData);
             }

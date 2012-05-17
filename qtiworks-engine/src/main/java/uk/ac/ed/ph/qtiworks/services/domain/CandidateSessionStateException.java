@@ -31,39 +31,48 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 
 /**
- * Various constants for the domain layer
+ * Client exception thrown when attempting to perform an
+ * unacceptable change to a {@link CandidateItemSession}.
  *
  * @author David McKain
  */
-public final class DomainConstants {
+public final class CandidateSessionStateException extends Exception {
 
-    public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
-    public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
-    public static final int USER_NAME_COMPONENT_MAX_LENGTH = 64;
-    public static final int SHA1_DIGEST_LENGTH = 40;
-    public static final int FILE_CONTENT_TYPE_LENGTH = 64;
+    private static final long serialVersionUID = -699513250898841731L;
 
-    public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
-    public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
+    public static enum CSFailureReason {
 
-    /** FIXME: What limit should we use here? */
-    public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
+        CANNOT_INITIALIZE,
 
-    /**
-     * NB: Should be set to the maximum length of the permitted values of
-     * the QTI <code>completionStatus</code> variable.
-     */
-    public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
+        ;
+    }
 
-    //----------------------------------------------
+    private final EnumerableClientFailure<CSFailureReason> failure;
 
-    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Works";
-    public static final String QTI_SAMPLE_OWNER_EMAIL_ADDRESS = "Works";
+    public CandidateSessionStateException(final EnumerableClientFailure<CSFailureReason> failure) {
+        super(failure.toString());
+        this.failure = failure;
+    }
 
+    public CandidateSessionStateException(final EnumerableClientFailure<CSFailureReason> failure, final Throwable cause) {
+        super(failure.toString(), cause);
+        this.failure = failure;
+    }
+
+    public CandidateSessionStateException(final CSFailureReason reason) {
+        this(new EnumerableClientFailure<CSFailureReason>(reason));
+    }
+
+    public CandidateSessionStateException(final CSFailureReason reason, final Object... arguments) {
+        this(new EnumerableClientFailure<CSFailureReason>(reason, arguments));
+    }
+
+    public EnumerableClientFailure<CSFailureReason> getFailure() {
+        return failure;
+    }
 }

@@ -86,7 +86,7 @@ public class SampleResourceImporter {
     public static final String DEFAULT_IMPORT_TITLE = "QTI Sample";
 
     @Resource
-    private AssessmentManagementService assessmentManagementServices;
+    private AssessmentManagementService assessmentManagementService;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -186,7 +186,7 @@ public class SampleResourceImporter {
         assessment.setName(ServiceUtilities.trimString(qtiSampleAssessment.getAssessmentHref(), DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
 
         /* Guess a title */
-        final String guessedTitle = assessmentManagementServices.guessAssessmentTitle(assessmentPackage);
+        final String guessedTitle = assessmentManagementService.guessAssessmentTitle(assessmentPackage);
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
