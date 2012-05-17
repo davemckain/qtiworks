@@ -49,13 +49,14 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
 /**
- * FIXME: Document this!
+ * Represents a candidate attempt on a particular {@link ItemDelivery}
  *
  * @author David McKain
  */
@@ -71,6 +72,11 @@ public class CandidateItemAttempt implements BaseEntity {
     @GeneratedValue(generator="candidateItemAttemptSequence")
     @Column(name="xaid")
     private Long id;
+
+    /** {@link CandidateItemEvent} representing this attempt */
+    @OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @JoinColumn(name="xeid")
+    private CandidateItemEvent event;
 
     @OneToMany(cascade=CascadeType.REMOVE)
     @JoinColumn(name="xaid")
@@ -92,6 +98,15 @@ public class CandidateItemAttempt implements BaseEntity {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    public CandidateItemEvent getEvent() {
+        return event;
+    }
+
+    public void setEvent(final CandidateItemEvent event) {
+        this.event = event;
     }
 
 

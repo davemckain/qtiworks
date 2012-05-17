@@ -44,6 +44,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
@@ -58,6 +60,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name="candidate_item_sessions")
 @SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidate_item_session_sequence", initialValue=1, allocationSize=50)
+@NamedQueries({
+    @NamedQuery(name="CandidateItemSession.getMostRecentEvent",
+            query="SELECT e"
+                + "  FROM CandidateItemSession s"
+                + "    JOIN s.events e"
+                + "  WHERE s = :candidateItemSession"
+                + "    AND INDEX(e) = SIZE(s.events) - 1")
+})
 public class CandidateItemSession implements BaseEntity {
 
     private static final long serialVersionUID = -3537558551866726398L;

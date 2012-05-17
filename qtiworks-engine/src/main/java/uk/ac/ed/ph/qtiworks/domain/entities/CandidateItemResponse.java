@@ -78,8 +78,8 @@ public class CandidateItemResponse implements BaseEntity {
 
     /** Attempt in which this response was made */
     @ManyToOne(optional=false)
-    @JoinColumn(name="xid")
-    private CandidateItemEvent attempt;
+    @JoinColumn(name="xaid")
+    private CandidateItemAttempt attempt;
 
     /** Identifier of the underlying response variable */
     @Basic(optional=false)
@@ -118,11 +118,11 @@ public class CandidateItemResponse implements BaseEntity {
     }
 
 
-    public CandidateItemEvent getAttempt() {
+    public CandidateItemAttempt getAttempt() {
         return attempt;
     }
 
-    public void setAttempt(final CandidateItemEvent attempt) {
+    public void setAttempt(final CandidateItemAttempt attempt) {
         this.attempt = attempt;
     }
 

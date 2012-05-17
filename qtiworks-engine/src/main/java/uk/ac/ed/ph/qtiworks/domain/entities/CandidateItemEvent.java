@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import java.util.Date;
@@ -90,7 +92,7 @@ public class CandidateItemEvent implements BaseEntity {
 
     /** Value of the <code>completionStatus</code> item variable */
     @Basic(optional=false)
-    @Column(name="completion_status", updatable=false, length=11)
+    @Column(name="completion_status", updatable=false, length=DomainConstants.QTI_COMPLETION_STATUS_MAX_LENGTH)
     private String completionStatus;
 
     @Basic(optional=false)
