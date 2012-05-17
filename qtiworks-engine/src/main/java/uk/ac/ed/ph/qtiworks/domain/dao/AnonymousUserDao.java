@@ -62,6 +62,6 @@ public class AnonymousUserDao extends GenericDao<AnonymousUser> {
     public AnonymousUser findBySessionId(final String sessionId) {
         final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.findBySessionId", AnonymousUser.class);
         query.setParameter("sessionId", sessionId);
-        return extractFindResult(query);
+        return extractNullableFindResult(query);
     }
 }

@@ -63,7 +63,7 @@ public class InstructorUserDao extends GenericDao<InstructorUser> {
     public InstructorUser findByLoginName(final String loginName) {
         final TypedQuery<InstructorUser> query = em.createNamedQuery("InstructorUser.findByLoginName", InstructorUser.class);
         query.setParameter("loginName", loginName);
-        return extractFindResult(query);
+        return extractNullableFindResult(query);
     }
 
     public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {

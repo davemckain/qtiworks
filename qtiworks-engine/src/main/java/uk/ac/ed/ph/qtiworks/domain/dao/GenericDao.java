@@ -106,7 +106,7 @@ public abstract class GenericDao<E extends BaseEntity> {
      * Helper to extract the result of a complex "find" query, which would be expected to return 0
      * or 1 results. This returns null if no results were found.
      */
-    protected E extractFindResult(final TypedQuery<E> query) {
+    protected E extractNullableFindResult(final TypedQuery<E> query) {
         final List<E> resultList = query.getResultList();
         return resultList.isEmpty() ? null : resultList.get(0);
     }

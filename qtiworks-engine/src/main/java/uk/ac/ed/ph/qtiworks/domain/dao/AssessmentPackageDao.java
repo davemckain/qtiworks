@@ -69,6 +69,6 @@ public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
         final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getCurrentForAssessment", AssessmentPackage.class);
         query.setParameter("assessment", assessment);
-        return extractFindResult(query);
+        return extractNullableFindResult(query);
     }
 }
