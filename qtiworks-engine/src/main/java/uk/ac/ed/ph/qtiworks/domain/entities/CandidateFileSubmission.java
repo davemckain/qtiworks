@@ -65,7 +65,7 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     private static final long serialVersionUID = -4310598861282271053L;
 
     @Id
-    @GeneratedValue(generator="candidateFileSessionSequence")
+    @GeneratedValue(generator="candidateFileSubmissionSequence")
     @Column(name="fid")
     private Long id;
 

@@ -33,57 +33,54 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 /**
- * Represents the "session" for a particular candidate {@link User} against a
- * particular {@link ItemDelivery}
+ * FIXME: Document this!
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_sessions")
-@SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidate_item_session_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemSession implements BaseEntity {
+@Table(name="candidate_item_attempts")
+@Inheritance(strategy=InheritanceType.JOINED)
+@SequenceGenerator(name="candidateItemAttemptSequence", sequenceName="candidate_item_attempt_sequence", initialValue=1, allocationSize=50)
+public class CandidateItemAttempt implements BaseEntity {
 
-    private static final long serialVersionUID = -3537558551866726398L;
+    private static final long serialVersionUID = 8824668735905399883L;
 
     @Id
-    @GeneratedValue(generator="candidateItemSessionSequence")
-    @Column(name="xid")
+    @GeneratedValue(generator="candidateItemAttemptSequence")
+    @Column(name="xaid")
     private Long id;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="did")
-    private ItemDelivery itemDelivery;
+    @OneToMany(cascade=CascadeType.REMOVE)
+    @JoinColumn(name="xaid")
+    private Set<CandidateItemResponse> responses;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name="uid")
-    private User candidate;
-
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemSession", cascade=CascadeType.REMOVE)
-    @OrderColumn(name="attempt_index")
-    private final List<CandidateItemEvent> events;
-
-    //------------------------------------------------------------
-
-    public CandidateItemSession() {
-        this.events = new ArrayList<CandidateItemEvent>();
-    }
+    @Type(type="org.hibernate.type.TextType")
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="invalid_response_identifiers", joinColumns=@JoinColumn(name="xaid"))
+    @Column(name="response_identifier", length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
+    private Set<String> invalidResponseIdentifiers;
 
     //------------------------------------------------------------
 
@@ -98,25 +95,20 @@ public class CandidateItemSession implements BaseEntity {
     }
 
 
-    public ItemDelivery getItemDelivery() {
-        return itemDelivery;
+    public Set<CandidateItemResponse> getResponses() {
+        return responses;
     }
 
-    public void setItemDelivery(final ItemDelivery itemDelivery) {
-        this.itemDelivery = itemDelivery;
-    }
-
-
-    public User getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(final User candidate) {
-        this.candidate = candidate;
+    public void setResponses(final Set<CandidateItemResponse> responses) {
+        this.responses = responses;
     }
 
 
-    public List<CandidateItemEvent> getEvents() {
-        return events;
+    public Set<String> getInvalidResponseIdentifiers() {
+        return invalidResponseIdentifiers;
+    }
+
+    public void setInvalidResponseIdentifiers(final Set<String> invalidResponseIdentifiers) {
+        this.invalidResponseIdentifiers = invalidResponseIdentifiers;
     }
 }

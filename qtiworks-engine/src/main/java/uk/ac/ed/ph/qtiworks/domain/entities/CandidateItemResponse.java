@@ -51,8 +51,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -67,7 +65,6 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="candidate_item_responses")
 @SequenceGenerator(name="candidateItemResponseSequence", sequenceName="candidate_item_response_sequence", initialValue=1, allocationSize=50)
 public class CandidateItemResponse implements BaseEntity {
@@ -75,7 +72,7 @@ public class CandidateItemResponse implements BaseEntity {
     private static final long serialVersionUID = -4310598861282271053L;
 
     @Id
-    @GeneratedValue(generator="candidateResponseSequence")
+    @GeneratedValue(generator="candidateItemResponseSequence")
     @Column(name="xrid")
     private Long id;
 

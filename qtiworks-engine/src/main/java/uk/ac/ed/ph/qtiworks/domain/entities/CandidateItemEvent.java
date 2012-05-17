@@ -44,8 +44,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -63,14 +61,13 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_item_events")
-@Inheritance(strategy=InheritanceType.JOINED)
-@SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateItemEventSequence", sequenceName="candidate_item_event_sequence", initialValue=1, allocationSize=50)
 public class CandidateItemEvent implements BaseEntity {
 
     private static final long serialVersionUID = -4620030911222629913L;
 
     @Id
-    @GeneratedValue(generator="candidateEventSequence")
+    @GeneratedValue(generator="candidateItemEventSequence")
     @Column(name="xeid")
     private Long id;
 
