@@ -34,15 +34,22 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
+import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.File;
-import java.io.FileOutputStream;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,18 +59,30 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.Files;
 
 /**
- * Draft of service for handling uploaded candidate data
- *
- * TODO: This needs to store stuff properly into the DB.
+ * Service for handling uploaded candidate data (i.e. responses to
+ * <code>uploadInteraction</code> and similar).
  *
  * @author David McKain
  */
 @ToRefactor
 @Service
-public class CandidateUploadService {
+public final class CandidateUploadService {
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateUploadService.class);
 
+    @Resource
+    private Auditor auditor;
+
+    @Resource
+    private IdentityContext identityContext;
+
+    @Resource
+    private FilespaceManager filespaceManager;
+
+    @Resource
+    private CandidateFileSubmissionDao candidateFileSubmissionDao;
+
+    @ToRemove
     private File sandboxRootDirectory;
 
     @PostConstruct
@@ -72,12 +91,40 @@ public class CandidateUploadService {
         logger.info("Created candidate upload directory at {}", sandboxRootDirectory);
     }
 
-    public FileResponseData importData(final MultipartFile multipartFile) {
+    public CandidateFileSubmission importFileSubmission(final CandidateItemSession candidateItemSession,
+            final MultipartFile multipartFile) {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.ensureNotNull(multipartFile, "multipartFile");
+
+        /* Save file into filesystem */
+        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final File uploadFile = filespaceManager.createCandidateUploadFile(candidateItemSession, candidate);
+        try {
+            multipartFile.transferTo(uploadFile);
+        }
+        catch (final Exception e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception uploading file submission", e);
+        }
+
+        /* Create and persist submission */
+        final CandidateFileSubmission result = new CandidateFileSubmission();
+        result.setCandidateItemSession(candidateItemSession);
+        result.setContentType(multipartFile.getContentType());
+        result.setFileName(multipartFile.getOriginalFilename());
+        result.setStoredFilePath(uploadFile.getAbsolutePath());
+        candidateFileSubmissionDao.persist(result);
+
+        auditor.recordEvent("Imported candidate file submission #" + result.getId());
+        return result;
+    }
+
+    @ToRefactor
+    public FileResponseData importDataV1(final MultipartFile multipartFile) {
         logger.debug("Importing candidate file upload {}", multipartFile);
         final String uploadName = "fileupload-" + Thread.currentThread().getName() + "-" + System.currentTimeMillis();
         final File uploadFile = new File(sandboxRootDirectory, uploadName);
         try {
-            IoUtilities.transfer(multipartFile.getInputStream(), new FileOutputStream(uploadFile));
+            multipartFile.transferTo(uploadFile);
         }
         catch (final Exception e) {
             throw new QtiWorksRuntimeException("Unexpected Exception uploading file submission", e);

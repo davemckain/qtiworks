@@ -37,7 +37,10 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
@@ -78,7 +81,7 @@ public final class FilespaceManager {
     @PostConstruct
     public void init() {
         final String filesystemBaseString = qtiWorksSettings.getFilesystemBase();
-        logger.info("Filesystem base will be {}", filesystemBaseString);
+        logger.info("Filesystem base for client data is {}", filesystemBaseString);
         this.filesystemBaseDirectory = new File(filesystemBaseString);
         if (!filesystemBaseDirectory.isDirectory()) {
             throw new QtiWorksRuntimeException("Filesystem base path " + filesystemBaseString + " is not a directory");
@@ -92,6 +95,23 @@ public final class FilespaceManager {
                 + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
         return createDirectoryPath(filespaceUri);
+    }
+
+    public File createCandidateUploadFile(final CandidateItemSession candidateItemSession, final User candidate) {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.ensureNotNull(candidate, "candidate");
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final Assessment assessment = assessmentPackage.getAssessment();
+
+        final String folderUri = filesystemBaseDirectory.toURI().toString()
+                + "/file-responses/assessment" + assessment.getId()
+                + "/package" + assessmentPackage.getId()
+                + "/delivery" + itemDelivery.getId()
+                + "/" + candidate.getBusinessKey()
+                + "/session" + candidateItemSession.getId();
+        final File candidateItemSessionFolder = createDirectoryPath(folderUri);
+        return new File(candidateItemSessionFolder, createUniqueRequestComponent());
     }
 
     public void deleteSandbox(final File sandboxDirectory) {
