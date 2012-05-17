@@ -78,7 +78,7 @@ public class CandidateItemAttempt implements BaseEntity {
     @JoinColumn(name="xeid")
     private CandidateItemEvent event;
 
-    @OneToMany(cascade=CascadeType.REMOVE)
+    @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="xaid")
     private Set<CandidateItemResponse> responses;
 

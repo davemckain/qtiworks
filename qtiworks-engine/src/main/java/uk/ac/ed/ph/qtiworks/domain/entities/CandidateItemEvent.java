@@ -49,6 +49,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -64,6 +66,18 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="candidate_item_events")
 @SequenceGenerator(name="candidateItemEventSequence", sequenceName="candidate_item_event_sequence", initialValue=1, allocationSize=50)
+@NamedQueries({
+    @NamedQuery(name="CandidateItemEvent.getForSession",
+            query="SELECT e"
+                + "  FROM CandidateItemEvent e"
+                + "  WHERE e.candidateItemSession = :candidateItemSession"
+                + "  ORDER BY e.timestamp"),
+    @NamedQuery(name="CandidateItemEvent.getForSessionReversed",
+            query="SELECT e"
+                + "  FROM CandidateItemEvent e"
+                + "  WHERE e.candidateItemSession = :candidateItemSession"
+                + "  ORDER BY e.timestamp DESC"),
+})
 public class CandidateItemEvent implements BaseEntity {
 
     private static final long serialVersionUID = -4620030911222629913L;
@@ -86,7 +100,7 @@ public class CandidateItemEvent implements BaseEntity {
 
     /** Type of event */
     @Basic(optional=false)
-    @Column(name="event_type", updatable=false, length=8)
+    @Column(name="event_type", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType eventType;
 

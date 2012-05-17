@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.exception.QtiSampleNotFoundException;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
@@ -296,7 +297,7 @@ public class CandidateController {
     private String handleResponseSubmission(final HttpServletRequest request, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState)
             throws RuntimeValidationException {
         /* First need to extract responses */
-        final Map<String, ResponseData> responseMap = new HashMap<String, ResponseData>();
+        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         extractStringResponseData(request, responseMap);
         if (request instanceof MultipartHttpServletRequest) {
             extractFileResponseData((MultipartHttpServletRequest) request, responseMap);
@@ -305,7 +306,7 @@ public class CandidateController {
 
         /* Bind responses */
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-        List<Identifier> invalidResponseIdentifiers = null;
+        Set<Identifier> invalidResponseIdentifiers = null;
         final List<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
         if (badResponseIdentifiers.isEmpty()) {
             logger.debug("Responses bound successfully, so continuing to response validation step");
@@ -327,7 +328,10 @@ public class CandidateController {
                 SerializationMethod.HTML5_MATHJAX);
     }
 
-    private void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<String, ResponseData> responseMap) {
+    /**
+     * @throws QtiParseException
+     */
+    private void extractFileResponseData(final MultipartHttpServletRequest multipartRequest, final Map<Identifier, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
         final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
         for (final String name : parameterNames) {
@@ -338,12 +342,15 @@ public class CandidateController {
                 if (multipartFile!=null) {
                     fileResponseData = candidateUploadService.importDataV1(multipartFile);
                 }
-                responseMap.put(responseIdentifier, fileResponseData);
+                responseMap.put(new Identifier(responseIdentifier), fileResponseData);
             }
         }
     }
 
-    private void extractStringResponseData(final HttpServletRequest request, final Map<String, ResponseData> responseMap) {
+    /**
+     * @throws QtiParseException
+     */
+    private void extractStringResponseData(final HttpServletRequest request, final Map<Identifier, ResponseData> responseMap) {
         @SuppressWarnings("unchecked")
         final Set<String> parameterNames = request.getParameterMap().keySet();
         for (final String name : parameterNames) {
@@ -351,7 +358,7 @@ public class CandidateController {
                 final String responseIdentifier = name.substring("qtiworks_presented_".length());
                 final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifier);
                 final StringResponseData stringResponseData = new StringResponseData(responseValues);
-                responseMap.put(responseIdentifier, stringResponseData);
+                responseMap.put(new Identifier(responseIdentifier), stringResponseData);
             }
         }
     }

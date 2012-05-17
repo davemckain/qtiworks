@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -60,9 +62,22 @@ public class CandidateItemEventDao extends GenericDao<CandidateItemEvent> {
         super(CandidateItemEvent.class);
     }
 
-    public CandidateItemEvent getNewestEventInSession(final CandidateItemSession session) {
-        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemSession.getMostRecentEvent", CandidateItemEvent.class);
+    public List<CandidateItemEvent> getForSession(final CandidateItemSession session) {
+        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSession", CandidateItemEvent.class);
         query.setParameter("candidateItemSession", session);
+        return query.getResultList();
+    }
+
+    public List<CandidateItemEvent> getForSessionReversed(final CandidateItemSession session) {
+        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSessionReversed", CandidateItemEvent.class);
+        query.setParameter("candidateItemSession", session);
+        return query.getResultList();
+    }
+
+    public CandidateItemEvent getNewestEventInSession(final CandidateItemSession session) {
+        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSessionReversed", CandidateItemEvent.class);
+        query.setParameter("candidateItemSession", session);
+        query.setMaxResults(1);
         return extractNullableFindResult(query);
     }
 }

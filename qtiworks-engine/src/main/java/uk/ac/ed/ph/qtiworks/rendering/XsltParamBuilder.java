@@ -177,17 +177,17 @@ public final class XsltParamBuilder {
         }
     }
 
-    public List<Node> responseInputsToElements(final Map<String, ResponseData> responseInputs) {
+    public List<Node> responseInputsToElements(final Map<Identifier, ResponseData> responseInputs) {
         final ArrayList<Node> result = new ArrayList<Node>();
         if (responseInputs==null || responseInputs.isEmpty()) {
             return result;
         }
         final Document doc = documentBuilder.newDocument();
-        for (final Entry<String, ResponseData> entry : responseInputs.entrySet()) {
-            final String interactionIdentifier = entry.getKey();
+        for (final Entry<Identifier, ResponseData> entry : responseInputs.entrySet()) {
+            final Identifier interactionIdentifier = entry.getKey();
             final ResponseData responseData = entry.getValue();
             final Element responseInputElement = doc.createElementNS(QTIWORKS_NAMESPACE, "responseInput");
-            responseInputElement.setAttribute("identifier", interactionIdentifier);
+            responseInputElement.setAttribute("identifier", interactionIdentifier.toString());
             switch (responseData.getType()) {
                 case STRING:
                     final List<String> stringResponses = ((StringResponseData) responseData).getResponseData();

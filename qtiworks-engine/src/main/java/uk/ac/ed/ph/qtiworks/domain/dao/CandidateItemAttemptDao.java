@@ -31,55 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Client exception thrown when attempting to perform an
- * unacceptable change to a {@link CandidateItemSession}.
+ * DAO implementation for the {@link CandidateItemAttempt} entity.
  *
  * @author David McKain
  */
-public final class CandidateSessionStateException extends Exception {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class CandidateItemAttemptDao extends GenericDao<CandidateItemAttempt> {
 
-    private static final long serialVersionUID = -699513250898841731L;
+    @SuppressWarnings("unused")
+    @PersistenceContext
+    private EntityManager em;
 
-    public static enum CSFailureReason {
-
-        ATTEMPT_NOT_ALLOWED,
-
-        ;
-    }
-
-    private final CandidateItemSession candidateSession;
-    private final EnumerableClientFailure<CSFailureReason> failure;
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final EnumerableClientFailure<CSFailureReason> failure) {
-        super(failure.toString());
-        this.candidateSession = candidateSession;
-        this.failure = failure;
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final EnumerableClientFailure<CSFailureReason> failure, final Throwable cause) {
-        super(failure.toString(), cause);
-        this.candidateSession = candidateSession;
-        this.failure = failure;
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final CSFailureReason reason) {
-        this(candidateSession, new EnumerableClientFailure<CSFailureReason>(reason));
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final CSFailureReason reason, final Object... arguments) {
-        this(candidateSession, new EnumerableClientFailure<CSFailureReason>(reason, arguments));
-    }
-
-    public CandidateItemSession getCandidateSession() {
-        return candidateSession;
-    }
-
-    public EnumerableClientFailure<CSFailureReason> getFailure() {
-        return failure;
+    public CandidateItemAttemptDao() {
+        super(CandidateItemAttempt.class);
     }
 }

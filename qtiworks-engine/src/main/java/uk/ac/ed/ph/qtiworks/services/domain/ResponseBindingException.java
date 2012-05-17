@@ -35,51 +35,34 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+
+import java.util.Map;
+
 /**
- * Client exception thrown when attempting to perform an
- * unacceptable change to a {@link CandidateItemSession}.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public final class CandidateSessionStateException extends Exception {
+public final class ResponseBindingException extends Exception {
 
-    private static final long serialVersionUID = -699513250898841731L;
-
-    public static enum CSFailureReason {
-
-        ATTEMPT_NOT_ALLOWED,
-
-        ;
-    }
+    private static final long serialVersionUID = 5017827115664184400L;
 
     private final CandidateItemSession candidateSession;
-    private final EnumerableClientFailure<CSFailureReason> failure;
+    private final Map<Identifier, ResponseData> badResponseMap;
 
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final EnumerableClientFailure<CSFailureReason> failure) {
-        super(failure.toString());
+    public ResponseBindingException(final CandidateItemSession candidateSession, final Map<Identifier, ResponseData> badResponseMap) {
+        super("Failed to bind some response data to response variables");
         this.candidateSession = candidateSession;
-        this.failure = failure;
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final EnumerableClientFailure<CSFailureReason> failure, final Throwable cause) {
-        super(failure.toString(), cause);
-        this.candidateSession = candidateSession;
-        this.failure = failure;
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final CSFailureReason reason) {
-        this(candidateSession, new EnumerableClientFailure<CSFailureReason>(reason));
-    }
-
-    public CandidateSessionStateException(final CandidateItemSession candidateSession, final CSFailureReason reason, final Object... arguments) {
-        this(candidateSession, new EnumerableClientFailure<CSFailureReason>(reason, arguments));
+        this.badResponseMap = badResponseMap;
     }
 
     public CandidateItemSession getCandidateSession() {
         return candidateSession;
     }
 
-    public EnumerableClientFailure<CSFailureReason> getFailure() {
-        return failure;
+    public Map<Identifier, ResponseData> getBadResponseMap() {
+        return badResponseMap;
     }
 }

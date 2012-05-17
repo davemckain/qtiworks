@@ -60,6 +60,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -154,8 +155,8 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderRespondedStandaloneItem(final ItemSessionController itemSessionController,
-            final Map<String, ResponseData> responseInputs, final List<Identifier> badResponseIdentifiers,
-            final List<Identifier> invalidResponseIdentifiers, final SerializationMethod serializationMethod) {
+            final Map<Identifier, ResponseData> responseInputs, final List<Identifier> badResponseIdentifiers,
+            final Set<Identifier> invalidResponseIdentifiers, final SerializationMethod serializationMethod) {
         logger.debug("renderStandaloneItem(itemSessionController={}, "
                 + "responseInputs={}, unboundResponseIdentifiers={}, "
                 + "invalidResponseIdentifiers={}, serializationMethod={}",
@@ -173,8 +174,8 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     private String doRenderStandaloneItem(final ItemSessionController itemSessionController,
-            final Map<String, ResponseData> responseInputs,
-            final List<Identifier> badResponseIdentifiers, final List<Identifier> invalidResponseIdentifiers,
+            final Map<Identifier, ResponseData> responseInputs,
+            final List<Identifier> badResponseIdentifiers, final Set<Identifier> invalidResponseIdentifiers,
             final SerializationMethod serializationMethod) {
         final ResolvedAssessmentItem resolvedAssessmentItem = itemSessionController.getResolvedAssessmentItem();
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();

@@ -61,8 +61,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class TextEntryInteractionTest {
 
-    public static RecordValue createRecordResult(String stringValue, double floatValue, Integer integerValue, int leftDigits, int rightDigits, int ndp,
-            int nsf, Integer exponent) {
+    public static RecordValue createRecordResult(final String stringValue, final double floatValue, final Integer integerValue, final int leftDigits, final int rightDigits, final int ndp,
+            final int nsf, final Integer exponent) {
         final RecordValue rv = new RecordValue();
 
         rv.add(StringInteraction.KEY_STRING_VALUE_NAME, new StringValue(stringValue));
@@ -79,7 +79,7 @@ public class TextEntryInteractionTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
@@ -104,14 +104,14 @@ public class TextEntryInteractionTest {
 
     private static String RESPONSE_NAME = "response";
     private static String STRING_RESPONSE_NAME = "stringResponse";
-    
+
     private final String fileName;
     private final String stringResponse;
     private final Value expectedResponse;
     private final Value expectedStringResponse;
     private final boolean expectedValidates;
 
-    public TextEntryInteractionTest(String fileName, String stringResponse, Value expectedResponse, Value expectedStringResponse, boolean expectedValidates) {
+    public TextEntryInteractionTest(final String fileName, final String stringResponse, final Value expectedResponse, final Value expectedStringResponse, final boolean expectedValidates) {
         this.fileName = fileName;
         this.stringResponse = stringResponse;
         this.expectedResponse = expectedResponse;
@@ -125,9 +125,9 @@ public class TextEntryInteractionTest {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         itemSessionController.initialize();
 
-        final Map<String, ResponseData> responses = new HashMap<String, ResponseData>();
-        responses.put(RESPONSE_NAME, new StringResponseData(stringResponse));
-        List<Identifier> badResponses = itemSessionController.bindResponses(responses);
+        final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
+        responses.put(new Identifier(RESPONSE_NAME), new StringResponseData(stringResponse));
+        final List<Identifier> badResponses = itemSessionController.bindResponses(responses);
         assertEquals(0, badResponses.size());
         assertEquals(expectedValidates, itemSessionController.validateResponses().size() == 0);
         assertEquals(expectedResponse, itemSessionState.getResponseValue(new Identifier(RESPONSE_NAME)));

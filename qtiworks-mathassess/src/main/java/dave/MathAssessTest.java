@@ -61,6 +61,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
@@ -118,10 +119,10 @@ public class MathAssessTest {
             System.out.println("\nOutcome Values: " + itemSessionState.getOutcomeValues());
 
             System.out.println("\n\nBinding Math responses");
-            final Map<String, ResponseData> responses = new HashMap<String, ResponseData>();
-            responses.put("RESPONSE", new StringResponseData("1+x"));
+            final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
+            responses.put(new Identifier("RESPONSE"), new StringResponseData("1+x"));
             final List<Identifier> badResponses = itemController.bindResponses(responses);
-            final List<Identifier> invalidResponses = itemController.validateResponses();
+            final Set<Identifier> invalidResponses = itemController.validateResponses();
             System.out.println("Bad responses: " + badResponses);
             System.out.println("Invalid response: " + invalidResponses);
             System.out.println("Response Values: " + itemSessionState.getResponseValues());

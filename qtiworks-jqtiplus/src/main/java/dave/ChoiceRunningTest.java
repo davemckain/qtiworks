@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ChoiceRunningTest {
 
@@ -46,10 +47,10 @@ public class ChoiceRunningTest {
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
 
         System.out.println("\nBinding & validating responses");
-        final Map<String, ResponseData> responseMap = new HashMap<String, ResponseData>();
-        responseMap.put("RESPONSE", new StringResponseData("ChoiceA"));
+        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
+        responseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
         final List<Identifier> badResponses = itemController.bindResponses(responseMap);
-        final List<Identifier> invalidResponses = itemController.validateResponses();
+        final Set<Identifier> invalidResponses = itemController.validateResponses();
         System.out.println("Bad responses: " + badResponses);
         System.out.println("Invalid responses:" + invalidResponses);
 

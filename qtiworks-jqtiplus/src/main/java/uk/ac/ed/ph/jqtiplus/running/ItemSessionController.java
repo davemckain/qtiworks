@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -82,9 +81,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -273,11 +274,10 @@ public final class ItemSessionController implements ItemProcessingContext {
      *         successfully bound from the provided data. (E.g. expected a float but got a String)
      * @param responseMap Map of responses to set, keyed on response variable identifier
      *
-     * @throws QtiParseException if one of the response identifiers is not a valid identifier
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public List<Identifier> bindResponses(final Map<String, ResponseData> responseMap) {
+    public List<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
@@ -298,8 +298,8 @@ public final class ItemSessionController implements ItemProcessingContext {
          * times.) */
         final Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
         final List<Identifier> badResponses = new ArrayList<Identifier>();
-        for (final Entry<String, ResponseData> responseEntry : responseMap.entrySet()) {
-            final Identifier responseIdentifier = new Identifier(responseEntry.getKey());
+        for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
+            final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
             Assert.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
@@ -321,13 +321,13 @@ public final class ItemSessionController implements ItemProcessingContext {
     /**
      * Validates the currently-bound responses for each of the interactions
      *
-     * @return a List of identifiers corresponding to invalid responses. The List will be
+     * @return a Set of identifiers corresponding to invalid responses. The Set will be
      *         empty if all responses were valid.
      */
-    public List<Identifier> validateResponses() {
+    public Set<Identifier> validateResponses() {
         logger.debug("Validating responses");
         ensureInitialized();
-        final List<Identifier> invalidResponseIdentifiers = new ArrayList<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
         for (final Interaction interaction : item.getItemBody().getInteractions()) {
             final Value responseValue = itemSessionState.getResponseValue(interaction);
             if (!interaction.validateResponse(this, responseValue)) {

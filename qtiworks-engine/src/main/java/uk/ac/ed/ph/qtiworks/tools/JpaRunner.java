@@ -40,14 +40,20 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -74,12 +80,20 @@ public final class JpaRunner {
         identityContext.setCurrentThreadUnderlyingIdentity(dave);
 
         final ItemDeliveryDao itemDeliveryDao = ctx.getBean(ItemDeliveryDao.class);
-        final ItemDelivery itemDelivery = itemDeliveryDao.findById(1L);
+        final ItemDelivery itemDelivery = itemDeliveryDao.findById(4L); /* (choice.xml) */
 
         final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
         final ItemSessionState itemSessionState = assessmentCandidateService.initialiseSession(candidateItemSession);
 
-        System.out.println(itemSessionState);
+        /* Do invalid attempt */
+        final Map<Identifier, List<String>> stringResponseMap = new HashMap<Identifier, List<String>>();
+        stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("x"));
+        CandidateItemAttempt attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+
+        /* Then valid attempt */
+        stringResponseMap.clear();
+        stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("ChoiceA"));
+        attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         ctx.close();
     }

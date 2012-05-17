@@ -25,10 +25,11 @@ import java.net.URI;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-public class SchemaTest {
+public final class ValidationTester {
 
     public static void main(final String[] args) throws Exception {
         final URI inputUri = URI.create("classpath:/mathextensions.xml");
+//        final URI inputUri = URI.create("classpath:/Example04-feedbackBlock-templateBlock.xml");
 
         System.out.println("Reading and validating");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();

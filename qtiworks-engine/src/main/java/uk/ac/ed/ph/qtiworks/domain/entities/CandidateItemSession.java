@@ -33,21 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -60,14 +51,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name="candidate_item_sessions")
 @SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidate_item_session_sequence", initialValue=1, allocationSize=50)
-@NamedQueries({
-    @NamedQuery(name="CandidateItemSession.getMostRecentEvent",
-            query="SELECT e"
-                + "  FROM CandidateItemSession s"
-                + "    JOIN s.events e"
-                + "  WHERE s = :candidateItemSession"
-                + "    AND INDEX(e) = SIZE(s.events) - 1")
-})
 public class CandidateItemSession implements BaseEntity {
 
     private static final long serialVersionUID = -3537558551866726398L;
@@ -84,16 +67,6 @@ public class CandidateItemSession implements BaseEntity {
     @ManyToOne(optional=false)
     @JoinColumn(name="uid")
     private User candidate;
-
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemSession", cascade=CascadeType.REMOVE)
-    @OrderColumn(name="attempt_index")
-    private final List<CandidateItemEvent> events;
-
-    //------------------------------------------------------------
-
-    public CandidateItemSession() {
-        this.events = new ArrayList<CandidateItemEvent>();
-    }
 
     //------------------------------------------------------------
 
@@ -123,10 +96,5 @@ public class CandidateItemSession implements BaseEntity {
 
     public void setCandidate(final User candidate) {
         this.candidate = candidate;
-    }
-
-
-    public List<CandidateItemEvent> getEvents() {
-        return events;
     }
 }

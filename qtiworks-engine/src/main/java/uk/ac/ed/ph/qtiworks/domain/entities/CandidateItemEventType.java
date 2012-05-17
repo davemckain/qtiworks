@@ -41,7 +41,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 public enum CandidateItemEventType {
 
     INIT,
-    ATTEMPT,
+    VALID_ATTEMPT,
+    INVALID_ATTEMPT,
     RESET,
     EXIT,
     ;
