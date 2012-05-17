@@ -204,7 +204,7 @@ public final class StringUtilities {
      * @return true if "yes", false if "no"
      *
      * @throws IllegalArgumentException if value if null or
-     *   neither "yes" or "no"
+     *   neither "yes" nor "no"
      */
     public static boolean fromYesNo(final String value) {
     	return fromBinaryValues(value, "yes", "no");
@@ -219,7 +219,7 @@ public final class StringUtilities {
      * @return true if "yes", false if "no"
      *
      * @throws IllegalArgumentException if value if null or
-     *   neither "yes" or "no"
+     *   neither "true" nor "false"
      */
     public static boolean fromTrueFalse(final String value) {
     	return fromBinaryValues(value, "true", "false");

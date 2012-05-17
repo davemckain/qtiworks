@@ -204,6 +204,12 @@ public final class ItemSesssionStateXmlMarshaller {
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
+        try {
+            result.setInitialized(StringUtilities.fromTrueFalse(documentElement.getAttribute("initialized")));
+        }
+        catch (final IllegalArgumentException e) {
+            throw new MarshallingException("Expected initialized attribute to be 'true' or 'false'");
+        }
 
         final List<Element> childElements = expectElementChildren(documentElement);
         for (final Element childElement : childElements) {
