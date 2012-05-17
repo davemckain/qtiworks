@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
 import java.util.Date;
 
@@ -84,7 +85,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private Long id;
 
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="aid")
+    @JoinColumn(name="apid")
     private AssessmentPackage assessmentPackage;
 
     @Basic(optional=false)
@@ -103,7 +104,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     //------------------------------------------------------------
     // Next ones are probably for items only
 
-    /** Maximum number of attempts, as defined by {@link ItemSesessionControl} */
+    /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
     @Basic(optional=false)
     @Column(name="max_attempts")
     private Integer maxAttempts;
