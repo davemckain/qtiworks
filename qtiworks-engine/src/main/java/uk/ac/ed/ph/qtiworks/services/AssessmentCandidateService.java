@@ -43,13 +43,18 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
@@ -77,13 +82,19 @@ public class AssessmentCandidateService {
     private static final Logger logger = LoggerFactory.getLogger(AssessmentCandidateService.class);
 
     @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
     private Auditor auditor;
 
     @Resource
+    private RequestTimestampContext requestTimestampContext;
+
+    @Resource
+    private AssessmentObjectManagementService assessmentObjectManagementService;
+
+    @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private JqtiExtensionManager jqtiExtensionManager;
 
     @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
@@ -126,10 +137,10 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-
     //----------------------------------------------------
+    // Initialisation
 
-    public ItemSessionState initialiseSession(final CandidateItemSession candidateSession) {
+    public ItemSessionState initialiseSession(final CandidateItemSession candidateSession) throws RuntimeValidationException {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent!=null) {
             /* FIXME: Need to add logic to decide whether we are allowed to re-initialize
@@ -137,8 +148,16 @@ public class AssessmentCandidateService {
              */
         }
 
+        /* Get the resolved JQTI+ Object for the underlying package */
+        final AssessmentPackage assessmentPackage = candidateSession.getItemDelivery().getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+
         /* Create new state */
         final ItemSessionState itemSessionState = new ItemSessionState();
+
+        /* Initialise state */
+        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        itemController.initialize();
 
         /* Record event */
         recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
@@ -146,6 +165,8 @@ public class AssessmentCandidateService {
 
         return itemSessionState;
     }
+
+    //----------------------------------------------------
 
     private CandidateItemEvent recordEvent(final CandidateItemSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {

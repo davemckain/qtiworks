@@ -320,7 +320,6 @@ public final class ItemSesssionStateXmlMarshaller {
             throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + valueStrings.size());
         }
         final String singleValueString = valueStrings.get(0);
-        System.out.println("PARSING " + singleValueString);
         try {
             return baseType.parseSingleValue(singleValueString);
         }
