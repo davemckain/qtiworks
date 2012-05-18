@@ -365,7 +365,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      */
     public NodeGroup<?> get(final String name) {
         for (final NodeGroup<?> child : groups) {
-            if (child.getName().equals(name) || child.getAllSupportedQtiClasses().contains(name)) {
+            if (child.getName().equals(name) || child.supportsQtiClass(name)) {
                 return child;
             }
         }

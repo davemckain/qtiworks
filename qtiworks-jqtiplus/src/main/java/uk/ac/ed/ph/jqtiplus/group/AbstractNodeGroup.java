@@ -159,9 +159,8 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
     }
 
     @Override
-    public Set<String> getAllSupportedQtiClasses() {
-        /* NB: The underlying set is already unmodifiable */
-        return supportedQtiClasses;
+    public boolean supportsQtiClass(final String qtiClassName) {
+        return supportedQtiClasses.contains(qtiClassName);
     }
 
     /**
@@ -218,13 +217,13 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
         boolean handled = false;
         try {
             final short nodeType = childNode.getNodeType();
-            if (nodeType==Node.ELEMENT_NODE && getAllSupportedQtiClasses().contains(childNode.getLocalName())) {
+            if (nodeType==Node.ELEMENT_NODE && supportsQtiClass(childNode.getLocalName())) {
                 final C child = createChild((Element) childNode, context.getJqtiExtensionManager());
                 child.load((Element) childNode, context);
                 children.add(child);
                 handled = true;
             }
-            else if (nodeType==Node.TEXT_NODE && getAllSupportedQtiClasses().contains(TextRun.DISPLAY_NAME)) {
+            else if (nodeType==Node.TEXT_NODE && supportsQtiClass(TextRun.DISPLAY_NAME)) {
                 final TextRun child = (TextRun) create(TextRun.DISPLAY_NAME);
                 child.load((Text) childNode);
                 children.add((C) child);

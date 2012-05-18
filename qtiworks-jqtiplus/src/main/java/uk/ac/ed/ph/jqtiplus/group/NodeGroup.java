@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import org.w3c.dom.Node;
 
@@ -93,13 +92,15 @@ public interface NodeGroup<C extends XmlNode> extends Validatable, Serializable,
     boolean isGeneral();
 
     /**
-     * Returns an unmodifiable {@link Set} of the QTI class names of all possible children.
+     * Returns whether this NodeGroup supports (i.e. contains) {@link XmlNode}s of the given
+     * QTI Class Names.
      *
-     * For example: SectionPartNodegroups returns assessmentSection and assessmentItemRef.
+     * For example: SectionPartNodegroups supports assessmentSection and assessmentItemRef.
      *
-     * @return list of all possible QTI class names (all possible children in this group)
+     * @return true if this group contains {@link XmlNode}s of the given class name, false
+     *   otherwise
      */
-    Set<String> getAllSupportedQtiClasses();
+    boolean supportsQtiClass(String qtiClassName);
 
     /**
      * Gets list of all children.
