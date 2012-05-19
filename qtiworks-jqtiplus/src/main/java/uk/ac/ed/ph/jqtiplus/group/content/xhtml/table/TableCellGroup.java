@@ -33,59 +33,30 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.TableCell;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.TableCellType;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tr;
 
 import java.util.List;
 
-
 /**
  * Group of tableCell children.
  *
  * @author Jonathon Hare
  */
-public class TableCellGroup extends AbstractNodeGroup<Tr,TableCell> {
+public class TableCellGroup extends ComplexNodeGroup<Tr,TableCell> {
 
     private static final long serialVersionUID = 3647300480260318987L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TableCellGroup(final Tr parent) {
         super(parent, TableCell.DISPLAY_NAME, TableCellType.getQtiClassNames(), 1, null);
     }
 
-    @Override
-    public Tr getParent() {
-        return super.getParent();
-    }
-
-    @Override
-    public boolean isComplexContent() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
-    public List<TableCell> getDlElements() {
+    public List<TableCell> getTableCellElements() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public TableCell create(final String classTag) {
         return TableCellType.getInstance(getParent(), classTag);

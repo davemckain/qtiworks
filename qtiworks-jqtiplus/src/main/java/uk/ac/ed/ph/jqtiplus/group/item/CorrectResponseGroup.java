@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
  *
  * @author Jonathon Hare
  */
-public final class CorrectResponseGroup extends AbstractNodeGroup<XmlNode, CorrectResponse> {
+public final class CorrectResponseGroup extends SimpleSingleNodeGroup<XmlNode, CorrectResponse> {
 
     private static final long serialVersionUID = -5509006540419433030L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public CorrectResponseGroup(final XmlNode parent) {
         super(parent, CorrectResponse.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setCorrectResponse
-     */
     public CorrectResponse getCorrectResponse() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param correctResponse new child
-     * @see #getCorrectResponse
-     */
     public void setCorrectResponse(final CorrectResponse correctResponse) {
         setChild(correctResponse);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public CorrectResponse create(final String classTag) {
+    public CorrectResponse create() {
         return new CorrectResponse(getParent());
     }
 }

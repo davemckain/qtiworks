@@ -33,8 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
-
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 
@@ -43,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
  *
  * @author Jiri Kajaba
  */
-public final class DefaultValueGroup extends AbstractNodeGroup<VariableDeclaration,DefaultValue> {
+public final class DefaultValueGroup extends SimpleSingleNodeGroup<VariableDeclaration,DefaultValue> {
 
     private static final long serialVersionUID = -849789190894504421L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public DefaultValueGroup(final VariableDeclaration parent) {
         super(parent, DefaultValue.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setDefaultValue
-     */
     public DefaultValue getDefaultValue() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param defaultValue new child
-     * @see #getDefaultValue
-     */
     public void setDefaultValue(final DefaultValue defaultValue) {
         setChild(defaultValue);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public DefaultValue create(final String classTag) {
+    public DefaultValue create() {
         return new DefaultValue(getParent());
     }
 }

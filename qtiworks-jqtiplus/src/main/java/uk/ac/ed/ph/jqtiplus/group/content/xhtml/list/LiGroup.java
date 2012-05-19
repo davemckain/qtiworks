@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.list.Li;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class LiGroup extends AbstractNodeGroup<BodyElement,Li> {
+public final class LiGroup extends SimpleMultipleNodeGroup<BodyElement,Li> {
 
     private static final long serialVersionUID = 3195076442282902893L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public LiGroup(final BodyElement parent) {
         super(parent, Li.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Li> getLis() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Li create(final String classTag) {
+    public Li create() {
         return new Li(getParent());
     }
 }

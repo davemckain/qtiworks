@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.expression;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ExpressionGroup extends AbstractNodeGroup<ExpressionParent, Expression> {
+public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Expression> {
 
     private static final long serialVersionUID = 891305708750072316L;
 
@@ -62,16 +62,6 @@ public final class ExpressionGroup extends AbstractNodeGroup<ExpressionParent, E
 
     public ExpressionGroup(final ExpressionParent parent, final int minimum, final int maximum) {
         this(parent, Integer.valueOf(minimum), Integer.valueOf(maximum));
-    }
-
-    @Override
-    public ExpressionParent getParent() {
-        return super.getParent();
-    }
-
-    @Override
-    public boolean isComplexContent() {
-        return true;
     }
 
     //    @Override

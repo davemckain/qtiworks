@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConditionChild;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRuleType;
@@ -45,41 +45,18 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateConditionChild,TemplateRule> {
+public final class TemplateRuleGroup extends ComplexNodeGroup<TemplateConditionChild,TemplateRule> {
 
     private static final long serialVersionUID = 7611032252474697635L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TemplateRuleGroup(final TemplateConditionChild parent) {
         super(parent, TemplateRule.DISPLAY_NAME, TemplateRuleType.getQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isComplexContent() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TemplateRule> getTemplateRules() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public TemplateRule create(final String classTag) {
         return TemplateRuleType.getInstance(getParent(), classTag);

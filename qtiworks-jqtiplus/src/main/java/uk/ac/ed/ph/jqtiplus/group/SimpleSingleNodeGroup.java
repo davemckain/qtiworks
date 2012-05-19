@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
- * FIXME: Document this!
+ * Base class for {@link NodeGroup}s that contain (ZERO or) ONE child of a particular type.
  *
  * @author David McKain
  */
@@ -44,8 +44,8 @@ public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode
 
     private static final long serialVersionUID = 3006947671579885917L;
 
-    public SimpleSingleNodeGroup(final P parent, final String childQtiClass, final boolean required) {
-        super(parent, childQtiClass, required);
+    public SimpleSingleNodeGroup(final P parent, final String name, final boolean required) {
+        super(parent, name, required ? 1 : 0, 1);
     }
 
     @Override

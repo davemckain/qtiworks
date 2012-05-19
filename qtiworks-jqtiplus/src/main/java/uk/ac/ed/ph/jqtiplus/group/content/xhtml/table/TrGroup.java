@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tr;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TrGroup extends AbstractNodeGroup<BodyElement,Tr> {
+public final class TrGroup extends SimpleMultipleNodeGroup<BodyElement,Tr> {
 
     private static final long serialVersionUID = 2992834378077111309L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TrGroup(final BodyElement parent) {
         super(parent, Tr.QTI_CLASS_NAME, 1, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Tr> getTrs() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Tr create(final String classTag) {
+    public Tr create() {
         return new Tr(getParent());
     }
 }

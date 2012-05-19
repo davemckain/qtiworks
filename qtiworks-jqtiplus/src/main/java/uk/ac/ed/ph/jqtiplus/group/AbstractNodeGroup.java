@@ -72,20 +72,6 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
     private final Integer maximum;
 
     /**
-     * Constructs group with maximum set to 1 and only supporting QTI classes having the same
-     * name of the group.
-     * <p>
-     * This is convenient constructor for group with only one child.
-     *
-     * @param parent parent of created group
-     * @param name name of created group
-     * @param required if true, minimum is set to 1, if false, minimum is set to 0
-     */
-    public AbstractNodeGroup(final P parent, final String name, final boolean required) {
-        this(parent, name, required ? 1 : 0, 1);
-    }
-
-    /**
      * Constructs group with maximum set to 1.
      * <p>
      * This is convenient constructor for group with only one child.

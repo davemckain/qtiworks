@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
  *
  * @author Jiri Kajaba
  */
-public final class TimeLimitGroup extends AbstractNodeGroup<ControlObject<?>,TimeLimit> {
+public final class TimeLimitGroup extends SimpleSingleNodeGroup<ControlObject<?>,TimeLimit> {
 
     private static final long serialVersionUID = -4277774618437451112L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TimeLimitGroup(final ControlObject<?> parent) {
         super(parent, TimeLimit.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setTimeLimit
-     */
     public TimeLimit getTimeLimit() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param timeLimit new child
-     * @see #getTimeLimit
-     */
     public void setTimeLimit(final TimeLimit timeLimit) {
         setChild(timeLimit);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public TimeLimit create(final String classTag) {
+    public TimeLimit create() {
         return new TimeLimit(getParent());
     }
 }

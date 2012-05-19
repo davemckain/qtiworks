@@ -38,26 +38,13 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import java.util.Set;
 
 /**
- * Parent of all groups.
+ * Base class for a "complex" {@link NodeGroup}, which is one that contain more than one type of child.
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
 public abstract class ComplexNodeGroup<P extends XmlNode, C extends XmlNode> extends AbstractNodeGroup<P,C> {
 
     private static final long serialVersionUID = 903238011893494959L;
-
-    /**
-     * Constructs group with maximum set to 1.
-     * <p>
-     * This is convenient constructor for group with only one child.
-     *
-     * @param parent parent of created group
-     * @param name name of created group
-     * @param required if true, minimum is set to 1, if false, minimum is set to 0
-     */
-    public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
-        super(parent, name, supportedQtiClasses, required ? 1 : 0, 1);
-    }
 
     public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses,
             final Integer minimum, final Integer maximum) {

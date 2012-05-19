@@ -46,14 +46,15 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 /**
- * Container for one node type.
+ * Container a particular class of {@link XmlNode}s.
  * <p>
  * For example: {@link TestPartGroup} (group for testParts), {@link ExpressionGroup} (group for expressions).
  *
  * @param <P> type of parent {@link XmlNode}
  * @param <C> type of child {@link XmlNode}
  *
- * @author Jiri Kajaba
+ * @author Jiri Kajaba (original)
+ * @author David McKain (refactored)
  */
 public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validatable, Serializable, Iterable<C> {
 
@@ -113,14 +114,16 @@ public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validat
     List<C> getChildren();
 
     /**
-     * Gets required minimum number of children or null.
+     * Returns the required minimum number of children.
+     *
+     * TODO: null and zero are the same.
      *
      * @return required minimum number of children or null
      */
     Integer getMinimum();
 
     /**
-     * Gets allowed maximum number of children or null.
+     * Returns the allowed maximum number of children, using null to mean "unlimited"
      *
      * @return allowed maximum number of children or null
      */

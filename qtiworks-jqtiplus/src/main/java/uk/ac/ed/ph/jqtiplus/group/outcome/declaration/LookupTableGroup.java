@@ -53,7 +53,7 @@ public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,
     public LookupTableGroup(final OutcomeDeclaration parent) {
         super(parent, LookupTable.DISPLAY_NAME,
                 ObjectUtilities.unmodifiableSet(MatchTable.QTI_CLASS_NAME, InterpolationTable.QTI_CLASS_NAME),
-                false);
+                0, 1);
     }
 
     public LookupTable getLookupTable() {

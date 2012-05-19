@@ -33,49 +33,31 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
 
 import java.util.List;
 
 /**
- * Group of assessmentSection children.
+ * Group of weight children.
  *
  * @author Jiri Kajaba
  */
-public final class WeightGroup extends AbstractNodeGroup<AssessmentItemRef,Weight> {
+public final class WeightGroup extends SimpleMultipleNodeGroup<AssessmentItemRef,Weight> {
 
     private static final long serialVersionUID = 56148491111431386L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public WeightGroup(final AssessmentItemRef parent) {
         super(parent, Weight.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Weight> getWeights() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Weight create(final String classTag) {
+    public Weight create() {
         return new Weight(getParent());
     }
 }

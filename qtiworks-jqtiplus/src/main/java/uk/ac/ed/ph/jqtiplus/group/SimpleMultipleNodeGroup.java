@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.group;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 /**
- * FIXME: Document this!
+ * Base class for {@link NodeGroup}s that can contain zero or more children, all of the same type.
  *
  * @author David McKain
  */

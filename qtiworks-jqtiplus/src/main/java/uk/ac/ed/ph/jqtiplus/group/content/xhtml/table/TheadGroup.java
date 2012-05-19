@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Thead;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Thead;
  *
  * @author Jonathon Hare
  */
-public final class TheadGroup extends AbstractNodeGroup<Table,Thead> {
+public final class TheadGroup extends SimpleSingleNodeGroup<Table,Thead> {
 
     private static final long serialVersionUID = 1884153251149664177L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TheadGroup(final Table parent) {
         super(parent, Thead.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets thead child.
-     *
-     * @return thead child, or null if it doesn't exist.
-     * @see #setThead
-     */
     public Thead getThead() {
         return getChild();
     }
 
-    /**
-     * Sets new thead child.
-     *
-     * @param thead new child
-     * @see #getThead
-     */
     public void setThead(final Thead thead) {
         setChild(thead);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Thead create(final String classTag) {
+    public Thead create() {
         return new Thead(getParent());
     }
 }

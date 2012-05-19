@@ -33,59 +33,33 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Caption;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
-
 
 /**
  * Group of correctResponse child.
  *
  * @author Jonathon Hare
  */
-public final class CaptionGroup extends AbstractNodeGroup<Table,Caption> {
+public final class CaptionGroup extends SimpleSingleNodeGroup<Table,Caption> {
 
     private static final long serialVersionUID = 4870184636177405884L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public CaptionGroup(final Table parent) {
         super(parent, Caption.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets caption child.
-     *
-     * @return caption child, or null if it doesn't exist.
-     * @see #setCaption
-     */
     public Caption getCaption() {
         return getChild();
     }
 
-    /**
-     * Sets new caption child.
-     *
-     * @param caption new child
-     * @see #getCaption
-     */
     public void setCaption(final Caption caption) {
         setChild(caption);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Caption create(final String classTag) {
+    public Caption create() {
         return new Caption(getParent());
     }
 }
