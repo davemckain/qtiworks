@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNodeGroupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
@@ -274,13 +273,42 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
     }
 
     /**
-     * Adds given group into this container.
-     * Checks duplicities in group's names.
+     * Adds given group into this container
+     * <p>
+     * (In JQTI+, this no longer checks duplicities in group names.)
+     *
+     * @see #addSafe(int, NodeGroup)
+     *
+     * @param group given group
+     */
+    public void add(final NodeGroup<?,?> group) {
+        groups.add(group);
+    }
+
+    /**
+     * Adds given group into this container at given position.
+     * <p>
+     * (In JQTI+, this no longer checks duplicities in group names.)
+     *
+     * @param index position
+     * @param group given group
+     */
+    public void add(final int index, final NodeGroup<?,?> group) {
+        groups.add(index, group);
+    }
+
+    /**
+     * SAFELY adds given group into this container, checking duplicities in
+     * group names.
+     * <p>
+     * This used to be the default in JQTI, but wastes processor cycles for the
+     * implementation of the core QTI spec. I've kept it in in case it might be
+     * useful for someone adding a (non-standard) extension to the spec.
      *
      * @param group given group
      * @throws QtiNodeGroupException if container already contains group with same name
      */
-    public void add(final NodeGroup<?,?> group) {
+    public void addSafe(final int index, final NodeGroup<?,?> group) {
         for (final NodeGroup<?,?> child : groups) {
             if (child.getName().equals(group.getName())) {
                 final QtiNodeGroupException ex = new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
@@ -289,18 +317,6 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
             }
         }
 
-        groups.add(group);
-    }
-
-    /**
-     * Adds given group into this container at given position.
-     * Checks duplicities in group's names.
-     *
-     * @param index position
-     * @param group given group
-     * @throws QtiEvaluationException if container already contains group with same name
-     */
-    public void add(final int index, final NodeGroup<?,?> group) {
         groups.add(index, group);
     }
 
