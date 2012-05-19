@@ -33,68 +33,37 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
 /**
- * Group of correctResponse child.
+ * Group of object child.
  *
  * @author Jonathon Hare
  */
-public final class ObjectGroup extends AbstractNodeGroup<Object> {
+public final class ObjectGroup extends SimpleSingleNodeGroup<XmlNode,Object> {
 
     private static final long serialVersionUID = 8768771986890876537L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ObjectGroup(XmlNode parent) {
+    public ObjectGroup(final XmlNode parent) {
         super(parent, Object.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param required if true then group is mandatory
-     */
-    public ObjectGroup(XmlNode parent, boolean required) {
-        super(parent, Object.QTI_CLASS_NAME, true);
+    public ObjectGroup(final XmlNode parent, final boolean required) {
+        super(parent, Object.QTI_CLASS_NAME, required);
     }
 
-    /**
-     * Gets Object child.
-     *
-     * @return Object child, or null if it doesn't exist.
-     * @see #setObject
-     */
     public Object getObject() {
         return getChild();
     }
 
-    /**
-     * Sets new Object child.
-     *
-     * @param object new child
-     * @see #getObject
-     */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         setChild(object);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Object create(String classTag) {
+    public Object create() {
         return new Object(getParent());
     }
 }

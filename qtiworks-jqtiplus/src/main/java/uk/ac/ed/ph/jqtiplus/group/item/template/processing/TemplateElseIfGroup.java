@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateElseIf;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TemplateElseIfGroup extends AbstractNodeGroup<TemplateElseIf> {
+public final class TemplateElseIfGroup extends SimpleMultipleNodeGroup<TemplateCondition,TemplateElseIf> {
 
     private static final long serialVersionUID = -4363023590072745882L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public TemplateElseIfGroup(TemplateCondition parent) {
+    public TemplateElseIfGroup(final TemplateCondition parent) {
         super(parent, TemplateElseIf.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TemplateElseIf> getTemplateElseIfs() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public TemplateElseIf create(String classTag) {
-        return new TemplateElseIf((TemplateCondition) getParent());
+    public TemplateElseIf create() {
+        return new TemplateElseIf(getParent());
     }
 }

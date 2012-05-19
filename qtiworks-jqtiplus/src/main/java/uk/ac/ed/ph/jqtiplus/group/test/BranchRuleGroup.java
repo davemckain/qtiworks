@@ -33,50 +33,31 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 
 import java.util.List;
-
 
 /**
  * Group of branchRule children.
  *
  * @author Jiri Kajaba
  */
-public final class BranchRuleGroup extends AbstractNodeGroup<BranchRule> {
+public final class BranchRuleGroup extends SimpleMultipleNodeGroup<AbstractPart,BranchRule> {
 
     private static final long serialVersionUID = -3357195062470412763L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public BranchRuleGroup(AbstractPart parent) {
+    public BranchRuleGroup(final AbstractPart parent) {
         super(parent, BranchRule.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<BranchRule> getBranchRules() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public BranchRule create(String classTag) {
-        return new BranchRule((AbstractPart) getParent());
+    public BranchRule create() {
+        return new BranchRule(getParent());
     }
 }

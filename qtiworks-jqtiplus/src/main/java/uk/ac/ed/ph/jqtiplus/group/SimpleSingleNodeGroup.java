@@ -31,34 +31,32 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
+package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseRule;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseRuleType;
-
-import java.util.List;
 
 /**
- * Group of responseRule children.
+ * FIXME: Document this!
  *
- * @author Jonathon Hare
+ * @author David McKain
  */
-public final class ResponseRuleGroup extends ComplexNodeGroup<XmlNode,ResponseRule> {
+public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode> extends AbstractNodeGroup<P,C> {
 
-    private static final long serialVersionUID = 8969526609727989356L;
+    private static final long serialVersionUID = 3006947671579885917L;
 
-    public ResponseRuleGroup(final XmlNode parent) {
-        super(parent, ResponseRule.DISPLAY_NAME, ResponseRuleType.getQtiClassNames(), null, null);
-    }
-
-    public List<ResponseRule> getResponseRules() {
-        return getChildren();
+    public SimpleSingleNodeGroup(final P parent, final String childQtiClass, final boolean required) {
+        super(parent, childQtiClass, required);
     }
 
     @Override
-    public ResponseRule create(final String classTag) {
-        return ResponseRuleType.getInstance(getParent(), classTag);
+    public final boolean isComplexContent() {
+        return false;
     }
+
+    @Override
+    public final C create(final String classTag) {
+        return create();
+    }
+
+    public abstract C create();
 }

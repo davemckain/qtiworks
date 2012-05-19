@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
  *
  * @author Jiri Kajaba
  */
-public final class TimeLimitGroup extends AbstractNodeGroup<TimeLimit> {
+public final class TimeLimitGroup extends AbstractNodeGroup<ControlObject<?>,TimeLimit> {
 
     private static final long serialVersionUID = -4277774618437451112L;
 
@@ -51,7 +51,7 @@ public final class TimeLimitGroup extends AbstractNodeGroup<TimeLimit> {
      *
      * @param parent parent of created group
      */
-    public TimeLimitGroup(ControlObject<?> parent) {
+    public TimeLimitGroup(final ControlObject<?> parent) {
         super(parent, TimeLimit.QTI_CLASS_NAME, false);
     }
 
@@ -71,7 +71,7 @@ public final class TimeLimitGroup extends AbstractNodeGroup<TimeLimit> {
      * @param timeLimit new child
      * @see #getTimeLimit
      */
-    public void setTimeLimit(TimeLimit timeLimit) {
+    public void setTimeLimit(final TimeLimit timeLimit) {
         setChild(timeLimit);
     }
 
@@ -84,7 +84,7 @@ public final class TimeLimitGroup extends AbstractNodeGroup<TimeLimit> {
      * @return created child
      */
     @Override
-    public TimeLimit create(String classTag) {
-        return new TimeLimit((ControlObject<?>) getParent());
+    public TimeLimit create(final String classTag) {
+        return new TimeLimit(getParent());
     }
 }

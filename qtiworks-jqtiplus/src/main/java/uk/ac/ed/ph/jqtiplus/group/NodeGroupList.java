@@ -224,9 +224,11 @@ import org.w3c.dom.NodeList;
 /**
  * Container for all node groups of one node.
  *
+ * @param <P> type of parent (owning) {@link XmlNode}
+ *
  * @author Jiri Kajaba
  */
-public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? extends XmlNode>> {
+public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>> {
 
     private static final long serialVersionUID = 4649998181277985510L;
 
@@ -236,7 +238,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
     private final XmlNode parent;
 
     /** Children (groups) of this container. */
-    private final List<NodeGroup<? extends XmlNode>> groups;
+    private final List<NodeGroup<?,?>> groups;
 
     /**
      * Constructs container.
@@ -245,7 +247,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      */
     public NodeGroupList(final XmlNode parent) {
         this.parent = parent;
-        this.groups = new ArrayList<NodeGroup<? extends XmlNode>>();
+        this.groups = new ArrayList<NodeGroup<?,?>>();
     }
 
     /**
@@ -267,7 +269,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
     }
 
     @Override
-    public Iterator<NodeGroup<?>> iterator() {
+    public Iterator<NodeGroup<?,?>> iterator() {
         return groups.iterator();
     }
 
@@ -278,8 +280,8 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param group given group
      * @throws QtiNodeGroupException if container already contains group with same name
      */
-    public void add(final NodeGroup<?> group) {
-        for (final NodeGroup<?> child : groups) {
+    public void add(final NodeGroup<?,?> group) {
+        for (final NodeGroup<?,?> child : groups) {
             if (child.getName().equals(group.getName())) {
                 final QtiNodeGroupException ex = new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
                 logger.error(ex.getMessage());
@@ -298,7 +300,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param group given group
      * @throws QtiEvaluationException if container already contains group with same name
      */
-    public void add(final int index, final NodeGroup<?> group) {
+    public void add(final int index, final NodeGroup<?,?> group) {
         groups.add(index, group);
     }
 
@@ -312,14 +314,14 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param element source node
      */
     public void load(final Element element, final LoadingContext context) {
-        for (final NodeGroup<?> group : groups) {
+        for (final NodeGroup<?,?> group : groups) {
             group.getChildren().clear();
         }
         final NodeList childNodes = element.getChildNodes();
         for (int i=0; i<childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
             boolean childLoaded = false;
-            for (final NodeGroup<?> group : groups) {
+            for (final NodeGroup<?,?> group : groups) {
                 if (group.loadChildIfSupported(childNode, context)) {
                     childLoaded = true;
                     break;
@@ -352,7 +354,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @param index index of requested group
      * @return group at given index
      */
-    public NodeGroup<?> get(final int index) {
+    public NodeGroup<?,?> get(final int index) {
         return groups.get(index);
     }
 
@@ -363,8 +365,8 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
      * @return group with given name
      * @throws QtiNodeGroupException if group is not found
      */
-    public NodeGroup<?> get(final String name) {
-        for (final NodeGroup<?> child : groups) {
+    public NodeGroup<?,?> get(final String name) {
+        for (final NodeGroup<?,?> child : groups) {
             if (child.getName().equals(name) || child.supportsQtiClass(name)) {
                 return child;
             }
@@ -377,7 +379,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<? ex
 
     @Override
     public void validate(final ValidationContext context) {
-        for (final NodeGroup<?> child : groups) {
+        for (final NodeGroup<?,?> child : groups) {
             child.validate(context);
         }
     }

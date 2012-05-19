@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.declaration;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ResponseDeclarationGroup extends AbstractNodeGroup<ResponseDeclaration> {
+public final class ResponseDeclarationGroup extends SimpleMultipleNodeGroup<AssessmentItem, ResponseDeclaration> {
 
     private static final long serialVersionUID = 1599116368594322171L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ResponseDeclarationGroup(AssessmentItem parent) {
-        super(parent, ResponseDeclaration.QTI_CLASS_NAME, null, null);
+    public ResponseDeclarationGroup(final AssessmentItem parent) {
+        super(parent, ResponseDeclaration.QTI_CLASS_NAME);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<ResponseDeclaration> getResponseDeclarations() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ResponseDeclaration create(String classTag) {
-        return new ResponseDeclaration((AssessmentItem) getParent());
+    public ResponseDeclaration create() {
+        return new ResponseDeclaration(getParent());
     }
 }

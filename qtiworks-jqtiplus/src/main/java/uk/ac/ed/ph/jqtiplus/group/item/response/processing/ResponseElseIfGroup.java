@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseElseIf;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ResponseElseIfGroup extends AbstractNodeGroup<ResponseElseIf> {
+public final class ResponseElseIfGroup extends SimpleMultipleNodeGroup<ResponseCondition,ResponseElseIf> {
 
     private static final long serialVersionUID = -6280993789555268028L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ResponseElseIfGroup(ResponseCondition parent) {
+    public ResponseElseIfGroup(final ResponseCondition parent) {
         super(parent, ResponseElseIf.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<ResponseElseIf> getResponseElseIfs() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ResponseElseIf create(String classTag) {
-        return new ResponseElseIf((ResponseCondition) getParent());
+    public ResponseElseIf create() {
+        return new ResponseElseIf(getParent());
     }
 }

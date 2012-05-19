@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseIf;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseIf;
  *
  * @author Jonathon Hare
  */
-public final class ResponseIfGroup extends AbstractNodeGroup<ResponseIf> {
+public final class ResponseIfGroup extends SimpleSingleNodeGroup<ResponseCondition,ResponseIf> {
 
     private static final long serialVersionUID = -5802411516986960190L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ResponseIfGroup(ResponseCondition parent) {
+    public ResponseIfGroup(final ResponseCondition parent) {
         super(parent, ResponseIf.QTI_CLASS_NAME, true);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setResponseIf
-     */
     public ResponseIf getResponseIf() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param responseIf new child
-     * @see #getResponseIf
-     */
-    public void setResponseIf(ResponseIf responseIf) {
+    public void setResponseIf(final ResponseIf responseIf) {
         setChild(responseIf);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ResponseIf create(String classTag) {
-        return new ResponseIf((ResponseCondition) getParent());
+    public ResponseIf create() {
+        return new ResponseIf(getParent());
     }
 }

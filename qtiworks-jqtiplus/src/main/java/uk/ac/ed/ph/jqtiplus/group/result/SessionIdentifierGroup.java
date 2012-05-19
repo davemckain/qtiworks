@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class SessionIdentifierGroup extends AbstractNodeGroup<SessionIdentifier> {
+public final class SessionIdentifierGroup extends SimpleMultipleNodeGroup<Context,SessionIdentifier> {
 
     private static final long serialVersionUID = 7411327926543577362L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public SessionIdentifierGroup(Context parent) {
+    public SessionIdentifierGroup(final Context parent) {
         super(parent, SessionIdentifier.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<SessionIdentifier> getSessionIdentifiers() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public SessionIdentifier create(String classTag) {
-        return new SessionIdentifier((Context) getParent());
+    public SessionIdentifier create() {
+        return new SessionIdentifier(getParent());
     }
 }

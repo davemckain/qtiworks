@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeCondition;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeElseIf;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeElseIfGroup extends AbstractNodeGroup<OutcomeElseIf> {
+public final class OutcomeElseIfGroup extends SimpleMultipleNodeGroup<OutcomeCondition,OutcomeElseIf> {
 
     private static final long serialVersionUID = 7361297940568871513L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public OutcomeElseIfGroup(OutcomeCondition parent) {
+    public OutcomeElseIfGroup(final OutcomeCondition parent) {
         super(parent, OutcomeElseIf.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<OutcomeElseIf> getOutcomeElseIfs() {
         return  getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public OutcomeElseIf create(String classTag) {
-        return new OutcomeElseIf((OutcomeCondition) getParent());
+    public OutcomeElseIf create() {
+        return new OutcomeElseIf(getParent());
     }
 }

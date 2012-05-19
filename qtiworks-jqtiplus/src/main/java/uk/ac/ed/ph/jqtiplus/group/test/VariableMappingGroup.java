@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class VariableMappingGroup extends AbstractNodeGroup<VariableMapping> {
+public final class VariableMappingGroup extends AbstractNodeGroup<AssessmentItemRef,VariableMapping> {
 
     private static final long serialVersionUID = -4601191716738151865L;
 
@@ -53,7 +53,7 @@ public final class VariableMappingGroup extends AbstractNodeGroup<VariableMappin
      *
      * @param parent parent of created group
      */
-    public VariableMappingGroup(AssessmentItemRef parent) {
+    public VariableMappingGroup(final AssessmentItemRef parent) {
         super(parent, VariableMapping.QTI_CLASS_NAME, null, null);
     }
 
@@ -75,7 +75,7 @@ public final class VariableMappingGroup extends AbstractNodeGroup<VariableMappin
      * @return created child
      */
     @Override
-    public VariableMapping create(String classTag) {
-        return new VariableMapping((AssessmentItemRef) getParent());
+    public VariableMapping create(final String classTag) {
+        return new VariableMapping(getParent());
     }
 }

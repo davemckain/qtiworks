@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
 
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseElse;
 
@@ -43,49 +43,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseElse;
  *
  * @author Jonathon Hare
  */
-public final class ResponseElseGroup extends AbstractNodeGroup<ResponseElse> {
+public final class ResponseElseGroup extends SimpleSingleNodeGroup<ResponseCondition,ResponseElse> {
 
     private static final long serialVersionUID = 2103491746328094206L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ResponseElseGroup(ResponseCondition parent) {
+    public ResponseElseGroup(final ResponseCondition parent) {
         super(parent, ResponseElse.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setResponseElse
-     */
     public ResponseElse getResponseElse() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param responseElse new child
-     * @see #getResponseElse
-     */
-    public void setResponseElse(ResponseElse responseElse) {
+    public void setResponseElse(final ResponseElse responseElse) {
         setChild(responseElse);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ResponseElse create(String classTag) {
-        return new ResponseElse((ResponseCondition) getParent());
+    public ResponseElse create() {
+        return new ResponseElse(getParent());
     }
 }

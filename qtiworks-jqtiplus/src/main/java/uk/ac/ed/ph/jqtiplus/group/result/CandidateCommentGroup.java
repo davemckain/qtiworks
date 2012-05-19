@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.CandidateComment;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
  *
  * @author Jiri Kajaba
  */
-public final class CandidateCommentGroup extends AbstractNodeGroup<CandidateComment> {
+public final class CandidateCommentGroup extends SimpleSingleNodeGroup<ItemResult,CandidateComment> {
 
     private static final long serialVersionUID = 4841058245935379411L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public CandidateCommentGroup(ItemResult parent) {
+    public CandidateCommentGroup(final ItemResult parent) {
         super(parent, CandidateComment.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setCandidateComment
-     */
     public CandidateComment getCandidateComment() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param candidateComment new child
-     * @see #getCandidateComment
-     */
-    public void setCandidateComment(CandidateComment candidateComment) {
+    public void setCandidateComment(final CandidateComment candidateComment) {
         setChild(candidateComment);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public CandidateComment create(String classTag) {
-        return new CandidateComment((ItemResult) getParent());
+    public CandidateComment create() {
+        return new CandidateComment(getParent());
     }
 }

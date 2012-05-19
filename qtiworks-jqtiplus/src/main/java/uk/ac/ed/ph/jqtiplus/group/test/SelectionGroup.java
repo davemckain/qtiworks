@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.test.Selection;
  *
  * @author Jiri Kajaba
  */
-public final class SelectionGroup extends AbstractNodeGroup<Selection> {
+public final class SelectionGroup extends SimpleSingleNodeGroup<AssessmentSection,Selection> {
 
     private static final long serialVersionUID = -334457452115682483L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public SelectionGroup(AssessmentSection parent) {
+    public SelectionGroup(final AssessmentSection parent) {
         super(parent, Selection.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setSelection
-     */
     public Selection getSelection() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param selection new child
-     * @see #getSelection
-     */
-    public void setSelection(Selection selection) {
+    public void setSelection(final Selection selection) {
         setChild(selection);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Selection create(String classTag) {
-        return new Selection((AssessmentSection) getParent());
+    public Selection create() {
+        return new Selection(getParent());
     }
 }

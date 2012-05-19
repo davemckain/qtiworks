@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
  *
  * @author Jiri Kajaba
  */
-public final class ItemSessionControlGroup extends AbstractNodeGroup<ItemSessionControl> {
+public final class ItemSessionControlGroup extends SimpleSingleNodeGroup<AbstractPart,ItemSessionControl> {
 
     private static final long serialVersionUID = -2510238710166216308L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ItemSessionControlGroup(AbstractPart parent) {
+    public ItemSessionControlGroup(final AbstractPart parent) {
         super(parent, ItemSessionControl.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setItemSessionControl
-     */
     public ItemSessionControl getItemSessionControl() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param itemSessionControl new child
-     * @see #getItemSessionControl
-     */
-    public void setItemSessionControl(ItemSessionControl itemSessionControl) {
+    public void setItemSessionControl(final ItemSessionControl itemSessionControl) {
         setChild(itemSessionControl);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ItemSessionControl create(String classTag) {
-        return new ItemSessionControl((AbstractPart) getParent());
+    public ItemSessionControl create() {
+        return new ItemSessionControl(getParent());
     }
 }

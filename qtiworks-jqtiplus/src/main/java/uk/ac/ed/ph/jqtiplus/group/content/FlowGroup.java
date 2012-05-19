@@ -48,37 +48,14 @@ public final class FlowGroup extends AbstractContentNodeGroup<Flow> {
 
     private static final long serialVersionUID = -2045148464986468147L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public FlowGroup(final XmlNode parent) {
         super(parent, Flow.DISPLAY_NAME, ContentType.getFlowQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Flow> getFlows() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public Flow create(final String classTag) {
         return ContentType.getFlowInstance(getParent(), classTag);

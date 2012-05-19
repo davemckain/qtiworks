@@ -48,37 +48,14 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
 
     private static final long serialVersionUID = -4777558280555802758L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TextOrVariableGroup(final XmlNode parent) {
         super(parent, TextOrVariable.DISPLAY_NAME, ContentType.getTextOrVariableQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TextOrVariable> getTextOrVariables() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public TextOrVariable create(final String classTag) {
         return ContentType.getTextOrVariableInstance(getParent(), classTag);

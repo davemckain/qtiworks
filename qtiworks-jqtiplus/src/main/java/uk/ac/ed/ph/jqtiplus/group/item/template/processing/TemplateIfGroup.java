@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateCondition;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateIf;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateIf;
  *
  * @author Jonathon Hare
  */
-public final class TemplateIfGroup extends AbstractNodeGroup<TemplateIf> {
+public final class TemplateIfGroup extends SimpleSingleNodeGroup<TemplateCondition,TemplateIf> {
 
     private static final long serialVersionUID = 8675309429542795041L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public TemplateIfGroup(TemplateCondition parent) {
+    public TemplateIfGroup(final TemplateCondition parent) {
         super(parent, TemplateIf.QTI_CLASS_NAME, true);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setTemplateIf
-     */
     public TemplateIf getTemplateIf() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param templateIf new child
-     * @see #getTemplateIf
-     */
-    public void setTemplateIf(TemplateIf templateIf) {
+    public void setTemplateIf(final TemplateIf templateIf) {
         setChild(templateIf);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public TemplateIf create(String classTag) {
-        return new TemplateIf((TemplateCondition) getParent());
+    public TemplateIf create() {
+        return new TemplateIf(getParent());
     }
 }

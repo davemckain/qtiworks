@@ -34,18 +34,18 @@
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConditionChild;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateRuleType;
 
 import java.util.List;
 
 /**
- * Group of outcomeRule children.
+ * Group of templateRule children.
  *
  * @author Jonathon Hare
  */
-public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateRule> {
+public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateConditionChild,TemplateRule> {
 
     private static final long serialVersionUID = 7611032252474697635L;
 
@@ -54,12 +54,12 @@ public final class TemplateRuleGroup extends AbstractNodeGroup<TemplateRule> {
      *
      * @param parent parent of created group
      */
-    public TemplateRuleGroup(final XmlNode parent) {
+    public TemplateRuleGroup(final TemplateConditionChild parent) {
         super(parent, TemplateRule.DISPLAY_NAME, TemplateRuleType.getQtiClassNames(), null, null);
     }
 
     @Override
-    public boolean isGeneral() {
+    public boolean isComplexContent() {
         return true;
     }
 

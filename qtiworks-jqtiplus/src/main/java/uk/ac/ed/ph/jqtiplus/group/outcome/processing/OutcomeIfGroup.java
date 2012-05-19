@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeCondition;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeIf;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeIf;
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeIfGroup extends AbstractNodeGroup<OutcomeIf> {
+public final class OutcomeIfGroup extends SimpleSingleNodeGroup<OutcomeCondition,OutcomeIf> {
 
     private static final long serialVersionUID = 6777084606090389566L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public OutcomeIfGroup(OutcomeCondition parent) {
+    public OutcomeIfGroup(final OutcomeCondition parent) {
         super(parent, OutcomeIf.QTI_CLASS_NAME, true);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setOutcomeIf
-     */
     public OutcomeIf getOutcomeIf() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param outcomeIf new child
-     * @see #getOutcomeIf
-     */
-    public void setOutcomeIf(OutcomeIf outcomeIf) {
+    public void setOutcomeIf(final OutcomeIf outcomeIf) {
         setChild(outcomeIf);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public OutcomeIf create(String classTag) {
-        return new OutcomeIf((OutcomeCondition) getParent());
+    public OutcomeIf create() {
+        return new OutcomeIf(getParent());
     }
 }

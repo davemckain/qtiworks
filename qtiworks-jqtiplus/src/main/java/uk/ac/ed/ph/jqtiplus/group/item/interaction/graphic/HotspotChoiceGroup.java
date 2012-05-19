@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoiceContainer;
 
@@ -44,48 +44,24 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class HotspotChoiceGroup extends AbstractNodeGroup<HotspotChoice> {
+public final class HotspotChoiceGroup extends SimpleMultipleNodeGroup<HotspotChoiceContainer,HotspotChoice> {
 
     private static final long serialVersionUID = -7699266322816203373L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public HotspotChoiceGroup(final HotspotChoiceContainer parent) {
         super(parent, HotspotChoice.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum number of children
-     */
     public HotspotChoiceGroup(final HotspotChoiceContainer parent, final int minimum) {
         super(parent, HotspotChoice.QTI_CLASS_NAME, minimum, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<HotspotChoice> getHotspotChoices() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public HotspotChoice create(final String classTag) {
+    public HotspotChoice create() {
         return new HotspotChoice(getParent());
     }
 }

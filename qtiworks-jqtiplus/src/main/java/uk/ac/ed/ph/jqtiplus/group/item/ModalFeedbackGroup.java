@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.ModalFeedback;
 
@@ -44,30 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ModalFeedbackGroup extends AbstractNodeGroup<ModalFeedback> {
+public final class ModalFeedbackGroup extends SimpleMultipleNodeGroup<AssessmentItem,ModalFeedback> {
 
     private static final long serialVersionUID = 7540621518736433863L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ModalFeedbackGroup(AssessmentItem parent) {
+    public ModalFeedbackGroup(final AssessmentItem parent) {
         super(parent, ModalFeedback.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
-    public List<ModalFeedback> getModalFeedback() {
-        return getChildren();
+    @Override
+    public ModalFeedback create() {
+        return new ModalFeedback(getParent());
     }
 
-    @Override
-    public ModalFeedback create(String classTag) {
-        return new ModalFeedback((AssessmentItem) getParent());
+    public List<ModalFeedback> getModalFeedbacks() {
+        return getChildren();
     }
 }

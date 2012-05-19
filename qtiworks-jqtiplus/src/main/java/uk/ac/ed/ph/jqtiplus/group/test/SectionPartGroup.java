@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.test;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
@@ -47,50 +47,27 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class SectionPartGroup extends AbstractNodeGroup<SectionPart> {
+public final class SectionPartGroup extends ComplexNodeGroup<AssessmentSection,SectionPart> {
 
     private static final long serialVersionUID = 5679547727938708339L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public SectionPartGroup(final AssessmentSection parent) {
         super(parent, SectionPart.DISPLAY_NAME,
                 ObjectUtilities.unmodifiableSet(AssessmentSection.QTI_CLASS_NAME, AssessmentItemRef.QTI_CLASS_NAME),
                 null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<SectionPart> getSectionParts() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public SectionPart create(final String classTag) {
         if (classTag.equals(AssessmentSection.QTI_CLASS_NAME)) {
-            return new AssessmentSection((AssessmentSection) getParent());
+            return new AssessmentSection(getParent());
         }
         else if (classTag.equals(AssessmentItemRef.QTI_CLASS_NAME)) {
-            return new AssessmentItemRef((AssessmentSection) getParent());
+            return new AssessmentItemRef(getParent());
         }
         else {
             throw new QtiIllegalChildException(getParent(), classTag);

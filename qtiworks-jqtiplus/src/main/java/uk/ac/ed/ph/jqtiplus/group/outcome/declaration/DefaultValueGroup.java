@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
  *
  * @author Jiri Kajaba
  */
-public final class DefaultValueGroup extends AbstractNodeGroup<DefaultValue> {
+public final class DefaultValueGroup extends AbstractNodeGroup<VariableDeclaration,DefaultValue> {
 
     private static final long serialVersionUID = -849789190894504421L;
 
@@ -52,7 +52,7 @@ public final class DefaultValueGroup extends AbstractNodeGroup<DefaultValue> {
      *
      * @param parent parent of created group
      */
-    public DefaultValueGroup(VariableDeclaration parent) {
+    public DefaultValueGroup(final VariableDeclaration parent) {
         super(parent, DefaultValue.QTI_CLASS_NAME, false);
     }
 
@@ -72,7 +72,7 @@ public final class DefaultValueGroup extends AbstractNodeGroup<DefaultValue> {
      * @param defaultValue new child
      * @see #getDefaultValue
      */
-    public void setDefaultValue(DefaultValue defaultValue) {
+    public void setDefaultValue(final DefaultValue defaultValue) {
         setChild(defaultValue);
     }
 
@@ -85,7 +85,7 @@ public final class DefaultValueGroup extends AbstractNodeGroup<DefaultValue> {
      * @return created child
      */
     @Override
-    public DefaultValue create(String classTag) {
-        return new DefaultValue((VariableDeclaration) getParent());
+    public DefaultValue create(final String classTag) {
+        return new DefaultValue(getParent());
     }
 }

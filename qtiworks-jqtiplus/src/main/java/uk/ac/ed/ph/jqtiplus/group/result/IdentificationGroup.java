@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
 import uk.ac.ed.ph.jqtiplus.node.result.Identification;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.result.Identification;
  *
  * @author Jiri Kajaba
  */
-public final class IdentificationGroup extends AbstractNodeGroup<Identification> {
+public final class IdentificationGroup extends SimpleSingleNodeGroup<Context,Identification> {
 
     private static final long serialVersionUID = 3185024329320657981L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public IdentificationGroup(Context parent) {
+    public IdentificationGroup(final Context parent) {
         super(parent, Identification.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setIdentification
-     */
     public Identification getIdentification() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param identification new child
-     * @see #getIdentification
-     */
-    public void setIdentification(Identification identification) {
+    public void setIdentification(final Identification identification) {
         setChild(identification);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Identification create(String classTag) {
-        return new Identification((Context) getParent());
+    public Identification create() {
+        return new Identification(getParent());
     }
 }

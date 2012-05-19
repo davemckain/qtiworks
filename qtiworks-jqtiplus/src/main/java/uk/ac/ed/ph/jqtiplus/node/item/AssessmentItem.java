@@ -69,7 +69,7 @@ import javax.xml.XMLConstants;
  * Scoring takes place when candidate responses are transformed into outcomes by response processing rules. It is sometimes
  * desirable to have several different items that appear the same to the candidate but which are scored differently.
  * In this specification, these are distinct items by definition and must therefore have distinct identifiers.
- * 
+ *
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
@@ -115,7 +115,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /** Value of completion status built-in variable. */
     public static final String VALUE_ITEM_IS_COMPLETED = "completed";
-    
+
     /** Value of completion status built-in variable. */
     public static final String VALUE_ITEM_IS_INCOMPLETE = "incomplete";
 
@@ -182,7 +182,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
     }
-    
+
     @Override
     public AssessmentObjectType getType() {
         return AssessmentObjectType.ASSESSMENT_ITEM;
@@ -194,25 +194,25 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     @Override
-    public void setSystemId(URI systemId) {
+    public void setSystemId(final URI systemId) {
         this.systemId = systemId;
     }
-    
+
 
     @Override
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     @Override
-    public void setModelRichness(ModelRichness modelRichness) {
+    public void setModelRichness(final ModelRichness modelRichness) {
         this.modelRichness = modelRichness;
     }
 
-    
+
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -223,18 +223,18 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
     @Override
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of title attribute.
-     * 
+     *
      * @return value of title attribute
      * @see #setTitle
      */
@@ -245,18 +245,18 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of title attribute.
-     * 
+     *
      * @param title new value of title attribute
      * @see #getTitle
      */
     @Override
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
     /**
      * Gets value of label attribute.
-     * 
+     *
      * @return value of label attribute
      * @see #setLabel
      */
@@ -266,17 +266,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of label attribute.
-     * 
+     *
      * @param label new value of label attribute
      * @see #getLabel
      */
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         getAttributes().getStringAttribute(ATTR_LABEL_NAME).setValue(label);
     }
 
     /**
      * Gets value of lang attribute.
-     * 
+     *
      * @return value of lang attribute
      * @see #setLang
      */
@@ -286,17 +286,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of lang attribute.
-     * 
+     *
      * @param lang new value of lang attribute
      * @see #getLang
      */
-    public void setLang(String lang) {
+    public void setLang(final String lang) {
         getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(lang);
     }
 
     /**
      * Gets value of adaptive attribute.
-     * 
+     *
      * @return value of adaptive attribute
      * @see #setAdaptive
      */
@@ -306,17 +306,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of adaptive attribute.
-     * 
+     *
      * @param adaptive new value of adaptive attribute
      * @see #getAdaptive
      */
-    public void setAdaptive(Boolean adaptive) {
+    public void setAdaptive(final Boolean adaptive) {
         getAttributes().getBooleanAttribute(ATTR_ADAPTIVE_NAME).setValue(adaptive);
     }
 
     /**
      * Gets value of timeDependent attribute.
-     * 
+     *
      * @return value of timeDependent attribute
      * @see #setTimeDependent
      */
@@ -326,17 +326,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of timeDependent attribute.
-     * 
+     *
      * @param timeDependent new value of timeDependent attribute
      * @see #getTimeDependent
      */
-    public void setTimeDependent(Boolean timeDependent) {
+    public void setTimeDependent(final Boolean timeDependent) {
         getAttributes().getBooleanAttribute(ATTR_TIME_DEPENDENT_NAME).setValue(timeDependent);
     }
 
     /**
      * Gets value of toolName attribute.
-     * 
+     *
      * @return value of toolName attribute
      * @see #setToolName
      */
@@ -347,18 +347,18 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of toolName attribute.
-     * 
+     *
      * @param toolName new value of toolName attribute
      * @see #getToolName
      */
     @Override
-    public void setToolName(String toolName) {
+    public void setToolName(final String toolName) {
         getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).setValue(toolName);
     }
 
     /**
      * Gets value of toolVersion attribute.
-     * 
+     *
      * @return value of toolVersion attribute
      * @see #setToolVersion
      */
@@ -369,18 +369,18 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new value of toolVersion attribute.
-     * 
+     *
      * @param toolVersion new value of toolVersion attribute
      * @see #getToolVersion
      */
     @Override
-    public void setToolVersion(String toolVersion) {
+    public void setToolVersion(final String toolVersion) {
         getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).setValue(toolVersion);
     }
 
     /**
      * Gets stylesheet children.
-     * 
+     *
      * @return stylesheet children
      */
     public List<Stylesheet> getStylesheets() {
@@ -389,17 +389,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets modalFeedback children.
-     * 
+     *
      * @return modalFeedback children
      */
     public List<ModalFeedback> getModalFeedbacks() {
-        return getNodeGroups().getModalFeedbackGroup().getModalFeedback();
+        return getNodeGroups().getModalFeedbackGroup().getModalFeedbacks();
     }
 
     //---------------------------------------------------------------
 
     @Override
-    public VariableDeclaration getVariableDeclaration(Identifier identifier) {
+    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
         VariableDeclaration result = getResponseDeclaration(identifier);
         if (result == null) {
             result = getOutcomeDeclaration(identifier);
@@ -413,7 +413,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /**
      * Gets outcomeDeclaration children.
      * NB: Doesn't include the implicitly-defined {@link #VARIABLE_COMPLETION_STATUS} variable
-     * 
+     *
      * @return outcomeDeclaration children
      */
     @Override
@@ -422,17 +422,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     @Override
-    public OutcomeDeclaration getOutcomeDeclaration(Identifier identifier) {
+    public OutcomeDeclaration getOutcomeDeclaration(final Identifier identifier) {
         return getOutcomeDeclaration(identifier.toString());
     }
 
     /**
      * Gets outcomeDeclaration with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return outcomeDeclaration with given identifier or null
      */
-    public OutcomeDeclaration getOutcomeDeclaration(String identifier) {
+    public OutcomeDeclaration getOutcomeDeclaration(final String identifier) {
         if (identifier.equals(VARIABLE_COMPLETION_STATUS)) {
             return completionStatusOutcomeDeclaration;
         }
@@ -447,24 +447,24 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /**
      * Gets responseDeclaration children.
      * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION_NAME} and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
-     * 
+     *
      * @return responseDeclaration children
      */
     public List<ResponseDeclaration> getResponseDeclarations() {
         return getNodeGroups().getResponseDeclarationGroup().getResponseDeclarations();
     }
 
-    public ResponseDeclaration getResponseDeclaration(Identifier identifier) {
+    public ResponseDeclaration getResponseDeclaration(final Identifier identifier) {
         return getResponseDeclaration(identifier.toString());
     }
 
     /**
      * Gets responseDeclaration with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return responseDeclaration with given identifier or null
      */
-    public ResponseDeclaration getResponseDeclaration(String identifier) {
+    public ResponseDeclaration getResponseDeclaration(final String identifier) {
         if (identifier.equals(VARIABLE_NUMBER_OF_ATTEMPTS)) {
             return numAttemptsResponseDeclaration;
         }
@@ -481,24 +481,24 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets templateDeclaration children.
-     * 
+     *
      * @return templateDeclaration children
      */
     public List<TemplateDeclaration> getTemplateDeclarations() {
         return getNodeGroups().getTemplateDeclarationGroup().getTemplateDeclarations();
     }
 
-    public TemplateDeclaration getTemplateDeclaration(Identifier identifier) {
+    public TemplateDeclaration getTemplateDeclaration(final Identifier identifier) {
         return getTemplateDeclaration(identifier.toString());
     }
 
     /**
      * Gets templateDeclaration with given identifier or null.
-     * 
+     *
      * @param identifier given identifier
      * @return templateDeclaration with given identifier or null
      */
-    public TemplateDeclaration getTemplateDeclaration(String identifier) {
+    public TemplateDeclaration getTemplateDeclaration(final String identifier) {
         for (final TemplateDeclaration declaration : getTemplateDeclarations()) {
             if (identifier.equals(declaration.getIdentifier().toString())) {
                 return declaration;
@@ -509,7 +509,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets templateProcessing child.
-     * 
+     *
      * @return templateProcessing child
      * @see #setTemplateProcessing
      */
@@ -519,17 +519,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new templateProcessing child.
-     * 
+     *
      * @param templateProcessing new templateProcessing child
      * @see #getTemplateProcessing
      */
-    public void setTemplateProcessing(TemplateProcessing templateProcessing) {
+    public void setTemplateProcessing(final TemplateProcessing templateProcessing) {
         getNodeGroups().getTemplateProcessingGroup().setTemplateProcessing(templateProcessing);
     }
 
     /**
      * Gets responseProcessing child.
-     * 
+     *
      * @return templateProcessing child
      * @see #setTemplateProcessing
      */
@@ -539,17 +539,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new responseProcessing child.
-     * 
+     *
      * @param responseProcessing new responseProcessing child
      * @see #getResponseProcessing
      */
-    public void setResponseProcessing(ResponseProcessing responseProcessing) {
+    public void setResponseProcessing(final ResponseProcessing responseProcessing) {
         getNodeGroups().getResponseProcessingGroup().setResponseProcessing(responseProcessing);
     }
 
     /**
      * Gets itemBody child.
-     * 
+     *
      * @return itemBody child
      * @see #setItemBody
      */
@@ -559,11 +559,11 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Sets new itemBody child.
-     * 
+     *
      * @param itemBody new itemBody child
      * @see #getItemBody
      */
-    public void setItemBody(ItemBody itemBody) {
+    public void setItemBody(final ItemBody itemBody) {
         getNodeGroups().getItemBodyGroup().setItemBody(itemBody);
     }
 
@@ -587,11 +587,11 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     //---------------------------------------------------------------
 
     //    /**
-    //     * Returns true if this item reference was correctly responded; 
+    //     * Returns true if this item reference was correctly responded;
     //     * Correctly responded means ALL defined responseVars match their associated correctResponse.
     //     * Returns null if any of the responseDeclarations don't have  correctResponses.
     //     *
-    //     * @return true if this item reference was correctly responded; null if not all 
+    //     * @return true if this item reference was correctly responded; null if not all
     //     * responseDeclarations contain correctResponses; false otherwise
     //     * @see #isIncorrect
     //     */
@@ -602,7 +602,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations())
     //            if (responseDeclaration.getCorrectResponse() == null)
     //                return null;
-    //        
+    //
     //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
     //            if (!responseDeclaration.isCorrectResponse()) {
     //                return false;
@@ -613,9 +613,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     //    }
     //
     //    /**
-    //     * Returns the number of correct responses 
+    //     * Returns the number of correct responses
     //     *
-    //     * @return the number of correct responses 
+    //     * @return the number of correct responses
     //     * @see #countIncorrect
     //     */
     //    @ToRefactor
@@ -632,39 +632,39 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     //
     //        return count;
     //    }
-    //    
+    //
     //    /**
-    //     * Returns true if this item reference was incorrectly responded; 
-    //     * Incorrectly responded means ANY defined responseVars didn't match their 
+    //     * Returns true if this item reference was incorrectly responded;
+    //     * Incorrectly responded means ANY defined responseVars didn't match their
     //     * associated correctResponse.
-    //     * 
+    //     *
     //     * Returns null if any of the responseDeclarations don't have correctResponses.
     //     *
-    //     * @return true if this item reference was incorrectly responded; null if not all 
+    //     * @return true if this item reference was incorrectly responded; null if not all
     //     * responseDeclarations contain correctResponses; false otherwise
     //     * @see #isCorrect
     //     */
     //    @ToRefactor
     //    public Boolean isIncorrect()
-    //    {      
+    //    {
     //        throw new QTILogicException("To be refactored");
     //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations())
     //            if (responseDeclaration.getCorrectResponse() == null)
     //                return null;
-    //        
+    //
     //        for (ResponseDeclaration responseDeclaration : getResponseDeclarations()) {
     //            if (!responseDeclaration.isCorrectResponse()) {
     //                return true;
     //            }
     //        }
-    //        
+    //
     //        return false;
     //    }
     //
     //    /**
-    //     * Returns the number of incorrect responses 
+    //     * Returns the number of incorrect responses
     //     *
-    //     * @return the number of incorrect responses 
+    //     * @return the number of incorrect responses
     //     * @see #countIncorrect
     //     */
     //    @ToRefactor

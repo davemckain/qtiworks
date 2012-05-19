@@ -48,37 +48,14 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
 
     private static final long serialVersionUID = -3625988403289280882L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public InlineStaticGroup(final XmlNode parent) {
         super(parent, InlineStatic.DISPLAY_NAME, ContentType.getInlineStaticQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<InlineStatic> getInlineStatics() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public InlineStatic create(final String classTag) {
         return ContentType.getInlineStaticInstance(getParent(), classTag);

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class ItemResultGroup extends AbstractNodeGroup<ItemResult> {
+public final class ItemResultGroup extends SimpleMultipleNodeGroup<AssessmentResult,ItemResult> {
 
     private static final long serialVersionUID = -4611796238391975428L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ItemResultGroup(AssessmentResult parent) {
+    public ItemResultGroup(final AssessmentResult parent) {
         super(parent, ItemResult.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<ItemResult> getItemResults() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ItemResult create(String classTag) {
-        return new ItemResult((AssessmentResult) getParent());
+    public ItemResult create() {
+        return new ItemResult(getParent());
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class AssessmentSectionGroup extends AbstractNodeGroup<AssessmentSection> {
+public final class AssessmentSectionGroup extends SimpleMultipleNodeGroup<AbstractPart,AssessmentSection> {
 
     private static final long serialVersionUID = -2686879770508827783L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public AssessmentSectionGroup(AbstractPart parent) {
+    public AssessmentSectionGroup(final AbstractPart parent) {
         super(parent, AssessmentSection.QTI_CLASS_NAME, 1, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<AssessmentSection> getAssessmentSections() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public AssessmentSection create(String classTag) {
-        return new AssessmentSection((AbstractPart) getParent());
+    public AssessmentSection create() {
+        return new AssessmentSection(getParent());
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.BlockInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Prompt;
 
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Prompt;
  *
  * @author Jonathon Hare
  */
-public final class PromptGroup extends AbstractNodeGroup<Prompt> {
+public final class PromptGroup extends SimpleSingleNodeGroup<BlockInteraction,Prompt> {
 
     private static final long serialVersionUID = -3440936238732152194L;
 
@@ -51,7 +51,7 @@ public final class PromptGroup extends AbstractNodeGroup<Prompt> {
      *
      * @param parent parent of created group
      */
-    public PromptGroup(BlockInteraction parent) {
+    public PromptGroup(final BlockInteraction parent) {
         super(parent, Prompt.QTI_CLASS_NAME, false);
     }
 
@@ -71,7 +71,7 @@ public final class PromptGroup extends AbstractNodeGroup<Prompt> {
      * @param prompt Prompt child to set.
      * @see #getPrompt
      */
-    public void setPrompt(Prompt prompt) {
+    public void setPrompt(final Prompt prompt) {
         setChild(prompt);
     }
 
@@ -84,7 +84,7 @@ public final class PromptGroup extends AbstractNodeGroup<Prompt> {
      * @return created child
      */
     @Override
-    public Prompt create(String classTag) {
+    public Prompt create() {
         return new Prompt(getParent());
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.InlineChoiceInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.InlineChoice;
 
@@ -44,48 +44,24 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class InlineChoiceGroup extends AbstractNodeGroup<InlineChoice> {
+public final class InlineChoiceGroup extends SimpleMultipleNodeGroup<InlineChoiceInteraction,InlineChoice> {
 
     private static final long serialVersionUID = -6552140842136886189L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public InlineChoiceGroup(final InlineChoiceInteraction parent) {
         super(parent, InlineChoice.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum number of children
-     */
     public InlineChoiceGroup(final InlineChoiceInteraction parent, final int minimum) {
         super(parent, InlineChoice.QTI_CLASS_NAME, minimum, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<InlineChoice> getInlineChoices() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public InlineChoice create(final String classTag) {
+    public InlineChoice create() {
         return new InlineChoice(getParent());
     }
 }

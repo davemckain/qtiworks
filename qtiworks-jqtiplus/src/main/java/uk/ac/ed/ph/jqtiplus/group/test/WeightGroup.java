@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class WeightGroup extends AbstractNodeGroup<Weight> {
+public final class WeightGroup extends AbstractNodeGroup<AssessmentItemRef,Weight> {
 
     private static final long serialVersionUID = 56148491111431386L;
 
@@ -53,7 +53,7 @@ public final class WeightGroup extends AbstractNodeGroup<Weight> {
      *
      * @param parent parent of created group
      */
-    public WeightGroup(AssessmentItemRef parent) {
+    public WeightGroup(final AssessmentItemRef parent) {
         super(parent, Weight.QTI_CLASS_NAME, null, null);
     }
 
@@ -75,7 +75,7 @@ public final class WeightGroup extends AbstractNodeGroup<Weight> {
      * @return created child
      */
     @Override
-    public Weight create(String classTag) {
-        return new Weight((AssessmentItemRef) getParent());
+    public Weight create(final String classTag) {
+        return new Weight(getParent());
     }
 }

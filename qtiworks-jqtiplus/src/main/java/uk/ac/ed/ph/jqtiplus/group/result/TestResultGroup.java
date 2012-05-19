@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
  *
  * @author Jiri Kajaba
  */
-public final class TestResultGroup extends AbstractNodeGroup<TestResult> {
+public final class TestResultGroup extends SimpleSingleNodeGroup<AssessmentResult,TestResult> {
 
     private static final long serialVersionUID = 773881262969698055L;
 
@@ -51,7 +51,7 @@ public final class TestResultGroup extends AbstractNodeGroup<TestResult> {
      *
      * @param parent parent of created group
      */
-    public TestResultGroup(AssessmentResult parent) {
+    public TestResultGroup(final AssessmentResult parent) {
         super(parent, TestResult.QTI_CLASS_NAME, false);
     }
 
@@ -71,7 +71,7 @@ public final class TestResultGroup extends AbstractNodeGroup<TestResult> {
      * @param testResult new child
      * @see #getTestResult
      */
-    public void setTestResult(TestResult testResult) {
+    public void setTestResult(final TestResult testResult) {
         setChild(testResult);
     }
 
@@ -84,7 +84,7 @@ public final class TestResultGroup extends AbstractNodeGroup<TestResult> {
      * @return created child
      */
     @Override
-    public TestResult create(String classTag) {
-        return new TestResult((AssessmentResult) getParent());
+    public TestResult create() {
+        return new TestResult(getParent());
     }
 }

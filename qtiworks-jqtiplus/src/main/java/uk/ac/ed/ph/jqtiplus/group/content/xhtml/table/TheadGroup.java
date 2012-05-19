@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Thead;
  *
  * @author Jonathon Hare
  */
-public final class TheadGroup extends AbstractNodeGroup<Thead> {
+public final class TheadGroup extends AbstractNodeGroup<Table,Thead> {
 
     private static final long serialVersionUID = 1884153251149664177L;
 
@@ -51,7 +51,7 @@ public final class TheadGroup extends AbstractNodeGroup<Thead> {
      *
      * @param parent parent of created group
      */
-    public TheadGroup(Table parent) {
+    public TheadGroup(final Table parent) {
         super(parent, Thead.QTI_CLASS_NAME, false);
     }
 
@@ -71,7 +71,7 @@ public final class TheadGroup extends AbstractNodeGroup<Thead> {
      * @param thead new child
      * @see #getThead
      */
-    public void setThead(Thead thead) {
+    public void setThead(final Thead thead) {
         setChild(thead);
     }
 
@@ -84,7 +84,7 @@ public final class TheadGroup extends AbstractNodeGroup<Thead> {
      * @return created child
      */
     @Override
-    public Thead create(String classTag) {
+    public Thead create(final String classTag) {
         return new Thead(getParent());
     }
 }

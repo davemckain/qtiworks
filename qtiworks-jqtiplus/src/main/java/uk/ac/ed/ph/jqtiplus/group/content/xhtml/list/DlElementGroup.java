@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.list.DlElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.list.DlElementType;
@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class DlElementGroup extends AbstractNodeGroup<DlElement> {
+public final class DlElementGroup extends ComplexNodeGroup<BodyElement,DlElement> {
 
     private static final long serialVersionUID = 1889833531495911861L;
 
@@ -53,33 +53,10 @@ public final class DlElementGroup extends AbstractNodeGroup<DlElement> {
         super(parent, BodyElement.DISPLAY_NAME, DlElementType.getQtiClassNames(), null, null);
     }
 
-    @Override
-    public BodyElement getParent() {
-        return (BodyElement) super.getParent();
-    }
-
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<DlElement> getDlElements() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public DlElement create(final String classTag) {
         return DlElementType.getInstance(getParent(), classTag);

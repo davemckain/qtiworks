@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TrGroup extends AbstractNodeGroup<Tr> {
+public final class TrGroup extends AbstractNodeGroup<BodyElement,Tr> {
 
     private static final long serialVersionUID = 2992834378077111309L;
 
@@ -53,7 +53,7 @@ public final class TrGroup extends AbstractNodeGroup<Tr> {
      *
      * @param parent parent of created group
      */
-    public TrGroup(BodyElement parent) {
+    public TrGroup(final BodyElement parent) {
         super(parent, Tr.QTI_CLASS_NAME, 1, null);
     }
 
@@ -75,7 +75,7 @@ public final class TrGroup extends AbstractNodeGroup<Tr> {
      * @return created child
      */
     @Override
-    public Tr create(String classTag) {
+    public Tr create(final String classTag) {
         return new Tr(getParent());
     }
 }

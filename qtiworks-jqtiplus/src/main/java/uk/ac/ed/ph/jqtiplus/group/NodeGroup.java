@@ -50,16 +50,19 @@ import org.w3c.dom.Node;
  * <p>
  * For example: {@link TestPartGroup} (group for testParts), {@link ExpressionGroup} (group for expressions).
  *
+ * @param <P> type of parent {@link XmlNode}
+ * @param <C> type of child {@link XmlNode}
+ *
  * @author Jiri Kajaba
  */
-public interface NodeGroup<C extends XmlNode> extends Validatable, Serializable, Iterable<C> {
+public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validatable, Serializable, Iterable<C> {
 
     /**
      * Gets parent node of group.
      *
      * @return parent node of group
      */
-    XmlNode getParent();
+    P getParent();
 
     /**
      * Gets name of group.
@@ -89,7 +92,7 @@ public interface NodeGroup<C extends XmlNode> extends Validatable, Serializable,
      *
      * @return true if group can contain children with different QTI class name; false otherwise
      */
-    boolean isGeneral();
+    boolean isComplexContent();
 
     /**
      * Returns whether this NodeGroup supports (i.e. contains) {@link XmlNode}s of the given

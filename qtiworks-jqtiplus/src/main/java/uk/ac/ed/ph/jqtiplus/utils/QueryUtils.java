@@ -207,7 +207,7 @@ public final class QueryUtils {
         Assert.ensureNotNull(startNodes);
         Assert.ensureNotNull(handler);
         for (final XmlNode startNode : startNodes) {
-            for (final NodeGroup<?> nodeGroup : startNode.getNodeGroups()) {
+            for (final NodeGroup<?,?> nodeGroup : startNode.getNodeGroups()) {
                 for (final XmlNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
@@ -218,7 +218,7 @@ public final class QueryUtils {
     private static void doWalkTree(final TreeWalkNodeHandler handler, final XmlNode currentNode) {
         final boolean descend = handler.handleNode(currentNode);
         if (descend) {
-            for (final NodeGroup<?> nodeGroup : currentNode.getNodeGroups()) {
+            for (final NodeGroup<?,?> nodeGroup : currentNode.getNodeGroups()) {
                 for (final XmlNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }

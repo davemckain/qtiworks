@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
  *
  * @author Jiri Kajaba
  */
-public final class OrderingGroup extends AbstractNodeGroup<Ordering> {
+public final class OrderingGroup extends SimpleSingleNodeGroup<AssessmentSection,Ordering> {
 
     private static final long serialVersionUID = -314094244801543514L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public OrderingGroup(AssessmentSection parent) {
+    public OrderingGroup(final AssessmentSection parent) {
         super(parent, Ordering.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setOrdering
-     */
     public Ordering getOrdering() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param ordering new child
-     * @see #getOrdering
-     */
-    public void setOrdering(Ordering ordering) {
+    public void setOrdering(final Ordering ordering) {
         setChild(ordering);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Ordering create(String classTag) {
-        return new Ordering((AssessmentSection) getParent());
+    public Ordering create() {
+        return new Ordering(getParent());
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class RubricBlockGroup extends AbstractNodeGroup<RubricBlock> {
+public final class RubricBlockGroup extends SimpleMultipleNodeGroup<AssessmentSection,RubricBlock> {
 
     private static final long serialVersionUID = 265433082183887266L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public RubricBlockGroup(AssessmentSection parent) {
+    public RubricBlockGroup(final AssessmentSection parent) {
         super(parent, RubricBlock.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<RubricBlock> getRubricBlocks() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public RubricBlock create(String classTag) {
+    public RubricBlock create() {
         return new RubricBlock(getParent());
     }
 }

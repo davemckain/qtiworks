@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTableEntry;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class MatchTableEntryGroup extends AbstractNodeGroup<MatchTableEntry> {
+public final class MatchTableEntryGroup extends SimpleMultipleNodeGroup<MatchTable,MatchTableEntry> {
 
     private static final long serialVersionUID = -7483705707354993061L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public MatchTableEntryGroup(MatchTable parent) {
+    public MatchTableEntryGroup(final MatchTable parent) {
         super(parent, MatchTableEntry.QTI_CLASS_NAME, 1, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<MatchTableEntry> getEntries() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public MatchTableEntry create(String classTag) {
-        return new MatchTableEntry((MatchTable) getParent());
+    public MatchTableEntry create() {
+        return new MatchTableEntry(getParent());
     }
 }

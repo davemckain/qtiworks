@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class TemplateDefaultGroup extends AbstractNodeGroup<TemplateDefault> {
+public final class TemplateDefaultGroup extends SimpleMultipleNodeGroup<AssessmentItemRef,TemplateDefault> {
 
     private static final long serialVersionUID = -7887050230105198147L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public TemplateDefaultGroup(AssessmentItemRef parent) {
+    public TemplateDefaultGroup(final AssessmentItemRef parent) {
         super(parent, TemplateDefault.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TemplateDefault> getTemplateDefaults() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public TemplateDefault create(String classTag) {
-        return new TemplateDefault((AssessmentItemRef) getParent());
+    public TemplateDefault create() {
+        return new TemplateDefault(getParent());
     }
 }

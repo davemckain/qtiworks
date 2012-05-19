@@ -48,37 +48,14 @@ public class ObjectFlowGroup extends AbstractContentNodeGroup<ObjectFlow> {
 
     private static final long serialVersionUID = -1256618525976970693L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public ObjectFlowGroup(final XmlNode parent) {
         super(parent, ObjectFlow.DISPLAY_NAME, ContentType.getObjectFlowQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<ObjectFlow> getObjectFlows() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public ObjectFlow create(final String classTag) {
         return ContentType.getObjectFlowInstance(getParent(), classTag);

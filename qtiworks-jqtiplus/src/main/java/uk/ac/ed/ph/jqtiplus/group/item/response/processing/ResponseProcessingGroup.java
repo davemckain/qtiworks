@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
  *
  * @author Jonathon Hare
  */
-public final class ResponseProcessingGroup extends AbstractNodeGroup<ResponseProcessing> {
+public final class ResponseProcessingGroup extends SimpleSingleNodeGroup<AssessmentItem,ResponseProcessing> {
 
     private static final long serialVersionUID = 2005401093091006593L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ResponseProcessingGroup(AssessmentItem parent) {
+    public ResponseProcessingGroup(final AssessmentItem parent) {
         super(parent, ResponseProcessing.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setResponseProcessing
-     */
     public ResponseProcessing getResponseProcessing() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param responseProcessing new child
-     * @see #getResponseProcessing
-     */
-    public void setResponseProcessing(ResponseProcessing responseProcessing) {
+    public void setResponseProcessing(final ResponseProcessing responseProcessing) {
         setChild(responseProcessing);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ResponseProcessing create(String classTag) {
-        return new ResponseProcessing((AssessmentItem) getParent());
+    public ResponseProcessing create() {
+        return new ResponseProcessing(getParent());
     }
 }

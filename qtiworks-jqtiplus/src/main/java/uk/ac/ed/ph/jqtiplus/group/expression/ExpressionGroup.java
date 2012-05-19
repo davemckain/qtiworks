@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ExpressionGroup extends AbstractNodeGroup<Expression> {
+public final class ExpressionGroup extends AbstractNodeGroup<ExpressionParent, Expression> {
 
     private static final long serialVersionUID = 891305708750072316L;
 
@@ -66,11 +66,11 @@ public final class ExpressionGroup extends AbstractNodeGroup<Expression> {
 
     @Override
     public ExpressionParent getParent() {
-        return (ExpressionParent) super.getParent();
+        return super.getParent();
     }
 
     @Override
-    public boolean isGeneral() {
+    public boolean isComplexContent() {
         return true;
     }
 

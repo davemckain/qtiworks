@@ -60,11 +60,11 @@ import org.w3c.dom.Text;
  *
  * @author Jiri Kajaba
  */
-public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<C> {
+public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> implements NodeGroup<P,C> {
 
     private static final long serialVersionUID = 903238011893494959L;
 
-    private final XmlNode parent;
+    private final P parent;
     private final String name;
     private final Set<String> supportedQtiClasses;
     private final List<C> children;
@@ -81,7 +81,7 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
      * @param name name of created group
      * @param required if true, minimum is set to 1, if false, minimum is set to 0
      */
-    public AbstractNodeGroup(final XmlNode parent, final String name, final boolean required) {
+    public AbstractNodeGroup(final P parent, final String name, final boolean required) {
         this(parent, name, required ? 1 : 0, 1);
     }
 
@@ -94,15 +94,15 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
      * @param name name of created group
      * @param required if true, minimum is set to 1, if false, minimum is set to 0
      */
-    public AbstractNodeGroup(final XmlNode parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
+    public AbstractNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
         this(parent, name, supportedQtiClasses, required ? 1 : 0, 1);
     }
 
-    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final int maximum) {
+    public AbstractNodeGroup(final P parent, final String name, final int minimum, final int maximum) {
         this(parent, name, Integer.valueOf(minimum), Integer.valueOf(maximum));
     }
 
-    public AbstractNodeGroup(final XmlNode parent, final String name, final int minimum, final Integer maximum) {
+    public AbstractNodeGroup(final P parent, final String name, final int minimum, final Integer maximum) {
         this(parent, name, Integer.valueOf(minimum), maximum);
     }
 
@@ -114,7 +114,7 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
      * @param minimum minimum required children of created group
      * @param maximum maximum allowed children of created group
      */
-    public AbstractNodeGroup(final XmlNode parent, final String name, final Integer minimum, final Integer maximum) {
+    public AbstractNodeGroup(final P parent, final String name, final Integer minimum, final Integer maximum) {
         Assert.ensureNotNull(parent);
         Assert.ensureNotNull(name);
         this.parent = parent;
@@ -125,7 +125,7 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
         supportedQtiClasses = ObjectUtilities.unmodifiableSet(name);
     }
 
-    public AbstractNodeGroup(final XmlNode parent, final String name, final Set<String> supportedQtiClasses,
+    public AbstractNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses,
             final Integer minimum, final Integer maximum) {
         Assert.ensureNotNull(parent);
         Assert.ensureNotNull(name);
@@ -139,7 +139,7 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
     }
 
     @Override
-    public XmlNode getParent() {
+    public P getParent() {
         return parent;
     }
 
@@ -154,7 +154,7 @@ public abstract class AbstractNodeGroup<C extends XmlNode> implements NodeGroup<
     }
 
     @Override
-    public boolean isGeneral() {
+    public boolean isComplexContent() {
         return false;
     }
 

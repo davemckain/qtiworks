@@ -49,69 +49,18 @@ public final class GapChoiceGroup extends AbstractContentNodeGroup<GapChoice> {
 
     private static final long serialVersionUID = 3797738603491602458L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public GapChoiceGroup(final XmlNode parent) {
         this(parent, 1);
     }
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum number of children
-     */
     public GapChoiceGroup(final XmlNode parent, final int minimum) {
         super(parent, GapChoice.DISPLAY_NAME, ContentType.getGapChoiceQtiClassNames(), minimum, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setGapChoice
-     */
-    public GapChoice getGapChoice() {
-        return getChildren().size() != 0 ? (GapChoice) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     *
-     * @param gapChoice new child
-     * @see #getGapChoice
-     */
-    public void setGapChoice(final GapChoice gapChoice) {
-        getChildren().clear();
-        getChildren().add(gapChoice);
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
-    @SuppressWarnings("unchecked")
     public List<GapChoice> getGapChoices() {
-        return (List<GapChoice>) (List<? extends XmlNode>) getChildren();
+        return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public GapChoice create(final String classTag) {
         return ContentType.getGapChoiceInstance(getParent(), classTag);

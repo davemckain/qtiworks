@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.interaction;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.PositionObjectInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.PositionObjectStage;
 
@@ -44,48 +44,24 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class PositionObjectInteractionGroup extends AbstractNodeGroup<PositionObjectInteraction> {
+public final class PositionObjectInteractionGroup extends SimpleMultipleNodeGroup<PositionObjectStage,PositionObjectInteraction> {
 
     private static final long serialVersionUID = 4524236294070620750L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public PositionObjectInteractionGroup(final PositionObjectStage parent) {
         super(parent, PositionObjectInteraction.QTI_CLASS_NAME, null, null);
     }
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum number of children
-     */
     public PositionObjectInteractionGroup(final PositionObjectStage parent, final int minimum) {
         super(parent, PositionObjectInteraction.QTI_CLASS_NAME, minimum, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<PositionObjectInteraction> getPositionObjectInteractions() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public PositionObjectInteraction create(final String classTag) {
+    public PositionObjectInteraction create() {
         return new PositionObjectInteraction(getParent());
     }
 }

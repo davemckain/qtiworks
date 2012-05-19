@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
  *
  * @author Jonathon Hare
  */
-public final class CaptionGroup extends AbstractNodeGroup<Caption> {
+public final class CaptionGroup extends AbstractNodeGroup<Table,Caption> {
 
     private static final long serialVersionUID = 4870184636177405884L;
 
@@ -52,7 +52,7 @@ public final class CaptionGroup extends AbstractNodeGroup<Caption> {
      *
      * @param parent parent of created group
      */
-    public CaptionGroup(Table parent) {
+    public CaptionGroup(final Table parent) {
         super(parent, Caption.QTI_CLASS_NAME, false);
     }
 
@@ -72,7 +72,7 @@ public final class CaptionGroup extends AbstractNodeGroup<Caption> {
      * @param caption new child
      * @see #getCaption
      */
-    public void setCaption(Caption caption) {
+    public void setCaption(final Caption caption) {
         setChild(caption);
     }
 
@@ -85,7 +85,7 @@ public final class CaptionGroup extends AbstractNodeGroup<Caption> {
      * @return created child
      */
     @Override
-    public Caption create(String classTag) {
+    public Caption create(final String classTag) {
         return new Caption(getParent());
     }
 }

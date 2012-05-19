@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.shared;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 
@@ -44,17 +44,10 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class FieldValueGroup extends AbstractNodeGroup<FieldValue> {
+public final class FieldValueGroup extends SimpleMultipleNodeGroup<FieldValueParent,FieldValue> {
 
     private static final long serialVersionUID = 5884381764228207L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum required children of created group
-     * @param maximum maximum allowed children of created group
-     */
     public FieldValueGroup(final FieldValueParent parent, final Integer minimum, final Integer maximum) {
         super(parent, FieldValue.QTI_CLASS_NAME, minimum, maximum);
     }
@@ -63,25 +56,12 @@ public final class FieldValueGroup extends AbstractNodeGroup<FieldValue> {
         this(parent, Integer.valueOf(minimum), maximum);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<FieldValue> getFieldValues() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public FieldValue create(final String classTag) {
-        return new FieldValue((FieldValueParent) getParent());
+    public FieldValue create() {
+        return new FieldValue(getParent());
     }
 }

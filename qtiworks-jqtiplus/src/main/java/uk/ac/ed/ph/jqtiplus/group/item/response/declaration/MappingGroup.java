@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.declaration;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.Mapping;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 
@@ -42,50 +42,25 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
  *
  * @author Jonathon Hare
  */
-public final class MappingGroup extends AbstractNodeGroup<Mapping> {
+public final class MappingGroup extends SimpleSingleNodeGroup<ResponseDeclaration,Mapping> {
 
     private static final long serialVersionUID = 7281533281741060744L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public MappingGroup(ResponseDeclaration parent) {
-        super(parent, Mapping.QTI_CLASS_NAME, null, null);
+    public MappingGroup(final ResponseDeclaration parent) {
+        super(parent, Mapping.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setMapping
-     */
     public Mapping getMapping() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param mapping new child
-     * @see #getMapping
-     */
-    public void setMapping(Mapping mapping) {
+    public void setMapping(final Mapping mapping) {
         setChild(mapping);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Mapping create(String classTag) {
-        return new Mapping((ResponseDeclaration) getParent());
+    public Mapping create() {
+        return new Mapping(getParent());
     }
 
 }

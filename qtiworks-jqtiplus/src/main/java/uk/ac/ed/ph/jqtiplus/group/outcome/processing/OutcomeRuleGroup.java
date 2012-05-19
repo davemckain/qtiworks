@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRuleType;
@@ -45,41 +45,18 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeRuleGroup extends AbstractNodeGroup<OutcomeRule> {
+public final class OutcomeRuleGroup extends ComplexNodeGroup<XmlNode,OutcomeRule> {
 
     private static final long serialVersionUID = -2078014326662762459L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public OutcomeRuleGroup(final XmlNode parent) {
         super(parent, OutcomeRule.DISPLAY_NAME, OutcomeRuleType.getQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<OutcomeRule> getOutcomeRules() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public OutcomeRule create(final String classTag) {
         return OutcomeRuleType.getInstance(getParent(), classTag);

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
@@ -46,61 +46,31 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
  *
  * @author Jiri Kajaba
  */
-public final class LookupTableGroup extends AbstractNodeGroup<LookupTable> {
+public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,LookupTable> {
 
     private static final long serialVersionUID = 8957840239215915389L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public LookupTableGroup(final OutcomeDeclaration parent) {
         super(parent, LookupTable.DISPLAY_NAME,
                 ObjectUtilities.unmodifiableSet(MatchTable.QTI_CLASS_NAME, InterpolationTable.QTI_CLASS_NAME),
                 false);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setLookupTable
-     */
     public LookupTable getLookupTable() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param lookupTable new child
-     * @see #getLookupTable
-     */
     public void setLookupTable(final LookupTable lookupTable) {
         setChild(lookupTable);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public LookupTable create(final String classTag) {
         if (classTag.equals(MatchTable.QTI_CLASS_NAME)) {
-            return new MatchTable((OutcomeDeclaration) getParent());
+            return new MatchTable(getParent());
         }
         else if (classTag.equals(InterpolationTable.QTI_CLASS_NAME)) {
-            return new InterpolationTable((OutcomeDeclaration) getParent());
+            return new InterpolationTable(getParent());
         }
         else {
             throw new QtiIllegalChildException(getParent(), classTag);

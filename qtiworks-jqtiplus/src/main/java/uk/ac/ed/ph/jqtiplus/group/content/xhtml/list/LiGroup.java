@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class LiGroup extends AbstractNodeGroup<Li> {
+public final class LiGroup extends AbstractNodeGroup<BodyElement,Li> {
 
     private static final long serialVersionUID = 3195076442282902893L;
 
@@ -53,7 +53,7 @@ public final class LiGroup extends AbstractNodeGroup<Li> {
      *
      * @param parent parent of created group
      */
-    public LiGroup(BodyElement parent) {
+    public LiGroup(final BodyElement parent) {
         super(parent, Li.QTI_CLASS_NAME, null, null);
     }
 
@@ -75,7 +75,7 @@ public final class LiGroup extends AbstractNodeGroup<Li> {
      * @return created child
      */
     @Override
-    public Li create(String classTag) {
+    public Li create(final String classTag) {
         return new Li(getParent());
     }
 }

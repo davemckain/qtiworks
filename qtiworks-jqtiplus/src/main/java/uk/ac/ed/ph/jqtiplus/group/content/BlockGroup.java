@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -44,41 +45,18 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class BlockGroup extends AbstractContentNodeGroup<Block> {
+public final class BlockGroup extends ComplexNodeGroup<XmlNode,Block> {
 
     private static final long serialVersionUID = 4196445027200459122L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public BlockGroup(final XmlNode parent) {
         super(parent, Block.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Block> getBlocks() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public Block create(final String classTag) {
         return ContentType.getBlockInstance(getParent(), classTag);

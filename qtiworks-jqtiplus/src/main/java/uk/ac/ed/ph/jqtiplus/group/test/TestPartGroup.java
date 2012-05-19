@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 
@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class TestPartGroup extends AbstractNodeGroup<TestPart> {
+public final class TestPartGroup extends SimpleMultipleNodeGroup<AssessmentTest,TestPart> {
 
     private static final long serialVersionUID = 5651173971564999817L;
 
@@ -53,7 +53,7 @@ public final class TestPartGroup extends AbstractNodeGroup<TestPart> {
      *
      * @param parent parent of created group
      */
-    public TestPartGroup(AssessmentTest parent) {
+    public TestPartGroup(final AssessmentTest parent) {
         super(parent, TestPart.QTI_CLASS_NAME, 1, null);
     }
 
@@ -75,7 +75,7 @@ public final class TestPartGroup extends AbstractNodeGroup<TestPart> {
      * @return created child
      */
     @Override
-    public TestPart create(String classTag) {
-        return new TestPart((AssessmentTest) getParent());
+    public TestPart create() {
+        return new TestPart(getParent());
     }
 }

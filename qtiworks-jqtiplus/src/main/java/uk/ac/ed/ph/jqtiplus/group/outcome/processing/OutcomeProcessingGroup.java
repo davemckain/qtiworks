@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeProcessingGroup extends AbstractNodeGroup<OutcomeProcessing> {
+public final class OutcomeProcessingGroup extends SimpleSingleNodeGroup<AssessmentTest,OutcomeProcessing> {
 
     private static final long serialVersionUID = 2272893734174608916L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public OutcomeProcessingGroup(AssessmentTest parent) {
+    public OutcomeProcessingGroup(final AssessmentTest parent) {
         super(parent, OutcomeProcessing.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setOutcomeProcessing
-     */
     public OutcomeProcessing getOutcomeProcessing() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param outcomeProcessing new child
-     * @see #getOutcomeProcessing
-     */
-    public void setOutcomeProcessing(OutcomeProcessing outcomeProcessing) {
+    public void setOutcomeProcessing(final OutcomeProcessing outcomeProcessing) {
         setChild(outcomeProcessing);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public OutcomeProcessing create(String classTag) {
-        return new OutcomeProcessing((AssessmentTest) getParent());
+    public OutcomeProcessing create() {
+        return new OutcomeProcessing(getParent());
     }
 }

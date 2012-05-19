@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
  *
  * @author Jonathon Hare
  */
-public final class ItemBodyGroup extends AbstractNodeGroup<ItemBody> {
+public final class ItemBodyGroup extends SimpleSingleNodeGroup<AssessmentItem,ItemBody> {
 
     private static final long serialVersionUID = 2940537893395709709L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ItemBodyGroup(AssessmentItem parent) {
+    public ItemBodyGroup(final AssessmentItem parent) {
         super(parent, ItemBody.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets itemBody child.
-     *
-     * @return itemBody child, or null if it doesn't exist.
-     * @see #setItemBody
-     */
     public ItemBody getItemBody() {
         return getChild();
     }
 
-    /**
-     * Sets new itemBody child.
-     *
-     * @param itemBody new child
-     * @see #getItemBody
-     */
-    public void setItemBody(ItemBody itemBody) {
+    public void setItemBody(final ItemBody itemBody) {
         setChild(itemBody);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public ItemBody create(String classTag) {
+    public ItemBody create() {
         return new ItemBody(getParent());
     }
 }

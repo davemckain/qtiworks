@@ -46,7 +46,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class TableCellGroup extends AbstractNodeGroup<TableCell> {
+public class TableCellGroup extends AbstractNodeGroup<Tr,TableCell> {
 
     private static final long serialVersionUID = 3647300480260318987L;
 
@@ -61,11 +61,11 @@ public class TableCellGroup extends AbstractNodeGroup<TableCell> {
 
     @Override
     public Tr getParent() {
-        return (Tr) super.getParent();
+        return super.getParent();
     }
 
     @Override
-    public boolean isGeneral() {
+    public boolean isComplexContent() {
         return true;
     }
 

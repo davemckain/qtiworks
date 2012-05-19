@@ -31,23 +31,41 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.group.item.response.declaration;
+package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
+import java.util.Set;
+
 /**
- * FIXME: Document this!
+ * Parent of all groups.
  *
- * @author David McKain
+ * @author Jiri Kajaba
  */
-public abstract class SimpleMultipleNodeGroup<P extends XmlNode, C extends XmlNode> extends AbstractNodeGroup<C> {
+public abstract class ComplexNodeGroup<P extends XmlNode, C extends XmlNode> extends AbstractNodeGroup<P,C> {
 
-    private static final long serialVersionUID = 3006947671579885917L;
+    private static final long serialVersionUID = 903238011893494959L;
 
-    public SimpleMultipleNodeGroup(final P parent, final String contentQtiClass) {
-        super(parent, contentQtiClass, null, null);
+    /**
+     * Constructs group with maximum set to 1.
+     * <p>
+     * This is convenient constructor for group with only one child.
+     *
+     * @param parent parent of created group
+     * @param name name of created group
+     * @param required if true, minimum is set to 1, if false, minimum is set to 0
+     */
+    public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
+        super(parent, name, supportedQtiClasses, required ? 1 : 0, 1);
     }
 
-    public abstract C create();
+    public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses,
+            final Integer minimum, final Integer maximum) {
+        super(parent, name, supportedQtiClasses, minimum, maximum);
+    }
+
+    @Override
+    public final boolean isComplexContent() {
+        return true;
+    }
 }

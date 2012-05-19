@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tbody;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TbodyGroup extends AbstractNodeGroup<Tbody> {
+public final class TbodyGroup extends SimpleMultipleNodeGroup<Table,Tbody> {
 
     private static final long serialVersionUID = 8187044194872135432L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public TbodyGroup(Table parent) {
+    public TbodyGroup(final Table parent) {
         super(parent, Tbody.QTI_CLASS_NAME, 1, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Tbody> getTbodys() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Tbody create(String classTag) {
+    public Tbody create() {
         return new Tbody(getParent());
     }
 }

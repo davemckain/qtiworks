@@ -33,60 +33,34 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.response.declaration;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.AreaMapping;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-
 
 /**
  * Group of AreaMapping children
  *
  * @author Jonathon Hare
  */
-public final class AreaMappingGroup extends AbstractNodeGroup<AreaMapping> {
+public final class AreaMappingGroup extends SimpleSingleNodeGroup<ResponseDeclaration,AreaMapping> {
 
     private static final long serialVersionUID = 5207162137272888723L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public AreaMappingGroup(ResponseDeclaration parent) {
-        super(parent, AreaMapping.QTI_CLASS_NAME, null, null);
+    public AreaMappingGroup(final ResponseDeclaration parent) {
+        super(parent, AreaMapping.QTI_CLASS_NAME, true);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setAreaMapping
-     */
     public AreaMapping getAreaMapping() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param mapping new child
-     * @see #getAreaMapping
-     */
-    public void setAreaMapping(AreaMapping mapping) {
+    public void setAreaMapping(final AreaMapping mapping) {
         setChild(mapping);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public AreaMapping create(String classTag) {
-        return new AreaMapping((ResponseDeclaration) getParent());
+    public AreaMapping create() {
+        return new AreaMapping(getParent());
     }
 
 }

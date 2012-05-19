@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tfoot;
 
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tfoot;
  *
  * @author Jonathon Hare
  */
-public final class TfootGroup extends AbstractNodeGroup<Tfoot> {
+public final class TfootGroup extends SimpleSingleNodeGroup<Table,Tfoot> {
 
     private static final long serialVersionUID = 610832088365163990L;
 
@@ -51,7 +51,7 @@ public final class TfootGroup extends AbstractNodeGroup<Tfoot> {
      *
      * @param parent parent of created group
      */
-    public TfootGroup(Table parent) {
+    public TfootGroup(final Table parent) {
         super(parent, Tfoot.QTI_CLASS_NAME, false);
     }
 
@@ -71,7 +71,7 @@ public final class TfootGroup extends AbstractNodeGroup<Tfoot> {
      * @param tfoot new child
      * @see #getTfoot
      */
-    public void setTfoot(Tfoot tfoot) {
+    public void setTfoot(final Tfoot tfoot) {
         setChild(tfoot);
     }
 
@@ -84,7 +84,7 @@ public final class TfootGroup extends AbstractNodeGroup<Tfoot> {
      * @return created child
      */
     @Override
-    public Tfoot create(String classTag) {
+    public Tfoot create() {
         return new Tfoot(getParent());
     }
 }

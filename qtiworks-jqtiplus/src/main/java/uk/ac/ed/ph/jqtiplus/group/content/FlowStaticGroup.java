@@ -48,61 +48,16 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
 
     private static final long serialVersionUID = 252407139619211538L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public FlowStaticGroup(final XmlNode parent) {
         super(parent, FlowStatic.DISPLAY_NAME, ContentType.getFlowStaticQtiClassNames(), null, null);
     }
 
     @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setFlowStatic
-     */
-    public FlowStatic getFlowStatic() {
-        return getChildren().size() != 0 ? (FlowStatic) getChildren().get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     *
-     * @param flow new child
-     * @see #getFlowStatic
-     */
-    public void setFlowStatic(final FlowStatic flow) {
-        getChildren().clear();
-        getChildren().add(flow);
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
-    @SuppressWarnings("unchecked")
-    public List<FlowStatic> getFlowStatics() {
-        return (List<FlowStatic>) (List<? extends XmlNode>) getChildren();
-    }
-
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
-    @Override
     public FlowStatic create(final String classTag) {
         return ContentType.getFlowStaticInstance(getParent(), classTag);
+    }
+
+    public List<FlowStatic> getFlowStatics() {
+        return getChildren();
     }
 }

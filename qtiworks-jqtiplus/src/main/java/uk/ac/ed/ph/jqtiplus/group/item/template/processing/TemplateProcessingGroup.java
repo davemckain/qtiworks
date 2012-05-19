@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
  *
  * @author Jonathon Hare
  */
-public final class TemplateProcessingGroup extends AbstractNodeGroup<TemplateProcessing> {
+public final class TemplateProcessingGroup extends SimpleSingleNodeGroup<AssessmentItem,TemplateProcessing> {
 
     private static final long serialVersionUID = -2746547798009434122L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public TemplateProcessingGroup(AssessmentItem parent) {
+    public TemplateProcessingGroup(final AssessmentItem parent) {
         super(parent, TemplateProcessing.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setTemplateProcessing
-     */
     public TemplateProcessing getTemplateProcessing() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param templateProcessing new child
-     * @see #getTemplateProcessing
-     */
-    public void setTemplateProcessing(TemplateProcessing templateProcessing) {
+    public void setTemplateProcessing(final TemplateProcessing templateProcessing) {
         setChild(templateProcessing);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public TemplateProcessing create(String classTag) {
-        return new TemplateProcessing((AssessmentItem) getParent());
+    public TemplateProcessing create() {
+        return new TemplateProcessing(getParent());
     }
 }

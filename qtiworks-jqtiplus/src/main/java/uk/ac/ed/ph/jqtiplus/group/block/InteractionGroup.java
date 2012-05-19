@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.block;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -46,27 +46,12 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class InteractionGroup extends AbstractNodeGroup<Interaction> {
+public class InteractionGroup extends ComplexNodeGroup<BodyElement,Interaction> {
 
     private static final long serialVersionUID = 3984257304010665017L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public InteractionGroup(final BodyElement parent) {
         super(parent, Interaction.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), null, null);
-    }
-
-    @Override
-    public BodyElement getParent() {
-        return (BodyElement) super.getParent();
-    }
-
-    @Override
-    public boolean isGeneral() {
-        return true;
     }
 
     /**

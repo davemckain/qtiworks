@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
@@ -46,41 +46,18 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TemplateProcessingRuleGroup extends AbstractNodeGroup<TemplateProcessingRule> {
+public final class TemplateProcessingRuleGroup extends ComplexNodeGroup<XmlNode,TemplateProcessingRule> {
 
     private static final long serialVersionUID = -510565066058403275L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TemplateProcessingRuleGroup(final XmlNode parent) {
         super(parent, TemplateProcessingRule.DISPLAY_NAME, TemplateProcessingRuleType.getQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TemplateProcessingRule> getTemplateProcessingRules() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public TemplateProcessingRule create(final String classTag) {
         return TemplateProcessingRuleType.getInstance((TemplateProcessing) getParent(), classTag);

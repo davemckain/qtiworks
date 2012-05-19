@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariableType;
@@ -45,43 +45,20 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class ItemVariableGroup extends AbstractNodeGroup<ItemVariable> {
+public final class ItemVariableGroup extends ComplexNodeGroup<AbstractResult,ItemVariable> {
 
     private static final long serialVersionUID = -1454402289748757510L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public ItemVariableGroup(final AbstractResult parent) {
         super(parent, ItemVariable.DISPLAY_NAME, ItemVariableType.getQtiClassNames(), null, null);
     }
 
-    @Override
-    public boolean isGeneral() {
-        return true;
-    }
-
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<ItemVariable> getItemVariables() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
     public ItemVariable create(final String classTag) {
-        return ItemVariableType.getInstance((AbstractResult) getParent(), classTag);
+        return ItemVariableType.getInstance(getParent(), classTag);
     }
 }

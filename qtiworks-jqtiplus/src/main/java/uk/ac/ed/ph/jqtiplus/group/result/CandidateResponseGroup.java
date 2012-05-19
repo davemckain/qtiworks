@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.result;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.result.CandidateResponse;
 import uk.ac.ed.ph.jqtiplus.node.result.ResponseVariable;
 
@@ -42,49 +42,24 @@ import uk.ac.ed.ph.jqtiplus.node.result.ResponseVariable;
  *
  * @author Jiri Kajaba
  */
-public final class CandidateResponseGroup extends AbstractNodeGroup<CandidateResponse> {
+public final class CandidateResponseGroup extends SimpleSingleNodeGroup<ResponseVariable,CandidateResponse> {
 
     private static final long serialVersionUID = -7778466628028274413L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public CandidateResponseGroup(ResponseVariable parent) {
+    public CandidateResponseGroup(final ResponseVariable parent) {
         super(parent, CandidateResponse.QTI_CLASS_NAME, true);
     }
 
-    /**
-     * Gets child.
-     *
-     * @return child
-     * @see #setCandidateResponse
-     */
     public CandidateResponse getCandidateResponse() {
         return getChild();
     }
 
-    /**
-     * Sets new child.
-     *
-     * @param candidateResponse new child
-     * @see #getCandidateResponse
-     */
-    public void setCandidateResponse(CandidateResponse candidateResponse) {
+    public void setCandidateResponse(final CandidateResponse candidateResponse) {
         setChild(candidateResponse);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public CandidateResponse create(String classTag) {
-        return new CandidateResponse((ResponseVariable) getParent());
+    public CandidateResponse create() {
+        return new CandidateResponse(getParent());
     }
 }

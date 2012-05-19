@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.test;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 
@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class TestFeedbackGroup extends AbstractNodeGroup<TestFeedback> {
+public final class TestFeedbackGroup extends SimpleMultipleNodeGroup<ControlObject<?>,TestFeedback> {
 
     private static final long serialVersionUID = -424594146402751111L;
 
@@ -53,7 +53,7 @@ public final class TestFeedbackGroup extends AbstractNodeGroup<TestFeedback> {
      *
      * @param parent parent of created group
      */
-    public TestFeedbackGroup(ControlObject<?> parent) {
+    public TestFeedbackGroup(final ControlObject<?> parent) {
         super(parent, TestFeedback.QTI_CLASS_NAME, null, null);
     }
 
@@ -75,7 +75,7 @@ public final class TestFeedbackGroup extends AbstractNodeGroup<TestFeedback> {
      * @return created child
      */
     @Override
-    public TestFeedback create(String classTag) {
-        return new TestFeedback((ControlObject<?>) getParent());
+    public TestFeedback create() {
+        return new TestFeedback(getParent());
     }
 }

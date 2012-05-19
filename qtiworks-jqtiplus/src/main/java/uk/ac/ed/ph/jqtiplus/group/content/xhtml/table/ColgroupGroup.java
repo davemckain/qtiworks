@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
+import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Colgroup;
 
@@ -44,38 +44,20 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class ColgroupGroup extends AbstractNodeGroup<Colgroup> {
+public final class ColgroupGroup extends SimpleMultipleNodeGroup<BodyElement,Colgroup> {
 
     private static final long serialVersionUID = -1390159571079030615L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
-    public ColgroupGroup(BodyElement parent) {
-        super(parent, Colgroup.QTI_CLASS_NAME, null, null);
+    public ColgroupGroup(final BodyElement parent) {
+        super(parent, Colgroup.QTI_CLASS_NAME);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Colgroup> getColgroups() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
-     *
-     * @param classTag QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
-    public Colgroup create(String classTag) {
+    public Colgroup create() {
         return new Colgroup(getParent());
     }
 }
