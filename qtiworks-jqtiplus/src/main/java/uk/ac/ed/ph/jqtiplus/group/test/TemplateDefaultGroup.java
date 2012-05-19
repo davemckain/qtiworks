@@ -49,7 +49,7 @@ public final class TemplateDefaultGroup extends SimpleMultipleNodeGroup<Assessme
     private static final long serialVersionUID = -7887050230105198147L;
 
     public TemplateDefaultGroup(final AssessmentItemRef parent) {
-        super(parent, TemplateDefault.QTI_CLASS_NAME, null, null);
+        super(parent, TemplateDefault.QTI_CLASS_NAME, 0, null);
     }
 
     public List<TemplateDefault> getTemplateDefaults() {

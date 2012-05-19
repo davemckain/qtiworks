@@ -114,13 +114,11 @@ public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validat
     List<C> getChildren();
 
     /**
-     * Returns the required minimum number of children.
-     *
-     * TODO: null and zero are the same.
+     * Returns the required minimum number of children. (0 = no restriction)
      *
      * @return required minimum number of children or null
      */
-    Integer getMinimum();
+    int getMinimum();
 
     /**
      * Returns the allowed maximum number of children, using null to mean "unlimited"

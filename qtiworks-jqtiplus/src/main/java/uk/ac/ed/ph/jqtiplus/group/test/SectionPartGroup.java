@@ -53,8 +53,7 @@ public final class SectionPartGroup extends ComplexNodeGroup<AssessmentSection,S
 
     public SectionPartGroup(final AssessmentSection parent) {
         super(parent, SectionPart.DISPLAY_NAME,
-                ObjectUtilities.unmodifiableSet(AssessmentSection.QTI_CLASS_NAME, AssessmentItemRef.QTI_CLASS_NAME),
-                null, null);
+                ObjectUtilities.unmodifiableSet(AssessmentSection.QTI_CLASS_NAME, AssessmentItemRef.QTI_CLASS_NAME));
     }
 
     public List<SectionPart> getSectionParts() {

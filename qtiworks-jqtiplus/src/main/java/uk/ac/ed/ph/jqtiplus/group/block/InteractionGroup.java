@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 
 import java.util.List;
 
-
 /**
  * Group of interaction children.
  *
@@ -51,7 +50,7 @@ public class InteractionGroup extends ComplexNodeGroup<BodyElement,Interaction> 
     private static final long serialVersionUID = 3984257304010665017L;
 
     public InteractionGroup(final BodyElement parent) {
-        super(parent, Interaction.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), null, null);
+        super(parent, Interaction.DISPLAY_NAME, ContentType.getInlineQtiClassNames());
     }
 
     /**

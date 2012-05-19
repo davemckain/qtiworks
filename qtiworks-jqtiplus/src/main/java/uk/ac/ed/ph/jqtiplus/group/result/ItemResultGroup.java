@@ -49,7 +49,7 @@ public final class ItemResultGroup extends SimpleMultipleNodeGroup<AssessmentRes
     private static final long serialVersionUID = -4611796238391975428L;
 
     public ItemResultGroup(final AssessmentResult parent) {
-        super(parent, ItemResult.QTI_CLASS_NAME, null, null);
+        super(parent, ItemResult.QTI_CLASS_NAME);
     }
 
     public List<ItemResult> getItemResults() {

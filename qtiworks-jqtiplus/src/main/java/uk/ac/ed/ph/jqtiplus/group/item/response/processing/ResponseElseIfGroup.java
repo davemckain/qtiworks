@@ -49,7 +49,7 @@ public final class ResponseElseIfGroup extends SimpleMultipleNodeGroup<ResponseC
     private static final long serialVersionUID = -6280993789555268028L;
 
     public ResponseElseIfGroup(final ResponseCondition parent) {
-        super(parent, ResponseElseIf.QTI_CLASS_NAME, null, null);
+        super(parent, ResponseElseIf.QTI_CLASS_NAME);
     }
 
     public List<ResponseElseIf> getResponseElseIfs() {

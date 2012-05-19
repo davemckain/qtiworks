@@ -78,7 +78,7 @@ public final class CasProcess extends MathAssessOperator {
 
         // Allow 1 child only
         getNodeGroups().clear();
-        getNodeGroups().add(new ExpressionGroup(this, Integer.valueOf(1), Integer.valueOf(1)));
+        getNodeGroups().add(new ExpressionGroup(this, 1, 1));
     }
 
     /**

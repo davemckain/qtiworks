@@ -57,11 +57,14 @@ public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,
     }
 
     public LookupTable getLookupTable() {
-        return getChild();
+        return children.size() != 0 ? children.get(0) : null;
     }
 
     public void setLookupTable(final LookupTable lookupTable) {
-        setChild(lookupTable);
+        children.clear();
+        if (lookupTable != null) {
+            children.add(lookupTable);
+        }
     }
 
     @Override

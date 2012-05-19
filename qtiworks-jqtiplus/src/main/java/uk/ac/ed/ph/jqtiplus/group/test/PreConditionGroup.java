@@ -49,7 +49,7 @@ public final class PreConditionGroup extends SimpleMultipleNodeGroup<AbstractPar
     private static final long serialVersionUID = 7873744576576748401L;
 
     public PreConditionGroup(final AbstractPart parent) {
-        super(parent, PreCondition.QTI_CLASS_NAME, null, null);
+        super(parent, PreCondition.QTI_CLASS_NAME);
     }
 
     public List<PreCondition> getPreConditions() {

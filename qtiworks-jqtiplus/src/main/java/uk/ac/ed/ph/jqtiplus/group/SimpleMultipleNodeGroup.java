@@ -44,8 +44,9 @@ public abstract class SimpleMultipleNodeGroup<P extends XmlNode, C extends XmlNo
 
     private static final long serialVersionUID = 3006947671579885917L;
 
+    /** Constructor appropriate for when an arbtritrary number of children are permitted */
     public SimpleMultipleNodeGroup(final P parent, final String childQtiClass) {
-        super(parent, childQtiClass, null, null);
+        super(parent, childQtiClass, 0, null);
     }
 
     public SimpleMultipleNodeGroup(final P parent, final String childQtiClass, final int minimum, final int maximum) {
@@ -56,8 +57,9 @@ public abstract class SimpleMultipleNodeGroup<P extends XmlNode, C extends XmlNo
         super(parent, childQtiClass, minimum, maximum);
     }
 
-    public SimpleMultipleNodeGroup(final P parent, final String childQtiClass, final Integer minimum, final Integer maximum) {
-        super(parent, childQtiClass, minimum, maximum);
+    @Override
+    public final boolean supportsQtiClass(final String qtiClassName) {
+        return name.equals(qtiClassName);
     }
 
     @Override

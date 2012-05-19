@@ -51,7 +51,7 @@ public final class TemplateProcessingRuleGroup extends ComplexNodeGroup<XmlNode,
     private static final long serialVersionUID = -510565066058403275L;
 
     public TemplateProcessingRuleGroup(final XmlNode parent) {
-        super(parent, TemplateProcessingRule.DISPLAY_NAME, TemplateProcessingRuleType.getQtiClassNames(), null, null);
+        super(parent, TemplateProcessingRule.DISPLAY_NAME, TemplateProcessingRuleType.getQtiClassNames());
     }
 
     public List<TemplateProcessingRule> getTemplateProcessingRules() {

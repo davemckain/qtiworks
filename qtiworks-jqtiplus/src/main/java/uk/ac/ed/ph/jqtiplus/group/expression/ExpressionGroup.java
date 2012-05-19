@@ -49,19 +49,12 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
 
     private static final long serialVersionUID = 891305708750072316L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     * @param minimum minimum required children of created group
-     * @param maximum maximum allowed children of created group
-     */
-    public ExpressionGroup(final ExpressionParent parent, final Integer minimum, final Integer maximum) {
+    public ExpressionGroup(final ExpressionParent parent, final int minimum, final Integer maximum) {
         super(parent, Expression.DISPLAY_NAME,  ExpressionType.getQtiClassNames(), minimum, maximum);
     }
 
     public ExpressionGroup(final ExpressionParent parent, final int minimum, final int maximum) {
-        this(parent, Integer.valueOf(minimum), Integer.valueOf(maximum));
+        this(parent, minimum, Integer.valueOf(maximum));
     }
 
     //    @Override

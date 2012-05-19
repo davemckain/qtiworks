@@ -49,7 +49,7 @@ public final class ColGroup extends SimpleMultipleNodeGroup<BodyElement,Col> {
     private static final long serialVersionUID = 764161568152065608L;
 
     public ColGroup(final BodyElement parent) {
-        super(parent, Col.QTI_CLASS_NAME, null, null);
+        super(parent, Col.QTI_CLASS_NAME);
     }
 
     public List<Col> getCols() {

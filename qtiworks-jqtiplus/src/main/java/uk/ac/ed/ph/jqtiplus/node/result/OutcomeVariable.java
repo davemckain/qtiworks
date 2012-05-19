@@ -50,7 +50,7 @@ import java.util.List;
 
 /**
  * Outcome variables are declared by outcome declarations.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
@@ -79,9 +79,9 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
     /** Name of masteryValue attribute in xml schema. */
     public static final String ATTR_MASTERY_VALUE_NAME = "masteryValue";
 
-    public OutcomeVariable(AbstractResult parent) {
+    public OutcomeVariable(final AbstractResult parent) {
         super(parent, QTI_CLASS_NAME);
-        
+
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, false));
         getAttributes().add(new UriAttribute(this, ATTR_LONG_INTERPRETATION, false));
@@ -89,17 +89,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
         getAttributes().add(new FloatAttribute(this, ATTR_NORMAL_MINIMUM_NAME, false));
         getAttributes().add(new FloatAttribute(this, ATTR_MASTERY_VALUE_NAME, false));
 
-        getNodeGroups().add(new FieldValueGroup(this, null, null));
+        getNodeGroups().add(new FieldValueGroup(this, 0, null));
     }
 
     /**
      * Creates new outcomeVariable from given outcomeDeclaration.
-     * 
+     *
      * @param parent parent of created outcomeVariable
      * @param declaration given outcomeDeclaration
      * @param value if provided, replaces value from outcomeDeclaration
      */
-    public OutcomeVariable(AbstractResult parent, OutcomeDeclaration declaration, Value value) {
+    public OutcomeVariable(final AbstractResult parent, final OutcomeDeclaration declaration, final Value value) {
         this(parent);
         if (declaration != null) {
             setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
@@ -119,12 +119,12 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Creates new outcomeVariable from given identifier and value.
-     * 
+     *
      * @param parent parent of created outcomeVariable
      * @param identifier identifier of created outcomeVariable (may be null)
      * @param value of created outcomeVariable (may be null)
      */
-    public OutcomeVariable(AbstractResult parent, VariableReferenceIdentifier identifier, Value value) {
+    public OutcomeVariable(final AbstractResult parent, final VariableReferenceIdentifier identifier, final Value value) {
         this(parent);
 
         setIdentifier(identifier);
@@ -140,14 +140,14 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
     public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
-    
-    public void setViews(List<View> value) {
+
+    public void setViews(final List<View> value) {
         getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
 
     /**
      * Gets value of interpretation attribute.
-     * 
+     *
      * @return value of interpretation attribute
      * @see #setInterpretation
      */
@@ -157,17 +157,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Sets new value of interpretation attribute.
-     * 
+     *
      * @param interpretation new value of interpretation attribute
      * @see #getInterpretation
      */
-    public void setInterpretation(String interpretation) {
+    public void setInterpretation(final String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
     /**
      * Gets value of longInterpretation attribute.
-     * 
+     *
      * @return value of longInterpretation attribute
      * @see #setLongInterpretation
      */
@@ -177,17 +177,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Sets new value of longInterpretation attribute.
-     * 
+     *
      * @param longInterpretation new value of longInterpretation attribute
      * @see #getLongInterpretation
      */
-    public void setLongInterpretation(URI longInterpretation) {
+    public void setLongInterpretation(final URI longInterpretation) {
         getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).setValue(longInterpretation);
     }
 
     /**
      * Gets value of normalMaximum attribute.
-     * 
+     *
      * @return value of normalMaximum attribute
      * @see #setNormalMaximum
      */
@@ -197,17 +197,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Sets new value of normalMaximum attribute.
-     * 
+     *
      * @param normalMaximum new value of normalMaximum attribute
      * @see #getNormalMaximum
      */
-    public void setNormalMaximum(Double normalMaximum) {
+    public void setNormalMaximum(final Double normalMaximum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).setValue(normalMaximum);
     }
 
     /**
      * Gets value of normalMinimum attribute.
-     * 
+     *
      * @return value of normalMinimum attribute
      * @see #setNormalMinimum
      */
@@ -217,17 +217,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Sets new value of normalMinimum attribute.
-     * 
+     *
      * @param normalMinimum new value of normalMinimum attribute
      * @see #getNormalMinimum()
      */
-    public void setNormalMinimum(Double normalMinimum) {
+    public void setNormalMinimum(final Double normalMinimum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).setValue(normalMinimum);
     }
 
     /**
      * Gets value of masteryValue attribute.
-     * 
+     *
      * @return value of masteryValue attribute
      * @see #setMasteryValue
      */
@@ -237,17 +237,17 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Sets new value of masteryValue attribute.
-     * 
+     *
      * @param masteryValue new value of masteryValue attribute
      * @see #getMasteryValue
      */
-    public void setMasteryValue(Double masteryValue) {
+    public void setMasteryValue(final Double masteryValue) {
         getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).setValue(masteryValue);
     }
 
     /**
      * Gets value of this variableDeclaration.
-     * 
+     *
      * @return value of this variableDeclaration
      */
     public Value getComputedValue() {
@@ -269,7 +269,7 @@ public class OutcomeVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Gets fieldValue children.
-     * 
+     *
      * @return fieldValue children
      */
     public List<FieldValue> getFieldValues() {

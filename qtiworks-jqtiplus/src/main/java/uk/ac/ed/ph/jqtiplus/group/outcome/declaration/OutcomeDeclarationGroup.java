@@ -49,7 +49,7 @@ public final class OutcomeDeclarationGroup extends SimpleMultipleNodeGroup<Asses
     private static final long serialVersionUID = -1592008701965170483L;
 
     public OutcomeDeclarationGroup(final AssessmentObject parent) {
-        super(parent, OutcomeDeclaration.QTI_CLASS_NAME, null, null);
+        super(parent, OutcomeDeclaration.QTI_CLASS_NAME, 0, null);
     }
 
     public List<OutcomeDeclaration> getOutcomeDeclarations() {

@@ -49,7 +49,7 @@ public final class TemplateDeclarationGroup extends SimpleMultipleNodeGroup<Asse
     private static final long serialVersionUID = 711086738893965361L;
 
     public TemplateDeclarationGroup(final AssessmentItem parent) {
-        super(parent, TemplateDeclaration.QTI_CLASS_NAME, null, null);
+        super(parent, TemplateDeclaration.QTI_CLASS_NAME);
     }
 
     public List<TemplateDeclaration> getTemplateDeclarations() {

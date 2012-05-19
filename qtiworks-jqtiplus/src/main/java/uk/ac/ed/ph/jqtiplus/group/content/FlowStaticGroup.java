@@ -49,7 +49,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
     private static final long serialVersionUID = 252407139619211538L;
 
     public FlowStaticGroup(final XmlNode parent) {
-        super(parent, FlowStatic.DISPLAY_NAME, ContentType.getFlowStaticQtiClassNames(), null, null);
+        super(parent, FlowStatic.DISPLAY_NAME, ContentType.getFlowStaticQtiClassNames(), 0, null);
     }
 
     @Override

@@ -42,7 +42,7 @@ import java.util.List;
 /**
  * Contains : simpleAssociableChoice [*]
  * An ordered set of choices for the set.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoiceContainer {
@@ -52,15 +52,15 @@ public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoi
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "simpleMatchSet";
 
-    public SimpleMatchSet(XmlNode parent) {
+    public SimpleMatchSet(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getNodeGroups().add(new SimpleAssociableChoiceGroup(this));
+        getNodeGroups().add(new SimpleAssociableChoiceGroup(this, 0));
     }
 
     /**
      * Gets simpleAssociableChoice children.
-     * 
+     *
      * @return simpleAssociableChoice children
      */
     public List<SimpleAssociableChoice> getSimpleAssociableChoices() {

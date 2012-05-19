@@ -49,7 +49,7 @@ public final class LiGroup extends SimpleMultipleNodeGroup<BodyElement,Li> {
     private static final long serialVersionUID = 3195076442282902893L;
 
     public LiGroup(final BodyElement parent) {
-        super(parent, Li.QTI_CLASS_NAME, null, null);
+        super(parent, Li.QTI_CLASS_NAME);
     }
 
     public List<Li> getLis() {

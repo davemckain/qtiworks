@@ -50,7 +50,7 @@ public final class OutcomeRuleGroup extends ComplexNodeGroup<XmlNode,OutcomeRule
     private static final long serialVersionUID = -2078014326662762459L;
 
     public OutcomeRuleGroup(final XmlNode parent) {
-        super(parent, OutcomeRule.DISPLAY_NAME, OutcomeRuleType.getQtiClassNames(), null, null);
+        super(parent, OutcomeRule.DISPLAY_NAME, OutcomeRuleType.getQtiClassNames());
     }
 
     public List<OutcomeRule> getOutcomeRules() {

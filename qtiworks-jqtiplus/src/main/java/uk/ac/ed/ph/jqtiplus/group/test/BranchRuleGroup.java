@@ -49,7 +49,7 @@ public final class BranchRuleGroup extends SimpleMultipleNodeGroup<AbstractPart,
     private static final long serialVersionUID = -3357195062470412763L;
 
     public BranchRuleGroup(final AbstractPart parent) {
-        super(parent, BranchRule.QTI_CLASS_NAME, null, null);
+        super(parent, BranchRule.QTI_CLASS_NAME);
     }
 
     public List<BranchRule> getBranchRules() {

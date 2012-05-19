@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * candidateResponse
- * 
+ *
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
@@ -55,10 +55,10 @@ public class CandidateResponse extends AbstractNode implements FieldValueParent 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "candidateResponse";
 
-    public CandidateResponse(ResponseVariable parent) {
+    public CandidateResponse(final ResponseVariable parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getNodeGroups().add(new FieldValueGroup(this, null, null));
+        getNodeGroups().add(new FieldValueGroup(this, 0, null));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CandidateResponse extends AbstractNode implements FieldValueParent 
 
     /**
      * Gets fieldValue children.
-     * 
+     *
      * @return fieldValue children
      */
     public List<FieldValue> getFieldValues() {

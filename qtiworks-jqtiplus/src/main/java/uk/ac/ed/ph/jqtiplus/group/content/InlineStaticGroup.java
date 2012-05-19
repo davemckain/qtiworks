@@ -49,7 +49,7 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
     private static final long serialVersionUID = -3625988403289280882L;
 
     public InlineStaticGroup(final XmlNode parent) {
-        super(parent, InlineStatic.DISPLAY_NAME, ContentType.getInlineStaticQtiClassNames(), null, null);
+        super(parent, InlineStatic.DISPLAY_NAME, ContentType.getInlineStaticQtiClassNames(), 0, null);
     }
 
     public List<InlineStatic> getInlineStatics() {

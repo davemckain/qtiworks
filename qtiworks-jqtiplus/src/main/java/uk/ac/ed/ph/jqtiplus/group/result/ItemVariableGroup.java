@@ -50,7 +50,7 @@ public final class ItemVariableGroup extends ComplexNodeGroup<AbstractResult,Ite
     private static final long serialVersionUID = -1454402289748757510L;
 
     public ItemVariableGroup(final AbstractResult parent) {
-        super(parent, ItemVariable.DISPLAY_NAME, ItemVariableType.getQtiClassNames(), null, null);
+        super(parent, ItemVariable.DISPLAY_NAME, ItemVariableType.getQtiClassNames());
     }
 
     public List<ItemVariable> getItemVariables() {

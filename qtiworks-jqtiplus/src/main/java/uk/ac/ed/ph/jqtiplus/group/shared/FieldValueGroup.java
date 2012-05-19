@@ -48,12 +48,8 @@ public final class FieldValueGroup extends SimpleMultipleNodeGroup<FieldValuePar
 
     private static final long serialVersionUID = 5884381764228207L;
 
-    public FieldValueGroup(final FieldValueParent parent, final Integer minimum, final Integer maximum) {
-        super(parent, FieldValue.QTI_CLASS_NAME, minimum, maximum);
-    }
-
     public FieldValueGroup(final FieldValueParent parent, final int minimum, final Integer maximum) {
-        this(parent, Integer.valueOf(minimum), maximum);
+        super(parent, FieldValue.QTI_CLASS_NAME, minimum, maximum);
     }
 
     public List<FieldValue> getFieldValues() {

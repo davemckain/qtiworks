@@ -49,7 +49,7 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
     private static final long serialVersionUID = -4777558280555802758L;
 
     public TextOrVariableGroup(final XmlNode parent) {
-        super(parent, TextOrVariable.DISPLAY_NAME, ContentType.getTextOrVariableQtiClassNames(), null, null);
+        super(parent, TextOrVariable.DISPLAY_NAME, ContentType.getTextOrVariableQtiClassNames(), 0, null);
     }
 
     public List<TextOrVariable> getTextOrVariables() {

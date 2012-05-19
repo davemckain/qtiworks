@@ -49,7 +49,7 @@ public final class WeightGroup extends SimpleMultipleNodeGroup<AssessmentItemRef
     private static final long serialVersionUID = 56148491111431386L;
 
     public WeightGroup(final AssessmentItemRef parent) {
-        super(parent, Weight.QTI_CLASS_NAME, null, null);
+        super(parent, Weight.QTI_CLASS_NAME);
     }
 
     public List<Weight> getWeights() {

@@ -49,7 +49,7 @@ public final class RubricBlockGroup extends SimpleMultipleNodeGroup<AssessmentSe
     private static final long serialVersionUID = 265433082183887266L;
 
     public RubricBlockGroup(final AssessmentSection parent) {
-        super(parent, RubricBlock.QTI_CLASS_NAME, null, null);
+        super(parent, RubricBlock.QTI_CLASS_NAME);
     }
 
     public List<RubricBlock> getRubricBlocks() {

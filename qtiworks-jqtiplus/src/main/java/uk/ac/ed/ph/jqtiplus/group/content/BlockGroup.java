@@ -50,7 +50,7 @@ public final class BlockGroup extends ComplexNodeGroup<XmlNode,Block> {
     private static final long serialVersionUID = 4196445027200459122L;
 
     public BlockGroup(final XmlNode parent) {
-        super(parent, Block.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), null, null);
+        super(parent, Block.DISPLAY_NAME, ContentType.getBlockQtiClassNames());
     }
 
     public List<Block> getBlocks() {

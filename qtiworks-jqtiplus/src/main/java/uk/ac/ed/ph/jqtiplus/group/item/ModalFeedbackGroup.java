@@ -49,7 +49,7 @@ public final class ModalFeedbackGroup extends SimpleMultipleNodeGroup<Assessment
     private static final long serialVersionUID = 7540621518736433863L;
 
     public ModalFeedbackGroup(final AssessmentItem parent) {
-        super(parent, ModalFeedback.QTI_CLASS_NAME, null, null);
+        super(parent, ModalFeedback.QTI_CLASS_NAME);
     }
 
     @Override

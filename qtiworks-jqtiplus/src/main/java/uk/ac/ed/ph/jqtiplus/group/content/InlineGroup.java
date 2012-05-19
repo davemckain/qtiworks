@@ -49,7 +49,7 @@ public final class InlineGroup extends AbstractContentNodeGroup<Inline> {
     private static final long serialVersionUID = -7476394697568540470L;
 
     public InlineGroup(final XmlNode parent) {
-        super(parent, Inline.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), null, null);
+        super(parent, Inline.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), 0, null);
     }
 
     public List<Inline> getInlines() {

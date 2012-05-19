@@ -49,7 +49,7 @@ public final class SessionIdentifierGroup extends SimpleMultipleNodeGroup<Contex
     private static final long serialVersionUID = 7411327926543577362L;
 
     public SessionIdentifierGroup(final Context parent) {
-        super(parent, SessionIdentifier.QTI_CLASS_NAME, null, null);
+        super(parent, SessionIdentifier.QTI_CLASS_NAME);
     }
 
     public List<SessionIdentifier> getSessionIdentifiers() {

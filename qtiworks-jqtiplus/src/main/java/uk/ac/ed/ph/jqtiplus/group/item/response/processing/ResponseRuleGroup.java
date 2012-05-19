@@ -50,7 +50,7 @@ public final class ResponseRuleGroup extends ComplexNodeGroup<XmlNode,ResponseRu
     private static final long serialVersionUID = 8969526609727989356L;
 
     public ResponseRuleGroup(final XmlNode parent) {
-        super(parent, ResponseRule.DISPLAY_NAME, ResponseRuleType.getQtiClassNames(), null, null);
+        super(parent, ResponseRule.DISPLAY_NAME, ResponseRuleType.getQtiClassNames());
     }
 
     public List<ResponseRule> getResponseRules() {

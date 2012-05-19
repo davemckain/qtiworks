@@ -53,7 +53,7 @@ public abstract class AbstractContentNodeGroup<C extends Content> extends Comple
 
     private static final long serialVersionUID = -630489519873000102L;
 
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Set<String> qtiClassNames, final Integer minimum, final Integer maximum) {
+    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Set<String> qtiClassNames, final int minimum, final Integer maximum) {
         super(parent, name, qtiClassNames, minimum, maximum);
     }
 }

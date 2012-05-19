@@ -48,10 +48,6 @@ public final class HotspotChoiceGroup extends SimpleMultipleNodeGroup<HotspotCho
 
     private static final long serialVersionUID = -7699266322816203373L;
 
-    public HotspotChoiceGroup(final HotspotChoiceContainer parent) {
-        super(parent, HotspotChoice.QTI_CLASS_NAME, null, null);
-    }
-
     public HotspotChoiceGroup(final HotspotChoiceContainer parent, final int minimum) {
         super(parent, HotspotChoice.QTI_CLASS_NAME, minimum, null);
     }

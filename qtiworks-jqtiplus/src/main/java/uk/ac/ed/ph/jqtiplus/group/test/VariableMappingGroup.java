@@ -49,7 +49,7 @@ public final class VariableMappingGroup extends SimpleMultipleNodeGroup<Assessme
     private static final long serialVersionUID = -4601191716738151865L;
 
     public VariableMappingGroup(final AssessmentItemRef parent) {
-        super(parent, VariableMapping.QTI_CLASS_NAME, null, null);
+        super(parent, VariableMapping.QTI_CLASS_NAME);
     }
 
     public List<VariableMapping> getVariableMappings() {

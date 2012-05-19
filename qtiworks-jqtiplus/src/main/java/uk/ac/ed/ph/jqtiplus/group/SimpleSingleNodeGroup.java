@@ -49,8 +49,41 @@ public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode
     }
 
     @Override
+    public final boolean supportsQtiClass(final String qtiClassName) {
+        return name.equals(qtiClassName);
+    }
+
+    @Override
     public final boolean isComplexContent() {
         return false;
+    }
+
+    /**
+     * Gets first child or null.
+     * This is convenient method for groups only with one child (maximum = 1).
+     *
+     * @return first child or null
+     * @see #setChild
+     */
+    public C getChild() {
+        return children.size() != 0 ? children.get(0) : null;
+    }
+
+    /**
+     * Sets new child.
+     * <p>
+     * Removes all children from list first!
+     * <p>
+     * This method should be used only on groups with one child (maximum = 1), because it clears list before setting new child.
+     *
+     * @param child new child
+     * @see #getChild
+     */
+    protected void setChild(final C child) {
+        children.clear();
+        if (child != null) {
+            children.add(child);
+        }
     }
 
     @Override

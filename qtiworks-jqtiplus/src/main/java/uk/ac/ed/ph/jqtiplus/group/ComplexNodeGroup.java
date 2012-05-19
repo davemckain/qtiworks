@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 
 import java.util.Set;
@@ -46,9 +47,22 @@ public abstract class ComplexNodeGroup<P extends XmlNode, C extends XmlNode> ext
 
     private static final long serialVersionUID = 903238011893494959L;
 
+    private final Set<String> supportedQtiClasses;
+
+    /** Constructor supporting an arbtrirary number of children */
+    public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses) {
+        this(parent, name, supportedQtiClasses, 0, null);
+    }
+
     public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses,
-            final Integer minimum, final Integer maximum) {
-        super(parent, name, supportedQtiClasses, minimum, maximum);
+            final int minimum, final Integer maximum) {
+        super(parent, name, minimum, maximum);
+        this.supportedQtiClasses = ObjectUtilities.unmodifiableSet(supportedQtiClasses);
+    }
+
+    @Override
+    public final boolean supportsQtiClass(final String qtiClassName) {
+        return supportedQtiClasses.contains(qtiClassName);
     }
 
     @Override

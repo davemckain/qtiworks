@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Template variables are declared by template declarations.
- * 
+ *
  * @author Jonathon Hare
  */
 public class TemplateVariable extends ItemVariable implements FieldValueParent {
@@ -53,18 +53,18 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateVariable";
 
-    public TemplateVariable(AbstractResult parent) {
+    public TemplateVariable(final AbstractResult parent) {
         super(parent, QTI_CLASS_NAME);
-        getNodeGroups().add(new FieldValueGroup(this, null, null));
+        getNodeGroups().add(new FieldValueGroup(this, 0, null));
     }
 
     /**
      * Creates new templateVariable from a given templateDeclaration.
-     * 
+     *
      * @param parent parent of created templateVariable
      * @param declaration given templateDeclaration
      */
-    public TemplateVariable(AbstractResult parent, TemplateDeclaration declaration, Value value) {
+    public TemplateVariable(final AbstractResult parent, final TemplateDeclaration declaration, final Value value) {
         this(parent);
         if (declaration != null) {
             setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
@@ -76,7 +76,7 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Gets fieldValue children.
-     * 
+     *
      * @return fieldValue children
      */
     public List<FieldValue> getFieldValues() {
@@ -85,7 +85,7 @@ public class TemplateVariable extends ItemVariable implements FieldValueParent {
 
     /**
      * Gets value of this variableDeclaration.
-     * 
+     *
      * @return value of this variableDeclaration
      */
     public Value getValue() {

@@ -49,7 +49,7 @@ public final class FlowGroup extends AbstractContentNodeGroup<Flow> {
     private static final long serialVersionUID = -2045148464986468147L;
 
     public FlowGroup(final XmlNode parent) {
-        super(parent, Flow.DISPLAY_NAME, ContentType.getFlowQtiClassNames(), null, null);
+        super(parent, Flow.DISPLAY_NAME, ContentType.getFlowQtiClassNames(), 0, null);
     }
 
     public List<Flow> getFlows() {

@@ -48,10 +48,6 @@ public final class InlineChoiceGroup extends SimpleMultipleNodeGroup<InlineChoic
 
     private static final long serialVersionUID = -6552140842136886189L;
 
-    public InlineChoiceGroup(final InlineChoiceInteraction parent) {
-        super(parent, InlineChoice.QTI_CLASS_NAME, null, null);
-    }
-
     public InlineChoiceGroup(final InlineChoiceInteraction parent, final int minimum) {
         super(parent, InlineChoice.QTI_CLASS_NAME, minimum, null);
     }

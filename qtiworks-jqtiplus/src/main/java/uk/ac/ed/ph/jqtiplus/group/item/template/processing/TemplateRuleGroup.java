@@ -50,7 +50,7 @@ public final class TemplateRuleGroup extends ComplexNodeGroup<TemplateConditionC
     private static final long serialVersionUID = 7611032252474697635L;
 
     public TemplateRuleGroup(final TemplateConditionChild parent) {
-        super(parent, TemplateRule.DISPLAY_NAME, TemplateRuleType.getQtiClassNames(), null, null);
+        super(parent, TemplateRule.DISPLAY_NAME, TemplateRuleType.getQtiClassNames());
     }
 
     public List<TemplateRule> getTemplateRules() {

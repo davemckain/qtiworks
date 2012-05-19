@@ -48,10 +48,6 @@ public final class GapImgGroup extends SimpleMultipleNodeGroup<XmlNode,GapImg> {
 
     private static final long serialVersionUID = -2058016255519477530L;
 
-    public GapImgGroup(final XmlNode parent) {
-        super(parent, GapImg.QTI_CLASS_NAME, null, null);
-    }
-
     public GapImgGroup(final XmlNode parent, final int minimum) {
         super(parent, GapImg.QTI_CLASS_NAME, minimum, null);
     }

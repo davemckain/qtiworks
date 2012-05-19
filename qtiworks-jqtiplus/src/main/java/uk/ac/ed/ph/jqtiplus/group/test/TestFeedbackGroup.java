@@ -54,7 +54,7 @@ public final class TestFeedbackGroup extends SimpleMultipleNodeGroup<ControlObje
      * @param parent parent of created group
      */
     public TestFeedbackGroup(final ControlObject<?> parent) {
-        super(parent, TestFeedback.QTI_CLASS_NAME, null, null);
+        super(parent, TestFeedback.QTI_CLASS_NAME);
     }
 
     /**

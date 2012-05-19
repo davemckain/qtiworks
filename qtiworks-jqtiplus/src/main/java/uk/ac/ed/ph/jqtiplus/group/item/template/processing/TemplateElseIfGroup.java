@@ -49,7 +49,7 @@ public final class TemplateElseIfGroup extends SimpleMultipleNodeGroup<TemplateC
     private static final long serialVersionUID = -4363023590072745882L;
 
     public TemplateElseIfGroup(final TemplateCondition parent) {
-        super(parent, TemplateElseIf.QTI_CLASS_NAME, null, null);
+        super(parent, TemplateElseIf.QTI_CLASS_NAME);
     }
 
     public List<TemplateElseIf> getTemplateElseIfs() {

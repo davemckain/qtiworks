@@ -48,10 +48,6 @@ public final class SimpleAssociableChoiceGroup extends SimpleMultipleNodeGroup<S
 
     private static final long serialVersionUID = 3086385158729326936L;
 
-    public SimpleAssociableChoiceGroup(final SimpleAssociableChoiceContainer parent) {
-        super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, null, null);
-    }
-
     public SimpleAssociableChoiceGroup(final SimpleAssociableChoiceContainer parent, final int minimum) {
         super(parent, SimpleAssociableChoice.QTI_CLASS_NAME, minimum, null);
     }

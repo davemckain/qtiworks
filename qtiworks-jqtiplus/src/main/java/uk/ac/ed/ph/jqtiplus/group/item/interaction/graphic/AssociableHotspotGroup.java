@@ -48,10 +48,6 @@ public final class AssociableHotspotGroup extends SimpleMultipleNodeGroup<Associ
 
     private static final long serialVersionUID = 5898143688224446359L;
 
-    public AssociableHotspotGroup(final AssociableHotspotContainer parent) {
-        super(parent, AssociableHotspot.QTI_CLASS_NAME, null, null);
-    }
-
     public AssociableHotspotGroup(final AssociableHotspotContainer parent, final int minimum) {
         super(parent, AssociableHotspot.QTI_CLASS_NAME, minimum, null);
     }

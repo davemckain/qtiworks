@@ -48,10 +48,6 @@ public final class PositionObjectInteractionGroup extends SimpleMultipleNodeGrou
 
     private static final long serialVersionUID = 4524236294070620750L;
 
-    public PositionObjectInteractionGroup(final PositionObjectStage parent) {
-        super(parent, PositionObjectInteraction.QTI_CLASS_NAME, null, null);
-    }
-
     public PositionObjectInteractionGroup(final PositionObjectStage parent, final int minimum) {
         super(parent, PositionObjectInteraction.QTI_CLASS_NAME, minimum, null);
     }

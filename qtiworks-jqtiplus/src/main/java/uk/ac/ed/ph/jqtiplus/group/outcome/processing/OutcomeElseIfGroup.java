@@ -49,7 +49,7 @@ public final class OutcomeElseIfGroup extends SimpleMultipleNodeGroup<OutcomeCon
     private static final long serialVersionUID = 7361297940568871513L;
 
     public OutcomeElseIfGroup(final OutcomeCondition parent) {
-        super(parent, OutcomeElseIf.QTI_CLASS_NAME, null, null);
+        super(parent, OutcomeElseIf.QTI_CLASS_NAME);
     }
 
     public List<OutcomeElseIf> getOutcomeElseIfs() {

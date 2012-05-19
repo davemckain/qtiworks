@@ -49,7 +49,7 @@ public class ObjectFlowGroup extends AbstractContentNodeGroup<ObjectFlow> {
     private static final long serialVersionUID = -1256618525976970693L;
 
     public ObjectFlowGroup(final XmlNode parent) {
-        super(parent, ObjectFlow.DISPLAY_NAME, ContentType.getObjectFlowQtiClassNames(), null, null);
+        super(parent, ObjectFlow.DISPLAY_NAME, ContentType.getObjectFlowQtiClassNames(), 0, null);
     }
 
     public List<ObjectFlow> getObjectFlows() {

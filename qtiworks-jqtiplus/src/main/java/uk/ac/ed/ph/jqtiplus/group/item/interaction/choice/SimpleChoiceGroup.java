@@ -49,7 +49,7 @@ public final class SimpleChoiceGroup extends SimpleMultipleNodeGroup<SimpleChoic
     private static final long serialVersionUID = 6131739024844791031L;
 
     public SimpleChoiceGroup(final SimpleChoiceContainer parent) {
-        super(parent, SimpleChoice.QTI_CLASS_NAME, null, null);
+        super(parent, SimpleChoice.QTI_CLASS_NAME);
     }
 
     public SimpleChoiceGroup(final SimpleChoiceContainer parent, final int minimum) {

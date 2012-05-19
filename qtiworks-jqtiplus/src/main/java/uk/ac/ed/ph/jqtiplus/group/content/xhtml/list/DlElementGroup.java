@@ -50,7 +50,7 @@ public final class DlElementGroup extends ComplexNodeGroup<BodyElement,DlElement
     private static final long serialVersionUID = 1889833531495911861L;
 
     public DlElementGroup(final BodyElement parent) {
-        super(parent, BodyElement.DISPLAY_NAME, DlElementType.getQtiClassNames(), null, null);
+        super(parent, BodyElement.DISPLAY_NAME, DlElementType.getQtiClassNames());
     }
 
     public List<DlElement> getDlElements() {

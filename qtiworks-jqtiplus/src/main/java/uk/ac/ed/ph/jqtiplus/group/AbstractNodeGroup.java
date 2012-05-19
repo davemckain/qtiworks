@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
@@ -46,10 +45,8 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,43 +61,17 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
 
     private static final long serialVersionUID = 903238011893494959L;
 
-    private final P parent;
-    private final String name;
-    private final Set<String> supportedQtiClasses;
-    private final List<C> children;
-    private final Integer minimum;
-    private final Integer maximum;
-
-    /**
-     * Constructs group with maximum set to 1.
-     * <p>
-     * This is convenient constructor for group with only one child.
-     *
-     * @param parent parent of created group
-     * @param name name of created group
-     * @param required if true, minimum is set to 1, if false, minimum is set to 0
-     */
-    public AbstractNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses, final boolean required) {
-        this(parent, name, supportedQtiClasses, required ? 1 : 0, 1);
-    }
+    protected final P parent;
+    protected final String name;
+    protected final List<C> children;
+    protected final int minimum;
+    protected final Integer maximum;
 
     public AbstractNodeGroup(final P parent, final String name, final int minimum, final int maximum) {
-        this(parent, name, Integer.valueOf(minimum), Integer.valueOf(maximum));
+        this(parent, name, minimum, Integer.valueOf(maximum));
     }
 
     public AbstractNodeGroup(final P parent, final String name, final int minimum, final Integer maximum) {
-        this(parent, name, Integer.valueOf(minimum), maximum);
-    }
-
-    /**
-     * Constructs group, only supporting QTI classes having the same name of the group.
-     *
-     * @param parent parent of created group
-     * @param name name of created group
-     * @param minimum minimum required children of created group
-     * @param maximum maximum allowed children of created group
-     */
-    public AbstractNodeGroup(final P parent, final String name, final Integer minimum, final Integer maximum) {
         Assert.ensureNotNull(parent);
         Assert.ensureNotNull(name);
         this.parent = parent;
@@ -108,20 +79,6 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
         this.children = new ArrayList<C>();
         this.minimum = minimum;
         this.maximum = maximum;
-        supportedQtiClasses = ObjectUtilities.unmodifiableSet(name);
-    }
-
-    public AbstractNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses,
-            final Integer minimum, final Integer maximum) {
-        Assert.ensureNotNull(parent);
-        Assert.ensureNotNull(name);
-        Assert.ensureNotNull(supportedQtiClasses);
-        this.parent = parent;
-        this.name = name;
-        this.children = new ArrayList<C>();
-        this.minimum = minimum;
-        this.maximum = maximum;
-        this.supportedQtiClasses = Collections.unmodifiableSet(supportedQtiClasses);
     }
 
     @Override
@@ -140,42 +97,10 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
     }
 
     @Override
-    public boolean isComplexContent() {
-        return false;
-    }
+    public abstract boolean isComplexContent();
 
     @Override
-    public boolean supportsQtiClass(final String qtiClassName) {
-        return supportedQtiClasses.contains(qtiClassName);
-    }
-
-    /**
-     * Gets first child or null.
-     * This is convenient method for groups only with one child (maximum = 1).
-     *
-     * @return first child or null
-     * @see #setChild
-     */
-    public C getChild() {
-        return children.size() != 0 ? children.get(0) : null;
-    }
-
-    /**
-     * Sets new child.
-     * <p>
-     * Removes all children from list first!
-     * <p>
-     * This method should be used only on groups with one child (maximum = 1), because it clears list before setting new child.
-     *
-     * @param child new child
-     * @see #getChild
-     */
-    protected void setChild(final C child) {
-        children.clear();
-        if (child != null) {
-            children.add(child);
-        }
-    }
+    public abstract boolean supportsQtiClass(final String qtiClassName);
 
     @Override
     public Iterator<C> iterator() {
@@ -188,7 +113,7 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
     }
 
     @Override
-    public Integer getMinimum() {
+    public int getMinimum() {
         return minimum;
     }
 
@@ -248,7 +173,7 @@ public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> im
 
     @Override
     public void validate(final ValidationContext context) {
-        if (minimum != null && children.size() < minimum.intValue()) {
+        if (children.size() < minimum) {
             context.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
         }
         if (maximum != null && children.size() > maximum.intValue()) {
