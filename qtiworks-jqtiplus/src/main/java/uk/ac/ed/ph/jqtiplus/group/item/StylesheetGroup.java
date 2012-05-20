@@ -48,32 +48,14 @@ public final class StylesheetGroup extends SimpleMultipleNodeGroup<AssessmentIte
 
     private static final long serialVersionUID = 5034925521089538183L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public StylesheetGroup(final AssessmentItem parent) {
         super(parent, Stylesheet.QTI_CLASS_NAME);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Stylesheet> getStylesheets() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
     public Stylesheet create() {
         return new Stylesheet(getParent());

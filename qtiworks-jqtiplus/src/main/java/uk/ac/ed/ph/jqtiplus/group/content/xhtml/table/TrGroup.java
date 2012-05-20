@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tr;
 import java.util.List;
 
 /**
- * Group of correctResponse child.
+ * Group of tr child.
  *
  * @author Jonathon Hare
  */

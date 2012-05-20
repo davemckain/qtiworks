@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Tfoot;
 
 /**
- * Group of correctResponse child.
+ * Group of tfoot child.
  *
  * @author Jonathon Hare
  */
@@ -46,43 +46,18 @@ public final class TfootGroup extends SimpleSingleNodeGroup<Table,Tfoot> {
 
     private static final long serialVersionUID = 610832088365163990L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TfootGroup(final Table parent) {
         super(parent, Tfoot.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets tfoot child.
-     *
-     * @return tfoot child, or null if it doesn't exist.
-     * @see #setTfoot
-     */
     public Tfoot getTfoot() {
         return getChild();
     }
 
-    /**
-     * Sets new tfoot child.
-     *
-     * @param tfoot new child
-     * @see #getTfoot
-     */
     public void setTfoot(final Tfoot tfoot) {
         setChild(tfoot);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
     public Tfoot create() {
         return new Tfoot(getParent());

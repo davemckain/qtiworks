@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import java.util.List;
 
 /**
- * Group of assessmentSection children.
+ * Group of testPart children.
  *
  * @author Jiri Kajaba
  */
@@ -48,32 +48,14 @@ public final class TestPartGroup extends SimpleMultipleNodeGroup<AssessmentTest,
 
     private static final long serialVersionUID = 5651173971564999817L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public TestPartGroup(final AssessmentTest parent) {
         super(parent, TestPart.QTI_CLASS_NAME, 1, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<TestPart> getTestParts() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
     public TestPart create() {
         return new TestPart(getParent());

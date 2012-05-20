@@ -59,8 +59,7 @@ public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode
     }
 
     /**
-     * Gets first child or null.
-     * This is convenient method for groups only with one child (maximum = 1).
+     * Gets the single child of this group, or null if it currently has no child.
      *
      * @return first child or null
      * @see #setChild
@@ -70,11 +69,7 @@ public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode
     }
 
     /**
-     * Sets new child.
-     * <p>
-     * Removes all children from list first!
-     * <p>
-     * This method should be used only on groups with one child (maximum = 1), because it clears list before setting new child.
+     * Sets the child for this group. null is acceptable.
      *
      * @param child new child
      * @see #getChild

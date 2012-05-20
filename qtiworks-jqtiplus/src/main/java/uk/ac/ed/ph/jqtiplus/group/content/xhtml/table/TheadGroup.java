@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Table;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.table.Thead;
 
 /**
- * Group of correctResponse child.
+ * Group of thead child.
  *
  * @author Jonathon Hare
  */

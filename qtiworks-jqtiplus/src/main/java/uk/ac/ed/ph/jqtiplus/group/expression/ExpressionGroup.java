@@ -74,7 +74,7 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
     //    }
 
     /**
-     * Gets child.
+     * Gets first child, or null if there are no children
      *
      * @return child
      * @see #setExpression
@@ -84,7 +84,7 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
     }
 
     /**
-     * Sets new child.
+     * Sets new single child, removing all existing children
      *
      * @param expression new child
      * @see #getExpression
@@ -94,23 +94,10 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
         getChildren().add(expression);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Expression> getExpressions() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public Expression create(final String qtiClassName) {
         return ExpressionType.getInstance(getParent(), qtiClassName);

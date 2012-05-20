@@ -53,23 +53,10 @@ public class InteractionGroup extends ComplexNodeGroup<BodyElement,Interaction> 
         super(parent, Interaction.DISPLAY_NAME, ContentType.getInlineQtiClassNames());
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<Interaction> getInteractions() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public Interaction create(final String qtiClassName) {
         return ContentType.getInteractionInstance(getParent(), qtiClassName);

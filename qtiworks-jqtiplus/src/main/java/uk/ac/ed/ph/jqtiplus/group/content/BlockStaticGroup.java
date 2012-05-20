@@ -48,11 +48,6 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
 
     private static final long serialVersionUID = 5763029606930975982L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public BlockStaticGroup(final XmlNode parent) {
         this(parent, null);
     }
@@ -65,23 +60,10 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
         super(parent, BlockStatic.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), minimum, null);
     }
 
-    /**
-     * Gets list of all children.
-     *
-     * @return list of all children
-     */
     public List<BlockStatic> getBlockStatics() {
         return getChildren();
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is needed)
-     * @return created child
-     */
     @Override
     public BlockStatic create(final String qtiClassName) {
         return ContentType.getBlockStaticInstance(getParent(), qtiClassName);

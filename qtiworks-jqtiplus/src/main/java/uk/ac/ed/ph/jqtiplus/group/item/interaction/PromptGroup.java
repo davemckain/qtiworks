@@ -46,43 +46,18 @@ public final class PromptGroup extends SimpleSingleNodeGroup<BlockInteraction,Pr
 
     private static final long serialVersionUID = -3440936238732152194L;
 
-    /**
-     * Constructs group.
-     *
-     * @param parent parent of created group
-     */
     public PromptGroup(final BlockInteraction parent) {
         super(parent, Prompt.QTI_CLASS_NAME, false);
     }
 
-    /**
-     * Gets prompt child.
-     *
-     * @return Prompt child, or null if it doesn't exist.
-     * @see #setPrompt
-     */
     public Prompt getPrompt() {
         return getChild();
     }
 
-    /**
-     * Sets prompt child.
-     *
-     * @param prompt Prompt child to set.
-     * @see #getPrompt
-     */
     public void setPrompt(final Prompt prompt) {
         setChild(prompt);
     }
 
-    /**
-     * Creates child with given QTI class name.
-     * <p>
-     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
-     *
-     * @param qtiClassName QTI class name (this parameter is ignored)
-     * @return created child
-     */
     @Override
     public Prompt create() {
         return new Prompt(getParent());

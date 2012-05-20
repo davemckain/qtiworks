@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 
 /**
- * Group of timeLimits child.
+ * Group of timeLimit children.
  *
  * @author Jiri Kajaba
  */

@@ -49,7 +49,7 @@ public abstract class ComplexNodeGroup<P extends XmlNode, C extends XmlNode> ext
 
     private final Set<String> supportedQtiClasses;
 
-    /** Constructor supporting an arbtrirary number of children */
+    /** Constructor supporting an arbitrary number of children */
     public ComplexNodeGroup(final P parent, final String name, final Set<String> supportedQtiClasses) {
         this(parent, name, supportedQtiClasses, 0, null);
     }
