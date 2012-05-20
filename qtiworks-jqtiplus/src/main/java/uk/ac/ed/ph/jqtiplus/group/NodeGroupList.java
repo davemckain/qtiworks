@@ -223,8 +223,6 @@ import org.w3c.dom.NodeList;
 /**
  * Container for all node groups of one node.
  *
- * @param <P> type of parent (owning) {@link XmlNode}
- *
  * @author Jiri Kajaba
  */
 public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>> {
