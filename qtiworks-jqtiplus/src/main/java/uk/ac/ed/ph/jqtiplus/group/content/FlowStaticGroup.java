@@ -53,8 +53,8 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
     }
 
     @Override
-    public FlowStatic create(final String classTag) {
-        return ContentType.getFlowStaticInstance(getParent(), classTag);
+    public FlowStatic create(final String qtiClassName) {
+        return ContentType.getFlowStaticInstance(getParent(), qtiClassName);
     }
 
     public List<FlowStatic> getFlowStatics() {

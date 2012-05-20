@@ -87,7 +87,7 @@ public enum TableCellType {
      *
      * @return QTI_CLASS_NAME of this tableCell type
      */
-    public String getClassTag() {
+    public String getQtiClassName() {
         return tableCellType;
     }
 
@@ -107,25 +107,25 @@ public enum TableCellType {
     /**
      * Gets tableCell type for given QTI_CLASS_NAME.
      *
-     * @param classTag QTI_CLASS_NAME
+     * @param qtiClassName QTI_CLASS_NAME
      * @return tableCell type for given QTI_CLASS_NAME
      */
-    public static TableCellType getType(final String classTag) {
-        return tableCellTypes.get(classTag);
+    public static TableCellType getType(final String qtiClassName) {
+        return tableCellTypes.get(qtiClassName);
     }
 
     /**
      * Creates tableCell element.
      *
      * @param parent parent of created tableCell
-     * @param classTag QTI_CLASS_NAME of created tableCell
+     * @param qtiClassName QTI_CLASS_NAME of created tableCell
      * @return created expression
      */
-    public static TableCell getInstance(final Tr parent, final String classTag) {
-        final TableCellType tableCellType = tableCellTypes.get(classTag);
+    public static TableCell getInstance(final Tr parent, final String qtiClassName) {
+        final TableCellType tableCellType = tableCellTypes.get(qtiClassName);
 
         if (tableCellType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return tableCellType.create(parent);

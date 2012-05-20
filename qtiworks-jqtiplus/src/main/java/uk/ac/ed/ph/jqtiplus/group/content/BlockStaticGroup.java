@@ -77,13 +77,13 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
     /**
      * Creates child with given QTI class name.
      * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
+     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
      *
-     * @param classTag QTI class name (this parameter is needed)
+     * @param qtiClassName QTI class name (this parameter is needed)
      * @return created child
      */
     @Override
-    public BlockStatic create(final String classTag) {
-        return ContentType.getBlockStaticInstance(getParent(), classTag);
+    public BlockStatic create(final String qtiClassName) {
+        return ContentType.getBlockStaticInstance(getParent(), qtiClassName);
     }
 }

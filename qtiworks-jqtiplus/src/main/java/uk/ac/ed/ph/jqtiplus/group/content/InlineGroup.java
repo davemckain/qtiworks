@@ -57,7 +57,7 @@ public final class InlineGroup extends AbstractContentNodeGroup<Inline> {
     }
 
     @Override
-    public Inline create(final String classTag) {
-        return ContentType.getInlineInstance(getParent(), classTag);
+    public Inline create(final String qtiClassName) {
+        return ContentType.getInlineInstance(getParent(), qtiClassName);
     }
 }

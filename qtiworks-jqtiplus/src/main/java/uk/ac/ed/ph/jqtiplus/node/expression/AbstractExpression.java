@@ -81,7 +81,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 
     @Override
     public ExpressionType getType() {
-        return ExpressionType.getType(getClassTag());
+        return ExpressionType.getType(getQtiClassName());
     }
 
     @Override
@@ -219,7 +219,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     protected Cardinality[] getParentRequiredCardinalities(ValidationContext context) {
         if (getParent() != null) {
-            final int index = getParent().getNodeGroups().get(getClassTag()).getChildren().indexOf(this);
+            final int index = getParent().getNodeGroups().get(getQtiClassName()).getChildren().indexOf(this);
 
             return getParent().getRequiredCardinalities(context, index);
         }
@@ -241,7 +241,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      */
     protected BaseType[] getParentRequiredBaseTypes(ValidationContext context) {
         if (getParent() != null) {
-            final int index = getParent().getNodeGroups().get(getClassTag()).getChildren().indexOf(this);
+            final int index = getParent().getNodeGroups().get(getQtiClassName()).getChildren().indexOf(this);
 
             return getParent().getRequiredBaseTypes(context, index);
         }

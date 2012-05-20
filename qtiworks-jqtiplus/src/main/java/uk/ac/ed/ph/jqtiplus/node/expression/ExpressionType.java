@@ -1296,7 +1296,7 @@ public enum ExpressionType {
      *
      * @return QTI_CLASS_NAME of this expression type
      */
-    public String getClassTag() {
+    public String getQtiClassName() {
         return expressionType;
     }
 
@@ -1376,11 +1376,11 @@ public enum ExpressionType {
     /**
      * Gets expression type for given QTI_CLASS_NAME.
      *
-     * @param classTag QTI_CLASS_NAME
+     * @param qtiClassName QTI_CLASS_NAME
      * @return expression type for given QTI_CLASS_NAME
      */
-    public static ExpressionType getType(final String classTag) {
-        return expressionTypes.get(classTag);
+    public static ExpressionType getType(final String qtiClassName) {
+        return expressionTypes.get(qtiClassName);
     }
 
     public static Set<String> getQtiClassNames() {
@@ -1430,15 +1430,15 @@ public enum ExpressionType {
              * Creates expression.
              *
              * @param parent parent of created expression
-             * @param classTag QTI_CLASS_NAME of created expression
+             * @param qtiClassName QTI_CLASS_NAME of created expression
              * @return created expression
              */
             public static
-            Expression getInstance(final ExpressionParent parent, final String classTag) {
-        final ExpressionType expressionType = expressionTypes.get(classTag);
+            Expression getInstance(final ExpressionParent parent, final String qtiClassName) {
+        final ExpressionType expressionType = expressionTypes.get(qtiClassName);
 
         if (expressionType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return expressionType.create(parent);

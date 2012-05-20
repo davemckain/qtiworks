@@ -59,7 +59,7 @@ public final class TemplateProcessingRuleGroup extends ComplexNodeGroup<XmlNode,
     }
 
     @Override
-    public TemplateProcessingRule create(final String classTag) {
-        return TemplateProcessingRuleType.getInstance((TemplateProcessing) getParent(), classTag);
+    public TemplateProcessingRule create(final String qtiClassName) {
+        return TemplateProcessingRuleType.getInstance((TemplateProcessing) getParent(), qtiClassName);
     }
 }

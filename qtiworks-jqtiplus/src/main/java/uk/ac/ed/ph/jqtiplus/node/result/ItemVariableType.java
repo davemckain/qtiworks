@@ -109,14 +109,14 @@ public enum ItemVariableType {
      * Creates itemVariable.
      *
      * @param parent parent of created itemVariable
-     * @param classTag QTI_CLASS_NAME of created itemVariable
+     * @param qtiClassName QTI_CLASS_NAME of created itemVariable
      * @return created itemVariable
      */
-    public static ItemVariable getInstance(final AbstractResult parent, final String classTag) {
-        final ItemVariableType itemVariableType = itemVariableTypes.get(classTag);
+    public static ItemVariable getInstance(final AbstractResult parent, final String qtiClassName) {
+        final ItemVariableType itemVariableType = itemVariableTypes.get(qtiClassName);
 
         if (itemVariableType == null) {
-            throw new QtiParseException("Unsupported itemVariable: " + classTag);
+            throw new QtiParseException("Unsupported itemVariable: " + qtiClassName);
         }
 
         return itemVariableType.create(parent);

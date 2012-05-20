@@ -126,7 +126,7 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
     public final String computeXPathComponent() {
         final String identifier = getIdentifier();
         if (identifier != null) {
-            return getClassTag() + "[@identifier=\"" + identifier + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }
         return super.computeXPathComponent();
     }

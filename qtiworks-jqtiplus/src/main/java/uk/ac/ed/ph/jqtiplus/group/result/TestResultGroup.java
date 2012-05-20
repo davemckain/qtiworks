@@ -78,9 +78,9 @@ public final class TestResultGroup extends SimpleSingleNodeGroup<AssessmentResul
     /**
      * Creates child with given QTI class name.
      * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
+     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
      *
-     * @param classTag QTI class name (this parameter is ignored)
+     * @param qtiClassName QTI class name (this parameter is ignored)
      * @return created child
      */
     @Override

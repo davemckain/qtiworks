@@ -146,14 +146,14 @@ public enum TemplateRuleType {
      * Creates template rule.
      *
      * @param parent parent of created template rule
-     * @param classTag QTI_CLASS_NAME of created template rule
+     * @param qtiClassName QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
-    public static TemplateRule getInstance(final XmlNode parent, final String classTag) {
-        final TemplateRuleType templateRuleType = templateRuleTypes.get(classTag);
+    public static TemplateRule getInstance(final XmlNode parent, final String qtiClassName) {
+        final TemplateRuleType templateRuleType = templateRuleTypes.get(qtiClassName);
 
         if (templateRuleType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return templateRuleType.create(parent);

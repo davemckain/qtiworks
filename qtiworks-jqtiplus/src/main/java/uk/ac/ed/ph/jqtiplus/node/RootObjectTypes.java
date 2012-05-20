@@ -121,7 +121,7 @@ public enum RootObjectTypes {
      * 
      * @param qtiClassName QTI_CLASS_NAME of created root node
      * @return created root node
-     * @throws IllegalArgumentException if the given classTag does not correspond to a QTI root Node
+     * @throws IllegalArgumentException if the given qtiClassName does not correspond to a QTI root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
     public static RootObject getInstance(String qtiClassName, URI systemId, ModelRichness modelRichness) {
@@ -146,7 +146,7 @@ public enum RootObjectTypes {
      * 
      * @param sourceElement source node
      * @return loaded root node
-     * @throws IllegalArgumentException if the given classTag does not correspond to a root Node
+     * @throws IllegalArgumentException if the given qtiClassName does not correspond to a root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
     public static RootObject load(Element sourceElement, URI systemId, ModelRichness modelRichness, LoadingContext context) {

@@ -68,15 +68,15 @@ public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,
     }
 
     @Override
-    public LookupTable create(final String classTag) {
-        if (classTag.equals(MatchTable.QTI_CLASS_NAME)) {
+    public LookupTable create(final String qtiClassName) {
+        if (qtiClassName.equals(MatchTable.QTI_CLASS_NAME)) {
             return new MatchTable(getParent());
         }
-        else if (classTag.equals(InterpolationTable.QTI_CLASS_NAME)) {
+        else if (qtiClassName.equals(InterpolationTable.QTI_CLASS_NAME)) {
             return new InterpolationTable(getParent());
         }
         else {
-            throw new QtiIllegalChildException(getParent(), classTag);
+            throw new QtiIllegalChildException(getParent(), qtiClassName);
         }
     }
 }

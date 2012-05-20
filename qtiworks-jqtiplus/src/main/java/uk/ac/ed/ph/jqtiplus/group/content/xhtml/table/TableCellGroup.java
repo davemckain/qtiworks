@@ -58,7 +58,7 @@ public class TableCellGroup extends ComplexNodeGroup<Tr,TableCell> {
     }
 
     @Override
-    public TableCell create(final String classTag) {
-        return TableCellType.getInstance(getParent(), classTag);
+    public TableCell create(final String qtiClassName) {
+        return TableCellType.getInstance(getParent(), qtiClassName);
     }
 }

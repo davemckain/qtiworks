@@ -157,14 +157,14 @@ public enum TemplateProcessingRuleType {
      * Creates template rule.
      *
      * @param parent parent of created template rule
-     * @param classTag QTI_CLASS_NAME of created template rule
+     * @param qtiClassName QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
-    public static TemplateProcessingRule getInstance(final TemplateProcessing parent, final String classTag) {
-        final TemplateProcessingRuleType templateRuleType = templateRuleTypes.get(classTag);
+    public static TemplateProcessingRule getInstance(final TemplateProcessing parent, final String qtiClassName) {
+        final TemplateProcessingRuleType templateRuleType = templateRuleTypes.get(qtiClassName);
 
         if (templateRuleType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return templateRuleType.create(parent);

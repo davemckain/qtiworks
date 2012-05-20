@@ -236,7 +236,7 @@ public class ContentTest {
             final String name = (String) clz[0];
             final XmlNode node = (XmlNode) clz[1];
 
-            assertEquals(name, node.getClassTag());
+            assertEquals(name, node.getQtiClassName());
 
             final ContentType c = ContentType.getType(name);
             assertEquals(c.getClazz(), node.getClass());

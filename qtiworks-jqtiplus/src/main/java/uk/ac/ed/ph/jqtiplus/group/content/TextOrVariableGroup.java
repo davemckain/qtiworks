@@ -57,7 +57,7 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
     }
 
     @Override
-    public TextOrVariable create(final String classTag) {
-        return ContentType.getTextOrVariableInstance(getParent(), classTag);
+    public TextOrVariable create(final String qtiClassName) {
+        return ContentType.getTextOrVariableInstance(getParent(), qtiClassName);
     }
 }

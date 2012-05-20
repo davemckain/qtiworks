@@ -100,7 +100,7 @@ public class FieldValue extends AbstractNode {
     @Override
     public final String computeXPathComponent() {
         if (singleValue != null) {
-            return getClassTag() + "[.='" + singleValue + "']";
+            return getQtiClassName() + "[.='" + singleValue + "']";
         }
         return super.computeXPathComponent();
     }

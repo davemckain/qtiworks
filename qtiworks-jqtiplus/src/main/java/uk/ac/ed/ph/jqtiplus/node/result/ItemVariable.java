@@ -134,7 +134,7 @@ public abstract class ItemVariable extends AbstractNode {
     public final String computeXPathComponent() {
         final VariableReferenceIdentifier identifier = getIdentifier();
         if (identifier != null) {
-            return getClassTag() + "[@identifier=\"" + identifier + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }
         return super.computeXPathComponent();
     }

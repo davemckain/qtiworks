@@ -58,7 +58,7 @@ public final class BlockGroup extends ComplexNodeGroup<XmlNode,Block> {
     }
 
     @Override
-    public Block create(final String classTag) {
-        return ContentType.getBlockInstance(getParent(), classTag);
+    public Block create(final String qtiClassName) {
+        return ContentType.getBlockInstance(getParent(), qtiClassName);
     }
 }

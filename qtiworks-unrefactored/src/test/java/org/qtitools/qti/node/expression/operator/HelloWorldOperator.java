@@ -59,7 +59,7 @@ public class HelloWorldOperator extends AbstractExpression {
     }
 
     @Override
-    public String getClassTag() {
+    public String getQtiClassName() {
         return "customOperator";
     }
 }

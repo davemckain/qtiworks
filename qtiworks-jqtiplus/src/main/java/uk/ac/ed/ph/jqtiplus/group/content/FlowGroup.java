@@ -57,7 +57,7 @@ public final class FlowGroup extends AbstractContentNodeGroup<Flow> {
     }
 
     @Override
-    public Flow create(final String classTag) {
-        return ContentType.getFlowInstance(getParent(), classTag);
+    public Flow create(final String qtiClassName) {
+        return ContentType.getFlowInstance(getParent(), qtiClassName);
     }
 }

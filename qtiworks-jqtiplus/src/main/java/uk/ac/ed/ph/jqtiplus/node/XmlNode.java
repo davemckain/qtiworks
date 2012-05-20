@@ -120,10 +120,10 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
      * Gets QTI class name of this node (as used in the specification).
      * This always returns the same as {@link #getLocalName()}.
      */
-    String getClassTag();
+    String getQtiClassName();
 
     /**
-     * Returns a partial XPath expression representing "this" Node. Normally, this would just be: <tt>classTag[position]</tt> but subclasses can override this
+     * Returns a partial XPath expression representing "this" Node. Normally, this would just be: <tt>qtiClassName[position]</tt> but subclasses can override this
      * to give more useful information if required.
      * <p>
      * This property is mutable while the Node tree is being modified. It may be assumed to be constant once the tree has been finalised.

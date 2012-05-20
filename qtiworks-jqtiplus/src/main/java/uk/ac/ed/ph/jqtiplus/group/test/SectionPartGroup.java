@@ -61,15 +61,15 @@ public final class SectionPartGroup extends ComplexNodeGroup<AssessmentSection,S
     }
 
     @Override
-    public SectionPart create(final String classTag) {
-        if (classTag.equals(AssessmentSection.QTI_CLASS_NAME)) {
+    public SectionPart create(final String qtiClassName) {
+        if (qtiClassName.equals(AssessmentSection.QTI_CLASS_NAME)) {
             return new AssessmentSection(getParent());
         }
-        else if (classTag.equals(AssessmentItemRef.QTI_CLASS_NAME)) {
+        else if (qtiClassName.equals(AssessmentItemRef.QTI_CLASS_NAME)) {
             return new AssessmentItemRef(getParent());
         }
         else {
-            throw new QtiIllegalChildException(getParent(), classTag);
+            throw new QtiIllegalChildException(getParent(), qtiClassName);
         }
     }
 }

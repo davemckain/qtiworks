@@ -82,7 +82,7 @@ public class BranchRule extends AbstractJump {
     public final String computeXPathComponent() {
         final Identifier target = getTarget();
         if (target != null) {
-            return getClassTag() + "[@target=\"" + target + "\"]";
+            return getQtiClassName() + "[@target=\"" + target + "\"]";
         }
         return super.computeXPathComponent();
     }
@@ -211,7 +211,7 @@ public class BranchRule extends AbstractJump {
                     final int targetIndex = targetPart.getGlobalIndex();
 
                     if (getParent() instanceof TestPart && (targetPart instanceof AssessmentSection || targetPart instanceof AssessmentItemRef)) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetPart.getClassTag() + ": " + target));
+                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target));
                     }
                     else if (targetIndex <= parentIdex) {
                         context.add(new ItemFlowValidationError(this, "Cannot jump back to: " + target));

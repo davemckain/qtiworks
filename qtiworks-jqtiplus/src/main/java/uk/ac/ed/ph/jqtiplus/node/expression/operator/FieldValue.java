@@ -74,7 +74,7 @@ public class FieldValue extends AbstractFunctionalExpression {
     public final String computeXPathComponent() {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            return getClassTag() + "[@identifier=\"" + identifier + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }
         return super.computeXPathComponent();
     }

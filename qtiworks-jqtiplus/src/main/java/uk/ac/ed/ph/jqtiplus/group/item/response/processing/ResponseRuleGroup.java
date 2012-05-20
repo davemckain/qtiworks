@@ -58,7 +58,7 @@ public final class ResponseRuleGroup extends ComplexNodeGroup<XmlNode,ResponseRu
     }
 
     @Override
-    public ResponseRule create(final String classTag) {
-        return ResponseRuleType.getInstance(getParent(), classTag);
+    public ResponseRule create(final String qtiClassName) {
+        return ResponseRuleType.getInstance(getParent(), qtiClassName);
     }
 }

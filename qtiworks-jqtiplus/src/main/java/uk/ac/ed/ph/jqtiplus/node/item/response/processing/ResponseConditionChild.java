@@ -72,7 +72,7 @@ public abstract class ResponseConditionChild extends AbstractNode {
         super.validateChildren(context);
 
         if (getResponseRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules."));
         }
     }
 

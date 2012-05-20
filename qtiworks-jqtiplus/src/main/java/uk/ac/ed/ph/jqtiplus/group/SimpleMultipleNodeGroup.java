@@ -68,7 +68,7 @@ public abstract class SimpleMultipleNodeGroup<P extends XmlNode, C extends XmlNo
     }
 
     @Override
-    public final C create(final String classTag) {
+    public final C create(final String qtiClassName) {
         return create();
     }
 

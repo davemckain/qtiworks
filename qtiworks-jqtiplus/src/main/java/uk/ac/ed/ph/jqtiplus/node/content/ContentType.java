@@ -1130,76 +1130,76 @@ public enum ContentType {
     static {
         contentTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
-            contentTypes.put(type.classTag, type);
+            contentTypes.put(type.qtiClassName, type);
         }
 
         blockTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (Block.class.isAssignableFrom(type.clazz)) {
-                blockTypes.put(type.classTag, type);
+                blockTypes.put(type.qtiClassName, type);
             }
         }
 
         flowTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (Flow.class.isAssignableFrom(type.clazz)) {
-                flowTypes.put(type.classTag, type);
+                flowTypes.put(type.qtiClassName, type);
             }
         }
 
         inlineTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (Inline.class.isAssignableFrom(type.clazz)) {
-                inlineTypes.put(type.classTag, type);
+                inlineTypes.put(type.qtiClassName, type);
             }
         }
 
         objectFlowTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (ObjectFlow.class.isAssignableFrom(type.clazz)) {
-                objectFlowTypes.put(type.classTag, type);
+                objectFlowTypes.put(type.qtiClassName, type);
             }
         }
 
         inlineStaticTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (InlineStatic.class.isAssignableFrom(type.clazz)) {
-                inlineStaticTypes.put(type.classTag, type);
+                inlineStaticTypes.put(type.qtiClassName, type);
             }
         }
 
         flowStaticTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (FlowStatic.class.isAssignableFrom(type.clazz)) {
-                flowStaticTypes.put(type.classTag, type);
+                flowStaticTypes.put(type.qtiClassName, type);
             }
         }
 
         textOrVariableTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (TextOrVariable.class.isAssignableFrom(type.clazz)) {
-                textOrVariableTypes.put(type.classTag, type);
+                textOrVariableTypes.put(type.qtiClassName, type);
             }
         }
 
         blockStaticTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (BlockStatic.class.isAssignableFrom(type.clazz)) {
-                blockStaticTypes.put(type.classTag, type);
+                blockStaticTypes.put(type.qtiClassName, type);
             }
         }
 
         gapChoiceTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (GapChoice.class.isAssignableFrom(type.clazz)) {
-                gapChoiceTypes.put(type.classTag, type);
+                gapChoiceTypes.put(type.qtiClassName, type);
             }
         }
 
         interactionTypes = new HashMap<String, ContentType>();
         for (final ContentType type : ContentType.values()) {
             if (Interaction.class.isAssignableFrom(type.clazz)) {
-                interactionTypes.put(type.classTag, type);
+                interactionTypes.put(type.qtiClassName, type);
             }
         }
     }
@@ -1294,12 +1294,12 @@ public enum ContentType {
         return interactionTypes.values();
     }
 
-    private String classTag;
+    private String qtiClassName;
 
     private Class<? extends AbstractNode> clazz;
 
     ContentType(final String type, final Class<? extends AbstractNode> clazz) {
-        this.classTag = type;
+        this.qtiClassName = type;
         this.clazz = clazz;
     }
 
@@ -1308,8 +1308,8 @@ public enum ContentType {
      *
      * @return QTI_CLASS_NAME of this block type
      */
-    public String getClassTag() {
-        return classTag;
+    public String getQtiClassName() {
+        return qtiClassName;
     }
 
     /**
@@ -1331,7 +1331,7 @@ public enum ContentType {
 
     @Override
     public String toString() {
-        return classTag;
+        return qtiClassName;
     }
 
     public static Set<String> getQtiClassNames() {
@@ -1381,25 +1381,25 @@ public enum ContentType {
     /**
      * Gets content type for given QTI_CLASS_NAME.
      *
-     * @param classTag QTI_CLASS_NAME
+     * @param qtiClassName QTI_CLASS_NAME
      * @return content type for given QTI_CLASS_NAME
      */
-    public static ContentType getType(final String classTag) {
-        return contentTypes.get(classTag);
+    public static ContentType getType(final String qtiClassName) {
+        return contentTypes.get(qtiClassName);
     }
 
     /**
      * Creates content element.
      *
      * @param parent parent of created content
-     * @param classTag QTI_CLASS_NAME of created content
+     * @param qtiClassName QTI_CLASS_NAME of created content
      * @return created content
      */
-    public static XmlNode getInstance(final XmlNode parent, final String classTag) {
-        final ContentType contentType = contentTypes.get(classTag);
+    public static XmlNode getInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType contentType = contentTypes.get(qtiClassName);
 
         if (contentType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return contentType.create(parent);
@@ -1409,14 +1409,14 @@ public enum ContentType {
      * Creates block element.
      *
      * @param parent parent of created block
-     * @param classTag QTI_CLASS_NAME of created block
+     * @param qtiClassName QTI_CLASS_NAME of created block
      * @return created block
      */
-    public static Block getBlockInstance(final XmlNode parent, final String classTag) {
-        final ContentType blockType = blockTypes.get(classTag);
+    public static Block getBlockInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType blockType = blockTypes.get(qtiClassName);
 
         if (blockType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (Block) blockType.create(parent);
@@ -1426,14 +1426,14 @@ public enum ContentType {
      * Creates inline element.
      *
      * @param parent parent of created inline
-     * @param classTag QTI_CLASS_NAME of created inline
+     * @param qtiClassName QTI_CLASS_NAME of created inline
      * @return created inline
      */
-    public static Inline getInlineInstance(final XmlNode parent, final String classTag) {
-        final ContentType inlineType = inlineTypes.get(classTag);
+    public static Inline getInlineInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType inlineType = inlineTypes.get(qtiClassName);
 
         if (inlineType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (Inline) inlineType.create(parent);
@@ -1443,14 +1443,14 @@ public enum ContentType {
      * Creates flow element.
      *
      * @param parent parent of created flow
-     * @param classTag QTI_CLASS_NAME of created flow
+     * @param qtiClassName QTI_CLASS_NAME of created flow
      * @return created flow
      */
-    public static Flow getFlowInstance(final XmlNode parent, final String classTag) {
-        final ContentType flowType = flowTypes.get(classTag);
+    public static Flow getFlowInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType flowType = flowTypes.get(qtiClassName);
 
         if (flowType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (Flow) flowType.create(parent);
@@ -1460,14 +1460,14 @@ public enum ContentType {
      * Creates objectFlow element.
      *
      * @param parent parent of created objectFlow
-     * @param classTag QTI_CLASS_NAME of created objectFlow
+     * @param qtiClassName QTI_CLASS_NAME of created objectFlow
      * @return created objectFlow
      */
-    public static ObjectFlow getObjectFlowInstance(final XmlNode parent, final String classTag) {
-        final ContentType flowType = objectFlowTypes.get(classTag);
+    public static ObjectFlow getObjectFlowInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType flowType = objectFlowTypes.get(qtiClassName);
 
         if (flowType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (ObjectFlow) flowType.create(parent);
@@ -1477,14 +1477,14 @@ public enum ContentType {
      * Creates inlineStatic element.
      *
      * @param parent parent of created inlineStatic
-     * @param classTag QTI_CLASS_NAME of created inlineStatic
+     * @param qtiClassName QTI_CLASS_NAME of created inlineStatic
      * @return created inlineStatic
      */
-    public static InlineStatic getInlineStaticInstance(final XmlNode parent, final String classTag) {
-        final ContentType inlineType = inlineStaticTypes.get(classTag);
+    public static InlineStatic getInlineStaticInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType inlineType = inlineStaticTypes.get(qtiClassName);
 
         if (inlineType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (InlineStatic) inlineType.create(parent);
@@ -1494,14 +1494,14 @@ public enum ContentType {
      * Creates flowStatic element.
      *
      * @param parent parent of created flowStatic
-     * @param classTag QTI_CLASS_NAME of created flowStatic
+     * @param qtiClassName QTI_CLASS_NAME of created flowStatic
      * @return created flowStatic
      */
-    public static FlowStatic getFlowStaticInstance(final XmlNode parent, final String classTag) {
-        final ContentType flowStaticType = flowStaticTypes.get(classTag);
+    public static FlowStatic getFlowStaticInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType flowStaticType = flowStaticTypes.get(qtiClassName);
 
         if (flowStaticType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (FlowStatic) flowStaticType.create(parent);
@@ -1511,14 +1511,14 @@ public enum ContentType {
      * Creates textOrVariable element.
      *
      * @param parent parent of created textOrVariable
-     * @param classTag QTI_CLASS_NAME of created textOrVariable
+     * @param qtiClassName QTI_CLASS_NAME of created textOrVariable
      * @return created textOrVariable
      */
-    public static TextOrVariable getTextOrVariableInstance(final XmlNode parent, final String classTag) {
-        final ContentType textOrVariable = textOrVariableTypes.get(classTag);
+    public static TextOrVariable getTextOrVariableInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType textOrVariable = textOrVariableTypes.get(qtiClassName);
 
         if (textOrVariable == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (TextOrVariable) textOrVariable.create(parent);
@@ -1528,14 +1528,14 @@ public enum ContentType {
      * Creates blockStatic element.
      *
      * @param parent parent of created blockStatic
-     * @param classTag QTI_CLASS_NAME of created blockStatic
+     * @param qtiClassName QTI_CLASS_NAME of created blockStatic
      * @return created blockStatic
      */
-    public static BlockStatic getBlockStaticInstance(final XmlNode parent, final String classTag) {
-        final ContentType blockStatic = blockStaticTypes.get(classTag);
+    public static BlockStatic getBlockStaticInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType blockStatic = blockStaticTypes.get(qtiClassName);
 
         if (blockStatic == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (BlockStatic) blockStatic.create(parent);
@@ -1545,14 +1545,14 @@ public enum ContentType {
      * Creates gapChoice element.
      *
      * @param parent parent of created gapChoice
-     * @param classTag QTI_CLASS_NAME of created gapChoice
+     * @param qtiClassName QTI_CLASS_NAME of created gapChoice
      * @return created gapChoice
      */
-    public static GapChoice getGapChoiceInstance(final XmlNode parent, final String classTag) {
-        final ContentType gapChoice = gapChoiceTypes.get(classTag);
+    public static GapChoice getGapChoiceInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType gapChoice = gapChoiceTypes.get(qtiClassName);
 
         if (gapChoice == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (GapChoice) gapChoice.create(parent);
@@ -1562,14 +1562,14 @@ public enum ContentType {
      * Creates interaction element.
      *
      * @param parent parent of created interaction
-     * @param classTag QTI_CLASS_NAME of created interaction
+     * @param qtiClassName QTI_CLASS_NAME of created interaction
      * @return created interaction
      */
-    public static Interaction getInteractionInstance(final XmlNode parent, final String classTag) {
-        final ContentType interaction = interactionTypes.get(classTag);
+    public static Interaction getInteractionInstance(final XmlNode parent, final String qtiClassName) {
+        final ContentType interaction = interactionTypes.get(qtiClassName);
 
         if (interaction == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return (Interaction) interaction.create(parent);

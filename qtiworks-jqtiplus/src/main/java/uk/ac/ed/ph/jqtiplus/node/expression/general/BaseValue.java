@@ -84,7 +84,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     @Override
     public final String computeXPathComponent() {
         if (singleValue != null) {
-            return getClassTag() + "[.=\"" + escapeForXmlString(singleValue.toQtiString(), true) + "\"]";
+            return getQtiClassName() + "[.=\"" + escapeForXmlString(singleValue.toQtiString(), true) + "\"]";
         }
         return super.computeXPathComponent();
     }

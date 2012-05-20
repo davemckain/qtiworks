@@ -164,7 +164,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
     @Override
     protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
-        logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getClassTag(), getIdentifier() });
+        logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
 
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();

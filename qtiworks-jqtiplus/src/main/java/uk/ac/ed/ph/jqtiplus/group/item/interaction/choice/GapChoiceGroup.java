@@ -62,7 +62,7 @@ public final class GapChoiceGroup extends AbstractContentNodeGroup<GapChoice> {
     }
 
     @Override
-    public GapChoice create(final String classTag) {
-        return ContentType.getGapChoiceInstance(getParent(), classTag);
+    public GapChoice create(final String qtiClassName) {
+        return ContentType.getGapChoiceInstance(getParent(), qtiClassName);
     }
 }

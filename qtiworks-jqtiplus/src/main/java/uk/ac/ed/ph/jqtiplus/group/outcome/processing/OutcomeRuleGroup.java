@@ -58,7 +58,7 @@ public final class OutcomeRuleGroup extends ComplexNodeGroup<XmlNode,OutcomeRule
     }
 
     @Override
-    public OutcomeRule create(final String classTag) {
-        return OutcomeRuleType.getInstance(getParent(), classTag);
+    public OutcomeRule create(final String qtiClassName) {
+        return OutcomeRuleType.getInstance(getParent(), qtiClassName);
     }
 }

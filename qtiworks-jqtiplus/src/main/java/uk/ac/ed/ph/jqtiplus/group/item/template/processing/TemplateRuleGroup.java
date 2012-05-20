@@ -58,7 +58,7 @@ public final class TemplateRuleGroup extends ComplexNodeGroup<TemplateConditionC
     }
 
     @Override
-    public TemplateRule create(final String classTag) {
-        return TemplateRuleType.getInstance(getParent(), classTag);
+    public TemplateRule create(final String qtiClassName) {
+        return TemplateRuleType.getInstance(getParent(), qtiClassName);
     }
 }

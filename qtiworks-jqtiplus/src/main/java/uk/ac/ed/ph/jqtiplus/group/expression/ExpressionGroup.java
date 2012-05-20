@@ -68,7 +68,7 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
     //        ExpressionType[] supportedTypes = ExpressionType.getSupportedTypes(requiredCardinalities, requiredBaseTypes);
     //
     //        for (ExpressionType type : supportedTypes)
-    //            supportedClassess.add(type.getClassTag());
+    //            supportedClassess.add(type.getQtiClassName());
     //
     //        return supportedClassess;
     //    }
@@ -106,13 +106,13 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
     /**
      * Creates child with given QTI class name.
      * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names.
+     * Parameter qtiClassName is needed only if group can contain children with different QTI class names.
      *
-     * @param classTag QTI class name (this parameter is needed)
+     * @param qtiClassName QTI class name (this parameter is needed)
      * @return created child
      */
     @Override
-    public Expression create(final String classTag) {
-        return ExpressionType.getInstance(getParent(), classTag);
+    public Expression create(final String qtiClassName) {
+        return ExpressionType.getInstance(getParent(), qtiClassName);
     }
 }

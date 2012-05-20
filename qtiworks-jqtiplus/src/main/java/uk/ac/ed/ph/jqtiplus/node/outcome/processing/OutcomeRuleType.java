@@ -147,14 +147,14 @@ public enum OutcomeRuleType {
      * Creates outcome rule.
      *
      * @param parent parent of created outcome rule
-     * @param classTag QTI_CLASS_NAME of created outcome rule
+     * @param qtiClassName QTI_CLASS_NAME of created outcome rule
      * @return created outcome rule
      */
-    public static OutcomeRule getInstance(final XmlNode parent, final String classTag) {
-        final OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(classTag);
+    public static OutcomeRule getInstance(final XmlNode parent, final String qtiClassName) {
+        final OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(qtiClassName);
 
         if (outcomeRuleType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return outcomeRuleType.create(parent);

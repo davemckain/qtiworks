@@ -144,11 +144,11 @@ public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validat
     /**
      * Creates child with given QTI class name.
      * <p>
-     * Parameter classTag is needed only if group can contain children with different QTI class names (otherwise it is ignored).
+     * Parameter qtiClassName is needed only if group can contain children with different QTI class names (otherwise it is ignored).
      *
-     * @param classTag QTI class name
+     * @param qtiClassName QTI class name
      * @return created child
-     * @throws QtiIllegalChildException if the given classTag is not appropriate
+     * @throws QtiIllegalChildException if the given qtiClassName is not appropriate
      */
-    C create(String classTag);
+    C create(String qtiClassName);
 }

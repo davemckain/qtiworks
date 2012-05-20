@@ -58,7 +58,7 @@ public final class DlElementGroup extends ComplexNodeGroup<BodyElement,DlElement
     }
 
     @Override
-    public DlElement create(final String classTag) {
-        return DlElementType.getInstance(getParent(), classTag);
+    public DlElement create(final String qtiClassName) {
+        return DlElementType.getInstance(getParent(), qtiClassName);
     }
 }

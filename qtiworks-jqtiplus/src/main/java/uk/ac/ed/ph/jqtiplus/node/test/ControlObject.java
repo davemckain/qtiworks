@@ -490,7 +490,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     public final String computeXPathComponent() {
         final E identifier = getIdentifier();
         if (identifier != null) {
-            return getClassTag() + "[@identifier=\"" + identifier + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }
         return super.computeXPathComponent();
     }

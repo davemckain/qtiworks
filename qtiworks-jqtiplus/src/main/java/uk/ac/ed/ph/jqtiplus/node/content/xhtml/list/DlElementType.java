@@ -88,7 +88,7 @@ public enum DlElementType {
      *
      * @return QTI_CLASS_NAME of this dlElement type
      */
-    public String getClassTag() {
+    public String getQtiClassName() {
         return dlElementType;
     }
 
@@ -108,11 +108,11 @@ public enum DlElementType {
     /**
      * Gets dlElement type for given QTI_CLASS_NAME.
      *
-     * @param classTag QTI_CLASS_NAME
+     * @param qtiClassName QTI_CLASS_NAME
      * @return dlElement type for given QTI_CLASS_NAME
      */
-    public static DlElementType getType(final String classTag) {
-        return dlElementTypes.get(classTag);
+    public static DlElementType getType(final String qtiClassName) {
+        return dlElementTypes.get(qtiClassName);
     }
 
     public static Set<String> getQtiClassNames() {
@@ -123,14 +123,14 @@ public enum DlElementType {
      * Creates dlElement element.
      *
      * @param parent parent of created dlElement
-     * @param classTag QTI_CLASS_NAME of created dlElement
+     * @param qtiClassName QTI_CLASS_NAME of created dlElement
      * @return created expression
      */
-    public static DlElement getInstance(final BodyElement parent, final String classTag) {
-        final DlElementType dlElementType = dlElementTypes.get(classTag);
+    public static DlElement getInstance(final BodyElement parent, final String qtiClassName) {
+        final DlElementType dlElementType = dlElementTypes.get(qtiClassName);
 
         if (dlElementType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return dlElementType.create(parent);

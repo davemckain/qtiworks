@@ -99,7 +99,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public final String getClassTag() {
+    public final String getQtiClassName() {
         return localName;
     }
 
@@ -223,14 +223,14 @@ public abstract class AbstractNode implements XmlNode {
                     if (child == this) {
                         break SEARCH;
                     }
-                    if (getClassTag().equals(child.getClassTag())) {
+                    if (getQtiClassName().equals(child.getQtiClassName())) {
                         position++;
                     }
                 }
             }
-            return getClassTag() + "[" + position + "]";
+            return getQtiClassName() + "[" + position + "]";
         }
-        return getClassTag();
+        return getQtiClassName();
     }
 
     @Override
@@ -369,7 +369,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public String toString() {
-        return "<" + getClassTag() + ">@" + hashCode()
+        return "<" + getQtiClassName() + ">@" + hashCode()
                 + "(xPath=" + computeXPath()
                 + ",location=" + sourceLocation
                 + ")";

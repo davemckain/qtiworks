@@ -148,14 +148,14 @@ public enum ResponseRuleType {
      * Creates response rule.
      *
      * @param parent parent of created response rule
-     * @param classTag QTI_CLASS_NAME of created response rule
+     * @param qtiClassName QTI_CLASS_NAME of created response rule
      * @return created response rule
      */
-    public static ResponseRule getInstance(final XmlNode parent, final String classTag) {
-        final ResponseRuleType responseRuleType = responseRuleTypes.get(classTag);
+    public static ResponseRule getInstance(final XmlNode parent, final String qtiClassName) {
+        final ResponseRuleType responseRuleType = responseRuleTypes.get(qtiClassName);
 
         if (responseRuleType == null) {
-            throw new QtiIllegalChildException(parent, classTag);
+            throw new QtiIllegalChildException(parent, qtiClassName);
         }
 
         return responseRuleType.create(parent);

@@ -196,7 +196,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     public final String computeXPathComponent() {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            return getClassTag() + "[@identifier=\"" + identifier.toString() + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier.toString() + "\"]";
         }
         return super.computeXPathComponent();
     }

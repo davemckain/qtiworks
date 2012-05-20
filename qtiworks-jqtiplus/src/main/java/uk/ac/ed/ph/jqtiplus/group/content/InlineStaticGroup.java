@@ -57,7 +57,7 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
     }
 
     @Override
-    public InlineStatic create(final String classTag) {
-        return ContentType.getInlineStaticInstance(getParent(), classTag);
+    public InlineStatic create(final String qtiClassName) {
+        return ContentType.getInlineStaticInstance(getParent(), qtiClassName);
     }
 }

@@ -67,7 +67,7 @@ public abstract class TemplateConditionChild extends AbstractNode {
         super.validateChildren(context);
 
         if (getTemplateRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + getClassTag() + " should contain some rules."));
+            context.add(new ValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules."));
         }
     }
 

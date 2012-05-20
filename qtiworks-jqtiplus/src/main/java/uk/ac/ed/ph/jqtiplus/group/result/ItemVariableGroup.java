@@ -58,7 +58,7 @@ public final class ItemVariableGroup extends ComplexNodeGroup<AbstractResult,Ite
     }
 
     @Override
-    public ItemVariable create(final String classTag) {
-        return ItemVariableType.getInstance(getParent(), classTag);
+    public ItemVariable create(final String qtiClassName) {
+        return ItemVariableType.getInstance(getParent(), qtiClassName);
     }
 }
