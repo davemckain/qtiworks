@@ -31,33 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Defines beans for the public web dispatcher
+ * Controller for candidate helpers, such as math input verifiers.
  *
  * @author David McKain
  */
-@EnableWebMvc
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.pub.controller"})
-public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
+@Controller
+public class CandidateHelperController {
 
-    @Bean
-    ViewResolver viewResolver() {
-        final UrlBasedViewResolver result = new UrlBasedViewResolver();
-        result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
-        result.setSuffix(".jsp");
-        return result;
+    @Resource
+    private XsltStylesheetCache stylesheetCache;
+
+    /**
+     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
+     * JSON.
+     *
+     * Accept: application/json from client expected
+     */
+    @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
+        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
+        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
+        return upConvertedASCIIMathInput;
     }
+
 }

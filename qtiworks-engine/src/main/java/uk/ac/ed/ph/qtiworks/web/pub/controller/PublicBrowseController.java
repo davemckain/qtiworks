@@ -31,33 +31,48 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.UrlBasedViewResolver;
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+
+import java.io.IOException;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Defines beans for the public web dispatcher
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-@EnableWebMvc
-@Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.pub.controller"})
-public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
+@Controller
+public class PublicBrowseController {
 
-    @Bean
-    ViewResolver viewResolver() {
-        final UrlBasedViewResolver result = new UrlBasedViewResolver();
-        result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
-        result.setSuffix(".jsp");
-        return result;
+    @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    /**
+     * FIXME: Make the result of this cacheable
+     * @throws IOException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    @RequestMapping(value="/package/{apid}/source", method=RequestMethod.GET)
+    public void streamPackageSource(final HttpServletResponse response, @PathVariable final long apid)
+            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+        /* Look up package and make sure caller has read permission on it */
+        final AssessmentPackage assessmentPackage = assessmentManagementService.getAssessmentPackage(apid);
+
+        response.setContentType("application/xml");
+        assessmentManagementService.getPackageSource(assessmentPackage, response.getOutputStream());
     }
+
 }

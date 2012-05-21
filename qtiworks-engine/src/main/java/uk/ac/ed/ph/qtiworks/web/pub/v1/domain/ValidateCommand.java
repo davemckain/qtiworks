@@ -31,46 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.controller;
+package uk.ac.ed.ph.qtiworks.web.pub.v1.domain;
 
-import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
-
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Controller for candidate helpers, such as math input verifiers.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-@Controller
-public class CandidateHelperController {
-
-    @Resource
-    private XsltStylesheetCache stylesheetCache;
-
-    /**
-     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
-     * JSON.
-     *
-     * Accept: application/json from client expected
-     */
-    @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
-        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
-        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
-        return upConvertedASCIIMathInput;
+public final class ValidateCommand {
+    
+    MultipartFile uploadFile;
+    String reportType;
+    
+    public MultipartFile getUploadFile() {
+        return uploadFile;
     }
-
+    
+    public void setUploadFile(MultipartFile uploadFile) {
+        this.uploadFile = uploadFile;
+    }
+    
+    
+    public String getReportType() {
+        return reportType;
+    }
+    
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

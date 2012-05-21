@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -68,7 +69,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -126,6 +129,31 @@ public class AssessmentManagementService {
         final Assessment result = assessmentDao.requireFindById(assessmentId);
         ensureCallerMayView(result);
         return result;
+    }
+
+    public AssessmentPackage getAssessmentPackage(final Long apid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        Assert.ensureNotNull(apid, "apid");
+        final AssessmentPackage result = assessmentPackageDao.requireFindById(apid);
+        ensureCallerMayView(result.getAssessment());
+        return result;
+    }
+
+    //-------------------------------------------------
+
+    public void getPackageSource(final AssessmentPackage assessmentPackage, final OutputStream outputStream)
+            throws PrivilegeException, IOException {
+        Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
+        ensureCallerMayViewSource(assessmentPackage.getAssessment());
+
+        final ResourceLocator resourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
+        final URI assessmentObjectUri = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
+        final InputStream assessmentObjectStream = resourceLocator.findResource(assessmentObjectUri);
+        if (assessmentObjectStream==null) {
+            throw new QtiWorksRuntimeException("Obtained null stream for AssessmentPackage source with URI "
+                    + assessmentObjectUri + " using locator " + resourceLocator);
+        }
+        IoUtilities.transfer(assessmentObjectStream, outputStream, false);
     }
 
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
@@ -428,6 +456,11 @@ public class AssessmentManagementService {
             throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT);
         }
         return caller;
+    }
+
+    private User ensureCallerMayViewSource(final Assessment assessment)
+            throws PrivilegeException {
+        return ensureCallerMayView(assessment);
     }
 
     private User ensureCallerMayChange(final Assessment assessment)

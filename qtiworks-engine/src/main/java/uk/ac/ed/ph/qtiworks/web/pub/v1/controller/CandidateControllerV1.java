@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.controller;
+package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
@@ -103,9 +103,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author David McKain
  */
 @Controller
-public class CandidateController {
+public class CandidateControllerV1 {
 
-    private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CandidateControllerV1.class);
 
     public static final QtiSampleCollection demoSampleCollection = new QtiSampleCollection(
             StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),

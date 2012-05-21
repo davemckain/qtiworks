@@ -31,14 +31,14 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.controller;
+package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
 
 import uk.ac.ed.ph.qtiworks.services.AnonymousUploadAndValidationServiceV1;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentUploadAndValidationResultV1;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.web.pub.domain.ValidateCommand;
+import uk.ac.ed.ph.qtiworks.web.pub.v1.domain.ValidateCommand;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;

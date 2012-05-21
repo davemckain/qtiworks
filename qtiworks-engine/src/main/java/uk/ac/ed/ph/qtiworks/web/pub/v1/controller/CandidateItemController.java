@@ -31,42 +31,20 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.domain;
+package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-
-import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 /**
- * FIXME: Document this type
+ * Controller for candidate item sessions
  *
  * @author David McKain
  */
-public final class ValidateCommand {
-    
-    MultipartFile uploadFile;
-    String reportType;
-    
-    public MultipartFile getUploadFile() {
-        return uploadFile;
-    }
-    
-    public void setUploadFile(MultipartFile uploadFile) {
-        this.uploadFile = uploadFile;
-    }
-    
-    
-    public String getReportType() {
-        return reportType;
-    }
-    
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
-    }
-    
-    
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
+@Controller
+public class CandidateItemController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CandidateItemController.class);
+
 }

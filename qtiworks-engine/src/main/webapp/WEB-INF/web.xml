@@ -123,10 +123,14 @@ Web deployment descriptor
     <filter-name>AnonymousAuthenticationFilter</filter-name>
     <url-pattern>/dispatcher/*</url-pattern>
   </filter-mapping>
+  <filter-mapping>
+    <filter-name>AnonymousAuthenticationFilter</filter-name>
+    <url-pattern>/web/public/*</url-pattern>
+  </filter-mapping>
 
-  <!-- Dispatcher for initial demos. This will die off eventually -->
+  <!-- Dispatcher for public web functionality -->
   <servlet>
-    <servlet-name>dispatcher</servlet-name>
+    <servlet-name>PublicDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
     <init-param>
@@ -141,7 +145,28 @@ Web deployment descriptor
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>dispatcher</servlet-name>
+    <servlet-name>PublicDispatcher</servlet-name>
+    <url-pattern>/web/public/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Dispatcher for initial demos. This will die off eventually -->
+  <servlet>
+    <servlet-name>PublicDispatcherV1</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+    <init-param>
+      <param-name>contextClass</param-name>
+      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </init-param>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+        uk.ac.ed.ph.qtiworks.config.PublicMvcConfigurationV1
+      </param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PublicDispatcherV1</servlet-name>
     <url-pattern>/dispatcher/*</url-pattern>
   </servlet-mapping>
 
