@@ -35,15 +35,23 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,8 +67,32 @@ public class PublicBrowseController {
     @Resource
     private AssessmentManagementService assessmentManagementService;
 
+    @Resource
+    private SampleCategoryDao sampleCategoryDao;
+
+    @Resource
+    private AssessmentDao assessmentDao;
+
+    @RequestMapping(value="/samples/list", method=RequestMethod.GET)
+    public String listSamples(final Model model) {
+        /* Look up all Assessments, grouped by SampleCategory.
+         * TODO: We're exposing the DAO layer here, which smells a bit but is OK here.
+         */
+        final Map<SampleCategory, List<Assessment>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<Assessment>>();
+        for (final SampleCategory sampleCategory : sampleCategoryDao.getAll()) {
+            final List<Assessment> assessmentsForCategory = assessmentDao.getForSampleCategory(sampleCategory);
+            sampleAssessmentMap.put(sampleCategory, assessmentsForCategory);
+        }
+
+        model.addAttribute("sampleAssessmentMap", sampleAssessmentMap);
+        return "public/samples/list";
+    }
+
     /**
-     * FIXME: Make the result of this cacheable
+     * Serves the source of the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#getPackageSource(AssessmentPackage, java.io.OutputStream)
+     *
      * @throws IOException
      * @throws PrivilegeException
      * @throws DomainEntityNotFoundException

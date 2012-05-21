@@ -15,6 +15,12 @@ All Rights Reserved
     <li><a href="web/instructor/uploadAssessment">Upload new Assessment</a></li>
   </ul>
 
+  <h3>Public/anonymous functionality</h3>
+  <ul>
+    <li><a href="web/public/samples/list">Browse public QTI samples</a></li>
+  </ul>
+
+
   <h3>Public/anonymous function sketches</h3>
   <ul>
     <li><a href="dispatcher/validator">Validation Demo</a></li>
