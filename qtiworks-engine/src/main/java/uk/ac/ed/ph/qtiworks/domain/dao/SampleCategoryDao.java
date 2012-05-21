@@ -33,9 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.List;
 
@@ -48,30 +46,23 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link Assessment} entity.
+ * DAO implementation for the {@link SampleCategory} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentDao extends GenericDao<Assessment> {
+public class SampleCategoryDao extends GenericDao<SampleCategory> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public AssessmentDao() {
-        super(Assessment.class);
+    public SampleCategoryDao() {
+        super(SampleCategory.class);
     }
 
-    public List<Assessment> getForOwner(final User user) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
-        query.setParameter("user", user);
-        return query.getResultList();
-    }
-
-    public List<Assessment> getForSampleCategory(final SampleCategory sampleCategory) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForSampleCategory", Assessment.class);
-        query.setParameter("sampleCategory", sampleCategory);
+    public List<SampleCategory> getAll() {
+        final TypedQuery<SampleCategory> query = em.createNamedQuery("SampleCategory.getAll", SampleCategory.class);
         return query.getResultList();
     }
 }

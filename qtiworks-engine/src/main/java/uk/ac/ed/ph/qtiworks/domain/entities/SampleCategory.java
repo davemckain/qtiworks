@@ -31,47 +31,65 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
- * DAO implementation for the {@link Assessment} entity.
+ * Represents the various categories of sample {@link Assessment}s included in the system.
+ * <p>
+ * This will hopefully be replaced with something more sophisticated in future.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentDao extends GenericDao<Assessment> {
+@Entity
+@Table(name="sample_categories")
+@SequenceGenerator(name="sampleCategorySequence", sequenceName="sample_category_sequence", initialValue=1, allocationSize=10)
+@NamedQueries({
+    @NamedQuery(name="SampleCategory.getAll",
+            query="SELECT sc"
+                + "  FROM SampleCategory sc"
+                + "  ORDER BY id")
+})
+public class SampleCategory implements BaseEntity {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = -4330181851974184912L;
 
-    public AssessmentDao() {
-        super(Assessment.class);
+    @Id
+    @GeneratedValue(generator="sampleCategorySequence")
+    @Column(name="id")
+    private Long id;
+
+    @Basic(optional=false)
+    @Column(name="title")
+    private String title;
+
+    //------------------------------------------------------------
+
+    @Override
+    public Long getId() {
+        return id;
     }
 
-    public List<Assessment> getForOwner(final User user) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
-        query.setParameter("user", user);
-        return query.getResultList();
+    @Override
+    public void setId(final Long id) {
+        this.id = id;
     }
 
-    public List<Assessment> getForSampleCategory(final SampleCategory sampleCategory) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForSampleCategory", Assessment.class);
-        query.setParameter("sampleCategory", sampleCategory);
-        return query.getResultList();
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
     }
 }

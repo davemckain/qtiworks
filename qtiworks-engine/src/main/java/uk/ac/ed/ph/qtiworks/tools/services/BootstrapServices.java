@@ -72,7 +72,7 @@ public class BootstrapServices {
         user.setPasswordDigest(ServiceUtilities.computePasswordDigest(qtiWorksSettings.getBootstrapUserPassword()));
         user.setSysAdmin(true);
         instructorUserDao.persist(user);
-        logger.info("Creating sysadmi user {}", user);
+        logger.info("Creating sysadmin user {}", user);
         return user;
 
     }

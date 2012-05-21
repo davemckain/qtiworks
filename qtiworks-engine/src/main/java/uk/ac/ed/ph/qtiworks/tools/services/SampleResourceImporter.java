@@ -40,11 +40,13 @@ import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
@@ -92,6 +94,9 @@ public class SampleResourceImporter {
     private AssessmentDao assessmentDao;
 
     @Resource
+    private SampleCategoryDao sampleCategoryDao;
+
+    @Resource
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
@@ -113,6 +118,9 @@ public class SampleResourceImporter {
         /* Create sample owner if required */
         final InstructorUser sampleOwner = importSampleOwnerUserIfRequired();
 
+        /* Find out which SampleCategories already exist */
+        final List<SampleCategory> sampleCategories = getExistingSampleCategories();
+
         /* Find out what sample Assessments are already loaded in the DB */
         final Map<String, Assessment> importedSampleAssessments = getImportedSampleAssessments(sampleOwner);
         logger.info("Existing samples are {}", importedSampleAssessments);
@@ -123,11 +131,7 @@ public class SampleResourceImporter {
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
-            for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
-                if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
-                    importSampleAssessment(sampleOwner, qtiSampleAssessment);
-                }
-            }
+            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments);
         }
     }
 
@@ -148,6 +152,10 @@ public class SampleResourceImporter {
         return sampleOwner;
     }
 
+    private List<SampleCategory> getExistingSampleCategories() {
+        return sampleCategoryDao.getAll();
+    }
+
     private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
         final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
@@ -161,7 +169,34 @@ public class SampleResourceImporter {
         return result;
     }
 
-    private Assessment importSampleAssessment(final InstructorUser owner, final QtiSampleAssessment qtiSampleAssessment) {
+    private void importSampleSet(final InstructorUser sampleOwner,
+            final QtiSampleSet qtiSampleSet, final List<SampleCategory> existingSampleCategories,
+            final Map<String, Assessment> importedSampleAssessments) {
+        final String sampleCategoryTitle = qtiSampleSet.getTitle();
+        SampleCategory resultingSampleCategory = null;
+        for (final SampleCategory sampleCategory : existingSampleCategories) {
+            if (sampleCategory.getTitle().equals(sampleCategoryTitle)) {
+                resultingSampleCategory = sampleCategory;
+                break;
+            }
+        }
+        if (resultingSampleCategory==null) {
+            /* Category doesn't exist yet */
+            resultingSampleCategory = new SampleCategory();
+            resultingSampleCategory.setTitle(sampleCategoryTitle);
+            logger.info("Creating new sample category {}", sampleCategoryTitle);
+            sampleCategoryDao.persist(resultingSampleCategory);
+
+        }
+        for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
+            if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
+                importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory);
+            }
+        }
+    }
+
+    private Assessment importSampleAssessment(final InstructorUser owner,
+            final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory) {
         Assert.ensureNotNull(qtiSampleAssessment, "qtiSampleAssessment");
         logger.info("Importing QTI sample {}", qtiSampleAssessment);
 
@@ -181,6 +216,7 @@ public class SampleResourceImporter {
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(owner);
         assessment.setPublic(true);
+        assessment.setSampleCategory(sampleCategory);
 
         /* FIXME: This is not great! */
         assessment.setName(ServiceUtilities.trimString(qtiSampleAssessment.getAssessmentHref(), DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));

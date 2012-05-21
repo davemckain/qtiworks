@@ -76,7 +76,13 @@ import javax.persistence.Version;
     @NamedQuery(name="Assessment.getForOwner",
             query="SELECT a"
                 + "  FROM Assessment a"
-                + "  WHERE a.owner = :user")
+                + "  WHERE a.owner = :user"
+                + "  ORDER BY creationTime"),
+    @NamedQuery(name="Assessment.getForSampleCategory",
+            query="SELECT a"
+                + "  FROM Assessment a"
+                + "  WHERE a.sampleCategory = :sampleCategory"
+                + "  ORDER BY creationTime")
 })
 public class Assessment implements BaseEntity, TimestampedOnCreation {
 
@@ -116,6 +122,16 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="public")
     private boolean isPublic;
+
+    /**
+     * For sample items, this specifies the category it belongs to. This should be set to null
+     * for non-sample items.
+     * <p>
+     * (This is expected to be temporary)
+     */
+    @ManyToOne(optional=true, fetch=FetchType.LAZY)
+    @JoinColumn(name="sample_category_id", updatable=false)
+    private SampleCategory sampleCategory;
 
     /**
      * Short name for this Assessment.
@@ -199,6 +215,15 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setPublic(final boolean isPublic) {
         this.isPublic = isPublic;
+    }
+
+
+    public SampleCategory getSampleCategory() {
+        return sampleCategory;
+    }
+
+    public void setSampleCategory(final SampleCategory sampleCategory) {
+        this.sampleCategory = sampleCategory;
     }
 
 
