@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -210,25 +209,6 @@ public final class XsltParamBuilder {
                     throw new QtiLogicException("Unexpected swtich case " + responseData.getType());
             }
             result.add(responseInputElement);
-        }
-        return result;
-    }
-
-    public List<Node> choiceOrdersToElements(final ItemSessionState itemSessionState) {
-        final List<Node> result = new ArrayList<Node>();
-        final Document doc = documentBuilder.newDocument();
-
-        for (final Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
-            final Identifier responseIdentifier = entry.getKey();
-            final List<Identifier> shuffledInteractionChoiceOrder = entry.getValue();
-            final Element container = doc.createElementNS(QTIWORKS_NAMESPACE, "shuffledChoiceOrder");
-            container.setAttribute("responseIdentifier", responseIdentifier.toString());
-            for (final Identifier choiceIdentifier : shuffledInteractionChoiceOrder) {
-                final Element choice = doc.createElementNS(QTIWORKS_NAMESPACE, "choice");
-                choice.setAttribute("identifier", choiceIdentifier.toString());
-                container.appendChild(choice);
-            }
-            result.add(container);
         }
         return result;
     }

@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -189,6 +191,9 @@ public final class AssessmentRenderer {
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(badResponseIdentifiers));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(invalidResponseIdentifiers));
 
+        /* Pass ItemSessionState as XML */
+        xsltParameters.put("itemSessionState", ItemSesssionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+
         /* FIXME: I've hard-coded maxAttempts=1 (for non-adaptive) items here. In future, this
          * should be settable by the instructor.
          */
@@ -200,9 +205,6 @@ public final class AssessmentRenderer {
         xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(itemSessionState.getResponseValues()));
         xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
         xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToElements(itemSessionState.getOutcomeValues()));
-
-        /* Pass interaction choice orders as parameters */
-        xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
 
         return doTransform(resolvedAssessmentItem, standaloneItemXsltUri, xsltParameters, serializationMethod);
     }

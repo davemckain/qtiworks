@@ -49,7 +49,7 @@ Rendering utility templates
                   <xsl:value-of select="@responseIdentifier"/>
                 </span>
                 <xsl:text> = [</xsl:text>
-                <xsl:value-of select="qw:choice/@identifier" separator=", "/>
+                <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
                 <xsl:text>]</xsl:text>
               </li>
             </xsl:for-each>

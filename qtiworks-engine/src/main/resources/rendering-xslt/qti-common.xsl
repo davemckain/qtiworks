@@ -33,13 +33,17 @@ rendering.
 
   <xsl:param name="view" select="false()" as="xs:boolean"/>
 
+  <!-- Current state -->
+  <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
+
+  <!-- Extract stuff from the state -->
+  <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
+    as="element(qw:shuffledInteractionChoiceOrder)*"/>
+
   <!-- AssessmentItem variables -->
   <xsl:param name="templateValues" select="()" as="element(qw:template)*"/>
   <xsl:param name="responseValues" select="()" as="element(qw:response)*"/>
   <xsl:param name="outcomeValues" select="()" as="element(qw:outcome)*"/>
-
-  <!-- Choice orders for shuffled shuffleable Interactions -->
-  <xsl:param name="shuffledChoiceOrders" select="()" as="element(qw:shuffledChoiceOrder)*"/>
 
   <!-- AssessmentTest variables (only passed when rendering tests) -->
   <xsl:param name="testOutcomeValues" select="()" as="element(qw:outcome)*"/>
@@ -318,8 +322,9 @@ rendering.
 
   <xsl:function name="qw:get-shuffled-choice-order" as="xs:string*">
     <xsl:param name="interaction" as="element()"/>
-    <xsl:variable name="shuffledChoiceOrder" select="$shuffledChoiceOrders[@responseIdentifier=$interaction/@responseIdentifier]"/>
-    <xsl:sequence select="for $c in ($shuffledChoiceOrder/qw:choice) return $c/@identifier"/>
+    <xsl:variable name="choiceSequence" as="xs:string?"
+      select="$shuffledChoiceOrders[@responseIdentifier=$interaction/@responseIdentifier]/@choiceSequence"/>
+    <xsl:sequence select="tokenize($choiceSequence, ' ')"/>
   </xsl:function>
 
   <xsl:function name="qw:get-visible-ordered-choices" as="element()*">
