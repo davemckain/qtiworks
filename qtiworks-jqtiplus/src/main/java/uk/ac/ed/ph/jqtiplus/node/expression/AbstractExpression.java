@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract super class for all expressions.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -68,7 +68,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     /** Expression logger. Used with all expressions. */
     private static Logger logger = LoggerFactory.getLogger(AbstractExpression.class);
 
-    public AbstractExpression(ExpressionParent parent, String localName) {
+    public AbstractExpression(final ExpressionParent parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new ExpressionGroup(this, getType().getMinimum(), getType().getMaximum()));
@@ -85,7 +85,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return getType().getRequiredCardinalities(index);
     }
 
@@ -93,14 +93,14 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * Gets list of all acceptable cardinalities which can child expression at given position produce.
      * <p>
      * This method is used when same cardinality is required (contains, match).
-     * 
+     *
      * @param context TODO
      * @param index position of child expression in this parent
      * @param includeParent whether parent requirements should be used during calculation
      * @return list of all acceptable cardinalities which can child expression at given position produce
      * @see #getRequiredCardinalities
      */
-    protected Cardinality[] getRequiredSameCardinalities(ValidationContext context, int index, boolean includeParent) {
+    protected Cardinality[] getRequiredSameCardinalities(final ValidationContext context, final int index, final boolean includeParent) {
         Cardinality[] required = getType().getRequiredCardinalities(index);
 
         if (includeParent) {
@@ -122,7 +122,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getType().getRequiredBaseTypes(index);
     }
 
@@ -130,14 +130,14 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * Gets list of all acceptable baseTypes which can child expression at given position produce.
      * <p>
      * This method is used when same baseType is required (contains, delete, index, match, ...).
-     * 
+     *
      * @param context TODO
      * @param index position of child expression in this parent
      * @param includeParent whether parent requirements should be used during calculation
      * @return list of all acceptable baseTypes which can child expression at given position produce
      * @see #getRequiredBaseTypes
      */
-    protected BaseType[] getRequiredSameBaseTypes(ValidationContext context, int index, boolean includeParent) {
+    protected BaseType[] getRequiredSameBaseTypes(final ValidationContext context, final int index, final boolean includeParent) {
         BaseType[] required = getType().getRequiredBaseTypes(index);
 
         if (includeParent) {
@@ -159,12 +159,12 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         return getType().getProducedCardinalities();
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         return getType().getProducedBaseTypes();
     }
 
@@ -178,12 +178,12 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * <li>if none of all children produces float, result is integer</li>
      * <li>otherwise result is set of integer and float</li>
      * </ol>
-     * 
+     *
      * @param context TODO
      * @return list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result)
      * @see #getProducedBaseTypes
      */
-    protected BaseType[] getProducedNumericalBaseTypes(ValidationContext context) {
+    protected BaseType[] getProducedNumericalBaseTypes(final ValidationContext context) {
         boolean floatFound = false;
         for (final Expression child : getChildren()) {
             final BaseType[] produced = child.getProducedBaseTypes(context);
@@ -213,17 +213,15 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * </ol>
      * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
      * returns list of all cardinalities.
-     * 
+     *
      * @param context TODO
      * @return list of all acceptable cardinalities for this expression from its parent
      */
-    protected Cardinality[] getParentRequiredCardinalities(ValidationContext context) {
+    protected Cardinality[] getParentRequiredCardinalities(final ValidationContext context) {
         if (getParent() != null) {
-            final int index = getParent().getNodeGroups().get(getQtiClassName()).getChildren().indexOf(this);
-
+            final int index = getParent().getNodeGroups().getGroupSupporting(getQtiClassName()).getChildren().indexOf(this);
             return getParent().getRequiredCardinalities(context, index);
         }
-
         return Cardinality.values();
     }
 
@@ -235,22 +233,20 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * </ol>
      * If this expression doesn't have any parent (it is legal for testing, but not for real use case),
      * returns list of all baseTypes.
-     * 
+     *
      * @param context TODO
      * @return list of all acceptable baseTypes for this expression from its parent
      */
-    protected BaseType[] getParentRequiredBaseTypes(ValidationContext context) {
+    protected BaseType[] getParentRequiredBaseTypes(final ValidationContext context) {
         if (getParent() != null) {
-            final int index = getParent().getNodeGroups().get(getQtiClassName()).getChildren().indexOf(this);
-
+            final int index = getParent().getNodeGroups().getGroupSupporting(getQtiClassName()).getChildren().indexOf(this);
             return getParent().getRequiredBaseTypes(context, index);
         }
-
         return BaseType.values();
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         validateThisOnly(context);
 
         // This is unusual order, because previous code logically belongs to parent validation.
@@ -258,7 +254,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /** Validates this Expression only, without descending into children */
-    private void validateThisOnly(ValidationContext context) {
+    private void validateThisOnly(final ValidationContext context) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
@@ -277,12 +273,12 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     /**
      * Returns true if list of produced objects contains at least one object from list of required objects (or both
      * lists are empty); false otherwise.
-     * 
+     *
      * @param required list with required objects
      * @param produced list with produced objects
      * @return true if both lists are empty or intersection of these lists is not empty; false otherwise
      */
-    private boolean check(Object[] required, Object[] produced) {
+    private boolean check(final Object[] required, final Object[] produced) {
         if (required.length == 0 && produced.length == 0) {
             return true;
         }
@@ -304,8 +300,8 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     /**
      * Returns true if any subexpression is NULL; false otherwise.
      */
-    protected boolean isAnyChildNull(Value[] childValues) {
-        for (Value childValue : childValues) {
+    protected boolean isAnyChildNull(final Value[] childValues) {
+        for (final Value childValue : childValues) {
             if (childValue.isNull()) {
                 return true;
             }
@@ -322,7 +318,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * For convenience, any resulting {@link RuntimeValidationException} will contain as many combined {@link ValidationItem}s as possible.
      */
     @Override
-    public final Value evaluate(ProcessingContext context) throws RuntimeValidationException {
+    public final Value evaluate(final ProcessingContext context) throws RuntimeValidationException {
         final AbstractValidationResult runtimeValidationResult = new RuntimeValidationResult(context.getSubject());
         final Value result = evaluate(context, runtimeValidationResult, 0);
         if (!runtimeValidationResult.getAllItems().isEmpty()) {
@@ -333,21 +329,21 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 
     /**
      * Evaluates this expression and all its children.
-     * 
+     *
      * @param depth of this expression in expression tree (root's depth = 0)
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
      */
-    private Value evaluate(ProcessingContext context, AbstractValidationResult runtimeValidationResult, int depth) {
+    private Value evaluate(final ProcessingContext context, final AbstractValidationResult runtimeValidationResult, final int depth) {
         if (getChildren().size() > 0) {
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }
 
         // (1) Evaluates all children (recursively)
-        List<Expression> children = getChildren();
-        Value[] childValues = new Value[children.size()];
+        final List<Expression> children = getChildren();
+        final Value[] childValues = new Value[children.size()];
         for (int i=0; i<children.size(); i++) {
-            Expression child = children.get(i);
+            final Expression child = children.get(i);
             Value childValue = NullValue.INSTANCE;
             if (child instanceof AbstractExpression) {
                 childValue = ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
@@ -370,7 +366,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 //      validateThisOnly(context);
 
         // 3) Evaluates this expression.
-        Value value = evaluateSelf(context, childValues, depth);
+        final Value value = evaluateSelf(context, childValues, depth);
 
         // Logs result of evaluation.
         final String format = "{}{} -> {}({})";
@@ -385,16 +381,16 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         return value;
     }
 
-    protected static String formatIndent(int depth) {
+    protected static String formatIndent(final int depth) {
         return "(" + depth + ") ";
     }
 
     /**
      * Evaluates this expression.
-     * 
+     *
      * @param childValues
      * @param depth depth of this expression in expression tree (root's depth = 0)
-     * 
+     *
      * @return result of evaluation, which must not be null
      */
     protected abstract Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth);
