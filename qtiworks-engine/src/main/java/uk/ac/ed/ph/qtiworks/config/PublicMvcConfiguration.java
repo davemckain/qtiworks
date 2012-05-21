@@ -43,6 +43,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -75,11 +76,7 @@ public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
               new MediaType("text", "plain", UTF8),
       }));
       converters.add(stringConverter);
-
-// Jackson temporarily disabled as I'm using v2.0 now, which hasn't been ported to Spring.
-// I will have to create an appropriate converter, but want to get the key databinding nailed
-// before I start playing with this.
-//      converters.add(new MappingJacksonHttpMessageConverter());
+      converters.add(new MappingJacksonHttpMessageConverter());
     }
 
     @Bean
