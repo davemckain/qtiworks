@@ -48,13 +48,6 @@ import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
-import uk.ac.ed.ph.jqtiplus.value.FileValue;
-import uk.ac.ed.ph.jqtiplus.value.ListValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
-import uk.ac.ed.ph.jqtiplus.value.RecordValue;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,89 +84,6 @@ public final class XsltParamBuilder {
     public XsltParamBuilder(final JqtiExtensionManager jqtiExtensionManager) {
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
-    }
-
-    public List<Node> responseValuesToElements(final Map<Identifier, Value> responseValues) {
-        return variableValuesToElements(responseValues, "response");
-    }
-
-    public List<Node> templateValuesToElements(final Map<Identifier, Value> templateValues) {
-        return variableValuesToElements(templateValues, "template");
-    }
-
-    public List<Node> outcomeValuesToElements(final Map<Identifier, Value> outcomeValues) {
-        return variableValuesToElements(outcomeValues, "outcome");
-    }
-
-    public List<Node> variableValuesToElements(final Map<Identifier, Value> variableValues, final String elementName) {
-        final ArrayList<Node> result = new ArrayList<Node>();
-        if (variableValues.isEmpty()) {
-            return result;
-        }
-        final Document doc = documentBuilder.newDocument();
-        for (final Entry<Identifier, Value> entry : variableValues.entrySet()) {
-            final Element child = doc.createElementNS(QTIWORKS_NAMESPACE, elementName);
-            child.setAttribute("identifier", entry.getKey().toString());
-            appendValueToElement(entry.getValue(), child);
-            result.add(child);
-        }
-        return result;
-    }
-
-    private void appendValueToElement(final Value value, final Element element) {
-        final Document doc = element.getOwnerDocument();
-
-        /* Add type information to container element. This won't be available for NullValues */
-        if (value.getBaseType()!=null) {
-            element.setAttribute("baseType", value.getBaseType().toQtiString());
-        }
-        if (value.getCardinality()!=null) {
-            element.setAttribute("cardinality", value.getCardinality().toQtiString());
-        }
-
-        /* Then add child Elements containing actual value information */
-        if (value instanceof NullValue) {
-            /* (Add no children, which we use to indicate null value) */
-        }
-        if (value instanceof SingleValue) {
-            final Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-            if (value instanceof FileValue) {
-                final FileValue fileValue = (FileValue) value;
-                v.setAttribute("contentType", fileValue.getContentType());
-                v.setAttribute("fileName", fileValue.getFileName());
-            }
-            else {
-                v.setTextContent(value.toQtiString());
-            }
-            element.appendChild(v);
-        }
-        else if (value instanceof OrderedValue) {
-            final OrderedValue orderedValue = (OrderedValue) value;
-            for (int i=0; i<orderedValue.size(); i++) {
-                final Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                v.setTextContent(((ListValue)value).get(i).toQtiString());
-                element.appendChild(v);
-            }
-        }
-        else if (value instanceof ListValue) {
-            /* (Note there there is no explicit ordering for MultipleValues here) */
-            final ListValue listValue = (ListValue) value;
-            for (int i=0; i<listValue.size(); i++) {
-                final Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                v.setTextContent(listValue.get(i).toQtiString());
-                element.appendChild(v);
-            }
-        }
-        else if (value instanceof RecordValue) {
-            /* Note that there is no explicit ordering here */
-            final RecordValue recordValue = (RecordValue) value;
-            for (final Identifier key : recordValue.keySet()) {
-                final Element v = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                v.setAttribute("identifier", key.toString());
-                appendValueToElement(recordValue.get(key), v);
-                element.appendChild(v);
-            }
-        }
     }
 
     public List<Node> responseInputsToElements(final Map<Identifier, ResponseData> responseInputs) {

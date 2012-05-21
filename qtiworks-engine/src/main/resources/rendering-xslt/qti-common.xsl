@@ -36,22 +36,21 @@ rendering.
   <!-- Current state -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Extract stuff from the state -->
-  <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
-    as="element(qw:shuffledInteractionChoiceOrder)*"/>
-
-  <!-- AssessmentItem variables -->
-  <xsl:param name="templateValues" select="()" as="element(qw:template)*"/>
-  <xsl:param name="responseValues" select="()" as="element(qw:response)*"/>
-  <xsl:param name="outcomeValues" select="()" as="element(qw:outcome)*"/>
-
   <!-- AssessmentTest variables (only passed when rendering tests) -->
+  <!-- FIXME: These need to be refactored -->
   <xsl:param name="testOutcomeValues" select="()" as="element(qw:outcome)*"/>
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
   <!-- Debugging Params -->
   <xsl:param name="overrideFeedback" select="false()" as="xs:boolean"/> <!-- enable all feedback  -->
   <xsl:param name="overrideTemplate" select="false()" as="xs:boolean"/> <!-- enable all templates -->
+
+  <!-- Extract stuff from the state -->
+  <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
+    as="element(qw:shuffledInteractionChoiceOrder)*"/>
+  <xsl:variable name="templateValues" select="$itemSessionState/qw:templateVariable" as="element(qw:templateVariable)*"/>
+  <xsl:variable name="responseValues" select="$itemSessionState/qw:responseVariable" as="element(qw:responseVariable)*"/>
+  <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
 
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
@@ -139,22 +138,17 @@ rendering.
     <xsl:sequence select="fmt:format($format, $number)" xmlns:fmt="java:uk.ac.ed.ph.qtiworks.rendering.XsltExtensionFunctions"/>
   </xsl:function>
 
-  <xsl:function name="qw:get-template-value" as="element(qw:template)?">
+  <xsl:function name="qw:get-template-value" as="element(qw:templateVariable)?">
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:sequence select="$templateValues[@identifier=$identifier]"/>
   </xsl:function>
 
-  <xsl:function name="qw:get-outcome-value" as="element(qw:outcome)?">
+  <xsl:function name="qw:get-outcome-value" as="element(qw:outcomeVariable)?">
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:sequence select="$outcomeValues[@identifier=$identifier]"/>
   </xsl:function>
 
-  <xsl:function name="qw:get-test-outcome-value" as="element(qw:outcome)?">
-    <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$testOutcomeValues[@identifier=$identifier]"/>
-  </xsl:function>
-
-  <xsl:function name="qw:get-response-value" as="element(qw:response)?">
+  <xsl:function name="qw:get-response-value" as="element(qw:responseVariable)?">
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:sequence select="$responseValues[@identifier=$identifier]"/>
   </xsl:function>
@@ -169,6 +163,11 @@ rendering.
     <xsl:param name="document" as="document-node()"/>
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:sequence select="$document/qti:assessmentItem/qti:outcomeDeclaration[@identifier=$identifier]"/>
+  </xsl:function>
+
+  <xsl:function name="qw:get-test-outcome-value" as="element(qw:outcome)?">
+    <xsl:param name="identifier" as="xs:string"/>
+    <xsl:sequence select="$testOutcomeValues[@identifier=$identifier]"/>
   </xsl:function>
 
   <xsl:function name="qw:get-test-outcome-declaration" as="element(qti:outcomeDeclaration)?">
@@ -282,7 +281,7 @@ rendering.
   <xsl:function name="qw:is-maths-content-value" as="xs:boolean">
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:sequence select="boolean($valueHolder[@cardinality='record'
-      and qw:value[@baseType='string' and @cardinality='single' and @identifier='MathsContentClass'
+      and qw:value[@baseType='string' and @identifier='MathsContentClass'
         and string(qw:value)='org.qtitools.mathassess']])"/>
   </xsl:function>
 
@@ -380,12 +379,12 @@ rendering.
 
   <!-- param -->
   <xsl:template match="qti:param">
-    <xsl:variable name="template" select="qw:get-template-value(@value)" as="element(qw:template)?"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value(@value)" as="element(qw:templateVariable)?"/>
     <!-- Note: spec is not explicit in that we really only allow single cardinality param substitution -->
-    <param name="{@name}" value="{if (exists($template)
-        and qw:is-single-cardinality-value($template)
+    <param name="{@name}" value="{if (exists($templateValue)
+        and qw:is-single-cardinality-value($templateValue)
         and qw:get-template-declaration(/, @value)[@paramVariable='true'])
-      then qw:extract-single-cardinality-value($template) else @value}"/>
+      then qw:extract-single-cardinality-value($templateValue) else @value}"/>
   </xsl:template>
 
   <xsl:template match="qti:rubricBlock" as="element(div)">
@@ -399,9 +398,9 @@ rendering.
   <!-- printedVariable. Numeric output currently only supports Java String.format formatting. -->
   <xsl:template match="qti:printedVariable" as="element(span)">
     <xsl:variable name="identifier" select="@identifier" as="xs:string"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value(@identifier)" as="element(qw:templateVariable)?"/>
+    <xsl:variable name="outcomeValue" select="qw:get-outcome-value(@identifier)" as="element(qw:outcomeVariable)?"/>
     <xsl:variable name="testOutcomeValue" select="if (ancestor::qti:testFeedback) then qw:get-test-outcome-value(@identifier) else ()" as="element(qw:outcome)?"/>
-    <xsl:variable name="outcomeValue" select="qw:get-outcome-value(@identifier)" as="element(qw:outcome)?"/>
-    <xsl:variable name="templateValue" select="qw:get-template-value(@identifier)" as="element(qw:template)?"/>
     <span class="printedVariable">
       <xsl:choose>
         <xsl:when test="exists($testOutcomeValue)">
@@ -528,10 +527,10 @@ rendering.
   -->
   <xsl:template match="m:mi" as="element()">
     <xsl:variable name="content" select="normalize-space(text())" as="xs:string"/>
-    <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:template)?"/>
-    <xsl:variable name="responseValue" select="qw:get-response-value($content)" as="element(qw:response)?"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:templateVariable)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value($content)" as="element(qw:responseVariable)?"/>
+    <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcomeVariable)?"/>
     <xsl:variable name="testOutcomeValue" select="if (ancestor::qti:testFeedback) then qw:get-test-outcome-value(@identifier) else ()" as="element(qw:outcome)?"/>
-    <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcome)?"/>
     <xsl:choose>
       <xsl:when test="exists($templateValue) and qw:get-template-declaration(/, $content)[@mathVariable='true']">
         <xsl:call-template name="substitute-mi">
@@ -614,10 +613,10 @@ rendering.
   -->
   <xsl:template match="m:ci">
     <xsl:variable name="value" select="normalize-space(text())"/>
-    <xsl:variable name="template" select="qw:get-template-value($value)" as="element(qw:template)?"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value($value)" as="element(qw:templateVariable)?"/>
     <xsl:variable name="templateDeclaration" select="qw:get-template-declaration(/, $value)" as="element(qti:templateDeclaration)?"/>
     <xsl:choose>
-      <xsl:when test="exists($template) and $templateDeclaration[@mathVariable='true']">
+      <xsl:when test="exists($templateValue) and $templateDeclaration[@mathVariable='true']">
         <xsl:element name="cn" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>

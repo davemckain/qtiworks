@@ -47,7 +47,7 @@
                 value="::{$interaction/qti:object/@type}::{qw:convert-link($interaction/qti:object/@data)}::{$interaction/qti:object/@width}::{$interaction/qti:object/@height}::{$interaction/@maxChoices}"/>
             </xsl:for-each>
 
-            <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+            <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
             <param name="feedbackState:{@responseIdentifier}">
               <xsl:attribute name="value">
                 <xsl:choose>

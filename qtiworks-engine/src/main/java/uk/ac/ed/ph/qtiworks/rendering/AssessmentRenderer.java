@@ -194,17 +194,14 @@ public final class AssessmentRenderer {
         /* Pass ItemSessionState as XML */
         xsltParameters.put("itemSessionState", ItemSesssionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
 
+        /* Pass raw response inputs */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
+
         /* FIXME: I've hard-coded maxAttempts=1 (for non-adaptive) items here. In future, this
          * should be settable by the instructor.
          */
         xsltParameters.put("furtherAttemptsAllowed", Boolean.valueOf(itemSessionController.isAttemptAllowed(1)));
-
-        /* Convert template, response and outcome values into parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
-        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToElements(itemSessionState.getTemplateValues()));
-        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(itemSessionState.getResponseValues()));
-        xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
-        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToElements(itemSessionState.getOutcomeValues()));
 
         return doTransform(resolvedAssessmentItem, standaloneItemXsltUri, xsltParameters, serializationMethod);
     }
