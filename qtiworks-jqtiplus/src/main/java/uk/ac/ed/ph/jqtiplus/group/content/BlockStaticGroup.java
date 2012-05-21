@@ -49,14 +49,10 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
     private static final long serialVersionUID = 5763029606930975982L;
 
     public BlockStaticGroup(final XmlNode parent) {
-        this(parent, null);
+        this(parent, 0);
     }
 
     public BlockStaticGroup(final XmlNode parent, final int minimum) {
-        this(parent, Integer.valueOf(minimum));
-    }
-
-    public BlockStaticGroup(final XmlNode parent, final Integer minimum) {
         super(parent, BlockStatic.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), minimum, null);
     }
 
