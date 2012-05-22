@@ -55,6 +55,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException.CSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.ResponseBindingException;
@@ -119,6 +121,9 @@ public class AssessmentCandidateService {
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
+
+    @Resource
+    private AssessmentRenderer assessmentRenderer;
 
     @Resource
     private CandidateUploadService candidateUploadService;
@@ -202,7 +207,7 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
-    // Session management
+    // Session access
 
     public CandidateItemSession lookupCandidateSession(final long sessionId)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -220,6 +225,51 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
         }
         return caller;
+    }
+
+    //----------------------------------------------------
+    // Rendering
+
+    /**
+     * FIXME: This should render to a temporary {@link File} or something.
+     *
+     * @param candidateSession
+     * @return
+     * @throws CandidateSessionStateException
+     */
+    public String renderCurrentState(final CandidateItemSession candidateSession)
+            throws CandidateSessionStateException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        final CandidateItemEvent latestEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
+        if (latestEvent==null) {
+            throw new CandidateSessionStateException(candidateSession, CSFailureReason.NO_EVENTS_RECORDED);
+        }
+        return renderEvent(latestEvent);
+    }
+
+    public String renderEvent(final CandidateItemEvent candidateEvent) {
+        Assert.ensureNotNull(candidateEvent, "candidateEvent");
+
+        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+
+        final CandidateItemEventType eventType = candidateEvent.getEventType();
+        switch (eventType) {
+            case INIT:
+                /* Render fresh */
+                final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
+                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+                return assessmentRenderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
+
+            case INVALID_ATTEMPT:
+            case VALID_ATTEMPT:
+                /* Render last attempt details */
+                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
+
+            default:
+                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
+        }
     }
 
     //----------------------------------------------------

@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -50,6 +51,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller for candidate item sessions
@@ -69,7 +71,7 @@ public class CandidateItemController {
      *
      * FIXME: This should be a POST only!
      */
-    @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
+    @RequestMapping(value="/delivery/{did}", method={ RequestMethod.GET, RequestMethod.POST })
     public String startCandidateItemSession(@PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.info("Creating new CandidateItemSession for delivery {}", did);
@@ -84,8 +86,11 @@ public class CandidateItemController {
      * Renders the current state of the given session
      */
     @RequestMapping(value="/session/{xid}", method=RequestMethod.GET)
-    public void renderItem() {
-
+    @ResponseBody
+    public String renderItem(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, CandidateSessionStateException {
+        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+        return assessmentCandidateService.renderCurrentState(candidateSession);
     }
 
 }
