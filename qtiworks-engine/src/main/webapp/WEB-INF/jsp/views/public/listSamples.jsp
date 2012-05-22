@@ -20,10 +20,10 @@ demoSampleCollection (QTISampleCollection)
   <c:forEach var="qtiSampleSet" items="${demoSampleCollection.qtiSampleSets}" varStatus="sampleStatus">
     <h3><c:out value="${qtiSampleSet.title}"/></h3>
     <ul>
-      <c:forEach var="qtiSampleResource" items="${qtiSampleSet.qtiSampleResources}" varStatus="resourceStatus">
+      <c:forEach var="qtiSampleAssessment" items="${qtiSampleSet.qtiSampleAssessments}" varStatus="resourceStatus">
         <li>
           <a href="<c:url value='/dispatcher/newSession/${sampleStatus.index}/${resourceStatus.index}'/>">
-            <c:out value="${qtiSampleResource.relativePath}"/>
+            <c:out value="${qtiSampleAssessment.assessmentHref}"/>
           </a>
         </li>
       </c:forEach>

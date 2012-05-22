@@ -36,6 +36,13 @@ package uk.ac.ed.ph.qtiworks.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+<<<<<<< HEAD
+=======
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+>>>>>>> origin/master
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -51,6 +58,25 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.pub.controller"})
 public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
+
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+
+    /**
+     * (I'm setting up message converters explicitly. One reason is that
+     * @ResponseBody doesn't allow you to set an explicit content type,
+     * which can lead to problems. I suppose it's nice and tidy being explicit, so
+     * here we are!)
+     */
+    @Override
+    public void configureMessageConverters(final List<HttpMessageConverter<?>> converters) {
+      final StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
+      stringConverter.setSupportedMediaTypes(Arrays.asList(new MediaType[] {
+              new MediaType("text", "html", UTF8),
+              new MediaType("text", "plain", UTF8),
+      }));
+      converters.add(stringConverter);
+      converters.add(new MappingJacksonHttpMessageConverter());
+    }
 
     @Bean
     ViewResolver viewResolver() {

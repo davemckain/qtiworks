@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -189,20 +191,17 @@ public final class AssessmentRenderer {
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(badResponseIdentifiers));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(invalidResponseIdentifiers));
 
+        /* Pass ItemSessionState as XML */
+        xsltParameters.put("itemSessionState", ItemSesssionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+
+        /* Pass raw response inputs */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
+
         /* FIXME: I've hard-coded maxAttempts=1 (for non-adaptive) items here. In future, this
          * should be settable by the instructor.
          */
         xsltParameters.put("furtherAttemptsAllowed", Boolean.valueOf(itemSessionController.isAttemptAllowed(1)));
-
-        /* Convert template, response and outcome values into parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
-        xsltParameters.put("templateValues", xsltParamBuilder.templateValuesToElements(itemSessionState.getTemplateValues()));
-        xsltParameters.put("responseValues", xsltParamBuilder.responseValuesToElements(itemSessionState.getResponseValues()));
-        xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
-        xsltParameters.put("outcomeValues", xsltParamBuilder.outcomeValuesToElements(itemSessionState.getOutcomeValues()));
-
-        /* Pass interaction choice orders as parameters */
-        xsltParameters.put("shuffledChoiceOrders", xsltParamBuilder.choiceOrdersToElements(itemSessionState));
 
         return doTransform(resolvedAssessmentItem, standaloneItemXsltUri, xsltParameters, serializationMethod);
     }

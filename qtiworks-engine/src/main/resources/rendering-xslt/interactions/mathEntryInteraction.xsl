@@ -12,7 +12,7 @@
   <xsl:template match="qti:customInteraction[@class='org.qtitools.mathassess.MathEntryInteraction']">
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
-    <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
     <xsl:variable name="asciiMathInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
     <div class="mathEntryInteraction">
       <div class="inputPanel">

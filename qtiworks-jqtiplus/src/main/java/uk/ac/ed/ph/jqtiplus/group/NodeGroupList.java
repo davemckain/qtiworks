@@ -214,8 +214,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -228,8 +226,6 @@ import org.w3c.dom.NodeList;
 public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>> {
 
     private static final long serialVersionUID = 4649998181277985510L;
-
-    private static Logger logger = LoggerFactory.getLogger(NodeGroupList.class);
 
     /** Parent (node) of this container. */
     private final XmlNode parent;
@@ -309,9 +305,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
     public void addSafe(final int index, final NodeGroup<?,?> group) {
         for (final NodeGroup<?,?> child : groups) {
             if (child.getName().equals(group.getName())) {
-                final QtiNodeGroupException ex = new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
-                logger.error(ex.getMessage());
-                throw ex;
+                throw new QtiNodeGroupException("Duplicate node group name: " + group.computeXPath());
             }
         }
 
@@ -348,7 +342,6 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
                 }
                 else {
                     /* Register error */
-                    System.out.println("BAH " + childNode.getLocalName() + " " + childNode);
                     context.modelBuildingError(new QtiIllegalChildException(parent, childNode.getLocalName()), childNode);
                 }
             }
@@ -385,10 +378,23 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
                 return child;
             }
         }
+        throw new QtiNodeGroupException("Cannot find node group with name " + name);
+    }
 
-        final QtiNodeGroupException ex = new QtiNodeGroupException("Cannot find node group: " + name);
-        logger.error(ex.getMessage());
-        throw ex;
+    /**
+     * Gets group supporting the given QTI class name.
+     *
+     * @param name name of requested group
+     * @return group with given name
+     * @throws QtiNodeGroupException if group is not found
+     */
+    public NodeGroup<?,?> getGroupSupporting(final String qtiClassName) {
+        for (final NodeGroup<?,?> child : groups) {
+            if (child.supportsQtiClass(qtiClassName)) {
+                return child;
+            }
+        }
+        throw new QtiNodeGroupException("Cannot find node group supporting " + qtiClassName);
     }
 
     @Override

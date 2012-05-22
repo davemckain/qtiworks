@@ -36,7 +36,7 @@
           <param name="noOfMarkers" value="{@maxChoices}"/>
           <param name="markerType" value="STANDARD"/>
 
-          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
           <param name="feedbackState">
             <xsl:attribute name="value">
               <xsl:choose>

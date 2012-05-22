@@ -39,7 +39,7 @@
               <xsl:attribute name="value"><xsl:value-of select="@identifier"/>::::<xsl:value-of select="@shape"/>::<xsl:value-of select="@coords"/><xsl:if test="@label">::hotSpotLabel:<xsl:value-of select="@label"/></xsl:if><xsl:if test="@matchGroup">::<xsl:value-of select="translate(normalize-space(@matchGroup), ' ', '::')"/></xsl:if><xsl:if test="@matchMax">::maxAssociations:<xsl:value-of select="@matchMax"/></xsl:if></xsl:attribute>
             </param>
           </xsl:for-each>
-          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
           <xsl:if test="qw:is-not-null-value($responseValue)">
             <param name="feedback">
               <xsl:attribute name="value">

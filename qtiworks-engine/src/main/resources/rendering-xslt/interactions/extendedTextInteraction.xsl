@@ -16,7 +16,7 @@ DM: I don't have anything to test this out with!
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
-      <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:response)?"/>
+      <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
       <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
       <xsl:variable name="rawInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
 
