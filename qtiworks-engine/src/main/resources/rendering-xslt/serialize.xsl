@@ -21,10 +21,8 @@ hence slightly easier to debug.
   <xsl:param name="contentType" as="xs:string"/>
   <xsl:param name="outputMethod" as="xs:string"/>
 
-  <!--
-  <xsl:param name="mathJaxUrl" select="'http://www2.ph.ed.ac.uk/lib/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>
-  -->
-  <xsl:param name="mathJaxUrl" select="'http://cdn.mathjax.org/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>
+  <!-- (This is the HTTPS-safe version of the MathJax CDN URL -->
+  <xsl:param name="mathJaxUrl" select="'//d3eoax9i5htok0.cloudfront.net/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>
   <xsl:param name="mathJaxConfig" as="xs:string?"/>
 
   <!-- ************************************************************ -->
