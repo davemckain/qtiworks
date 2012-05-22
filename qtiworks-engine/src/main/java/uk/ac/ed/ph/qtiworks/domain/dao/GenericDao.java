@@ -81,12 +81,16 @@ public abstract class GenericDao<E extends BaseEntity> {
         this.entityClass = entityClass;
     }
 
-    public EntityManager getEm() {
-        return em;
+    public E findById(final long id) {
+        return em.find(entityClass, Long.valueOf(id));
     }
 
     public E findById(final Long id) {
         return em.find(entityClass, id);
+    }
+
+    public E requireFindById(final long id) throws DomainEntityNotFoundException {
+        return requireFindById(Long.valueOf(id));
     }
 
     public E requireFindById(final Long id) throws DomainEntityNotFoundException {
