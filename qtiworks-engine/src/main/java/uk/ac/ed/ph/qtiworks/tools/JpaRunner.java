@@ -85,6 +85,9 @@ public final class JpaRunner {
         final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
         final ItemSessionState itemSessionState = assessmentCandidateService.initialiseSession(candidateItemSession);
 
+        /* Render initial state */
+        System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
+
         /* Do invalid attempt */
         final Map<Identifier, List<String>> stringResponseMap = new HashMap<Identifier, List<String>>();
         stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("x"));
@@ -94,6 +97,9 @@ public final class JpaRunner {
         stringResponseMap.clear();
         stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("ChoiceA"));
         attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+
+        /* Render new state */
+        System.out.println("Rendering after first attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 
         ctx.close();
     }

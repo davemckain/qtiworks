@@ -34,9 +34,11 @@
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,11 +53,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class CandidateItemAttemptDao extends GenericDao<CandidateItemAttempt> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public CandidateItemAttemptDao() {
         super(CandidateItemAttempt.class);
+    }
+
+    public CandidateItemAttempt getForEvent(final CandidateItemEvent candidateItemEvent) {
+        final TypedQuery<CandidateItemAttempt> query = em.createNamedQuery("CandidateItemAttempt.getForEvent", CandidateItemAttempt.class);
+        query.setParameter("candidateItemEvent", candidateItemEvent);
+        return extractNullableFindResult(query);
     }
 }

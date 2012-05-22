@@ -71,12 +71,12 @@ import org.hibernate.annotations.Type;
             query="SELECT e"
                 + "  FROM CandidateItemEvent e"
                 + "  WHERE e.candidateItemSession = :candidateItemSession"
-                + "  ORDER BY e.timestamp"),
+                + "  ORDER BY e.id"),
     @NamedQuery(name="CandidateItemEvent.getForSessionReversed",
             query="SELECT e"
                 + "  FROM CandidateItemEvent e"
                 + "  WHERE e.candidateItemSession = :candidateItemSession"
-                + "  ORDER BY e.timestamp DESC"),
+                + "  ORDER BY e.id DESC"),
 })
 public class CandidateItemEvent implements BaseEntity {
 
@@ -197,5 +197,15 @@ public class CandidateItemEvent implements BaseEntity {
 
     public void setItemSessionStateXml(final String itemSessionStateXml) {
         this.itemSessionStateXml = itemSessionStateXml;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(id=" + id
+                + ",eventType=" + eventType
+                + ")";
     }
 }

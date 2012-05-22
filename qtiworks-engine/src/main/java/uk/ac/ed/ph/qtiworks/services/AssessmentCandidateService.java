@@ -71,6 +71,7 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
@@ -174,7 +175,7 @@ public class AssessmentCandidateService {
         result.setItemDelivery(itemDelivery);
         candidateItemSessionDao.persist(result);
 
-        auditor.recordEvent("Created item session #" + result.getId());
+        auditor.recordEvent("Created CandidateItemSession #" + result.getId() + " on ItemDelivery #" + itemDelivery.getId());
         return result;
     }
 
@@ -201,7 +202,7 @@ public class AssessmentCandidateService {
 
         /* Record event */
         recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
-        auditor.recordEvent("Initialized session #" + candidateSession);
+        auditor.recordEvent("Initialized session #" + candidateSession.getId());
 
         return itemSessionState;
     }
@@ -251,25 +252,73 @@ public class AssessmentCandidateService {
     public String renderEvent(final CandidateItemEvent candidateEvent) {
         Assert.ensureNotNull(candidateEvent, "candidateEvent");
 
-        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
-                /* Render fresh */
-                final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
-                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-                return assessmentRenderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
+                return renderAfterInit(candidateEvent);
 
             case INVALID_ATTEMPT:
             case VALID_ATTEMPT:
-                /* Render last attempt details */
-                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
+                return renderAfterAttempt(candidateEvent);
 
             default:
                 throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
         }
+    }
+
+    private String renderAfterInit(final CandidateItemEvent candidateEvent) {
+        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        return assessmentRenderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
+    }
+
+    private String renderAfterAttempt(final CandidateItemEvent candidateEvent) {
+        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
+        if (attempt==null) {
+            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
+        }
+        return assessmentRenderer.renderRespondedStandaloneItem(itemSessionController,
+                extractResponseMap(attempt), null, extractInvalidResponseIdentifiers(attempt),
+                SerializationMethod.HTML5_MATHJAX);
+    }
+
+    private Set<Identifier> extractInvalidResponseIdentifiers(final CandidateItemAttempt attempt) {
+        final Set<Identifier> result = new HashSet<Identifier>();
+        for (final String invalidResponseIdentifierString : attempt.getInvalidResponseIdentifiers()) {
+            result.add(new Identifier(invalidResponseIdentifierString));
+        }
+        return result;
+    }
+
+    private Map<Identifier, ResponseData> extractResponseMap(final CandidateItemAttempt attempt) {
+        final Map<Identifier, ResponseData> result = new HashMap<Identifier, ResponseData>();
+        for (final CandidateItemResponse response : attempt.getResponses()) {
+            final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
+            final ResponseDataType responseType = response.getResponseType();
+            ResponseData responseData = null;
+            switch (responseType) {
+                case STRING:
+                    responseData = new StringResponseData(response.getStringResponseData());
+                    break;
+
+                case FILE:
+                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
+                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
+                            fileSubmission.getContentType());
+                    break;
+
+                default:
+                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
+            }
+            result.put(responseIdentifier, responseData);
+        }
+        return result;
     }
 
     //----------------------------------------------------

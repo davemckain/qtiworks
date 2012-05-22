@@ -48,6 +48,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
@@ -64,6 +66,12 @@ import org.hibernate.annotations.Type;
 @Table(name="candidate_item_attempts")
 @Inheritance(strategy=InheritanceType.JOINED)
 @SequenceGenerator(name="candidateItemAttemptSequence", sequenceName="candidate_item_attempt_sequence", initialValue=1, allocationSize=50)
+@NamedQueries({
+    @NamedQuery(name="CandidateItemAttempt.getForEvent",
+            query="SELECT a"
+                + "  FROM CandidateItemAttempt a"
+                + "  WHERE a.event = :candidateItemEvent")
+})
 public class CandidateItemAttempt implements BaseEntity {
 
     private static final long serialVersionUID = 8824668735905399883L;
