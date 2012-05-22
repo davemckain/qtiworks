@@ -115,7 +115,7 @@ Rendering utility templates
           <a id="qtiworks_id_toggle_debugMathsContent_{@identifier}" class="debugButton"
             href="javascript:void(0)">Toggle Details</a>
           <div id="qtiworks_id_debugMathsContent_{@identifier}" class="debugMathsContent">
-            <xsl:call-template name="dump-values">
+            <xsl:call-template name="dump-record-entries">
               <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
             </xsl:call-template>
           </div>
@@ -156,7 +156,7 @@ Rendering utility templates
             </xsl:when>
             <xsl:when test="@cardinality='record'">
               <xsl:text>(</xsl:text>
-              <xsl:call-template name="dump-values">
+              <xsl:call-template name="dump-record-entries">
                 <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
               </xsl:call-template>
               <xsl:text>)</xsl:text>
@@ -165,6 +165,40 @@ Rendering utility templates
         </xsl:otherwise>
       </xsl:choose>
     </li>
+  </xsl:template>
+
+  <xsl:template name="dump-record-entries" as="element(ul)">
+    <xsl:param name="valueHolders" as="element()*"/>
+    <ul>
+      <xsl:for-each select="$valueHolders">
+        <li>
+          <span class="variableName">
+            <xsl:value-of select="@identifier"/>
+          </span>
+          <xsl:text> = </xsl:text>
+          <xsl:choose>
+            <xsl:when test="not(*)">
+              <xsl:text>NULL</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <!-- Other variables will be output in a fairly generic way -->
+              <span class="type">
+                <xsl:value-of select="(@baseType, ':: ')" separator=" "/>
+              </span>
+              <xsl:variable name="text" select="qw:value" as="xs:string"/>
+              <xsl:choose>
+                <xsl:when test="contains($text, '&#x0a;')">
+                  <pre><xsl:value-of select="$text"/></pre>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$text"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
+        </li>
+      </xsl:for-each>
+    </ul>
   </xsl:template>
 
 </xsl:stylesheet>
