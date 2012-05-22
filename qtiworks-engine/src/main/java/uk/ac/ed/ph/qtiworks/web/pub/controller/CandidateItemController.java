@@ -31,11 +31,17 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
+package uk.ac.ed.ph.qtiworks.web.pub.controller;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controller for candidate item sessions
@@ -46,5 +52,13 @@ import org.springframework.stereotype.Controller;
 public class CandidateItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateItemController.class);
+
+    /**
+     * Starts a new {@link CandidateItemSession} for the given {@link ItemDelivery}.
+     */
+    @RequestMapping(value="/deliveries/{did}", method=RequestMethod.POST)
+    public void startCandidateItemSession(@PathVariable final long did) {
+        logger.error("Functionality needs added to start new session on {}", did);
+    }
 
 }

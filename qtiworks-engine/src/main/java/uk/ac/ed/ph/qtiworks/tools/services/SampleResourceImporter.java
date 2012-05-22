@@ -235,14 +235,19 @@ public class SampleResourceImporter {
         assessmentDao.persist(assessment);
         assessmentPackageDao.persist(assessmentPackage);
 
-        /* TEMP! Create a default delivery */
+        /* Create a default delivery */
         if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM) {
             final ItemDelivery defaultDelivery = new ItemDelivery();
             defaultDelivery.setAssessmentPackage(assessmentPackage);
             defaultDelivery.setMaxAttempts(Integer.valueOf(0));
             defaultDelivery.setOpen(true);
             defaultDelivery.setTitle("Temporary default bootstrap delivery");
+            defaultDelivery.setAllowReset(true);
+            defaultDelivery.setAllowResult(true);
+            defaultDelivery.setAllowSource(true);
+            assessmentPackage.setDefaultDelivery(defaultDelivery);
             itemDeliveryDao.persist(defaultDelivery);
+            assessmentPackageDao.update(assessmentPackage);
         }
 
         return assessment;

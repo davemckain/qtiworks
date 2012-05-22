@@ -109,6 +109,18 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="max_attempts")
     private Integer maxAttempts;
 
+    @Basic(optional=false)
+    @Column(name="allow_reset")
+    private boolean allowReset;
+
+    @Basic(optional=false)
+    @Column(name="allow_result")
+    private boolean allowResult;
+
+    @Basic(optional=false)
+    @Column(name="allow_source")
+    private boolean allowSource;
+
     //------------------------------------------------------------
 
     @Override
@@ -166,5 +178,32 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
+    }
+
+
+    public boolean isAllowReset() {
+        return allowReset;
+    }
+
+    public void setAllowReset(final boolean allowReset) {
+        this.allowReset = allowReset;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
+    }
+
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
     }
 }
