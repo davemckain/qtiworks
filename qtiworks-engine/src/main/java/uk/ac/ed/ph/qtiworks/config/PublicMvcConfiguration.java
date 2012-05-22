@@ -82,6 +82,7 @@ public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     ViewResolver viewResolver() {
         final UrlBasedViewResolver result = new UrlBasedViewResolver();
+        result.setRedirectHttp10Compatible(false);
         result.setViewClass(JstlView.class);
         result.setPrefix("/WEB-INF/jsp/views/");
         result.setSuffix(".jsp");

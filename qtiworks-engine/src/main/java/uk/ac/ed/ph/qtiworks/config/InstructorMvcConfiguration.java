@@ -49,12 +49,13 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  */
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.instructor"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.instructor.controller"})
 public class InstructorMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     ViewResolver viewResolver() {
         final UrlBasedViewResolver result = new UrlBasedViewResolver();
+        result.setRedirectHttp10Compatible(false);
         result.setViewClass(JstlView.class);
         result.setPrefix("/WEB-INF/jsp/views/instructor/");
         result.setSuffix(".jsp");
