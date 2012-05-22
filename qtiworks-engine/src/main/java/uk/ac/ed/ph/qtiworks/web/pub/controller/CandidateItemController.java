@@ -33,8 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +61,31 @@ public class CandidateItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateItemController.class);
 
+    @Resource
+    private AssessmentCandidateService assessmentCandidateService;
+
     /**
      * Starts a new {@link CandidateItemSession} for the given {@link ItemDelivery}.
+     *
+     * FIXME: This should be a POST only!
      */
-    @RequestMapping(value="/deliveries/{did}", method=RequestMethod.POST)
-    public void startCandidateItemSession(@PathVariable final long did) {
-        logger.error("Functionality needs added to start new session on {}", did);
+    @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
+    public String startCandidateItemSession(@PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.info("Creating new CandidateItemSession for delivery {}", did);
+        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
+        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(itemDelivery);
+        final ItemSessionState itemSessionState = assessmentCandidateService.initialiseSession(candidateSession);
+
+        return "redirect:/web/public/session/" + candidateSession.getId();
+    }
+
+    /**
+     * Renders the current state of the given session
+     */
+    @RequestMapping(value="/session/{xid}", method=RequestMethod.GET)
+    public void renderItem() {
+
     }
 
 }

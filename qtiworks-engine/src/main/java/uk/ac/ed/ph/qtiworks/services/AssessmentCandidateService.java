@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
@@ -126,6 +127,9 @@ public class AssessmentCandidateService {
     private JqtiExtensionManager jqtiExtensionManager;
 
     @Resource
+    private ItemDeliveryDao itemDeliveryDao;
+
+    @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
 
     @Resource
@@ -135,15 +139,26 @@ public class AssessmentCandidateService {
     private CandidateItemAttemptDao candidateItemAttemptDao;
 
     //----------------------------------------------------
-    // Session management
+    // Session creation and initialisation
 
-    public CandidateItemSession getCandidateSession(final Long sessionId)
+    public ItemDelivery lookupItemDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
-        Assert.ensureNotNull(sessionId, "sessionId");
+        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
+        ensureCandidateMayAccess(itemDelivery);
+        return itemDelivery;
+    }
 
-        final CandidateItemSession session = candidateItemSessionDao.requireFindById(sessionId);
-        ensureCallerMayAccess(session);
-        return session;
+    /**
+     * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
+     * to be relaxed in order to allow "real" deliveries to be done.
+     */
+    private User ensureCandidateMayAccess(final ItemDelivery itemDelivery) throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final Assessment assessment = itemDelivery.getAssessmentPackage().getAssessment();
+        if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+        }
+        return caller;
     }
 
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery) {
@@ -157,20 +172,6 @@ public class AssessmentCandidateService {
         auditor.recordEvent("Created item session #" + result.getId());
         return result;
     }
-
-    /**
-     * (Currently we're restricting access to sessions to their owners.)
-     */
-    private User ensureCallerMayAccess(final CandidateItemSession candidateSession) throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.equals(candidateSession.getCandidate())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
-        }
-        return caller;
-    }
-
-    //----------------------------------------------------
-    // Initialisation
 
     public ItemSessionState initialiseSession(final CandidateItemSession candidateSession) throws RuntimeValidationException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
@@ -198,6 +199,27 @@ public class AssessmentCandidateService {
         auditor.recordEvent("Initialized session #" + candidateSession);
 
         return itemSessionState;
+    }
+
+    //----------------------------------------------------
+    // Session management
+
+    public CandidateItemSession lookupCandidateSession(final long sessionId)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final CandidateItemSession session = candidateItemSessionDao.requireFindById(sessionId);
+        ensureCallerMayAccess(session);
+        return session;
+    }
+
+    /**
+     * (Currently we're restricting access to sessions to their owners.)
+     */
+    private User ensureCallerMayAccess(final CandidateItemSession candidateSession) throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.equals(candidateSession.getCandidate())) {
+            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
+        }
+        return caller;
     }
 
     //----------------------------------------------------
