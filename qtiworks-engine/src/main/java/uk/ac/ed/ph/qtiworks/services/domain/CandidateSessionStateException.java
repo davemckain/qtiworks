@@ -35,18 +35,23 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * Client exception thrown when attempting to perform an
  * unacceptable change to a {@link CandidateItemSession}.
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.CONFLICT)
 public final class CandidateSessionStateException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
 
     public static enum CSFailureReason {
 
+        NO_EVENTS_RECORDED,
         ATTEMPT_NOT_ALLOWED,
 
         ;

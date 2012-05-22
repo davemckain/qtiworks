@@ -35,12 +35,16 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * Client exception thrown when attempting to perform a change to an
  * {@link Assessment} that its current state does not support.
  *
  * @author David McKain
  */
+@ResponseStatus(value=HttpStatus.CONFLICT)
 public final class AssessmentStateException extends Exception {
 
     private static final long serialVersionUID = -699513250898841731L;
