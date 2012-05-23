@@ -59,7 +59,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -121,7 +120,7 @@ public class MathAssessTest {
             System.out.println("\n\nBinding Math responses");
             final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
             responses.put(new Identifier("RESPONSE"), new StringResponseData("1+x"));
-            final List<Identifier> badResponses = itemController.bindResponses(responses);
+            final Set<Identifier> badResponses = itemController.bindResponses(responses);
             final Set<Identifier> invalidResponses = itemController.validateResponses();
             System.out.println("Bad responses: " + badResponses);
             System.out.println("Invalid response: " + invalidResponses);
