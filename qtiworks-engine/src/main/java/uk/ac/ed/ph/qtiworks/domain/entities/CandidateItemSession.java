@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -60,11 +61,11 @@ public class CandidateItemSession implements BaseEntity {
     @Column(name="xid")
     private Long id;
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
     private ItemDelivery itemDelivery;
 
-    @ManyToOne(optional=false)
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="uid")
     private User candidate;
 

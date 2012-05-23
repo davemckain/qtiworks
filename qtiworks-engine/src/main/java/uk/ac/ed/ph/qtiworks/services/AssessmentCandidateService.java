@@ -203,7 +203,7 @@ public class AssessmentCandidateService {
 
         /* Record event */
         recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
-        auditor.recordEvent("Initialized session #" + candidateSession.getId());
+        auditor.recordEvent("Initialized candidate session #" + candidateSession.getId());
 
         return itemSessionState;
     }
@@ -431,8 +431,6 @@ public class AssessmentCandidateService {
             }
         }
 
-        /* Persist responses */
-
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
@@ -441,6 +439,9 @@ public class AssessmentCandidateService {
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
+        auditor.recordEvent("Recorded candidate attempt #" + candidateItemAttempt.getId()
+                + " on session #" + candidateSession.getId()
+                + " on delivery #" + candidateSession.getItemDelivery().getId());
         return candidateItemAttempt;
     }
 
@@ -454,6 +455,7 @@ public class AssessmentCandidateService {
         ensureCallerMayViewSource(itemDelivery);
 
         ServiceUtilities.streamAssessmentPackageSource(itemDelivery.getAssessmentPackage(), outputStream);
+        auditor.recordEvent("Candidate streamed source for delivery #" + itemDelivery.getId());
     }
 
     private User ensureCallerMayViewSource(final ItemDelivery itemDelivery)
@@ -487,7 +489,11 @@ public class AssessmentCandidateService {
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         final ItemResult itemResult = itemSessionController.computeItemResult();
+
+        /* Send result */
         assessmentRenderer.serializeJqtiObject(itemResult, outputStream);
+        auditor.recordEvent("Candidate streamed result for session #" + candidateSession.getId()
+                + " on delivery #" + candidateSession.getItemDelivery().getId());
     }
 
     private User ensureCallerMayViewResult(final ItemDelivery itemDelivery)
