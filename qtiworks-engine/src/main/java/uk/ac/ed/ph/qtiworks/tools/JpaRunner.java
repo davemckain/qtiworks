@@ -46,14 +46,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -114,49 +110,5 @@ public final class JpaRunner {
         System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 
         ctx.close();
-    }
-
-    private static class NullMultipartFile implements MultipartFile {
-
-        @Override
-        public String getName() {
-            return "Null file";
-        }
-
-        @Override
-        public String getOriginalFilename() {
-            return "file";
-        }
-
-        @Override
-        public String getContentType() {
-            return "text/plain";
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public long getSize() {
-            return 0L;
-        }
-
-        @Override
-        public byte[] getBytes() throws IOException {
-            return new byte[0];
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return new ByteArrayInputStream(getBytes());
-        }
-
-        @Override
-        public void transferTo(final File dest) {
-            /* Do nothing */
-        }
-
     }
 }
