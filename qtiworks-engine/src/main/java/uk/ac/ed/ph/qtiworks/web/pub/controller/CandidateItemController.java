@@ -78,10 +78,8 @@ public class CandidateItemController {
 
     /**
      * Starts a new {@link CandidateItemSession} for the given {@link ItemDelivery}.
-     *
-     * FIXME: This should be a POST only!
      */
-    @RequestMapping(value="/delivery/{did}", method={ RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value="/delivery/{did}", method=RequestMethod.POST)
     public String startCandidateItemSession(@PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Creating new CandidateItemSession for delivery {}", did);

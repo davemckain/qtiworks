@@ -80,7 +80,6 @@ public class PublicBrowseController {
         final Map<SampleCategory, List<AssessmentPackage>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<AssessmentPackage>>();
         for (final SampleCategory sampleCategory : sampleCategoryDao.getAll()) {
             final List<AssessmentPackage> assessmentsForCategory = assessmentPackageDao.getForSampleCategory(sampleCategory);
-            System.out.println("GOT " + assessmentsForCategory);
             sampleAssessmentMap.put(sampleCategory, assessmentsForCategory);
         }
 
