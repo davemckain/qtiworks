@@ -9,6 +9,7 @@ All Rights Reserved
 <%@ tag body-content="scriptless" %>
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ attribute name="title" required="false" %>
 
