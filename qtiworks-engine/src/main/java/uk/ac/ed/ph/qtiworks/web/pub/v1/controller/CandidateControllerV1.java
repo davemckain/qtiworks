@@ -307,7 +307,7 @@ public class CandidateControllerV1 {
         /* Bind responses */
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         Set<Identifier> invalidResponseIdentifiers = null;
-        final List<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
+        final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
         if (badResponseIdentifiers.isEmpty()) {
             logger.debug("Responses bound successfully, so continuing to response validation step");
             invalidResponseIdentifiers = itemSessionController.validateResponses();

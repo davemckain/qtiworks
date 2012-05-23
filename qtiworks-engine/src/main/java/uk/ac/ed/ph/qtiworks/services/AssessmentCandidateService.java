@@ -54,12 +54,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException.CSFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.ResponseBindingException;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -79,7 +79,6 @@ import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -257,8 +256,9 @@ public class AssessmentCandidateService {
             case INIT:
                 return renderAfterInit(candidateEvent);
 
-            case INVALID_ATTEMPT:
-            case VALID_ATTEMPT:
+            case ATTEMPT_VALID:
+            case ATTEMPT_INVALID:
+            case ATTEMPT_BAD:
                 return renderAfterAttempt(candidateEvent);
 
             default:
@@ -283,23 +283,21 @@ public class AssessmentCandidateService {
         if (attempt==null) {
             throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
         }
+        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
         return assessmentRenderer.renderRespondedStandaloneItem(itemSessionController,
-                extractResponseMap(attempt), null, extractInvalidResponseIdentifiers(attempt),
+                responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder,
                 SerializationMethod.HTML5_MATHJAX);
     }
 
-    private Set<Identifier> extractInvalidResponseIdentifiers(final CandidateItemAttempt attempt) {
-        final Set<Identifier> result = new HashSet<Identifier>();
-        for (final String invalidResponseIdentifierString : attempt.getInvalidResponseIdentifiers()) {
-            result.add(new Identifier(invalidResponseIdentifierString));
-        }
-        return result;
-    }
-
-    private Map<Identifier, ResponseData> extractResponseMap(final CandidateItemAttempt attempt) {
-        final Map<Identifier, ResponseData> result = new HashMap<Identifier, ResponseData>();
+    private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
+            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
         for (final CandidateItemResponse response : attempt.getResponses()) {
             final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
+            final ResponseLegality responseLegality = response.getResponseLegality();
             final ResponseDataType responseType = response.getResponseType();
             ResponseData responseData = null;
             switch (responseType) {
@@ -316,9 +314,14 @@ public class AssessmentCandidateService {
                 default:
                     throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
             }
-            result.put(responseIdentifier, responseData);
+            responseDataBuilder.put(responseIdentifier, responseData);
+            if (responseLegality==ResponseLegality.BAD) {
+                badResponseIdentifiersBuilder.add(responseIdentifier);
+            }
+            else if (responseLegality==ResponseLegality.INVALID) {
+                invalidResponseIdentifiersBuilder.add(responseIdentifier);
+            }
         }
-        return result;
     }
 
     //----------------------------------------------------
@@ -334,7 +337,7 @@ public class AssessmentCandidateService {
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateSession,
             final Map<Identifier, List<String>> stringResponseMap,
             final Map<Identifier, CandidateFileSubmission> fileResponseMap)
-            throws RuntimeValidationException, CandidateSessionStateException, ResponseBindingException {
+            throws RuntimeValidationException, CandidateSessionStateException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
         /* Check current state */
@@ -369,27 +372,10 @@ public class AssessmentCandidateService {
             }
         }
 
-        /* Attempt to bind responses */
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-        final List<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
-        if (!badResponseIdentifiers.isEmpty()) {
-            /* Some responses could not be bound.
-             *
-             * (This would happen if the client sends the wrong type of response data. This is
-             * NOT the fault of the candidate - it is either caused by the API caller or the
-             * rendering layer.)
-             */
-            final Map<Identifier, ResponseData> badResponseMap = new HashMap<Identifier, ResponseData>();
-            for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
-                badResponseMap.put(badResponseIdentifier, responseMap.get(badResponseIdentifier));
-            }
-            auditor.recordEvent("Failed to bind response data on session #" + candidateSession.getId());
-            throw new ResponseBindingException(candidateSession, badResponseMap);
-        }
-
-        /* All responses were bound successfully, so we'll treat this is an attempt */
+        /* Build Map of responses in appropriate entity form */
         final CandidateItemAttempt candidateItemAttempt = new CandidateItemAttempt();
-        final List<CandidateItemResponse> candidateItemResponses = new ArrayList<CandidateItemResponse>();
+        final Map<Identifier, CandidateItemResponse> responseEntityMap = new HashMap<Identifier, CandidateItemResponse>();
+        final Set<CandidateItemResponse> candidateItemResponses = new HashSet<CandidateItemResponse>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
@@ -398,6 +384,7 @@ public class AssessmentCandidateService {
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
             candidateItemResponse.setAttempt(candidateItemAttempt);
             candidateItemResponse.setResponseType(responseData.getType());
+            candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
             switch (responseData.getType()) {
                 case STRING:
                     candidateItemResponse.setStringResponseData(((StringResponseData) responseData).getResponseData());
@@ -410,30 +397,46 @@ public class AssessmentCandidateService {
                 default:
                     throw new QtiWorksLogicException("Unexpected switch case: " + responseData.getType());
             }
+            responseEntityMap.put(responseIdentifier, candidateItemResponse);
             candidateItemResponses.add(candidateItemResponse);
+        }
+        candidateItemAttempt.setResponses(candidateItemResponses);
+
+        /* Attempt to bind responses */
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
+
+        /* Record any responses that failed to bind */
+        final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
+        for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
+            responseEntityMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);
         }
 
         /* Now validate the responses according to any constraints specified by the interactions */
-        final Set<Identifier> invalidResponseIdentifiers = itemSessionController.validateResponses();
-        final boolean areResponsesValid = invalidResponseIdentifiers.isEmpty();
-        if (!areResponsesValid) {
-            /* Some responses not valid, so note these down */
-            final Set<String> invalidResponseIdentifierStrings = new HashSet<String>();
-            for (final Identifier invalidResponseIdentifier : invalidResponseIdentifiers) {
-                invalidResponseIdentifierStrings.add(invalidResponseIdentifier.toString());
+        boolean allResponsesValid = false;
+        if (allResponsesBound) {
+            final Set<Identifier> invalidResponseIdentifiers = itemSessionController.validateResponses();
+            allResponsesValid = invalidResponseIdentifiers.isEmpty();
+            if (!allResponsesValid) {
+                /* Some responses not valid, so note these down */
+                for (final Identifier invalidResponseIdentifier : invalidResponseIdentifiers) {
+                    responseEntityMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
+                }
             }
-            candidateItemAttempt.setInvalidResponseIdentifiers(invalidResponseIdentifierStrings);
+
+            /* Invoke response processing (only if responses are valid) */
+            if (allResponsesValid) {
+                itemSessionController.processResponses();
+            }
         }
 
-        /* Invoke response processing (only if responses are valid) */
-        if (areResponsesValid) {
-            itemSessionController.processResponses();
-        }
+        /* Persist responses */
 
         /* Record resulting attempt and event */
-        final CandidateItemEvent candidateItemEvent = recordEvent(candidateSession,
-                areResponsesValid ? CandidateItemEventType.VALID_ATTEMPT : CandidateItemEventType.INVALID_ATTEMPT,
-                itemSessionState);
+        final CandidateItemEventType eventType = allResponsesBound ?
+            (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
+            : CandidateItemEventType.ATTEMPT_BAD;
+        final CandidateItemEvent candidateItemEvent = recordEvent(candidateSession, eventType, itemSessionState);
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);

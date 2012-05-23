@@ -33,14 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -54,8 +50,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * Represents a candidate attempt on a particular {@link ItemDelivery}
@@ -90,12 +84,6 @@ public class CandidateItemAttempt implements BaseEntity {
     @JoinColumn(name="xaid")
     private Set<CandidateItemResponse> responses;
 
-    @Type(type="org.hibernate.type.TextType")
-    @ElementCollection(fetch=FetchType.EAGER)
-    @CollectionTable(name="invalid_response_identifiers", joinColumns=@JoinColumn(name="xaid"))
-    @Column(name="response_identifier", length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
-    private Set<String> invalidResponseIdentifiers;
-
     //------------------------------------------------------------
 
     @Override
@@ -126,12 +114,12 @@ public class CandidateItemAttempt implements BaseEntity {
         this.responses = responses;
     }
 
+    //------------------------------------------------------------
 
-    public Set<String> getInvalidResponseIdentifiers() {
-        return invalidResponseIdentifiers;
-    }
-
-    public void setInvalidResponseIdentifiers(final Set<String> invalidResponseIdentifiers) {
-        this.invalidResponseIdentifiers = invalidResponseIdentifiers;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(id=" + id
+                + ")";
     }
 }

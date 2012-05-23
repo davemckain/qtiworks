@@ -41,8 +41,16 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 public enum CandidateItemEventType {
 
     INIT,
-    VALID_ATTEMPT,
-    INVALID_ATTEMPT,
+
+    /** Attempt made, all responses bound successfully and valid */
+    ATTEMPT_VALID,
+
+    /** Attempt made, all responses bound successfully but some invalid */
+    ATTEMPT_INVALID,
+
+    /** Attempt made, some responses bound unsuccessfully */
+    ATTEMPT_BAD,
+
     RESET,
     EXIT,
     ;

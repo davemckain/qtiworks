@@ -59,7 +59,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -157,7 +156,7 @@ public final class AssessmentRenderer {
      * fashion, and not part of an assessment.
      */
     public String renderRespondedStandaloneItem(final ItemSessionController itemSessionController,
-            final Map<Identifier, ResponseData> responseInputs, final List<Identifier> badResponseIdentifiers,
+            final Map<Identifier, ResponseData> responseInputs, final Set<Identifier> badResponseIdentifiers,
             final Set<Identifier> invalidResponseIdentifiers, final SerializationMethod serializationMethod) {
         logger.debug("renderStandaloneItem(itemSessionController={}, "
                 + "responseInputs={}, unboundResponseIdentifiers={}, "
@@ -177,7 +176,7 @@ public final class AssessmentRenderer {
      */
     private String doRenderStandaloneItem(final ItemSessionController itemSessionController,
             final Map<Identifier, ResponseData> responseInputs,
-            final List<Identifier> badResponseIdentifiers, final Set<Identifier> invalidResponseIdentifiers,
+            final Set<Identifier> badResponseIdentifiers, final Set<Identifier> invalidResponseIdentifiers,
             final SerializationMethod serializationMethod) {
         final ResolvedAssessmentItem resolvedAssessmentItem = itemSessionController.getResolvedAssessmentItem();
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();

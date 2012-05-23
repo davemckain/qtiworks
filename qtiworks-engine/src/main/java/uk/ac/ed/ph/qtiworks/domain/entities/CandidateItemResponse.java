@@ -88,9 +88,15 @@ public class CandidateItemResponse implements BaseEntity {
 
     /** Type of response */
     @Basic(optional=false)
-    @Column(name="response_type", updatable=false, length=5)
+    @Column(name="response_type", updatable=false, length=6)
     @Enumerated(EnumType.STRING)
     private ResponseDataType responseType;
+
+    /** Legality of response */
+    @Basic(optional=false)
+    @Column(name="response_legality", updatable=false, length=7)
+    @Enumerated(EnumType.STRING)
+    private ResponseLegality responseLegality;
 
     /** Raw response string data (only used for {@link ResponseDataType#STRING} */
     @Lob
@@ -145,6 +151,15 @@ public class CandidateItemResponse implements BaseEntity {
     }
 
 
+    public ResponseLegality getResponseLegality() {
+        return responseLegality;
+    }
+
+    public void setResponseLegality(final ResponseLegality responseLegality) {
+        this.responseLegality = responseLegality;
+    }
+
+
     public List<String> getStringResponseData() {
         return stringResponseData;
     }
@@ -161,5 +176,16 @@ public class CandidateItemResponse implements BaseEntity {
 
     public void setFileSubmission(final CandidateFileSubmission fileSubmission) {
         this.fileSubmission = fileSubmission;
+    }
+
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(id=" + id
+                + ",responseIdentifier=" + responseIdentifier
+                + ",responseType=" + responseType
+                + ",responseLegality=" + responseLegality
+                + ")";
     }
 }

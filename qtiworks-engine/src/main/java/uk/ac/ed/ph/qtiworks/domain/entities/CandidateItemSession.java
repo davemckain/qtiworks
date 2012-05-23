@@ -97,4 +97,13 @@ public class CandidateItemSession implements BaseEntity {
     public void setCandidate(final User candidate) {
         this.candidate = candidate;
     }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(id=" + id
+                + ")";
+    }
 }

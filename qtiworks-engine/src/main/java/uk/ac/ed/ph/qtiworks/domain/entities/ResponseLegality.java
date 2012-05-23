@@ -31,38 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-
-import java.util.Map;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * FIXME: Document this type
+ * Encapsulates the legality of a {@link CandidateItemResponse}
  *
  * @author David McKain
  */
-public final class ResponseBindingException extends Exception {
+public enum ResponseLegality {
 
-    private static final long serialVersionUID = 5017827115664184400L;
+    VALID,
+    INVALID,
+    BAD
+    ;
 
-    private final CandidateItemSession candidateSession;
-    private final Map<Identifier, ResponseData> badResponseMap;
-
-    public ResponseBindingException(final CandidateItemSession candidateSession, final Map<Identifier, ResponseData> badResponseMap) {
-        super("Failed to bind some response data to response variables");
-        this.candidateSession = candidateSession;
-        this.badResponseMap = badResponseMap;
-    }
-
-    public CandidateItemSession getCandidateSession() {
-        return candidateSession;
-    }
-
-    public Map<Identifier, ResponseData> getBadResponseMap() {
-        return badResponseMap;
-    }
 }

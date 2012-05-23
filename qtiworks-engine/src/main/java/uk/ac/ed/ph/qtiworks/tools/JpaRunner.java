@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
@@ -49,6 +50,10 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -88,10 +94,16 @@ public final class JpaRunner {
         /* Render initial state */
         System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 
+        /* Do bad attempt == file submission */
+        final CandidateFileSubmission fileSubmission = assessmentCandidateService.importFileResponse(candidateItemSession, new NullMultipartFile());
+        final Map<Identifier, CandidateFileSubmission> fileResponseMap = new HashMap<Identifier, CandidateFileSubmission>();
+        fileResponseMap.put(new Identifier("RESPONSE"), fileSubmission);
+        CandidateItemAttempt attempt = assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
+
         /* Do invalid attempt */
         final Map<Identifier, List<String>> stringResponseMap = new HashMap<Identifier, List<String>>();
         stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("x"));
-        CandidateItemAttempt attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
@@ -99,8 +111,52 @@ public final class JpaRunner {
         attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */
-        System.out.println("Rendering after first attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
+        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 
         ctx.close();
+    }
+
+    private static class NullMultipartFile implements MultipartFile {
+
+        @Override
+        public String getName() {
+            return "Null file";
+        }
+
+        @Override
+        public String getOriginalFilename() {
+            return "file";
+        }
+
+        @Override
+        public String getContentType() {
+            return "text/plain";
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public long getSize() {
+            return 0L;
+        }
+
+        @Override
+        public byte[] getBytes() throws IOException {
+            return new byte[0];
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return new ByteArrayInputStream(getBytes());
+        }
+
+        @Override
+        public void transferTo(final File dest) {
+            /* Do nothing */
+        }
+
     }
 }
