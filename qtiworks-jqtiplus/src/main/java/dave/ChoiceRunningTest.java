@@ -23,7 +23,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class ChoiceRunningTest {
         System.out.println("\nBinding & validating responses");
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
-        final List<Identifier> badResponses = itemController.bindResponses(responseMap);
+        final Set<Identifier> badResponses = itemController.bindResponses(responseMap);
         final Set<Identifier> invalidResponses = itemController.validateResponses();
         System.out.println("Bad responses: " + badResponses);
         System.out.println("Invalid responses:" + invalidResponses);

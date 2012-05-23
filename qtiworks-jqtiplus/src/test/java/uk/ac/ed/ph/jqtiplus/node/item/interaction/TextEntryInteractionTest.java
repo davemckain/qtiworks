@@ -50,8 +50,8 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -127,7 +127,7 @@ public class TextEntryInteractionTest {
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
         responses.put(new Identifier(RESPONSE_NAME), new StringResponseData(stringResponse));
-        final List<Identifier> badResponses = itemSessionController.bindResponses(responses);
+        final Set<Identifier> badResponses = itemSessionController.bindResponses(responses);
         assertEquals(0, badResponses.size());
         assertEquals(expectedValidates, itemSessionController.validateResponses().size() == 0);
         assertEquals(expectedResponse, itemSessionState.getResponseValue(new Identifier(RESPONSE_NAME)));

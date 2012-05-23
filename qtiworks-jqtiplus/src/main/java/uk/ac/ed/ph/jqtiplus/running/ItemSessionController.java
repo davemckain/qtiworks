@@ -270,14 +270,14 @@ public final class ItemSessionController implements ItemProcessingContext {
      * <p>
      * This will modify {@link #itemSessionState}
      *
-     * @return a List of identifiers corresponding to response variables which could not be
+     * @return a {@link Set} of identifiers corresponding to response variables which could not be
      *         successfully bound from the provided data. (E.g. expected a float but got a String)
      * @param responseMap Map of responses to set, keyed on response variable identifier
      *
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public List<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
+    public Set<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.ensureNotNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
@@ -297,7 +297,7 @@ public final class ItemSessionController implements ItemProcessingContext {
          * of all responses, since adaptive items will only present certain interactions at certain
          * times.) */
         final Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
-        final List<Identifier> badResponses = new ArrayList<Identifier>();
+        final Set<Identifier> badResponses = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
