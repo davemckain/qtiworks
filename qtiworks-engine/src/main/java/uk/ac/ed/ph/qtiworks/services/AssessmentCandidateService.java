@@ -446,8 +446,31 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
+    // Access to additional package resources (e.g. images/CSS)
+
+    /** FIXME: Add caching support */
+    public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileHref,
+            final OutputStream outputStream)
+            throws PrivilegeException, IOException {
+        Assert.ensureNotNull(itemDelivery, "itemDelivery");
+        Assert.ensureNotNull(fileHref, "fileHref");
+        Assert.ensureNotNull(outputStream, "outputStream");
+
+        /* Make sure requested file is whitelisted for access */
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        if (!assessmentPackage.getFileHrefs().contains(fileHref)) {
+            final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ASSESSMENT_FILE, assessmentPackage);
+        }
+
+        /* Finally stream the required resource */
+        ServiceUtilities.streamAssessmentFile(assessmentPackage, fileHref, outputStream);
+    }
+
+    //----------------------------------------------------
     // Candidate Source access
 
+    /** FIXME: Add caching support */
     public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStream outputStream)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");

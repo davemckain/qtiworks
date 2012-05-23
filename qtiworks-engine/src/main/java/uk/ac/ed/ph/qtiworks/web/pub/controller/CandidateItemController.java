@@ -64,6 +64,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -227,6 +228,25 @@ public class CandidateItemController {
 
         response.setContentType("application/xml");
         assessmentCandidateService.streamAssessmentSource(itemDelivery, response.getOutputStream());
+    }
+
+    /**
+     * Serves the given (white-listed) file in the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     *
+     * @throws IOException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
+    public void streamPackageFile(final HttpServletResponse response, @PathVariable final long did,
+            @RequestParam("href") final String href)
+            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
+
+        response.setContentType("application/xml");
+        assessmentCandidateService.streamAssessmentResource(itemDelivery, href, response.getOutputStream());
     }
 
     /**

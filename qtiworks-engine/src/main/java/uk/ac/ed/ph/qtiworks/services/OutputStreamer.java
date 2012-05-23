@@ -31,35 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import java.util.Date;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Callback interface used to handle data emanating from {@link AssessmentCandidateService}
+ * and friends.
  *
  * @author David McKain
  */
-public enum Privilege {
+public interface OutputStreamer {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    void setContentType(String contentType);
 
-    CREATE_ASSESSMENT,
-    CHANGE_ASSESSMENT,
-    VIEW_ASSESSMENT,
-    VIEW_ASSESSMENT_SOURCE,
+    void setContentLength(long contentLength);
 
-    ACCESS_CANDIDATE_SESSION,
-    CANDIDATE_ACCESS_ITEM_DELIVERY,
-    CANDIDATE_ACCESS_ASSESSMENT_FILE,
-    CANDIDATE_VIEW_ASSESSMENT_SOURCE,
-    CANDIDATE_VIEW_ASSESSMENT_RESULT,
+    void setLastModifiedTime(Date date);
 
-    ;
+    void setCacheable(boolean cacheable);
+
 
 }

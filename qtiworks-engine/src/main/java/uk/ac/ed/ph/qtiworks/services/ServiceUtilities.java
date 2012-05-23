@@ -110,13 +110,30 @@ public final class ServiceUtilities {
      * @return
      */
     public static URI createAssessmentObjectUri(final AssessmentPackage assessmentPackage) {
+        return createAssessmentFileUri(assessmentPackage, assessmentPackage.getAssessmentHref());
+    }
+
+    /**
+     * Generates a URI for the given file resource within the given {@link AssessmentPackage}.
+     * <p>
+     * For an {@link AssessmentPackage} uploaded by a user, this will be a "package" URI that can
+     * access the package's sandbox directory.
+     * <p>
+     * For the bundled samples, this will be a ClassPath URI
+     *
+     * (NOTE: This does not check the existence of the resulting resource)
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    public static URI createAssessmentFileUri(final AssessmentPackage assessmentPackage, final String fileHref) {
         URI result;
         if (assessmentPackage.getImportType()==AssessmentPackageImportType.BUNDLED_SAMPLE) {
-            result = QtiSampleAssessment.toClassPathUri(assessmentPackage.getAssessmentHref());
+            result = QtiSampleAssessment.toClassPathUri(fileHref);
         }
         else {
             final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-            result = packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref().toString());
+            result = packageUriScheme.pathToUri(fileHref);
         }
         return result;
     }
@@ -137,6 +154,25 @@ public final class ServiceUtilities {
                     + assessmentObjectUri + " using locator " + resourceLocator);
         }
         IoUtilities.transfer(assessmentObjectStream, outputStream, false);
+    }
+
+    /**
+     * Streams a file contained with the given {@link AssessmentPackage} to the required
+     * {@link OutputStream}
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    public static void streamAssessmentFile(final AssessmentPackage assessmentPackage, final String fileHref, final OutputStream outputStream)
+            throws IOException {
+        final ResourceLocator resourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
+        final URI assessmentFileUri = ServiceUtilities.createAssessmentFileUri(assessmentPackage, fileHref);
+        final InputStream assessmentFileStream = resourceLocator.findResource(assessmentFileUri);
+        if (assessmentFileStream==null) {
+            throw new QtiWorksRuntimeException("Obtained null stream for AssessmentPackage file with URI "
+                    + assessmentFileUri + " using locator " + resourceLocator);
+        }
+        IoUtilities.transfer(assessmentFileStream, outputStream, false);
     }
 
     //-------------------------------------------------
