@@ -141,7 +141,7 @@ public class CandidateItemController {
     }
 
     /**
-     * @throws QtiParseException
+     * @throws BadResponseWebPayloadException
      */
     private Map<Identifier, CandidateFileSubmission> extractFileResponseData(final CandidateItemSession candidateSession,
             final MultipartHttpServletRequest multipartRequest) {
@@ -150,19 +150,28 @@ public class CandidateItemController {
         final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
         for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_uploadpresented_")) {
-                final String responseIdentifier = name.substring("qtiworks_uploadpresented_".length());
-                final MultipartFile multipartFile = multipartRequest.getFile("qtiworks_uploadresponse_" + responseIdentifier);
-                if (multipartFile!=null) {
-                    final CandidateFileSubmission candidateFileSubmission = assessmentCandidateService.importFileResponse(candidateSession, multipartFile);
-                    fileResponseMap.put(new Identifier(responseIdentifier), candidateFileSubmission);
+                final String responseIdentifierString = name.substring("qtiworks_uploadpresented_".length());
+                final Identifier responseIdentifier;
+                try {
+                    responseIdentifier = new Identifier(responseIdentifierString);
                 }
+                catch (final QtiParseException e) {
+                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
+                }
+                final String multipartName = "qtiworks_uploadresponse_" + responseIdentifierString;
+                final MultipartFile multipartFile = multipartRequest.getFile(multipartName);
+                if (multipartFile==null) {
+                    throw new BadResponseWebPayloadException("Expected to find multipart file with name " + multipartName);
+                }
+                final CandidateFileSubmission candidateFileSubmission = assessmentCandidateService.importFileResponse(candidateSession, multipartFile);
+                fileResponseMap.put(responseIdentifier, candidateFileSubmission);
             }
         }
         return fileResponseMap;
     }
 
     /**
-     * @throws QtiParseException
+     * @throws BadResponseWebPayloadException
      */
     private Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest request) {
         final Map<Identifier, StringResponseData> responseMap = new HashMap<Identifier, StringResponseData>();
@@ -170,10 +179,17 @@ public class CandidateItemController {
         final Set<String> parameterNames = request.getParameterMap().keySet();
         for (final String name : parameterNames) {
             if (name.startsWith("qtiworks_presented_")) {
-                final String responseIdentifier = name.substring("qtiworks_presented_".length());
-                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifier);
+                final String responseIdentifierString = name.substring("qtiworks_presented_".length());
+                final Identifier responseIdentifier;
+                try {
+                    responseIdentifier = new Identifier(responseIdentifierString);
+                }
+                catch (final QtiParseException e) {
+                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
+                }
+                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifierString);
                 final StringResponseData stringResponseData = new StringResponseData(responseValues);
-                responseMap.put(new Identifier(responseIdentifier), stringResponseData);
+                responseMap.put(responseIdentifier, stringResponseData);
             }
         }
         return responseMap;
