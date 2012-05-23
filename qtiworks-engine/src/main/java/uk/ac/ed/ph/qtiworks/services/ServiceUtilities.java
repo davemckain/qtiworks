@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
@@ -49,6 +51,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NetworkHttpResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 
@@ -114,11 +119,27 @@ public final class ServiceUtilities {
             result = packageUriScheme.pathToUri(assessmentPackage.getAssessmentHref().toString());
         }
         return result;
+    }
 
+    /**
+     * Streams the source of the given {@link AssessmentPackage} to the required {@link OutputStream}
+     *
+     * @param assessmentPackage
+     * @return
+     */
+    public static void streamAssessmentPackageSource(final AssessmentPackage assessmentPackage, final OutputStream outputStream)
+            throws IOException {
+        final ResourceLocator resourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
+        final URI assessmentObjectUri = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
+        final InputStream assessmentObjectStream = resourceLocator.findResource(assessmentObjectUri);
+        if (assessmentObjectStream==null) {
+            throw new QtiWorksRuntimeException("Obtained null stream for AssessmentPackage source with URI "
+                    + assessmentObjectUri + " using locator " + resourceLocator);
+        }
+        IoUtilities.transfer(assessmentObjectStream, outputStream, false);
     }
 
     //-------------------------------------------------
-
 
     public static final String ellipses = "...";
 

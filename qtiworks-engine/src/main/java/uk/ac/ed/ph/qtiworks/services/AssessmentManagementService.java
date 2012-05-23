@@ -51,7 +51,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -141,19 +140,11 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    public void getPackageSource(final AssessmentPackage assessmentPackage, final OutputStream outputStream)
+    public void streamPackageSource(final AssessmentPackage assessmentPackage, final OutputStream outputStream)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
         ensureCallerMayViewSource(assessmentPackage.getAssessment());
-
-        final ResourceLocator resourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
-        final URI assessmentObjectUri = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
-        final InputStream assessmentObjectStream = resourceLocator.findResource(assessmentObjectUri);
-        if (assessmentObjectStream==null) {
-            throw new QtiWorksRuntimeException("Obtained null stream for AssessmentPackage source with URI "
-                    + assessmentObjectUri + " using locator " + resourceLocator);
-        }
-        IoUtilities.transfer(assessmentObjectStream, outputStream, false);
+        ServiceUtilities.streamAssessmentPackageSource(assessmentPackage, outputStream);
     }
 
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
@@ -380,7 +371,6 @@ public class AssessmentManagementService {
         return result;
     }
 
-
     //-------------------------------------------------
 
     /**
@@ -453,21 +443,33 @@ public class AssessmentManagementService {
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT);
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
         }
         return caller;
     }
 
+    /**
+     * TODO: Currently allowing people to view the source of public Assessments, or
+     * their own Assessments.
+     *
+     * @param assessment
+     * @return
+     * @throws PrivilegeException
+     */
     private User ensureCallerMayViewSource(final Assessment assessment)
             throws PrivilegeException {
-        return ensureCallerMayView(assessment);
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT_SOURCE, assessment);
+        }
+        return caller;
     }
 
     private User ensureCallerMayChange(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT);
+            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT, assessment);
         }
         return caller;
     }

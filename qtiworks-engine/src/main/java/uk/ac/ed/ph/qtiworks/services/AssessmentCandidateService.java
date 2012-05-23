@@ -65,6 +65,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -78,6 +79,8 @@ import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -439,6 +442,61 @@ public class AssessmentCandidateService {
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
         return candidateItemAttempt;
+    }
+
+    //----------------------------------------------------
+    // Candidate Source access
+
+    public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStream outputStream)
+            throws PrivilegeException, IOException {
+        Assert.ensureNotNull(itemDelivery, "itemDelivery");
+        Assert.ensureNotNull(outputStream, "outputStream");
+        ensureCallerMayViewSource(itemDelivery);
+
+        ServiceUtilities.streamAssessmentPackageSource(itemDelivery.getAssessmentPackage(), outputStream);
+    }
+
+    private User ensureCallerMayViewSource(final ItemDelivery itemDelivery)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!itemDelivery.isAllowSource()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE, itemDelivery);
+        }
+        return caller;
+    }
+
+    //----------------------------------------------------
+    // Candidate Result access
+
+    public void streamItemResult(final CandidateItemSession candidateSession, final OutputStream outputStream)
+            throws PrivilegeException, CandidateSessionStateException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+        Assert.ensureNotNull(outputStream, "outputStream");
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureCallerMayViewResult(itemDelivery);
+
+        /* Get current state */
+        final CandidateItemEvent latestEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
+        if (latestEvent==null) {
+            throw new CandidateSessionStateException(candidateSession, CSFailureReason.NO_EVENTS_RECORDED);
+        }
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(latestEvent);
+
+        /* Generate result Object from state */
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemResult itemResult = itemSessionController.computeItemResult();
+        assessmentRenderer.serializeJqtiObject(itemResult, outputStream);
+    }
+
+    private User ensureCallerMayViewResult(final ItemDelivery itemDelivery)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!itemDelivery.isAllowSource()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE, itemDelivery);
+        }
+        return caller;
     }
 
     //----------------------------------------------------

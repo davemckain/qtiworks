@@ -35,23 +35,28 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +81,9 @@ public class CandidateItemController {
     @Resource
     private AssessmentCandidateService assessmentCandidateService;
 
+    //----------------------------------------------------
+    // Session initialisation
+
     /**
      * Starts a new {@link CandidateItemSession} for the given {@link ItemDelivery}.
      */
@@ -94,6 +102,9 @@ public class CandidateItemController {
         return "redirect:/web/public/session/" + candidateSession.getId();
     }
 
+    //----------------------------------------------------
+    // Rendering
+
     /**
      * Renders the current state of the given session
      */
@@ -105,6 +116,9 @@ public class CandidateItemController {
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
         return assessmentCandidateService.renderCurrentState(candidateSession);
     }
+
+    //----------------------------------------------------
+    // Attempt handling
 
     /**
      * Handles submission of candidate responses
@@ -191,5 +205,47 @@ public class CandidateItemController {
             }
         }
         return responseMap;
+    }
+
+    //----------------------------------------------------
+    // Other actions
+
+    /**
+     * Serves the source of the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     *
+     * @throws IOException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
+    public void streamPackageSource(final HttpServletResponse response, @PathVariable final long did)
+            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+        logger.debug("Request source for delivery #{}", did);
+        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
+
+        response.setContentType("application/xml");
+        assessmentCandidateService.streamAssessmentSource(itemDelivery, response.getOutputStream());
+    }
+
+    /**
+     * Streams an {@link ItemResult} representing the current state of the given
+     * {@link CandidateItemSession}
+     *
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws CandidateSessionStateException
+     * @throws IOException
+     */
+    @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException,
+            CandidateSessionStateException, IOException {
+        logger.debug("Streaming result for session #{}", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+
+        response.setContentType("application/xml");
+        assessmentCandidateService.streamItemResult(candidateSession, response.getOutputStream());
     }
 }

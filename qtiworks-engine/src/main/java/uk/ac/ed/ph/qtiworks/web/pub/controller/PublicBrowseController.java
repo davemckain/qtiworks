@@ -90,7 +90,7 @@ public class PublicBrowseController {
     /**
      * Serves the source of the given {@link AssessmentPackage}
      *
-     * @see AssessmentManagementService#getPackageSource(AssessmentPackage, java.io.OutputStream)
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      *
      * @throws IOException
      * @throws PrivilegeException
@@ -103,7 +103,7 @@ public class PublicBrowseController {
         final AssessmentPackage assessmentPackage = assessmentManagementService.getAssessmentPackage(apid);
 
         response.setContentType("application/xml");
-        assessmentManagementService.getPackageSource(assessmentPackage, response.getOutputStream());
+        assessmentManagementService.streamPackageSource(assessmentPackage, response.getOutputStream());
     }
 
 }
