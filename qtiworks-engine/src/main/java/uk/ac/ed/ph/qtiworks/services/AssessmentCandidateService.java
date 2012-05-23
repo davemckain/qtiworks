@@ -81,7 +81,6 @@ import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -335,7 +334,7 @@ public class AssessmentCandidateService {
     }
 
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateSession,
-            final Map<Identifier, List<String>> stringResponseMap,
+            final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, CandidateFileSubmission> fileResponseMap)
             throws RuntimeValidationException, CandidateSessionStateException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
@@ -356,10 +355,9 @@ public class AssessmentCandidateService {
          */
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         if (stringResponseMap!=null) {
-            for (final Entry<Identifier, List<String>> stringResponseEntry : stringResponseMap.entrySet()) {
+            for (final Entry<Identifier, StringResponseData> stringResponseEntry : stringResponseMap.entrySet()) {
                 final Identifier identifier = stringResponseEntry.getKey();
-                final List<String> stringResponses = stringResponseEntry.getValue();
-                final StringResponseData stringResponseData = new StringResponseData(stringResponses);
+                final StringResponseData stringResponseData = stringResponseEntry.getValue();
                 responseMap.put(identifier, stringResponseData);
             }
         }

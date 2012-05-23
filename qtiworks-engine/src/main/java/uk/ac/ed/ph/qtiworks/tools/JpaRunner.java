@@ -50,11 +50,10 @@ import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -97,13 +96,13 @@ public final class JpaRunner {
         CandidateItemAttempt attempt = assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
 
         /* Do invalid attempt */
-        final Map<Identifier, List<String>> stringResponseMap = new HashMap<Identifier, List<String>>();
-        stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("x"));
+        final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
+        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("x"));
         attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
-        stringResponseMap.put(new Identifier("RESPONSE"), Arrays.asList("ChoiceA"));
+        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
         attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */
