@@ -94,7 +94,6 @@ public class CandidateItemController {
         logger.debug("Creating new CandidateItemSession for delivery {}", did);
         final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(itemDelivery);
-        assessmentCandidateService.initialiseSession(candidateSession);
 
         return redirectToSession(candidateSession);
     }

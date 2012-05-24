@@ -109,17 +109,20 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="max_attempts")
     private Integer maxAttempts;
 
+    /** Allow candidate to view assessment source(s) */
     @Basic(optional=false)
-    @Column(name="allow_reset")
-    private boolean allowReset;
+    @Column(name="allow_source")
+    private boolean allowSource;
 
+    /** Allow candidate to access result XML */
     @Basic(optional=false)
     @Column(name="allow_result")
     private boolean allowResult;
 
+    /** Allow candidate to reset attempt while in {@link CandidateSessionState#INTERACTING} state */
     @Basic(optional=false)
-    @Column(name="allow_source")
-    private boolean allowSource;
+    @Column(name="allow_reset")
+    private boolean allowReset;
 
     //------------------------------------------------------------
 

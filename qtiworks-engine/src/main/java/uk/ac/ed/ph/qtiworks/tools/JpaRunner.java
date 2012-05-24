@@ -48,7 +48,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -84,7 +83,6 @@ public final class JpaRunner {
         final ItemDelivery itemDelivery = itemDeliveryDao.findById(4L); /* (choice.xml) */
 
         final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
-        final ItemSessionState itemSessionState = assessmentCandidateService.initialiseSession(candidateItemSession);
 
         /* Render initial state */
         System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));

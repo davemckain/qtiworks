@@ -31,25 +31,19 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services;
-
-import java.util.Date;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Callback interface used to handle data emanating from {@link AssessmentCandidateService}
- * and friends.
+ * Encapsulates the various states for a {@link CandidateItemSession}
  *
  * @author David McKain
  */
-public interface OutputStreamer {
+public enum CandidateSessionState {
 
-    void setContentType(String contentType);
-
-    void setContentLength(int contentLength);
-
-    void setLastModifiedTime(Date date);
-
-    void setCacheable(boolean cacheable);
-
+    NOT_READY,
+    INTERACTING,
+    REVIEWING,
+    CLOSED
+    ;
 
 }

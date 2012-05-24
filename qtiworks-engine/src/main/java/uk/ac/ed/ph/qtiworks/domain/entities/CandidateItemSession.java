@@ -33,8 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -69,6 +72,12 @@ public class CandidateItemSession implements BaseEntity {
     @JoinColumn(name="uid")
     private User candidate;
 
+    /** Current state */
+    @Basic(optional=false)
+    @Column(name="state", updatable=false, length=11)
+    @Enumerated(EnumType.STRING)
+    private CandidateSessionState state;
+
     //------------------------------------------------------------
 
     @Override
@@ -99,12 +108,22 @@ public class CandidateItemSession implements BaseEntity {
         this.candidate = candidate;
     }
 
+
+    public CandidateSessionState getState() {
+        return state;
+    }
+
+    public void setState(final CandidateSessionState state) {
+        this.state = state;
+    }
+
     //------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
+                + ",state=" + state
                 + ")";
     }
 }

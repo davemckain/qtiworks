@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
@@ -146,7 +147,7 @@ public class AssessmentCandidateService {
     private CandidateItemAttemptDao candidateItemAttemptDao;
 
     //----------------------------------------------------
-    // Session creation and initialisation
+    // Candidate delivery access
 
     public ItemDelivery lookupItemDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -159,7 +160,8 @@ public class AssessmentCandidateService {
      * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
      * to be relaxed in order to allow "real" deliveries to be done.
      */
-    private User ensureCandidateMayAccess(final ItemDelivery itemDelivery) throws PrivilegeException {
+    private User ensureCandidateMayAccess(final ItemDelivery itemDelivery)
+            throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         final Assessment assessment = itemDelivery.getAssessmentPackage().getAssessment();
         if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
@@ -168,29 +170,100 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-    public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery) {
+    //----------------------------------------------------
+    // Session creation and initialisation
+
+    /**
+     * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
+     * @param itemDelivery
+     * @return
+     * @throws RuntimeValidationException
+     */
+    public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery)
+            throws RuntimeValidationException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
 
-        final CandidateItemSession result = new CandidateItemSession();
-        result.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
-        result.setItemDelivery(itemDelivery);
-        candidateItemSessionDao.persist(result);
+        /* Create fresh JQTI+ state Object */
+        final ItemSessionState itemSessionState = new ItemSessionState();
 
-        auditor.recordEvent("Created CandidateItemSession #" + result.getId() + " on ItemDelivery #" + itemDelivery.getId());
-        return result;
+        /* Initialise state */
+        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        itemSessionController.initialize();
+
+        /* Check whether an attempt is allowed. This is a bit pathological here,
+         * but it makes sense to be consistent.
+         */
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+
+        /* Create new session and put into appropriate state */
+        final CandidateItemSession candidateSession = new CandidateItemSession();
+        candidateSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
+        candidateSession.setItemDelivery(itemDelivery);
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.persist(candidateSession);
+
+        /* Record initialisation event */
+        recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
+
+        auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
+                + " on ItemDelivery #" + itemDelivery.getId());
+        return candidateSession;
     }
 
-    public ItemSessionState initialiseSession(final CandidateItemSession candidateSession) throws RuntimeValidationException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    private ItemSessionController createItemSessionController(final ItemDelivery itemDelivery, final ItemSessionState itemSessionState) {
+        /* Get the resolved JQTI+ Object for the underlying package */
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
-        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent!=null) {
-            /* FIXME: Need to add logic to decide whether we are allowed to re-initialize
-             * the session or not
-             */
+        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+    }
+
+    //----------------------------------------------------
+    // Session access after creation
+
+    public CandidateItemSession lookupCandidateSession(final long sessionId)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final CandidateItemSession session = candidateItemSessionDao.requireFindById(sessionId);
+        ensureCallerMayAccess(session);
+        return session;
+    }
+
+    /**
+     * (Currently we're restricting access to sessions to their owners.)
+     */
+    private User ensureCallerMayAccess(final CandidateItemSession candidateSession) throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.equals(candidateSession.getCandidate())) {
+            /* TOOD: Only allow access to session owner */
+            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
+        }
+        if (!candidateSession.getItemDelivery().isOpen()) {
+            /* No access when delivery is closed */
+            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
+        }
+        return caller;
+    }
+
+
+    //----------------------------------------------------
+    // Session reset
+
+    public ItemSessionState resetCandidateSession(final CandidateItemSession candidateSession)
+            throws RuntimeValidationException, PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+
+        /* Make sure we can reset the session */
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_AFTER_INTERACTING, candidateSession);
+        }
+        if (!candidateSession.getItemDelivery().isAllowReset()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
         }
 
         /* Get the resolved JQTI+ Object for the underlying package */
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
         final AssessmentPackage assessmentPackage = candidateSession.getItemDelivery().getAssessmentPackage();
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
@@ -208,26 +281,9 @@ public class AssessmentCandidateService {
         return itemSessionState;
     }
 
-    //----------------------------------------------------
-    // Session access
 
-    public CandidateItemSession lookupCandidateSession(final long sessionId)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final CandidateItemSession session = candidateItemSessionDao.requireFindById(sessionId);
-        ensureCallerMayAccess(session);
-        return session;
-    }
 
-    /**
-     * (Currently we're restricting access to sessions to their owners.)
-     */
-    private User ensureCallerMayAccess(final CandidateItemSession candidateSession) throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.equals(candidateSession.getCandidate())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
-        }
-        return caller;
-    }
+
 
     //----------------------------------------------------
     // Rendering
@@ -243,10 +299,7 @@ public class AssessmentCandidateService {
             throws CandidateSessionStateException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
-        final CandidateItemEvent latestEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
-        if (latestEvent==null) {
-            throw new CandidateSessionStateException(candidateSession, CSFailureReason.NO_EVENTS_RECORDED);
-        }
+        final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
         return renderEvent(latestEvent);
     }
 
@@ -344,9 +397,11 @@ public class AssessmentCandidateService {
 
         /* Check current state */
         final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        if (itemSessionState==null) {
-            throw new CandidateSessionStateException(candidateSession, CSFailureReason.ATTEMPT_NOT_ALLOWED);
-        }
+
+// FIXME: Following can't be null! Check what else uses this failure reason
+//        if (itemSessionState==null) {
+//            throw new CandidateSessionStateException(candidateSession, CSFailureReason.ATTEMPT_NOT_ALLOWED);
+//        }
         final AssessmentPackage assessmentPackage = candidateSession.getItemDelivery().getAssessmentPackage();
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
@@ -522,8 +577,8 @@ public class AssessmentCandidateService {
     private User ensureCallerMayViewResult(final ItemDelivery itemDelivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDelivery.isAllowSource()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE, itemDelivery);
+        if (!itemDelivery.isAllowResult()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_RESULT, itemDelivery);
         }
         return caller;
     }
@@ -531,17 +586,28 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Utilities
 
-    private ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession) {
+    private CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
-            return null;
+            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
+        return mostRecentEvent;
+    }
+
+    private ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession) {
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
         return unmarshalItemSessionState(mostRecentEvent);
+    }
+
+    private ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {
+        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
+        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
     }
 
     private ItemSessionState unmarshalItemSessionState(final CandidateItemEvent event) {
         final String itemSessionStateXml = event.getItemSessionStateXml();
-
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         Document doc;
         try {
