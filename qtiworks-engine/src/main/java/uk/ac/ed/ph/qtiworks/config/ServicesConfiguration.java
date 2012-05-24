@@ -106,11 +106,6 @@ public class ServicesConfiguration {
     }
 
     @Bean
-    public AssessmentRendererV1 rendererV1() {
-        return new AssessmentRendererV1(jqtiExtensionManager(), contextPath(), stylesheetCache());
-    }
-
-    @Bean
     public AssessmentRenderer assessmentRenderer() {
         return new AssessmentRenderer(jqtiExtensionManager(), stylesheetCache());
     }

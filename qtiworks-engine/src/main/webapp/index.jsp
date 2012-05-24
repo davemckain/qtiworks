@@ -24,7 +24,6 @@ All Rights Reserved
   <h3>Public/anonymous function sketches</h3>
   <ul>
     <li><a href="dispatcher/validator">Validation Demo</a></li>
-    <li><a href="dispatcher/listSamples">Run sample items</a></li>
   </ul>
 
 </page:page>

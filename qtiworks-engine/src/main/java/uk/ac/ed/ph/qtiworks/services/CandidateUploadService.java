@@ -42,21 +42,14 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.File;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.google.common.io.Files;
 
 /**
  * Service for handling uploaded candidate data (i.e. responses to
@@ -67,8 +60,6 @@ import com.google.common.io.Files;
 @ToRefactor
 @Service
 public final class CandidateUploadService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CandidateUploadService.class);
 
     @Resource
     private Auditor auditor;
@@ -81,15 +72,6 @@ public final class CandidateUploadService {
 
     @Resource
     private CandidateFileSubmissionDao candidateFileSubmissionDao;
-
-    @ToRemove
-    private File sandboxRootDirectory;
-
-    @PostConstruct
-    public void init() {
-        sandboxRootDirectory = Files.createTempDir();
-        logger.info("Created candidate upload directory at {}", sandboxRootDirectory);
-    }
 
     public CandidateFileSubmission importFileSubmission(final CandidateItemSession candidateItemSession,
             final MultipartFile multipartFile) {
@@ -116,19 +98,5 @@ public final class CandidateUploadService {
 
         auditor.recordEvent("Imported candidate file submission #" + result.getId());
         return result;
-    }
-
-    @ToRefactor
-    public FileResponseData importDataV1(final MultipartFile multipartFile) {
-        logger.debug("Importing candidate file upload {}", multipartFile);
-        final String uploadName = "fileupload-" + Thread.currentThread().getName() + "-" + System.currentTimeMillis();
-        final File uploadFile = new File(sandboxRootDirectory, uploadName);
-        try {
-            multipartFile.transferTo(uploadFile);
-        }
-        catch (final Exception e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception uploading file submission", e);
-        }
-        return new FileResponseData(uploadFile, multipartFile.getContentType(), multipartFile.getOriginalFilename());
     }
 }
