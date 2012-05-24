@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -111,7 +110,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}", method=RequestMethod.GET)
     @ResponseBody
     public String renderItem(@PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException, CandidateSessionStateException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Rendering current state for session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
         return assessmentCandidateService.renderCurrentState(candidateSession);
@@ -129,8 +128,7 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException,
-            RuntimeValidationException, CandidateSessionStateException {
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Handling attempt against session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
 
@@ -242,8 +240,7 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException,
-            CandidateSessionStateException, IOException {
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Streaming result for session #{}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
 
@@ -256,13 +253,13 @@ public class CandidateItemController {
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      *
-     * @throws IOException
      * @throws PrivilegeException
      * @throws DomainEntityNotFoundException
+     * @throws IOException
      */
     @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
     public void streamPackageSource(final HttpServletResponse response, @PathVariable final long did)
-            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Request source for delivery #{}", did);
         final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
 

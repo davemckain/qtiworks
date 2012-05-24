@@ -59,8 +59,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException;
-import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionStateException.CSFailureReason;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -294,10 +292,8 @@ public class AssessmentCandidateService {
      *
      * @param candidateSession
      * @return
-     * @throws CandidateSessionStateException
      */
-    public String renderCurrentState(final CandidateItemSession candidateSession)
-            throws CandidateSessionStateException {
+    public String renderCurrentState(final CandidateItemSession candidateSession) {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
         final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
@@ -550,23 +546,17 @@ public class AssessmentCandidateService {
     // Candidate Result access
 
     public void streamItemResult(final CandidateItemSession candidateSession, final OutputStream outputStream)
-            throws PrivilegeException, CandidateSessionStateException {
+            throws PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(outputStream, "outputStream");
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         ensureCallerMayViewResult(itemDelivery);
 
         /* Get current state */
-        final CandidateItemEvent latestEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
-        if (latestEvent==null) {
-            throw new CandidateSessionStateException(candidateSession, CSFailureReason.NO_EVENTS_RECORDED);
-        }
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(latestEvent);
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
 
         /* Generate result Object from state */
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
         final ItemResult itemResult = itemSessionController.computeItemResult();
 
         /* Send result */
