@@ -211,6 +211,47 @@ public class CandidateItemController {
     // Other actions
 
     /**
+     * Resets the given {@link CandidateItemSession}
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/reset", method=RequestMethod.GET)
+    public String resetSession(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting reset of session #{}", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+        assessmentCandidateService.resetCandidateSession(candidateSession);
+
+        /* Redirect to rendering of current session state */
+        return redirectToSession(candidateSession);
+    }
+
+    /**
+     * Streams an {@link ItemResult} representing the current state of the given
+     * {@link CandidateItemSession}
+     *
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws CandidateSessionStateException
+     * @throws IOException
+     */
+    @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException,
+            CandidateSessionStateException, IOException {
+        logger.debug("Streaming result for session #{}", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+
+        response.setContentType("application/xml");
+        assessmentCandidateService.streamItemResult(candidateSession, response.getOutputStream());
+    }
+
+    /**
      * Serves the source of the given {@link AssessmentPackage}
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
@@ -238,7 +279,7 @@ public class CandidateItemController {
      * @throws PrivilegeException
      * @throws DomainEntityNotFoundException
      */
-    @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
+    @RequestMapping(value="/delivery/{did}/file", method=RequestMethod.GET)
     public void streamPackageFile(final HttpServletResponse response, @PathVariable final long did,
             @RequestParam("href") final String href)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
@@ -248,23 +289,4 @@ public class CandidateItemController {
         assessmentCandidateService.streamAssessmentResource(itemDelivery, href, response.getOutputStream());
     }
 
-    /**
-     * Streams an {@link ItemResult} representing the current state of the given
-     * {@link CandidateItemSession}
-     *
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateSessionStateException
-     * @throws IOException
-     */
-    @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException,
-            CandidateSessionStateException, IOException {
-        logger.debug("Streaming result for session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
-
-        response.setContentType("application/xml");
-        assessmentCandidateService.streamItemResult(candidateSession, response.getOutputStream());
-    }
 }

@@ -103,6 +103,9 @@ public final class JpaRunner {
         stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
         attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
+        /* Then reset state */
+        assessmentCandidateService.resetCandidateSession(candidateItemSession);
+
         /* Render new state */
         System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 

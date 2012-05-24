@@ -163,6 +163,9 @@ public class AssessmentCandidateService {
     private User ensureCandidateMayAccess(final ItemDelivery itemDelivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!itemDelivery.isOpen()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+        }
         final Assessment assessment = itemDelivery.getAssessmentPackage().getAssessment();
         if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
@@ -257,33 +260,31 @@ public class AssessmentCandidateService {
         if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_AFTER_INTERACTING, candidateSession);
         }
-        if (!candidateSession.getItemDelivery().isAllowReset()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (!itemDelivery.isAllowReset()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, itemDelivery);
         }
 
-        /* Get the resolved JQTI+ Object for the underlying package */
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
-        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
-        final AssessmentPackage assessmentPackage = candidateSession.getItemDelivery().getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-
-        /* Create new state */
+        /* Create fresh JQTI+ state */
         final ItemSessionState itemSessionState = new ItemSessionState();
 
+        /* Get the resolved JQTI+ Object for the underlying package */
+        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+
         /* Initialise state */
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-        itemController.initialize();
+        itemSessionController.initialize();
+
+        /* Update state */
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
 
         /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
-        auditor.recordEvent("Initialized candidate session #" + candidateSession.getId());
+        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
 
         return itemSessionState;
     }
-
-
-
-
 
     //----------------------------------------------------
     // Rendering
@@ -309,6 +310,7 @@ public class AssessmentCandidateService {
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
+            case RESET:
                 return renderAfterInit(candidateEvent);
 
             case ATTEMPT_VALID:
@@ -322,18 +324,12 @@ public class AssessmentCandidateService {
     }
 
     private String renderAfterInit(final CandidateItemEvent candidateEvent) {
-        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
         return assessmentRenderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
     }
 
     private String renderAfterAttempt(final CandidateItemEvent candidateEvent) {
-        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
         if (attempt==null) {
             throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
@@ -382,7 +378,8 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Attempt
 
-    public CandidateFileSubmission importFileResponse(final CandidateItemSession candidateSession, final MultipartFile multipartFile) {
+    public CandidateFileSubmission importFileResponse(final CandidateItemSession candidateSession,
+            final MultipartFile multipartFile) {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(multipartFile, "multipartFile");
 
@@ -392,20 +389,15 @@ public class AssessmentCandidateService {
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, CandidateFileSubmission> fileResponseMap)
-            throws RuntimeValidationException, CandidateSessionStateException {
+            throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
 
-        /* Check current state */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-
-// FIXME: Following can't be null! Check what else uses this failure reason
-//        if (itemSessionState==null) {
-//            throw new CandidateSessionStateException(candidateSession, CSFailureReason.ATTEMPT_NOT_ALLOWED);
-//        }
-        final AssessmentPackage assessmentPackage = candidateSession.getItemDelivery().getAssessmentPackage();
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-
-        /* FIXME: Need more rigorous state checking, e.g. no attempt after complete etc. */
+        /* Make sure an attempt is allowed */
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_MAKE_ATTEMPT, candidateSession);
+        }
 
         /* Build response map in required format for JQTI+.
          * NB: The following doesn't test for duplicate keys in the two maps. I'm not sure
@@ -458,8 +450,11 @@ public class AssessmentCandidateService {
         }
         candidateItemAttempt.setResponses(candidateItemResponses);
 
+        /* Get current JQTI state and create JQTI controller */
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
+
         /* Attempt to bind responses */
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
         final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
 
         /* Record any responses that failed to bind */
@@ -490,10 +485,16 @@ public class AssessmentCandidateService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = recordEvent(candidateSession, eventType, itemSessionState);
+        final CandidateItemEvent candidateItemEvent = recordEvent(candidateSession, eventType, itemSessionController.getItemSessionState());
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
+
+        /* Update session state */
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
+
         auditor.recordEvent("Recorded candidate attempt #" + candidateItemAttempt.getId()
                 + " on session #" + candidateSession.getId()
                 + " on delivery #" + candidateSession.getItemDelivery().getId());
@@ -592,11 +593,6 @@ public class AssessmentCandidateService {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentEvent;
-    }
-
-    private ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession) {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
-        return unmarshalItemSessionState(mostRecentEvent);
     }
 
     private ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {

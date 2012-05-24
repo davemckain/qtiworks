@@ -52,7 +52,6 @@ public final class CandidateSessionStateException extends Exception {
     public static enum CSFailureReason {
 
         NO_EVENTS_RECORDED,
-        ATTEMPT_NOT_ALLOWED,
 
         ;
     }

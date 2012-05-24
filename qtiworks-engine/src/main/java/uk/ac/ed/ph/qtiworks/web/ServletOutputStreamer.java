@@ -31,38 +31,52 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Implementation of {@link OutputStreamer} suitable for sending data
+ * via an {@link HttpServletResponse}
  *
  * @author David McKain
  */
-public enum Privilege {
+public class ServletOutputStreamer implements OutputStreamer {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final Logger logger = LoggerFactory.getLogger(ServletOutputStreamer.class);
 
-    CREATE_ASSESSMENT,
-    CHANGE_ASSESSMENT,
-    VIEW_ASSESSMENT,
-    VIEW_ASSESSMENT_SOURCE,
+    private final HttpServletResponse response;
 
-    ACCESS_CANDIDATE_SESSION,
-    CANDIDATE_RESET_SESSION_WHEN_INTERACTING,
-    CANDIDATE_RESET_SESSION_AFTER_INTERACTING,
-    CANDIDATE_MAKE_ATTEMPT,
-    CANDIDATE_ACCESS_ITEM_DELIVERY,
-    CANDIDATE_ACCESS_ASSESSMENT_FILE,
-    CANDIDATE_VIEW_ASSESSMENT_SOURCE,
-    CANDIDATE_VIEW_ASSESSMENT_RESULT,
+    public ServletOutputStreamer(final HttpServletResponse response) {
+        this.response = response;
+    }
 
-    ;
+    @Override
+    public void setContentType(final String contentType) {
+        response.setContentType(contentType);
+    }
 
+    @Override
+    public void setContentLength(final int contentLength) {
+        response.setContentLength(contentLength);
+    }
+
+    @Override
+    public void setLastModifiedTime(final Date date) {
+        final SimpleDateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        response.setHeader("Last-Modified", httpDateFormat.format(date));
+    }
+
+    @Override
+    public void setCacheable(final boolean cacheable) {
+        logger.warn("Caching has not been implemented here yet");
+    }
 }
