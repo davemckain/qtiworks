@@ -58,7 +58,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -314,39 +315,66 @@ public class AssessmentCandidateService {
      * @param candidateSession
      * @return
      */
-    public String renderCurrentState(final CandidateItemSession candidateSession) {
+    public String renderCurrentState(final CandidateItemSession candidateSession,
+            final RenderingOptions renderingOptions) {
         Assert.ensureNotNull(candidateSession, "candidateSession");
+        Assert.ensureNotNull(renderingOptions, "renderingOptions");
 
         final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
-        return renderEvent(latestEvent);
+        return renderEvent(latestEvent, renderingOptions);
     }
 
-    public String renderEvent(final CandidateItemEvent candidateEvent) {
+    public String renderEvent(final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions) {
         Assert.ensureNotNull(candidateEvent, "candidateEvent");
+        Assert.ensureNotNull(renderingOptions, "renderingOptions");
 
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
             case RESET:
-                return renderAfterInit(candidateEvent);
+                return renderAfterInit(candidateEvent, renderingOptions);
 
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                return renderAfterAttempt(candidateEvent);
+                return renderAfterAttempt(candidateEvent, renderingOptions);
 
             default:
                 throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
         }
     }
 
-    private String renderAfterInit(final CandidateItemEvent candidateEvent) {
-        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
-        return assessmentRenderer.renderFreshStandaloneItem(itemSessionController, SerializationMethod.HTML5_MATHJAX);
+    private String renderAfterInit(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+        return assessmentRenderer.renderItem(renderingRequest);
     }
 
-    private String renderAfterAttempt(final CandidateItemEvent candidateEvent) {
+    private ItemRenderingRequest createItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAttemptAllowed(itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts()));
+        renderingRequest.setCandidateSessionState(candidateSession.getState());
+        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setResetAllowed(itemDelivery.isAllowReset());
+        renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
+        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+        renderingRequest.setBadResponseIdentifiers(null);
+        renderingRequest.setInvalidResponseIdentifiers(null);
+        renderingRequest.setResponseInputs(null);
+        return renderingRequest;
+    }
+
+    private String renderAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
         if (attempt==null) {
             throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
@@ -356,9 +384,11 @@ public class AssessmentCandidateService {
         final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
         extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
 
-        return assessmentRenderer.renderRespondedStandaloneItem(itemSessionController,
-                responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder,
-                SerializationMethod.HTML5_MATHJAX);
+        renderingRequest.setResponseInputs(responseDataBuilder);
+        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
+
+        return assessmentRenderer.renderItem(renderingRequest);
     }
 
     private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,

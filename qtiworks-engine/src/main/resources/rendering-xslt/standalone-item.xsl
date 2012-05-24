@@ -18,8 +18,6 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <xsl:param name="furtherAttemptsAllowed" as="xs:boolean"/>
-
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -105,17 +103,32 @@ Renders a standalone assessmentItem
               </xsl:if>
             </div>
           </div>
-          <!-- Author session contol -->
           <div class="qtiworksAuthorControl">
             <h2>Session control</h2>
             <ul>
-              <li><a href="{$webappContextPath}/dispatcher/resetItemSession">Reset and replay</a></li>
-              <li><a href="{$webappContextPath}/dispatcher/endItemSession">Exit and return</a></li>
-              <li><a href="{$webappContextPath}/dispatcher/itemResult">View ItemResult</a></li>
+              <xsl:if test="$resetAllowed">
+                <li>
+                  <form action="{$webappContextPath}{$resetUrl}" method="post">
+                    <input type="submit" value="Reset"/>
+                  </form>
+                </li>
+              </xsl:if>
+              <li>
+                <form action="{$webappContextPath}{$exitUrl}" method="post">
+                  <input type="submit" value="Exit and return"/>
+                </form>
+              </li>
+              <xsl:if test="$resultAllowed">
+                <li>
+                  <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>
+                </li>
+              </xsl:if>
             </ul>
             <h2>Author tools</h2>
             <ul>
-              <li><a href="{$webappContextPath}/dispatcher/itemSource">View Item source</a></li>
+              <xsl:if test="$sourceAllowed">
+                <li><a href="{$webappContextPath}{$sourceUrl}">View Item source</a></li>
+              </xsl:if>
             </ul>
           </div>
           <!-- Author debugging information -->
@@ -129,13 +142,14 @@ Renders a standalone assessmentItem
 
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
-      <form method="post"
+      <form method="post" action="{$webappContextPath}{$attemptUrl}"
         onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
         onreset="QtiWorks.reset()" autocomplete="off">
+
         <xsl:apply-templates/>
 
         <!-- Maybe show controls -->
-        <xsl:if test="$furtherAttemptsAllowed">
+        <xsl:if test="$attemptAllowed">
           <div class="controls">
             <!--<input type="reset" value="RESET INPUT"/>-->
             <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>

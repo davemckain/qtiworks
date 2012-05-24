@@ -44,7 +44,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -84,7 +86,15 @@ public final class JpaRunner {
         final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
 
         /* Render initial state */
-        System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
+        final RenderingOptions renderingOptions = new RenderingOptions();
+        renderingOptions.setContextPath("/context");
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setAttemptUrl("/attempt");
+        renderingOptions.setExitUrl("/exit");
+        renderingOptions.setResetUrl("/reset");
+        renderingOptions.setSourceUrl("/source");
+        renderingOptions.setResultUrl("/result");
+        System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
 
         /* Do bad attempt == file submission */
         final CandidateFileSubmission fileSubmission = assessmentCandidateService.importFileResponse(candidateItemSession, new NullMultipartFile());
@@ -103,7 +113,7 @@ public final class JpaRunner {
         assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */
-        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
+        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
 
         /* Then reset state */
         assessmentCandidateService.resetCandidateSession(candidateItemSession);

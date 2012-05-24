@@ -24,13 +24,25 @@ rendering.
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
-  <xsl:param name="isResponded" as="xs:boolean" required="yes"/>
+  <!-- Action URLs -->
+  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitUrl" as="xs:string" required="yes"/>
+  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+
+  <!-- Action permissions -->
+  <xsl:param name="attemptAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
   <xsl:param name="badResponseIdentifiers" select="()" as="xs:string*"/>
   <xsl:param name="invalidResponseIdentifiers" select="()" as="xs:string*"/>
 
+  <!-- FIXME: This is not used at the moment? -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
 
   <!-- Current state -->
@@ -42,6 +54,7 @@ rendering.
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
   <!-- Debugging Params -->
+  <!-- FIXME: These are not currently used! -->
   <xsl:param name="overrideFeedback" select="false()" as="xs:boolean"/> <!-- enable all feedback  -->
   <xsl:param name="overrideTemplate" select="false()" as="xs:boolean"/> <!-- enable all templates -->
 
@@ -51,6 +64,9 @@ rendering.
   <xsl:variable name="templateValues" select="$itemSessionState/qw:templateVariable" as="element(qw:templateVariable)*"/>
   <xsl:variable name="responseValues" select="$itemSessionState/qw:responseVariable" as="element(qw:responseVariable)*"/>
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
+
+  <!-- Has the candidate made a response? -->
+  <xsl:variable name="isResponded" as="xs:boolean" select="exists($responseInputs)"/>
 
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>

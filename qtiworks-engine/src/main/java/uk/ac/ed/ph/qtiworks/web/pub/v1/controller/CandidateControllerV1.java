@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.pub.v1.controller;
 
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRendererV1;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
@@ -125,7 +125,7 @@ public class CandidateControllerV1 {
     private QtiXmlReader qtiXmlReader;
 
     @Resource
-    private AssessmentRenderer renderer;
+    private AssessmentRendererV1 renderer;
 
     @RequestMapping(value="/listSamples", method=RequestMethod.GET)
     public String listSamples(final Model model) {

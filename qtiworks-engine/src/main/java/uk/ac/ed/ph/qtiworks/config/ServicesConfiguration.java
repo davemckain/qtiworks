@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRendererV1;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -66,7 +67,7 @@ public class ServicesConfiguration {
     private ApplicationContext applicationContext;
 
     /**
-     * FIXME: The {@link AssessmentRenderer} currently needs the context path when
+     * FIXME: The {@link AssessmentRendererV1} currently needs the context path when
      * rendering pages. In order to make things run in a generic application,
      * to handle this method lies in a non-{@link WebApplicationContext}. This needs
      * tidied up...
@@ -105,7 +106,12 @@ public class ServicesConfiguration {
     }
 
     @Bean
-    public AssessmentRenderer renderer() {
-        return new AssessmentRenderer(jqtiExtensionManager(), contextPath(), stylesheetCache());
+    public AssessmentRendererV1 rendererV1() {
+        return new AssessmentRendererV1(jqtiExtensionManager(), contextPath(), stylesheetCache());
+    }
+
+    @Bean
+    public AssessmentRenderer assessmentRenderer() {
+        return new AssessmentRenderer(jqtiExtensionManager(), stylesheetCache());
     }
 }

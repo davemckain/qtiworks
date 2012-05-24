@@ -39,8 +39,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -65,11 +67,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * Controller for candidate item sessions
+ *
+ * FIXME: Need to implement 'end'
  *
  * @author David McKain
  */
@@ -109,11 +114,22 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}", method=RequestMethod.GET)
     @ResponseBody
-    public String renderItem(@PathVariable final long xid)
+    public String renderItem(final WebRequest webRequest, @PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Rendering current state for session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
-        return assessmentCandidateService.renderCurrentState(candidateSession);
+
+        /* Create appropriate options that link back to this controller */
+        final RenderingOptions renderingOptions = new RenderingOptions();
+        renderingOptions.setContextPath(webRequest.getContextPath());
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setAttemptUrl("/web/public/session/" + xid);
+        renderingOptions.setExitUrl("/web/public/session/" + xid + "/exit");
+        renderingOptions.setResetUrl("/web/public/session/" + xid + "/reset");
+        renderingOptions.setSourceUrl("/web/public/delivery/" + candidateSession.getItemDelivery().getId() + "/source");
+        renderingOptions.setResultUrl("/web/public/session/" + xid + "/result");
+
+        return assessmentCandidateService.renderCurrentState(candidateSession, renderingOptions);
     }
 
     //----------------------------------------------------
@@ -218,7 +234,7 @@ public class CandidateItemController {
      * @throws DomainEntityNotFoundException
      * @throws RuntimeValidationException
      */
-    @RequestMapping(value="/session/{xid}/reset", method=RequestMethod.GET)
+    @RequestMapping(value="/session/{xid}/reset", method=RequestMethod.POST)
     public String resetSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Requesting reset of session #{}", xid);
