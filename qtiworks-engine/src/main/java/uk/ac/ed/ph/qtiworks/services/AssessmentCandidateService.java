@@ -245,11 +245,10 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-
     //----------------------------------------------------
     // Session reset
 
-    public ItemSessionState resetCandidateSession(final CandidateItemSession candidateSession)
+    public void resetCandidateSession(final CandidateItemSession candidateSession)
             throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
@@ -280,8 +279,30 @@ public class AssessmentCandidateService {
         /* Record event */
         recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
+    }
 
-        return itemSessionState;
+    //----------------------------------------------------
+    // Session end (by candidate)
+
+    public void endCandidateSession(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+
+        /* Check we're in the right state */
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION, candidateSession);
+        }
+
+        /* Record event */
+        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
+        recordEvent(candidateSession, CandidateItemEventType.END, itemSessionState);
+
+        /* Update state */
+        candidateSession.setState(CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
     }
 
     //----------------------------------------------------
@@ -583,6 +604,11 @@ public class AssessmentCandidateService {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentEvent;
+    }
+
+    private ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession)  {
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+        return unmarshalItemSessionState(mostRecentEvent);
     }
 
     private ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {

@@ -34,12 +34,14 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * FIXME: Document this type
+ * Enumerates the types of {@link CandidateItemEvent}s that happen
+ * on a {@link CandidateItemSession}
  *
  * @author David McKain
  */
 public enum CandidateItemEventType {
 
+    /** {@link CandidateItemSession} first initialised */
     INIT,
 
     /** Attempt made, all responses bound successfully and valid */
@@ -51,8 +53,12 @@ public enum CandidateItemEventType {
     /** Attempt made, some responses bound unsuccessfully */
     ATTEMPT_BAD,
 
+    /** Candidate has reset the session back to its initial state */
     RESET,
-    EXIT,
+
+    /** Candidate has ended the current session */
+    END,
+
     ;
 
 }

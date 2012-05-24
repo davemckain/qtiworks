@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
@@ -91,23 +90,26 @@ public final class JpaRunner {
         final CandidateFileSubmission fileSubmission = assessmentCandidateService.importFileResponse(candidateItemSession, new NullMultipartFile());
         final Map<Identifier, CandidateFileSubmission> fileResponseMap = new HashMap<Identifier, CandidateFileSubmission>();
         fileResponseMap.put(new Identifier("RESPONSE"), fileSubmission);
-        CandidateItemAttempt attempt = assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
+        assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
 
         /* Do invalid attempt */
         final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
         stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("x"));
-        attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
         stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
-        attempt = assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+
+        /* Render new state */
+        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
 
         /* Then reset state */
         assessmentCandidateService.resetCandidateSession(candidateItemSession);
 
-        /* Render new state */
-        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession));
+        /* Then end session */
+        assessmentCandidateService.endCandidateSession(candidateItemSession);
 
         ctx.close();
     }
