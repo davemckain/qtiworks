@@ -30,6 +30,7 @@ rendering.
   <xsl:param name="exitUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- Action permissions -->
   <xsl:param name="attemptAllowed" as="xs:boolean" required="yes"/>
@@ -71,9 +72,6 @@ rendering.
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
-  <!-- URI for MVC controller serving up within-package resources -->
-  <xsl:variable name="resourceControllerUri" select="concat($webappContextPath, '/dispatcher/assessmentResource')" as="xs:string"/>
-
   <!-- Include stylesheets handling each type of interaction -->
   <xsl:include href="interactions/associateInteraction.xsl"/>
   <xsl:include href="interactions/choiceInteraction.xsl"/>
@@ -108,7 +106,7 @@ rendering.
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="resolved" as="xs:string" select="string(resolve-uri($uri, $itemSystemId))"/>
-        <xsl:sequence select="concat($resourceControllerUri, '?uri=', encode-for-uri($resolved))"/>
+        <xsl:sequence select="concat($webappContextPath, $serveFileUrl, '?href=', encode-for-uri($resolved))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>

@@ -31,9 +31,8 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
+package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
@@ -63,6 +62,8 @@ public final class RenderingOptions implements Serializable {
     private String resultUrl;
 
     private String sourceUrl;
+
+    private String serveFileUrl;
 
     //----------------------------------------------------
 
@@ -128,7 +129,19 @@ public final class RenderingOptions implements Serializable {
         this.sourceUrl = sourceUrl;
     }
 
+
+    public String getServeFileUrl() {
+        return serveFileUrl;
+    }
+
+    public void setServeFileUrl(final String serveFileUrl) {
+        this.serveFileUrl = serveFileUrl;
+    }
+
     //----------------------------------------------------
+
+
+
 
     @Override
     public String toString() {

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -154,6 +153,7 @@ public final class AssessmentRenderer {
         xsltParameters.put("exitUrl", renderingOptions.getExitUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getBadResponseIdentifiers()));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getInvalidResponseIdentifiers()));
         xsltParameters.put("attemptAllowed", Boolean.valueOf(renderingRequest.isAttemptAllowed()));

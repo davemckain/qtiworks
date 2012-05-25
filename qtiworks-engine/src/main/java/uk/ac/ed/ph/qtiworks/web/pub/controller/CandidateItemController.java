@@ -39,10 +39,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -51,6 +51,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -118,6 +119,7 @@ public class CandidateItemController {
             throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Rendering current state for session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+        final Long did = candidateSession.getItemDelivery().getId();
 
         /* Create appropriate options that link back to this controller */
         final RenderingOptions renderingOptions = new RenderingOptions();
@@ -126,8 +128,9 @@ public class CandidateItemController {
         renderingOptions.setAttemptUrl("/web/public/session/" + xid);
         renderingOptions.setExitUrl("/web/public/session/" + xid + "/exit");
         renderingOptions.setResetUrl("/web/public/session/" + xid + "/reset");
-        renderingOptions.setSourceUrl("/web/public/delivery/" + candidateSession.getItemDelivery().getId() + "/source");
+        renderingOptions.setSourceUrl("/web/public/delivery/" + did + "/source");
         renderingOptions.setResultUrl("/web/public/session/" + xid + "/result");
+        renderingOptions.setServeFileUrl("/web/public/delivery/" + did + "/file");
 
         return assessmentCandidateService.renderCurrentState(candidateSession, renderingOptions);
     }
@@ -319,8 +322,13 @@ public class CandidateItemController {
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
 
-        response.setContentType("application/xml");
+        response.setContentType(getResourceContentType(href));
         assessmentCandidateService.streamAssessmentResource(itemDelivery, href, response.getOutputStream());
+    }
+
+    /** FIXME: This probably should be encoded within the DB */
+    private String getResourceContentType(final String href) {
+        return URLConnection.getFileNameMap().getContentTypeFor(href);
     }
 
 }

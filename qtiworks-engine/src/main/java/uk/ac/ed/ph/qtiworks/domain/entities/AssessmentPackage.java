@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -169,10 +168,10 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
      */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="assessment_package_files", joinColumns=@JoinColumn(name="aid"))
     @Column(name="href")
-    private Set<String> fileHrefs = new HashSet<String>();
+    private Set<String> fileHrefs;
 
     //------------------------------------------------------------
 

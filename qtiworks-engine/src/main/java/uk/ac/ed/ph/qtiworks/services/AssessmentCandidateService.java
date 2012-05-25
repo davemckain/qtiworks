@@ -59,7 +59,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
-import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -82,6 +82,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -553,22 +554,31 @@ public class AssessmentCandidateService {
     // Access to additional package resources (e.g. images/CSS)
 
     /** FIXME: Add caching support */
-    public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileHref,
+    @Transactional(propagation=Propagation.REQUIRED)
+    public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileSystemIdString,
             final OutputStream outputStream)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
-        Assert.ensureNotNull(fileHref, "fileHref");
+        Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
         Assert.ensureNotNull(outputStream, "outputStream");
 
         /* Make sure requested file is whitelisted for access */
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
-        if (!assessmentPackage.getFileHrefs().contains(fileHref)) {
+        String resultingFileHref = null;
+        for (final String fileHref : assessmentPackage.getFileHrefs()) {
+            final URI fileUri = ServiceUtilities.createAssessmentFileUri(assessmentPackage, fileHref);
+            if (fileUri.toString().equals(fileSystemIdString)) {
+                resultingFileHref = fileHref;
+                break;
+            }
+        }
+        if (resultingFileHref==null) {
             final User caller = identityContext.getCurrentThreadEffectiveIdentity();
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ASSESSMENT_FILE, assessmentPackage);
         }
 
         /* Finally stream the required resource */
-        ServiceUtilities.streamAssessmentFile(assessmentPackage, fileHref, outputStream);
+        ServiceUtilities.streamAssessmentFile(assessmentPackage, resultingFileHref, outputStream);
     }
 
     //----------------------------------------------------
