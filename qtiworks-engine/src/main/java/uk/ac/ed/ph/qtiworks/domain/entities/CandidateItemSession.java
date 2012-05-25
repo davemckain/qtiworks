@@ -74,7 +74,7 @@ public class CandidateItemSession implements BaseEntity {
 
     /** Current state */
     @Basic(optional=false)
-    @Column(name="state", updatable=false, length=11)
+    @Column(name="state", length=11)
     @Enumerated(EnumType.STRING)
     private CandidateSessionState state;
 
