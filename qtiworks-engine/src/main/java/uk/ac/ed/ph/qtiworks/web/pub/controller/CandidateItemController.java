@@ -246,6 +246,27 @@ public class CandidateItemController {
     }
 
     /**
+     * Ends the given {@link CandidateItemSession}
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/exit", method=RequestMethod.POST)
+    public String endSession(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting reset of session #{}", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
+        assessmentCandidateService.endCandidateSession(candidateSession);
+
+        /* TODO: Need to redirect somewhere useful! */
+        return "redirect:/";
+    }
+
+    /**
      * Streams an {@link ItemResult} representing the current state of the given
      * {@link CandidateItemSession}
      *

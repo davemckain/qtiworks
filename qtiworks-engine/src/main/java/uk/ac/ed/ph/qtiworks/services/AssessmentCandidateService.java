@@ -272,13 +272,14 @@ public class AssessmentCandidateService {
         /* Initialise state */
         itemSessionController.initialize();
 
+        /* Record event */
+        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
         candidateItemSessionDao.update(candidateSession);
 
-        /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
     }
 
