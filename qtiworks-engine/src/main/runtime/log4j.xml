@@ -21,6 +21,22 @@ Runtime logging configuration
     </filter>
   </appender>
 
+  <!--
+  <logger name="org.hibernate">
+    <level value="DEBUG"/>
+  </logger>
+  -->
+  <!--
+  <logger name="org.springframework.orm.jpa">
+    <level value="DEBUG"/>
+  </logger>
+  -->
+  <!--
+  <logger name="org.springframework.transaction">
+    <level value="DEBUG"/>
+  </logger>
+  -->
+
   <!-- Root logger -->
   <root>
     <level value="INFO"/>
