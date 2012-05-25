@@ -42,13 +42,14 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -57,9 +58,9 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author David McKain
  */
-@ToRefactor
 @Service
-public final class CandidateUploadService {
+@Transactional(propagation=Propagation.REQUIRED)
+public class CandidateUploadService {
 
     @Resource
     private Auditor auditor;
