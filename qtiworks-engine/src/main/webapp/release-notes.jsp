@@ -7,6 +7,19 @@ All Rights Reserved
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Release notes">
 
+  <h2>1.0-DEV7 (25/05/2012)</h2>
+
+  <p>
+    This snapshot finally includes all of the internal logic for successfully
+    delivering - and recording the delivery of - a single asseesment item to a
+    candidate, as well as much of the logic for managing assessments within the
+    system. However, not much of this is yet visible to end users, apart from a
+    revised version of the "play sample items" functionality that uses the new
+    implementation. There's a little bit of the assessment management functionality
+    visible, as well as the login form that people will use to access this, but
+    not enough to be truly usable yet.
+  </p>
+
   <h2>1.0-DEV6 (02/05/2012)</h2>
 
   <p>
