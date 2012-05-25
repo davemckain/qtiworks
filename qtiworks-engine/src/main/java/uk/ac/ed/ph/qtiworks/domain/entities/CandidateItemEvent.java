@@ -76,7 +76,7 @@ import org.hibernate.annotations.Type;
             query="SELECT e"
                 + "  FROM CandidateItemEvent e"
                 + "  WHERE e.candidateItemSession = :candidateItemSession"
-                + "  ORDER BY e.id DESC"),
+                + "  ORDER BY e.id DESC")
 })
 public class CandidateItemEvent implements BaseEntity {
 
