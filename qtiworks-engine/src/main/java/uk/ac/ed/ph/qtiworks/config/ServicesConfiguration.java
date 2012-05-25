@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRendererV1;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -44,14 +43,10 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
-import javax.annotation.Resource;
-
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Defines service-level configuration
@@ -62,23 +57,6 @@ import org.springframework.web.context.WebApplicationContext;
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.tools.services"})
 @EnableTransactionManagement
 public class ServicesConfiguration {
-
-    @Resource
-    private ApplicationContext applicationContext;
-
-    /**
-     * FIXME: The {@link AssessmentRendererV1} currently needs the context path when
-     * rendering pages. In order to make things run in a generic application,
-     * to handle this method lies in a non-{@link WebApplicationContext}. This needs
-     * tidied up...
-     */
-    @Bean
-    public String contextPath() {
-        if (applicationContext instanceof WebApplicationContext) {
-            return ((WebApplicationContext) applicationContext).getServletContext().getContextPath();
-        }
-        return "/";
-    }
 
     @Bean
     public SchemaCache schemaCache() {

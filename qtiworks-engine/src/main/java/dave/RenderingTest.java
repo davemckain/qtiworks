@@ -5,8 +5,11 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRendererV1;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.services.domain.RenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -46,10 +49,31 @@ public class RenderingTest {
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-            final AssessmentRendererV1 renderer = new AssessmentRendererV1(jqtiExtensionManager, "/qtiworks",
-                    new SimpleXsltStylesheetCache());
-            final String rendered = renderer.renderFreshStandaloneItem(itemSessionController,
-                    SerializationMethod.HTML5_MATHJAX);
+
+            final RenderingOptions renderingOptions = new RenderingOptions();
+            renderingOptions.setContextPath("/qtiworks");
+            renderingOptions.setAttemptUrl("/attempt");
+            renderingOptions.setExitUrl("/exit");
+            renderingOptions.setResetUrl("/result");
+            renderingOptions.setResultUrl("/result");
+            renderingOptions.setSourceUrl("/source");
+            renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+
+            final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceUri(inputUri);
+            renderingRequest.setCandidateSessionState(CandidateSessionState.INTERACTING);
+            renderingRequest.setItemSessionState(itemSessionState);
+            renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setAttemptAllowed(true);
+            renderingRequest.setResetAllowed(true);
+            renderingRequest.setResultAllowed(true);
+            renderingRequest.setSourceAllowed(true);
+            renderingRequest.setBadResponseIdentifiers(null);
+            renderingRequest.setInvalidResponseIdentifiers(null);
+
+            final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, new SimpleXsltStylesheetCache());
+            final String rendered = renderer.renderItem(renderingRequest);
             System.out.println("Rendered page: " + rendered);
         }
         finally {
