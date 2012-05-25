@@ -108,7 +108,7 @@ import org.xml.sax.InputSource;
  * @author David McKain
  */
 @Service
-@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+@Transactional(propagation=Propagation.REQUIRED)
 public class AssessmentCandidateService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentCandidateService.class);
@@ -554,7 +554,6 @@ public class AssessmentCandidateService {
     // Access to additional package resources (e.g. images/CSS)
 
     /** FIXME: Add caching support */
-    @Transactional(propagation=Propagation.REQUIRED)
     public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileSystemIdString,
             final OutputStream outputStream)
             throws PrivilegeException, IOException {
