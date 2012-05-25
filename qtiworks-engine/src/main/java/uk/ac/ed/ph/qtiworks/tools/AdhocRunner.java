@@ -36,91 +36,23 @@ package uk.ac.ed.ph.qtiworks.tools;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
-import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
-
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import uk.ac.ed.ph.qtiworks.tools.services.AdhocService;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Dev utility class for running arbitrary JPA code
+ * Dev utility class for calling arbitrary bits of service code
  *
  * @author David McKain
  */
-public final class JpaRunner {
+public final class AdhocRunner {
 
     public static void main(final String[] args) throws Exception {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
         ctx.refresh();
 
-        final AssessmentCandidateService assessmentCandidateService = ctx.getBean(AssessmentCandidateService.class);
-        final RequestTimestampContext requestTimestampContext = ctx.getBean(RequestTimestampContext.class);
-        requestTimestampContext.setCurrentRequestTimestamp(new Date());
-
-        final InstructorUserDao instructorUserDao = ctx.getBean(InstructorUserDao.class);
-        final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
-        final IdentityContext identityContext = ctx.getBean(IdentityContext.class);
-        identityContext.setCurrentThreadEffectiveIdentity(dave);
-        identityContext.setCurrentThreadUnderlyingIdentity(dave);
-
-        final ItemDeliveryDao itemDeliveryDao = ctx.getBean(ItemDeliveryDao.class);
-        final ItemDelivery itemDelivery = itemDeliveryDao.findById(4L); /* (choice.xml) */
-
-        final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
-
-        /* Render initial state */
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/context");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setExitUrl("/exit");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setResultUrl("/result");
-        System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
-
-        /* Do bad attempt == file submission */
-        final CandidateFileSubmission fileSubmission = assessmentCandidateService.importFileResponse(candidateItemSession, new NullMultipartFile());
-        final Map<Identifier, CandidateFileSubmission> fileResponseMap = new HashMap<Identifier, CandidateFileSubmission>();
-        fileResponseMap.put(new Identifier("RESPONSE"), fileSubmission);
-        assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
-
-        /* Do invalid attempt */
-        final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
-        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("x"));
-        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
-
-        /* Then valid attempt */
-        stringResponseMap.clear();
-        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
-        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
-
-        /* Render new state */
-        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
-
-        /* Then reset state */
-        assessmentCandidateService.resetCandidateSession(candidateItemSession);
-
-        /* Then end session */
-        assessmentCandidateService.endCandidateSession(candidateItemSession);
-
-        ctx.close();
+        final AdhocService adhocService = ctx.getBean(AdhocService.class);
+        adhocService.doWork();
     }
 }
