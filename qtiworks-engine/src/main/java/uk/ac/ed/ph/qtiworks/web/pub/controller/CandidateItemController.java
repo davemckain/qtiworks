@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -97,9 +96,7 @@ public class CandidateItemController {
     public String startCandidateItemSession(@PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Creating new CandidateItemSession for delivery {}", did);
-        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
-        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(itemDelivery);
-
+        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(did);
         return redirectToSession(candidateSession);
     }
 
@@ -132,7 +129,7 @@ public class CandidateItemController {
         renderingOptions.setResultUrl("/web/public/session/" + xid + "/result");
         renderingOptions.setServeFileUrl("/web/public/delivery/" + did + "/file");
 
-        return assessmentCandidateService.renderCurrentState(candidateSession, renderingOptions);
+        return assessmentCandidateService.renderCurrentState(xid, renderingOptions);
     }
 
     //----------------------------------------------------
@@ -155,10 +152,10 @@ public class CandidateItemController {
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
         logger.debug("Extract string responses {}", stringResponseMap);
 
-        /* Extract file responses (if appropriate) */
-        Map<Identifier, CandidateFileSubmission> fileResponseMap = null;
+        /* Extract and import file responses (if appropriate) */
+        Map<Identifier, MultipartFile> fileResponseMap = null;
         if (request instanceof MultipartHttpServletRequest) {
-            fileResponseMap = extractFileResponseData(candidateSession, (MultipartHttpServletRequest) request);
+            fileResponseMap = extractFileResponseData((MultipartHttpServletRequest) request);
             logger.debug("Extracted file responses {}", fileResponseMap);
         }
 
@@ -172,9 +169,8 @@ public class CandidateItemController {
     /**
      * @throws BadResponseWebPayloadException
      */
-    private Map<Identifier, CandidateFileSubmission> extractFileResponseData(final CandidateItemSession candidateSession,
-            final MultipartHttpServletRequest multipartRequest) {
-        final Map<Identifier, CandidateFileSubmission> fileResponseMap = new HashMap<Identifier, CandidateFileSubmission>();
+    private Map<Identifier, MultipartFile> extractFileResponseData(final MultipartHttpServletRequest multipartRequest) {
+        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
         @SuppressWarnings("unchecked")
         final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
         for (final String name : parameterNames) {
@@ -192,8 +188,7 @@ public class CandidateItemController {
                 if (multipartFile==null) {
                     throw new BadResponseWebPayloadException("Expected to find multipart file with name " + multipartName);
                 }
-                final CandidateFileSubmission candidateFileSubmission = assessmentCandidateService.importFileResponse(candidateSession, multipartFile);
-                fileResponseMap.put(responseIdentifier, candidateFileSubmission);
+                fileResponseMap.put(responseIdentifier, multipartFile);
             }
         }
         return fileResponseMap;
@@ -241,8 +236,7 @@ public class CandidateItemController {
     public String resetSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Requesting reset of session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
-        assessmentCandidateService.resetCandidateSession(candidateSession);
+        final CandidateItemSession candidateSession = assessmentCandidateService.resetCandidateSession(xid);
 
         /* Redirect to rendering of current session state */
         return redirectToSession(candidateSession);
@@ -261,9 +255,8 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/exit", method=RequestMethod.POST)
     public String endSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        logger.debug("Requesting reset of session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
-        assessmentCandidateService.endCandidateSession(candidateSession);
+        logger.debug("Requesting end of session #{}", xid);
+        assessmentCandidateService.endCandidateSession(xid);
 
         /* TODO: Need to redirect somewhere useful! */
         return "redirect:/";
@@ -282,10 +275,9 @@ public class CandidateItemController {
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Streaming result for session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
 
         response.setContentType("application/xml");
-        assessmentCandidateService.streamItemResult(candidateSession, response.getOutputStream());
+        assessmentCandidateService.streamItemResult(xid, response.getOutputStream());
     }
 
     /**
@@ -301,10 +293,9 @@ public class CandidateItemController {
     public void streamPackageSource(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Request source for delivery #{}", did);
-        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
 
         response.setContentType("application/xml");
-        assessmentCandidateService.streamAssessmentSource(itemDelivery, response.getOutputStream());
+        assessmentCandidateService.streamAssessmentSource(did, response.getOutputStream());
     }
 
     /**
@@ -320,10 +311,8 @@ public class CandidateItemController {
     public void streamPackageFile(final HttpServletResponse response, @PathVariable final long did,
             @RequestParam("href") final String href)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery itemDelivery = assessmentCandidateService.lookupItemDelivery(did);
-
         response.setContentType(getResourceContentType(href));
-        assessmentCandidateService.streamAssessmentResource(itemDelivery, href, response.getOutputStream());
+        assessmentCandidateService.streamAssessmentResource(did, href, response.getOutputStream());
     }
 
     /** FIXME: This probably should be encoded within the DB */

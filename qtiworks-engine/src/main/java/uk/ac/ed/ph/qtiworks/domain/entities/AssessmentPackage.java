@@ -168,7 +168,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
      */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection(fetch=FetchType.LAZY)
     @CollectionTable(name="assessment_package_files", joinColumns=@JoinColumn(name="aid"))
     @Column(name="href")
     private Set<String> fileHrefs;

@@ -103,7 +103,10 @@ import org.xml.sax.InputSource;
 
 /**
  * Service the manages the real-time delivery of an {@link Assessment}
- * to a particular candidate {@link User}
+ * to a particular candidate {@link User}.
+ * <p>
+ * DEV NOTE: MVC Controllers should use the public methods taking IDs to ensure
+ * that work is done in a single transaction and avoid detached entities.
  *
  * @author David McKain
  */
@@ -177,12 +180,28 @@ public class AssessmentCandidateService {
     // Session creation and initialisation
 
     /**
+     * Starts a new {@link CandidateItemSession} for the {@link ItemDelivery}
+     * having the given ID (did).
+     *
+     * @param did
+     * @return
+     * @throws RuntimeValidationException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession createCandidateSession(final long did)
+            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+        final ItemDelivery itemDelivery = lookupItemDelivery(did);
+        return createCandidateSession(itemDelivery);
+    }
+
+    /**
      * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
      * @param itemDelivery
      * @return
      * @throws RuntimeValidationException
      */
-    public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery)
+    private CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery)
             throws RuntimeValidationException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
 
@@ -224,9 +243,18 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Session access after creation
 
-    public CandidateItemSession lookupCandidateSession(final long sessionId)
+    /**
+     * Looks up the {@link CandidateItemSession} having the given ID (xid)
+     * and ensures the caller has access to it.
+     *
+     * @param xid
+     * @return
+     * @throws DomainEntityNotFoundException
+     * @throws PrivilegeException
+     */
+    public CandidateItemSession lookupCandidateSession(final long xid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final CandidateItemSession session = candidateItemSessionDao.requireFindById(sessionId);
+        final CandidateItemSession session = candidateItemSessionDao.requireFindById(xid);
         ensureCallerMayAccess(session);
         return session;
     }
@@ -250,7 +278,23 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Session reset
 
-    public void resetCandidateSession(final CandidateItemSession candidateSession)
+    /**
+     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
+     * updated {@link CandidateItemSession}
+     *
+     * @param xid
+     * @return
+     * @throws RuntimeValidationException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession resetCandidateSession(final long xid)
+            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return resetCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
             throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
@@ -282,12 +326,27 @@ public class AssessmentCandidateService {
         candidateItemSessionDao.update(candidateSession);
 
         auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
+        return candidateSession;
     }
 
     //----------------------------------------------------
     // Session end (by candidate)
 
-    public void endCandidateSession(final CandidateItemSession candidateSession)
+    /**
+     * Ends the {@link CandidateItemSession} having the given ID (xid).
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession endCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return endCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession endCandidateSession(final CandidateItemSession candidateSession)
             throws PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
@@ -306,31 +365,41 @@ public class AssessmentCandidateService {
         candidateItemSessionDao.update(candidateSession);
 
         auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
+        return candidateSession;
     }
 
     //----------------------------------------------------
     // Rendering
 
     /**
+     * Renders the current state of the {@link CandidateItemSession} having
+     * the given ID (xid).
+     *
      * FIXME: This should render to a temporary {@link File} or something.
      *
      * @param candidateSession
      * @return
+     * @throws DomainEntityNotFoundException
+     * @throws PrivilegeException
      */
+    public String renderCurrentState(final long xid,
+            final RenderingOptions renderingOptions) throws PrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(renderingOptions, "renderingOptions");
+
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return renderCurrentState(candidateSession, renderingOptions);
+    }
+
     public String renderCurrentState(final CandidateItemSession candidateSession,
             final RenderingOptions renderingOptions) {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(renderingOptions, "renderingOptions");
-
         final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
         return renderEvent(latestEvent, renderingOptions);
     }
 
-    public String renderEvent(final CandidateItemEvent candidateEvent,
+    private String renderEvent(final CandidateItemEvent candidateEvent,
             final RenderingOptions renderingOptions) {
-        Assert.ensureNotNull(candidateEvent, "candidateEvent");
-        Assert.ensureNotNull(renderingOptions, "renderingOptions");
-
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
@@ -427,17 +496,17 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Attempt
 
-    public CandidateFileSubmission importFileResponse(final CandidateItemSession candidateSession,
-            final MultipartFile multipartFile) {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
-        Assert.ensureNotNull(multipartFile, "multipartFile");
-
-        return candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+    public CandidateItemAttempt handleAttempt(final long xid,
+            final Map<Identifier, StringResponseData> stringResponseMap,
+            final Map<Identifier, MultipartFile> fileResponseMap)
+            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, CandidateFileSubmission> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap)
             throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
@@ -460,12 +529,15 @@ public class AssessmentCandidateService {
                 responseMap.put(identifier, stringResponseData);
             }
         }
+        final Map<Identifier, CandidateFileSubmission> fileSubmissionMap = new HashMap<Identifier, CandidateFileSubmission>();
         if (fileResponseMap!=null) {
-            for (final Entry<Identifier, CandidateFileSubmission> fileResponseEntry : fileResponseMap.entrySet()) {
+            for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
                 final Identifier identifier = fileResponseEntry.getKey();
-                final CandidateFileSubmission fileSubmission = fileResponseEntry.getValue();
+                final MultipartFile multipartFile = fileResponseEntry.getValue();
+                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
                 final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
                 responseMap.put(identifier, fileResponseData);
+                fileSubmissionMap.put(identifier, fileSubmission);
             }
         }
 
@@ -488,7 +560,7 @@ public class AssessmentCandidateService {
                     break;
 
                 case FILE:
-                    candidateItemResponse.setFileSubmission(fileResponseMap.get(responseIdentifier));
+                    candidateItemResponse.setFileSubmission(fileSubmissionMap.get(responseIdentifier));
                     break;
 
                 default:
@@ -553,6 +625,15 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
+    public void streamAssessmentResource(final long did, final String fileSystemIdString,
+            final OutputStream outputStream)
+            throws PrivilegeException, IOException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
+        Assert.ensureNotNull(outputStream, "outputStream");
+        final ItemDelivery itemDelivery = lookupItemDelivery(did);
+        streamAssessmentResource(itemDelivery, fileSystemIdString, outputStream);
+    }
+
     /** FIXME: Add caching support */
     public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileSystemIdString,
             final OutputStream outputStream)
@@ -583,6 +664,13 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Candidate Source access
 
+    public void streamAssessmentSource(final long did, final OutputStream outputStream)
+            throws PrivilegeException, IOException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(outputStream, "outputStream");
+        final ItemDelivery itemDelivery = lookupItemDelivery(did);
+        streamAssessmentSource(itemDelivery, outputStream);
+    }
+
     /** FIXME: Add caching support */
     public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStream outputStream)
             throws PrivilegeException, IOException {
@@ -605,6 +693,13 @@ public class AssessmentCandidateService {
 
     //----------------------------------------------------
     // Candidate Result access
+
+    public void streamItemResult(final long xid, final OutputStream outputStream)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(outputStream, "outputStream");
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        streamItemResult(candidateSession, outputStream);
+    }
 
     public void streamItemResult(final CandidateItemSession candidateSession, final OutputStream outputStream)
             throws PrivilegeException {

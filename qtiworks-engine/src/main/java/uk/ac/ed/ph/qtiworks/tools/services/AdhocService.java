@@ -36,11 +36,8 @@ package uk.ac.ed.ph.qtiworks.tools.services;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
@@ -58,6 +55,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -80,9 +78,6 @@ public class AdhocService {
     @Resource
     private InstructorUserDao instructorUserDao;
 
-    @Resource
-    private ItemDeliveryDao itemDeliveryDao;
-
     public void doWork() throws Exception {
         requestTimestampContext.setCurrentRequestTimestamp(new Date());
 
@@ -90,9 +85,9 @@ public class AdhocService {
         identityContext.setCurrentThreadEffectiveIdentity(dave);
         identityContext.setCurrentThreadUnderlyingIdentity(dave);
 
-        final ItemDelivery itemDelivery = itemDeliveryDao.findById(4L); /* (choice.xml) */
+        final long did = 4L; /* ID of delivery to try out (choice.xml) */
 
-        final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(itemDelivery);
+        final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(did);
 
         /* Render initial state */
         final RenderingOptions renderingOptions = new RenderingOptions();
@@ -107,9 +102,8 @@ public class AdhocService {
         System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
 
         /* Do bad attempt == file submission */
-        final CandidateFileSubmission fileSubmission = assessmentCandidateService.importFileResponse(candidateItemSession, new NullMultipartFile());
-        final Map<Identifier, CandidateFileSubmission> fileResponseMap = new HashMap<Identifier, CandidateFileSubmission>();
-        fileResponseMap.put(new Identifier("RESPONSE"), fileSubmission);
+        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
+        fileResponseMap.put(new Identifier("RESPONSE"), new NullMultipartFile());
         assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
 
         /* Do invalid attempt */
