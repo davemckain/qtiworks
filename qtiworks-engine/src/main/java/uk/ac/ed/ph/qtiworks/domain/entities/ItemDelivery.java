@@ -109,6 +109,11 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="max_attempts")
     private Integer maxAttempts;
 
+    /** Allow candidate to end attempt */
+    @Basic(optional=false)
+    @Column(name="allow_end")
+    private boolean allowEnd;
+
     /** Allow candidate to view assessment source(s) */
     @Basic(optional=false)
     @Column(name="allow_source")
@@ -123,6 +128,11 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="allow_reset")
     private boolean allowReset;
+
+    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#INTERACTING} state */
+    @Basic(optional=false)
+    @Column(name="allow_reinit")
+    private boolean allowReinit;
 
     //------------------------------------------------------------
 
@@ -184,12 +194,30 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public boolean isAllowEnd() {
+        return allowEnd;
+    }
+
+    public void setAllowEnd(final boolean allowEnd) {
+        this.allowEnd = allowEnd;
+    }
+
+
     public boolean isAllowReset() {
         return allowReset;
     }
 
     public void setAllowReset(final boolean allowReset) {
         this.allowReset = allowReset;
+    }
+
+
+    public boolean isAllowReinit() {
+        return allowReinit;
+    }
+
+    public void setAllowReinit(final boolean allowReinit) {
+        this.allowReinit = allowReinit;
     }
 
 

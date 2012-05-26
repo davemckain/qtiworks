@@ -27,16 +27,21 @@ rendering.
   <!-- Action URLs -->
   <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
   <xsl:param name="resetUrl" as="xs:string" required="yes"/>
-  <xsl:param name="exitUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endUrl" as="xs:string" required="yes"/>
+  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- Action permissions -->
   <xsl:param name="attemptAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="endAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>

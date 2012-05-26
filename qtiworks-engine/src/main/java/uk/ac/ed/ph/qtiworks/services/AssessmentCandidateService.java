@@ -85,6 +85,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -275,222 +276,13 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-    //----------------------------------------------------
-    // Session reset
-
-    /**
-     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
-     * updated {@link CandidateItemSession}
-     *
-     * @param xid
-     * @return
-     * @throws RuntimeValidationException
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     */
-    public CandidateItemSession resetCandidateSession(final long xid)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return resetCandidateSession(candidateSession);
-    }
-
-    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
-            throws RuntimeValidationException, PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    private User ensureSessionNotClosed(final CandidateItemSession candidateSession) throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-
-        /* Make sure we can reset the session */
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_AFTER_INTERACTING, candidateSession);
+        if (candidateSession.getState()==CandidateSessionState.CLOSED) {
+            /* No access when session has been is closed */
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_CLOSED_SESSION, candidateSession);
         }
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        if (!itemDelivery.isAllowReset()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, itemDelivery);
-        }
-
-        /* Create fresh JQTI+ state */
-        final ItemSessionState itemSessionState = new ItemSessionState();
-
-        /* Get the resolved JQTI+ Object for the underlying package */
-        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
-
-        /* Initialise state */
-        itemSessionController.initialize();
-
-        /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
-
-        /* Update state */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
-        candidateItemSessionDao.update(candidateSession);
-
-        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
-    // Session end (by candidate)
-
-    /**
-     * Ends the {@link CandidateItemSession} having the given ID (xid).
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     */
-    public CandidateItemSession endCandidateSession(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return endCandidateSession(candidateSession);
-    }
-
-    public CandidateItemSession endCandidateSession(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-
-        /* Check we're in the right state */
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION, candidateSession);
-        }
-
-        /* Record event */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.END, itemSessionState);
-
-        /* Update state */
-        candidateSession.setState(CandidateSessionState.REVIEWING);
-        candidateItemSessionDao.update(candidateSession);
-
-        auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
-    // Rendering
-
-    /**
-     * Renders the current state of the {@link CandidateItemSession} having
-     * the given ID (xid).
-     *
-     * FIXME: This should render to a temporary {@link File} or something.
-     *
-     * @param candidateSession
-     * @return
-     * @throws DomainEntityNotFoundException
-     * @throws PrivilegeException
-     */
-    public String renderCurrentState(final long xid,
-            final RenderingOptions renderingOptions) throws PrivilegeException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(renderingOptions, "renderingOptions");
-
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return renderCurrentState(candidateSession, renderingOptions);
-    }
-
-    public String renderCurrentState(final CandidateItemSession candidateSession,
-            final RenderingOptions renderingOptions) {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
-        Assert.ensureNotNull(renderingOptions, "renderingOptions");
-        final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
-        return renderEvent(latestEvent, renderingOptions);
-    }
-
-    private String renderEvent(final CandidateItemEvent candidateEvent,
-            final RenderingOptions renderingOptions) {
-        final CandidateItemEventType eventType = candidateEvent.getEventType();
-        switch (eventType) {
-            case INIT:
-            case RESET:
-                return renderAfterInit(candidateEvent, renderingOptions);
-
-            case ATTEMPT_VALID:
-            case ATTEMPT_INVALID:
-            case ATTEMPT_BAD:
-                return renderAfterAttempt(candidateEvent, renderingOptions);
-
-            default:
-                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
-        }
-    }
-
-    private String renderAfterInit(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
-        return assessmentRenderer.renderItem(renderingRequest);
-    }
-
-    private ItemRenderingRequest createItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
-
-        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAttemptAllowed(itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts()));
-        renderingRequest.setCandidateSessionState(candidateSession.getState());
-        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setResetAllowed(itemDelivery.isAllowReset());
-        renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
-        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
-        renderingRequest.setBadResponseIdentifiers(null);
-        renderingRequest.setInvalidResponseIdentifiers(null);
-        renderingRequest.setResponseInputs(null);
-        return renderingRequest;
-    }
-
-    private String renderAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
-
-        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
-        if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
-        }
-        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-        renderingRequest.setResponseInputs(responseDataBuilder);
-        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-
-        return assessmentRenderer.renderItem(renderingRequest);
-    }
-
-    private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
-            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateItemResponse response : attempt.getResponses()) {
-            final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
-            final ResponseLegality responseLegality = response.getResponseLegality();
-            final ResponseDataType responseType = response.getResponseType();
-            ResponseData responseData = null;
-            switch (responseType) {
-                case STRING:
-                    responseData = new StringResponseData(response.getStringResponseData());
-                    break;
-
-                case FILE:
-                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
-                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
-                            fileSubmission.getContentType());
-                    break;
-
-                default:
-                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
-            }
-            responseDataBuilder.put(responseIdentifier, responseData);
-            if (responseLegality==ResponseLegality.BAD) {
-                badResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-            else if (responseLegality==ResponseLegality.INVALID) {
-                invalidResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-        }
+        return caller;
     }
 
     //----------------------------------------------------
@@ -623,6 +415,351 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
+    // Session end (by candidate)
+
+    /**
+     * Ends the {@link CandidateItemSession} having the given ID (xid), moving it
+     * into {@link CandidateSessionState#REVIEWING} state.
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession endCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return endCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession endCandidateSession(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Check this is allowed in current state */
+        final User caller = ensureSessionNotClosed(candidateSession);
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_AFTER_INTERACTING, candidateSession);
+        }
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (!itemDelivery.isAllowEnd()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_WHEN_INTERACTING, itemDelivery);
+        }
+
+        /* Record event */
+        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
+        recordEvent(candidateSession, CandidateItemEventType.END, itemSessionState);
+
+        /* Update state */
+        candidateSession.setState(CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Session reset
+
+    /**
+     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
+     * updated {@link CandidateItemSession}. This takes the session back to the state it
+     * was in immediately after the last {@link CandidateItemEvent#REINIT} (if applicable),
+     * or after the original {@link CandidateItemEvent#INIT}.
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession resetCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return resetCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Make sure caller may reset the session */
+        final User caller = ensureSessionNotClosed(candidateSession);
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_AFTER_INTERACTING, candidateSession);
+        }
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (!itemDelivery.isAllowReset()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, itemDelivery);
+        }
+
+        /* Find the last REINIT, falling back to original INIT if none present */
+        final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateSession);
+        CandidateItemEvent lastInitEvent = null;
+        for (final CandidateItemEvent event : events) {
+            if (event.getEventType()==CandidateItemEventType.REINIT) {
+                lastInitEvent = event;
+                break;
+            }
+        }
+        if (lastInitEvent==null) {
+            lastInitEvent = events.get(events.size()-1);
+        }
+
+        /* Pull the QTI state from this event */
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(lastInitEvent);
+
+        /* Record event */
+        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+
+        /* Update state */
+        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Session reinit
+
+    /**
+     * Re-initialises the {@link CandidateItemSession} having the given ID (xid), returning the
+     * updated {@link CandidateItemSession}. At QTI level, this reruns template processing, so
+     * randomised values will change as a result of this process.
+     *
+     * @param xid
+     * @return
+     * @throws RuntimeValidationException
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession reinitCandidateSession(final long xid)
+            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return reinitCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateSession)
+            throws RuntimeValidationException, PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Make sure caller may reinit the session */
+        final User caller = ensureSessionNotClosed(candidateSession);
+        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_AFTER_INTERACTING, candidateSession);
+        }
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (!itemDelivery.isAllowReset()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, itemDelivery);
+        }
+
+        /* Create fresh JQTI+ state */
+        final ItemSessionState itemSessionState = new ItemSessionState();
+
+        /* Get the resolved JQTI+ Object for the underlying package */
+        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+
+        /* Initialise state */
+        itemSessionController.initialize();
+
+        /* Record event */
+        recordEvent(candidateSession, CandidateItemEventType.REINIT, itemSessionState);
+
+        /* Update state */
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate re-intialized session #" + candidateSession.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Session close (by candidate)
+
+    /**
+     * Closes the {@link CandidateItemSession} having the given ID (xid), moving it into
+     * {@link CandidateSessionState#CLOSED} state.
+     * <p>
+     * We always allow this to happen when in {@link CandidateSessionState#REVIEWING}
+     * state. This is permitted in {@link CandidateSessionState#INTERACTING} state if the
+     * {@link ItemDelivery} allows the session to be closed.
+     *
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession closeCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return closeCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Check this is allowed in current state */
+        final User caller = ensureSessionNotClosed(candidateSession);
+        if (candidateSession.getState()==CandidateSessionState.INTERACTING) {
+            final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+            if (!itemDelivery.isAllowEnd()) {
+                throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_WHEN_INTERACTING, itemDelivery);
+            }
+        }
+
+        /* Record event */
+        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
+        recordEvent(candidateSession, CandidateItemEventType.CLOSED, itemSessionState);
+
+        /* Update state */
+        candidateSession.setState(CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate closed session #" + candidateSession.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Rendering
+
+    /**
+     * Renders the current state of the {@link CandidateItemSession} having
+     * the given ID (xid).
+     *
+     * FIXME: This should render to a temporary {@link File} or something.
+     *
+     * @param candidateSession
+     * @return
+     * @throws DomainEntityNotFoundException
+     * @throws PrivilegeException
+     */
+    public String renderCurrentState(final long xid,
+            final RenderingOptions renderingOptions) throws PrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(renderingOptions, "renderingOptions");
+
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return renderCurrentState(candidateSession, renderingOptions);
+    }
+
+    public String renderCurrentState(final CandidateItemSession candidateSession,
+            final RenderingOptions renderingOptions) {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+        Assert.ensureNotNull(renderingOptions, "renderingOptions");
+        final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
+        return renderEvent(latestEvent, renderingOptions);
+    }
+
+    private String renderEvent(final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions) {
+        final CandidateItemEventType eventType = candidateEvent.getEventType();
+        switch (eventType) {
+            case INIT:
+            case REINIT:
+            case RESET:
+            case END:
+                return renderAfterInit(candidateEvent, renderingOptions);
+
+            case ATTEMPT_VALID:
+            case ATTEMPT_INVALID:
+            case ATTEMPT_BAD:
+                return renderAfterAttempt(candidateEvent, renderingOptions);
+
+            case CLOSED:
+                /* FIXME: Need to implement something here */
+                throw new QtiWorksLogicException("Unimplemented" + eventType);
+
+            default:
+                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
+        }
+    }
+
+    private String renderAfterInit(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+        return assessmentRenderer.renderItem(renderingRequest);
+    }
+
+    private ItemRenderingRequest createItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAttemptAllowed(itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts()));
+        renderingRequest.setCandidateSessionState(candidateSessionState);
+        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setEndAllowed(itemDelivery.isAllowEnd() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setReinitAllowed(itemDelivery.isAllowReinit() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setResetAllowed(itemDelivery.isAllowReset() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setResultAllowed(itemDelivery.isAllowResult() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+        renderingRequest.setCloseAllowed(itemDelivery.isAllowEnd() || candidateSessionState==CandidateSessionState.REVIEWING);
+        renderingRequest.setBadResponseIdentifiers(null);
+        renderingRequest.setInvalidResponseIdentifiers(null);
+        renderingRequest.setResponseInputs(null);
+        return renderingRequest;
+    }
+
+    private String renderAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+
+        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
+        if (attempt==null) {
+            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
+        }
+        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
+        renderingRequest.setResponseInputs(responseDataBuilder);
+        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
+
+        return assessmentRenderer.renderItem(renderingRequest);
+    }
+
+    private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
+            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
+        for (final CandidateItemResponse response : attempt.getResponses()) {
+            final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
+            final ResponseLegality responseLegality = response.getResponseLegality();
+            final ResponseDataType responseType = response.getResponseType();
+            ResponseData responseData = null;
+            switch (responseType) {
+                case STRING:
+                    responseData = new StringResponseData(response.getStringResponseData());
+                    break;
+
+                case FILE:
+                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
+                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
+                            fileSubmission.getContentType());
+                    break;
+
+                default:
+                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
+            }
+            responseDataBuilder.put(responseIdentifier, responseData);
+            if (responseLegality==ResponseLegality.BAD) {
+                badResponseIdentifiersBuilder.add(responseIdentifier);
+            }
+            else if (responseLegality==ResponseLegality.INVALID) {
+                invalidResponseIdentifiersBuilder.add(responseIdentifier);
+            }
+        }
+    }
+
+    //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
     public void streamAssessmentResource(final long did, final String fileSystemIdString,
@@ -705,6 +842,11 @@ public class AssessmentCandidateService {
             throws PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(outputStream, "outputStream");
+
+        /* Forbid results if the candidate session is closed */
+        ensureSessionNotClosed(candidateSession);
+
+        /* Make sure candidate is actually allowed to get results for this delivery */
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         ensureCallerMayViewResult(itemDelivery);
 

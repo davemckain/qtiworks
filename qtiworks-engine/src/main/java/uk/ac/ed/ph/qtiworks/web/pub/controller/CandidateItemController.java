@@ -122,11 +122,13 @@ public class CandidateItemController {
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl("/web/public/session/" + xid);
-        renderingOptions.setExitUrl("/web/public/session/" + xid + "/exit");
+        renderingOptions.setAttemptUrl("/web/public/session/" + xid + "/attempt");
+        renderingOptions.setEndUrl("/web/public/session/" + xid + "/end");
         renderingOptions.setResetUrl("/web/public/session/" + xid + "/reset");
-        renderingOptions.setSourceUrl("/web/public/delivery/" + did + "/source");
+        renderingOptions.setReinitUrl("/web/public/session/" + xid + "/reinit");
         renderingOptions.setResultUrl("/web/public/session/" + xid + "/result");
+        renderingOptions.setCloseUrl("/web/public/session/" + xid + "/close");
+        renderingOptions.setSourceUrl("/web/public/delivery/" + did + "/source");
         renderingOptions.setServeFileUrl("/web/public/delivery/" + did + "/file");
 
         return assessmentCandidateService.renderCurrentState(xid, renderingOptions);
@@ -142,7 +144,7 @@ public class CandidateItemController {
      * @throws CandidateSessionStateException
      * @throws RuntimeValidationException
      */
-    @RequestMapping(value="/session/{xid}", method=RequestMethod.POST)
+    @RequestMapping(value="/session/{xid}/attempt", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Handling attempt against session {}", xid);
@@ -225,6 +227,8 @@ public class CandidateItemController {
     /**
      * Resets the given {@link CandidateItemSession}
      *
+     * @see AssessmentCandidateService#resetCandidateSession(long)
+     *
      * @param response
      * @param did
      * @return
@@ -243,7 +247,9 @@ public class CandidateItemController {
     }
 
     /**
-     * Ends the given {@link CandidateItemSession}
+     * Re-initialises the given {@link CandidateItemSession}
+     *
+     * @see AssessmentCandidateService#reinitCandidateSession(long)
      *
      * @param response
      * @param did
@@ -252,11 +258,51 @@ public class CandidateItemController {
      * @throws DomainEntityNotFoundException
      * @throws RuntimeValidationException
      */
-    @RequestMapping(value="/session/{xid}/exit", method=RequestMethod.POST)
+    @RequestMapping(value="/session/{xid}/reinit", method=RequestMethod.POST)
+    public String reinitSession(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting reinit of session #{}", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.reinitCandidateSession(xid);
+
+        /* Redirect to rendering of current session state */
+        return redirectToSession(candidateSession);
+    }
+
+    /**
+     * Ends (but does not exit) the given {@link CandidateItemSession}
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/end", method=RequestMethod.POST)
     public String endSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Requesting end of session #{}", xid);
-        assessmentCandidateService.endCandidateSession(xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.endCandidateSession(xid);
+
+        /* Redirect to rendering of current session state */
+        return redirectToSession(candidateSession);
+    }
+
+    /**
+     * Exits the given {@link CandidateItemSession}
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/close", method=RequestMethod.POST)
+    public String closeSession(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting close of session #{}", xid);
+        assessmentCandidateService.closeCandidateSession(xid);
 
         /* TODO: Need to redirect somewhere useful! */
         return "redirect:/";

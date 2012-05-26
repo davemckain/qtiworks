@@ -59,10 +59,16 @@ public final class RenderingOptions implements Serializable {
     private String attemptUrl;
 
     @NotNull
+    private String endUrl;
+
+    @NotNull
     private String resetUrl;
 
     @NotNull
-    private String exitUrl;
+    private String reinitUrl;
+
+    @NotNull
+    private String closeUrl;
 
     @NotNull
     private String resultUrl;
@@ -102,6 +108,15 @@ public final class RenderingOptions implements Serializable {
     }
 
 
+    public String getEndUrl() {
+        return endUrl;
+    }
+
+    public void setEndUrl(final String endUrl) {
+        this.endUrl = endUrl;
+    }
+
+
     public String getResetUrl() {
         return resetUrl;
     }
@@ -111,12 +126,21 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getExitUrl() {
-        return exitUrl;
+    public String getReinitUrl() {
+        return reinitUrl;
     }
 
-    public void setExitUrl(final String exitUrl) {
-        this.exitUrl = exitUrl;
+    public void setReinitUrl(final String reinitUrl) {
+        this.reinitUrl = reinitUrl;
+    }
+
+
+    public String getCloseUrl() {
+        return closeUrl;
+    }
+
+    public void setCloseUrl(final String closeUrl) {
+        this.closeUrl = closeUrl;
     }
 
 

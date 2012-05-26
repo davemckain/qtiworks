@@ -53,11 +53,20 @@ public enum CandidateItemEventType {
     /** Attempt made, some responses bound unsuccessfully */
     ATTEMPT_BAD,
 
-    /** Candidate has reset the session back to its initial state */
+    /**
+     * Candidate has reset the session back to the state immediately after the last
+     * {@link #REINIT} (or after the {@link #INIT} if there were no reinits)
+     */
     RESET,
 
-    /** Candidate has ended the current session */
+    /** Candidate has re-initialised the session (i.e. template processing has been redone) */
+    REINIT,
+
+    /** Candidate has ended the current session and moved it into review state */
     END,
+
+    /** Candidate has closed the current session completely */
+    CLOSED,
 
     ;
 

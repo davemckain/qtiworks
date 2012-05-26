@@ -242,7 +242,9 @@ public class SampleResourceImporter {
             defaultDelivery.setMaxAttempts(Integer.valueOf(0));
             defaultDelivery.setOpen(true);
             defaultDelivery.setTitle("Temporary default bootstrap delivery");
+            defaultDelivery.setAllowEnd(true);
             defaultDelivery.setAllowReset(true);
+            defaultDelivery.setAllowReinit(true);
             defaultDelivery.setAllowResult(true);
             defaultDelivery.setAllowSource(true);
             assessmentPackage.setDefaultDelivery(defaultDelivery);

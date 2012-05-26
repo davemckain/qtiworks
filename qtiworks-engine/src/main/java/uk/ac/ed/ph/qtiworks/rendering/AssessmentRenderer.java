@@ -139,11 +139,12 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-
     @PostConstruct
     public void init() {
         this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), xsltStylesheetCache);
     }
+
+    //----------------------------------------------------
 
     /**
      * FIXME: This is probably in the wrong place, as it's not technically a rendering thing!
@@ -200,17 +201,22 @@ public class AssessmentRenderer {
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+        xsltParameters.put("endUrl", renderingOptions.getEndUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
-        xsltParameters.put("exitUrl", renderingOptions.getExitUrl());
+        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
+        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getBadResponseIdentifiers()));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getInvalidResponseIdentifiers()));
         xsltParameters.put("attemptAllowed", Boolean.valueOf(renderingRequest.isAttemptAllowed()));
+        xsltParameters.put("endAllowed", Boolean.valueOf(renderingRequest.isEndAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
+        xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
+        xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
 
         /* Pass ItemSessionState as XML */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();

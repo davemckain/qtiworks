@@ -94,8 +94,10 @@ public class AdhocService {
         renderingOptions.setContextPath("/context");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setExitUrl("/exit");
+        renderingOptions.setEndUrl("/end");
+        renderingOptions.setCloseUrl("/exit");
         renderingOptions.setResetUrl("/reset");
+        renderingOptions.setReinitUrl("/reinit");
         renderingOptions.setSourceUrl("/source");
         renderingOptions.setResultUrl("/result");
         renderingOptions.setServeFileUrl("/file");
@@ -119,10 +121,16 @@ public class AdhocService {
         /* Render new state */
         System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
 
+        /* Then reinit state */
+        assessmentCandidateService.reinitCandidateSession(candidateItemSession);
+
         /* Then reset state */
         assessmentCandidateService.resetCandidateSession(candidateItemSession);
 
         /* Then end session */
         assessmentCandidateService.endCandidateSession(candidateItemSession);
+
+        /* Then close session */
+        assessmentCandidateService.closeCandidateSession(candidateItemSession);
     }
 }

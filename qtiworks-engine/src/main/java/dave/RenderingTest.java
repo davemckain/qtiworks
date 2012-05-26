@@ -55,11 +55,13 @@ public class RenderingTest {
             final RenderingOptions renderingOptions = new RenderingOptions();
             renderingOptions.setContextPath("/qtiworks");
             renderingOptions.setAttemptUrl("/attempt");
-            renderingOptions.setExitUrl("/exit");
-            renderingOptions.setResetUrl("/result");
+            renderingOptions.setEndUrl("/end");
+            renderingOptions.setResetUrl("/reset");
+            renderingOptions.setReinitUrl("/reinit");
             renderingOptions.setResultUrl("/result");
             renderingOptions.setSourceUrl("/source");
             renderingOptions.setServeFileUrl("/serveFile");
+            renderingOptions.setCloseUrl("/close");
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -70,6 +72,7 @@ public class RenderingTest {
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAttemptAllowed(true);
             renderingRequest.setResetAllowed(true);
+            renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
             renderingRequest.setBadResponseIdentifiers(null);

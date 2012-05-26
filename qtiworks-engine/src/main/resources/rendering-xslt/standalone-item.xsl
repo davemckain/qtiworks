@@ -113,11 +113,27 @@ Renders a standalone assessmentItem
                   </form>
                 </li>
               </xsl:if>
-              <li>
-                <form action="{$webappContextPath}{$exitUrl}" method="post">
-                  <input type="submit" value="Exit and return"/>
-                </form>
-              </li>
+              <xsl:if test="$reinitAllowed">
+                <li>
+                  <form action="{$webappContextPath}{$reinitUrl}" method="post">
+                    <input type="submit" value="Reinitialise"/>
+                  </form>
+                </li>
+              </xsl:if>
+              <xsl:if test="$endAllowed">
+                <li>
+                  <form action="{$webappContextPath}{$endUrl}" method="post">
+                    <input type="submit" value="End session for review"/>
+                  </form>
+                </li>
+              </xsl:if>
+              <xsl:if test="$closeAllowed">
+                <li>
+                  <form action="{$webappContextPath}{$closeUrl}" method="post">
+                    <input type="submit" value="Close session"/>
+                  </form>
+                </li>
+              </xsl:if>
               <xsl:if test="$resultAllowed">
                 <li>
                   <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>

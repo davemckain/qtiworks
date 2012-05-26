@@ -83,10 +83,12 @@ public final class ItemRenderingRequest implements Serializable {
 
     /** Whether the candidate should be allowed to make an attempt */
     private boolean attemptAllowed;
-
+    private boolean endAllowed;
     private boolean resetAllowed;
+    private boolean reinitAllowed;
     private boolean sourceAllowed;
     private boolean resultAllowed;
+    private boolean closeAllowed;
 
     //----------------------------------------------------
 
@@ -171,12 +173,30 @@ public final class ItemRenderingRequest implements Serializable {
     }
 
 
+    public boolean isEndAllowed() {
+        return endAllowed;
+    }
+
+    public void setEndAllowed(final boolean endAllowed) {
+        this.endAllowed = endAllowed;
+    }
+
+
     public boolean isResetAllowed() {
         return resetAllowed;
     }
 
     public void setResetAllowed(final boolean resetAllowed) {
         this.resetAllowed = resetAllowed;
+    }
+
+
+    public boolean isReinitAllowed() {
+        return reinitAllowed;
+    }
+
+    public void setReinitAllowed(final boolean reinitAllowed) {
+        this.reinitAllowed = reinitAllowed;
     }
 
 
@@ -195,6 +215,15 @@ public final class ItemRenderingRequest implements Serializable {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
+    }
+
+
+    public boolean isCloseAllowed() {
+        return closeAllowed;
+    }
+
+    public void setCloseAllowed(final boolean closeAllowed) {
+        this.closeAllowed = closeAllowed;
     }
 
     //----------------------------------------------------
