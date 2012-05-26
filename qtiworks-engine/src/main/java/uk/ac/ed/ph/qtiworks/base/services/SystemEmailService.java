@@ -85,7 +85,7 @@ public final class SystemEmailService {
         /* Validate the raw message */
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(message, "message");
         jsr303Validator.validate(message, errors);
-        if (!errors.hasErrors()) {
+        if (errors.hasErrors()) {
             throw new QtiWorksRuntimeException("Invalid CstMailMessage Object: " + errors);
         }
 
