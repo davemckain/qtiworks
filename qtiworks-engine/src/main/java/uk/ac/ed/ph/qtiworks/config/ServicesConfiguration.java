@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
-import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -54,7 +53,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.tools.services"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.tools.services"})
 @EnableTransactionManagement
 public class ServicesConfiguration {
 
@@ -81,10 +80,5 @@ public class ServicesConfiguration {
     @Bean
     public QtiXmlReader qtiXmlReader() {
         return new QtiXmlReader(jqtiExtensionManager(), schemaCache());
-    }
-
-    @Bean
-    public AssessmentRenderer assessmentRenderer() {
-        return new AssessmentRenderer(jqtiExtensionManager(), stylesheetCache());
     }
 }

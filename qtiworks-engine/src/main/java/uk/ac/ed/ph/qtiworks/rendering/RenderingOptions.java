@@ -33,10 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * FIXME: Document this!
@@ -48,21 +49,28 @@ public final class RenderingOptions implements Serializable {
     private static final long serialVersionUID = -1744991243897646596L;
 
     /** Required {@link SerializationMethod} */
+    @NotNull
     private SerializationMethod serializationMethod;
 
-    /** TODO: This is currently duplicated, but is probably cleaner here? */
+    @NotNull
     private String contextPath;
 
+    @NotNull
     private String attemptUrl;
 
+    @NotNull
     private String resetUrl;
 
+    @NotNull
     private String exitUrl;
 
+    @NotNull
     private String resultUrl;
 
+    @NotNull
     private String sourceUrl;
 
+    @NotNull
     private String serveFileUrl;
 
     //----------------------------------------------------

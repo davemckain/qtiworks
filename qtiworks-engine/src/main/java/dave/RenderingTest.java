@@ -27,6 +27,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
 
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
 public class RenderingTest {
 
     public static void main(final String[] args) throws RuntimeValidationException {
@@ -57,6 +59,7 @@ public class RenderingTest {
             renderingOptions.setResetUrl("/result");
             renderingOptions.setResultUrl("/result");
             renderingOptions.setSourceUrl("/source");
+            renderingOptions.setServeFileUrl("/serveFile");
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -72,7 +75,14 @@ public class RenderingTest {
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
 
-            final AssessmentRenderer renderer = new AssessmentRenderer(jqtiExtensionManager, new SimpleXsltStylesheetCache());
+            final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+            validator.afterPropertiesSet();
+
+            final AssessmentRenderer renderer = new AssessmentRenderer();
+            renderer.setJsr303Validator(validator);
+            renderer.setJqtiExtensionManager(jqtiExtensionManager);
+            renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
+            renderer.init();
             final String rendered = renderer.renderItem(renderingRequest);
             System.out.println("Rendered page: " + rendered);
         }

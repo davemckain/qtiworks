@@ -46,6 +46,9 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 /**
  * Encapsulates parameters for controlling "external" aspects of the rendering process.
  *
@@ -55,15 +58,21 @@ public final class ItemRenderingRequest implements Serializable {
 
     private static final long serialVersionUID = -1744991243897646596L;
 
+    @NotNull
     private ResourceLocator assessmentResourceLocator;
 
+    @NotNull
     private URI assessmentResourceUri;
 
+    @NotNull
+    @Valid
     private RenderingOptions renderingOptions;
 
     /** Current state of the candidate's session */
+    @NotNull
     private CandidateSessionState candidateSessionState;
 
+    @NotNull
     private ItemSessionState itemSessionState;
 
     private Map<Identifier, ResponseData> responseInputs;

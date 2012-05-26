@@ -58,6 +58,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -69,6 +71,9 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Validator;
 import org.xml.sax.SAXException;
 
 /**
@@ -83,7 +88,8 @@ import org.xml.sax.SAXException;
  *
  * @author David McKain
  */
-public final class AssessmentRenderer {
+@Service
+public class AssessmentRenderer {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentRenderer.class);
 
@@ -92,12 +98,51 @@ public final class AssessmentRenderer {
     @SuppressWarnings("unused")
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
 
-    private final JqtiExtensionManager jqtiExtensionManager;
-    private final XsltStylesheetManager stylesheetManager;
+    @Resource
+    private JqtiExtensionManager jqtiExtensionManager;
 
-    public AssessmentRenderer(final JqtiExtensionManager jqtiExtensionManager, final XsltStylesheetCache stylesheetCache) {
+    @Resource
+    private XsltStylesheetCache xsltStylesheetCache;
+
+    @Resource
+    private Validator jsr303Validator;
+
+    private XsltStylesheetManager stylesheetManager;
+
+    //----------------------------------------------------
+
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
+    }
+
+    public void setJqtiExtensionManager(final JqtiExtensionManager jqtiExtensionManager) {
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), stylesheetCache);
+    }
+
+
+    public XsltStylesheetCache getXsltStylesheetCache() {
+        return xsltStylesheetCache;
+    }
+
+    public void setXsltStylesheetCache(final XsltStylesheetCache xsltStylesheetCache) {
+        this.xsltStylesheetCache = xsltStylesheetCache;
+    }
+
+
+    public Validator getJsr303Validator() {
+        return jsr303Validator;
+    }
+
+    public void setJsr303Validator(final Validator jsr303Validator) {
+        this.jsr303Validator = jsr303Validator;
+    }
+
+    //----------------------------------------------------
+
+
+    @PostConstruct
+    public void init() {
+        this.stylesheetManager = new XsltStylesheetManager(new ClassPathResourceLocator(), xsltStylesheetCache);
     }
 
     /**
@@ -137,13 +182,19 @@ public final class AssessmentRenderer {
 
     public String renderItem(final ItemRenderingRequest renderingRequest) {
         Assert.ensureNotNull(renderingRequest, "renderingRequest");
-
-        /* FIXME: Need to validate request to make sure all data has been supplied */
         logger.debug("renderItem({})", renderingRequest);
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "renderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid ItemRenderingRequest Object: " + errors);
+        }
+
         final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
 
-        /* Set various control parameters */
+        /* Pass request info to XSLT as parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
