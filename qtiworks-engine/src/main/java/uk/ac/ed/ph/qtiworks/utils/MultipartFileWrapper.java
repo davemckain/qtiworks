@@ -36,10 +36,11 @@ package uk.ac.ed.ph.qtiworks.utils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -87,7 +88,7 @@ public class MultipartFileWrapper implements MultipartFile {
     public byte[] getBytes() throws IOException {
         byte[] result;
         if (file.exists()) {
-            result = IoUtilities.readBinaryStream(new FileInputStream(file));
+            result = FileUtils.readFileToByteArray(file);
         }
         else {
             result = new byte[0];
@@ -109,12 +110,13 @@ public class MultipartFileWrapper implements MultipartFile {
 
     @Override
     public void transferTo(final File dest) throws IOException, IllegalStateException {
-        final FileOutputStream destStream = new FileOutputStream(dest);
-        if (file.exists()) {
-            IoUtilities.transfer(new FileInputStream(file), destStream);
+        InputStream inputStream = null;
+        try {
+            inputStream = getInputStream();
+            FileUtils.copyInputStreamToFile(getInputStream(), dest);
         }
-        else {
-            IoUtilities.transfer(new ByteArrayInputStream(new byte[0]), destStream);
+        finally {
+            IOUtils.closeQuietly(inputStream);
         }
     }
 }
