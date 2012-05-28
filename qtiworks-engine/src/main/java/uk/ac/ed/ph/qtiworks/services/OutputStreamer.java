@@ -45,16 +45,12 @@ import java.util.Date;
  */
 public interface OutputStreamer {
 
-//    void setContentType(String contentType);
-//
-//    void setContentLength(int contentLength);
-//
-//    void setLastModifiedTime(Date date);
-//
-//    void setCacheable(boolean cacheable);
-
-    void streamDynamic(String contentType, int contentLength, Date lastModifiedTime, InputStream resultStream)
+    void streamCacheable(final String pseudoResourceUri, String contentType, int contentLength,
+            Date lastModifiedTime, InputStream resultStream)
         throws IOException;
 
+    void streamDynamic(final String pseudoResourceUri, String contentType, int contentLength,
+            Date lastModifiedTime, InputStream resultStream)
+        throws IOException;
 
 }
