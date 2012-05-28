@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -54,9 +53,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class ItemRenderingRequest implements Serializable {
-
-    private static final long serialVersionUID = -1744991243897646596L;
+public final class ItemRenderingRequest {
 
     @NotNull
     private ResourceLocator assessmentResourceLocator;
