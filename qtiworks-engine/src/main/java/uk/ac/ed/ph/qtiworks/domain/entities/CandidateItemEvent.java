@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import java.util.Date;
@@ -147,11 +148,11 @@ public class CandidateItemEvent implements BaseEntity {
 
 
     public Date getTimestamp() {
-        return timestamp;
+        return ObjectUtilities.safeClone(timestamp);
     }
 
     public void setTimestamp(final Date timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp = ObjectUtilities.safeClone(timestamp);
     }
 
 

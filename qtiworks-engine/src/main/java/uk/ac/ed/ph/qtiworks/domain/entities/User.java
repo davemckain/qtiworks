@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -111,12 +113,12 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Date getCreationTime() {
-        return creationTime;
+        return ObjectUtilities.safeClone(creationTime);
     }
 
     @Override
     public void setCreationTime(final Date creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = ObjectUtilities.safeClone(creationTime);
     }
 
 

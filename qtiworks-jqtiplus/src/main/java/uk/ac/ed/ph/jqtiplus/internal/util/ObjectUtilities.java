@@ -37,6 +37,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,15 @@ public final class ObjectUtilities {
             result = Collections.emptyMap();
         }
         return result;
+    }
+
+    /**
+     * Safely clones a {@link Date} Object, returning null for a null input.
+     *
+     * @param object
+     */
+    public static Date safeClone(final Date date) {
+        return date!=null ? (Date) date.clone() : null;
     }
 
     /**

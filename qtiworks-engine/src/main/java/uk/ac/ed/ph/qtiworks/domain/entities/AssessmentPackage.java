@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -206,12 +207,12 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Date getCreationTime() {
-        return creationTime;
+        return ObjectUtilities.safeClone(creationTime);
     }
 
     @Override
     public void setCreationTime(final Date creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = ObjectUtilities.safeClone(creationTime);
     }
 
 
