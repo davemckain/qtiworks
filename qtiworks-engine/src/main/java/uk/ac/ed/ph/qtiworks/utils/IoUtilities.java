@@ -48,6 +48,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 
+import org.apache.commons.io.FileUtils;
+
 /**
  * NOTE: Consider using Google Guava instead of this where possible.
  *
@@ -222,6 +224,10 @@ public final class IoUtilities {
     //----------------------------------------------------------------------------
     // Reading methods
 
+    /**
+     * @see FileUtils#readFileToByteArray(File)
+     */
+    @Deprecated
     public static byte[] readBinaryStream(final InputStream stream) throws IOException {
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         transfer(stream, outStream);
@@ -276,6 +282,7 @@ public final class IoUtilities {
      * @return String representing the data we read in
      * @throws IOException
      */
+    @Deprecated
     public static String readUnicodeFile(final File file) throws IOException {
         final InputStream inStream = new FileInputStream(file);
         try {
@@ -298,6 +305,7 @@ public final class IoUtilities {
      *
      * @throws IOException if the usual bad things happen
      */
+    @Deprecated
     public static void writeUnicodeFile(final File outputFile, final String data) throws IOException {
         writeFile(outputFile, data, "UTF-8");
     }
@@ -313,6 +321,7 @@ public final class IoUtilities {
      * @throws UnsupportedEncodingException if the given encoding
      *   is not supported.
      */
+    @Deprecated
     public static void writeFile(final File outputFile, final String data, final String encoding) throws IOException {
         final FileOutputStream outStream = new FileOutputStream(outputFile);
         OutputStreamWriter writer = null;
