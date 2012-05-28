@@ -68,6 +68,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -125,6 +126,9 @@ public class AssessmentCandidateService {
 
     @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private QtiSerializer qtiSerializer;
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
@@ -858,7 +862,7 @@ public class AssessmentCandidateService {
         final ItemResult itemResult = itemSessionController.computeItemResult();
 
         /* Send result */
-        assessmentRenderer.serializeJqtiObject(itemResult, outputStream);
+        qtiSerializer.serializeJqtiObject(itemResult, outputStream);
         auditor.recordEvent("Candidate streamed result for session #" + candidateSession.getId()
                 + " on delivery #" + candidateSession.getItemDelivery().getId());
     }
