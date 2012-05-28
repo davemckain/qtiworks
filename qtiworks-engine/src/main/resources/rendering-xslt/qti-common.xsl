@@ -300,7 +300,7 @@ rendering.
   <xsl:function name="qw:is-maths-content-value" as="xs:boolean">
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:sequence select="boolean($valueHolder[@cardinality='record'
-      and qw:value[@baseType='string' and @identifier='MathsContentClass'
+      and qw:value[@baseType='string' and @fieldIdentifier='MathsContentClass'
         and string(qw:value)='org.qtitools.mathassess']])"/>
   </xsl:function>
 
@@ -308,7 +308,7 @@ rendering.
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:choose>
       <xsl:when test="qw:is-maths-content-value($valueHolder)">
-        <xsl:variable name="pmathmlString" select="$valueHolder/qw:value[@identifier='PMathML']" as="xs:string"/>
+        <xsl:variable name="pmathmlString" select="$valueHolder/qw:value[@fieldIdentifier='PMathML']" as="xs:string"/>
         <xsl:variable name="pmathmlDocNode" select="saxon:parse($pmathmlString)" as="document-node()"/>
         <xsl:copy-of select="$pmathmlDocNode/*"/>
       </xsl:when>

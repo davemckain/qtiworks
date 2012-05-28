@@ -152,7 +152,7 @@ public final class ItemSesssionStateXmlMarshaller {
                         final SingleValue itemValue = entry.getValue();
                         final Element v = document.createElementNS(QTIWORKS_NAMESPACE, "value");
                         v.setAttribute("baseType", itemValue.getBaseType().toQtiString());
-                        v.setAttribute("identifier",itemIdentifier.toString());
+                        v.setAttribute("fieldIdentifier",itemIdentifier.toString());
                         appendSingleValue(v, itemValue);
                         element.appendChild(v);
                     }
@@ -356,7 +356,7 @@ public final class ItemSesssionStateXmlMarshaller {
             if (!"value".equals(childElement.getLocalName())) {
                 throw new MarshallingException("Expected only <value> children of " + element);
             }
-            final Identifier itemIdentifier = parseIdentifierAttribute(childElement, "identifier");
+            final Identifier itemIdentifier = parseIdentifierAttribute(childElement, "fieldIdentifier");
             final SingleValue itemValue = parseSingleValue(childElement);
             result.add(itemIdentifier, itemValue);
         }
@@ -436,8 +436,4 @@ public final class ItemSesssionStateXmlMarshaller {
         }
         return result;
     }
-
-    //----------------------------------------------
-
-
 }

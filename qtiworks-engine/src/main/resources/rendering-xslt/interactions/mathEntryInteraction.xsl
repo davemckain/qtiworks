@@ -55,8 +55,8 @@
             </xsl:when>
             <xsl:otherwise>
               widget.show('<xsl:value-of select="$asciiMathInput"/>', {
-                cmath: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@identifier='CMathML'])"/>',
-                pmathBracketed: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@identifier='PMathMLBracketed'])"/>',
+                cmath: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@fieldIdentifier='CMathML'])"/>',
+                pmathBracketed: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@fieldIdentifier='PMathMLBracketed'])"/>',
               });
             </xsl:otherwise>
           </xsl:choose>

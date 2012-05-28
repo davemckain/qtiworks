@@ -173,7 +173,7 @@ Rendering utility templates
       <xsl:for-each select="$valueHolders">
         <li>
           <span class="variableName">
-            <xsl:value-of select="@identifier"/>
+            <xsl:value-of select="@fieldIdentifier"/>
           </span>
           <xsl:text> = </xsl:text>
           <xsl:choose>
