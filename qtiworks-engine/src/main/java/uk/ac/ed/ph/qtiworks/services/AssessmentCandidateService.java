@@ -813,7 +813,7 @@ public class AssessmentCandidateService {
         final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
         final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
         final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+        extractResponseData(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
 
         renderingRequest.setResponseInputs(responseDataBuilder);
         renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
@@ -892,7 +892,7 @@ public class AssessmentCandidateService {
         final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
         final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
         final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+        extractResponseData(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
 
         renderingRequest.setResponseInputs(responseDataBuilder);
         renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
@@ -935,6 +935,19 @@ public class AssessmentCandidateService {
         renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
         renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
 
+        /* If it's an attempt, pull out the raw response data */
+        final CandidateItemAttempt playbackAttempt = candidateItemAttemptDao.getForEvent(playbackEvent);
+        if (playbackAttempt!=null) {
+            final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+            final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+            final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+            extractResponseData(playbackAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
+            renderingRequest.setResponseInputs(responseDataBuilder);
+            renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+            renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
+        }
+
         renderingRequest.setPlaybackAllowed(itemDelivery.isAllowPlayback());
         if (itemDelivery.isAllowPlayback()) {
             renderingRequest.setPlaybackEventIds(getPlaybackEventIds(candidateSession));
@@ -975,7 +988,7 @@ public class AssessmentCandidateService {
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
-    private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
+    private void extractResponseData(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
             final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
         for (final CandidateItemResponse response : attempt.getResponses()) {
             final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
@@ -1148,7 +1161,6 @@ public class AssessmentCandidateService {
                 || eventType==CandidateItemEventType.INIT
                 || eventType==CandidateItemEventType.REINIT
                 || eventType==CandidateItemEventType.RESET;
-
     }
 
     private CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateSession)  {
