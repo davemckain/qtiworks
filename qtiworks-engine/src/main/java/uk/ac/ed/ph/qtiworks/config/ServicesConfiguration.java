@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
@@ -80,5 +81,10 @@ public class ServicesConfiguration {
     @Bean
     public QtiXmlReader qtiXmlReader() {
         return new QtiXmlReader(jqtiExtensionManager(), schemaCache());
+    }
+
+    @Bean
+    public QtiSerializer qtiSerializer() {
+        return new QtiSerializer(jqtiExtensionManager());
     }
 }

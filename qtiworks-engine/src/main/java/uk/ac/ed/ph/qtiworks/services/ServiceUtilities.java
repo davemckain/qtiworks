@@ -219,6 +219,13 @@ public final class ServiceUtilities {
      * Computes a hex-encoded SHA1 digest of the given password String
      */
     public static String computePasswordDigest(final String password) {
-        return Hashing.sha1().hashString(password, Charset.forName("UTF-8")).toString();
+        return computeSha1Digest(password);
+    }
+
+    /**
+     * Computes a hex-encoded SHA1 digest of the given String
+     */
+    public static String computeSha1Digest(final String string) {
+        return Hashing.sha1().hashString(string, Charset.forName("UTF-8")).toString();
     }
 }

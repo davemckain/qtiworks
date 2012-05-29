@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -43,13 +45,12 @@ import java.util.Date;
  */
 public interface OutputStreamer {
 
-    void setContentType(String contentType);
+    void streamCacheable(final String pseudoResourceUri, String contentType, int contentLength,
+            Date lastModifiedTime, InputStream resultStream)
+        throws IOException;
 
-    void setContentLength(int contentLength);
-
-    void setLastModifiedTime(Date date);
-
-    void setCacheable(boolean cacheable);
-
+    void streamDynamic(final String pseudoResourceUri, String contentType, int contentLength,
+            Date lastModifiedTime, InputStream resultStream)
+        throws IOException;
 
 }

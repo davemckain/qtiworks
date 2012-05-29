@@ -34,14 +34,18 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Implementation of {@link OutputStreamer} suitable for sending data
@@ -49,34 +53,72 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public class ServletOutputStreamer implements OutputStreamer {
-
-    private static final Logger logger = LoggerFactory.getLogger(ServletOutputStreamer.class);
+public final class ServletOutputStreamer implements OutputStreamer {
 
     private final HttpServletResponse response;
+    private final DateFormat httpDateFormat;
+    private final long maxCacheAge;
 
-    public ServletOutputStreamer(final HttpServletResponse response) {
+    public ServletOutputStreamer(final HttpServletResponse response, final long maxCacheAge) {
         this.response = response;
+        this.httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        this.maxCacheAge = maxCacheAge;
     }
 
     @Override
-    public void setContentType(final String contentType) {
+    public void streamDynamic(final String pseudoResourceUri, final String contentType, final int contentLength, final Date lastModifiedTime, final InputStream resultStream)
+            throws IOException {
+        setContentType(contentType);
+        setContentLength(contentLength);
+        setLastModifiedTime(lastModifiedTime);
+        response.setHeader("ETag", computeEtag(pseudoResourceUri));
+        response.setHeader("Cache-Control", "must-revalidate");
+        response.setHeader("Expires", formatHttpDate(lastModifiedTime));
+        final ServletOutputStream servletOutputStream = response.getOutputStream();
+        try {
+            IOUtils.copy(resultStream, servletOutputStream);
+        }
+        finally {
+            servletOutputStream.flush();
+        }
+    }
+
+    @Override
+    public void streamCacheable(final String pseudoResourceUri, final String contentType, final int contentLength, final Date lastModifiedTime, final InputStream resultStream)
+            throws IOException {
+        setContentType(contentType);
+        setContentLength(contentLength);
+        setLastModifiedTime(lastModifiedTime);
+        response.setHeader("ETag", computeEtag(pseudoResourceUri));
+        response.setHeader("Cache-Control", "max-age=" + maxCacheAge);
+        response.setHeader("Expires", formatHttpDate(new Date(lastModifiedTime.getTime() + maxCacheAge)));
+        final ServletOutputStream servletOutputStream = response.getOutputStream();
+        try {
+            IOUtils.copy(resultStream, servletOutputStream);
+        }
+        finally {
+            servletOutputStream.flush();
+        }
+    }
+
+    private void setContentType(final String contentType) {
         response.setContentType(contentType);
     }
 
-    @Override
-    public void setContentLength(final int contentLength) {
+    private void setContentLength(final int contentLength) {
         response.setContentLength(contentLength);
     }
 
-    @Override
-    public void setLastModifiedTime(final Date date) {
-        final SimpleDateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
-        response.setHeader("Last-Modified", httpDateFormat.format(date));
+    private void setLastModifiedTime(final Date date) {
+        response.setHeader("Last-Modified", formatHttpDate(date));
     }
 
-    @Override
-    public void setCacheable(final boolean cacheable) {
-        logger.warn("Caching has not been implemented here yet");
+    private String formatHttpDate(final Date date) {
+        return httpDateFormat.format(date);
+    }
+
+    private String computeEtag(final String pseudoResourceUri) {
+        return ServiceUtilities.computeSha1Digest(pseudoResourceUri);
+
     }
 }

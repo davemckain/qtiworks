@@ -38,20 +38,15 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.util.HashMap;
@@ -65,7 +60,6 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -74,7 +68,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
-import org.xml.sax.SAXException;
 
 /**
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
@@ -145,41 +138,6 @@ public class AssessmentRenderer {
     }
 
     //----------------------------------------------------
-
-    /**
-     * FIXME: This is probably in the wrong place, as it's not technically a rendering thing!
-     * @param object
-     * @return
-     */
-    public String serializeJqtiObject(final XmlNode jqtiObject) {
-        final StringWriter resultWriter = new StringWriter();
-        serializeJqtiObject(jqtiObject, new StreamResult(resultWriter));
-        return resultWriter.toString();
-    }
-
-    /**
-     * FIXME: This is probably in the wrong place, as it's not technically a rendering thing!
-     * @param object
-     * @return
-     */
-    public void serializeJqtiObject(final XmlNode jqtiObject, final OutputStream outputStream) {
-        serializeJqtiObject(jqtiObject, new StreamResult(outputStream));
-    }
-
-    private void serializeJqtiObject(final XmlNode jqtiObject, final StreamResult result) {
-        final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
-        serializationOptions.setIndenting(true);
-
-        final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
-        serializerHandler.setResult(result);
-        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, new SaxFiringOptions());
-        try {
-            saxEventFirer.fireSaxDocument(jqtiObject);
-        }
-        catch (final SAXException e) {
-            throw new QtiRenderingException("Unexpected Exception firing QTI Object SAX events at serializer stylesheet");
-        }
-    }
 
     public String renderItem(final ItemRenderingRequest renderingRequest) {
         Assert.ensureNotNull(renderingRequest, "renderingRequest");
@@ -262,7 +220,9 @@ public class AssessmentRenderer {
         transformer.setOutputProperty(OutputKeys.METHOD, serializationMethod.getMethod());
         transformer.setOutputProperty("include-content-type", "no");
 
-        /* If we're building HTML5, add in its custom pseudo-DOCTYPE as we can't generate this in XSLT */
+        /* If we're building HTML5, add in its custom pseudo-DOCTYPE as we can't generate this in XSLT.
+         * (NB: This only works sanely as we've hard-coded a reasonable encoding.)
+         */
         final StringWriter resultWriter = new StringWriter();
         if (serializationMethod==SerializationMethod.HTML5_MATHJAX) {
             resultWriter.append("<!DOCTYPE html>\n");
