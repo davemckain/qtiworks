@@ -119,17 +119,20 @@ public class CandidateItemController {
         final Long did = candidateSession.getItemDelivery().getId();
 
         /* Create appropriate options that link back to this controller */
+        final String sessionBaseUrl = "/web/public/session/" + xid;
+        final String deliveryBaseUrl = "/web/public/delivery/" + did;
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl("/web/public/session/" + xid + "/attempt");
-        renderingOptions.setCloseUrl("/web/public/session/" + xid + "/close");
-        renderingOptions.setResetUrl("/web/public/session/" + xid + "/reset");
-        renderingOptions.setReinitUrl("/web/public/session/" + xid + "/reinit");
-        renderingOptions.setResultUrl("/web/public/session/" + xid + "/result");
-        renderingOptions.setTerminateUrl("/web/public/session/" + xid + "/close");
-        renderingOptions.setSourceUrl("/web/public/delivery/" + did + "/source");
-        renderingOptions.setServeFileUrl("/web/public/delivery/" + did + "/file");
+        renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
+        renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
+        renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
+        renderingOptions.setResetUrl(sessionBaseUrl + "/reset");
+        renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
+        renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
+        renderingOptions.setSourceUrl(deliveryBaseUrl + "/source");
+        renderingOptions.setServeFileUrl(deliveryBaseUrl + "/file");
 
         return assessmentCandidateService.renderCurrentState(xid, renderingOptions);
     }

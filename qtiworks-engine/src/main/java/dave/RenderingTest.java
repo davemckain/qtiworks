@@ -74,12 +74,11 @@ public class RenderingTest {
             renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
-            renderingRequest.setSolutionAllowedWhenInteracting(true);
-            renderingRequest.setResetAllowedWhenInteracting(true);
-            renderingRequest.setReinitAllowedWhenInteracting(true);
+            renderingRequest.setSolutionAllowed(true);
+            renderingRequest.setResetAllowed(true);
+            renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
-            renderingRequest.setTerminateAllowed(true);
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
 

@@ -21,6 +21,7 @@ rendering.
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
+  <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
   <xsl:param name="renderingMode" as="xs:string" required="yes"/>
   <xsl:variable name="isInteracting" as="xs:boolean" select="$renderingMode='INTERACTING'"/>
 
@@ -31,7 +32,7 @@ rendering.
   <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
   <xsl:param name="resetUrl" as="xs:string" required="yes"/>
   <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
-  <xsl:param name="endUrl" as="xs:string" required="yes"/>
+  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
   <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
   <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
@@ -39,13 +40,12 @@ rendering.
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- Action permissions -->
-  <xsl:param name="endAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="terminateAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>

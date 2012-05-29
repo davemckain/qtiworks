@@ -82,15 +82,11 @@ public final class ItemRenderingRequest {
     private Set<Identifier> invalidResponseIdentifiers;
 
     private boolean closeAllowed;
-    private boolean resetAllowedWhenInteracting;
-    private boolean resetAllowedWhenClosed;
-    private boolean reinitAllowedWhenInteracting;
-    private boolean reinitAllowedWhenClosed;
-    private boolean solutionAllowedWhenInteracting;
-    private boolean solutionAllowedAfterInteracting;
+    private boolean resetAllowed;
+    private boolean reinitAllowed;
+    private boolean solutionAllowed;
     private boolean sourceAllowed;
     private boolean resultAllowed;
-    private boolean terminateAllowed;
 
     //----------------------------------------------------
 
@@ -184,39 +180,30 @@ public final class ItemRenderingRequest {
     }
 
 
-    public boolean isResetAllowedWhenInteracting() {
-        return resetAllowedWhenInteracting;
+    public boolean isResetAllowed() {
+        return resetAllowed;
     }
 
-    public void setResetAllowedWhenInteracting(final boolean resetAllowedWhenInteracting) {
-        this.resetAllowedWhenInteracting = resetAllowedWhenInteracting;
-    }
-
-
-    public boolean isResetAllowedWhenClosed() {
-        return resetAllowedWhenClosed;
-    }
-
-    public void setResetAllowedWhenClosed(final boolean resetAllowedWhenClosed) {
-        this.resetAllowedWhenClosed = resetAllowedWhenClosed;
+    public void setResetAllowed(final boolean resetAllowed) {
+        this.resetAllowed = resetAllowed;
     }
 
 
-    public boolean isReinitAllowedWhenInteracting() {
-        return reinitAllowedWhenInteracting;
+    public boolean isReinitAllowed() {
+        return reinitAllowed;
     }
 
-    public void setReinitAllowedWhenInteracting(final boolean reinitAllowedWhenInteracting) {
-        this.reinitAllowedWhenInteracting = reinitAllowedWhenInteracting;
+    public void setReinitAllowed(final boolean reinitAllowed) {
+        this.reinitAllowed = reinitAllowed;
     }
 
 
-    public boolean isReinitAllowedWhenClosed() {
-        return reinitAllowedWhenClosed;
+    public boolean isSolutionAllowed() {
+        return solutionAllowed;
     }
 
-    public void setReinitAllowedWhenClosed(final boolean reinitAllowedWhenClosed) {
-        this.reinitAllowedWhenClosed = reinitAllowedWhenClosed;
+    public void setSolutionAllowed(final boolean solutionAllowed) {
+        this.solutionAllowed = solutionAllowed;
     }
 
 
@@ -235,33 +222,6 @@ public final class ItemRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
-    }
-
-
-    public boolean isSolutionAllowedWhenInteracting() {
-        return solutionAllowedWhenInteracting;
-    }
-
-    public void setSolutionAllowedWhenInteracting(final boolean solutionAllowedWhenInteracting) {
-        this.solutionAllowedWhenInteracting = solutionAllowedWhenInteracting;
-    }
-
-
-    public boolean isSolutionAllowedAfterInteracting() {
-        return solutionAllowedAfterInteracting;
-    }
-
-    public void setSolutionAllowedAfterInteracting(final boolean solutionAllowedAfterInteracting) {
-        this.solutionAllowedAfterInteracting = solutionAllowedAfterInteracting;
-    }
-
-
-    public boolean isTerminateAllowed() {
-        return terminateAllowed;
-    }
-
-    public void setTerminateAllowed(final boolean terminateAllowed) {
-        this.terminateAllowed = terminateAllowed;
     }
 
     //----------------------------------------------------

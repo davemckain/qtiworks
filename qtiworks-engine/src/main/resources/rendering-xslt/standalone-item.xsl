@@ -113,6 +113,10 @@ Renders a standalone assessmentItem
           <div class="qtiworksAuthorControl">
             <h2>Session control</h2>
             <p>(This will be presented in a nicer way shortly.)</p>
+            <p>
+              Current candidate session state is <xsl:value-of select="$candidateSessionState"/>.
+              Current rendering mode is <xsl:value-of select="$renderingMode"/>.
+            </p>
             <ul>
               <xsl:if test="$resetAllowed">
                 <li>
@@ -128,10 +132,10 @@ Renders a standalone assessmentItem
                   </form>
                 </li>
               </xsl:if>
-              <xsl:if test="$endAllowed">
+              <xsl:if test="$closeAllowed">
                 <li>
-                  <form action="{$webappContextPath}{$endUrl}" method="post">
-                    <input type="submit" value="End session for review"/>
+                  <form action="{$webappContextPath}{$closeUrl}" method="post">
+                    <input type="submit" value="Finish and review"/>
                   </form>
                 </li>
               </xsl:if>
@@ -142,13 +146,11 @@ Renders a standalone assessmentItem
                   </form>
                 </li>
               </xsl:if>
-              <xsl:if test="$terminateAllowed">
-                <li>
-                  <form action="{$webappContextPath}{$terminateUrl}" method="post">
-                    <input type="submit" value="Terminate session"/>
-                  </form>
-                </li>
-              </xsl:if>
+              <li>
+                <form action="{$webappContextPath}{$terminateUrl}" method="post">
+                  <input type="submit" value="Terminate session"/>
+                </form>
+              </li>
               <xsl:if test="$resultAllowed">
                 <li>
                   <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>

@@ -59,6 +59,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
@@ -660,7 +661,6 @@ public class AssessmentCandidateService {
             case INIT:
             case REINIT:
             case RESET:
-            case CLOSED:
                 return renderAfterInit(candidateEvent, renderingOptions);
 
             case ATTEMPT_VALID:
@@ -668,9 +668,12 @@ public class AssessmentCandidateService {
             case ATTEMPT_BAD:
                 return renderAfterAttempt(candidateEvent, renderingOptions);
 
+            case CLOSED:
+                throw new QtiWorksLogicException("Unimplemented " + eventType);
+
             case TERMINATED:
                 /* FIXME: Need to implement something here */
-                throw new QtiWorksLogicException("Unimplemented" + eventType);
+                throw new QtiWorksLogicException("Unimplemented " + eventType);
 
             default:
                 throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
@@ -678,37 +681,13 @@ public class AssessmentCandidateService {
     }
 
     private String renderAfterInit(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
+
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
-    private ItemRenderingRequest createItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
-
-        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setCandidateSessionState(candidateSessionState);
-        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setCloseAllowed(itemDelivery.isAllowClose() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setReinitAllowedWhenInteracting(itemDelivery.isAllowReinitWhenInteracting() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setResetAllowedWhenInteracting(itemDelivery.isAllowResetWhenInteracting() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setResultAllowed(itemDelivery.isAllowResult() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
-        renderingRequest.setTerminateAllowed(itemDelivery.isAllowClose() || candidateSessionState==CandidateSessionState.CLOSED);
-        renderingRequest.setBadResponseIdentifiers(null);
-        renderingRequest.setInvalidResponseIdentifiers(null);
-        renderingRequest.setResponseInputs(null);
-        return renderingRequest;
-    }
-
     private String renderAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequest(candidateEvent, renderingOptions);
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
 
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
         if (attempt==null) {
@@ -724,6 +703,61 @@ public class AssessmentCandidateService {
         renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
 
         return assessmentRenderer.renderItem(renderingRequest);
+    }
+
+    private ItemRenderingRequest createItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+
+        final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
+        renderingRequest.setCloseAllowed(itemDelivery.isAllowClose());
+        renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenInteracting());
+        renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenInteracting());
+        renderingRequest.setResultAllowed(false);
+        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+        renderingRequest.setBadResponseIdentifiers(null);
+        renderingRequest.setInvalidResponseIdentifiers(null);
+        renderingRequest.setResponseInputs(null);
+        return renderingRequest;
+    }
+
+    private ItemRenderingRequest createPartialItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setCandidateSessionState(candidateSessionState);
+        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setRenderingOptions(renderingOptions);
+        return renderingRequest;
+    }
+
+    private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setRenderingMode(RenderingMode.CLOSED);
+        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setCandidateSessionState(candidateSessionState);
+        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setCloseAllowed(false);
+        renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenClosed());
+        renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenClosed());
+        renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
+        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+        return renderingRequest;
     }
 
     private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
