@@ -71,101 +71,115 @@ Renders a standalone assessmentItem
         <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body>
-        <div class="qtiworks">
-          <div class="qtiworksRendering">
-            <div class="assessmentItem">
-              <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
-              <xsl:choose>
-                <xsl:when test="$renderingMode='SOLUTION'">
-                  <div class="renderingMode solution">
-                    A model solution to this item is shown below.
-                  </div>
-                </xsl:when>
-              </xsl:choose>
-              <div class="itemBody">
-                <!-- Descend into itemBody only -->
-                <xsl:apply-templates select="qti:itemBody"/>
-              </div>
-              <!-- Display active modal feedback (only after responseProcessing) -->
-              <xsl:if test="$isResponded">
-                <xsl:variable name="modalFeedback" as="element()*">
-                  <xsl:for-each select="qti:modalFeedback">
-                    <xsl:variable name="feedback" as="node()*">
-                      <xsl:call-template name="feedback"/>
-                    </xsl:variable>
-                    <xsl:if test="$feedback">
-                      <div class="modalFeedbackItem">
-                        <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
-                        <xsl:sequence select="$feedback"/>
-                      </div>
-                    </xsl:if>
-                  </xsl:for-each>
-                </xsl:variable>
-                <xsl:if test="exists($modalFeedback)">
-                  <div class="modalFeedback">
-                    <h2>Feedback</h2>
-                    <xsl:sequence select="$modalFeedback"/>
-                  </div>
-                </xsl:if>
-              </xsl:if>
-            </div>
-          </div>
-          <div class="qtiworksAuthorControl">
-            <h2>Session control</h2>
-            <p>(This will be presented in a nicer way shortly.)</p>
+        <xsl:choose>
+          <xsl:when test="$candidateSessionState='TERMINATED'">
             <p>
-              Current candidate session state is <xsl:value-of select="$candidateSessionState"/>.
-              Current rendering mode is <xsl:value-of select="$renderingMode"/>.
+              This assessment session is no longer available to you.
             </p>
-            <ul>
-              <xsl:if test="$resetAllowed">
-                <li>
-                  <form action="{$webappContextPath}{$resetUrl}" method="post">
-                    <input type="submit" value="Reset"/>
-                  </form>
-                </li>
-              </xsl:if>
-              <xsl:if test="$reinitAllowed">
-                <li>
-                  <form action="{$webappContextPath}{$reinitUrl}" method="post">
-                    <input type="submit" value="Reinitialise"/>
-                  </form>
-                </li>
-              </xsl:if>
-              <xsl:if test="$closeAllowed">
-                <li>
-                  <form action="{$webappContextPath}{$closeUrl}" method="post">
-                    <input type="submit" value="Finish and review"/>
-                  </form>
-                </li>
-              </xsl:if>
-              <xsl:if test="$solutionAllowed">
-                <li>
-                  <form action="{$webappContextPath}{$solutionUrl}" method="post">
-                    <input type="submit" value="Show model solution"/>
-                  </form>
-                </li>
-              </xsl:if>
-              <li>
-                <form action="{$webappContextPath}{$terminateUrl}" method="post">
-                  <input type="submit" value="Terminate session"/>
-                </form>
-              </li>
-              <xsl:if test="$resultAllowed">
-                <li>
-                  <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>
-                </li>
-              </xsl:if>
-              <xsl:if test="$sourceAllowed">
-                <li><a href="{$webappContextPath}{$sourceUrl}">View Item source</a></li>
-              </xsl:if>
-            </ul>
-          </div>
-          <!-- Author debugging information -->
-          <xsl:call-template name="internalState"/>
-        </div>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="." mode="render-allowed"/>
+          </xsl:otherwise>
+        </xsl:choose>
        </body>
     </html>
+  </xsl:template>
+
+  <!-- Renders the body content of the item -->
+  <xsl:template match="qti:assessmentItem" mode="render-allowed">
+    <div class="qtiworks">
+      <div class="qtiworksRendering">
+        <div class="assessmentItem">
+          <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
+          <xsl:choose>
+            <xsl:when test="$renderingMode='SOLUTION'">
+              <div class="renderingMode solution">
+                A model solution to this item is shown below.
+              </div>
+            </xsl:when>
+          </xsl:choose>
+          <div class="itemBody">
+            <!-- Descend into itemBody only -->
+            <xsl:apply-templates select="qti:itemBody"/>
+          </div>
+          <!-- Display active modal feedback (only after responseProcessing) -->
+          <xsl:if test="$isResponded">
+            <xsl:variable name="modalFeedback" as="element()*">
+              <xsl:for-each select="qti:modalFeedback">
+                <xsl:variable name="feedback" as="node()*">
+                  <xsl:call-template name="feedback"/>
+                </xsl:variable>
+                <xsl:if test="$feedback">
+                  <div class="modalFeedbackItem">
+                    <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
+                    <xsl:sequence select="$feedback"/>
+                  </div>
+                </xsl:if>
+              </xsl:for-each>
+            </xsl:variable>
+            <xsl:if test="exists($modalFeedback)">
+              <div class="modalFeedback">
+                <h2>Feedback</h2>
+                <xsl:sequence select="$modalFeedback"/>
+              </div>
+            </xsl:if>
+          </xsl:if>
+        </div>
+      </div>
+      <div class="qtiworksAuthorControl">
+        <h2>Session control</h2>
+        <p>(This will be presented in a nicer way shortly.)</p>
+        <p>
+          Current candidate session state is <xsl:value-of select="$candidateSessionState"/>.
+          Current rendering mode is <xsl:value-of select="$renderingMode"/>.
+        </p>
+        <ul>
+          <xsl:if test="$resetAllowed">
+            <li>
+              <form action="{$webappContextPath}{$resetUrl}" method="post">
+                <input type="submit" value="Reset"/>
+              </form>
+            </li>
+          </xsl:if>
+          <xsl:if test="$reinitAllowed">
+            <li>
+              <form action="{$webappContextPath}{$reinitUrl}" method="post">
+                <input type="submit" value="Reinitialise"/>
+              </form>
+            </li>
+          </xsl:if>
+          <xsl:if test="$closeAllowed">
+            <li>
+              <form action="{$webappContextPath}{$closeUrl}" method="post">
+                <input type="submit" value="Finish and review"/>
+              </form>
+            </li>
+          </xsl:if>
+          <xsl:if test="$solutionAllowed">
+            <li>
+              <form action="{$webappContextPath}{$solutionUrl}" method="post">
+                <input type="submit" value="Show model solution"/>
+              </form>
+            </li>
+          </xsl:if>
+          <li>
+            <form action="{$webappContextPath}{$terminateUrl}" method="post">
+              <input type="submit" value="Terminate session"/>
+            </form>
+          </li>
+          <xsl:if test="$resultAllowed">
+            <li>
+              <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>
+            </li>
+          </xsl:if>
+          <xsl:if test="$sourceAllowed">
+            <li><a href="{$webappContextPath}{$sourceUrl}">View Item source</a></li>
+          </xsl:if>
+        </ul>
+      </div>
+      <!-- Author debugging information -->
+      <xsl:call-template name="internalState"/>
+    </div>
   </xsl:template>
 
   <!-- ************************************************************ -->
