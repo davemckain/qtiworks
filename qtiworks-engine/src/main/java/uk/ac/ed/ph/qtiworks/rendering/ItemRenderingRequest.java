@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
@@ -90,7 +91,8 @@ public final class ItemRenderingRequest {
     private boolean resultAllowed;
     private boolean playbackAllowed;
 
-    private List<Long> playbackEventIds;
+    private CandidateItemEvent currentPlaybackEvent;
+    private List<CandidateItemEvent> playbackEvents;
 
     //----------------------------------------------------
 
@@ -239,12 +241,21 @@ public final class ItemRenderingRequest {
     }
 
 
-    public List<Long> getPlaybackEventIds() {
-        return playbackEventIds;
+    public CandidateItemEvent getCurrentPlaybackEvent() {
+        return currentPlaybackEvent;
     }
 
-    public void setPlaybackEventIds(final List<Long> playbackEventIds) {
-        this.playbackEventIds = playbackEventIds;
+    public void setCurrentPlaybackEvent(final CandidateItemEvent currentPlaybackEvent) {
+        this.currentPlaybackEvent = currentPlaybackEvent;
+    }
+
+
+    public List<CandidateItemEvent> getPlaybackEvents() {
+        return playbackEvents;
+    }
+
+    public void setPlaybackEvents(final List<CandidateItemEvent> playbackEvents) {
+        this.playbackEvents = playbackEvents;
     }
 
     //----------------------------------------------------

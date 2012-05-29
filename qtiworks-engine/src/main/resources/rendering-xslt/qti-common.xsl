@@ -42,7 +42,11 @@ rendering.
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
+
+  <xsl:param name="currentPlaybackEventId" select="()" as="xs:integer?"/>
+  <xsl:param name="currentPlaybackEventType" select="()" as="xs:string?"/>
   <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
+  <xsl:param name="playbackEventTypes" select="()" as="xs:string*"/>
 
   <!-- Action permissions -->
   <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>

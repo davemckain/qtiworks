@@ -454,7 +454,7 @@ public class AssessmentCandidateService {
 
         /* Record event */
         final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.CLOSED, itemSessionState);
+        recordEvent(candidateSession, CandidateItemEventType.CLOSE, itemSessionState);
 
         /* Update state */
         candidateSession.setState(CandidateSessionState.CLOSED);
@@ -670,8 +670,8 @@ public class AssessmentCandidateService {
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK
-                || targetEventType==CandidateItemEventType.CLOSED
-                || targetEventType==CandidateItemEventType.TERMINATED) {
+                || targetEventType==CandidateItemEventType.CLOSE
+                || targetEventType==CandidateItemEventType.TERMINATE) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_EVENT, candidateSession);
         }
 
@@ -715,7 +715,7 @@ public class AssessmentCandidateService {
 
         /* Record event */
         final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.TERMINATED, itemSessionState);
+        recordEvent(candidateSession, CandidateItemEventType.TERMINATE, itemSessionState);
 
         /* Update state */
         candidateSession.setState(CandidateSessionState.TERMINATED);
@@ -848,7 +848,7 @@ public class AssessmentCandidateService {
             case ATTEMPT_BAD:
                 return renderClosedAfterAttempt(candidateEvent, renderingOptions);
 
-            case CLOSED:
+            case CLOSE:
                 return renderClosed(candidateEvent, renderingOptions);
 
             case SOLUTION:
@@ -948,10 +948,15 @@ public class AssessmentCandidateService {
             renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
         }
 
+        /* Register playback events */
         renderingRequest.setPlaybackAllowed(itemDelivery.isAllowPlayback());
         if (itemDelivery.isAllowPlayback()) {
-            renderingRequest.setPlaybackEventIds(getPlaybackEventIds(candidateSession));
+            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
+            renderingRequest.setCurrentPlaybackEvent(playbackEvent);
         }
+
+        /* Record which event we're playing back */
+        renderingRequest.setCurrentPlaybackEvent(playbackEvent);
 
         return assessmentRenderer.renderItem(renderingRequest);
     }
@@ -977,7 +982,7 @@ public class AssessmentCandidateService {
 
         renderingRequest.setPlaybackAllowed(itemDelivery.isAllowPlayback());
         if (itemDelivery.isAllowPlayback()) {
-            renderingRequest.setPlaybackEventIds(getPlaybackEventIds(candidateSession));
+            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
         }
         return renderingRequest;
     }
@@ -1142,12 +1147,12 @@ public class AssessmentCandidateService {
      * @param candidateSession
      * @return
      */
-    private List<Long> getPlaybackEventIds(final CandidateItemSession candidateSession) {
+    private List<CandidateItemEvent> getPlaybackEvents(final CandidateItemSession candidateSession) {
         final List<CandidateItemEvent> events = candidateItemEventDao.getForSession(candidateSession);
-        final List<Long> result = new ArrayList<Long>(events.size());
+        final List<CandidateItemEvent> result = new ArrayList<CandidateItemEvent>(events.size());
         for (final CandidateItemEvent event : events) {
             if (isCandidatePlaybackCapable(event)) {
-                result.add(event.getId());
+                result.add(event);
             }
         }
         return result;

@@ -77,13 +77,13 @@ public enum CandidateItemEventType {
      * Candidate has closed the current session and moved it into
      * {@link CandidateSessionState#CLOSED} state
      */
-    CLOSED,
+    CLOSE,
 
     /**
      * Candidate has terminated the current session completely,
      * moving it to {@link CandidateSessionState#TERMINATED} state
      */
-    TERMINATED,
+    TERMINATE,
 
     ;
 

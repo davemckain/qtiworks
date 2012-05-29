@@ -18,6 +18,23 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
+  <xsl:function name="qw:describe-candidate-event" as="xs:string">
+    <xsl:param name="candidate-event-type" as="xs:string"/>
+    <xsl:variable name="descriptions" as="element(qw:description)+">
+      <qw:description type="INIT">Initial presentation of your assessment</qw:description>
+      <qw:description type="ATTEMPT_VALID">Submission of an answer</qw:description>
+      <qw:description type="ATTEMPT_INVALID">Submission of an answer that did not fit what was asked for</qw:description>
+      <qw:description type="ATTEMPT_BAD">Submission of the wrong type of answer</qw:description>
+      <qw:description type="REINIT">Re-initialisation of your assessment</qw:description>
+      <qw:description type="RESET">Reset of your assessment</qw:description>
+      <qw:description type="SOLUTION">Display of a model solution for this assessment</qw:description>
+      <qw:description type="PLAYBACK">Playback of your assessment</qw:description>
+      <qw:description type="CLOSE">Completion of your assessment</qw:description>
+      <qw:description type="TERMINATE">Termination of your assessment</qw:description>
+    </xsl:variable>
+    <xsl:sequence select="$descriptions[@type=$candidate-event-type]/text()"/>
+  </xsl:function>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -94,17 +111,25 @@ Renders a standalone assessmentItem
           <xsl:choose>
             <xsl:when test="$renderingMode='SOLUTION'">
               <div class="candidateMessage">
-                A model solution to this item is shown below.
+                A model solution to this assessment is shown below.
               </div>
             </xsl:when>
             <xsl:when test="$renderingMode='CLOSED'">
               <div class="candidateMessage">
-                This item is now complete.
+                This assessment is now complete.
               </div>
             </xsl:when>
             <xsl:when test="$renderingMode='PLAYBACK'">
               <div class="candidateMessage">
-                You are currently playing back your progress on this item.
+                <p>
+                  You are currently playing back your interaction with this assessment.
+                </p>
+                <p>
+                  Currently showing: <xsl:value-of select="qw:describe-candidate-event($currentPlaybackEventType)"/>
+                  (Event #<xsl:value-of select="for $i in 1 to count($playbackEventIds), $id in $playbackEventIds[$i]
+                    return if ($id = $currentPlaybackEventId) then $i else ()"/>
+                  of <xsl:value-of select="count($playbackEventIds)"/>)
+                </p>
               </div>
             </xsl:when>
           </xsl:choose>
@@ -177,9 +202,10 @@ Renders a standalone assessmentItem
               Playback events:
               <ul>
                 <xsl:for-each select="$playbackEventIds">
+                  <xsl:variable name="eventIndex" select="position()" as="xs:integer"/>
                   <li>
                     <form action="{$webappContextPath}{$playbackUrlBase}/{.}" method="post">
-                      <input type="submit" value="Play back event {.}"/>
+                      <input type="submit" value="Play back event #{$eventIndex} ({qw:describe-candidate-event($playbackEventTypes[$eventIndex])})"/>
                     </form>
                   </li>
                 </xsl:for-each>

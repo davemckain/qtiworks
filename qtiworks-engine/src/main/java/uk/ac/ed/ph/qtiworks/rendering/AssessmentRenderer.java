@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -49,7 +50,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -176,10 +179,27 @@ public class AssessmentRenderer {
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
         xsltParameters.put("solutionAllowed", Boolean.valueOf(renderingRequest.isSolutionAllowed()));
-        xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
-        xsltParameters.put("playbackEventIds", renderingRequest.getPlaybackEventIds());
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
+
+        /* Playback */
+        xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
+        final List<CandidateItemEvent> playbackEvents = renderingRequest.getPlaybackEvents();
+        if (playbackEvents!=null) {
+            final List<Long> playbackEventIds = new ArrayList<Long>();
+            final List<String> playbackEventTypes = new ArrayList<String>();
+            for (final CandidateItemEvent playbackEvent : playbackEvents) {
+                playbackEventIds.add(playbackEvent.getId());
+                playbackEventTypes.add(playbackEvent.getEventType().toString());
+            }
+            xsltParameters.put("playbackEventIds", playbackEventIds);
+            xsltParameters.put("playbackEventTypes", playbackEventTypes);
+        }
+        final CandidateItemEvent currentPlaybackEvent = renderingRequest.getCurrentPlaybackEvent();
+        if (currentPlaybackEvent!=null) {
+            xsltParameters.put("currentPlaybackEventId", currentPlaybackEvent.getId());
+            xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getEventType().toString());
+        }
 
         /* Pass ItemSessionState as XML */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();

@@ -5,6 +5,8 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
@@ -84,7 +86,17 @@ public class RenderingTest {
             renderingRequest.setPlaybackAllowed(true);
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
-            renderingRequest.setPlaybackEventIds(Arrays.asList(1L, 2L, 3L));
+
+            final CandidateItemEvent playback1 = new CandidateItemEvent();
+            playback1.setId(1L);
+            playback1.setEventType(CandidateItemEventType.INIT);
+
+            final CandidateItemEvent playback2 = new CandidateItemEvent();
+            playback2.setId(2L);
+            playback2.setEventType(CandidateItemEventType.ATTEMPT_VALID);
+
+            renderingRequest.setPlaybackEvents(Arrays.asList(playback1, playback2));
+            renderingRequest.setCurrentPlaybackEvent(playback1);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
