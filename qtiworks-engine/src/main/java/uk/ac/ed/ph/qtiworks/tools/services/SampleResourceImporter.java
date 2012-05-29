@@ -249,6 +249,7 @@ public class SampleResourceImporter {
             defaultDelivery.setAllowReinitWhenInteracting(true);
             defaultDelivery.setAllowSolutionWhenInteracting(true);
             defaultDelivery.setAllowSolutionWhenClosed(true);
+            defaultDelivery.setAllowPlayback(true);
             defaultDelivery.setAllowResult(true);
             defaultDelivery.setAllowSource(true);
             assessmentPackage.setDefaultDelivery(defaultDelivery);

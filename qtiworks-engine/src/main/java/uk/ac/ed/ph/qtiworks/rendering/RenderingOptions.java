@@ -77,7 +77,10 @@ public final class RenderingOptions implements Serializable {
     private String sourceUrl;
 
     @NotNull
-    private String teminateUrl;
+    private String playbackUrlBase;
+
+    @NotNull
+    private String terminateUrl;
 
     @NotNull
     private String serveFileUrl;
@@ -138,15 +141,6 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getTerminateUrl() {
-        return teminateUrl;
-    }
-
-    public void setTerminateUrl(final String terminateUrl) {
-        this.teminateUrl = terminateUrl;
-    }
-
-
     public String getSolutionUrl() {
         return solutionUrl;
     }
@@ -174,6 +168,24 @@ public final class RenderingOptions implements Serializable {
     }
 
 
+    public String getPlaybackUrlBase() {
+        return playbackUrlBase;
+    }
+
+    public void setPlaybackUrlBase(final String playbackUrlBase) {
+        this.playbackUrlBase = playbackUrlBase;
+    }
+
+
+    public String getTerminateUrl() {
+        return terminateUrl;
+    }
+
+    public void setTerminateUrl(final String terminateUrl) {
+        this.terminateUrl = terminateUrl;
+    }
+
+
     public String getServeFileUrl() {
         return serveFileUrl;
     }
@@ -183,9 +195,6 @@ public final class RenderingOptions implements Serializable {
     }
 
     //----------------------------------------------------
-
-
-
 
     @Override
     public String toString() {

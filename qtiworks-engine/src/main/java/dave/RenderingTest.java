@@ -27,6 +27,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+import java.util.Arrays;
 
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
@@ -64,12 +65,13 @@ public class RenderingTest {
             renderingOptions.setResultUrl("/result");
             renderingOptions.setSourceUrl("/source");
             renderingOptions.setServeFileUrl("/serveFile");
+            renderingOptions.setPlaybackUrlBase("/playback");
             renderingOptions.setTerminateUrl("/terminate");
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
             renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
-            renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
+            renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);
             renderingRequest.setItemSessionState(itemSessionState);
@@ -79,8 +81,10 @@ public class RenderingTest {
             renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
+            renderingRequest.setPlaybackAllowed(true);
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
+            renderingRequest.setPlaybackEventIds(Arrays.asList(1L, 2L, 3L));
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

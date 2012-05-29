@@ -41,6 +41,9 @@ rendering.
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
+  <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
+  <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
+
   <!-- Action permissions -->
   <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
@@ -48,6 +51,7 @@ rendering.
   <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="playbackAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>

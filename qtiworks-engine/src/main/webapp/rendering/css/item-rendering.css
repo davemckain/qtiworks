@@ -259,3 +259,13 @@
 .qtiworksRendering .assessmentItem table.inputHelp .longComma {
   margin-right: 0.5em;
 }
+
+/************************************************************/
+
+/* Information messages for candidate */
+
+.qtiworksRendering .assessmentItem .candidateMessage {
+  font-size: larger;
+  font-weight: bold;
+  color: blue;
+}

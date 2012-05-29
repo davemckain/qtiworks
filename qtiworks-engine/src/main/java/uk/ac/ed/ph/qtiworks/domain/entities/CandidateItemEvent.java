@@ -52,6 +52,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -133,6 +134,15 @@ public class CandidateItemEvent implements BaseEntity {
     @Basic(optional=false)
     @Column(name="item_session_state_xml", updatable=false)
     private String itemSessionStateXml;
+
+    /**
+     * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
+     * the same session that the candidate has requested to see
+     * {@link CandidateItemEvent}
+     */
+    @OneToOne(optional=true)
+    @JoinColumn(name="playback_xeid", updatable=false)
+    private CandidateItemEvent playbackEvent;
 
     //------------------------------------------------------------
 
@@ -216,6 +226,15 @@ public class CandidateItemEvent implements BaseEntity {
 
     public void setItemSessionStateXml(final String itemSessionStateXml) {
         this.itemSessionStateXml = itemSessionStateXml;
+    }
+
+
+    public CandidateItemEvent getPlaybackEvent() {
+        return playbackEvent;
+    }
+
+    public void setPlaybackEvent(final CandidateItemEvent playbackEvent) {
+        this.playbackEvent = playbackEvent;
     }
 
     //------------------------------------------------------------

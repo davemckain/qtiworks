@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +88,9 @@ public final class ItemRenderingRequest {
     private boolean solutionAllowed;
     private boolean sourceAllowed;
     private boolean resultAllowed;
+    private boolean playbackAllowed;
+
+    private List<Long> playbackEventIds;
 
     //----------------------------------------------------
 
@@ -222,6 +226,25 @@ public final class ItemRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
+    }
+
+
+    public boolean isPlaybackAllowed() {
+        return playbackAllowed;
+    }
+
+
+    public void setPlaybackAllowed(final boolean playbackAllowed) {
+        this.playbackAllowed = playbackAllowed;
+    }
+
+
+    public List<Long> getPlaybackEventIds() {
+        return playbackEventIds;
+    }
+
+    public void setPlaybackEventIds(final List<Long> playbackEventIds) {
+        this.playbackEventIds = playbackEventIds;
     }
 
     //----------------------------------------------------

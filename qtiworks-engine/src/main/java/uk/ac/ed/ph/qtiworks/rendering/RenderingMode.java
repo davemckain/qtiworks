@@ -45,7 +45,7 @@ public enum RenderingMode {
     CLOSED_AFTER_ATTEMPT,
     CLOSED,
     SOLUTION,
-    REPLAY,
+    PLAYBACK,
     TERMINATED,
     ;
 

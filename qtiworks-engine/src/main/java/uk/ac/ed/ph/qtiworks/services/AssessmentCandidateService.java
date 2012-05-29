@@ -85,6 +85,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -448,7 +449,7 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED, candidateSession);
         }
         else if (!itemDelivery.isAllowClose()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING, candidateSession);
         }
 
         /* Record event */
@@ -495,7 +496,7 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, candidateSession);
         }
         else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowReinitWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED, candidateSession);
         }
 
         /* Create fresh JQTI+ state */
@@ -551,7 +552,7 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
         }
         else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowResetWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED, candidateSession);
         }
 
         /* Find the last REINIT, falling back to original INIT if none present */
@@ -612,7 +613,7 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_INTERACTING, candidateSession);
         }
         else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowResetWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_CLOSED, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_CLOSED, candidateSession);
         }
 
         /* Record event */
@@ -626,6 +627,60 @@ public class AssessmentCandidateService {
         }
 
         auditor.recordEvent("Candidate moved session #" + candidateSession.getId() + " to solution state");
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Playback request
+
+    /**
+     * Updates the state of the {@link CandidateItemSession} having the given ID (xid)
+     * so that it will play back the {@link CandidateItemEvent} having the given ID (xeid).
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession setPlaybackState(final long xid, final long xeid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return setPlaybackState(candidateSession, xeid);
+    }
+
+    public CandidateItemSession setPlaybackState(final CandidateItemSession candidateSession, final long xeid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Make sure caller may do this */
+        final User caller = ensureSessionNotTerminated(candidateSession);
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (candidateSessionState==CandidateSessionState.INTERACTING) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_WHEN_INTERACTING, candidateSession);
+        }
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowPlayback()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK, candidateSession);
+        }
+
+        /* Look up target event, make sure it belongs to this session and make sure it can be played back */
+        final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
+        if (targetEvent.getCandidateItemSession().getId()!=candidateSession.getId()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_OTHER_SESSION, candidateSession);
+        }
+        final CandidateItemEventType targetEventType = targetEvent.getEventType();
+        if (targetEventType==CandidateItemEventType.PLAYBACK
+                || targetEventType==CandidateItemEventType.CLOSED
+                || targetEventType==CandidateItemEventType.TERMINATED) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_EVENT, candidateSession);
+        }
+
+        /* Record event */
+        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
+        recordEvent(candidateSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
+
+        auditor.recordEvent("Candidate played back event #" + targetEvent.getId()
+                + " in session #" + candidateSession.getId());
         return candidateSession;
     }
 
@@ -793,18 +848,24 @@ public class AssessmentCandidateService {
             case ATTEMPT_BAD:
                 return renderClosedAfterAttempt(candidateEvent, renderingOptions);
 
+            case CLOSED:
+                return renderClosed(candidateEvent, renderingOptions);
+
             case SOLUTION:
                 return renderSolution(candidateEvent, renderingOptions);
 
+            case PLAYBACK:
+                return renderPlayback(candidateEvent, renderingOptions);
+
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
-                        + " should have moved session state out of " + CandidateSessionState.INTERACTING
+                        + " either hasn't been implemented here, or should have earlier moved session state out of "
+                        + CandidateSessionState.INTERACTING
                         + " mode");
         }
     }
 
     private ItemRenderingRequest createPartialItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
@@ -814,7 +875,7 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setCandidateSessionState(candidateSessionState);
-        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         return renderingRequest;
     }
@@ -840,25 +901,59 @@ public class AssessmentCandidateService {
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
+    private String renderClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.CLOSED);
+        return assessmentRenderer.renderItem(renderingRequest);
+    }
+
     private String renderSolution(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
-    private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
+    private String renderPlayback(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final CandidateItemEvent playbackEvent = candidateEvent.getPlaybackEvent();
+
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
+        renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
+        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setItemSessionState(unmarshalItemSessionState(playbackEvent));
+        renderingRequest.setRenderingOptions(renderingOptions);
+
+        renderingRequest.setCloseAllowed(false);
+        renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenClosed());
+        renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenClosed());
+        renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenClosed());
+        renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
+        renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+
+        renderingRequest.setPlaybackAllowed(itemDelivery.isAllowPlayback());
+        if (itemDelivery.isAllowPlayback()) {
+            renderingRequest.setPlaybackEventIds(getPlaybackEventIds(candidateSession));
+        }
+
+        return assessmentRenderer.renderItem(renderingRequest);
+    }
+
+    private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
         renderingRequest.setRenderingMode(RenderingMode.CLOSED);
         renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setCandidateSessionState(candidateSessionState);
-        renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
+        renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenClosed());
@@ -866,6 +961,11 @@ public class AssessmentCandidateService {
         renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenClosed());
         renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
         renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
+
+        renderingRequest.setPlaybackAllowed(itemDelivery.isAllowPlayback());
+        if (itemDelivery.isAllowPlayback()) {
+            renderingRequest.setPlaybackEventIds(getPlaybackEventIds(candidateSession));
+        }
         return renderingRequest;
     }
 
@@ -1022,6 +1122,35 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Utilities
 
+    /**
+     * Returns a List of IDs (xeid) of all {@link CandidateItemEvent}s in the given
+     * {@link CandidateItemSession} that a candidate may play back.
+     *
+     * @param candidateSession
+     * @return
+     */
+    private List<Long> getPlaybackEventIds(final CandidateItemSession candidateSession) {
+        final List<CandidateItemEvent> events = candidateItemEventDao.getForSession(candidateSession);
+        final List<Long> result = new ArrayList<Long>(events.size());
+        for (final CandidateItemEvent event : events) {
+            if (isCandidatePlaybackCapable(event)) {
+                result.add(event.getId());
+            }
+        }
+        return result;
+    }
+
+    private boolean isCandidatePlaybackCapable(final CandidateItemEvent event) {
+        final CandidateItemEventType eventType = event.getEventType();
+        return eventType==CandidateItemEventType.ATTEMPT_VALID
+                || eventType==CandidateItemEventType.ATTEMPT_INVALID
+                || eventType==CandidateItemEventType.ATTEMPT_BAD
+                || eventType==CandidateItemEventType.INIT
+                || eventType==CandidateItemEventType.REINIT
+                || eventType==CandidateItemEventType.RESET;
+
+    }
+
     private CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
@@ -1057,6 +1186,12 @@ public class AssessmentCandidateService {
 
     private CandidateItemEvent recordEvent(final CandidateItemSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
+        return recordEvent(candidateSession, eventType, itemSessionState, null);
+    }
+
+    private CandidateItemEvent recordEvent(final CandidateItemSession candidateSession,
+            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+            final CandidateItemEvent playbackEvent) {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateSession);
         event.setEventType(eventType);
@@ -1065,6 +1200,7 @@ public class AssessmentCandidateService {
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
+        event.setPlaybackEvent(playbackEvent);
 
         /* Record serialized ItemSessionState */
         event.setItemSessionStateXml(marshalItemSessionState(itemSessionState));

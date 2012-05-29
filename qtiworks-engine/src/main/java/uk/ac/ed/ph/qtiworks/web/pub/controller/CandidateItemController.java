@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -131,6 +132,7 @@ public class CandidateItemController {
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
+        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(deliveryBaseUrl + "/source");
         renderingOptions.setServeFileUrl(deliveryBaseUrl + "/file");
 
@@ -306,6 +308,27 @@ public class CandidateItemController {
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         logger.debug("Requesting transition of session #{} to solution state", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.transitionCandidateSessionToSolutionState(xid);
+
+        /* Redirect to rendering of current session state */
+        return redirectToSession(candidateSession);
+    }
+
+    /**
+     * Transitions the state of the {@link CandidateItemSession} so that it plays back the
+     * {@link CandidateItemEvent} having the given ID (xeid).
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/playback/{xeid}", method=RequestMethod.POST)
+    public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final long xeid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting to set playback position of session #{} to event #{}", xid, xeid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.setPlaybackState(xid, xeid);
 
         /* Redirect to rendering of current session state */
         return redirectToSession(candidateSession);

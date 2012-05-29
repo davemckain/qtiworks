@@ -93,8 +93,18 @@ Renders a standalone assessmentItem
           <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
           <xsl:choose>
             <xsl:when test="$renderingMode='SOLUTION'">
-              <div class="renderingMode solution">
+              <div class="candidateMessage">
                 A model solution to this item is shown below.
+              </div>
+            </xsl:when>
+            <xsl:when test="$renderingMode='CLOSED'">
+              <div class="candidateMessage">
+                This item is now complete.
+              </div>
+            </xsl:when>
+            <xsl:when test="$renderingMode='PLAYBACK'">
+              <div class="candidateMessage">
+                You are currently playing back your progress on this item.
               </div>
             </xsl:when>
           </xsl:choose>
@@ -160,6 +170,20 @@ Renders a standalone assessmentItem
               <form action="{$webappContextPath}{$solutionUrl}" method="post">
                 <input type="submit" value="Show model solution"/>
               </form>
+            </li>
+          </xsl:if>
+          <xsl:if test="$playbackAllowed and exists($playbackEventIds)">
+            <li>
+              Playback events:
+              <ul>
+                <xsl:for-each select="$playbackEventIds">
+                  <li>
+                    <form action="{$webappContextPath}{$playbackUrlBase}/{.}" method="post">
+                      <input type="submit" value="Play back event {.}"/>
+                    </form>
+                  </li>
+                </xsl:for-each>
+              </ul>
             </li>
           </xsl:if>
           <li>
