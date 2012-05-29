@@ -18,38 +18,44 @@
         <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
 
+      <div class="prompt">
+        <xsl:apply-templates select="qti:prompt"/>
+      </div>
       <table>
-        <tr>
-          <th class="prompt">
-            <xsl:apply-templates select="qti:prompt"/>
-          </th>
-          <xsl:for-each select="$orderedSet1">
-            <th>
-              <xsl:apply-templates/>
-            </th>
-          </xsl:for-each>
-        </tr>
-        <xsl:for-each select="$orderedSet2">
-          <xsl:variable name="choiceIdentifier" select="@identifier" as="xs:string"/>
+        <thead>
           <tr>
-            <th>
-              <xsl:apply-templates/>
-            </th>
-            <xsl:for-each select="$orderedSet1">
-              <td align="center">
-                <xsl:variable name="responseValue" select="concat(@identifier, ' ', $choiceIdentifier)" as="xs:string"/>
-                <input type="checkbox" name="qtiworks_response_{$responseIdentifier}" value="{$responseValue}">
-                  <xsl:if test="$isSessionClosed">
-                    <xsl:attribute name="disabled">disabled</xsl:attribute>
-                  </xsl:if>
-                  <xsl:if test="qw:value-contains(qw:get-response-value(/, $responseIdentifier), $responseValue)">
-                    <xsl:attribute name="checked">checked</xsl:attribute>
-                  </xsl:if>
-                </input>
-              </td>
+            <th/>
+            <xsl:for-each select="$orderedSet2">
+              <th>
+                <xsl:apply-templates/>
+              </th>
             </xsl:for-each>
           </tr>
-        </xsl:for-each>
+        </thead>
+        <tbody>
+          <xsl:for-each select="$orderedSet1">
+            <xsl:variable name="set1Identifier" select="@identifier" as="xs:string"/>
+            <tr>
+              <th>
+                <xsl:apply-templates/>
+              </th>
+              <xsl:for-each select="$orderedSet2">
+                <xsl:variable name="set2Identifier" select="@identifier" as="xs:string"/>
+                <td align="center">
+                  <xsl:variable name="responseValue" select="concat($set1Identifier, ' ', $set2Identifier)" as="xs:string"/>
+                  <input type="checkbox" name="qtiworks_response_{$responseIdentifier}" value="{$responseValue}">
+                    <xsl:if test="$isSessionClosed">
+                      <xsl:attribute name="disabled">disabled</xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="qw:value-contains(qw:get-response-value(/, $responseIdentifier), $responseValue)">
+                      <xsl:attribute name="checked">checked</xsl:attribute>
+                    </xsl:if>
+                  </input>
+                </td>
+              </xsl:for-each>
+            </tr>
+          </xsl:for-each>
+        </tbody>
       </table>
       <xsl:if test="$isSessionInteracting">
         <script type='text/javascript'>
