@@ -75,6 +75,13 @@ Renders a standalone assessmentItem
           <div class="qtiworksRendering">
             <div class="assessmentItem">
               <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
+              <xsl:choose>
+                <xsl:when test="$renderingMode='SOLUTION'">
+                  <div class="renderingMode solution">
+                    A model solution to this item is shown below.
+                  </div>
+                </xsl:when>
+              </xsl:choose>
               <div class="itemBody">
                 <!-- Descend into itemBody only -->
                 <xsl:apply-templates select="qti:itemBody"/>
@@ -105,6 +112,7 @@ Renders a standalone assessmentItem
           </div>
           <div class="qtiworksAuthorControl">
             <h2>Session control</h2>
+            <p>(This will be presented in a nicer way shortly.)</p>
             <ul>
               <xsl:if test="$resetAllowed">
                 <li>
@@ -127,10 +135,17 @@ Renders a standalone assessmentItem
                   </form>
                 </li>
               </xsl:if>
-              <xsl:if test="$closeAllowed">
+              <xsl:if test="$solutionAllowed">
                 <li>
-                  <form action="{$webappContextPath}{$closeUrl}" method="post">
-                    <input type="submit" value="Close session"/>
+                  <form action="{$webappContextPath}{$solutionUrl}" method="post">
+                    <input type="submit" value="Show model solution"/>
+                  </form>
+                </li>
+              </xsl:if>
+              <xsl:if test="$terminateAllowed">
+                <li>
+                  <form action="{$webappContextPath}{$terminateUrl}" method="post">
+                    <input type="submit" value="Terminate session"/>
                   </form>
                 </li>
               </xsl:if>
@@ -139,9 +154,6 @@ Renders a standalone assessmentItem
                   <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>
                 </li>
               </xsl:if>
-            </ul>
-            <h2>Author tools</h2>
-            <ul>
               <xsl:if test="$sourceAllowed">
                 <li><a href="{$webappContextPath}{$sourceUrl}">View Item source</a></li>
               </xsl:if>
@@ -164,10 +176,8 @@ Renders a standalone assessmentItem
 
         <xsl:apply-templates/>
 
-        <!-- Maybe show controls -->
-        <xsl:if test="$attemptAllowed">
+        <xsl:if test="$isInteracting">
           <div class="controls">
-            <!--<input type="reset" value="RESET INPUT"/>-->
             <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
           </div>
         </xsl:if>

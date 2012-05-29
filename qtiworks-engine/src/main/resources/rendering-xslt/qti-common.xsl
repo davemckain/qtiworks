@@ -21,6 +21,9 @@ rendering.
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
+  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
+  <xsl:variable name="isInteracting" as="xs:boolean" select="$renderingMode='INTERACTING'"/>
+
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
@@ -29,19 +32,20 @@ rendering.
   <xsl:param name="resetUrl" as="xs:string" required="yes"/>
   <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
   <xsl:param name="endUrl" as="xs:string" required="yes"/>
-  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
+  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- Action permissions -->
-  <xsl:param name="attemptAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="endAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="terminateAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
@@ -78,8 +82,11 @@ rendering.
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
   <!-- Include stylesheets handling each type of interaction -->
+  <!--
   <xsl:include href="interactions/associateInteraction.xsl"/>
+  -->
   <xsl:include href="interactions/choiceInteraction.xsl"/>
+  <!--
   <xsl:include href="interactions/drawingInteraction.xsl"/>
   <xsl:include href="interactions/endAttemptInteraction.xsl"/>
   <xsl:include href="interactions/extendedTextInteraction.xsl"/>
@@ -99,6 +106,7 @@ rendering.
   <xsl:include href="interactions/textEntryInteraction.xsl"/>
   <xsl:include href="interactions/uploadInteraction.xsl"/>
   <xsl:include href="interactions/mathEntryInteraction.xsl"/>
+  -->
 
   <!-- ************************************************************ -->
 
@@ -167,9 +175,35 @@ rendering.
     <xsl:sequence select="$outcomeValues[@identifier=$identifier]"/>
   </xsl:function>
 
-  <xsl:function name="qw:get-response-value" as="element(qw:responseVariable)?">
+  <xsl:function name="qw:get-response-declaration" as="element(qti:responseDeclaration)?">
+    <xsl:param name="document" as="document-node()"/>
     <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$responseValues[@identifier=$identifier]"/>
+    <xsl:sequence select="$document/qti:assessmentItem/qti:responseDeclaration[@identifier=$identifier]"/>
+  </xsl:function>
+
+  <xsl:function name="qw:get-response-value" as="element(qw:responseVariable)?">
+    <xsl:param name="document" as="document-node()"/>
+    <xsl:param name="identifier" as="xs:string"/>
+    <xsl:variable name="responseDeclaration" select="qw:get-response-declaration($document, $identifier)" as="element(qti:responseDeclaration)?"/>
+    <xsl:choose>
+      <xsl:when test="$renderingMode='SOLUTION' and $responseDeclaration/qti:correctResponse">
+        <!-- Need to convert QTI <qti:correctResponse/> to <qw:responseVariable/> -->
+        <xsl:for-each select="$responseDeclaration/qti:correctResponse">
+          <qw:responseVariable>
+            <xsl:copy-of select="@cardinality, @baseType"/>
+            <xsl:for-each select="qti:value">
+              <qw:value>
+                <xsl:copy-of select="@fieldIdentifier, @baseType"/>
+                <xsl:copy-of select="text()"/>
+              </qw:value>
+            </xsl:for-each>
+          </qw:responseVariable>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="$responseValues[@identifier=$identifier]"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
 
   <xsl:function name="qw:get-template-declaration" as="element(qti:templateDeclaration)?">
@@ -192,12 +226,6 @@ rendering.
   <xsl:function name="qw:get-test-outcome-declaration" as="element(qti:outcomeDeclaration)?">
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:sequence select="$testOutcomeDeclarations[@identifier=$identifier]"/>
-  </xsl:function>
-
-  <xsl:function name="qw:get-response-declaration" as="element(qti:responseDeclaration)?">
-    <xsl:param name="document" as="document-node()"/>
-    <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$document/qti:assessmentItem/qti:responseDeclaration[@identifier=$identifier]"/>
   </xsl:function>
 
   <xsl:function name="qw:value-contains" as="xs:boolean">
@@ -300,7 +328,7 @@ rendering.
   <xsl:function name="qw:is-maths-content-value" as="xs:boolean">
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:sequence select="boolean($valueHolder[@cardinality='record'
-      and qw:value[@baseType='string' and @identifier='MathsContentClass'
+      and qw:value[@baseType='string' and @fieldIdentifier='MathsContentClass'
         and string(qw:value)='org.qtitools.mathassess']])"/>
   </xsl:function>
 
@@ -308,7 +336,7 @@ rendering.
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:choose>
       <xsl:when test="qw:is-maths-content-value($valueHolder)">
-        <xsl:variable name="pmathmlString" select="$valueHolder/qw:value[@identifier='PMathML']" as="xs:string"/>
+        <xsl:variable name="pmathmlString" select="$valueHolder/qw:value[@fieldIdentifier='PMathML']" as="xs:string"/>
         <xsl:variable name="pmathmlDocNode" select="saxon:parse($pmathmlString)" as="document-node()"/>
         <xsl:copy-of select="$pmathmlDocNode/*"/>
       </xsl:when>
@@ -547,7 +575,7 @@ rendering.
   <xsl:template match="m:mi" as="element()">
     <xsl:variable name="content" select="normalize-space(text())" as="xs:string"/>
     <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:templateVariable)?"/>
-    <xsl:variable name="responseValue" select="qw:get-response-value($content)" as="element(qw:responseVariable)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value(/, $content)" as="element(qw:responseVariable)?"/>
     <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcomeVariable)?"/>
     <xsl:variable name="testOutcomeValue" select="if (ancestor::qti:testFeedback) then qw:get-test-outcome-value(@identifier) else ()" as="element(qw:outcome)?"/>
     <xsl:choose>

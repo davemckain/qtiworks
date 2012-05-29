@@ -222,7 +222,7 @@ public class AssessmentCandidateService {
         final CandidateItemSession candidateSession = new CandidateItemSession();
         candidateSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
         candidateSession.setItemDelivery(itemDelivery);
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.persist(candidateSession);
 
         /* Record initialisation event */
@@ -276,11 +276,11 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-    private User ensureSessionNotClosed(final CandidateItemSession candidateSession) throws PrivilegeException {
+    private User ensureSessionNotTerminated(final CandidateItemSession candidateSession) throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (candidateSession.getState()==CandidateSessionState.CLOSED) {
+        if (candidateSession.getState()==CandidateSessionState.TERMINATED) {
             /* No access when session has been is closed */
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_CLOSED_SESSION, candidateSession);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_TERMINATED_SESSION, candidateSession);
         }
         return caller;
     }
@@ -405,7 +405,7 @@ public class AssessmentCandidateService {
 
         /* Update session state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
         auditor.recordEvent("Recorded candidate attempt #" + candidateItemAttempt.getId()
@@ -415,109 +415,46 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
-    // Session end (by candidate)
+    // Session close(by candidate)
 
     /**
-     * Ends the {@link CandidateItemSession} having the given ID (xid), moving it
-     * into {@link CandidateSessionState#REVIEWING} state.
+     * Closes the {@link CandidateItemSession} having the given ID (xid), moving it
+     * into {@link CandidateSessionState#CLOSED} state.
      *
      * @param xid
      * @return
      * @throws PrivilegeException
      * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession endCandidateSession(final long xid)
+    public CandidateItemSession closeCandidateSession(final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return endCandidateSession(candidateSession);
+        return closeCandidateSession(candidateSession);
     }
 
-    public CandidateItemSession endCandidateSession(final CandidateItemSession candidateSession)
+    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateSession)
             throws PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
         /* Check this is allowed in current state */
-        final User caller = ensureSessionNotClosed(candidateSession);
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_AFTER_INTERACTING, candidateSession);
-        }
+        final User caller = ensureSessionNotTerminated(candidateSession);
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        if (!itemDelivery.isAllowEnd()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_WHEN_INTERACTING, itemDelivery);
+        if (candidateSession.getState()==CandidateSessionState.CLOSED) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED, candidateSession);
+        }
+        else if (!itemDelivery.isAllowClose()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING, itemDelivery);
         }
 
         /* Record event */
         final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.END, itemSessionState);
+        recordEvent(candidateSession, CandidateItemEventType.CLOSED, itemSessionState);
 
         /* Update state */
-        candidateSession.setState(CandidateSessionState.REVIEWING);
+        candidateSession.setState(CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
         auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
-    // Session reset
-
-    /**
-     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
-     * updated {@link CandidateItemSession}. This takes the session back to the state it
-     * was in immediately after the last {@link CandidateItemEvent#REINIT} (if applicable),
-     * or after the original {@link CandidateItemEvent#INIT}.
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     */
-    public CandidateItemSession resetCandidateSession(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return resetCandidateSession(candidateSession);
-    }
-
-    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
-
-        /* Make sure caller may reset the session */
-        final User caller = ensureSessionNotClosed(candidateSession);
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_AFTER_INTERACTING, candidateSession);
-        }
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        if (!itemDelivery.isAllowReset()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, itemDelivery);
-        }
-
-        /* Find the last REINIT, falling back to original INIT if none present */
-        final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateSession);
-        CandidateItemEvent lastInitEvent = null;
-        for (final CandidateItemEvent event : events) {
-            if (event.getEventType()==CandidateItemEventType.REINIT) {
-                lastInitEvent = event;
-                break;
-            }
-        }
-        if (lastInitEvent==null) {
-            lastInitEvent = events.get(events.size()-1);
-        }
-
-        /* Pull the QTI state from this event */
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(lastInitEvent);
-
-        /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
-
-        /* Update state */
-        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
-        candidateItemSessionDao.update(candidateSession);
-
-        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
         return candidateSession;
     }
 
@@ -546,13 +483,14 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
         /* Make sure caller may reinit the session */
-        final User caller = ensureSessionNotClosed(candidateSession);
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_AFTER_INTERACTING, candidateSession);
-        }
+        final User caller = ensureSessionNotTerminated(candidateSession);
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        if (!itemDelivery.isAllowReset()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, itemDelivery);
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDelivery.isAllowReinitWhenInteracting()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, candidateSession);
+        }
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowReinitWhenClosed()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED, itemDelivery);
         }
 
         /* Create fresh JQTI+ state */
@@ -569,7 +507,7 @@ public class AssessmentCandidateService {
 
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.REVIEWING);
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
         auditor.recordEvent("Candidate re-intialized session #" + candidateSession.getId());
@@ -577,50 +515,107 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
-    // Session close (by candidate)
+    // Session reset
 
     /**
-     * Closes the {@link CandidateItemSession} having the given ID (xid), moving it into
-     * {@link CandidateSessionState#CLOSED} state.
-     * <p>
-     * We always allow this to happen when in {@link CandidateSessionState#REVIEWING}
-     * state. This is permitted in {@link CandidateSessionState#INTERACTING} state if the
-     * {@link ItemDelivery} allows the session to be closed.
-     *
+     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
+     * updated {@link CandidateItemSession}. This takes the session back to the state it
+     * was in immediately after the last {@link CandidateItemEvent#REINIT_WHEN_INTERACTING} (if applicable),
+     * or after the original {@link CandidateItemEvent#INIT}.
      *
      * @param xid
      * @return
      * @throws PrivilegeException
      * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession closeCandidateSession(final long xid)
+    public CandidateItemSession resetCandidateSession(final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return closeCandidateSession(candidateSession);
+        return resetCandidateSession(candidateSession);
     }
 
-    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateSession)
+    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
             throws PrivilegeException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
 
-        /* Check this is allowed in current state */
-        final User caller = ensureSessionNotClosed(candidateSession);
-        if (candidateSession.getState()==CandidateSessionState.INTERACTING) {
-            final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-            if (!itemDelivery.isAllowEnd()) {
-                throw new PrivilegeException(caller, Privilege.CANDIDATE_END_SESSION_WHEN_INTERACTING, itemDelivery);
+        /* Make sure caller may reset the session */
+        final User caller = ensureSessionNotTerminated(candidateSession);
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDelivery.isAllowResetWhenInteracting()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
+        }
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowResetWhenClosed()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED, itemDelivery);
+        }
+
+        /* Find the last REINIT, falling back to original INIT if none present */
+        final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateSession);
+        CandidateItemEvent lastInitEvent = null;
+        for (final CandidateItemEvent event : events) {
+            if (event.getEventType()==CandidateItemEventType.REINIT) {
+                lastInitEvent = event;
+                break;
             }
         }
+        if (lastInitEvent==null) {
+            lastInitEvent = events.get(events.size()-1);
+        }
+
+        /* Pull the QTI state from this event */
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(lastInitEvent);
+
+        /* Record event */
+        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+
+        /* Update state */
+        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts());
+        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateSession);
+
+        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Session termination (by candidate)
+
+    /**
+     * Terminates the {@link CandidateItemSession} having the given ID (xid), moving it into
+     * {@link CandidateSessionState#TERMINATED} state.
+     * <p>
+     * Currently we're always allowing this action to be made when in
+     * {@link CandidateSessionState#INTERACTING} or {@link CandidateSessionState#CLOSED}
+     * states.
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession terminateCandidateSession(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return terminateCandidateSession(candidateSession);
+    }
+
+    public CandidateItemSession terminateCandidateSession(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Check session has not already been terminated */
+        ensureSessionNotTerminated(candidateSession);
 
         /* Record event */
         final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.CLOSED, itemSessionState);
+        recordEvent(candidateSession, CandidateItemEventType.TERMINATED, itemSessionState);
 
         /* Update state */
-        candidateSession.setState(CandidateSessionState.CLOSED);
+        candidateSession.setState(CandidateSessionState.TERMINATED);
         candidateItemSessionDao.update(candidateSession);
 
-        auditor.recordEvent("Candidate closed session #" + candidateSession.getId());
+        auditor.recordEvent("Candidate terminated session #" + candidateSession.getId());
         return candidateSession;
     }
 
@@ -661,7 +656,7 @@ public class AssessmentCandidateService {
             case INIT:
             case REINIT:
             case RESET:
-            case END:
+            case CLOSED:
                 return renderAfterInit(candidateEvent, renderingOptions);
 
             case ATTEMPT_VALID:
@@ -669,7 +664,7 @@ public class AssessmentCandidateService {
             case ATTEMPT_BAD:
                 return renderAfterAttempt(candidateEvent, renderingOptions);
 
-            case CLOSED:
+            case TERMINATED:
                 /* FIXME: Need to implement something here */
                 throw new QtiWorksLogicException("Unimplemented" + eventType);
 
@@ -693,16 +688,15 @@ public class AssessmentCandidateService {
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAttemptAllowed(itemSessionController.isAttemptAllowed(itemDelivery.getMaxAttempts()));
         renderingRequest.setCandidateSessionState(candidateSessionState);
         renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
         renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setEndAllowed(itemDelivery.isAllowEnd() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setReinitAllowed(itemDelivery.isAllowReinit() && candidateSessionState==CandidateSessionState.INTERACTING);
-        renderingRequest.setResetAllowed(itemDelivery.isAllowReset() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setCloseAllowed(itemDelivery.isAllowClose() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setReinitAllowedWhenInteracting(itemDelivery.isAllowReinitWhenInteracting() && candidateSessionState==CandidateSessionState.INTERACTING);
+        renderingRequest.setResetAllowedWhenInteracting(itemDelivery.isAllowResetWhenInteracting() && candidateSessionState==CandidateSessionState.INTERACTING);
         renderingRequest.setResultAllowed(itemDelivery.isAllowResult() && candidateSessionState==CandidateSessionState.INTERACTING);
         renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
-        renderingRequest.setCloseAllowed(itemDelivery.isAllowEnd() || candidateSessionState==CandidateSessionState.REVIEWING);
+        renderingRequest.setTerminateAllowed(itemDelivery.isAllowClose() || candidateSessionState==CandidateSessionState.CLOSED);
         renderingRequest.setBadResponseIdentifiers(null);
         renderingRequest.setInvalidResponseIdentifiers(null);
         renderingRequest.setResponseInputs(null);
@@ -844,7 +838,7 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(outputStream, "outputStream");
 
         /* Forbid results if the candidate session is closed */
-        ensureSessionNotClosed(candidateSession);
+        ensureSessionNotTerminated(candidateSession);
 
         /* Make sure candidate is actually allowed to get results for this delivery */
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
@@ -913,7 +907,7 @@ public class AssessmentCandidateService {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateSession);
         event.setEventType(eventType);
-
+        event.setSessionState(candidateSession.getState());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());

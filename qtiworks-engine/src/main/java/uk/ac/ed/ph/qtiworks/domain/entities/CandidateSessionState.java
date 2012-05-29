@@ -41,20 +41,21 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 public enum CandidateSessionState {
 
     /**
-     * Candidate is still interacting and may make further attempts
+     * Candidate is still interacting and may make further attempts.
      */
     INTERACTING,
 
     /**
-     * No further attempts are allowed. Candidate may review their attempt
-     * in some way.
+     * No further attempts are allowed. Candidate may still be able to
+     * perform further actions, such as resetting the session or
+     * accessing a model solution.
      */
-    REVIEWING,
+    CLOSED,
 
     /**
-     * Candidate may no longer access session
+     * Candidate may no longer access session.
      */
-    CLOSED
+    TERMINATED
     ;
 
 }

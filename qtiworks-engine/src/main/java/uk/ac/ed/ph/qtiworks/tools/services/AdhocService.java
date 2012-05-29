@@ -94,13 +94,13 @@ public class AdhocService {
         renderingOptions.setContextPath("/context");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setEndUrl("/end");
-        renderingOptions.setCloseUrl("/exit");
+        renderingOptions.setCloseUrl("/end");
         renderingOptions.setResetUrl("/reset");
         renderingOptions.setReinitUrl("/reinit");
         renderingOptions.setSourceUrl("/source");
         renderingOptions.setResultUrl("/result");
         renderingOptions.setServeFileUrl("/file");
+        renderingOptions.setTerminateUrl("/terminate");
         System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
 
         /* Do bad attempt == file submission */
@@ -128,9 +128,9 @@ public class AdhocService {
         assessmentCandidateService.resetCandidateSession(candidateItemSession);
 
         /* Then end session */
-        assessmentCandidateService.endCandidateSession(candidateItemSession);
+        assessmentCandidateService.closeCandidateSession(candidateItemSession);
 
         /* Then close session */
-        assessmentCandidateService.closeCandidateSession(candidateItemSession);
+        assessmentCandidateService.terminateCandidateSession(candidateItemSession);
     }
 }

@@ -31,43 +31,20 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateItemSession}
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public enum CandidateItemEventType {
+public enum RenderingMode {
 
-    /** {@link CandidateItemSession} first initialised */
-    INIT,
-
-    /** Attempt made, all responses bound successfully and valid */
-    ATTEMPT_VALID,
-
-    /** Attempt made, all responses bound successfully but some invalid */
-    ATTEMPT_INVALID,
-
-    /** Attempt made, some responses bound unsuccessfully */
-    ATTEMPT_BAD,
-
-    /** Candidate has re-initialised the session (i.e. template processing has been redone) */
-    REINIT,
-
-    /**
-     * Candidate has reset the session back to the state immediately after the last
-     * reinit (or after the {@link #INIT} if there were no reinits)
-     */
-    RESET,
-
-    /** Candidate has closed the current session and moved it into review state */
+    INTERACTING,
     CLOSED,
-
-    /** Candidate has terminated the current session completely */
+    SOLUTION,
+    REPLAY,
     TERMINATED,
-
     ;
 
 }

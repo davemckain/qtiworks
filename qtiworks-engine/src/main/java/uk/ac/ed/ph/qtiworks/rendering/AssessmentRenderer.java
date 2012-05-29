@@ -197,26 +197,30 @@ public class AssessmentRenderer {
 
         /* Pass request info to XSLT as parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
-        xsltParameters.put("endUrl", renderingOptions.getEndUrl());
+        xsltParameters.put("endUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
         xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
-        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
+        xsltParameters.put("closeUrl", renderingOptions.getTerminateUrl());
+        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getBadResponseIdentifiers()));
         xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getInvalidResponseIdentifiers()));
-        xsltParameters.put("attemptAllowed", Boolean.valueOf(renderingRequest.isAttemptAllowed()));
-        xsltParameters.put("endAllowed", Boolean.valueOf(renderingRequest.isEndAllowed()));
-        xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
-        xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
+        xsltParameters.put("endAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
+        xsltParameters.put("resetAllowedWhenInteracting", Boolean.valueOf(renderingRequest.isResetAllowedWhenInteracting()));
+        xsltParameters.put("reinitAllowedWhenInteracting", Boolean.valueOf(renderingRequest.isReinitAllowedWhenInteracting()));
+        xsltParameters.put("resetAllowedWhenClosed", Boolean.valueOf(renderingRequest.isResetAllowedWhenClosed()));
+        xsltParameters.put("reinitAllowedWhenClosed", Boolean.valueOf(renderingRequest.isReinitAllowedWhenClosed()));
+        xsltParameters.put("solutionAllowed", Boolean.valueOf(renderingRequest.isSolutionAllowedWhenInteracting()));
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
-        xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
+        xsltParameters.put("terminateAllowed", Boolean.valueOf(renderingRequest.isTerminateAllowed()));
 
         /* Pass ItemSessionState as XML */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();

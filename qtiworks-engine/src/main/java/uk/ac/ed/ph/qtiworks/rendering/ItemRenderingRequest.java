@@ -56,6 +56,9 @@ import javax.validation.constraints.NotNull;
 public final class ItemRenderingRequest {
 
     @NotNull
+    private RenderingMode renderingMode;
+
+    @NotNull
     private ResourceLocator assessmentResourceLocator;
 
     @NotNull
@@ -78,16 +81,27 @@ public final class ItemRenderingRequest {
 
     private Set<Identifier> invalidResponseIdentifiers;
 
-    /** Whether the candidate should be allowed to make an attempt */
-    private boolean attemptAllowed;
-    private boolean endAllowed;
-    private boolean resetAllowed;
-    private boolean reinitAllowed;
+    private boolean closeAllowed;
+    private boolean resetAllowedWhenInteracting;
+    private boolean resetAllowedWhenClosed;
+    private boolean reinitAllowedWhenInteracting;
+    private boolean reinitAllowedWhenClosed;
+    private boolean solutionAllowedWhenInteracting;
+    private boolean solutionAllowedAfterInteracting;
     private boolean sourceAllowed;
     private boolean resultAllowed;
-    private boolean closeAllowed;
+    private boolean terminateAllowed;
 
     //----------------------------------------------------
+
+    public RenderingMode getRenderingMode() {
+        return renderingMode;
+    }
+
+    public void setRenderingMode(final RenderingMode renderingMode) {
+        this.renderingMode = renderingMode;
+    }
+
 
     public ResourceLocator getAssessmentResourceLocator() {
         return assessmentResourceLocator;
@@ -161,39 +175,48 @@ public final class ItemRenderingRequest {
     }
 
 
-    public boolean isAttemptAllowed() {
-        return attemptAllowed;
+    public boolean isCloseAllowed() {
+        return closeAllowed;
     }
 
-    public void setAttemptAllowed(final boolean attemptAllowed) {
-        this.attemptAllowed = attemptAllowed;
-    }
-
-
-    public boolean isEndAllowed() {
-        return endAllowed;
-    }
-
-    public void setEndAllowed(final boolean endAllowed) {
-        this.endAllowed = endAllowed;
+    public void setCloseAllowed(final boolean closeAllowed) {
+        this.closeAllowed = closeAllowed;
     }
 
 
-    public boolean isResetAllowed() {
-        return resetAllowed;
+    public boolean isResetAllowedWhenInteracting() {
+        return resetAllowedWhenInteracting;
     }
 
-    public void setResetAllowed(final boolean resetAllowed) {
-        this.resetAllowed = resetAllowed;
+    public void setResetAllowedWhenInteracting(final boolean resetAllowedWhenInteracting) {
+        this.resetAllowedWhenInteracting = resetAllowedWhenInteracting;
     }
 
 
-    public boolean isReinitAllowed() {
-        return reinitAllowed;
+    public boolean isResetAllowedWhenClosed() {
+        return resetAllowedWhenClosed;
     }
 
-    public void setReinitAllowed(final boolean reinitAllowed) {
-        this.reinitAllowed = reinitAllowed;
+    public void setResetAllowedWhenClosed(final boolean resetAllowedWhenClosed) {
+        this.resetAllowedWhenClosed = resetAllowedWhenClosed;
+    }
+
+
+    public boolean isReinitAllowedWhenInteracting() {
+        return reinitAllowedWhenInteracting;
+    }
+
+    public void setReinitAllowedWhenInteracting(final boolean reinitAllowedWhenInteracting) {
+        this.reinitAllowedWhenInteracting = reinitAllowedWhenInteracting;
+    }
+
+
+    public boolean isReinitAllowedWhenClosed() {
+        return reinitAllowedWhenClosed;
+    }
+
+    public void setReinitAllowedWhenClosed(final boolean reinitAllowedWhenClosed) {
+        this.reinitAllowedWhenClosed = reinitAllowedWhenClosed;
     }
 
 
@@ -215,12 +238,30 @@ public final class ItemRenderingRequest {
     }
 
 
-    public boolean isCloseAllowed() {
-        return closeAllowed;
+    public boolean isSolutionAllowedWhenInteracting() {
+        return solutionAllowedWhenInteracting;
     }
 
-    public void setCloseAllowed(final boolean closeAllowed) {
-        this.closeAllowed = closeAllowed;
+    public void setSolutionAllowedWhenInteracting(final boolean solutionAllowedWhenInteracting) {
+        this.solutionAllowedWhenInteracting = solutionAllowedWhenInteracting;
+    }
+
+
+    public boolean isSolutionAllowedAfterInteracting() {
+        return solutionAllowedAfterInteracting;
+    }
+
+    public void setSolutionAllowedAfterInteracting(final boolean solutionAllowedAfterInteracting) {
+        this.solutionAllowedAfterInteracting = solutionAllowedAfterInteracting;
+    }
+
+
+    public boolean isTerminateAllowed() {
+        return terminateAllowed;
+    }
+
+    public void setTerminateAllowed(final boolean terminateAllowed) {
+        this.terminateAllowed = terminateAllowed;
     }
 
     //----------------------------------------------------

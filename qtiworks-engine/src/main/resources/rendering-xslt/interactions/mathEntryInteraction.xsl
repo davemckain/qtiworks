@@ -12,13 +12,16 @@
   <xsl:template match="qti:customInteraction[@class='org.qtitools.mathassess.MathEntryInteraction']">
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
-    <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
     <xsl:variable name="asciiMathInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
     <div class="mathEntryInteraction">
       <div class="inputPanel">
         <a href="{$webappContextPath}/rendering/mathEntryInteractionHelp.html" target="_blank" id="qtiworks_id_mathEntryHelp_{@responseIdentifier}"></a>
         <input id="qtiworks_id_mathEntryInput_{@responseIdentifier}" name="qtiworks_response_{@responseIdentifier}" type="text"
             size="{if (exists(@ma:expectedLength)) then @ma:expectedLength else '10'}">
+          <xsl:if test="not($isInteracting)">
+            <xsl:attribute name="disabled">disabled</xsl:attribute>
+          </xsl:if>
           <xsl:if test="exists($asciiMathInput)">
             <xsl:attribute name="value">
               <xsl:value-of select="$asciiMathInput"/>
@@ -55,8 +58,8 @@
             </xsl:when>
             <xsl:otherwise>
               widget.show('<xsl:value-of select="$asciiMathInput"/>', {
-                cmath: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@identifier='CMathML'])"/>',
-                pmathBracketed: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@identifier='PMathMLBracketed'])"/>',
+                cmath: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@fieldIdentifier='CMathML'])"/>',
+                pmathBracketed: '<xsl:value-of select="qw:escape-for-javascript-string($responseValue/qw:value[@fieldIdentifier='PMathMLBracketed'])"/>',
               });
             </xsl:otherwise>
           </xsl:choose>

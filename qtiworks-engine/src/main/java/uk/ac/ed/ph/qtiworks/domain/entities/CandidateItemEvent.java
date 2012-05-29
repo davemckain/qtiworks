@@ -105,6 +105,15 @@ public class CandidateItemEvent implements BaseEntity {
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType eventType;
 
+    /**
+     * State that the {@link CandidateItemSession} was in when (just before)
+     * this event was performed.
+     */
+    @Basic(optional=false)
+    @Column(name="state", length=11)
+    @Enumerated(EnumType.STRING)
+    private CandidateSessionState sessionState;
+
     /** Value of the <code>completionStatus</code> item variable */
     @Basic(optional=false)
     @Column(name="completion_status", updatable=false, length=DomainConstants.QTI_COMPLETION_STATUS_MAX_LENGTH)
@@ -162,6 +171,15 @@ public class CandidateItemEvent implements BaseEntity {
 
     public void setEventType(final CandidateItemEventType eventType) {
         this.eventType = eventType;
+    }
+
+
+    public CandidateSessionState getSessionState() {
+        return sessionState;
+    }
+
+    public void setSessionState(final CandidateSessionState sessionState) {
+        this.sessionState = sessionState;
     }
 
 

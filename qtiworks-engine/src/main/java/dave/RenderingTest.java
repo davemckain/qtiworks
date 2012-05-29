@@ -8,6 +8,7 @@ package dave;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
@@ -32,7 +33,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class RenderingTest {
 
     public static void main(final String[] args) throws RuntimeValidationException {
-        final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
+//        final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
+        final URI inputUri = URI.create("classpath:/choice.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -55,26 +57,29 @@ public class RenderingTest {
             final RenderingOptions renderingOptions = new RenderingOptions();
             renderingOptions.setContextPath("/qtiworks");
             renderingOptions.setAttemptUrl("/attempt");
-            renderingOptions.setEndUrl("/end");
+            renderingOptions.setCloseUrl("/close");
             renderingOptions.setResetUrl("/reset");
             renderingOptions.setReinitUrl("/reinit");
             renderingOptions.setResultUrl("/result");
             renderingOptions.setSourceUrl("/source");
             renderingOptions.setServeFileUrl("/serveFile");
-            renderingOptions.setCloseUrl("/close");
+            renderingOptions.setSolutionUrl("/solution");
+            renderingOptions.setTerminateUrl("/terminate");
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+            renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);
-            renderingRequest.setCandidateSessionState(CandidateSessionState.INTERACTING);
+            renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
-            renderingRequest.setAttemptAllowed(true);
-            renderingRequest.setResetAllowed(true);
-            renderingRequest.setReinitAllowed(true);
+            renderingRequest.setSolutionAllowedWhenInteracting(true);
+            renderingRequest.setResetAllowedWhenInteracting(true);
+            renderingRequest.setReinitAllowedWhenInteracting(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
+            renderingRequest.setTerminateAllowed(true);
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
 

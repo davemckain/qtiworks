@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
@@ -98,6 +100,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
+    /** Available to candidates? */
     @Basic(optional=false)
     @Column(name="open")
     private boolean open;
@@ -110,10 +113,40 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="max_attempts")
     private Integer maxAttempts;
 
-    /** Allow candidate to end attempt */
+    /** Allow candidate to close session */
     @Basic(optional=false)
-    @Column(name="allow_end")
-    private boolean allowEnd;
+    @Column(name="allow_close")
+    private boolean allowClose;
+
+    /** Allow candidate to reset attempt while in {@link CandidateSessionState#INTERACTING} state */
+    @Basic(optional=false)
+    @Column(name="allow_reset_when_interacting")
+    private boolean allowResetWhenInteracting;
+
+    /** Allow candidate to reset attempt while in {@link CandidateSessionState#CLOSED} state */
+    @Basic(optional=false)
+    @Column(name="allow_reset_when_closed")
+    private boolean allowResetWhenClosed;
+
+    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#INTERACTING} state */
+    @Basic(optional=false)
+    @Column(name="allow_reinit_when_interacting")
+    private boolean allowReinitWhenInteracting;
+
+    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#CLOSED} state */
+    @Basic(optional=false)
+    @Column(name="allow_reinit_when_closed")
+    private boolean allowReinitWhenClosed;
+
+    /** Allow candidate to show solution when in {@link CandidateSessionState#INTERACTING} state */
+    @Basic(optional=false)
+    @Column(name="allow_solution_when_interacting")
+    private boolean allowSolutionWhenInteracting;
+
+    /** Allow candidate to show solution when in {@link CandidateSessionState#CLOSED} state */
+    @Basic(optional=false)
+    @Column(name="allow_solution_when_closed")
+    private boolean allowSolutionWhenClosed;
 
     /** Allow candidate to view assessment source(s) */
     @Basic(optional=false)
@@ -124,16 +157,6 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="allow_result")
     private boolean allowResult;
-
-    /** Allow candidate to reset attempt while in {@link CandidateSessionState#INTERACTING} state */
-    @Basic(optional=false)
-    @Column(name="allow_reset")
-    private boolean allowReset;
-
-    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#INTERACTING} state */
-    @Basic(optional=false)
-    @Column(name="allow_reinit")
-    private boolean allowReinit;
 
     //------------------------------------------------------------
 
@@ -168,6 +191,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public AssessmentPackage getAssessmentPackage() {
         return assessmentPackage;
     }
@@ -195,30 +219,21 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isAllowEnd() {
-        return allowEnd;
+    public boolean isAllowClose() {
+        return allowClose;
     }
 
-    public void setAllowEnd(final boolean allowEnd) {
-        this.allowEnd = allowEnd;
-    }
-
-
-    public boolean isAllowReset() {
-        return allowReset;
-    }
-
-    public void setAllowReset(final boolean allowReset) {
-        this.allowReset = allowReset;
+    public void setAllowClose(final boolean allowClose) {
+        this.allowClose = allowClose;
     }
 
 
-    public boolean isAllowReinit() {
-        return allowReinit;
+    public boolean isAllowSource() {
+        return allowSource;
     }
 
-    public void setAllowReinit(final boolean allowReinit) {
-        this.allowReinit = allowReinit;
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
     }
 
 
@@ -231,11 +246,63 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public boolean isAllowSource() {
-        return allowSource;
+    public boolean isAllowResetWhenInteracting() {
+        return allowResetWhenInteracting;
     }
 
-    public void setAllowSource(final boolean allowSource) {
-        this.allowSource = allowSource;
+    public void setAllowResetWhenInteracting(final boolean allowReset) {
+        this.allowResetWhenInteracting = allowReset;
+    }
+
+
+    public boolean isAllowResetWhenClosed() {
+        return allowResetWhenClosed;
+    }
+
+    public void setAllowResetWhenClosed(final boolean allowReset) {
+        this.allowResetWhenClosed = allowReset;
+    }
+
+
+    public boolean isAllowReinitWhenInteracting() {
+        return allowReinitWhenInteracting;
+    }
+
+    public void setAllowReinitWhenInteracting(final boolean allowReinit) {
+        this.allowReinitWhenInteracting = allowReinit;
+    }
+
+
+    public boolean isAllowReinitWhenClosed() {
+        return allowReinitWhenClosed;
+    }
+
+    public void setAllowReinitWhenClosed(final boolean allowReinitWhenClosed) {
+        this.allowReinitWhenClosed = allowReinitWhenClosed;
+    }
+
+
+    public boolean isAllowSolutionWhenInteracting() {
+        return allowSolutionWhenInteracting;
+    }
+
+    public void setAllowSolutionWhenInteracting(final boolean allowSolution) {
+        this.allowSolutionWhenInteracting = allowSolution;
+    }
+
+
+    public boolean isAllowSolutionWhenClosed() {
+        return allowSolutionWhenClosed;
+    }
+
+    public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
+        this.allowSolutionWhenClosed = allowSolutionWhenClosed;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }
