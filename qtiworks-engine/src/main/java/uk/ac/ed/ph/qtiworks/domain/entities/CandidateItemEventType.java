@@ -62,6 +62,12 @@ public enum CandidateItemEventType {
      */
     RESET,
 
+    /**
+     * Candidate has requested a model solution to be rendered.
+     * (This closes the session if it hasn't already been closed)
+     */
+    SOLUTION,
+
     /** Candidate has closed the current session and moved it into review state */
     CLOSED,
 

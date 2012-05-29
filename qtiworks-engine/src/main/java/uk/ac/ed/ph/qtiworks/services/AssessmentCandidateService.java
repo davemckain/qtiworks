@@ -584,6 +584,52 @@ public class AssessmentCandidateService {
     }
 
     //----------------------------------------------------
+    // Solution request
+
+    /**
+     * Transitions the {@link CandidateItemSession} having the given ID (xid) into solution state.
+     *
+     * @param xid
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     */
+    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+        return transitionCandidateSessionToSolutionState(candidateSession);
+    }
+
+    public CandidateItemSession transitionCandidateSessionToSolutionState(final CandidateItemSession candidateSession)
+            throws PrivilegeException {
+        Assert.ensureNotNull(candidateSession, "candidateSession");
+
+        /* Make sure caller may do this */
+        final User caller = ensureSessionNotTerminated(candidateSession);
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDelivery.isAllowSolutionWhenInteracting()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_INTERACTING, candidateSession);
+        }
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDelivery.isAllowResetWhenClosed()) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_CLOSED, itemDelivery);
+        }
+
+        /* Record event */
+        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
+        recordEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
+
+        /* Change session state to CLOSED if it's not already there */
+        if (candidateSessionState==CandidateSessionState.INTERACTING) {
+            candidateSession.setState(CandidateSessionState.CLOSED);
+            candidateItemSessionDao.update(candidateSession);
+        }
+
+        auditor.recordEvent("Candidate moved session #" + candidateSession.getId() + " to solution state");
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
     // Session termination (by candidate)
 
     /**
@@ -729,6 +775,7 @@ public class AssessmentCandidateService {
         renderingRequest.setCloseAllowed(itemDelivery.isAllowClose());
         renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenInteracting());
+        renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
         renderingRequest.setBadResponseIdentifiers(null);
@@ -745,6 +792,9 @@ public class AssessmentCandidateService {
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
                 return renderClosedAfterAttempt(candidateEvent, renderingOptions);
+
+            case SOLUTION:
+                return renderSolution(candidateEvent, renderingOptions);
 
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
@@ -790,6 +840,12 @@ public class AssessmentCandidateService {
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
+    private String renderSolution(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
+        return assessmentRenderer.renderItem(renderingRequest);
+    }
+
     private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final ItemSessionController itemSessionController = createItemSessionController(candidateEvent);
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
@@ -805,6 +861,7 @@ public class AssessmentCandidateService {
         renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
+        renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenClosed());
         renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenClosed());
         renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenClosed());
         renderingRequest.setResultAllowed(itemDelivery.isAllowResult());

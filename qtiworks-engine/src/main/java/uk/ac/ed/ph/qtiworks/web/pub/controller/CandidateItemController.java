@@ -292,6 +292,26 @@ public class CandidateItemController {
     }
 
     /**
+     * Transitions the given {@link CandidateItemSession} to solution state
+     *
+     * @param response
+     * @param did
+     * @return
+     * @throws PrivilegeException
+     * @throws DomainEntityNotFoundException
+     * @throws RuntimeValidationException
+     */
+    @RequestMapping(value="/session/{xid}/solution", method=RequestMethod.POST)
+    public String transitionSessionToSolutionState(@PathVariable final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        logger.debug("Requesting transition of session #{} to solution state", xid);
+        final CandidateItemSession candidateSession = assessmentCandidateService.transitionCandidateSessionToSolutionState(xid);
+
+        /* Redirect to rendering of current session state */
+        return redirectToSession(candidateSession);
+    }
+
+    /**
      * Terminates the given {@link CandidateItemSession}
      *
      * @param response

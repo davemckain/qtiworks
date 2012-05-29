@@ -60,18 +60,18 @@ public class RenderingTest {
             renderingOptions.setCloseUrl("/close");
             renderingOptions.setResetUrl("/reset");
             renderingOptions.setReinitUrl("/reinit");
+            renderingOptions.setSolutionUrl("/solution");
             renderingOptions.setResultUrl("/result");
             renderingOptions.setSourceUrl("/source");
             renderingOptions.setServeFileUrl("/serveFile");
-            renderingOptions.setSolutionUrl("/solution");
             renderingOptions.setTerminateUrl("/terminate");
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+            renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
             renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);
-            renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setSolutionAllowed(true);
