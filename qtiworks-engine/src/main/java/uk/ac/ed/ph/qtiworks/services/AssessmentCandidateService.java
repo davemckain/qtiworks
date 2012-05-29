@@ -651,43 +651,59 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(renderingOptions, "renderingOptions");
         final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
-        return renderEvent(latestEvent, renderingOptions);
+        return renderEvent(candidateSession, latestEvent, renderingOptions);
     }
 
-    private String renderEvent(final CandidateItemEvent candidateEvent,
+    private String renderEvent(final CandidateItemSession candidateSession,
+            final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions) {
+        final CandidateSessionState candidateSessionState = candidateSession.getState();
+        switch (candidateSessionState) {
+            case INTERACTING:
+                return renderEventWhenInteracting(candidateEvent, renderingOptions);
+
+            case CLOSED:
+                return renderEventWhenClosed(candidateEvent, renderingOptions);
+
+            case TERMINATED:
+                return renderTerminated(candidateEvent, renderingOptions);
+
+            default:
+                throw new QtiWorksLogicException("Unexpected state " + candidateSessionState);
+        }
+    }
+
+    private String renderEventWhenInteracting(final CandidateItemEvent candidateEvent,
             final RenderingOptions renderingOptions) {
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
             case REINIT:
             case RESET:
-                return renderAfterInit(candidateEvent, renderingOptions);
+                return renderInteractingPresentation(candidateEvent, renderingOptions);
 
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                return renderAfterAttempt(candidateEvent, renderingOptions);
-
-            case CLOSED:
-                throw new QtiWorksLogicException("Unimplemented " + eventType);
-
-            case TERMINATED:
-                /* FIXME: Need to implement something here */
-                throw new QtiWorksLogicException("Unimplemented " + eventType);
+                return renderInteractingAfterAttempt(candidateEvent, renderingOptions);
 
             default:
-                throw new QtiWorksLogicException("Rendering of event " + eventType + " has not been implemented yet");
+                throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
+                        + " should have moved session state out of " + CandidateSessionState.INTERACTING
+                        + " mode");
         }
     }
 
-    private String renderAfterInit(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private String renderInteractingPresentation(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.INTERACTING_PRESENTATION);
 
         return assessmentRenderer.renderItem(renderingRequest);
     }
 
-    private String renderAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private String renderInteractingAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.INTERACTING_AFTER_ATTEMPT);
 
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
         if (attempt==null) {
@@ -710,7 +726,6 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
 
         final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
         renderingRequest.setCloseAllowed(itemDelivery.isAllowClose());
         renderingRequest.setReinitAllowed(itemDelivery.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDelivery.isAllowResetWhenInteracting());
@@ -720,6 +735,22 @@ public class AssessmentCandidateService {
         renderingRequest.setInvalidResponseIdentifiers(null);
         renderingRequest.setResponseInputs(null);
         return renderingRequest;
+    }
+
+    private String renderEventWhenClosed(final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions) {
+        final CandidateItemEventType eventType = candidateEvent.getEventType();
+        switch (eventType) {
+            case ATTEMPT_VALID:
+            case ATTEMPT_INVALID:
+            case ATTEMPT_BAD:
+                return renderClosedAfterAttempt(candidateEvent, renderingOptions);
+
+            default:
+                throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
+                        + " should have moved session state out of " + CandidateSessionState.INTERACTING
+                        + " mode");
+        }
     }
 
     private ItemRenderingRequest createPartialItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
@@ -736,6 +767,27 @@ public class AssessmentCandidateService {
         renderingRequest.setItemSessionState(itemSessionController.getItemSessionState());
         renderingRequest.setRenderingOptions(renderingOptions);
         return renderingRequest;
+    }
+
+    private String renderClosedAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.CLOSED_AFTER_ATTEMPT);
+
+        /* FIXME: Cut & paste below! Refactor this! */
+        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
+        if (attempt==null) {
+            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateEvent.getId());
+        }
+        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+        extractResponseMap(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
+        renderingRequest.setResponseInputs(responseDataBuilder);
+        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
+
+        return assessmentRenderer.renderItem(renderingRequest);
     }
 
     private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
@@ -758,6 +810,12 @@ public class AssessmentCandidateService {
         renderingRequest.setResultAllowed(itemDelivery.isAllowResult());
         renderingRequest.setSourceAllowed(itemDelivery.isAllowSource());
         return renderingRequest;
+    }
+
+    private String renderTerminated(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+        final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
+        renderingRequest.setRenderingMode(RenderingMode.TERMINATED);
+        return assessmentRenderer.renderItem(renderingRequest);
     }
 
     private void extractResponseMap(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,

@@ -23,7 +23,8 @@ rendering.
 
   <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
   <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-  <xsl:variable name="isInteracting" as="xs:boolean" select="$renderingMode='INTERACTING'"/>
+
+  <xsl:variable name="isInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
 
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>

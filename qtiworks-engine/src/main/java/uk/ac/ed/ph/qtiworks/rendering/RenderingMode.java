@@ -40,7 +40,9 @@ package uk.ac.ed.ph.qtiworks.rendering;
  */
 public enum RenderingMode {
 
-    INTERACTING,
+    INTERACTING_PRESENTATION,
+    INTERACTING_AFTER_ATTEMPT,
+    CLOSED_AFTER_ATTEMPT,
     CLOSED,
     SOLUTION,
     REPLAY,
