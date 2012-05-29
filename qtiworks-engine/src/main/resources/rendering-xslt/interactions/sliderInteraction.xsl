@@ -20,7 +20,7 @@
         <xsl:call-template name="qw:generic-bad-response-message"/>
       </xsl:if>
 
-      <xsl:variable name="value" select="qw:get-response-value(@responseIdentifier)"/>
+      <xsl:variable name="value" select="qw:get-response-value(/, @responseIdentifier)"/>
       <xsl:variable name="is-discrete" select="qw:get-response-declaration(/, @responseIdentifier)/@baseType='integer'" as="xs:boolean"/>
       <xsl:variable name="min" select="if ($is-discrete) then string(floor(@lowerBound)) else string(@lowerBound)" as="xs:string"/>
       <xsl:variable name="max" select="if ($is-discrete) then string(ceiling(@upperBound)) else string(@upperBound)" as="xs:string"/>

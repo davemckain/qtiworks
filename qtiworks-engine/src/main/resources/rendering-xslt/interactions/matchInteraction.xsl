@@ -39,8 +39,11 @@
               <td align="center">
                 <xsl:variable name="responseValue" select="concat(@identifier, ' ', $choiceIdentifier)" as="xs:string"/>
                 <input type="checkbox" name="qtiworks_response_{$responseIdentifier}" value="{$responseValue}">
-                  <xsl:if test="qw:value-contains(qw:get-response-value($responseIdentifier), $responseValue)">
-                    <xsl:attribute name="checked" select="'checked'"/>
+                  <xsl:if test="$isSessionClosed">
+                    <xsl:attribute name="disabled">disabled</xsl:attribute>
+                  </xsl:if>
+                  <xsl:if test="qw:value-contains(qw:get-response-value(/, $responseIdentifier), $responseValue)">
+                    <xsl:attribute name="checked">checked</xsl:attribute>
                   </xsl:if>
                 </input>
               </td>
@@ -48,18 +51,20 @@
           </tr>
         </xsl:for-each>
       </table>
-      <script type='text/javascript'>
-        QtiWorks.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
-          <xsl:value-of select="@maxAssociations"/>,
-          {<xsl:for-each select="$orderedSet1">
-            <xsl:if test="position() > 1">,</xsl:if>
-            <xsl:value-of select="@identifier"/>:<xsl:value-of select="@matchMax"/>
-          </xsl:for-each>},
-          {<xsl:for-each select="$orderedSet2">
-            <xsl:if test="position() > 1">,</xsl:if>
-            <xsl:value-of select="@identifier"/>:<xsl:value-of select="@matchMax"/>
-          </xsl:for-each>});
-      </script>
+      <xsl:if test="$isSessionInteracting">
+        <script type='text/javascript'>
+          QtiWorks.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
+            <xsl:value-of select="@maxAssociations"/>,
+            {<xsl:for-each select="$orderedSet1">
+              <xsl:if test="position() > 1">,</xsl:if>
+              <xsl:value-of select="@identifier"/>:<xsl:value-of select="@matchMax"/>
+            </xsl:for-each>},
+            {<xsl:for-each select="$orderedSet2">
+              <xsl:if test="position() > 1">,</xsl:if>
+              <xsl:value-of select="@identifier"/>:<xsl:value-of select="@matchMax"/>
+            </xsl:for-each>});
+        </script>
+      </xsl:if>
     </div>
   </xsl:template>
 </xsl:stylesheet>

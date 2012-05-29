@@ -25,7 +25,10 @@
 
   <xsl:template match="qti:inlineChoice">
     <option value="{@identifier}">
-      <xsl:if test="qw:value-contains(qw:get-response-value(../@responseIdentifier), @identifier)">
+      <xsl:if test="$isSessionClosed">
+        <xsl:attribute name="disabled">disabled</xsl:attribute>
+      </xsl:if>
+      <xsl:if test="qw:value-contains(qw:get-response-value(/, ../@responseIdentifier), @identifier)">
         <xsl:attribute name="selected" select="'selected'"/>
       </xsl:if>
       <!--

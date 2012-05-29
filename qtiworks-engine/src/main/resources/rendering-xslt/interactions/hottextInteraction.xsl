@@ -41,8 +41,11 @@
         <input type="{if ($hottextInteraction/@maxChoices=1) then 'radio' else 'checkbox'}"
              name="qtiworks_response_{$responseIdentifier}"
              value="{@identifier}">
-           <xsl:if test="qw:value-contains(qw:get-response-value($responseIdentifier), @identifier)">
-             <xsl:attribute name="checked" select="'checked'"/>
+          <xsl:if test="$isSessionClosed">
+            <xsl:attribute name="disabled">disabled</xsl:attribute>
+          </xsl:if>
+          <xsl:if test="qw:value-contains(qw:get-response-value(/, $responseIdentifier), @identifier)">
+            <xsl:attribute name="checked" select="'checked'"/>
           </xsl:if>
         </input>
         <xsl:apply-templates/>

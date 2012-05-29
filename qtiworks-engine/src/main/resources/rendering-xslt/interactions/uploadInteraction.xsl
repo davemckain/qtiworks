@@ -16,7 +16,11 @@
           <xsl:apply-templates select="qti:prompt"/>
         </div>
       </xsl:if>
-      <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}"/>
+      <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}">
+        <xsl:if test="$isSessionClosed">
+          <xsl:attribute name="disabled">disabled</xsl:attribute>
+        </xsl:if>
+      </input>
     </div>
   </xsl:template>
 

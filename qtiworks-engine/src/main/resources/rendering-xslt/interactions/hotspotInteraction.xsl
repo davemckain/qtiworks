@@ -38,7 +38,7 @@
               value="{@identifier}::::{@shape}::{@coords}{if (@label) then concat('::hotSpotLabel',@label) else ''}{if (@matchGroup) then concat('::', translate(normalize-space(@matchGroup), ' ', '::')) else ''}"/>
           </xsl:for-each>
 
-          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
+          <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
           <xsl:if test="qw:is-not-null-value($responseValue)">
             <param name="feedback">
               <xsl:attribute name="value">

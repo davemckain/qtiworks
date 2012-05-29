@@ -178,7 +178,7 @@ Renders a standalone assessmentItem
 
         <xsl:apply-templates/>
 
-        <xsl:if test="$isInteracting">
+        <xsl:if test="$isSessionInteracting">
           <div class="controls">
             <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
           </div>

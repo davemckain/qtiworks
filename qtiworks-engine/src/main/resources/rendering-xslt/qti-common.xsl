@@ -24,7 +24,8 @@ rendering.
   <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
   <xsl:param name="renderingMode" as="xs:string" required="yes"/>
 
-  <xsl:variable name="isInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$candidateSessionState='CLOSED'"/>
 
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
@@ -83,11 +84,8 @@ rendering.
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
   <!-- Include stylesheets handling each type of interaction -->
-  <!--
   <xsl:include href="interactions/associateInteraction.xsl"/>
-  -->
   <xsl:include href="interactions/choiceInteraction.xsl"/>
-  <!--
   <xsl:include href="interactions/drawingInteraction.xsl"/>
   <xsl:include href="interactions/endAttemptInteraction.xsl"/>
   <xsl:include href="interactions/extendedTextInteraction.xsl"/>
@@ -107,7 +105,6 @@ rendering.
   <xsl:include href="interactions/textEntryInteraction.xsl"/>
   <xsl:include href="interactions/uploadInteraction.xsl"/>
   <xsl:include href="interactions/mathEntryInteraction.xsl"/>
-  -->
 
   <!-- ************************************************************ -->
 

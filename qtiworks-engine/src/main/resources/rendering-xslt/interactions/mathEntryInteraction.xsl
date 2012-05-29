@@ -19,7 +19,7 @@
         <a href="{$webappContextPath}/rendering/mathEntryInteractionHelp.html" target="_blank" id="qtiworks_id_mathEntryHelp_{@responseIdentifier}"></a>
         <input id="qtiworks_id_mathEntryInput_{@responseIdentifier}" name="qtiworks_response_{@responseIdentifier}" type="text"
             size="{if (exists(@ma:expectedLength)) then @ma:expectedLength else '10'}">
-          <xsl:if test="not($isInteracting)">
+          <xsl:if test="$isSessionClosed">
             <xsl:attribute name="disabled">disabled</xsl:attribute>
           </xsl:if>
           <xsl:if test="exists($asciiMathInput)">

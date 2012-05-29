@@ -16,7 +16,7 @@ DM: I don't have anything to test this out with!
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <div class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
-      <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
+      <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
       <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
       <xsl:variable name="rawInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
 
@@ -107,6 +107,9 @@ DM: I don't have anything to test this out with!
     <xsl:param name="checkJavaScript" as="xs:string?"/>
     <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
     <textarea cols="40" rows="6" name="qtiworks_response_{@responseIdentifier}">
+      <xsl:if test="$isSessionClosed">
+        <xsl:attribute name="disabled">disabled</xsl:attribute>
+      </xsl:if>
       <xsl:if test="@expectedLines">
         <xsl:attribute name="rows" select="@expectedLines"/>
       </xsl:if>

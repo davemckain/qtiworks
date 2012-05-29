@@ -28,6 +28,9 @@
         ')')" as="xs:string"/>
 
       <input type="text" name="qtiworks_response_{@responseIdentifier}">
+        <xsl:if test="$isSessionClosed">
+          <xsl:attribute name="disabled">disabled</xsl:attribute>
+        </xsl:if>
         <xsl:if test="qw:is-bad-response(@responseIdentifier) or qw:is-invalid-response(@responseIdentifier)">
           <xsl:attribute name="class" select="'badResponse'"/>
         </xsl:if>

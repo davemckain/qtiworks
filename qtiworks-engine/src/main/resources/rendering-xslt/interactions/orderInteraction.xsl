@@ -28,7 +28,7 @@
         been selected and those which have -->
         <xsl:variable name="thisInteraction" select="." as="element(qti:orderInteraction)"/>
         <xsl:variable name="visibleOrderedChoices" as="element(qti:simpleChoice)*" select="qw:get-visible-ordered-choices(., qti:simpleChoice)"/>
-        <xsl:variable name="respondedChoiceIdentifiers" select="qw:extract-iterable-elements(qw:get-response-value(@responseIdentifier))" as="xs:string*"/>
+        <xsl:variable name="respondedChoiceIdentifiers" select="qw:extract-iterable-elements(qw:get-response-value(/, @responseIdentifier))" as="xs:string*"/>
         <xsl:variable name="unselectedVisibleChoices" select="$visibleOrderedChoices[not(@identifier = $respondedChoiceIdentifiers)]" as="element(qti:simpleChoice)*"/>
         <xsl:variable name="respondedVisibleChoices" as="element(qti:simpleChoice)*">
           <xsl:for-each select="$respondedChoiceIdentifiers">
@@ -39,14 +39,18 @@
         <!-- Now generate selection widget -->
         <xsl:variable name="orientation" select="if (@orientation) then @orientation else 'horizontal'" as="xs:string"/>
         <div class="source box {$orientation}">
-          <span class="info">Drag unused items from here...</span>
+          <xsl:if test="$isSessionInteracting">
+            <span class="info">Drag unused items from here...</span>
+          </xsl:if>
           <ul class="{$orientation}">
             <xsl:apply-templates select="$unselectedVisibleChoices"/>
           </ul>
           <br/>
         </div>
         <div class="target box {$orientation}">
-          <span class="info">Drop and order your selected items here...</span>
+          <xsl:if test="$isSessionInteracting">
+            <span class="info">Drop and order your selected items here...</span>
+          </xsl:if>
           <ul class="{$orientation}">
             <xsl:apply-templates select="$respondedVisibleChoices"/>
           </ul>

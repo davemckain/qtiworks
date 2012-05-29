@@ -40,7 +40,7 @@
             <param name="hotspot{position()-1}" value="{@identifier}::{normalize-space(string-join(for $n in $content return string($n), ''))}"/>
           </xsl:for-each>
 
-          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
+          <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
           <xsl:if test="qw:is-not-null-value($responseValue)">
             <param name="feedback">
               <xsl:attribute name="value">

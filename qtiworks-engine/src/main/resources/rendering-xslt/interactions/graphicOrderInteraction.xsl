@@ -42,7 +42,7 @@
           <xsl:for-each select="$hotspotChoices">
             <param name="movable_object{position()-1}" value="{position()}::{position()}"/>
           </xsl:for-each>
-          <xsl:variable name="responseValue" select="qw:get-response-value(@responseIdentifier)" as="element(qw:responseVariable)?"/>
+          <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
           <xsl:if test="qw:is-not-null-value($responseValue)">
             <param name="feedback">
               <xsl:attribute name="value">
