@@ -133,6 +133,9 @@ public class AssessmentCandidateService {
     private QtiSerializer qtiSerializer;
 
     @Resource
+    private AssessmentPackageFileService assessmentPackageFileService;
+
+    @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
@@ -872,8 +875,8 @@ public class AssessmentCandidateService {
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setCandidateSessionState(candidateSessionState);
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
@@ -923,8 +926,8 @@ public class AssessmentCandidateService {
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
         renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(playbackEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
 
@@ -969,8 +972,8 @@ public class AssessmentCandidateService {
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
         renderingRequest.setRenderingMode(RenderingMode.CLOSED);
-        renderingRequest.setAssessmentResourceLocator(ServiceUtilities.createAssessmentResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(ServiceUtilities.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
@@ -1028,29 +1031,28 @@ public class AssessmentCandidateService {
     // Access to additional package resources (e.g. images/CSS)
 
     public void streamAssessmentResource(final long did, final String fileSystemIdString,
-            final OutputStream outputStream)
+            final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException, DomainEntityNotFoundException {
         Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        streamAssessmentResource(itemDelivery, fileSystemIdString, outputStream);
+        streamAssessmentResource(itemDelivery, fileSystemIdString, outputStreamer);
     }
 
-    /** FIXME: Add caching support */
     public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileSystemIdString,
-            final OutputStream outputStream)
+            final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
         Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
         String resultingFileHref = null;
-        for (final String fileHref : assessmentPackage.getFileHrefs()) {
-            final URI fileUri = ServiceUtilities.createAssessmentFileUri(assessmentPackage, fileHref);
+        for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
+            final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
             if (fileUri.toString().equals(fileSystemIdString)) {
-                resultingFileHref = fileHref;
+                resultingFileHref = safeFileHref;
                 break;
             }
         }
@@ -1060,27 +1062,26 @@ public class AssessmentCandidateService {
         }
 
         /* Finally stream the required resource */
-        ServiceUtilities.streamAssessmentFile(assessmentPackage, resultingFileHref, outputStream);
+        assessmentPackageFileService.streamAssessmentPackageFile(assessmentPackage, resultingFileHref, outputStreamer);
     }
 
     //----------------------------------------------------
     // Candidate Source access
 
-    public void streamAssessmentSource(final long did, final OutputStream outputStream)
+    public void streamAssessmentSource(final long did, final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        streamAssessmentSource(itemDelivery, outputStream);
+        streamAssessmentSource(itemDelivery, outputStreamer);
     }
 
-    /** FIXME: Add caching support */
-    public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStream outputStream)
+    public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
         ensureCallerMayViewSource(itemDelivery);
 
-        ServiceUtilities.streamAssessmentPackageSource(itemDelivery.getAssessmentPackage(), outputStream);
+        assessmentPackageFileService.streamAssessmentPackageSource(itemDelivery.getAssessmentPackage(), outputStreamer);
         auditor.recordEvent("Candidate streamed source for delivery #" + itemDelivery.getId());
     }
 

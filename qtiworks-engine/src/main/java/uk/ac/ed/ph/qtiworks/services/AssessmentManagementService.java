@@ -70,7 +70,6 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -104,6 +103,9 @@ public class AssessmentManagementService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private AssessmentPackageFileImporter assessmentPackageFileImporter;
@@ -140,11 +142,12 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    public void streamPackageSource(final AssessmentPackage assessmentPackage, final OutputStream outputStream)
+    public void streamPackageSource(final AssessmentPackage assessmentPackage, final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
         ensureCallerMayViewSource(assessmentPackage.getAssessment());
-        ServiceUtilities.streamAssessmentPackageSource(assessmentPackage, outputStream);
+        assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
     }
 
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
@@ -353,8 +356,8 @@ public class AssessmentManagementService {
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
     validateAssessment(final AssessmentPackage assessmentPackage) {
-        final ResourceLocator inputResourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
-        final URI assessmentObjectSystemId = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
+        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         E result;
@@ -417,8 +420,8 @@ public class AssessmentManagementService {
      */
     public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
         Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
-        final ResourceLocator inputResourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
-        final URI assessmentSystemId = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
+        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
         XmlReadResult xmlReadResult;
         try {
             xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);

@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.web.CacheableServletOutputStreamer;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -47,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -62,6 +65,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class PublicBrowseController {
+
+    /** Default age for any cacheable resources */
+    public static final long CACHE_AGE = 60 * 60;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -97,13 +103,20 @@ public class PublicBrowseController {
      * @throws DomainEntityNotFoundException
      */
     @RequestMapping(value="/package/{apid}/source", method=RequestMethod.GET)
-    public void streamPackageSource(final HttpServletResponse response, @PathVariable final long apid)
+    public void streamPackageSource(@PathVariable final long apid,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
         /* Look up package and make sure caller has read permission on it */
         final AssessmentPackage assessmentPackage = assessmentManagementService.getAssessmentPackage(apid);
 
-        response.setContentType("application/xml");
-        assessmentManagementService.streamPackageSource(assessmentPackage, response.getOutputStream());
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
+            assessmentManagementService.streamPackageSource(assessmentPackage, outputStreamer);
+        }
     }
-
 }

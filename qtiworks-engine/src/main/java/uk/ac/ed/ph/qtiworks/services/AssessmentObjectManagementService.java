@@ -76,6 +76,9 @@ public class AssessmentObjectManagementService {
     @Resource
     private QtiXmlReader qtiXmlReader;
 
+    @Resource
+    private AssessmentPackageFileService assessmentPackageFileService;
+
     private final LruHashMap<Long, ResolvedAssessmentItem> resolvedassessmentItemCache;
 
     public AssessmentObjectManagementService() {
@@ -106,8 +109,8 @@ public class AssessmentObjectManagementService {
     @SuppressWarnings("unchecked")
     private <E extends ResolvedAssessmentObject<?>>
     E resolveAssessmentObject(final AssessmentPackage assessmentPackage) {
-        final ResourceLocator inputResourceLocator = ServiceUtilities.createAssessmentResourceLocator(assessmentPackage);
-        final URI assessmentObjectSystemId = ServiceUtilities.createAssessmentObjectUri(assessmentPackage);
+        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
         final QtiXmlObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         E result;

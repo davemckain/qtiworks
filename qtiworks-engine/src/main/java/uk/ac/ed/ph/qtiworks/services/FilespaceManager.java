@@ -88,10 +88,17 @@ public final class FilespaceManager {
         }
     }
 
+    public File createTempFile() {
+        final String tmpFolderUri = filesystemBaseDirectory.toURI().toString()
+                + "/tmp";
+        final File candidateItemSessionFolder = createDirectoryPath(tmpFolderUri);
+        return new File(candidateItemSessionFolder, createUniqueRequestComponent());
+    }
+
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.ensureNotNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
-                + "/assessments/"
+                + "/uploads/assessment_packages/"
                 + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
         return createDirectoryPath(filespaceUri);
@@ -105,11 +112,11 @@ public final class FilespaceManager {
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/file-responses/assessment" + assessment.getId()
-                + "/package" + assessmentPackage.getId()
-                + "/delivery" + itemDelivery.getId()
+                + "/uploads/file_responses/assessment_" + assessment.getId()
+                + "/package_" + assessmentPackage.getId()
+                + "/delivery_" + itemDelivery.getId()
                 + "/" + candidate.getBusinessKey()
-                + "/session" + candidateItemSession.getId();
+                + "/session_" + candidateItemSession.getId();
         final File candidateItemSessionFolder = createDirectoryPath(folderUri);
         return new File(candidateItemSessionFolder, createUniqueRequestComponent());
     }
@@ -144,5 +151,4 @@ public final class FilespaceManager {
         final long threadId = Thread.currentThread().getId();
         return new SimpleDateFormat("yyyyMMdd-HHmmssSSS").format(timestamp) + "-" + String.valueOf(threadId);
     }
-
 }

@@ -61,7 +61,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -204,7 +206,8 @@ public class SampleResourceImporter {
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setAssessmentType(qtiSampleAssessment.getType());
         assessmentPackage.setAssessmentHref(qtiSampleAssessment.getAssessmentHref());
-        assessmentPackage.setFileHrefs(qtiSampleAssessment.getFileHrefs());
+        assessmentPackage.setQtiFileHrefs(new HashSet<String>(Arrays.asList(qtiSampleAssessment.getAssessmentHref())));
+        assessmentPackage.setSafeFileHrefs(qtiSampleAssessment.getFileHrefs());
         assessmentPackage.setImportType(AssessmentPackageImportType.BUNDLED_SAMPLE);
         assessmentPackage.setSandboxPath(null);
         assessmentPackage.setImporter(owner);

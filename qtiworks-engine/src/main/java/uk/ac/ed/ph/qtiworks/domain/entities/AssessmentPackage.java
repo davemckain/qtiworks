@@ -163,16 +163,21 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="default_did")
     private ItemDelivery defaultDelivery;
 
-    /**
-     * Hrefs of all file resources declared within this package.
-     * Used to determine what resources are allowed to be served up
-     */
+    /** Hrefs of all QTI XML file resources declared within this package */
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @ElementCollection(fetch=FetchType.LAZY)
-    @CollectionTable(name="assessment_package_files", joinColumns=@JoinColumn(name="aid"))
+    @CollectionTable(name="assessment_package_qti_files", joinColumns=@JoinColumn(name="aid"))
     @Column(name="href")
-    private Set<String> fileHrefs;
+    private Set<String> qtiFileHrefs;
+
+    /** Hrefs of all safe (non-QTI) file resources declared within this package */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @ElementCollection(fetch=FetchType.LAZY)
+    @CollectionTable(name="assessment_package_safe_files", joinColumns=@JoinColumn(name="aid"))
+    @Column(name="href")
+    private Set<String> safeFileHrefs;
 
     //------------------------------------------------------------
 
@@ -288,12 +293,21 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public Set<String> getFileHrefs() {
-        return fileHrefs;
+    public Set<String> getQtiFileHrefs() {
+        return qtiFileHrefs;
     }
 
-    public void setFileHrefs(final Set<String> fileHrefs) {
-        this.fileHrefs = fileHrefs;
+    public void setQtiFileHrefs(final Set<String> qtiFileHrefs) {
+        this.qtiFileHrefs = qtiFileHrefs;
+    }
+
+
+    public Set<String> getSafeFileHrefs() {
+        return safeFileHrefs;
+    }
+
+    public void setSafeFileHrefs(final Set<String> fileHrefs) {
+        this.safeFileHrefs = fileHrefs;
     }
 
 }

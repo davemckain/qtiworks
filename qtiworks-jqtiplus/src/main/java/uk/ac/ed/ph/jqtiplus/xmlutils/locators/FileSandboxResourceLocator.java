@@ -51,33 +51,47 @@ import org.slf4j.LoggerFactory;
  * packages.
  * <p>
  * By default, the URI scheme will be called 'package', but this can be changed as required.
- * 
+ *
  * Example:
- * 
+ *
  * <code>package:/a/b/c.xml</code> -> <code>File base/a/b/c.xml</code>
- * 
+ *
  * A check is included to ensure that the resulting path does not end up outside the
  * required base directory.
  *
  * @author David McKain
  */
 public class FileSandboxResourceLocator implements ResourceLocator {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(FileSandboxResourceLocator.class);
-    
+
     private final CustomUriScheme uriScheme;
     private final File sandboxBaseDirectory;
-    
-    public FileSandboxResourceLocator(CustomUriScheme uriScheme, File sandboxBaseDirectory) {
+
+    public FileSandboxResourceLocator(final CustomUriScheme uriScheme, final File sandboxBaseDirectory) {
         Assert.ensureNotNull(uriScheme, "uriScheme");
         Assert.ensureNotNull(sandboxBaseDirectory, "sandboxBaseDirectory");
         this.uriScheme = uriScheme;
         this.sandboxBaseDirectory = sandboxBaseDirectory;
     }
-    
+
     @Override
-    public InputStream findResource(URI systemIdUri) {
-        URI normalizedUri = systemIdUri.normalize();
+    public InputStream findResource(final URI systemIdUri) {
+        final File sandboxFile = findSandboxFile(systemIdUri);
+        if (sandboxFile!=null) {
+            try {
+                return new FileInputStream(sandboxFile);
+            }
+            catch (final FileNotFoundException e) {
+                logger.trace("URI {} successfully mapped to non-existent file {}", systemIdUri, sandboxFile);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    public File findSandboxFile(final URI systemIdUri) {
+        final URI normalizedUri = systemIdUri.normalize();
         if (uriScheme.isInScheme(normalizedUri)) {
             final String normalizedPath = uriScheme.uriToPath(normalizedUri);
             if (normalizedPath!=null) {
@@ -87,28 +101,29 @@ public class FileSandboxResourceLocator implements ResourceLocator {
                     return null;
                 }
                 final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
-                FileInputStream result = null;
-                try {
-                    result = new FileInputStream(resultingFile);
-                    logger.trace("URI {} successfully mapped to file {}", systemIdUri, resultingFile);
-                }
-                catch (FileNotFoundException e) {
+                if (!resultingFile.exists()) {
                     logger.trace("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
+                    return null;
                 }
-                return result;
+                else if (!resultingFile.isFile()) {
+                    logger.trace("URI {} successfully mapped to non-file file {}", systemIdUri, resultingFile);
+                    return null;
+                }
+                logger.trace("URI {} successfully mapped to good file {}", systemIdUri, resultingFile);
+                return resultingFile;
             }
         }
         return null;
     }
-    
+
     public CustomUriScheme getUriScheme() {
         return uriScheme;
     }
-    
+
     public File getExpandedBaseDirectory() {
         return sandboxBaseDirectory;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

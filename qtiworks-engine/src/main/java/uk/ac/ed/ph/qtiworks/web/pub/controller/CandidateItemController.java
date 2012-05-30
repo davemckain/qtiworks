@@ -43,6 +43,8 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.web.CacheableServletOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -51,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -83,6 +84,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class CandidateItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(CandidateItemController.class);
+
+    /** Default age for any cacheable resources */
+    public static final long CACHE_AGE = 60 * 60;
 
     @Resource
     private AssessmentCandidateService assessmentCandidateService;
@@ -382,12 +386,20 @@ public class CandidateItemController {
      * @throws IOException
      */
     @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
-    public void streamPackageSource(final HttpServletResponse response, @PathVariable final long did)
+    public void streamPackageSource(@PathVariable final long did,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Request source for delivery #{}", did);
 
-        response.setContentType("application/xml");
-        assessmentCandidateService.streamAssessmentSource(did, response.getOutputStream());
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
+            assessmentCandidateService.streamAssessmentSource(did, outputStreamer);
+        }
     }
 
     /**
@@ -400,16 +412,18 @@ public class CandidateItemController {
      * @throws DomainEntityNotFoundException
      */
     @RequestMapping(value="/delivery/{did}/file", method=RequestMethod.GET)
-    public void streamPackageFile(final HttpServletResponse response, @PathVariable final long did,
-            @RequestParam("href") final String href)
+    public void streamPackageFile(@PathVariable final long did,
+            @RequestParam("href") final String href,
+            final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        response.setContentType(getResourceContentType(href));
-        assessmentCandidateService.streamAssessmentResource(did, href, response.getOutputStream());
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
+            assessmentCandidateService.streamAssessmentResource(did, href, outputStreamer);
+        }
     }
-
-    /** FIXME: This probably should be encoded within the DB */
-    private String getResourceContentType(final String href) {
-        return URLConnection.getFileNameMap().getContentTypeFor(href);
-    }
-
 }

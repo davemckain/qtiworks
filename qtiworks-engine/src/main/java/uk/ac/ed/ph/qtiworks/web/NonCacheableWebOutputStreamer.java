@@ -37,14 +37,9 @@ import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * Implementation of {@link OutputStreamer} suitable for sending data
@@ -52,47 +47,21 @@ import org.apache.commons.io.IOUtils;
  *
  * @author David McKain
  */
-abstract class ServletOutputStreamer implements OutputStreamer {
+public final class NonCacheableWebOutputStreamer extends ServletOutputStreamer {
 
-    protected final HttpServletResponse response;
-    protected final String eTag;
-    protected final DateFormat httpDateFormat;
-
-    public ServletOutputStreamer(final HttpServletResponse response, final String eTag) {
-        this.response = response;
-        this.eTag = eTag;
-        this.httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+    public NonCacheableWebOutputStreamer(final HttpServletResponse response, final String eTag) {
+        super(response, eTag);
     }
 
-    protected void transferResultStream(final InputStream resultStream) throws IOException {
-        final ServletOutputStream servletOutputStream = response.getOutputStream();
-        try {
-            IOUtils.copy(resultStream, servletOutputStream);
-        }
-        finally {
-            servletOutputStream.flush();
-        }
-    }
-
-    protected void maybeSetEtag() {
-        if (eTag!=null) {
-            response.setHeader("ETag", eTag);
-        }
-    }
-
-    protected void setContentType(final String contentType) {
-        response.setContentType(contentType);
-    }
-
-    protected void setContentLength(final long contentLength) {
-        response.setContentLength((int) contentLength); /* Huge files aren't going to happen... */
-    }
-
-    protected void setLastModifiedTime(final Date date) {
-        response.setHeader("Last-Modified", formatHttpDate(date));
-    }
-
-    protected String formatHttpDate(final Date date) {
-        return httpDateFormat.format(date);
+    @Override
+    public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream)
+            throws IOException {
+        maybeSetEtag();
+        setContentType(contentType);
+        setContentLength(contentLength);
+        setLastModifiedTime(lastModifiedTime);
+        response.setHeader("Cache-Control", "must-revalidate");
+        response.setHeader("Expires", formatHttpDate(lastModifiedTime));
+        transferResultStream(resultStream);
     }
 }
