@@ -244,24 +244,110 @@ public class SampleResourceImporter {
             defaultDelivery.setAssessmentPackage(assessmentPackage);
             defaultDelivery.setMaxAttempts(Integer.valueOf(0));
             defaultDelivery.setOpen(true);
-            defaultDelivery.setTitle("Temporary default bootstrap delivery");
-            defaultDelivery.setPrompt("Prompt goes here");
             defaultDelivery.setAuthorMode(true);
-            defaultDelivery.setAllowClose(true);
-            defaultDelivery.setAllowResetWhenInteracting(true);
-            defaultDelivery.setAllowResetWhenClosed(true);
-            defaultDelivery.setAllowReinitWhenInteracting(true);
-            defaultDelivery.setAllowReinitWhenInteracting(true);
-            defaultDelivery.setAllowSolutionWhenInteracting(true);
-            defaultDelivery.setAllowSolutionWhenClosed(true);
+            defaultDelivery.setTitle("Default demo delivery");
             defaultDelivery.setAllowPlayback(true);
             defaultDelivery.setAllowResult(true);
             defaultDelivery.setAllowSource(true);
+            defaultDelivery.setAllowPlayback(true);
+            tweakItemDelivery(defaultDelivery, qtiSampleAssessment);
+
             assessmentPackage.setDefaultDelivery(defaultDelivery);
             itemDeliveryDao.persist(defaultDelivery);
             assessmentPackageDao.update(assessmentPackage);
         }
-
         return assessment;
+    }
+
+    private void tweakItemDelivery(final ItemDelivery delivery, final QtiSampleAssessment qtiSampleAssessment) {
+        switch (qtiSampleAssessment.getDeliveryStyle()) {
+            case MATHASSESS_STANDARD:
+                delivery.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
+                        + "the item as many times as you like. There is no template processing (randomisation) in this "
+                        + "example.");
+                delivery.setAllowClose(true);
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowResetWhenClosed(true);
+                break;
+
+            case MATHASSESS_TEMPLATED:
+                delivery.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
+                        + "the item as many times as you like. This item contains template processing (randomisation), "
+                        + "so we have provided a button to let you reinitialise your session with a freshly generated instance of the item");
+                delivery.setAllowClose(true);
+                delivery.setAllowReinitWhenInteracting(true);
+                delivery.setAllowReinitWhenClosed(true);
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowResetWhenClosed(true);
+                break;
+
+            case IMS_ADAPTIVE:
+                delivery.setPrompt("This is an adaptive item, potentially involving more than one step to complete. "
+                        + "This example lets you try this out as many times as you like, and also reset the question "
+                        + "if you want to start again. A model solution is provided.");
+                delivery.setMaxAttempts(Integer.valueOf(1));
+                delivery.setAllowClose(true);
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowResetWhenClosed(true);
+                delivery.setAllowSolutionWhenInteracting(true);
+                delivery.setAllowSolutionWhenClosed(true);
+                break;
+
+            case IMS_STANDARD:
+                delivery.setPrompt("This is a typical standard IMS sample question. It has a model solution, but no "
+                        + "feedback. In this example, we'll let you give you one attempt at the question before it "
+                        + "closes. You can still reset the question and try it again, though.");
+                delivery.setAllowClose(true);
+                delivery.setAllowResetWhenClosed(true);
+                delivery.setAllowSolutionWhenInteracting(true);
+                delivery.setAllowSolutionWhenClosed(true);
+                break;
+
+            case IMS_FEEDBACK:
+                delivery.setPrompt("This is a typical standard IMS sample question. It has a model solution... "
+                        + "and this one also has feedback. In this example, we'll let you make as many attempts as you like. "
+                        + "You can still reset the question and try it again, though.");
+                delivery.setAllowClose(true);
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowResetWhenClosed(true);
+                delivery.setAllowSolutionWhenInteracting(true);
+                delivery.setAllowSolutionWhenClosed(true);
+                break;
+
+            case IMS_NO_RESPONSE_PROCESSING:
+                delivery.setPrompt("This is a very basic standard IMS sample question. It has no response processing (scoring) "
+                        + "built in so isn't very interactve. There is also no model solution. It's therefore not much fun "
+                        + "to play around with!");
+                delivery.setAllowResetWhenInteracting(true);
+                break;
+
+            case IMS_STANDARD_TEMPLATED:
+                delivery.setPrompt("This is a standard IMS sample question demonstrating template processing (randomisation). "
+                        + "It has no model solution and no feedback, so it's fun to render but not much fun to actually try out. "
+                        + "Try playing with the 'Reinitialize' option to generate the question with different values");
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowReinitWhenInteracting(true);
+                break;
+
+            case LANGUAGE_STANDARD:
+                delivery.setPrompt("This question has a model solution and feedback. In this example, we'll let you try "
+                        + "the item once and see the result. You can always reset it and try again afterwards if you like.");
+                delivery.setMaxAttempts(Integer.valueOf(1));
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowSolutionWhenInteracting(true);
+                break;
+
+            default:
+                delivery.setPrompt("This item hasn't been categoried, so we probably haven't presented it with the most "
+                        + "useful set of options.");
+                delivery.setAllowClose(true);
+                delivery.setAllowResetWhenInteracting(true);
+                delivery.setAllowResetWhenClosed(true);
+                delivery.setAllowReinitWhenInteracting(true);
+                delivery.setAllowReinitWhenInteracting(true);
+                delivery.setAllowSolutionWhenInteracting(true);
+                delivery.setAllowSolutionWhenClosed(true);
+                break;
+        }
     }
 }

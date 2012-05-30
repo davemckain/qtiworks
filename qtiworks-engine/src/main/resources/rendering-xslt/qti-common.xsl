@@ -166,7 +166,7 @@ rendering.
         <!-- Need to convert QTI <qti:correctResponse/> to <qw:responseVariable/> -->
         <xsl:for-each select="$responseDeclaration/qti:correctResponse">
           <qw:responseVariable>
-            <xsl:copy-of select="@cardinality, @baseType"/>
+            <xsl:copy-of select="../@cardinality, ../@baseType"/>
             <xsl:for-each select="qti:value">
               <qw:value>
                 <xsl:copy-of select="@fieldIdentifier, @baseType"/>

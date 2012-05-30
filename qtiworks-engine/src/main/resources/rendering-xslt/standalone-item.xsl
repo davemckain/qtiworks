@@ -150,6 +150,13 @@ Renders a standalone assessmentItem
 
     <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
 
+    <!-- Delivery prompt -->
+    <xsl:if test="$prompt">
+      <div class="itemPrompt">
+        <xsl:value-of select="$prompt"/>
+      </div>
+    </xsl:if>
+
     <!-- Candidate status -->
     <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED', 'PLAYBACK')">
       <div class="candidateStatus">
@@ -182,13 +189,6 @@ Renders a standalone assessmentItem
             </ul>
           </xsl:when>
         </xsl:choose>
-      </div>
-    </xsl:if>
-
-    <!-- Delivery prompt -->
-    <xsl:if test="$prompt">
-      <div class="itemPrompt">
-        <xsl:value-of select="$prompt"/>
       </div>
     </xsl:if>
 
@@ -246,6 +246,13 @@ Renders a standalone assessmentItem
           <li>
             <form action="{$webappContextPath}{$closeUrl}" method="post">
               <input type="submit" value="Finish and review"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$playbackAllowed and exists($playbackEventIds) and $renderingMode!='PLAYBACK'">
+          <li>
+            <form action="{$webappContextPath}{$playbackUrlBase}/{$playbackEventIds[1]}" method="post">
+              <input type="submit" value="Enter playback mode"/>
             </form>
           </li>
         </xsl:if>
