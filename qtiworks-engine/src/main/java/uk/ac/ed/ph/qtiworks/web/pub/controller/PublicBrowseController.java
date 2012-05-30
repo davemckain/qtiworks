@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.web.CacheableServletOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -115,7 +115,7 @@ public class PublicBrowseController {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
         else {
-            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
             assessmentManagementService.streamPackageSource(assessmentPackage, outputStreamer);
         }
     }

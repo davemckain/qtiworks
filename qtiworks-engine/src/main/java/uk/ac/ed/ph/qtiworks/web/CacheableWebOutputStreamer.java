@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,17 +42,18 @@ import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implementation of {@link OutputStreamer} suitable for sending data
- * via an {@link HttpServletResponse}
+ * This {@link OutputStreamer} sends HTTP response headers to make the result
+ * cacheable (in a reasonable sense for this type of application).
  *
  * @author David McKain
  */
-public final class CacheableServletOutputStreamer extends ServletOutputStreamer {
+public final class CacheableWebOutputStreamer extends ServletOutputStreamer {
 
     private final long maxCacheAge;
 
-    public CacheableServletOutputStreamer(final HttpServletResponse response, final String eTag, final long maxCacheAge) {
-        super(response, eTag);
+    public CacheableWebOutputStreamer(final HttpServletResponse response,
+            final String resourceEtag, final long maxCacheAge) {
+        super(response, resourceEtag);
         this.maxCacheAge = maxCacheAge;
     }
 

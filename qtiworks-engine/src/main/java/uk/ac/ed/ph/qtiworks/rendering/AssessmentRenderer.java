@@ -47,8 +47,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -142,9 +146,28 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    public String renderItem(final ItemRenderingRequest renderingRequest) {
+    /** (Convenience method) */
+    public String renderItemToString(final ItemRenderingRequest renderingRequest) {
+        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+        renderItem(renderingRequest, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+        return stringBuilderWriter.toString();
+    }
+
+    /**
+     * Renders the given {@link ItemRenderingRequest}, sending the results as UTF-8 encoded XML
+     * to the given {@link OutputStream}.
+     * <p>
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @param renderingRequest
+     * @param resultStream
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderItem(final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
         Assert.ensureNotNull(renderingRequest, "renderingRequest");
-        logger.debug("renderItem({})", renderingRequest);
+        Assert.ensureNotNull(resultStream, "resultStream");
+        logger.debug("renderItem({}, {})", renderingRequest, resultStream);
 
         /* Check request is valid */
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "renderingRequest");
@@ -211,11 +234,11 @@ public class AssessmentRenderer {
             xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
         }
 
-        return doTransform(renderingRequest, standaloneItemXsltUri, xsltParameters);
+        doTransform(renderingRequest, resultStream, standaloneItemXsltUri, xsltParameters);
     }
 
-    private String doTransform(final ItemRenderingRequest renderingRequest, final URI stylesheetUri,
-            final Map<String, Object> xsltParameters) {
+    private void doTransform(final ItemRenderingRequest renderingRequest, final OutputStream resultStream,
+            final URI stylesheetUri, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
         Transformer transformer;
         try {
@@ -244,9 +267,13 @@ public class AssessmentRenderer {
         /* If we're building HTML5, add in its custom pseudo-DOCTYPE as we can't generate this in XSLT.
          * (NB: This only works sanely as we've hard-coded a reasonable encoding.)
          */
-        final StringWriter resultWriter = new StringWriter();
         if (serializationMethod==SerializationMethod.HTML5_MATHJAX) {
-            resultWriter.append("<!DOCTYPE html>\n");
+            try {
+                resultStream.write("<!DOCTYPE html>\n".getBytes(Charsets.UTF_8));
+            }
+            catch (final IOException e) {
+                throw new QtiRenderingException("Could not write HTML5 prolog to resultStream", e);
+            }
         }
 
         /* Set up Source */
@@ -256,7 +283,7 @@ public class AssessmentRenderer {
         final StreamSource assessmentSource = new StreamSource(assessmentStream);
 
         /* Set up Result */
-        final StreamResult result = new StreamResult(resultWriter);
+        final StreamResult result = new StreamResult(resultStream);
 
         /* Do transform */
         try {
@@ -265,6 +292,5 @@ public class AssessmentRenderer {
         catch (final TransformerException e) {
             throw new QtiRenderingException("Unexpected Exception doing XSLT transform", e);
         }
-        return resultWriter.toString();
     }
 }

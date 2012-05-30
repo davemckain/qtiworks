@@ -41,11 +41,15 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +105,12 @@ public class AdhocService {
         renderingOptions.setResultUrl("/result");
         renderingOptions.setServeFileUrl("/file");
         renderingOptions.setTerminateUrl("/terminate");
-        System.out.println("Rendering after init:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
+        renderingOptions.setSolutionUrl("/solution");
+        renderingOptions.setPlaybackUrlBase("/playback");
+
+        final Utf8Streamer utf8Streamer = new Utf8Streamer();
+        assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
 
         /* Do bad attempt == file submission */
         final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
@@ -119,7 +128,8 @@ public class AdhocService {
         assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */
-        System.out.println("Rendering after first proper attempt:\n" + assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions));
+        assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        System.out.println("Rendering after first proper attempt:\n" + utf8Streamer.getResult());
 
         /* Then reinit state */
         assessmentCandidateService.reinitCandidateSession(candidateItemSession);
@@ -132,5 +142,20 @@ public class AdhocService {
 
         /* Then close session */
         assessmentCandidateService.terminateCandidateSession(candidateItemSession);
+    }
+
+    public static class Utf8Streamer implements OutputStreamer {
+
+        private String result = null;
+
+        @Override
+        public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream) throws IOException {
+            this.result = IoUtilities.readUnicodeStream(resultStream);
+        }
+
+        public String getResult() {
+            return result;
+        }
+
     }
 }

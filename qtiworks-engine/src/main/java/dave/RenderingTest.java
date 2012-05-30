@@ -106,7 +106,8 @@ public class RenderingTest {
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
             renderer.init();
-            final String rendered = renderer.renderItem(renderingRequest);
+
+            final String rendered = renderer.renderItemToString(renderingRequest);
             System.out.println("Rendered page: " + rendered);
         }
         finally {

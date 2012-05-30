@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
@@ -61,6 +62,7 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -81,6 +83,9 @@ import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -96,6 +101,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -134,6 +140,9 @@ public class AssessmentCandidateService {
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
+
+    @Resource
+    private FilespaceManager filespaceManager;
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
@@ -735,61 +744,112 @@ public class AssessmentCandidateService {
      * Renders the current state of the {@link CandidateItemSession} having
      * the given ID (xid).
      *
-     * FIXME: This should render to a temporary {@link File} or something.
-     *
      * @param candidateSession
      * @return
      * @throws DomainEntityNotFoundException
      * @throws PrivilegeException
+     * @throws IOException
      */
-    public String renderCurrentState(final long xid,
-            final RenderingOptions renderingOptions) throws PrivilegeException, DomainEntityNotFoundException {
+    public void renderCurrentState(final long xid, final RenderingOptions renderingOptions,
+            final OutputStreamer outputStreamer)
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
         Assert.ensureNotNull(renderingOptions, "renderingOptions");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return renderCurrentState(candidateSession, renderingOptions);
+        renderCurrentState(candidateSession, renderingOptions, outputStreamer);
     }
 
-    public String renderCurrentState(final CandidateItemSession candidateSession,
-            final RenderingOptions renderingOptions) {
+    public void renderCurrentState(final CandidateItemSession candidateSession,
+            final RenderingOptions renderingOptions,
+            final OutputStreamer outputStreamer) throws IOException {
         Assert.ensureNotNull(candidateSession, "candidateSession");
         Assert.ensureNotNull(renderingOptions, "renderingOptions");
+        Assert.ensureNotNull(outputStreamer, "outputStreamer");
+
+        /* Look up most recent event */
         final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
-        return renderEvent(candidateSession, latestEvent, renderingOptions);
+
+        /* Create temporary file to hold the output before it gets streamed */
+        final File resultFile = filespaceManager.createTempFile();
+        try {
+            /* Render to temp file */
+            FileOutputStream resultOutputStream = null;
+            try {
+                resultOutputStream = new FileOutputStream(resultFile);
+                renderEvent(candidateSession, latestEvent, renderingOptions, resultOutputStream);
+            }
+            catch (final IOException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            finally {
+                IOUtils.closeQuietly(resultOutputStream);
+            }
+
+            /* Finally stream to caller */
+            final String contentType = renderingOptions.getSerializationMethod().getContentType();
+            final long contentLength = resultFile.length();
+            FileInputStream resultInputStream = null;
+            try {
+                resultInputStream = new FileInputStream(resultFile);
+                outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
+                        resultInputStream);
+            }
+            catch (final FileNotFoundException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            catch (final IOException e) {
+                /* Streamer threw Exception */
+                throw e;
+            }
+            finally {
+                IOUtils.closeQuietly(resultInputStream);
+            }
+        }
+        finally {
+            if (!resultFile.delete()) {
+                throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
+            }
+        }
     }
 
-    private String renderEvent(final CandidateItemSession candidateSession,
+    private void renderEvent(final CandidateItemSession candidateSession,
             final CandidateItemEvent candidateEvent,
-            final RenderingOptions renderingOptions) {
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         switch (candidateSessionState) {
             case INTERACTING:
-                return renderEventWhenInteracting(candidateEvent, renderingOptions);
+                renderEventWhenInteracting(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case CLOSED:
-                return renderEventWhenClosed(candidateEvent, renderingOptions);
+                renderEventWhenClosed(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case TERMINATED:
-                return renderTerminated(candidateEvent, renderingOptions);
+                renderTerminated(candidateEvent, renderingOptions, resultStream);
+                break;
 
             default:
                 throw new QtiWorksLogicException("Unexpected state " + candidateSessionState);
         }
     }
 
-    private String renderEventWhenInteracting(final CandidateItemEvent candidateEvent,
-            final RenderingOptions renderingOptions) {
+    private void renderEventWhenInteracting(final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case INIT:
             case REINIT:
             case RESET:
-                return renderInteractingPresentation(candidateEvent, renderingOptions);
+                renderInteractingPresentation(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                return renderInteractingAfterAttempt(candidateEvent, renderingOptions);
+                renderInteractingAfterAttempt(candidateEvent, renderingOptions, resultStream);
+                break;
 
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
@@ -798,14 +858,14 @@ public class AssessmentCandidateService {
         }
     }
 
-    private String renderInteractingPresentation(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderInteractingPresentation(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.INTERACTING_PRESENTATION);
 
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
-    private String renderInteractingAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderInteractingAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.INTERACTING_AFTER_ATTEMPT);
 
@@ -822,7 +882,7 @@ public class AssessmentCandidateService {
         renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
         renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
 
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
     private ItemRenderingRequest createItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
@@ -842,23 +902,27 @@ public class AssessmentCandidateService {
         return renderingRequest;
     }
 
-    private String renderEventWhenClosed(final CandidateItemEvent candidateEvent,
-            final RenderingOptions renderingOptions) {
+    private void renderEventWhenClosed(final CandidateItemEvent candidateEvent,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEventType eventType = candidateEvent.getEventType();
         switch (eventType) {
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                return renderClosedAfterAttempt(candidateEvent, renderingOptions);
+                renderClosedAfterAttempt(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case CLOSE:
-                return renderClosed(candidateEvent, renderingOptions);
+                renderClosed(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case SOLUTION:
-                return renderSolution(candidateEvent, renderingOptions);
+                renderSolution(candidateEvent, renderingOptions, resultStream);
+                break;
 
             case PLAYBACK:
-                return renderPlayback(candidateEvent, renderingOptions);
+                renderPlayback(candidateEvent, renderingOptions, resultStream);
+                break;
 
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
@@ -883,7 +947,7 @@ public class AssessmentCandidateService {
         return renderingRequest;
     }
 
-    private String renderClosedAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderClosedAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.CLOSED_AFTER_ATTEMPT);
 
@@ -901,22 +965,22 @@ public class AssessmentCandidateService {
         renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
         renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
 
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
-    private String renderClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.CLOSED);
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
-    private String renderSolution(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderSolution(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
-    private String renderPlayback(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderPlayback(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEvent playbackEvent = candidateEvent.getPlaybackEvent();
 
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
@@ -961,7 +1025,7 @@ public class AssessmentCandidateService {
         /* Record which event we're playing back */
         renderingRequest.setCurrentPlaybackEvent(playbackEvent);
 
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
     private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
@@ -990,10 +1054,10 @@ public class AssessmentCandidateService {
         return renderingRequest;
     }
 
-    private String renderTerminated(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
+    private void renderTerminated(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
         renderingRequest.setRenderingMode(RenderingMode.TERMINATED);
-        return assessmentRenderer.renderItem(renderingRequest);
+        assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
     private void extractResponseData(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
@@ -1030,16 +1094,16 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
-    public void streamAssessmentResource(final long did, final String fileSystemIdString,
+    public void streamAssessmentFile(final long did, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException, DomainEntityNotFoundException {
         Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        streamAssessmentResource(itemDelivery, fileSystemIdString, outputStreamer);
+        streamAssessmentFile(itemDelivery, fileSystemIdString, outputStreamer);
     }
 
-    public void streamAssessmentResource(final ItemDelivery itemDelivery, final String fileSystemIdString,
+    public void streamAssessmentFile(final ItemDelivery itemDelivery, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws PrivilegeException, IOException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");

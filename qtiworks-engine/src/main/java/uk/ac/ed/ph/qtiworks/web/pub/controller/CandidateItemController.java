@@ -44,7 +44,8 @@ import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.web.CacheableServletOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -68,7 +69,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -114,11 +114,12 @@ public class CandidateItemController {
 
     /**
      * Renders the current state of the given session
+     * @throws IOException
      */
     @RequestMapping(value="/session/{xid}", method=RequestMethod.GET)
-    @ResponseBody
-    public String renderItem(final WebRequest webRequest, @PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
+    public void renderItem(@PathVariable final long xid,
+            final WebRequest webRequest, final HttpServletResponse response)
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
         logger.debug("Rendering current state for session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
         final Long did = candidateSession.getItemDelivery().getId();
@@ -140,7 +141,8 @@ public class CandidateItemController {
         renderingOptions.setSourceUrl(deliveryBaseUrl + "/source");
         renderingOptions.setServeFileUrl(deliveryBaseUrl + "/file");
 
-        return assessmentCandidateService.renderCurrentState(xid, renderingOptions);
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        assessmentCandidateService.renderCurrentState(xid, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------
@@ -397,7 +399,7 @@ public class CandidateItemController {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
         else {
-            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
             assessmentCandidateService.streamAssessmentSource(did, outputStreamer);
         }
     }
@@ -416,14 +418,16 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        System.out.println("URI is " + request.getRequestURI());
+        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
         else {
-            final CacheableServletOutputStreamer outputStreamer = new CacheableServletOutputStreamer(response, resourceEtag, CACHE_AGE);
-            assessmentCandidateService.streamAssessmentResource(did, href, outputStreamer);
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
+            assessmentCandidateService.streamAssessmentFile(did, href, outputStreamer);
         }
     }
 }

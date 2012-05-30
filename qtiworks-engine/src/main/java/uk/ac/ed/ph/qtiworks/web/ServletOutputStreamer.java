@@ -33,13 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Implementation of {@link OutputStreamer} suitable for sending data
+ * Base implementation of {@link OutputStreamer} suitable for sending data
  * via an {@link HttpServletResponse}
  *
  * @author David McKain
@@ -55,13 +56,16 @@ import org.apache.commons.io.IOUtils;
 abstract class ServletOutputStreamer implements OutputStreamer {
 
     protected final HttpServletResponse response;
-    protected final String eTag;
+    protected final String resourceEtag;
     protected final DateFormat httpDateFormat;
 
-    public ServletOutputStreamer(final HttpServletResponse response, final String eTag) {
+    public ServletOutputStreamer(final HttpServletResponse response, final String resourceEtag) {
         this.response = response;
-        this.eTag = eTag;
+        this.resourceEtag = resourceEtag;
+
+        /* HTTP date format. NB: timezone must be GMT! */
         this.httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        httpDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
     protected void transferResultStream(final InputStream resultStream) throws IOException {
@@ -75,8 +79,8 @@ abstract class ServletOutputStreamer implements OutputStreamer {
     }
 
     protected void maybeSetEtag() {
-        if (eTag!=null) {
-            response.setHeader("ETag", eTag);
+        if (resourceEtag!=null) {
+            response.setHeader("ETag", resourceEtag);
         }
     }
 

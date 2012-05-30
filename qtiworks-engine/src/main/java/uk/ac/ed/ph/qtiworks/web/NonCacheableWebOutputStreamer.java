@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.services.OutputStreamer;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -42,25 +40,25 @@ import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implementation of {@link OutputStreamer} suitable for sending data
- * via an {@link HttpServletResponse}
+ * This implementation of {@link ServletOutputStreamer} is suitable for web requests that can be
+ * expected to send a different response each time. (E.g. rendering the current state of an item
+ * session).
  *
  * @author David McKain
  */
 public final class NonCacheableWebOutputStreamer extends ServletOutputStreamer {
 
-    public NonCacheableWebOutputStreamer(final HttpServletResponse response, final String eTag) {
-        super(response, eTag);
+    public NonCacheableWebOutputStreamer(final HttpServletResponse response) {
+        super(response, null);
     }
 
     @Override
     public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream)
             throws IOException {
-        maybeSetEtag();
         setContentType(contentType);
         setContentLength(contentLength);
         setLastModifiedTime(lastModifiedTime);
-        response.setHeader("Cache-Control", "must-revalidate");
+        response.setHeader("Cache-Control", "no-cache, must-revalidate");
         response.setHeader("Expires", formatHttpDate(lastModifiedTime));
         transferResultStream(resultStream);
     }

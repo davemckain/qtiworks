@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
@@ -223,8 +224,7 @@ public class AssessmentPackageFileService {
             final String fileHref, final OutputStreamer outputStreamer)
             throws IOException {
         final String contentType = getResourceContentType(fileHref);
-        streamAssessmentFile(assessmentPackage, assessmentPackage.getAssessmentHref(),
-                contentType, outputStreamer);
+        streamAssessmentFile(assessmentPackage, fileHref, contentType, outputStreamer);
     }
 
     private void streamAssessmentFile(final AssessmentPackage assessmentPackage, final String fileHref,

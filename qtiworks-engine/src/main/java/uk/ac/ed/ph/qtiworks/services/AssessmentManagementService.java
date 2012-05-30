@@ -50,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
