@@ -418,7 +418,6 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        System.out.println("URI is " + request.getRequestURI());
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
