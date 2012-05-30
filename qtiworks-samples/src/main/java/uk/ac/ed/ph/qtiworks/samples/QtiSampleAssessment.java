@@ -57,23 +57,38 @@ public class QtiSampleAssessment implements Serializable {
     }
     
     private final AssessmentObjectType type;
+    private final DeliveryStyle deliveryStyle;
     private final String assessmentHref;
     private final Set<Feature> features;
     private final Set<String> fileHrefs;
     
     public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, Feature... features) {
-        this(type, assessmentHref, new String[0], features);
+        this(type, null, assessmentHref, new String[0], features);
     }
     
+    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle, String assessmentHref, Feature... features) {
+        this(type, deliveryStyle, assessmentHref, new String[0], features);
+    }
+        
     public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, String[] fileHrefs, Feature... features) {
+        this(type, null, assessmentHref, fileHrefs, features);
+    }
+    
+    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
+            String assessmentHref, String[] fileHrefs, Feature... features) {
         this.type = type;
+        this.deliveryStyle = deliveryStyle;
         this.assessmentHref = assessmentHref;
-        this.features = new HashSet<Feature>(Arrays.asList(features));
         this.fileHrefs = new HashSet<String>(Arrays.asList(fileHrefs));
+        this.features = new HashSet<Feature>(Arrays.asList(features));
     }
     
     public AssessmentObjectType getType() {
         return type;
+    }
+    
+    public DeliveryStyle getDeliveryStyle() {
+        return deliveryStyle;
     }
     
     public String getAssessmentHref() {

@@ -33,26 +33,21 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-
 /**
- * Sample set containing Graham Smith's language examples
- * 
+ * Attempts to enumerate different "styles" of sample. This is used to
+ * create sensible delivery options in the engine.
+ *
  * @author David McKain
  */
-public final class LanguageSampleSet {
-    
-    private static final QtiSampleSet instance = new QtiSampleSet("Language examples",
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/habenprompt.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/pburg1g.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/qcyril2gV2.xml")
-    );
-    
-    private LanguageSampleSet() {
-        /* No constructor */
-    }
-    
-    public static QtiSampleSet instance() {
-        return instance;
-    }
+public enum DeliveryStyle {
+
+    IMS_ADAPTIVE,
+    IMS_STANDARD,
+    IMS_STANDARD_TEMPLATED,
+    IMS_NO_RESPONSE_PROCESSING, 
+    IMS_FEEDBACK,
+    MATHASSESS_STANDARD,
+    MATHASSESS_TEMPLATED,
+    LANGUAGE_STANDARD
+    ;
 }

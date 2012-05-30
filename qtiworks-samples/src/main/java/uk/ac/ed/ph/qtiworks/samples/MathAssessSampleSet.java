@@ -43,24 +43,24 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 public final class MathAssessSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAA01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAB01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/Diff-001.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/GU-Formulae-006-BMI.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAA01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAB01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAC02-SR.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD01-SRinCO-demo.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD01-SRinRP.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD01-newSRinRP.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD03a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD04-ltgt-tVars.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD05-Factors-CC.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD05-Factors-SR.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MAD06-Diff.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MANum01CP.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/MANum01SR.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, "mathassess/diag00001.xml")
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/Diff-001.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinRP.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD04-ltgt-tVars.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-CC.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-SR.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD06-Diff.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01CP.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01SR.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/diag00001.xml")
     );
     
     private MathAssessSampleSet() {
