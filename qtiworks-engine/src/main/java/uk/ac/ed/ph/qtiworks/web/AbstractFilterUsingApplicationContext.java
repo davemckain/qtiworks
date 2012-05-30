@@ -78,9 +78,10 @@ public abstract class AbstractFilterUsingApplicationContext implements Filter {
         throws Exception;
 
     /**
-     * Convenience noop. Subclasses can override as required.
+     * Convenience no-op. Subclasses can override as required.
      */
     @Override
     public void destroy() {
+        /* No-op */
     }
 }

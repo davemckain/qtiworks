@@ -109,7 +109,7 @@ public final class PrivilegeException extends NotAllowedException {
             final BaseEntity target = targetEntities[i];
             stringBuilder.append(target)
                 .append(i<targetEntities.length-2 ? ", " : (i==targetEntities.length-2 ? " and " : ""));
-        };
+        }
         return stringBuilder.toString();
     }
 
