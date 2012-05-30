@@ -14,9 +14,46 @@ Renders a standalone assessmentItem
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xs qti qw m">
 
+  <!-- ************************************************************ -->
+
   <xsl:import href="qti-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
+
+  <!-- State -->
+  <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
+  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$candidateSessionState='CLOSED'"/>
+
+  <xsl:param name="prompt" select="()" as="xs:string?"/>
+  <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
+
+  <!-- Item Action URLs -->
+  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
+  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
+  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
+  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+
+  <!-- Action permissions -->
+  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="playbackAllowed" as="xs:boolean" required="yes"/>
+
+  <!-- Playback -->
+  <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
+  <xsl:param name="currentPlaybackEventId" select="()" as="xs:integer?"/>
+  <xsl:param name="currentPlaybackEventType" select="()" as="xs:string?"/>
+  <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
+  <xsl:param name="playbackEventTypes" select="()" as="xs:string*"/>
 
   <xsl:function name="qw:describe-candidate-event" as="xs:string">
     <xsl:param name="candidate-event-type" as="xs:string"/>
@@ -81,13 +118,12 @@ Renders a standalone assessmentItem
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/common-rendering.css" type="text/css" media="screen"/>
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item-rendering.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
         <xsl:apply-templates select="qti:stylesheet"/>
       </head>
-      <body>
+      <body class="qtiworks assessmentItem">
         <xsl:choose>
           <xsl:when test="$candidateSessionState='TERMINATED'">
             <p>
@@ -95,7 +131,7 @@ Renders a standalone assessmentItem
             </p>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:apply-templates select="." mode="render-allowed"/>
+            <xsl:apply-templates select="." mode="rendering-allowed"/>
           </xsl:otherwise>
         </xsl:choose>
        </body>
@@ -103,133 +139,222 @@ Renders a standalone assessmentItem
   </xsl:template>
 
   <!-- Renders the body content of the item -->
-  <xsl:template match="qti:assessmentItem" mode="render-allowed">
-    <div class="qtiworks">
-      <div class="qtiworksRendering">
-        <div class="assessmentItem">
-          <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
-          <xsl:choose>
-            <xsl:when test="$renderingMode='SOLUTION'">
-              <div class="candidateMessage">
-                A model solution to this assessment is shown below.
-              </div>
-            </xsl:when>
-            <xsl:when test="$renderingMode='CLOSED'">
-              <div class="candidateMessage">
-                This assessment is now complete.
-              </div>
-            </xsl:when>
-            <xsl:when test="$renderingMode='PLAYBACK'">
-              <div class="candidateMessage">
-                <p>
-                  You are currently playing back your interaction with this assessment.
-                </p>
-                <p>
-                  Currently showing: <xsl:value-of select="qw:describe-candidate-event($currentPlaybackEventType)"/>
-                  (Event #<xsl:value-of select="for $i in 1 to count($playbackEventIds), $id in $playbackEventIds[$i]
-                    return if ($id = $currentPlaybackEventId) then $i else ()"/>
-                  of <xsl:value-of select="count($playbackEventIds)"/>)
-                </p>
-              </div>
-            </xsl:when>
-          </xsl:choose>
-          <div class="itemBody">
-            <!-- Descend into itemBody only -->
-            <xsl:apply-templates select="qti:itemBody"/>
-          </div>
-          <!-- Display active modal feedback (only after responseProcessing) -->
-          <xsl:if test="$isResponded">
-            <xsl:variable name="modalFeedback" as="element()*">
-              <xsl:for-each select="qti:modalFeedback">
-                <xsl:variable name="feedback" as="node()*">
-                  <xsl:call-template name="feedback"/>
-                </xsl:variable>
-                <xsl:if test="$feedback">
-                  <div class="modalFeedbackItem">
-                    <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
-                    <xsl:sequence select="$feedback"/>
-                  </div>
-                </xsl:if>
-              </xsl:for-each>
-            </xsl:variable>
-            <xsl:if test="exists($modalFeedback)">
-              <div class="modalFeedback">
-                <h2>Feedback</h2>
-                <xsl:sequence select="$modalFeedback"/>
-              </div>
-            </xsl:if>
-          </xsl:if>
-        </div>
+  <xsl:template match="qti:assessmentItem" mode="rendering-allowed">
+    <!-- Author mode note (maybe) -->
+    <xsl:if test="$authorMode">
+      <div class="authorModeNote authorMode">
+        You are currently running this item in "author" mode, which shows extra information
+        that would not normally be shown to candidates.
       </div>
-      <div class="qtiworksAuthorControl">
-        <h2>Session control</h2>
-        <p>(This will be presented in a nicer way shortly.)</p>
-        <p>
-          Current candidate session state is <xsl:value-of select="$candidateSessionState"/>.
-          Current rendering mode is <xsl:value-of select="$renderingMode"/>.
-        </p>
-        <ul>
-          <xsl:if test="$resetAllowed">
-            <li>
-              <form action="{$webappContextPath}{$resetUrl}" method="post">
-                <input type="submit" value="Reset"/>
-              </form>
-            </li>
+    </xsl:if>
+
+    <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
+
+    <!-- Candidate status -->
+    <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED', 'PLAYBACK')">
+      <div class="candidateStatus">
+        <xsl:choose>
+          <xsl:when test="$renderingMode='SOLUTION'">
+            A model solution to this assessment is shown below.
+          </xsl:when>
+          <xsl:when test="$renderingMode='CLOSED'">
+            This assessment is now complete.
+          </xsl:when>
+          <xsl:when test="$renderingMode='PLAYBACK'">
+            <p>
+              You are currently playing back your interaction with this assessment.
+            </p>
+            <p>
+              Currently showing: <xsl:value-of select="qw:describe-candidate-event($currentPlaybackEventType)"/>
+              (Event #<xsl:value-of select="for $i in 1 to count($playbackEventIds), $id in $playbackEventIds[$i]
+                return if ($id = $currentPlaybackEventId) then $i else ()"/>
+              of <xsl:value-of select="count($playbackEventIds)"/>)
+            </p>
+            <ul class="playbackControls">
+              <xsl:for-each select="$playbackEventIds">
+                <xsl:variable name="eventIndex" select="position()" as="xs:integer"/>
+                <li>
+                  <form action="{$webappContextPath}{$playbackUrlBase}/{.}" method="post">
+                    <input type="submit" value="Play back event #{$eventIndex} ({qw:describe-candidate-event($playbackEventTypes[$eventIndex])})"/>
+                  </form>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:when>
+        </xsl:choose>
+      </div>
+    </xsl:if>
+
+    <!-- Delivery prompt -->
+    <xsl:if test="$prompt">
+      <div class="itemPrompt">
+        <xsl:value-of select="$prompt"/>
+      </div>
+    </xsl:if>
+
+    <!-- Item body -->
+    <xsl:apply-templates select="qti:itemBody"/>
+
+    <!-- Display active modal feedback (only after responseProcessing) -->
+    <xsl:if test="$isResponded">
+      <xsl:variable name="modalFeedback" as="element()*">
+        <xsl:for-each select="qti:modalFeedback">
+          <xsl:variable name="feedback" as="node()*">
+            <xsl:call-template name="feedback"/>
+          </xsl:variable>
+          <xsl:if test="$feedback">
+            <div class="modalFeedbackItem">
+              <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
+              <xsl:sequence select="$feedback"/>
+            </div>
           </xsl:if>
-          <xsl:if test="$reinitAllowed">
-            <li>
-              <form action="{$webappContextPath}{$reinitUrl}" method="post">
-                <input type="submit" value="Reinitialise"/>
-              </form>
-            </li>
-          </xsl:if>
-          <xsl:if test="$closeAllowed">
-            <li>
-              <form action="{$webappContextPath}{$closeUrl}" method="post">
-                <input type="submit" value="Finish and review"/>
-              </form>
-            </li>
-          </xsl:if>
-          <xsl:if test="$solutionAllowed">
-            <li>
-              <form action="{$webappContextPath}{$solutionUrl}" method="post">
-                <input type="submit" value="Show model solution"/>
-              </form>
-            </li>
-          </xsl:if>
-          <xsl:if test="$playbackAllowed and exists($playbackEventIds)">
-            <li>
-              Playback events:
-              <ul>
-                <xsl:for-each select="$playbackEventIds">
-                  <xsl:variable name="eventIndex" select="position()" as="xs:integer"/>
-                  <li>
-                    <form action="{$webappContextPath}{$playbackUrlBase}/{.}" method="post">
-                      <input type="submit" value="Play back event #{$eventIndex} ({qw:describe-candidate-event($playbackEventTypes[$eventIndex])})"/>
-                    </form>
-                  </li>
-                </xsl:for-each>
-              </ul>
-            </li>
-          </xsl:if>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:if test="exists($modalFeedback)">
+        <div class="modalFeedback">
+          <h2>Feedback</h2>
+          <xsl:sequence select="$modalFeedback"/>
+        </div>
+      </xsl:if>
+    </xsl:if>
+
+    <!-- Session control -->
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode sessionControl">
+          The candidate currently has the following "session control" options. You can choose
+          exactly which options are available via the "item delivery". (You will be able
+          to do this soon!)
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$resetAllowed">
           <li>
-            <form action="{$webappContextPath}{$terminateUrl}" method="post">
-              <input type="submit" value="Terminate session"/>
+            <form action="{$webappContextPath}{$resetUrl}" method="post">
+              <input type="submit" value="Reset"/>
             </form>
           </li>
-          <xsl:if test="$resultAllowed">
-            <li>
-              <a href="{$webappContextPath}{$resultUrl}">View ItemResult</a>
-            </li>
-          </xsl:if>
-          <xsl:if test="$sourceAllowed">
-            <li><a href="{$webappContextPath}{$sourceUrl}">View Item source</a></li>
-          </xsl:if>
-        </ul>
-      </div>
-      <!-- Author debugging information -->
-      <xsl:call-template name="internalState"/>
+        </xsl:if>
+        <xsl:if test="$reinitAllowed">
+          <li>
+            <form action="{$webappContextPath}{$reinitUrl}" method="post">
+              <input type="submit" value="Reinitialise"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$closeAllowed">
+          <li>
+            <form action="{$webappContextPath}{$closeUrl}" method="post">
+              <input type="submit" value="Finish and review"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$solutionAllowed">
+          <li>
+            <form action="{$webappContextPath}{$solutionUrl}" method="post">
+              <input type="submit" value="Show model solution"/>
+            </form>
+          </li>
+        </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$terminateUrl}" method="post">
+            <input type="submit" value="Terminate session"/>
+          </form>
+        </li>
+        <xsl:if test="$resultAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resultUrl}" method="get">
+              <input type="submit" value="View ItemResult"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$sourceAllowed">
+          <li>
+            <form action="{$webappContextPath}{$sourceUrl}" method="get">
+              <input type="submit" value="View Item source"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
     </div>
+
+    <xsl:if test="$authorMode">
+      <div class="authorInfo authorMode">
+        <h2>QTI state information</h2>
+        <h3>Candidate Session State</h3>
+        <p>Current candidate session state is:</p>
+        <ul>
+          <li>Primary: <xsl:value-of select="$candidateSessionState"/></li>
+          <li>Secondary: <xsl:value-of select="$renderingMode"/></li>
+        </ul>
+
+        TEST=[<xsl:copy-of select="$badResponseIdentifiers"/>]
+
+        <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">
+          <h3>Response errors</h3>
+          <xsl:if test="exists($badResponseIdentifiers)">
+            <h4>Bad responses</h4>
+            <p>
+              The following responses were not successfully bound to their corresponding variables:
+            </p>
+            <ul>
+              <xsl:for-each select="$badResponseIdentifiers">
+                <li>
+                  <span class="variableName">
+                    <xsl:value-of select="."/>
+                  </span>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+          <xsl:if test="exists($invalidResponseIdentifiers)">
+            <h4>Invalid responses</h4>
+            <p>
+              The following responses were successfully bound to their corresponding variables,
+              but failed to satisfy the constraints made by the corresponding interaction:
+            </p>
+            <ul>
+              <xsl:for-each select="$invalidResponseIdentifiers">
+                <li>
+                  <span class="variableName">
+                    <xsl:value-of select="."/>
+                  </span>
+                </li>
+              </xsl:for-each>
+            </ul>
+          </xsl:if>
+        </xsl:if>
+        <h3>Item Session State</h3>
+        <xsl:call-template name="sessionState"/>
+
+        <h2>Delivery settings</h2>
+        <p>
+          Candidate is currently allowed to:
+        </p>
+        <dl>
+          <dt>Reset session?</dt>
+          <dd><xsl:value-of select="$resetAllowed"/></dd>
+
+          <dt>Reinitialize session?</dt>
+          <dd><xsl:value-of select="$reinitAllowed"/></dd>
+
+          <dt>Close session?</dt>
+          <dd><xsl:value-of select="$closeAllowed"/></dd>
+
+          <dt>View solution?</dt>
+          <dd><xsl:value-of select="$solutionAllowed"/></dd>
+
+          <dt>View item source XML?</dt>
+          <dd><xsl:value-of select="$sourceAllowed"/></dd>
+
+          <dt>View <code>&lt;itemResult&gt;</code> XML?</dt>
+          <dd><xsl:value-of select="$resultAllowed"/></dd>
+
+          <dt>Play back actions?</dt>
+          <dd><xsl:value-of select="$playbackAllowed"/></dd>
+        </dl>
+      </div>
+    </xsl:if>
   </xsl:template>
 
   <!-- ************************************************************ -->

@@ -21,48 +21,18 @@ rendering.
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
-  <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
-  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-
-  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
-  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$candidateSessionState='CLOSED'"/>
-
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
   <!-- Action URLs -->
-  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
-  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
-  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
-  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
-  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
-
-  <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
-
-  <xsl:param name="currentPlaybackEventId" select="()" as="xs:integer?"/>
-  <xsl:param name="currentPlaybackEventType" select="()" as="xs:string?"/>
-  <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
-  <xsl:param name="playbackEventTypes" select="()" as="xs:string*"/>
-
-  <!-- Action permissions -->
-  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="playbackAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
   <xsl:param name="badResponseIdentifiers" select="()" as="xs:string*"/>
   <xsl:param name="invalidResponseIdentifiers" select="()" as="xs:string*"/>
 
-  <!-- FIXME: This is not used at the moment? -->
+  <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
 
   <!-- Current state -->

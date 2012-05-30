@@ -186,6 +186,8 @@ public class AssessmentRenderer {
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
+        xsltParameters.put("prompt", renderingRequest.getPrompt());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
         xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());

@@ -78,6 +78,8 @@ public class RenderingTest {
             renderingRequest.setAssessmentResourceUri(inputUri);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setPrompt("This is an item!");
+            renderingRequest.setAuthorMode(true);
             renderingRequest.setSolutionAllowed(true);
             renderingRequest.setResetAllowed(true);
             renderingRequest.setReinitAllowed(true);

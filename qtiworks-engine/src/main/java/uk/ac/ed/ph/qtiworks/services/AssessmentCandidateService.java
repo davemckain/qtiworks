@@ -944,6 +944,8 @@ public class AssessmentCandidateService {
         renderingRequest.setCandidateSessionState(candidateSessionState);
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setPrompt(itemDelivery.getPrompt());
+        renderingRequest.setAuthorMode(itemDelivery.isAuthorMode());
         return renderingRequest;
     }
 
@@ -994,6 +996,8 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(playbackEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setPrompt(itemDelivery.getPrompt());
+        renderingRequest.setAuthorMode(itemDelivery.isAuthorMode());
 
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenClosed());
@@ -1039,6 +1043,9 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
+        renderingRequest.setPrompt(itemDelivery.getPrompt());
+        renderingRequest.setAuthorMode(itemDelivery.isAuthorMode());
+
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDelivery.isAllowSolutionWhenClosed());

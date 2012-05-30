@@ -77,12 +77,8 @@ public final class ItemRenderingRequest {
     @NotNull
     private ItemSessionState itemSessionState;
 
-    private Map<Identifier, ResponseData> responseInputs;
-
-    private Set<Identifier> badResponseIdentifiers;
-
-    private Set<Identifier> invalidResponseIdentifiers;
-
+    private String prompt;
+    private boolean authorMode;
     private boolean closeAllowed;
     private boolean resetAllowed;
     private boolean reinitAllowed;
@@ -90,6 +86,10 @@ public final class ItemRenderingRequest {
     private boolean sourceAllowed;
     private boolean resultAllowed;
     private boolean playbackAllowed;
+
+    private Map<Identifier, ResponseData> responseInputs;
+    private Set<Identifier> badResponseIdentifiers;
+    private Set<Identifier> invalidResponseIdentifiers;
 
     private CandidateItemEvent currentPlaybackEvent;
     private List<CandidateItemEvent> playbackEvents;
@@ -150,30 +150,21 @@ public final class ItemRenderingRequest {
     }
 
 
-    public Map<Identifier, ResponseData> getResponseInputs() {
-        return responseInputs;
+    public String getPrompt() {
+        return prompt;
     }
 
-    public void setResponseInputs(final Map<Identifier, ResponseData> responseInputs) {
-        this.responseInputs = responseInputs;
-    }
-
-
-    public Set<Identifier> getBadResponseIdentifiers() {
-        return badResponseIdentifiers;
-    }
-
-    public void setBadResponseIdentifiers(final Set<Identifier> badResponseIdentifiers) {
-        this.badResponseIdentifiers = badResponseIdentifiers;
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
     }
 
 
-    public Set<Identifier> getInvalidResponseIdentifiers() {
-        return invalidResponseIdentifiers;
+    public boolean isAuthorMode() {
+        return authorMode;
     }
 
-    public void setInvalidResponseIdentifiers(final Set<Identifier> invalidResponseIdentifiers) {
-        this.invalidResponseIdentifiers = invalidResponseIdentifiers;
+    public void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
     }
 
 
@@ -228,6 +219,33 @@ public final class ItemRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
+    }
+
+
+    public Map<Identifier, ResponseData> getResponseInputs() {
+        return responseInputs;
+    }
+
+    public void setResponseInputs(final Map<Identifier, ResponseData> responseInputs) {
+        this.responseInputs = responseInputs;
+    }
+
+
+    public Set<Identifier> getBadResponseIdentifiers() {
+        return badResponseIdentifiers;
+    }
+
+    public void setBadResponseIdentifiers(final Set<Identifier> badResponseIdentifiers) {
+        this.badResponseIdentifiers = badResponseIdentifiers;
+    }
+
+
+    public Set<Identifier> getInvalidResponseIdentifiers() {
+        return invalidResponseIdentifiers;
+    }
+
+    public void setInvalidResponseIdentifiers(final Set<Identifier> invalidResponseIdentifiers) {
+        this.invalidResponseIdentifiers = invalidResponseIdentifiers;
     }
 
 

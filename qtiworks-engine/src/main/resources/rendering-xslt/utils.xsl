@@ -36,50 +36,47 @@ Rendering utility templates
 
   <!-- ************************************************************ -->
 
-  <xsl:template name="internalState" as="element()+">
-    <div class="qtiworksDebugging">
-      <div class="internalState">
-        <h2>Session State</h2>
-        <xsl:if test="exists($shuffledChoiceOrders)">
-          <h3>Shuffled choice orders</h3>
-          <ul>
-            <xsl:for-each select="$shuffledChoiceOrders">
-              <li>
-                <span class="variableName">
-                  <xsl:value-of select="@responseIdentifier"/>
-                </span>
-                <xsl:text> = [</xsl:text>
-                <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
-                <xsl:text>]</xsl:text>
-              </li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-        <xsl:if test="exists($templateValues)">
-          <h3>Item Template vars</h3>
-          <xsl:call-template name="dump-values">
-            <xsl:with-param name="valueHolders" select="$templateValues"/>
-          </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="exists($responseValues)">
-          <h3>Item Response vars</h3>
-          <xsl:call-template name="dump-values">
-            <xsl:with-param name="valueHolders" select="$responseValues"/>
-          </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="exists($outcomeValues)">
-          <h3>Item Outcome vars</h3>
-          <xsl:call-template name="dump-values">
-            <xsl:with-param name="valueHolders" select="$outcomeValues"/>
-          </xsl:call-template>
-        </xsl:if>
-        <xsl:if test="exists($testOutcomeValues)">
-          <h3>Test Outcome vars</h3>
-          <xsl:call-template name="dump-values">
-            <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
-          </xsl:call-template>
-        </xsl:if>
-      </div>
+  <xsl:template name="sessionState" as="element()+">
+    <div class="sessionState">
+      <xsl:if test="exists($shuffledChoiceOrders)">
+        <h4>Shuffled choice orders</h4>
+        <ul>
+          <xsl:for-each select="$shuffledChoiceOrders">
+            <li>
+              <span class="variableName">
+                <xsl:value-of select="@responseIdentifier"/>
+              </span>
+              <xsl:text> = [</xsl:text>
+              <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+      <xsl:if test="exists($templateValues)">
+        <h4>Item Template vars</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$templateValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($responseValues)">
+        <h4>Item Response vars</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$responseValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($outcomeValues)">
+        <h4>Item Outcome vars</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$outcomeValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($testOutcomeValues)">
+        <h4>Test Outcome vars</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
+        </xsl:call-template>
+      </xsl:if>
     </div>
   </xsl:template>
 

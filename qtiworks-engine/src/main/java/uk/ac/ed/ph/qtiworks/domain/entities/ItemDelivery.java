@@ -48,6 +48,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -55,6 +56,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
@@ -108,10 +111,22 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     //------------------------------------------------------------
     // Next ones are probably for items only
 
+    /** Optional prompt to show to candidates */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="prompt")
+    private String prompt;
+
     /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
     @Basic(optional=false)
     @Column(name="max_attempts")
     private Integer maxAttempts;
+
+    /** Author mode includes additional debugging information in the rendering */
+    @Basic(optional=false)
+    @Column(name="author_mode")
+    private boolean authorMode;
 
     /** Allow candidate to close session */
     @Basic(optional=false)
@@ -215,12 +230,30 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
+    }
+
+
     public Integer getMaxAttempts() {
         return maxAttempts;
     }
 
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
+    }
+
+
+    public boolean isAuthorMode() {
+        return authorMode;
+    }
+
+    public void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
     }
 
 

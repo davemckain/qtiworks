@@ -245,6 +245,8 @@ public class SampleResourceImporter {
             defaultDelivery.setMaxAttempts(Integer.valueOf(0));
             defaultDelivery.setOpen(true);
             defaultDelivery.setTitle("Temporary default bootstrap delivery");
+            defaultDelivery.setPrompt("Prompt goes here");
+            defaultDelivery.setAuthorMode(true);
             defaultDelivery.setAllowClose(true);
             defaultDelivery.setAllowResetWhenInteracting(true);
             defaultDelivery.setAllowResetWhenClosed(true);
