@@ -231,14 +231,14 @@ Renders a standalone assessmentItem
         <xsl:if test="$resetAllowed">
           <li>
             <form action="{$webappContextPath}{$resetUrl}" method="post">
-              <input type="submit" value="Reset"/>
+              <input type="submit" value="Reset{if ($isSessionClosed) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
         <xsl:if test="$reinitAllowed">
           <li>
             <form action="{$webappContextPath}{$reinitUrl}" method="post">
-              <input type="submit" value="Reinitialise"/>
+              <input type="submit" value="Reinitialise{if ($isSessionClosed) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
@@ -263,11 +263,8 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
-        <li>
-          <form action="{$webappContextPath}{$terminateUrl}" method="post">
-            <input type="submit" value="Terminate session"/>
-          </form>
-        </li>
+      </ul>
+      <ul class="controls">
         <xsl:if test="$resultAllowed">
           <li>
             <form action="{$webappContextPath}{$resultUrl}" method="get">
@@ -282,6 +279,11 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$terminateUrl}" method="post">
+            <input type="submit" value="Terminate session"/>
+          </form>
+        </li>
       </ul>
     </div>
 

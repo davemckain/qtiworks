@@ -46,9 +46,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
  */
 public enum RenderingMode {
 
-    INTERACTING_PRESENTATION,
-    INTERACTING_AFTER_ATTEMPT,
-    CLOSED_AFTER_ATTEMPT,
+    AFTER_INITIALISATION,
+    AFTER_ATTEMPT,
     CLOSED,
     SOLUTION,
     PLAYBACK,

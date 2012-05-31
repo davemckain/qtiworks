@@ -860,14 +860,14 @@ public class AssessmentCandidateService {
 
     private void renderInteractingPresentation(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.INTERACTING_PRESENTATION);
+        renderingRequest.setRenderingMode(RenderingMode.AFTER_INITIALISATION);
 
         assessmentRenderer.renderItem(renderingRequest, resultStream);
     }
 
     private void renderInteractingAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.INTERACTING_AFTER_ATTEMPT);
+        renderingRequest.setRenderingMode(RenderingMode.AFTER_ATTEMPT);
 
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
         if (attempt==null) {
@@ -951,7 +951,7 @@ public class AssessmentCandidateService {
 
     private void renderClosedAfterAttempt(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.CLOSED_AFTER_ATTEMPT);
+        renderingRequest.setRenderingMode(RenderingMode.AFTER_ATTEMPT);
 
         /* FIXME: Cut & paste below! Refactor this! */
         final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateEvent);
