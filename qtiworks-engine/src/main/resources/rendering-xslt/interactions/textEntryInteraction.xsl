@@ -9,6 +9,8 @@
   exclude-result-prefixes="xs qti qw">
 
   <xsl:template match="qti:textEntryInteraction">
+    <xsl:variable name="is-bad-response" select="qw:is-bad-response(@responseIdentifier)" as="xs:boolean"/>
+    <xsl:variable name="is-invalid-response" select="qw:is-invalid-response(@responseIdentifier)" as="xs:boolean"/>
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
       <xsl:variable name="responseDeclaration" select="qw:get-response-declaration(/, @responseIdentifier)" as="element(qti:responseDeclaration)?"/>
@@ -32,30 +34,32 @@
         <xsl:if test="$isSessionClosed">
           <xsl:attribute name="disabled">disabled</xsl:attribute>
         </xsl:if>
-        <xsl:if test="qw:is-bad-response(@responseIdentifier) or qw:is-invalid-response(@responseIdentifier)">
+        <xsl:if test="$is-bad-response or $is-invalid-response">
           <xsl:attribute name="class" select="'badResponse'"/>
         </xsl:if>
         <xsl:if test="@expectedLength">
           <xsl:attribute name="size" select="@expectedLength"/>
         </xsl:if>
         <xsl:choose>
-          <xsl:when test="exists($responseValue)">
-            <xsl:attribute name="value" select="qw:extract-single-cardinality-value($responseValue)"/>
-          </xsl:when>
-          <xsl:when test="exists($responseInputString)">
+          <xsl:when test="$is-bad-response">
+            <!-- Response won't have been bound to variable, so show raw input -->
             <xsl:attribute name="value" select="$responseInputString"/>
+          </xsl:when>
+          <xsl:when test="exists($responseValue)">
+            <!-- Response has been bound, so show current variable value -->
+            <xsl:attribute name="value" select="qw:extract-single-cardinality-value($responseValue)"/>
           </xsl:when>
         </xsl:choose>
         <xsl:if test="exists($checks)">
           <xsl:attribute name="onchange" select="$checkJavaScript"/>
         </xsl:if>
       </input>
-      <xsl:if test="qw:is-bad-response(@responseIdentifier)">
+      <xsl:if test="$is-bad-response">
         <span class="badResponse">
           You must enter a valid <xsl:value-of select="$responseDeclaration/@baseType"/>!
         </span>
       </xsl:if>
-      <xsl:if test="qw:is-invalid-response(@responseIdentifier)">
+      <xsl:if test="$is-invalid-response">
         <!-- (This must be a regex issue) -->
         <span class="badResponse">
           Your input is not of the required format!

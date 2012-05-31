@@ -50,6 +50,8 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,6 +88,17 @@ public final class XsltParamBuilder {
         this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
     }
 
+    public static List<String> identifiersToList(final Collection<Identifier> identifiers) {
+        if (identifiers==null || identifiers.isEmpty()) {
+            return Collections.emptyList();
+        }
+        final List<String> result = new ArrayList<String>(identifiers.size());
+        for (final Identifier identifier : identifiers) {
+            result.add(identifier.toString());
+        }
+        return result;
+    }
+
     public List<Node> responseInputsToElements(final Map<Identifier, ResponseData> responseInputs) {
         final ArrayList<Node> result = new ArrayList<Node>();
         if (responseInputs==null || responseInputs.isEmpty()) {
@@ -97,6 +110,7 @@ public final class XsltParamBuilder {
             final ResponseData responseData = entry.getValue();
             final Element responseInputElement = doc.createElementNS(QTIWORKS_NAMESPACE, "responseInput");
             responseInputElement.setAttribute("identifier", interactionIdentifier.toString());
+            responseInputElement.setAttribute("type", responseData.getType().toString().toLowerCase());
             switch (responseData.getType()) {
                 case STRING:
                     final List<String> stringResponses = ((StringResponseData) responseData).getResponseData();

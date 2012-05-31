@@ -295,14 +295,14 @@ Renders a standalone assessmentItem
           <li>Secondary: <xsl:value-of select="$renderingMode"/></li>
         </ul>
 
-        TEST=[<xsl:copy-of select="$badResponseIdentifiers"/>]
-
         <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">
           <h3>Response errors</h3>
           <xsl:if test="exists($badResponseIdentifiers)">
             <h4>Bad responses</h4>
             <p>
-              The following responses were not successfully bound to their corresponding variables:
+              The responses listed below were not successfully bound to their corresponding variables.
+              This might happen, for example, if you bind a <code>&lt;textEntryInteraction&gt;</code> to
+              a numeric variable and the candidate enters something that is not a number.
             </p>
             <ul>
               <xsl:for-each select="$badResponseIdentifiers">
@@ -317,8 +317,8 @@ Renders a standalone assessmentItem
           <xsl:if test="exists($invalidResponseIdentifiers)">
             <h4>Invalid responses</h4>
             <p>
-              The following responses were successfully bound to their corresponding variables,
-              but failed to satisfy the constraints made by the corresponding interaction:
+              The responses were successfully bound to their corresponding variables,
+              but failed to satisfy the constraints specified by their corresponding interactions:
             </p>
             <ul>
               <xsl:for-each select="$invalidResponseIdentifiers">

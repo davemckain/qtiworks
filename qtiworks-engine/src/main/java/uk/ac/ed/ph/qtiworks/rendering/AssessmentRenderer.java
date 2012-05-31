@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -198,8 +197,8 @@ public class AssessmentRenderer {
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("badResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getBadResponseIdentifiers()));
-        xsltParameters.put("invalidResponseIdentifiers", ObjectUtilities.safeToString(renderingRequest.getInvalidResponseIdentifiers()));
+        xsltParameters.put("badResponseIdentifiers", XsltParamBuilder.identifiersToList(renderingRequest.getBadResponseIdentifiers()));
+        xsltParameters.put("invalidResponseIdentifiers", XsltParamBuilder.identifiersToList(renderingRequest.getInvalidResponseIdentifiers()));
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));

@@ -54,25 +54,29 @@ Rendering utility templates
         </ul>
       </xsl:if>
       <xsl:if test="exists($templateValues)">
-        <h4>Item Template vars</h4>
+        <h4>Template variables</h4>
         <xsl:call-template name="dump-values">
           <xsl:with-param name="valueHolders" select="$templateValues"/>
         </xsl:call-template>
       </xsl:if>
+      <xsl:if test="exists($badResponseIdentifiers)">
+        <h4>Unbound Response inputs</h4>
+        <xsl:call-template name="dump-unbound-response-inputs"/>
+      </xsl:if>
       <xsl:if test="exists($responseValues)">
-        <h4>Item Response vars</h4>
+        <h4>Response variables</h4>
         <xsl:call-template name="dump-values">
           <xsl:with-param name="valueHolders" select="$responseValues"/>
         </xsl:call-template>
       </xsl:if>
       <xsl:if test="exists($outcomeValues)">
-        <h4>Item Outcome vars</h4>
+        <h4>Outcome variables</h4>
         <xsl:call-template name="dump-values">
           <xsl:with-param name="valueHolders" select="$outcomeValues"/>
         </xsl:call-template>
       </xsl:if>
       <xsl:if test="exists($testOutcomeValues)">
-        <h4>Test Outcome vars</h4>
+        <h4>Test Outcome variables</h4>
         <xsl:call-template name="dump-values">
           <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
         </xsl:call-template>
@@ -192,6 +196,29 @@ Rendering utility templates
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:otherwise>
+          </xsl:choose>
+        </li>
+      </xsl:for-each>
+    </ul>
+  </xsl:template>
+
+  <xsl:template name="dump-unbound-response-inputs" as="element(ul)">
+    <ul>
+      <xsl:for-each select="$responseInputs[@identifier = $badResponseIdentifiers]">
+        <li>
+          <span class="variableName">
+            <xsl:value-of select="@identifier"/>
+          </span>
+          <xsl:text> = </xsl:text>
+          <xsl:choose>
+            <xsl:when test="@type='string'">
+              <xsl:text>[</xsl:text>
+              <xsl:value-of select="qw:value" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </xsl:when>
+            <xsl:when test="@type='file'">
+              (Uploaded file)
+            </xsl:when>
           </xsl:choose>
         </li>
       </xsl:for-each>
