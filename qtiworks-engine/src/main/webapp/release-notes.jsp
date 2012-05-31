@@ -7,6 +7,17 @@ All Rights Reserved
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Release notes">
 
+  <h2>1.0-DEV8 (31/05/2012)</h2>
+
+  <p>
+    This adds further enhancements to the rendering process for single items.
+    I have written a
+    <a href="http://qtisupport.blogspot.co.uk/2012/05/enhanced-item-rendering-in-qtiworks.html">blog post for this release</a>,
+    so it's probably more useful to
+    link to it than try to paraphrase it badly here:
+    </li>
+  </ul>
+
   <h2>1.0-DEV7 (25/05/2012)</h2>
 
   <p>
