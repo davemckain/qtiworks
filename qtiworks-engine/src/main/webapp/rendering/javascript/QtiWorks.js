@@ -7,9 +7,7 @@
  *
  * Author: David McKain
  *
- * $Id: QtiWorks.js 2707 2011-05-17 11:14:08Z davemckain $
- *
- * Copyright (c) 2010-2011, The University of Edinburgh
+ * Copyright (c) 2012, The University of Edinburgh
  * All Rights Reserved
  */
 
@@ -610,3 +608,22 @@ var QtiWorks = (function() {
         }
     };
 })();
+
+/* Form progressive enhancement - shows item source/result XML in a dialog box */
+$(document).ready(function() {
+    $('.showXmlInDialog').submit(function() {
+        var title =$(this).attr('title');
+        var action = $(this).attr('action');
+        $.get(action, function(data, textStatus, jqXHR) {
+            var xmlDiv = $("<pre class='xmlSource'></pre>");
+            xmlDiv.text(jqXHR.responseText);
+            xmlDiv.dialog({
+                modal: true,
+                width: $(window).width() * 0.8,
+                height: $(window).height() * 0.6,
+                title: title
+            });
+        });
+        return false;
+    });
+});

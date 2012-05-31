@@ -39,9 +39,7 @@ ul.playbackControls {
 
 #itemBody {
   margin: 2em 0;
-  x-border: 1px dotted #eeeeee;
   border-radius: 1em;
-  x-background-color: #fafafa;
 }
 
 .sessionControl ul {
@@ -59,52 +57,7 @@ ul.playbackControls {
   display: inline;
 }
 
-.qtiworksAuthorControl {
-  margin: 1em;
-  color: #666666;
-  font-size: smaller;
-}
-
-/* Internal State / Debugging */
-
-.authorInfo {
-  padding: 1em;
-  color: #666666;
-  font-size: smaller;
-}
-
-.authorInfo a:hover {
-  text-decoration: underline;
-}
-
-.sessionState .variableName {
-  font-weight: bold;
-}
-
-.sessionState li li .variableName {
-  font-weight: normal
-}
-
-.sessionState .type {
-  font-style: italic;
-}
-
-.sessionState .debugButton {
-  font-size: smaller;
-}
-
-.sessionState .debugMathsContent {
-  display: none;
-}
-
-/* OLD STUFF BELOW */
-
-/* (This provides basic styling for the rendered content of items) */
-
-.assessmentItem {
-  padding: 0.5em 0.5em 3em 0.5em;
-  border-bottom: 1px solid #ccc;
-}
+/************************************************************/
 
 .assessmentItem div.badResponse,
 .assessmentItem span.badResponse {
@@ -114,21 +67,6 @@ ul.playbackControls {
 
 .assessmentItem input.badResponse {
   border: 1px solid red;
-}
-
-.assessmentItem div.controls {
-  margin: 0.5em 0;
-}
-
-.assessmentItem .validation,
-.assessmentItem .flash {
-  font-weight: bold;
-  color: red;
-  background-color: inherit;
-}
-
-.assessmentItem .box-title {
-  display:none;
 }
 
 /************************************************************/
@@ -255,7 +193,7 @@ ul.playbackControls {
 .assessmentItem .mathEntryInteraction {
   border: 1px solid #eeeeee;
   background-color: #f7faf7;
-  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
   padding: 1em;
   margin: 0.5em 0;
   min-height: 5em;
@@ -362,11 +300,52 @@ ul.playbackControls {
 }
 
 /************************************************************/
+/* Author tools */
 
-/* Information messages for candidate */
+.xmlSource {
+  font-size: smaller;
+  overflow: scroll;
+}
 
-.assessmentItem .candidateMessage {
-  font-size: larger;
-  font-weight: bold;
+.clicky {
+  text-decoration: underline;
   color: blue;
+}
+
+.clicky:hover {
+  background-color: red;
+}
+
+.hide {
+  display: none;
+}
+
+.authorInfo {
+  padding: 1em;
+  color: #666666;
+  font-size: smaller;
+}
+
+.authorInfo a:hover {
+  text-decoration: underline;
+}
+
+.sessionState .variableName {
+  font-weight: bold;
+}
+
+.sessionState li li .variableName {
+  font-weight: normal
+}
+
+.sessionState .type {
+  font-style: italic;
+}
+
+.sessionState .debugButton {
+  font-size: smaller;
+}
+
+.sessionState .debugMathsContent {
+  display: none;
 }

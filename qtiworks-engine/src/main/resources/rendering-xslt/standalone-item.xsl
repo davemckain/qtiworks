@@ -94,12 +94,12 @@ Renders a standalone assessmentItem
       </xsl:if>
       <head>
         <title><xsl:value-of select="@title"/></title>
-
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
-        <!-- The following are used for certain interactions, as well as the debugging panel. -->
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
-
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
+        <xsl:if test="$authorMode">
+          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js" type="text/javascript"/>
+        </xsl:if>
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
         (It would be quite nice if we could allow each interaction to hook into this
@@ -143,9 +143,14 @@ Renders a standalone assessmentItem
     <!-- Author mode note (maybe) -->
     <xsl:if test="$authorMode">
       <div class="authorModeNote authorMode">
-        You are currently running this item in "author" mode, which shows extra information
-        that would not normally be shown to candidates.
+        <p>
+          You are currently running this item in "author" mode, which shows extra information
+          that would not normally be shown to candidates.
+        </p>
       </div>
+      <script type="text/javascript"><![CDATA[
+        AuthorMode.setupAuthorModeToggler();
+      ]]></script>
     </xsl:if>
 
     <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
@@ -267,14 +272,14 @@ Renders a standalone assessmentItem
       <ul class="controls">
         <xsl:if test="$resultAllowed">
           <li>
-            <form action="{$webappContextPath}{$resultUrl}" method="get">
+            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
               <input type="submit" value="View ItemResult"/>
             </form>
           </li>
         </xsl:if>
         <xsl:if test="$sourceAllowed">
           <li>
-            <form action="{$webappContextPath}{$sourceUrl}" method="get">
+            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
               <input type="submit" value="View Item source"/>
             </form>
           </li>
