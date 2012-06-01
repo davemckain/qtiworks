@@ -422,7 +422,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
-        final InputStream inputStream = getInputSream(multipartFile);
+        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
         final String contentType = multipartFile.getContentType();
         try {
             final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
@@ -432,15 +432,6 @@ public class AssessmentManagementService {
         catch (final AssessmentPackageFileImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
-        }
-    }
-
-    private InputStream getInputSream(final MultipartFile multipartFile) {
-        try {
-            return multipartFile.getInputStream();
-        }
-        catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception", e);
         }
     }
 

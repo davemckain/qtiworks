@@ -7,7 +7,7 @@ Validator service submission form
 
 Model attributes:
 
-validateCommand:
+uploadAssessmentPackageCommand:
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -22,24 +22,17 @@ validateCommand:
   </p>
 
   <div class="validatorUpload">
-    <form:form id="validatorForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="validateCommand">
+    <form:form id="validatorForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
 
       <%-- Show any validation errors discovered --%>
       <form:errors element="div" cssClass="error" path="*"/>
 
       <dl>
-        <dt><label for="submissionFile">1. Select a Content Package or Assessment Item XML file to upload and validate:</label></dt>
+        <dt><label for="submissionFile">Select a Content Package or Assessment Item XML file to upload and validate:</label></dt>
         <dd>
-          <form:input path="uploadFile" type="file"/>
+          <form:input path="file" type="file"/>
         </dd>
-        <dt><label for="reportType">2. Select report type:</label></dt>
-        <dd>
-          <form:select path="reportType">
-            <form:option value="HTML" label="Nice(ish) web report" />
-            <form:option value="JAVA" label="Java Object dump" />
-          </form:select>
-        </dd>
-        <dt><label for="submit">3. Hit "Upload and Validate!"</label></dt>
+        <dt><label for="submit">Hit "Upload and Validate!"</label></dt>
         <dd>
           <input id="submit" name="submit" type="submit" value="Upload and Validate!">
         </dd>

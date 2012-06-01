@@ -31,56 +31,59 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
+package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.InputStream;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * FIXME: This is from the initial sketch of the upload/validation functionality
- *
- * Encapsulates an {@link AssessmentObject} that has been uploaded into the engine
- * and validated, as implemented in the first iteration of the webapp.
- *
- * TODO: This will eventually become a persisted Object so needs to stick to convention.
+ * Standalone lightweight validation service that bypasses the domain layer
+ * completely.
  *
  * @author David McKain
  */
-@ToRefactor
-public class AssessmentUploadAndValidationResultV1 implements Serializable {
+@Service
+public class StandaloneValidationService {
 
-    private static final long serialVersionUID = -8906026282623891941L;
+    @Resource
+    private IdentityContext identityContext;
 
-    private final AssessmentPackage assessmentPackage;
-    private final AssessmentObjectValidationResult<?> validationResult;
+    @Resource
+    private AssessmentPackageFileImporter assessmentPackageImporter;
 
-    public AssessmentUploadAndValidationResultV1(final AssessmentPackage assessmentPackage, final AssessmentObjectValidationResult<?> validationResult) {
-        this.assessmentPackage = assessmentPackage;
-        this.validationResult = validationResult;
+    @Resource
+    private FilespaceManager filespaceManager;
+
+    @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
+            throws AssessmentPackageFileImportException {
+        Assert.ensureNotNull(multipartFile, "multipartFile");
+        final AnonymousUser caller = (AnonymousUser) identityContext.getCurrentThreadEffectiveIdentity();
+        final File sandboxDirectory = filespaceManager.createAssessmentPackageSandbox(caller);
+        final AssessmentPackage importedPackage;
+        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
+        final String contentType = multipartFile.getContentType();
+        try {
+            importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, inputStream, contentType);
+            return assessmentManagementService.validateAssessment(importedPackage);
+        }
+        finally {
+            filespaceManager.deleteSandbox(sandboxDirectory);
+        }
     }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
-    }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentObjectValidationResult<?> getValidationResult() {
-        return validationResult;
-    }
-
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
-
 }

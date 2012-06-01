@@ -33,9 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.hash.Hashing;
 
@@ -96,5 +102,16 @@ public final class ServiceUtilities {
      */
     public static String computeSha1Digest(final String string) {
         return Hashing.sha1().hashString(string, Charset.forName("UTF-8")).toString();
+    }
+
+    //-----------------------------------------------------
+
+    public static InputStream ensureInputSream(final MultipartFile multipartFile) {
+        try {
+            return multipartFile.getInputStream();
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception getting InputStream from MultipartFile", e);
+        }
     }
 }
