@@ -233,6 +233,7 @@ var QtiWorks = (function() {
             this.gapMap[key] = {
                 required: gapData[key], /* NB: This is not currently used in the JS */
                 matched: false,
+                matchedGapChoice: null,
                 query: query,
                 label: query.text()
             };
@@ -276,6 +277,7 @@ var QtiWorks = (function() {
             }
             for (var key in this.gapMap) {
                 this.gapMap[key].matched = false;
+                this.gapMap[key].matchedGapChoice = null;
             }
 
             queryInputElements(this.responseIdentifier).each(function() {
@@ -283,14 +285,23 @@ var QtiWorks = (function() {
                     if (inputElement.checked) {
                         gapChoice.matchCount++;
                         gap.matched = true;
-                        interaction.matched[pair] = true;
-                        gap.query.text(gapChoice.text);
-                    }
-                    else {
-                        gap.query.text(gap.label);
+                        gap.matchedGapChoice = gapChoice;
+                        interaction.matched[directedPair] = true;
                     }
                 });
             });
+
+            for (var key in this.gapMap) {
+                var gap = this.gapMap[key];
+                var gapText;
+                if (gap.matched) {
+                    gapText = gap.matchedGapChoice.text;
+                }
+                else {
+                    gapText = gap.label;
+                }
+                gap.query.text(gapText);
+            }
         };
 
         this.updateDisabledStates = function() {
@@ -318,12 +329,14 @@ var QtiWorks = (function() {
                     else {
                         gapChoice.matchCount++;
                         gap.matched = true;
+                        gap.matchedGapChoice = gapChoice;
                     }
                     gap.query.text(gapChoice.text);
                 }
                 else{
                     gapChoice.matchCount--;
                     gap.matched = false;
+                    gap.matchedGapChoice = null;
                     gap.query.text(gap.label);
                 }
                 interaction.updateDisabledStates(responseIdentifier);
