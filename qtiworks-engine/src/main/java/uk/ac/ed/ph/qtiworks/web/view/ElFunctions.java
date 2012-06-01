@@ -76,7 +76,7 @@ public final class ElFunctions {
         return (HttpServletRequest) pageContext.getRequest();
     }
 
-    private static String escapeLink(final String link) {
+    public static String escapeLink(final String link) {
         try {
             return new URI(link).toASCIIString();
         }

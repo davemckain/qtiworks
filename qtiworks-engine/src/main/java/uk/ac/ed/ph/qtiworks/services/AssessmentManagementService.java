@@ -50,8 +50,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
-import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -125,7 +125,7 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    public Assessment getAssessment(final Long assessmentId)
+    public Assessment getAssessment(final long assessmentId)
             throws DomainEntityNotFoundException, PrivilegeException {
         Assert.ensureNotNull(assessmentId, "assessmentId");
         final Assessment result = assessmentDao.requireFindById(assessmentId);
@@ -331,7 +331,7 @@ public class AssessmentManagementService {
     @Transactional(propagation=Propagation.REQUIRED)
     public AssessmentObjectValidationResult<?> validateAssessment(final Long assessmentId)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = getAssessment(assessmentId);
+        final Assessment assessment = getAssessment(assessmentId.longValue());
         final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */

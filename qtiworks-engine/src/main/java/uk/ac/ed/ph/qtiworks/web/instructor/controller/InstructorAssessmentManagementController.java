@@ -49,7 +49,9 @@ import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -73,25 +75,55 @@ import com.google.common.io.Closeables;
 public final class InstructorAssessmentManagementController {
 
     @Resource
+    private String contextPath;
+
+    @Resource
     private AssessmentManagementService assessmentManagementService;
 
     //------------------------------------------------------
 
+    /**
+     * Lists all Assignments owned by the caller
+     */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
         final List<Assessment> assessments = assessmentManagementService.getCallerAssessments();
         model.addAttribute(assessments);
+        model.addAttribute("assessmentRouting", buildAssessmentListRouting(assessments));
         return "assessmentList";
     }
 
+    public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final Assessment assessment : assessments) {
+            result.put(assessment.getId(), buildAssessmentRouting(assessment.getId().longValue()));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildAssessmentRouting(final long aid) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", contextPath + "/web/instructor/assessment/" + aid);
+        return result;
+    }
+
+    //------------------------------------------------------
+
+    /**
+     * Shows the Assessment having the given ID (aid)
+     */
     @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)
-    public String showAssessment(final Model model, final @PathVariable Long assessmentId)
+    public String showAssessment(final Model model, final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.getAssessment(assessmentId);
+        final Assessment assessment = assessmentManagementService.getAssessment(aid);
         final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
         return "showAssessment";
+    }
+
+    public String getShowAssessmentUrl(final long aid) {
+        return "/web/instructor/assessment/" + aid;
     }
 
     //------------------------------------------------------

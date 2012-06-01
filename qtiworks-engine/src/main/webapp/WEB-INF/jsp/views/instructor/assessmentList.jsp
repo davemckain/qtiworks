@@ -8,6 +8,7 @@ Lists Assessments owned by caller
 Model:
 
 assessmentList
+assessmentRouting: aid -> action -> URL
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -32,7 +33,7 @@ assessmentList
               <td><c:out value="${assessment.name}"/></td>
               <td><c:out value="${assessment.title}"/></td>
               <td><c:out value="${assessment.creationTime}"/></td>
-              <td><a href="<c:url value='/web/instructor/assessment/${assessment.id}'/>">Show</a></td>
+              <td><a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}">Show</a></td>
             </tr>
           </c:forEach>
         </tbody>
