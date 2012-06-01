@@ -11,6 +11,7 @@ Model:
 * assessmentId (Long)
 
 --%>
+<%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Validation result">
 
