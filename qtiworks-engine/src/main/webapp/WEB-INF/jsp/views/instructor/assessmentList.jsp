@@ -9,6 +9,7 @@ Model:
 
 assessmentList
 assessmentRouting: aid -> action -> URL
+instructorAssessmentRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -46,7 +47,7 @@ assessmentRouting: aid -> action -> URL
 
   <h3>Actions</h3>
   <ul>
-    <li><a href="uploadAssessment">Upload a new assessment</a></li>
+    <li><a href="${utils:escapeLink(instructorAssessmentRouting['uploadAssessment'])}">Upload a new assessment</a></li>
   </ul>
 
 </page:page>

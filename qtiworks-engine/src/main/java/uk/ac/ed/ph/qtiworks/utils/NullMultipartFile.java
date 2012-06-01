@@ -65,7 +65,7 @@ public class NullMultipartFile implements MultipartFile {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 
     @Override

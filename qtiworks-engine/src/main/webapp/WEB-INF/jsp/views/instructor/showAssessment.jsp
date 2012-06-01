@@ -7,8 +7,10 @@ Instructor upload assessment package form
 
 Model:
 
-- assessment
-- assessmentPackage (most recent)
+assessment
+assessmentPackage (most recent)
+assessmentRouting (action -> URL)
+instructorAssessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -52,8 +54,8 @@ Model:
   <h3>Actions</h3>
 
   <ul>
-    <li><a href="<c:url value='/web/instructor/updateAssessmentPackage/${assessment.id}'/>">Upload and replace package files</a></li>
-    <li><a href="<c:url value='/web/instructor/validate/${assessment.id}'/>">Validate assessment</a></li>
-    <li><a href="<c:url value='/web/instructor/assessments'/>">My assessment list</a></li>
+    <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Upload and replace package files</a></li>
+    <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Validate assessment</a></li>
+    <li><a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a></li>
   </ul>
 </page:page>

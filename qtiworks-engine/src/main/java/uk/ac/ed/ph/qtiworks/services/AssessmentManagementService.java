@@ -81,6 +81,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 
 /**
@@ -124,20 +125,46 @@ public class AssessmentManagementService {
     private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
+    // Assessment access
 
-    public Assessment getAssessment(final long assessmentId)
+    /**
+     * Looks up the {@link Assessment} having the given ID (aid) and checks that
+     * the caller may access it.
+     *
+     * @param aid
+     * @return
+     * @throws DomainEntityNotFoundException
+     * @throws PrivilegeException
+     */
+    public Assessment lookupAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        Assert.ensureNotNull(assessmentId, "assessmentId");
-        final Assessment result = assessmentDao.requireFindById(assessmentId);
-        ensureCallerMayView(result);
+        Assert.ensureNotNull(aid, "aid");
+        final Assessment result = assessmentDao.requireFindById(aid);
+        ensureCallerMayAccess(result);
         return result;
     }
 
-    public AssessmentPackage getAssessmentPackage(final Long apid)
+    /**
+     * TODO: Currently only permitting people to see either public Assessments, or
+     * their own Assessments.
+     */
+    private User ensureCallerMayAccess(final Assessment assessment)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
+        }
+        return caller;
+    }
+
+    //-------------------------------------------------
+    // AssessmentPackage access
+
+    public AssessmentPackage lookupAssessmentPackage(final Long apid)
             throws DomainEntityNotFoundException, PrivilegeException {
         Assert.ensureNotNull(apid, "apid");
         final AssessmentPackage result = assessmentPackageDao.requireFindById(apid);
-        ensureCallerMayView(result.getAssessment());
+        ensureCallerMayAccess(result.getAssessment());
         return result;
     }
 
@@ -172,7 +199,7 @@ public class AssessmentManagementService {
      * - the {@link InputStream} is left open
      * - a new {@link AssessmentPackage} is persisted, and its data is safely stored in a sandbox
      *
-     * @param inputStream
+     * @param multipartFile
      * @param contentType
      * @param name for the resulting package. A default will be chosen if one is not provided.
      *   The name will be silently truncated if it is too large for the underlying DB field.
@@ -182,30 +209,29 @@ public class AssessmentManagementService {
      * @throws QtiWorksRuntimeException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment importAssessment(final InputStream inputStream,
-            final String contentType, final String name)
+    public Assessment importAssessment(final MultipartFile multipartFile)
             throws PrivilegeException, AssessmentPackageFileImportException {
-        Assert.ensureNotNull(inputStream, "inputStream");
-        Assert.ensureNotNull(contentType, "contentType");
+        Assert.ensureNotNull(multipartFile, "multipartFile");
         final User caller = ensureCallerMayCreateAssessment();
 
         /* First, upload the data into a sandbox */
-        final AssessmentPackage assessmentPackage = importPackageFiles(inputStream, contentType);
+        final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile);
 
         /* Create resulting Assessment entity */
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(caller);
 
-        /* Decide on resulting Assessment name, using a suitable default if client failed to supply anything */
-        String resultingName;
-        if (StringUtilities.isNullOrBlank(name)) {
-            resultingName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
+        /* Try to create Assessment name from the name of the MultipartFile */
+        final String fileName = multipartFile.getOriginalFilename();
+        String assessmentName;
+        if (StringUtilities.isNullOrBlank(fileName)) {
+            assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
         }
         else {
-            resultingName = ServiceUtilities.trimString(name, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
+            assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
         }
-        assessment.setName(resultingName);
+        assessment.setName(assessmentName);
 
         /* Guess a title */
         final String guessedTitle = guessAssessmentTitle(assessmentPackage);
@@ -232,29 +258,27 @@ public class AssessmentManagementService {
         return assessment;
     }
 
+
     /**
      * NOTE: Not allowed to go item->test or test->item.
      *
-     * @param inputStream
-     * @param contentType
      * @throws AssessmentStateException
      * @throws PrivilegeException
      * @throws AssessmentPackageFileImportException
      * @throws DomainEntityNotFoundException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment updateAssessmentPackageFiles(final Long assessmentId,
-            final InputStream inputStream, final String contentType)
+    public Assessment updateAssessmentPackageFiles(final Long aid,
+            final MultipartFile multipartFile)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(assessmentId, "assessmentId");
-        Assert.ensureNotNull(inputStream, "inputStream");
-        Assert.ensureNotNull(contentType, "contentType");
-        final Assessment assessment = assessmentDao.requireFindById(assessmentId);
+        Assert.ensureNotNull(aid, "aid");
+        Assert.ensureNotNull(multipartFile, "multipartFile");
+        final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayChange(assessment);
 
         /* Upload data into a new sandbox */
-        final AssessmentPackage newAssessmentPackage = importPackageFiles(inputStream, contentType);
+        final AssessmentPackage newAssessmentPackage = importPackageFiles(multipartFile);
 
         /* Make sure we haven't gone item->test or test->item */
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
@@ -290,7 +314,7 @@ public class AssessmentManagementService {
             throws DomainEntityNotFoundException, PrivilegeException {
         Assert.ensureNotNull(itemDeliveryId, "itemDeliveryId");
         final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(itemDeliveryId);
-        ensureCallerMayView(itemDelivery.getAssessmentPackage().getAssessment());
+        ensureCallerMayAccess(itemDelivery.getAssessmentPackage().getAssessment());
         return itemDelivery;
     }
 
@@ -329,9 +353,9 @@ public class AssessmentManagementService {
     // Validation
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public AssessmentObjectValidationResult<?> validateAssessment(final Long assessmentId)
+    public AssessmentObjectValidationResult<?> validateAssessment(final Long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = getAssessment(assessmentId.longValue());
+        final Assessment assessment = lookupAssessment(aid.longValue());
         final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
@@ -394,10 +418,12 @@ public class AssessmentManagementService {
      * @throws AssessmentPackageFileImportException
      * @throws QtiWorksRuntimeException
      */
-    private AssessmentPackage importPackageFiles(final InputStream inputStream, final String contentType)
+    private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
             throws PrivilegeException, AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
+        final InputStream inputStream = getInputSream(multipartFile);
+        final String contentType = multipartFile.getContentType();
         try {
             final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
             assessmentPackage.setImporter(owner);
@@ -406,6 +432,15 @@ public class AssessmentManagementService {
         catch (final AssessmentPackageFileImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
+        }
+    }
+
+    private InputStream getInputSream(final MultipartFile multipartFile) {
+        try {
+            return multipartFile.getInputStream();
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception", e);
         }
     }
 
@@ -439,18 +474,7 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    /**
-     * TODO: Currently only permitting people to see either public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayView(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
-        }
-        return caller;
-    }
+
 
     /**
      * TODO: Currently allowing people to view the source of public Assessments, or

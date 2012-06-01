@@ -47,13 +47,12 @@ import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand
 
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,8 +63,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.io.Closeables;
-
 /**
  * Controller providing management functions for {@link Assessment}s
  *
@@ -73,6 +70,8 @@ import com.google.common.io.Closeables;
  */
 @Controller
 public final class InstructorAssessmentManagementController {
+
+    private static final String controllerPath = "/web/instructor";
 
     @Resource
     private String contextPath;
@@ -103,8 +102,26 @@ public final class InstructorAssessmentManagementController {
 
     public Map<String, String> buildAssessmentRouting(final long aid) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", contextPath + "/web/instructor/assessment/" + aid);
+        result.put("show", buildActionPath("/assessment/" + aid));
+        result.put("upload", buildActionPath("/assessment/" + aid + "/upload"));
+        result.put("validate", buildActionPath("/assessment/" + aid + "/validate"));
         return result;
+    }
+
+    private String buildActionPath(final String requestPath) {
+        return contextPath + controllerPath + requestPath;
+    }
+
+    private String buildActionRedirect(final String requestPath) {
+        return "redirect:" + controllerPath + requestPath;
+    }
+
+    @ModelAttribute
+    public void setupPrimaryRouting(final Model model) {
+        final Map<String, String> primaryRouting = new HashMap<String, String>();
+        primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
+        primaryRouting.put("listAssessments", buildActionPath("/assessments"));
+        model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
     //------------------------------------------------------
@@ -112,81 +129,72 @@ public final class InstructorAssessmentManagementController {
     /**
      * Shows the Assessment having the given ID (aid)
      */
-    @RequestMapping(value="/assessment/{assessmentId}", method=RequestMethod.GET)
+    @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
     public String showAssessment(final Model model, final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.getAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+
+        /* TODO: This is using a detached entity */
         final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
+
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "showAssessment";
-    }
-
-    public String getShowAssessmentUrl(final long aid) {
-        return "/web/instructor/assessment/" + aid;
     }
 
     //------------------------------------------------------
 
-    @RequestMapping(value="/uploadAssessment", method=RequestMethod.GET)
+    @RequestMapping(value="/assessments/upload", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
         model.addAttribute(new UploadAssessmentPackageCommand());
         return "uploadAssessmentForm";
     }
 
-    @RequestMapping(value="/uploadAssessment", method=RequestMethod.POST)
-    public String handleUploadAssessmentForm(final @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
-            throws IOException, PrivilegeException {
-        /* Make sure something was submitted */
-        final MultipartFile uploadFile = command.getFile();
-        if (uploadFile==null || uploadFile.isEmpty()) {
-            result.reject("uploadAssessmentPackageCommand.noFile");
+    @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
+    public String handleUploadAssessmentForm(final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
+            throws PrivilegeException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
             return "uploadAssessmentForm";
         }
 
         /* Attempt to import the package */
-        final InputStream uploadStream = uploadFile.getInputStream();
-        final String uploadContentType = uploadFile.getContentType();
-        final String uploadName = uploadFile.getOriginalFilename();
         Assessment assessment;
         try {
-            assessment = assessmentManagementService.importAssessment(uploadStream, uploadContentType, uploadName);
+            assessment = assessmentManagementService.importAssessment(command.getFile());
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "uploadAssessmentPackageCommand");
             return "uploadAssessmentForm";
         }
-        finally {
-            Closeables.closeQuietly(uploadStream);
-        }
-        return "redirect:/web/instructor/assessment/" + assessment.getId();
+        return buildActionRedirect("/assessment/" + assessment.getId());
     }
 
     //------------------------------------------------------
 
-    @RequestMapping(value="/updateAssessmentPackage/{assessmentId}", method=RequestMethod.GET)
-    public String showUpdateAssessmentPackageForm(final @PathVariable Long assessmentId, final Model model) {
+    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
+    public String showUpdateAssessmentPackageForm(@SuppressWarnings("unused") final @PathVariable long aid,
+            final Model model) {
         model.addAttribute(new UploadAssessmentPackageCommand());
         return "updateAssessmentPackageForm";
     }
 
-    @RequestMapping(value="/updateAssessmentPackage/{assessmentId}", method=RequestMethod.POST)
-    public String handleUploadAssessmentForm(final @PathVariable Long assessmentId,
-            final @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
-            throws IOException, PrivilegeException, DomainEntityNotFoundException {
+    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
+    public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
+            final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
         /* Make sure something was submitted */
-        final MultipartFile uploadFile = command.getFile();
-        if (uploadFile==null || uploadFile.isEmpty()) {
-            result.reject("uploadAssessmentPackageCommand.noFile");
+        /* Validate command Object */
+        if (result.hasErrors()) {
             return "updateAssessmentPackageForm";
         }
 
         /* Attempt to import the package */
-        final InputStream uploadStream = uploadFile.getInputStream();
-        final String uploadContentType = uploadFile.getContentType();
+        final MultipartFile uploadFile = command.getFile();
         try {
-            assessmentManagementService.updateAssessmentPackageFiles(assessmentId, uploadStream, uploadContentType);
+            assessmentManagementService.updateAssessmentPackageFiles(aid, uploadFile);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -198,19 +206,16 @@ public final class InstructorAssessmentManagementController {
             failure.registerErrors(result, "uploadAssessmentPackageCommand");
             return "updateAssessmentPackageForm";
         }
-        finally {
-            Closeables.closeQuietly(uploadStream);
-        }
-        return "redirect:/web/instructor/assessment/{assessmentId}";
+        return buildActionRedirect("/assessment/{aid}");
     }
 
     //------------------------------------------------------
 
-    @RequestMapping(value="/validate/{assessmentId}", method=RequestMethod.GET)
-    public String validateAssessment(final @PathVariable Long assessmentId, final Model model)
+    @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
+    public String validateAssessment(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessmentId);
-        model.addAttribute("assessmentId", assessmentId);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
+        model.addAttribute("aid", aid);
         model.addAttribute("validationResult", validationResult);
         return "validationResult";
     }

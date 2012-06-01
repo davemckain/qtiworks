@@ -107,7 +107,7 @@ public class PublicBrowseController {
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
         /* Look up package and make sure caller has read permission on it */
-        final AssessmentPackage assessmentPackage = assessmentManagementService.getAssessmentPackage(apid);
+        final AssessmentPackage assessmentPackage = assessmentManagementService.lookupAssessmentPackage(apid);
 
         final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
         final String requestEtag = request.getHeader("If-None-Match");

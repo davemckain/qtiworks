@@ -31,35 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.instructor.domain;
+package uk.ac.ed.ph.qtiworks.services.validation;
 
-import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Command for the "upload assessment package" action
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public final class UploadAssessmentPackageCommand {
-
-    @MultipartFileExists
-    private MultipartFile file;
-
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(final MultipartFile file) {
-        this.file = file;
-    }
-
+public class MultipartFileExistsValidator implements ConstraintValidator<MultipartFileExists, MultipartFile> {
 
     @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    public void initialize(final MultipartFileExists multipartFile) {
+        /* Nothing to do */
     }
+
+    @Override
+    public boolean isValid(final MultipartFile multipartFile, final ConstraintValidatorContext validatorContext) {
+        if (multipartFile==null) {
+            return true;
+        }
+        return !multipartFile.isEmpty();
+    }
+
 }

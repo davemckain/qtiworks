@@ -31,35 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.instructor.domain;
+package uk.ac.ed.ph.qtiworks.services.validation;
 
-import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Command for the "upload assessment package" action
+ * Validation annotation used to indicate that a {@link MultipartFile} should not be empty
  *
  * @author David McKain
  */
-public final class UploadAssessmentPackageCommand {
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy=MultipartFileExistsValidator.class)
+@Documented
+public @interface MultipartFileExists {
 
-    @MultipartFileExists
-    private MultipartFile file;
+    String message() default "MultipartFile is empty";
 
-    public MultipartFile getFile() {
-        return file;
-    }
+    Class<?>[] groups() default {};
 
-    public void setFile(final MultipartFile file) {
-        this.file = file;
-    }
+    Class<? extends Payload>[] payload() default {};
 
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
 }

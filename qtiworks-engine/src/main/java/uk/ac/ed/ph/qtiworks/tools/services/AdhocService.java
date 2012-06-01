@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
+import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
@@ -59,6 +60,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -82,7 +85,19 @@ public class AdhocService {
     @Resource
     private InstructorUserDao instructorUserDao;
 
-    public void doWork() throws Exception {
+    @Resource
+    private Validator jsr303Validator;
+
+    public void doWork() {
+        final UploadAssessmentPackageCommand cmd = new UploadAssessmentPackageCommand();
+        cmd.setFile(new NullMultipartFile());
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(cmd, "CMD");
+        jsr303Validator.validate(cmd, errors);
+        System.out.println(cmd);
+        System.out.println(errors);
+    }
+
+    public void doWork1() throws Exception {
         requestTimestampContext.setCurrentRequestTimestamp(new Date());
 
         final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
