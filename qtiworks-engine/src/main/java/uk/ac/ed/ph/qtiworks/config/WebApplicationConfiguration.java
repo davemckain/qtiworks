@@ -33,10 +33,13 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import javax.annotation.Resource;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
@@ -49,6 +52,14 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 public class WebApplicationConfiguration {
 
     public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+
+    @Resource
+    private WebApplicationContext applicationContext;
+
+    @Bean
+    public String contextPath() {
+        return applicationContext.getServletContext().getContextPath();
+    }
 
     @Bean
     MessageSource messageSource() {
