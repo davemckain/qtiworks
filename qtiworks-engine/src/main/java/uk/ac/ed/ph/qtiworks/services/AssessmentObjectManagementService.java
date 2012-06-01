@@ -58,10 +58,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Service responsible for instantiating and caching
- * {@link ResolvedAssessmentObject}s
+ * Service responsible for instantiating and caching {@link ResolvedAssessmentObject}s
  * <p>
- * For the time being, we'll use an
+ * For the time being, we'll use an {@link LruHashMap}, though this is probably not the
+ * best choice.
  *
  * @author David McKain
  */

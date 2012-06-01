@@ -137,7 +137,7 @@ public class AssessmentPackageFileService {
         final ResourceLocator result;
         if (assessmentPackage.getImportType()==AssessmentPackageImportType.BUNDLED_SAMPLE) {
             /* This is a bundled sample, which lives in the ClassPath */
-            return sampleResolvingResourceLocator;
+            result = sampleResolvingResourceLocator;
         }
         else {
             /* Uploaded by user, so resource lives in a sandbox within the filesystem */
