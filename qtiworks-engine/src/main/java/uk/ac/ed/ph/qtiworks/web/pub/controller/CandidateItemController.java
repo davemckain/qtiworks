@@ -239,17 +239,10 @@ public class CandidateItemController {
      * Resets the given {@link CandidateItemSession}
      *
      * @see AssessmentCandidateService#resetCandidateSession(long)
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/reset", method=RequestMethod.POST)
     public String resetSession(@PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting reset of session #{}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.resetCandidateSession(xid);
 
@@ -259,15 +252,6 @@ public class CandidateItemController {
 
     /**
      * Re-initialises the given {@link CandidateItemSession}
-     *
-     * @see AssessmentCandidateService#reinitCandidateSession(long)
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/reinit", method=RequestMethod.POST)
     public String reinitSession(@PathVariable final long xid)
@@ -281,17 +265,10 @@ public class CandidateItemController {
 
     /**
      * Closes (but does not exit) the given {@link CandidateItemSession}
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/close", method=RequestMethod.POST)
     public String closeSession(@PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting close of session #{}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.closeCandidateSession(xid);
 
@@ -301,17 +278,10 @@ public class CandidateItemController {
 
     /**
      * Transitions the given {@link CandidateItemSession} to solution state
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/solution", method=RequestMethod.POST)
     public String transitionSessionToSolutionState(@PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting transition of session #{} to solution state", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.transitionCandidateSessionToSolutionState(xid);
 
@@ -322,17 +292,10 @@ public class CandidateItemController {
     /**
      * Transitions the state of the {@link CandidateItemSession} so that it plays back the
      * {@link CandidateItemEvent} having the given ID (xeid).
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/playback/{xeid}", method=RequestMethod.POST)
     public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final long xeid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting to set playback position of session #{} to event #{}", xid, xeid);
         final CandidateItemSession candidateSession = assessmentCandidateService.setPlaybackState(xid, xeid);
 
@@ -342,17 +305,10 @@ public class CandidateItemController {
 
     /**
      * Terminates the given {@link CandidateItemSession}
-     *
-     * @param response
-     * @param did
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws RuntimeValidationException
      */
     @RequestMapping(value="/session/{xid}/terminate", method=RequestMethod.POST)
     public String terminateSession(@PathVariable final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting termination of session #{}", xid);
         assessmentCandidateService.terminateCandidateSession(xid);
 
@@ -363,11 +319,6 @@ public class CandidateItemController {
     /**
      * Streams an {@link ItemResult} representing the current state of the given
      * {@link CandidateItemSession}
-     *
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateSessionStateException
-     * @throws IOException
      */
     @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
@@ -382,10 +333,6 @@ public class CandidateItemController {
      * Serves the source of the given {@link AssessmentPackage}
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
-     *
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
-     * @throws IOException
      */
     @RequestMapping(value="/delivery/{did}/source", method=RequestMethod.GET)
     public void streamPackageSource(@PathVariable final long did,
@@ -408,10 +355,6 @@ public class CandidateItemController {
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
-     *
-     * @throws IOException
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
     @RequestMapping(value="/delivery/{did}/file", method=RequestMethod.GET)
     public void streamPackageFile(@PathVariable final long did,
