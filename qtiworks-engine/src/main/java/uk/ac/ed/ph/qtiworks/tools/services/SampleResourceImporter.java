@@ -40,13 +40,16 @@ import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryOptionsDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
+import uk.ac.ed.ph.qtiworks.samples.DeliveryStyle;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
@@ -105,6 +108,9 @@ public class SampleResourceImporter {
     private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
+    private ItemDeliveryOptionsDao itemDeliveryOptionsDao;
+
+    @Resource
     private InstructorUserDao instructorUserDao;
 
     @Resource
@@ -120,6 +126,9 @@ public class SampleResourceImporter {
         /* Create sample owner if required */
         final InstructorUser sampleOwner = importSampleOwnerUserIfRequired();
 
+        /* Set up sample ItemDeliveryOptions */
+        final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap = importDeliveryOptions(sampleOwner);
+
         /* Find out which SampleCategories already exist */
         final List<SampleCategory> sampleCategories = getExistingSampleCategories();
 
@@ -133,7 +142,7 @@ public class SampleResourceImporter {
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
-            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments);
+            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, itemDeliveryOptionsMap);
         }
     }
 
@@ -158,6 +167,147 @@ public class SampleResourceImporter {
         return sampleCategoryDao.getAll();
     }
 
+    private Map<DeliveryStyle, ItemDeliveryOptions> importDeliveryOptions(final InstructorUser sampleOwner) {
+        final Map<String, ItemDeliveryOptions> deliveryOptionsByTitleMap = new HashMap<String, ItemDeliveryOptions>();
+        for (final ItemDeliveryOptions existingOptions : itemDeliveryOptionsDao.getForOwner(sampleOwner)) {
+            deliveryOptionsByTitleMap.put(existingOptions.getTitle(), existingOptions);
+        }
+
+        /* Go through all sample options, persisting any that aren't yet in the DB.
+         * NB: This does not update existing options!
+         */
+        final Map<DeliveryStyle, ItemDeliveryOptions> deliveryOptionsMap = buildDeliveryOptionsMap();
+        for (final ItemDeliveryOptions options : deliveryOptionsMap.values()) {
+            if (!deliveryOptionsByTitleMap.containsKey(options.getTitle())) {
+                /* New options */
+                options.setOwner(sampleOwner);
+                itemDeliveryOptionsDao.persist(options);
+                logger.info("Created ItemDeliveryOptions {}", options);
+                deliveryOptionsByTitleMap.put(options.getTitle(), options);
+            }
+        }
+        /* Now convert back to Map keyed on DeliveryStyle. */
+        final Map<DeliveryStyle, ItemDeliveryOptions> result = new HashMap<DeliveryStyle, ItemDeliveryOptions>();
+        for (final DeliveryStyle deliveryStyle : DeliveryStyle.values()) {
+            result.put(deliveryStyle, deliveryOptionsByTitleMap.get(deliveryOptionsMap.get(deliveryStyle).getTitle()));
+        }
+        return result;
+    }
+
+    private Map<DeliveryStyle, ItemDeliveryOptions> buildDeliveryOptionsMap() {
+        final Map<DeliveryStyle, ItemDeliveryOptions> result = new HashMap<DeliveryStyle, ItemDeliveryOptions>();
+        /* Yes, the next bit is not efficient but it's readable! */
+        for (final DeliveryStyle deliveryStyle : DeliveryStyle.values()) {
+            final ItemDeliveryOptions options = new ItemDeliveryOptions();
+            options.setMaxAttempts(Integer.valueOf(0));
+            options.setAuthorMode(true);
+            options.setAllowPlayback(true);
+            options.setAllowResult(true);
+            options.setAllowSource(true);
+            options.setAllowPlayback(true);
+            switch (deliveryStyle) {
+                case MATHASSESS_STANDARD:
+                    options.setTitle("MathAssess standard");
+                    options.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
+                            + "the item as many times as you like. There is no template processing (randomisation) in this "
+                            + "example.");
+                    options.setAllowClose(true);
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowResetWhenClosed(true);
+                    break;
+
+                case MATHASSESS_TEMPLATED:
+                    options.setTitle("MathAssess templated");
+                    options.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
+                            + "the item as many times as you like. This item contains template processing (randomisation), "
+                            + "so we have provided a button to let you reinitialise your session with a freshly generated instance of the item");
+                    options.setAllowClose(true);
+                    options.setAllowReinitWhenInteracting(true);
+                    options.setAllowReinitWhenClosed(true);
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowResetWhenClosed(true);
+                    break;
+
+                case IMS_ADAPTIVE:
+                    options.setTitle("IMS adaptive");
+                    options.setPrompt("This is an adaptive item, potentially involving more than one step to complete. "
+                            + "This example lets you try this out as many times as you like, and also reset the question "
+                            + "if you want to start again. A model solution is provided.");
+                    options.setMaxAttempts(Integer.valueOf(1));
+                    options.setAllowClose(true);
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowResetWhenClosed(true);
+                    options.setAllowSolutionWhenInteracting(true);
+                    options.setAllowSolutionWhenClosed(true);
+                    break;
+
+                case IMS_STANDARD:
+                    options.setTitle("IMS standard");
+                    options.setPrompt("This is a typical standard IMS sample question. It has a model solution, but no "
+                            + "feedback. In this example, we'll let you give you one attempt at the question before it "
+                            + "closes. You can still reset the question and try it again, though.");
+                    options.setAllowClose(true);
+                    options.setAllowResetWhenClosed(true);
+                    options.setAllowSolutionWhenInteracting(true);
+                    options.setAllowSolutionWhenClosed(true);
+                    break;
+
+                case IMS_FEEDBACK:
+                    options.setTitle("IMS feedback");
+                    options.setPrompt("This is a typical standard IMS sample question. It has a model solution... "
+                            + "and this one also has feedback. In this example, we'll let you make as many attempts as you like. "
+                            + "You can still reset the question and try it again, though.");
+                    options.setAllowClose(true);
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowResetWhenClosed(true);
+                    options.setAllowSolutionWhenInteracting(true);
+                    options.setAllowSolutionWhenClosed(true);
+                    break;
+
+                case IMS_NO_RESPONSE_PROCESSING:
+                    options.setTitle("IMS no response processing");
+                    options.setPrompt("This is a very basic standard IMS sample question. It has no response processing (scoring) "
+                            + "built in so isn't very interactve. There is also no model solution. It's therefore not much fun "
+                            + "to play around with!");
+                    options.setAllowResetWhenInteracting(true);
+                    break;
+
+                case IMS_STANDARD_TEMPLATED:
+                    options.setTitle("IMS standard templated");
+                    options.setPrompt("This is a standard IMS sample question demonstrating template processing (randomisation). "
+                            + "It has no model solution and no feedback, so it's fun to render but not much fun to actually try out. "
+                            + "Try playing with the 'Reinitialize' option to generate the question with different values");
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowReinitWhenInteracting(true);
+                    break;
+
+                case LANGUAGE_STANDARD:
+                    options.setTitle("Language standard");
+                    options.setPrompt("This question has a model solution and feedback. In this example, we'll let you try "
+                            + "the item once and see the result. You can always reset it and try again afterwards if you like.");
+                    options.setMaxAttempts(Integer.valueOf(1));
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowSolutionWhenInteracting(true);
+                    break;
+
+                default:
+                    options.setTitle("Default");
+                    options.setPrompt("This item hasn't been categoried, so we probably haven't presented it with the most "
+                            + "useful set of options.");
+                    options.setAllowClose(true);
+                    options.setAllowResetWhenInteracting(true);
+                    options.setAllowResetWhenClosed(true);
+                    options.setAllowReinitWhenInteracting(true);
+                    options.setAllowReinitWhenInteracting(true);
+                    options.setAllowSolutionWhenInteracting(true);
+                    options.setAllowSolutionWhenClosed(true);
+                    break;
+            }
+            result.put(deliveryStyle, options);
+        }
+        return result;
+    }
+
     private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
         final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
@@ -173,7 +323,8 @@ public class SampleResourceImporter {
 
     private void importSampleSet(final InstructorUser sampleOwner,
             final QtiSampleSet qtiSampleSet, final List<SampleCategory> existingSampleCategories,
-            final Map<String, Assessment> importedSampleAssessments) {
+            final Map<String, Assessment> importedSampleAssessments,
+            final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap) {
         final String sampleCategoryTitle = qtiSampleSet.getTitle();
         SampleCategory resultingSampleCategory = null;
         for (final SampleCategory sampleCategory : existingSampleCategories) {
@@ -192,13 +343,14 @@ public class SampleResourceImporter {
         }
         for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
             if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
-                importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory);
+                importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory, itemDeliveryOptionsMap);
             }
         }
     }
 
     private Assessment importSampleAssessment(final InstructorUser owner,
-            final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory) {
+            final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory,
+            final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap) {
         Assert.ensureNotNull(qtiSampleAssessment, "qtiSampleAssessment");
         logger.info("Importing QTI sample {}", qtiSampleAssessment);
 
@@ -241,113 +393,17 @@ public class SampleResourceImporter {
         /* Create a default delivery */
         if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM) {
             final ItemDelivery defaultDelivery = new ItemDelivery();
+            final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsMap.get(qtiSampleAssessment.getDeliveryStyle());
+
+            defaultDelivery.setItemDeliveryOptions(itemDeliveryOptions);
             defaultDelivery.setAssessmentPackage(assessmentPackage);
-            defaultDelivery.setMaxAttempts(Integer.valueOf(0));
             defaultDelivery.setOpen(true);
-            defaultDelivery.setAuthorMode(true);
             defaultDelivery.setTitle("Default demo delivery");
-            defaultDelivery.setAllowPlayback(true);
-            defaultDelivery.setAllowResult(true);
-            defaultDelivery.setAllowSource(true);
-            defaultDelivery.setAllowPlayback(true);
-            tweakItemDelivery(defaultDelivery, qtiSampleAssessment);
 
             assessmentPackage.setDefaultDelivery(defaultDelivery);
             itemDeliveryDao.persist(defaultDelivery);
             assessmentPackageDao.update(assessmentPackage);
         }
         return assessment;
-    }
-
-    private void tweakItemDelivery(final ItemDelivery delivery, final QtiSampleAssessment qtiSampleAssessment) {
-        switch (qtiSampleAssessment.getDeliveryStyle()) {
-            case MATHASSESS_STANDARD:
-                delivery.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
-                        + "the item as many times as you like. There is no template processing (randomisation) in this "
-                        + "example.");
-                delivery.setAllowClose(true);
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowResetWhenClosed(true);
-                break;
-
-            case MATHASSESS_TEMPLATED:
-                delivery.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
-                        + "the item as many times as you like. This item contains template processing (randomisation), "
-                        + "so we have provided a button to let you reinitialise your session with a freshly generated instance of the item");
-                delivery.setAllowClose(true);
-                delivery.setAllowReinitWhenInteracting(true);
-                delivery.setAllowReinitWhenClosed(true);
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowResetWhenClosed(true);
-                break;
-
-            case IMS_ADAPTIVE:
-                delivery.setPrompt("This is an adaptive item, potentially involving more than one step to complete. "
-                        + "This example lets you try this out as many times as you like, and also reset the question "
-                        + "if you want to start again. A model solution is provided.");
-                delivery.setMaxAttempts(Integer.valueOf(1));
-                delivery.setAllowClose(true);
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowResetWhenClosed(true);
-                delivery.setAllowSolutionWhenInteracting(true);
-                delivery.setAllowSolutionWhenClosed(true);
-                break;
-
-            case IMS_STANDARD:
-                delivery.setPrompt("This is a typical standard IMS sample question. It has a model solution, but no "
-                        + "feedback. In this example, we'll let you give you one attempt at the question before it "
-                        + "closes. You can still reset the question and try it again, though.");
-                delivery.setAllowClose(true);
-                delivery.setAllowResetWhenClosed(true);
-                delivery.setAllowSolutionWhenInteracting(true);
-                delivery.setAllowSolutionWhenClosed(true);
-                break;
-
-            case IMS_FEEDBACK:
-                delivery.setPrompt("This is a typical standard IMS sample question. It has a model solution... "
-                        + "and this one also has feedback. In this example, we'll let you make as many attempts as you like. "
-                        + "You can still reset the question and try it again, though.");
-                delivery.setAllowClose(true);
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowResetWhenClosed(true);
-                delivery.setAllowSolutionWhenInteracting(true);
-                delivery.setAllowSolutionWhenClosed(true);
-                break;
-
-            case IMS_NO_RESPONSE_PROCESSING:
-                delivery.setPrompt("This is a very basic standard IMS sample question. It has no response processing (scoring) "
-                        + "built in so isn't very interactve. There is also no model solution. It's therefore not much fun "
-                        + "to play around with!");
-                delivery.setAllowResetWhenInteracting(true);
-                break;
-
-            case IMS_STANDARD_TEMPLATED:
-                delivery.setPrompt("This is a standard IMS sample question demonstrating template processing (randomisation). "
-                        + "It has no model solution and no feedback, so it's fun to render but not much fun to actually try out. "
-                        + "Try playing with the 'Reinitialize' option to generate the question with different values");
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowReinitWhenInteracting(true);
-                break;
-
-            case LANGUAGE_STANDARD:
-                delivery.setPrompt("This question has a model solution and feedback. In this example, we'll let you try "
-                        + "the item once and see the result. You can always reset it and try again afterwards if you like.");
-                delivery.setMaxAttempts(Integer.valueOf(1));
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowSolutionWhenInteracting(true);
-                break;
-
-            default:
-                delivery.setPrompt("This item hasn't been categoried, so we probably haven't presented it with the most "
-                        + "useful set of options.");
-                delivery.setAllowClose(true);
-                delivery.setAllowResetWhenInteracting(true);
-                delivery.setAllowResetWhenClosed(true);
-                delivery.setAllowReinitWhenInteracting(true);
-                delivery.setAllowReinitWhenInteracting(true);
-                delivery.setAllowSolutionWhenInteracting(true);
-                delivery.setAllowSolutionWhenClosed(true);
-                break;
-        }
     }
 }

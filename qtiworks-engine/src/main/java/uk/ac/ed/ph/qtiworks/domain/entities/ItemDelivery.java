@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
 import java.util.Date;
 
@@ -48,7 +47,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -56,8 +54,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.Type;
 
 /**
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
@@ -94,6 +90,10 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="apid")
     private AssessmentPackage assessmentPackage;
 
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    @JoinColumn(name="doid")
+    private ItemDeliveryOptions itemDeliveryOptions;
+
     @Basic(optional=false)
     @Column(name="title")
     private String title;
@@ -109,76 +109,6 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private boolean open;
 
     //------------------------------------------------------------
-    // Next ones are probably for items only
-
-    /** Optional prompt to show to candidates */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="prompt")
-    private String prompt;
-
-    /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
-    @Basic(optional=false)
-    @Column(name="max_attempts")
-    private Integer maxAttempts;
-
-    /** Author mode includes additional debugging information in the rendering */
-    @Basic(optional=false)
-    @Column(name="author_mode")
-    private boolean authorMode;
-
-    /** Allow candidate to close session */
-    @Basic(optional=false)
-    @Column(name="allow_close")
-    private boolean allowClose;
-
-    /** Allow candidate to reset attempt while in {@link CandidateSessionState#INTERACTING} state */
-    @Basic(optional=false)
-    @Column(name="allow_reset_when_interacting")
-    private boolean allowResetWhenInteracting;
-
-    /** Allow candidate to reset attempt while in {@link CandidateSessionState#CLOSED} state */
-    @Basic(optional=false)
-    @Column(name="allow_reset_when_closed")
-    private boolean allowResetWhenClosed;
-
-    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#INTERACTING} state */
-    @Basic(optional=false)
-    @Column(name="allow_reinit_when_interacting")
-    private boolean allowReinitWhenInteracting;
-
-    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#CLOSED} state */
-    @Basic(optional=false)
-    @Column(name="allow_reinit_when_closed")
-    private boolean allowReinitWhenClosed;
-
-    /** Allow candidate to show solution when in {@link CandidateSessionState#INTERACTING} state */
-    @Basic(optional=false)
-    @Column(name="allow_solution_when_interacting")
-    private boolean allowSolutionWhenInteracting;
-
-    /** Allow candidate to show solution when in {@link CandidateSessionState#CLOSED} state */
-    @Basic(optional=false)
-    @Column(name="allow_solution_when_closed")
-    private boolean allowSolutionWhenClosed;
-
-    /** Allow candidate to see the actions they performed */
-    @Basic(optional=false)
-    @Column(name="allow_playback")
-    private boolean allowPlayback;
-
-    /** Allow candidate to view assessment source(s) */
-    @Basic(optional=false)
-    @Column(name="allow_source")
-    private boolean allowSource;
-
-    /** Allow candidate to access result XML */
-    @Basic(optional=false)
-    @Column(name="allow_result")
-    private boolean allowResult;
-
-    //------------------------------------------------------------
 
     @Override
     public Long getId() {
@@ -188,6 +118,26 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    public void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        this.assessmentPackage = assessmentPackage;
+    }
+
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public ItemDeliveryOptions getItemDeliveryOptions() {
+        return itemDeliveryOptions;
+    }
+
+    public void setItemDeliveryOptions(final ItemDeliveryOptions itemDeliveryOptions) {
+        this.itemDeliveryOptions = itemDeliveryOptions;
     }
 
 
@@ -211,16 +161,6 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
-    }
-
-    public void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        this.assessmentPackage = assessmentPackage;
-    }
-
-
     public boolean isOpen() {
         return open;
     }
@@ -229,127 +169,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
         this.open = open;
     }
 
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
-    }
-
-
-    public Integer getMaxAttempts() {
-        return maxAttempts;
-    }
-
-    public void setMaxAttempts(final Integer maxAttempts) {
-        this.maxAttempts = maxAttempts;
-    }
-
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
-    }
-
-
-    public boolean isAllowClose() {
-        return allowClose;
-    }
-
-    public void setAllowClose(final boolean allowClose) {
-        this.allowClose = allowClose;
-    }
-
-
-    public boolean isAllowSource() {
-        return allowSource;
-    }
-
-    public void setAllowSource(final boolean allowSource) {
-        this.allowSource = allowSource;
-    }
-
-
-    public boolean isAllowResult() {
-        return allowResult;
-    }
-
-    public void setAllowResult(final boolean allowResult) {
-        this.allowResult = allowResult;
-    }
-
-
-    public boolean isAllowResetWhenInteracting() {
-        return allowResetWhenInteracting;
-    }
-
-    public void setAllowResetWhenInteracting(final boolean allowReset) {
-        this.allowResetWhenInteracting = allowReset;
-    }
-
-
-    public boolean isAllowResetWhenClosed() {
-        return allowResetWhenClosed;
-    }
-
-    public void setAllowResetWhenClosed(final boolean allowReset) {
-        this.allowResetWhenClosed = allowReset;
-    }
-
-
-    public boolean isAllowReinitWhenInteracting() {
-        return allowReinitWhenInteracting;
-    }
-
-    public void setAllowReinitWhenInteracting(final boolean allowReinit) {
-        this.allowReinitWhenInteracting = allowReinit;
-    }
-
-
-    public boolean isAllowReinitWhenClosed() {
-        return allowReinitWhenClosed;
-    }
-
-    public void setAllowReinitWhenClosed(final boolean allowReinitWhenClosed) {
-        this.allowReinitWhenClosed = allowReinitWhenClosed;
-    }
-
-
-    public boolean isAllowSolutionWhenInteracting() {
-        return allowSolutionWhenInteracting;
-    }
-
-    public void setAllowSolutionWhenInteracting(final boolean allowSolution) {
-        this.allowSolutionWhenInteracting = allowSolution;
-    }
-
-
-    public boolean isAllowSolutionWhenClosed() {
-        return allowSolutionWhenClosed;
-    }
-
-    public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
-        this.allowSolutionWhenClosed = allowSolutionWhenClosed;
-    }
-
-
-    public boolean isAllowPlayback() {
-        return allowPlayback;
-    }
-
-    public void setAllowPlayback(final boolean allowPlayback) {
-        this.allowPlayback = allowPlayback;
-    }
-
     //------------------------------------------------------------
-
-
-
 
     @Override
     public String toString() {
