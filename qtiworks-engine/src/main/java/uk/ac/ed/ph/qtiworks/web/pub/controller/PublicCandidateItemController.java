@@ -43,53 +43,51 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
-import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
+import uk.ac.ed.ph.qtiworks.web.services.CandidateControllerService;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * Controller for candidate item sessions
  *
- * FIXME: Need to implement 'end'
- *
  * @author David McKain
  */
 @Controller
-public class CandidateItemController {
+public class PublicCandidateItemController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CandidateItemController.class);
-
-    /** Default age for any cacheable resources */
-    public static final long CACHE_AGE = 60 * 60;
+    @Resource
+    private CandidateControllerService candidateControllerService;
 
     @Resource
     private AssessmentCandidateService assessmentCandidateService;
+
+    //----------------------------------------------------
+
+    private String redirectToListing() {
+        return "redirect:/web/public/samples/list";
+    }
+
+    private String redirectToRenderSession(final CandidateItemSession candidateSession) {
+        return redirectToRenderSession(candidateSession.getId().longValue());
+    }
+
+    private String redirectToRenderSession(final long xid) {
+        return "redirect:/web/public/session/" + xid;
+    }
 
     //----------------------------------------------------
     // Session initialisation
@@ -100,13 +98,8 @@ public class CandidateItemController {
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.POST)
     public String startCandidateItemSession(@PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        logger.debug("Creating new CandidateItemSession for delivery {}", did);
-        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(did);
-        return redirectToSession(candidateSession);
-    }
-
-    private String redirectToSession(final CandidateItemSession candidateSession) {
-        return "redirect:/web/public/session/" + candidateSession.getId();
+        final CandidateItemSession candidateSession = candidateControllerService.startCandidateItemSession(did);
+        return redirectToRenderSession(candidateSession);
     }
 
     //----------------------------------------------------
@@ -120,7 +113,6 @@ public class CandidateItemController {
     public void renderItem(@PathVariable final long xid,
             final WebRequest webRequest, final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        logger.debug("Rendering current state for session {}", xid);
         final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
         final Long did = candidateSession.getItemDelivery().getId();
 
@@ -141,8 +133,7 @@ public class CandidateItemController {
         renderingOptions.setSourceUrl(deliveryBaseUrl + "/source");
         renderingOptions.setServeFileUrl(deliveryBaseUrl + "/file");
 
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        assessmentCandidateService.renderCurrentState(xid, renderingOptions, outputStreamer);
+        candidateControllerService.renderItem(xid, response, renderingOptions);
     }
 
     //----------------------------------------------------
@@ -158,78 +149,10 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/attempt", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        logger.debug("Handling attempt against session {}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid);
-
-        /* First need to extract responses */
-        final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
-        logger.debug("Extract string responses {}", stringResponseMap);
-
-        /* Extract and import file responses (if appropriate) */
-        Map<Identifier, MultipartFile> fileResponseMap = null;
-        if (request instanceof MultipartHttpServletRequest) {
-            fileResponseMap = extractFileResponseData((MultipartHttpServletRequest) request);
-            logger.debug("Extracted file responses {}", fileResponseMap);
-        }
-
-        /* Call up service layer */
-        assessmentCandidateService.handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+        candidateControllerService.handleAttempt(request, xid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
-    }
-
-    /**
-     * @throws BadResponseWebPayloadException
-     */
-    private Map<Identifier, MultipartFile> extractFileResponseData(final MultipartHttpServletRequest multipartRequest) {
-        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
-        @SuppressWarnings("unchecked")
-        final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
-        for (final String name : parameterNames) {
-            if (name.startsWith("qtiworks_uploadpresented_")) {
-                final String responseIdentifierString = name.substring("qtiworks_uploadpresented_".length());
-                final Identifier responseIdentifier;
-                try {
-                    responseIdentifier = new Identifier(responseIdentifierString);
-                }
-                catch (final QtiParseException e) {
-                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
-                }
-                final String multipartName = "qtiworks_uploadresponse_" + responseIdentifierString;
-                final MultipartFile multipartFile = multipartRequest.getFile(multipartName);
-                if (multipartFile==null) {
-                    throw new BadResponseWebPayloadException("Expected to find multipart file with name " + multipartName);
-                }
-                fileResponseMap.put(responseIdentifier, multipartFile);
-            }
-        }
-        return fileResponseMap;
-    }
-
-    /**
-     * @throws BadResponseWebPayloadException
-     */
-    private Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest request) {
-        final Map<Identifier, StringResponseData> responseMap = new HashMap<Identifier, StringResponseData>();
-        @SuppressWarnings("unchecked")
-        final Set<String> parameterNames = request.getParameterMap().keySet();
-        for (final String name : parameterNames) {
-            if (name.startsWith("qtiworks_presented_")) {
-                final String responseIdentifierString = name.substring("qtiworks_presented_".length());
-                final Identifier responseIdentifier;
-                try {
-                    responseIdentifier = new Identifier(responseIdentifierString);
-                }
-                catch (final QtiParseException e) {
-                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
-                }
-                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifierString);
-                final StringResponseData stringResponseData = new StringResponseData(responseValues);
-                responseMap.put(responseIdentifier, stringResponseData);
-            }
-        }
-        return responseMap;
+        return redirectToRenderSession(xid);
     }
 
     //----------------------------------------------------
@@ -241,13 +164,12 @@ public class CandidateItemController {
      * @see AssessmentCandidateService#resetCandidateSession(long)
      */
     @RequestMapping(value="/session/{xid}/reset", method=RequestMethod.POST)
-    public String resetSession(@PathVariable final long xid)
+    public String resetCandidateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        logger.debug("Requesting reset of session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.resetCandidateSession(xid);
+        candidateControllerService.resetCandidateSession(xid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
+        return redirectToRenderSession(xid);
     }
 
     /**
@@ -256,11 +178,10 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/reinit", method=RequestMethod.POST)
     public String reinitSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        logger.debug("Requesting reinit of session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.reinitCandidateSession(xid);
+        candidateControllerService.reinitCandidateSession(xid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
+        return redirectToRenderSession(xid);
     }
 
     /**
@@ -269,11 +190,10 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/close", method=RequestMethod.POST)
     public String closeSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        logger.debug("Requesting close of session #{}", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.closeCandidateSession(xid);
+        candidateControllerService.closeCandidateSession(xid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
+        return redirectToRenderSession(xid);
     }
 
     /**
@@ -282,11 +202,10 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/solution", method=RequestMethod.POST)
     public String transitionSessionToSolutionState(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        logger.debug("Requesting transition of session #{} to solution state", xid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.transitionCandidateSessionToSolutionState(xid);
+        candidateControllerService.transitionCandidateSessionToSolutionState(xid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
+        return redirectToRenderSession(xid);
     }
 
     /**
@@ -296,11 +215,10 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/playback/{xeid}", method=RequestMethod.POST)
     public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final long xeid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        logger.debug("Requesting to set playback position of session #{} to event #{}", xid, xeid);
-        final CandidateItemSession candidateSession = assessmentCandidateService.setPlaybackState(xid, xeid);
+        candidateControllerService.setPlaybackState(xid, xeid);
 
         /* Redirect to rendering of current session state */
-        return redirectToSession(candidateSession);
+        return redirectToRenderSession(xid);
     }
 
     /**
@@ -309,12 +227,14 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/terminate", method=RequestMethod.POST)
     public String terminateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        logger.debug("Requesting termination of session #{}", xid);
-        assessmentCandidateService.terminateCandidateSession(xid);
+        candidateControllerService.terminateCandidateSession(xid);
 
-        /* TODO: Need to redirect somewhere useful! */
-        return "redirect:/";
+        /* Go back to the public item list */
+        return redirectToListing();
     }
+
+    //----------------------------------------------------
+    // Informational actions
 
     /**
      * Streams an {@link ItemResult} representing the current state of the given
@@ -323,10 +243,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/result", method=RequestMethod.GET)
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        logger.debug("Streaming result for session #{}", xid);
-
-        response.setContentType("application/xml");
-        assessmentCandidateService.streamItemResult(xid, response.getOutputStream());
+        candidateControllerService.streamResult(response, xid);
     }
 
     /**
@@ -338,17 +255,7 @@ public class CandidateItemController {
     public void streamPackageSource(@PathVariable final long did,
             final HttpServletRequest request, final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        logger.debug("Request source for delivery #{}", did);
-
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
-            assessmentCandidateService.streamAssessmentSource(did, outputStreamer);
-        }
+        candidateControllerService.streamPackageSource(did, request, response);
     }
 
     /**
@@ -361,15 +268,6 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
-            assessmentCandidateService.streamAssessmentFile(did, href, outputStreamer);
-        }
+        candidateControllerService.streamPackageFile(did, href, request, response);
     }
 }
