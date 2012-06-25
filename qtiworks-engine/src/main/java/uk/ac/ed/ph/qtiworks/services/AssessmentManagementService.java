@@ -367,7 +367,6 @@ public class AssessmentManagementService {
         assessmentPackageDao.update(currentAssessmentPackage);
 
         return validationResult;
-
     }
 
     /**

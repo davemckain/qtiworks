@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -151,6 +152,10 @@ public final class InstructorAssessmentManagementController {
         return "uploadAssessmentForm";
     }
 
+    /**
+     * TODO: I'm doing upload + validation together. It would make sense later to split
+     * these into 2 steps and find some way of showing progress.
+     */
     @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
     public String handleUploadAssessmentForm(final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws PrivilegeException {
@@ -169,6 +174,13 @@ public final class InstructorAssessmentManagementController {
             failure.registerErrors(result, "uploadAssessmentPackageCommand");
             return "uploadAssessmentForm";
         }
+        try {
+            assessmentManagementService.validateAssessment(assessment.getId());
+        }
+        catch (final DomainEntityNotFoundException e) {
+            /* This could only happen if there's some kind of race condition */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
         return buildActionRedirect("/assessment/" + assessment.getId());
     }
 
@@ -181,6 +193,10 @@ public final class InstructorAssessmentManagementController {
         return "updateAssessmentPackageForm";
     }
 
+    /**
+     * TODO: I'm doing upload + validation together. It would make sense later to split
+     * these into 2 steps and find some way of showing progress.
+     */
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
     public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
@@ -195,6 +211,7 @@ public final class InstructorAssessmentManagementController {
         final MultipartFile uploadFile = command.getFile();
         try {
             assessmentManagementService.updateAssessmentPackageFiles(aid, uploadFile);
+            assessmentManagementService.validateAssessment(aid);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
@@ -206,11 +223,19 @@ public final class InstructorAssessmentManagementController {
             failure.registerErrors(result, "uploadAssessmentPackageCommand");
             return "updateAssessmentPackageForm";
         }
+        try {
+            assessmentManagementService.validateAssessment(aid);
+        }
+        catch (final DomainEntityNotFoundException e) {
+            /* This could only happen if there's some kind of race condition */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
         return buildActionRedirect("/assessment/{aid}");
     }
 
     //------------------------------------------------------
 
+    /** TODO: For performance, we should cache the validation result */
     @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
     public String validateAssessment(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
