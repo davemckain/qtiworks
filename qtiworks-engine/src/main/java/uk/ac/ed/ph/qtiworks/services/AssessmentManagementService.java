@@ -43,10 +43,8 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -119,9 +117,6 @@ public class AssessmentManagementService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    private ItemDeliveryDao itemDeliveryDao;
-
-    @Resource
     private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
@@ -160,9 +155,8 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // AssessmentPackage access
 
-    public AssessmentPackage lookupAssessmentPackage(final Long apid)
+    public AssessmentPackage lookupAssessmentPackage(final long apid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        Assert.ensureNotNull(apid, "apid");
         final AssessmentPackage result = assessmentPackageDao.requireFindById(apid);
         ensureCallerMayAccess(result.getAssessment());
         return result;
@@ -268,11 +262,10 @@ public class AssessmentManagementService {
      * @throws DomainEntityNotFoundException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment updateAssessmentPackageFiles(final Long aid,
+    public Assessment updateAssessmentPackageFiles(final long aid,
             final MultipartFile multipartFile)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(aid, "aid");
         Assert.ensureNotNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayChange(assessment);
@@ -305,17 +298,6 @@ public class AssessmentManagementService {
         logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
         auditor.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
-    }
-
-    //-------------------------------------------------
-    // Delivery stuff (not fully implemented)
-
-    public ItemDelivery getItemDelivery(final Long itemDeliveryId)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        Assert.ensureNotNull(itemDeliveryId, "itemDeliveryId");
-        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(itemDeliveryId);
-        ensureCallerMayAccess(itemDelivery.getAssessmentPackage().getAssessment());
-        return itemDelivery;
     }
 
     //-------------------------------------------------
@@ -353,9 +335,9 @@ public class AssessmentManagementService {
     // Validation
 
     @Transactional(propagation=Propagation.REQUIRED)
-    public AssessmentObjectValidationResult<?> validateAssessment(final Long aid)
+    public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = lookupAssessment(aid.longValue());
+        final Assessment assessment = lookupAssessment(aid);
         final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
@@ -463,8 +445,6 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-
-
 
     /**
      * TODO: Currently allowing people to view the source of public Assessments, or
