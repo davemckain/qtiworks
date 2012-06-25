@@ -246,6 +246,7 @@ public class SampleResourceImporter {
                     options.setPrompt("This is a typical standard IMS sample question. It has a model solution, but no "
                             + "feedback. In this example, we'll let you give you one attempt at the question before it "
                             + "closes. You can still reset the question and try it again, though.");
+                    options.setMaxAttempts(Integer.valueOf(1));
                     options.setAllowClose(true);
                     options.setAllowResetWhenClosed(true);
                     options.setAllowSolutionWhenInteracting(true);
@@ -293,7 +294,7 @@ public class SampleResourceImporter {
                 default:
                     options.setTitle("Default");
                     options.setPrompt("This item hasn't been categoried, so we probably haven't presented it with the most "
-                            + "useful set of options.");
+                            + "useful set of options to show it in its best light!");
                     options.setAllowClose(true);
                     options.setAllowResetWhenInteracting(true);
                     options.setAllowResetWhenClosed(true);
