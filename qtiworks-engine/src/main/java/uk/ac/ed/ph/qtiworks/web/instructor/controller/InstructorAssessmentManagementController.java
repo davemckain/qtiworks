@@ -215,7 +215,7 @@ public final class InstructorAssessmentManagementController {
     public String validateAssessment(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
-        model.addAttribute("aid", aid);
+        model.addAttribute("assessmentId", aid);
         model.addAttribute("validationResult", validationResult);
         return "validationResult";
     }
