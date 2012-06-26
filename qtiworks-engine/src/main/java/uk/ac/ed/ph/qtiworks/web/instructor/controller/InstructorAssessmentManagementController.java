@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -89,9 +90,7 @@ public final class InstructorAssessmentManagementController {
 
     //------------------------------------------------------
 
-    /**
-     * Lists all Assignments owned by the caller
-     */
+    /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
         final List<Assessment> assessments = assessmentManagementService.getCallerAssessments();
@@ -103,9 +102,13 @@ public final class InstructorAssessmentManagementController {
     public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {
         final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
         for (final Assessment assessment : assessments) {
-            result.put(assessment.getId(), buildAssessmentRouting(assessment.getId().longValue()));
+            result.put(assessment.getId(), buildAssessmentRouting(assessment));
         }
         return result;
+    }
+
+    public Map<String, String> buildAssessmentRouting(final Assessment assessment) {
+        return buildAssessmentRouting(assessment.getId().longValue());
     }
 
     public Map<String, String> buildAssessmentRouting(final long aid) {
@@ -130,6 +133,8 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
         primaryRouting.put("listAssessments", buildActionPath("/assessments"));
+        primaryRouting.put("listItemDeliveryOptions", buildActionPath("/itemdeliveryoptions"));
+        primaryRouting.put("createItemDeliveryOptions", buildActionPath("/itemdeliveryoptions/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
@@ -261,5 +266,35 @@ public final class InstructorAssessmentManagementController {
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
         return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
+    }
+
+    //------------------------------------------------------
+    // Management of ItemDeliveryOptions
+
+    @RequestMapping(value="/deliveryoptions", method=RequestMethod.GET)
+    public String listDeliveryOptions(final Model model) {
+        final List<ItemDeliveryOptions> itemDeliveryOptionsList = assessmentManagementService.getCallerItemDeliveryOptions();
+        model.addAttribute(itemDeliveryOptionsList);
+        model.addAttribute("itemDeliveryOptionsRouting", buildDeliveryOptionsListRouting(itemDeliveryOptionsList));
+        return "listDeliveryOptions";
+    }
+
+    public Map<Long, Map<String, String>> buildDeliveryOptionsListRouting(final List<ItemDeliveryOptions> itemDeliveryOptionsList) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final ItemDeliveryOptions itemDeliveryOptions : itemDeliveryOptionsList) {
+            result.put(itemDeliveryOptions.getId(), buildDeliveryOptionsRouting(itemDeliveryOptions));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildDeliveryOptionsRouting(final ItemDeliveryOptions itemDeliveryOptions) {
+        return buildDeliveryOptionsRouting(itemDeliveryOptions.getId().longValue());
+    }
+
+    public Map<String, String> buildDeliveryOptionsRouting(final long doid) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", buildActionPath("/deliveryoptions/" + doid));
+        result.put("update", buildActionPath("/deliveryoptions/" + doid + "/update"));
+        return result;
     }
 }

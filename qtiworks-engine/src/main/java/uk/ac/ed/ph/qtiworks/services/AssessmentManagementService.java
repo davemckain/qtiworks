@@ -395,6 +395,72 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
+    // CRUD for ItemDelviveryOptions
+
+    public List<ItemDeliveryOptions> getCallerItemDeliveryOptions() {
+        return itemDeliveryOptionsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    }
+
+    public ItemDeliveryOptions lookupItemDeliveryOptions(final long doid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsDao.requireFindById(doid);
+        ensureCallerOwns(itemDeliveryOptions);
+        return itemDeliveryOptions;
+    }
+
+    private void ensureCallerOwns(final ItemDeliveryOptions itemDeliveryOptions)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.equals(itemDeliveryOptions.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliveryOptions);
+        }
+    }
+
+    public ItemDeliveryOptions createItemDeliveryOptions(final ItemDeliveryOptions template) {
+        Assert.ensureNotNull(template, "template");
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+
+        /* Create and persist new options from template */
+        final ItemDeliveryOptions result = new ItemDeliveryOptions();
+        result.setOwner(caller);
+        mergeItemDeliveryOptions(template, result);
+        itemDeliveryOptionsDao.persist(result);
+
+        auditor.recordEvent("Created ItemDeliveryOptions #" + result.getId());
+        return result;
+    }
+
+    public ItemDeliveryOptions updateItemDeliveryOptions(final long doid, final ItemDeliveryOptions template)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(template, "template");
+        final ItemDeliveryOptions itemDeliveryOptions = lookupItemDeliveryOptions(doid);
+
+        /* Merge template into options and update */
+        mergeItemDeliveryOptions(template, itemDeliveryOptions);
+        itemDeliveryOptionsDao.update(itemDeliveryOptions);
+
+        auditor.recordEvent("Updated ItemDeliveryOptions #" + itemDeliveryOptions.getId());
+        return itemDeliveryOptions;
+    }
+
+    private void mergeItemDeliveryOptions(final ItemDeliveryOptions source, final ItemDeliveryOptions target) {
+        target.setAllowClose(source.isAllowClose());
+        target.setAllowPlayback(source.isAllowPlayback());
+        target.setAllowReinitWhenClosed(source.isAllowReinitWhenClosed());
+        target.setAllowReinitWhenInteracting(source.isAllowReinitWhenInteracting());
+        target.setAllowResetWhenClosed(source.isAllowResetWhenClosed());
+        target.setAllowResetWhenInteracting(source.isAllowResetWhenInteracting());
+        target.setAllowResult(source.isAllowResult());
+        target.setAllowSolutionWhenClosed(source.isAllowSolutionWhenClosed());
+        target.setAllowSolutionWhenInteracting(source.isAllowSolutionWhenInteracting());
+        target.setAllowSource(source.isAllowSource());
+        target.setAuthorMode(source.isAuthorMode());
+        target.setMaxAttempts(source.getMaxAttempts());
+        target.setPrompt(source.getPrompt());
+        target.setTitle(source.getTitle());
+    }
+
+    //-------------------------------------------------
     // Assessment trying
 
     public ItemDelivery createDemoDelivery(final Assessment assessment) throws PrivilegeException {

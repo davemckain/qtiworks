@@ -55,11 +55,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
 /**
  * Specifies options controlling the delivery of an {@link AssessmentItem} to a group of candidates.
+ * <p>
+ * NB: This is also used a command/template, with separate validation.
  * <p>
  * TODO: We'll eventually need one of these for a test, and probably an entity superclass containing
  * the common aspects of both types of deliveries.
@@ -99,6 +102,7 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
     private Date creationTime;
 
     /** Owner's title, must be unique within those created by owner */
+    @NotNull
     @Basic(optional=false)
     @Column(name="title")
     private String title;

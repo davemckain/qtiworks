@@ -11,8 +11,9 @@ All Rights Reserved
 
   <h3>"Instructor" functions</h3>
   <ul>
-    <li><a href="web/instructor/assessments">Show your assessments</a></li>
+    <li><a href="web/instructor/assessments">Manage your Assessments</a></li>
     <li><a href="web/instructor/assessments/upload">Upload new Assessment</a></li>
+    <li><a href="web/instructor/deliveryoptions">Manage your Item Delivery Configurations</a></li>
   </ul>
 
   <h3>Public/anonymous functionality</h3>
