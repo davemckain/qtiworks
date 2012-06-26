@@ -249,11 +249,12 @@ public class CandidateControllerService {
 
     /**
      * Terminates the given {@link CandidateItemSession}
+     * @return
      */
-    public void terminateCandidateSession(final long xid)
+    public CandidateItemSession terminateCandidateSession(final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         logger.debug("Requesting termination of session #{}", xid);
-        assessmentCandidateService.terminateCandidateSession(xid);
+        return assessmentCandidateService.terminateCandidateSession(xid);
     }
 
     //----------------------------------------------------
@@ -279,7 +280,7 @@ public class CandidateControllerService {
     public void streamPackageSource(final long did, final HttpServletRequest request,
             final HttpServletResponse response)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        logger.debug("Request source for delivery #{}", did);
+        logger.debug("Requested source for delivery #{}", did);
 
         final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
         final String requestEtag = request.getHeader("If-None-Match");
