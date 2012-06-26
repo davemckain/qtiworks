@@ -71,8 +71,10 @@ public final class SchemaSetup {
         logger.info("Creating accounts for project team");
         final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
         bootstrapServices.createProjectTeamUser("dmckain", "David", "McKain", "david.mckain@ed.ac.uk");
-        bootstrapServices.createProjectTeamUser("sue", "Sue", "Milne", "sue@elandweb.co.uk");
-        bootstrapServices.createProjectTeamUser("niall", "Niall", "Barr", "niall.barr@glasgow.ac.uk");
+        bootstrapServices.createProjectTeamUser("suem", "Sue", "Milne", "sue@elandweb.co.uk");
+        bootstrapServices.createProjectTeamUser("niallb", "Niall", "Barr", "niall.barr@glasgow.ac.uk");
+        bootstrapServices.createProjectTeamUser("Loccy", "Paul", "Neve", "p.neve@kingston.ac.uk");
+        bootstrapServices.createProjectTeamUser("ghs235", "Graham", "Smith", "G.H.Smith@leeds.ac.uk");
 
         ctx.close();
     }
