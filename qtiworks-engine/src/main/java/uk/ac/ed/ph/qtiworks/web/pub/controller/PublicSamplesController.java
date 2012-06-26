@@ -35,22 +35,21 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 
-import java.io.IOException;
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,33 +58,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * FIXME: Document this type
+ * Controller for browsing and trying the public samples
  *
  * @author David McKain
  */
 @Controller
-public class PublicBrowseController {
-
-    /** Default age for any cacheable resources */
-    public static final long CACHE_AGE = 60 * 60;
-
-    @Resource
-    private AssessmentManagementService assessmentManagementService;
+public class PublicSamplesController {
 
     @Resource
     private SampleCategoryDao sampleCategoryDao;
 
     @Resource
-    private AssessmentPackageDao assessmentPackageDao;
+    private AssessmentDao assessmentDao;
+
+    @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    @Resource
+    private PublicCandidateItemController publicCandidateItemController;
 
     @RequestMapping(value="/samples/list", method=RequestMethod.GET)
     public String listSamples(final Model model) {
         /* Look up all Assessments, grouped by SampleCategory.
          * TODO: We're exposing the DAO layer here, which smells a bit but is OK here.
          */
-        final Map<SampleCategory, List<AssessmentPackage>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<AssessmentPackage>>();
+        final Map<SampleCategory, List<Assessment>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<Assessment>>();
         for (final SampleCategory sampleCategory : sampleCategoryDao.getAll()) {
-            final List<AssessmentPackage> assessmentsForCategory = assessmentPackageDao.getForSampleCategory(sampleCategory);
+            final List<Assessment> assessmentsForCategory = assessmentDao.getForSampleCategory(sampleCategory);
             sampleAssessmentMap.put(sampleCategory, assessmentsForCategory);
         }
 
@@ -94,29 +93,13 @@ public class PublicBrowseController {
     }
 
     /**
-     * Serves the source of the given {@link AssessmentPackage}
-     *
-     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
-     *
-     * @throws IOException
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
+     * Starts a new {@link CandidateItemSession} on the given sample, using the special
+     * {@link ItemDelivery} created when bootstrapping the samples.
      */
-    @RequestMapping(value="/package/{apid}/source", method=RequestMethod.GET)
-    public void streamPackageSource(@PathVariable final long apid,
-            final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, PrivilegeException, DomainEntityNotFoundException {
-        /* Look up package and make sure caller has read permission on it */
-        final AssessmentPackage assessmentPackage = assessmentManagementService.lookupAssessmentPackage(apid);
-
-        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
-        final String requestEtag = request.getHeader("If-None-Match");
-        if (resourceEtag.equals(requestEtag)) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        }
-        else {
-            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHE_AGE);
-            assessmentManagementService.streamPackageSource(assessmentPackage, outputStreamer);
-        }
+    @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
+    public String startItemSession(@PathVariable final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        final ItemDelivery sampleItemDelivery = assessmentManagementService.lookupSystemSampleDelivery(aid);
+        return publicCandidateItemController.startCandidateItemSession(sampleItemDelivery.getId().longValue());
     }
 }
