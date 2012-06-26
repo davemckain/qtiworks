@@ -23,7 +23,7 @@ All Rights Reserved
 
   <h3>Public/anonymous function sketches</h3>
   <ul>
-    <li><a href="dispatcher/validator">Validation Demo</a></li>
+    <li><a href="web/public/validator">Validation Demo</a></li>
   </ul>
 
 </page:page>
