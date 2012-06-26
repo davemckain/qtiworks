@@ -133,8 +133,8 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
         primaryRouting.put("listAssessments", buildActionPath("/assessments"));
-        primaryRouting.put("listItemDeliveryOptions", buildActionPath("/itemdeliveryoptions"));
-        primaryRouting.put("createItemDeliveryOptions", buildActionPath("/itemdeliveryoptions/create"));
+        primaryRouting.put("listItemDeliveryOptions", buildActionPath("/deliveryoptions"));
+        primaryRouting.put("createItemDeliveryOptions", buildActionPath("/deliveryoptions/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
@@ -272,11 +272,35 @@ public final class InstructorAssessmentManagementController {
     // Management of ItemDeliveryOptions
 
     @RequestMapping(value="/deliveryoptions", method=RequestMethod.GET)
-    public String listDeliveryOptions(final Model model) {
+    public String listItemDeliveryOptions(final Model model) {
         final List<ItemDeliveryOptions> itemDeliveryOptionsList = assessmentManagementService.getCallerItemDeliveryOptions();
         model.addAttribute(itemDeliveryOptionsList);
         model.addAttribute("itemDeliveryOptionsRouting", buildDeliveryOptionsListRouting(itemDeliveryOptionsList));
         return "listDeliveryOptions";
+    }
+
+    @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.GET)
+    public String showCreateItemDeliveryOptionsForm(final Model model) {
+        final long existingOptionCount = assessmentManagementService.countCallerItemDeliveryOptions();
+        final ItemDeliveryOptions template = assessmentManagementService.createItemDeliveryOptionsTemplate();
+        template.setTitle("Item Delivery Configuration #" + (existingOptionCount+1));
+        model.addAttribute(template);
+        return "createItemDeliveryOptionsForm";
+    }
+
+    @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.POST)
+    public String handleCreateItemDeliveryOptionsForm(final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result) {
+        /* Validate command Object */
+        System.out.println(result);
+        if (result.hasErrors()) {
+            return "createItemDeliveryOptionsForm";
+        }
+
+        /* Try to create new entity */
+        assessmentManagementService.createItemDeliveryOptions(command);
+
+        /* TODO: Redirect to options page */
+        return buildActionRedirect("/deliveryoptions");
     }
 
     public Map<Long, Map<String, String>> buildDeliveryOptionsListRouting(final List<ItemDeliveryOptions> itemDeliveryOptionsList) {

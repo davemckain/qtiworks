@@ -40,6 +40,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -62,17 +63,23 @@ public class ItemDeliveryOptionsDao extends GenericDao<ItemDeliveryOptions> {
         super(ItemDeliveryOptions.class);
     }
 
-    public ItemDeliveryOptions getFirstForOwner(final User user) {
-        final TypedQuery<ItemDeliveryOptions> query = em.createNamedQuery("ItemDeliveryOptions.getForOwner", ItemDeliveryOptions.class);
+    public long countForOwner(final User user) {
+        final Query query = em.createNamedQuery("ItemDeliveryOptions.countForOwner");
         query.setParameter("user", user);
-        query.setMaxResults(1);
-        return extractNullableFindResult(query);
+        return extractCountResult(query);
     }
 
     public List<ItemDeliveryOptions> getForOwner(final User user) {
         final TypedQuery<ItemDeliveryOptions> query = em.createNamedQuery("ItemDeliveryOptions.getForOwner", ItemDeliveryOptions.class);
         query.setParameter("user", user);
         return query.getResultList();
+    }
+
+    public ItemDeliveryOptions getFirstForOwner(final User user) {
+        final TypedQuery<ItemDeliveryOptions> query = em.createNamedQuery("ItemDeliveryOptions.getForOwner", ItemDeliveryOptions.class);
+        query.setParameter("user", user);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
     }
 
 }

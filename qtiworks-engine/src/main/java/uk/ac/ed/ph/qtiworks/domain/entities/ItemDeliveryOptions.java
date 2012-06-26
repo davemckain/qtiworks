@@ -54,8 +54,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 
@@ -70,14 +71,18 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="item_delivery_options", uniqueConstraints=@UniqueConstraint(columnNames={"owner_uid", "title"}))
+@Table(name="item_delivery_options")
 @SequenceGenerator(name="itemDeliveryOptionsSequence", sequenceName="item_delivery_options_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
     @NamedQuery(name="ItemDeliveryOptions.getForOwner",
             query="SELECT do"
                 + "  FROM ItemDeliveryOptions do"
                 + "  WHERE do.owner = :user"
-                + "  ORDER BY creationTime")
+                + "  ORDER BY creationTime"),
+    @NamedQuery(name="ItemDeliveryOptions.countForOwner",
+            query="SELECT COUNT(do)"
+                + "  FROM ItemDeliveryOptions do"
+                + "  WHERE do.owner = :user")
 })
 public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
 
@@ -103,6 +108,9 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
 
     /** Owner's title, must be unique within those created by owner */
     @NotNull
+    @Size(min=1)
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="title")
     private String title;
@@ -118,6 +126,7 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
     private String prompt;
 
     /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
+    @Min(value=0)
     @Basic(optional=false)
     @Column(name="max_attempts")
     private Integer maxAttempts;

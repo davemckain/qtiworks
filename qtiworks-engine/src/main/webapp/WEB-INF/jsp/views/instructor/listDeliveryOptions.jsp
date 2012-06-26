@@ -18,7 +18,7 @@ instructorAssessmentRouting
   <h2>Your Item Delivery Configurations</h2>
 
   <c:choose>
-    <c:when test="${!empty itemDeliveryOptions}">
+    <c:when test="${!empty itemDeliveryOptionsList}">
       <table>
         <thead>
           <tr>

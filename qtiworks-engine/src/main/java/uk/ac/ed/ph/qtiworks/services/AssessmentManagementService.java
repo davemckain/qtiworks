@@ -397,6 +397,10 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // CRUD for ItemDelviveryOptions
 
+    public long countCallerItemDeliveryOptions() {
+        return itemDeliveryOptionsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    }
+
     public List<ItemDeliveryOptions> getCallerItemDeliveryOptions() {
         return itemDeliveryOptionsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
@@ -500,20 +504,8 @@ public class AssessmentManagementService {
     private ItemDeliveryOptions getFirstDeliveryOptions(final User owner) {
         ItemDeliveryOptions firstDeliveryOptions = itemDeliveryOptionsDao.getFirstForOwner(owner);
         if (firstDeliveryOptions==null) {
-            firstDeliveryOptions = new ItemDeliveryOptions();
+            firstDeliveryOptions = createItemDeliveryOptionsTemplate();
             firstDeliveryOptions.setOwner(owner);
-            firstDeliveryOptions.setAllowClose(true);
-            firstDeliveryOptions.setAllowPlayback(true);
-            firstDeliveryOptions.setAllowReinitWhenClosed(true);
-            firstDeliveryOptions.setAllowReinitWhenInteracting(true);
-            firstDeliveryOptions.setAllowResetWhenClosed(true);
-            firstDeliveryOptions.setAllowResetWhenInteracting(true);
-            firstDeliveryOptions.setAllowResult(true);
-            firstDeliveryOptions.setAllowSolutionWhenClosed(true);
-            firstDeliveryOptions.setAllowSolutionWhenInteracting(true);
-            firstDeliveryOptions.setAllowSource(true);
-            firstDeliveryOptions.setAuthorMode(true);
-            firstDeliveryOptions.setMaxAttempts(Integer.valueOf(0));
             firstDeliveryOptions.setTitle("Default delivery options");
             firstDeliveryOptions.setPrompt("This assessment item is being delivered using a set of default 'delivery options'"
                     + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
@@ -523,6 +515,25 @@ public class AssessmentManagementService {
             auditor.recordEvent("Created default ItemDeliveryOptions for this user");
         }
         return firstDeliveryOptions;
+    }
+
+    public ItemDeliveryOptions createItemDeliveryOptionsTemplate() {
+        final ItemDeliveryOptions template = new ItemDeliveryOptions();
+        template.setAllowClose(true);
+        template.setAllowPlayback(true);
+        template.setAllowReinitWhenClosed(true);
+        template.setAllowReinitWhenInteracting(true);
+        template.setAllowResetWhenClosed(true);
+        template.setAllowResetWhenInteracting(true);
+        template.setAllowResult(true);
+        template.setAllowSolutionWhenClosed(true);
+        template.setAllowSolutionWhenInteracting(true);
+        template.setAllowSource(true);
+        template.setAuthorMode(true);
+        template.setMaxAttempts(Integer.valueOf(0));
+        template.setTitle("Item Delivery Configuration");
+        template.setPrompt(null);
+        return template;
     }
 
     //-------------------------------------------------
