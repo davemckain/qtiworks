@@ -38,6 +38,9 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -46,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureR
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
 
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.HashMap;
@@ -80,6 +84,9 @@ public final class InstructorAssessmentManagementController {
     @Resource
     private AssessmentManagementService assessmentManagementService;
 
+    @Resource
+    private AssessmentCandidateService assessmentCandidateService;
+
     //------------------------------------------------------
 
     /**
@@ -106,6 +113,7 @@ public final class InstructorAssessmentManagementController {
         result.put("show", buildActionPath("/assessment/" + aid));
         result.put("upload", buildActionPath("/assessment/" + aid + "/upload"));
         result.put("validate", buildActionPath("/assessment/" + aid + "/validate"));
+        result.put("try", buildActionPath("/assessment/" + aid + "/try"));
         return result;
     }
 
@@ -242,5 +250,16 @@ public final class InstructorAssessmentManagementController {
         model.addAttribute("assessmentId", aid);
         model.addAttribute("validationResult", validationResult);
         return "validationResult";
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
+    public String tryLatestAssessmentPackage(final @PathVariable long aid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
+        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
+        return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
     }
 }

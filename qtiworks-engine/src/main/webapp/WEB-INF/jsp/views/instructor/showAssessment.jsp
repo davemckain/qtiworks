@@ -57,5 +57,17 @@ instructorAssessmentRouting (action -> URL)
     <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Upload and replace package files</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a></li>
+    <li>
+      <c:choose>
+        <c:when test="${assessmentPackage.valid}">
+          <form action="${utils:escapeLink(assessmentRouting['try'])}" method="post">
+            <input type="submit" value="Try out">
+          </form>
+        </c:when>
+        <c:otherwise>
+          (A button allowing you to try this assessment out will appear here once you fix its validation issues)
+        </c:otherwise>
+      </c:choose>
+    </li>
   </ul>
 </page:page>

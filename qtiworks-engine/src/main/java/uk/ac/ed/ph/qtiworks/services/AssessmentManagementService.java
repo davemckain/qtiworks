@@ -44,9 +44,11 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryOptionsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -121,6 +123,9 @@ public class AssessmentManagementService {
 
     @Resource
     private ItemDeliveryDao itemDeliveryDao;
+
+    @Resource
+    private ItemDeliveryOptionsDao itemDeliveryOptionsDao;
 
     @Resource
     private QtiXmlReader qtiXmlReader;
@@ -392,11 +397,67 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Assessment trying
 
-//    private ItemDelivery createDemoDelivery(final Assessment assessment) throws PrivilegeException {
-//        Assert.ensureNotNull(assessment, "assessment");
-//        ensureCallerMayRun(assessment);
-//
-//    }
+    public ItemDelivery createDemoDelivery(final Assessment assessment) throws PrivilegeException {
+        Assert.ensureNotNull(assessment, "assessment");
+
+        /* Make sure caller is allowed to run this Assessment */
+        final User caller = ensureCallerMayRun(assessment);
+
+        /* Get most recent package */
+        final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
+
+        /* Make sure package is valid */
+        if (!currentAssessmentPackage.isValid()) {
+            throw new PrivilegeException(caller, assessment, Privilege.RUN_INVALID_ASSESSMENT);
+        }
+
+        /* Select suitable delivery options */
+        ItemDeliveryOptions deliveryOptions = assessment.getDefaultDeliveryOptions();
+        if (deliveryOptions==null) {
+            deliveryOptions = getFirstDeliveryOptions(caller);
+        }
+
+        /* Create demo Delivery */
+        final ItemDelivery delivery = new ItemDelivery();
+        delivery.setAssessmentPackage(currentAssessmentPackage);
+        delivery.setItemDeliveryOptions(deliveryOptions);
+        delivery.setItemDeliveryType(ItemDeliveryType.USER_TRANSIENT);
+        delivery.setOpen(true);
+        delivery.setTitle("Transient demo delivery");
+        itemDeliveryDao.persist(delivery);
+
+        /* That's it! */
+        auditor.recordEvent("Created demo ItemDelivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
+        return delivery;
+    }
+
+    private ItemDeliveryOptions getFirstDeliveryOptions(final User owner) {
+        ItemDeliveryOptions firstDeliveryOptions = itemDeliveryOptionsDao.getFirstForOwner(owner);
+        if (firstDeliveryOptions==null) {
+            firstDeliveryOptions = new ItemDeliveryOptions();
+            firstDeliveryOptions.setOwner(owner);
+            firstDeliveryOptions.setAllowClose(true);
+            firstDeliveryOptions.setAllowPlayback(true);
+            firstDeliveryOptions.setAllowReinitWhenClosed(true);
+            firstDeliveryOptions.setAllowReinitWhenInteracting(true);
+            firstDeliveryOptions.setAllowResetWhenClosed(true);
+            firstDeliveryOptions.setAllowResetWhenInteracting(true);
+            firstDeliveryOptions.setAllowResult(true);
+            firstDeliveryOptions.setAllowSolutionWhenClosed(true);
+            firstDeliveryOptions.setAllowSolutionWhenInteracting(true);
+            firstDeliveryOptions.setAllowSource(true);
+            firstDeliveryOptions.setAuthorMode(true);
+            firstDeliveryOptions.setMaxAttempts(Integer.valueOf(0));
+            firstDeliveryOptions.setTitle("Default delivery options");
+            firstDeliveryOptions.setPrompt("This assessment item is being delivered using a set of default 'delivery options'"
+                    + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
+                    + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
+                    + " which you can edit or remove to suit.");
+            itemDeliveryOptionsDao.persist(firstDeliveryOptions);
+            auditor.recordEvent("Created default ItemDeliveryOptions for this user");
+        }
+        return firstDeliveryOptions;
+    }
 
     //-------------------------------------------------
     // Internal helpers

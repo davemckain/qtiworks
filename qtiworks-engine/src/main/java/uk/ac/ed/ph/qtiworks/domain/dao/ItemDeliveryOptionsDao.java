@@ -62,6 +62,13 @@ public class ItemDeliveryOptionsDao extends GenericDao<ItemDeliveryOptions> {
         super(ItemDeliveryOptions.class);
     }
 
+    public ItemDeliveryOptions getFirstForOwner(final User user) {
+        final TypedQuery<ItemDeliveryOptions> query = em.createNamedQuery("ItemDeliveryOptions.getForOwner", ItemDeliveryOptions.class);
+        query.setParameter("user", user);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
+
     public List<ItemDeliveryOptions> getForOwner(final User user) {
         final TypedQuery<ItemDeliveryOptions> query = em.createNamedQuery("ItemDeliveryOptions.getForOwner", ItemDeliveryOptions.class);
         query.setParameter("user", user);
