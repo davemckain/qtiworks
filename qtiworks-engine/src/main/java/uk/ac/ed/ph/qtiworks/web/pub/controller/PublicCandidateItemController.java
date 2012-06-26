@@ -62,7 +62,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * Controller for candidate item sessions
+ * Controller for candidate item sessions (as part of the public API)
  *
  * @author David McKain
  */
