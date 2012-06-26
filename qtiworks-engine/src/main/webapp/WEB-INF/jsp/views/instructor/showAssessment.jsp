@@ -31,6 +31,9 @@ instructorAssessmentRouting (action -> URL)
 
     <dt>Type:</dt>
     <dd>${assessment.assessmentType}</dd>
+
+    <dt>Public?</dt>
+    <dd>${assessment.public}</dd>
   </dl>
 
   <h3>Current package content</h3>
@@ -55,6 +58,7 @@ instructorAssessmentRouting (action -> URL)
   <h3>Actions</h3>
 
   <ul>
+    <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Upload and replace package files</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a></li>

@@ -324,11 +324,40 @@ public final class InstructorAssessmentManagementController {
         return "listDeliveryOptions";
     }
 
+    @RequestMapping(value="/deliveryoptions/{doid}", method=RequestMethod.GET)
+    public String showEditItemDeliveryOptionsForm(final Model model, @PathVariable final long doid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final ItemDeliveryOptions itemDeliveryOptions = assessmentManagementService.lookupItemDeliveryOptions(doid);
+
+        model.addAttribute(itemDeliveryOptions);
+        return "editItemDeliveryOptionsForm";
+    }
+
+    @RequestMapping(value="/deliveryoptions/{doid}", method=RequestMethod.POST)
+    public String handleEditItemDeliveryOptionsForm(@PathVariable final long doid,
+            final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        System.out.println(result);
+        if (result.hasErrors()) {
+            return "editItemDeliveryOptionsForm";
+        }
+
+        /* Perform update */
+        assessmentManagementService.updateItemDeliveryOptions(doid, command);
+
+        /* Return to show/edit
+         * FIXME: Add some flash message here so that it's not confusing.
+         */
+        return buildActionRedirect("/deliveryoptions/" + doid);
+    }
+
     @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.GET)
     public String showCreateItemDeliveryOptionsForm(final Model model) {
         final long existingOptionCount = assessmentManagementService.countCallerItemDeliveryOptions();
         final ItemDeliveryOptions template = assessmentManagementService.createItemDeliveryOptionsTemplate();
         template.setTitle("Item Delivery Configuration #" + (existingOptionCount+1));
+
         model.addAttribute(template);
         return "createItemDeliveryOptionsForm";
     }

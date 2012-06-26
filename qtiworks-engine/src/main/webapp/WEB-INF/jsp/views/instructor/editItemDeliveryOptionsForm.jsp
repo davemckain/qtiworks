@@ -7,13 +7,13 @@ Form for creating a new Item Delivery Options
 
 Model:
 
-itemDeliveryOptions - form backing template
+itemDeliveryOptions - current options
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Create new Item Delivery Configuration">
 
-  <h2>Create Item Delivery Configuration</h2>
+  <h2>Edit Item Delivery Configuration</h2>
 
   <form:form method="post" acceptCharset="UTF-8" commandName="itemDeliveryOptions">
     <form:errors element="div" cssClass="error" path="*"/>
@@ -102,7 +102,7 @@ itemDeliveryOptions - form backing template
       </div>
     </fieldset>
 
-    <input type="submit" value="Create" />
+    <input type="submit" value="Edit" />
 
   </form:form>
 
