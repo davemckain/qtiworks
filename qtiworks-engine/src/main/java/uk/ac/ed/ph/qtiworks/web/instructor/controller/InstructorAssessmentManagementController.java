@@ -338,7 +338,6 @@ public final class InstructorAssessmentManagementController {
             final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
-        System.out.println(result);
         if (result.hasErrors()) {
             return "editItemDeliveryOptionsForm";
         }
@@ -365,7 +364,6 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.POST)
     public String handleCreateItemDeliveryOptionsForm(final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result) {
         /* Validate command Object */
-        System.out.println(result);
         if (result.hasErrors()) {
             return "createItemDeliveryOptionsForm";
         }
