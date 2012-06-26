@@ -104,7 +104,7 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     private Long packageImportVersion;
 
     @Basic(optional=false)
-    @Column(name="creation_time",updatable=false)
+    @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
@@ -154,7 +154,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @ManyToOne(optional=true, fetch=FetchType.LAZY)
     @JoinColumn(name="sample_category_id", updatable=false)
     private SampleCategory sampleCategory;
-
 
     //------------------------------------------------------------
 

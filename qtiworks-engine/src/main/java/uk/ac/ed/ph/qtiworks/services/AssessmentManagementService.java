@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
+import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -84,6 +85,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 
@@ -108,6 +112,9 @@ public class AssessmentManagementService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private Validator jsr303Validator;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
@@ -249,6 +256,27 @@ public class AssessmentManagementService {
         return assessment;
     }
 
+    public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
+            throws BindException, DomainEntityNotFoundException, PrivilegeException {
+        /* Validate data */
+        Assert.ensureNotNull(command, "command");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(command, "updateAssessmentCommand");
+        jsr303Validator.validate(command, errors);
+        if (errors.hasErrors()) {
+            throw new BindException(errors);
+        }
+
+        /* Look up Assessment */
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        ensureCallerMayChange(assessment);
+
+        /* Make changes */
+        assessment.setName(command.getName());
+        assessment.setTitle(command.getTitle());
+        assessment.setPublic(command.isPublic());
+        assessmentDao.update(assessment);
+        return assessment;
+    }
 
     /**
      * NOTE: Not allowed to go item->test or test->item.

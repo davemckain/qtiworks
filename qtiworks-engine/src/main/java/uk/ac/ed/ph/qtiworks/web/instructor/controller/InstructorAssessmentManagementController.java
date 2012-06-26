@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.instructor.controller;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
@@ -48,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -62,6 +64,7 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,6 +117,7 @@ public final class InstructorAssessmentManagementController {
     public Map<String, String> buildAssessmentRouting(final long aid) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildActionPath("/assessment/" + aid));
+        result.put("edit", buildActionPath("/assessment/" + aid + "/edit"));
         result.put("upload", buildActionPath("/assessment/" + aid + "/upload"));
         result.put("validate", buildActionPath("/assessment/" + aid + "/validate"));
         result.put("try", buildActionPath("/assessment/" + aid + "/try"));
@@ -144,7 +148,7 @@ public final class InstructorAssessmentManagementController {
      * Shows the Assessment having the given ID (aid)
      */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
-    public String showAssessment(final Model model, final @PathVariable long aid)
+    public String showAssessment(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
@@ -155,6 +159,37 @@ public final class InstructorAssessmentManagementController {
         model.addAttribute(itemDeliveryOptionsList);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "showAssessment";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
+    public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+
+        final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
+        command.setName(assessment.getName());
+        command.setTitle(assessment.getTitle());
+        command.setPublic(assessment.isPublic());
+        model.addAttribute(command);
+
+        return "editAssessmentForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
+    public String handleEditAssessmentForm(@PathVariable final long aid,
+            final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            return "editAssessmentForm";
+        }
+        try {
+            assessmentManagementService.updateAssessment(aid, command);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+        return buildActionRedirect("/assessment/" + aid);
     }
 
     //------------------------------------------------------
