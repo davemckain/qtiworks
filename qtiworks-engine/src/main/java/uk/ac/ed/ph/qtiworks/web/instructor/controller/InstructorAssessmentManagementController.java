@@ -147,12 +147,12 @@ public final class InstructorAssessmentManagementController {
     public String showAssessment(final Model model, final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-
-        /* TODO: This is using a detached entity */
         final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
+        final List<ItemDeliveryOptions> itemDeliveryOptionsList = assessmentManagementService.getCallerItemDeliveryOptions();
 
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
+        model.addAttribute(itemDeliveryOptionsList);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "showAssessment";
     }
@@ -264,6 +264,16 @@ public final class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
+        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
+        return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
+    }
+
+    @RequestMapping(value="/assessment/{aid}/try/{doid}", method=RequestMethod.POST)
+    public String tryLatestAssessmentPackage(final @PathVariable long aid, final @PathVariable long doid)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final ItemDeliveryOptions itemDeliveryOptions = assessmentManagementService.lookupItemDeliveryOptions(doid);
+        final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliveryOptions);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
         return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
     }

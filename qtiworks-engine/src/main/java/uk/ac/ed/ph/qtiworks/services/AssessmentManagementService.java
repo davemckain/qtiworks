@@ -467,8 +467,25 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Assessment trying
 
-    public ItemDelivery createDemoDelivery(final Assessment assessment) throws PrivilegeException {
+    public ItemDelivery createDemoDelivery(final Assessment assessment)
+            throws PrivilegeException {
         Assert.ensureNotNull(assessment, "assessment");
+
+        /* Select suitable delivery options */
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        ItemDeliveryOptions deliveryOptions = assessment.getDefaultDeliveryOptions();
+        if (deliveryOptions==null) {
+            deliveryOptions = getFirstDeliveryOptions(caller);
+        }
+
+        /* Now create demo delivery using these options */
+        return createDemoDelivery(assessment, deliveryOptions);
+    }
+
+    public ItemDelivery createDemoDelivery(final Assessment assessment, final ItemDeliveryOptions itemDeliveryOptions)
+            throws PrivilegeException {
+        Assert.ensureNotNull(assessment, "assessment");
+        Assert.ensureNotNull(itemDeliveryOptions, "itemDeliveryOptions");
 
         /* Make sure caller is allowed to run this Assessment */
         final User caller = ensureCallerMayRun(assessment);
@@ -481,19 +498,13 @@ public class AssessmentManagementService {
             throw new PrivilegeException(caller, assessment, Privilege.RUN_INVALID_ASSESSMENT);
         }
 
-        /* Select suitable delivery options */
-        ItemDeliveryOptions deliveryOptions = assessment.getDefaultDeliveryOptions();
-        if (deliveryOptions==null) {
-            deliveryOptions = getFirstDeliveryOptions(caller);
-        }
-
         /* Create demo Delivery */
         final ItemDelivery delivery = new ItemDelivery();
         delivery.setAssessmentPackage(currentAssessmentPackage);
-        delivery.setItemDeliveryOptions(deliveryOptions);
+        delivery.setItemDeliveryOptions(itemDeliveryOptions);
         delivery.setItemDeliveryType(ItemDeliveryType.USER_TRANSIENT);
         delivery.setOpen(true);
-        delivery.setTitle("Transient demo delivery");
+        delivery.setTitle("Temporary demo delivery");
         itemDeliveryDao.persist(delivery);
 
         /* That's it! */

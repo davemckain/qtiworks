@@ -9,6 +9,7 @@ Model:
 
 assessment
 assessmentPackage (most recent)
+itemDeliveryOptionsList (List<ItemDeliveryOptions> - possibly empty)
 assessmentRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
 
@@ -60,9 +61,26 @@ instructorAssessmentRouting (action -> URL)
     <li>
       <c:choose>
         <c:when test="${assessmentPackage.valid}">
-          <form action="${utils:escapeLink(assessmentRouting['try'])}" method="post">
-            <input type="submit" value="Try out">
-          </form>
+        <c:choose>
+          <c:when test="${!empty itemDeliveryOptionsList}">
+            Try out using:
+            <ul>
+              <c:forEach var="itemDeliveryOptions" items="${itemDeliveryOptionsList">
+                <li>
+                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${itemDeliveryOptions.id}" method="post">
+                    <input type="submit" value="${fn:escapeHtml(itemDeliveryOptions.title)}" />
+                  </form>
+                </li>
+              </c:forEach>
+            </ul>
+          </c:when>
+          <c:otherwise>
+            <%-- No options exist yet, so allow try out with a default set --%>
+            <form action="${utils:escapeLink(assessmentRouting['try'])}" method="post">
+              <input type="submit" value="Try out">
+            </form>
+          </c:otherwise>
+        </c:choose>
         </c:when>
         <c:otherwise>
           (A button allowing you to try this assessment out will appear here once you fix its validation issues)
