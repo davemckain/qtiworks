@@ -175,7 +175,7 @@ public final class InstructorAssessmentManagementController {
             return "uploadAssessmentForm";
         }
         try {
-            assessmentManagementService.validateAssessment(assessment.getId());
+            assessmentManagementService.validateAssessment(assessment.getId().longValue());
         }
         catch (final DomainEntityNotFoundException e) {
             /* This could only happen if there's some kind of race condition */
@@ -211,7 +211,6 @@ public final class InstructorAssessmentManagementController {
         final MultipartFile uploadFile = command.getFile();
         try {
             assessmentManagementService.updateAssessmentPackageFiles(aid, uploadFile);
-            assessmentManagementService.validateAssessment(aid);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
