@@ -56,7 +56,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -157,11 +156,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="valid")
     private boolean valid;
-
-    /** Default {@link ItemDelivery} to use when trying package out */
-    @OneToOne(optional=true)
-    @JoinColumn(name="default_did")
-    private ItemDelivery defaultDelivery;
 
     /** Hrefs of all QTI XML file resources declared within this package */
     @Lob
@@ -281,15 +275,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
     public void setValid(final boolean valid) {
         this.valid = valid;
-    }
-
-
-    public ItemDelivery getDefaultDelivery() {
-        return defaultDelivery;
-    }
-
-    public void setDefaultDelivery(final ItemDelivery defaultDelivery) {
-        this.defaultDelivery = defaultDelivery;
     }
 
 

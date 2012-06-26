@@ -31,48 +31,23 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * DAO implementation for the {@link ItemDelivery} entity.
+ * Encapsulates the legality of a {@link CandidateItemResponse}
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
+public enum ItemDeliveryType {
 
-    @PersistenceContext
-    private EntityManager em;
+    /** Explicitly-created delivery */
+    USER_CREATED,
 
-    public ItemDeliveryDao() {
-        super(ItemDelivery.class);
-    }
+    /** Transient delivery used for trying things out only */
+    USER_TRANSIENT,
 
-    public List<ItemDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackage", ItemDelivery.class);
-        query.setParameter("assessmentPackage", assessmentPackage);
-        return query.getResultList();
-    }
+    /** Demo delivery bootstrapped into the system */
+    SYSTEM_DEMO,
+    ;
 
-    public List<ItemDelivery> getForAssessmentPackageAndType(final AssessmentPackage assessmentPackage, final ItemDeliveryType itemDeliveryType) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackageAndType", ItemDelivery.class);
-        query.setParameter("assessmentPackage", assessmentPackage);
-        query.setParameter("itemDeliveryType", itemDeliveryType);
-        return query.getResultList();
-    }
 }

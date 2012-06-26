@@ -43,6 +43,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -72,7 +74,12 @@ import javax.persistence.TemporalType;
     @NamedQuery(name="ItemDelivery.getForAssessmentPackage",
             query="SELECT d"
                 + "  FROM ItemDelivery d"
-                + "  WHERE d.assessmentPackage = :assessmentPackage")
+                + "  WHERE d.assessmentPackage = :assessmentPackage"),
+    @NamedQuery(name="ItemDelivery.getForAssessmentPackageAndType",
+            query="SELECT d"
+                + "  FROM ItemDelivery d"
+                + "  WHERE d.assessmentPackage = :assessmentPackage"
+                + "    AND d.itemDeliveryType = :itemDeliveryType")
 })
 public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
@@ -86,6 +93,11 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="did")
     private Long id;
 
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="apid")
     private AssessmentPackage assessmentPackage;
@@ -95,13 +107,13 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private ItemDeliveryOptions itemDeliveryOptions;
 
     @Basic(optional=false)
-    @Column(name="title")
-    private String title;
+    @Column(name="type", updatable=false, length=15)
+    @Enumerated(EnumType.STRING)
+    private ItemDeliveryType itemDeliveryType;
 
     @Basic(optional=false)
-    @Column(name="creation_time", updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationTime;
+    @Column(name="title")
+    private String title;
 
     /** Available to candidates? */
     @Basic(optional=false)
@@ -118,6 +130,17 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    @Override
+    public Date getCreationTime() {
+        return ObjectUtilities.safeClone(creationTime);
+    }
+
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = ObjectUtilities.safeClone(creationTime);
     }
 
 
@@ -141,14 +164,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    @Override
-    public Date getCreationTime() {
-        return ObjectUtilities.safeClone(creationTime);
+    public ItemDeliveryType getItemDeliveryType() {
+        return itemDeliveryType;
     }
 
-    @Override
-    public void setCreationTime(final Date creationTime) {
-        this.creationTime = ObjectUtilities.safeClone(creationTime);
+    public void setItemDeliveryType(final ItemDeliveryType itemDeliveryType) {
+        this.itemDeliveryType = itemDeliveryType;
     }
 
 

@@ -125,16 +125,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     private boolean isPublic;
 
     /**
-     * For sample items, this specifies the category it belongs to. This should be set to null
-     * for non-sample items.
-     * <p>
-     * (This is expected to be temporary)
-     */
-    @ManyToOne(optional=true, fetch=FetchType.LAZY)
-    @JoinColumn(name="sample_category_id", updatable=false)
-    private SampleCategory sampleCategory;
-
-    /**
      * Short name for this Assessment.
      * Used for listings and other stuff.
      */
@@ -149,6 +139,22 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     private String title;
+
+    /** Default {@link ItemDeliveryOptions} to use when trying package out */
+    @ManyToOne(optional=true)
+    @JoinColumn(name="default_doid")
+    private ItemDeliveryOptions defaultDeliveryOptions;
+
+    /**
+     * For sample items, this specifies the category it belongs to. This should be set to null
+     * for non-sample items.
+     * <p>
+     * (This is expected to be temporary)
+     */
+    @ManyToOne(optional=true, fetch=FetchType.LAZY)
+    @JoinColumn(name="sample_category_id", updatable=false)
+    private SampleCategory sampleCategory;
+
 
     //------------------------------------------------------------
 
@@ -219,15 +225,6 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public SampleCategory getSampleCategory() {
-        return sampleCategory;
-    }
-
-    public void setSampleCategory(final SampleCategory sampleCategory) {
-        this.sampleCategory = sampleCategory;
-    }
-
-
     public String getName() {
         return name;
     }
@@ -243,5 +240,23 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+
+    public ItemDeliveryOptions getDefaultDeliveryOptions() {
+        return defaultDeliveryOptions;
+    }
+
+    public void setDefaultDeliveryOptions(final ItemDeliveryOptions defaultDeliveryOptions) {
+        this.defaultDeliveryOptions = defaultDeliveryOptions;
+    }
+
+
+    public SampleCategory getSampleCategory() {
+        return sampleCategory;
+    }
+
+    public void setSampleCategory(final SampleCategory sampleCategory) {
+        this.sampleCategory = sampleCategory;
     }
 }

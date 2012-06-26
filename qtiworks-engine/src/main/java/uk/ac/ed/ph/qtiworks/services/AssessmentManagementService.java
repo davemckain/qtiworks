@@ -43,8 +43,11 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -117,6 +120,9 @@ public class AssessmentManagementService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
+    private ItemDeliveryDao itemDeliveryDao;
+
+    @Resource
     private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
@@ -133,23 +139,9 @@ public class AssessmentManagementService {
      */
     public Assessment lookupAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        Assert.ensureNotNull(aid, "aid");
         final Assessment result = assessmentDao.requireFindById(aid);
         ensureCallerMayAccess(result);
         return result;
-    }
-
-    /**
-     * TODO: Currently only permitting people to see either public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayAccess(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
-        }
-        return caller;
     }
 
     //-------------------------------------------------
@@ -381,6 +373,33 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
+    // System samples (this is probably the wrong place for this?)
+
+    public ItemDelivery lookupSystemSampleDelivery(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final Assessment assessment = lookupAssessment(aid);
+        final AssessmentPackage assessmentPackage = getCurrentAssessmentPackage(assessment);
+        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
+        if (systemDemoDeliveries.size()!=1) {
+            logger.info("Assessment #{} did not yield exactly 1 ItemDelivery of type {}",
+                    Long.valueOf(aid), ItemDeliveryType.SYSTEM_DEMO);
+            final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+            throw new PrivilegeException(caller, assessment, Privilege.ACCESS_ASSESSMENT_SYSTEM_DEMO);
+        }
+        return systemDemoDeliveries.get(0);
+    }
+
+    //-------------------------------------------------
+    // Assessment trying
+
+//    private ItemDelivery createDemoDelivery(final Assessment assessment) throws PrivilegeException {
+//        Assert.ensureNotNull(assessment, "assessment");
+//        ensureCallerMayRun(assessment);
+//
+//    }
+
+    //-------------------------------------------------
+    // Internal helpers
 
     /**
      * @throws QtiWorksLogicException if sandboxPath is already null
@@ -447,20 +466,34 @@ public class AssessmentManagementService {
     //-------------------------------------------------
 
     /**
-     * TODO: Currently allowing people to view the source of public Assessments, or
+     * TODO: Currently only permitting people to see either public Assessments, or
      * their own Assessments.
-     *
-     * @param assessment
-     * @return
-     * @throws PrivilegeException
      */
-    private User ensureCallerMayViewSource(final Assessment assessment)
+    private User ensureCallerMayAccess(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT_SOURCE, assessment);
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
         }
         return caller;
+    }
+
+    /**
+     * TODO: Currently allowing people to view the source of public Assessments, or
+     * their own Assessments.
+     */
+    private User ensureCallerMayRun(final Assessment assessment)
+            throws PrivilegeException {
+        return ensureCallerMayAccess(assessment);
+    }
+
+    /**
+     * TODO: Currently allowing people to view the source of public Assessments, or
+     * their own Assessments.
+     */
+    private User ensureCallerMayViewSource(final Assessment assessment)
+            throws PrivilegeException {
+        return ensureCallerMayAccess(assessment);
     }
 
     private User ensureCallerMayChange(final Assessment assessment)

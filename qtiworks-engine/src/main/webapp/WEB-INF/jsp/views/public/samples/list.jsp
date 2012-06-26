@@ -10,7 +10,7 @@ Lists samples to try out
 
 Model attributes:
 
-sampleAssessmentMap (SampleCategory -> List<AssessmentPackage>)
+sampleAssessmentMap (SampleCategory -> List<Assessment>)
 
 --%>
 <page:page title="Public QTI Samples">
@@ -19,20 +19,18 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentPackage>)
 
   <c:forEach var="entry" items="${sampleAssessmentMap}">
     <c:set var="sampleCategory" value="${entry.key}"/>
-    <c:set var="assessmentPackageList" value="${entry.value}"/>
+    <c:set var="assessmentList" value="${entry.value}"/>
     <h3><c:out value="${sampleCategory.title}"/></h3>
     <table class="samples">
       <tbody>
-        <c:forEach var="assessmentPackage" items="${assessmentPackageList}" varStatus="loopStatus">
-          <c:set var="assessment" value="${assessmentPackage.assessment}"/>
-          <c:set var="delivery" value="${assessmentPackage.defaultDelivery}"/>
+        <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">
           <tr>
             <td>
               ${loopStatus.index + 1}
             </td>
             <td>
               <%-- Play option TODO: Create template for this --%>
-              <c:url var="playUrl" value="/web/public/delivery/${delivery.id}"/>
+              <c:url var="playUrl" value="/web/public/samples/${assessment.id}"/>
               <form action="${playUrl}" method="post" class="playAssessment">
                 <input type="submit" value="Try out">
               </form>

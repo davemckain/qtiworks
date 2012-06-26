@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.samples.DeliveryStyle;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
@@ -391,19 +392,23 @@ public class SampleResourceImporter {
         assessmentDao.persist(assessment);
         assessmentPackageDao.persist(assessmentPackage);
 
-        /* Create a default delivery */
         if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM) {
-            final ItemDelivery defaultDelivery = new ItemDelivery();
+            /* Create default delivery options */
             final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsMap.get(qtiSampleAssessment.getDeliveryStyle());
+            assessment.setDefaultDeliveryOptions(itemDeliveryOptions);
+            assessmentDao.update(assessment);
 
-            defaultDelivery.setItemDeliveryOptions(itemDeliveryOptions);
-            defaultDelivery.setAssessmentPackage(assessmentPackage);
-            defaultDelivery.setOpen(true);
-            defaultDelivery.setTitle("Default demo delivery");
-
-            assessmentPackage.setDefaultDelivery(defaultDelivery);
-            itemDeliveryDao.persist(defaultDelivery);
-            assessmentPackageDao.update(assessmentPackage);
+            /* Create a Delivery using these options (if there isn't one already) */
+            final List<ItemDelivery> demoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
+            if (demoDeliveries.isEmpty()) {
+                final ItemDelivery defaultDelivery = new ItemDelivery();
+                defaultDelivery.setAssessmentPackage(assessmentPackage);
+                defaultDelivery.setItemDeliveryType(ItemDeliveryType.SYSTEM_DEMO);
+                defaultDelivery.setItemDeliveryOptions(itemDeliveryOptions);
+                defaultDelivery.setOpen(true);
+                defaultDelivery.setTitle("System demo delivery");
+                itemDeliveryDao.persist(defaultDelivery);
+            }
         }
         return assessment;
     }
