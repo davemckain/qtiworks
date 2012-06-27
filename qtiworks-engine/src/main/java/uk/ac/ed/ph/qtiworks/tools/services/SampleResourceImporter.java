@@ -182,6 +182,7 @@ public class SampleResourceImporter {
             if (!deliveryOptionsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
                 options.setOwner(sampleOwner);
+                options.setPublic(true);
                 itemDeliveryOptionsDao.persist(options);
                 logger.info("Created ItemDeliveryOptions {}", options);
                 deliveryOptionsByTitleMap.put(options.getTitle(), options);

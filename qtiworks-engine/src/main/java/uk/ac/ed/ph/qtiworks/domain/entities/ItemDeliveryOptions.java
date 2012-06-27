@@ -115,6 +115,11 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
     @Column(name="title")
     private String title;
 
+    /** Available to all users */
+    @Basic(optional=false)
+    @Column(name="public")
+    private boolean isPublic;
+
     //------------------------------------------------------------
     // Next ones are probably for items only
 
@@ -225,6 +230,15 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(final boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
 

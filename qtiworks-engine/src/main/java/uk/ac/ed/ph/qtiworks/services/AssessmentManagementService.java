@@ -436,14 +436,14 @@ public class AssessmentManagementService {
     public ItemDeliveryOptions lookupItemDeliveryOptions(final long doid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsDao.requireFindById(doid);
-        ensureCallerOwns(itemDeliveryOptions);
+        ensureCallerMayAccess(itemDeliveryOptions);
         return itemDeliveryOptions;
     }
 
-    private void ensureCallerOwns(final ItemDeliveryOptions itemDeliveryOptions)
+    private void ensureCallerMayAccess(final ItemDeliveryOptions itemDeliveryOptions)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.equals(itemDeliveryOptions.getOwner())) {
+        if (!itemDeliveryOptions.isPublic() && !caller.equals(itemDeliveryOptions.getOwner())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliveryOptions);
         }
     }
@@ -683,14 +683,13 @@ public class AssessmentManagementService {
     }
 
     /**
-     * TODO: Currently we are only allowing instructors to create Assessments.
-     * We may choose to let anonymous users do the same in future.
+     * TODO: We are currently allowing anyone to create an assessment, since the public
+     * upload/run functionality allows this.
+     *
+     * @throws PrivilegeException
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.isInstructor()) {
-            throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
-        }
         return caller;
     }
 
