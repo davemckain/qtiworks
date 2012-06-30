@@ -13,7 +13,7 @@
 
 /************************************************************/
 
-var QtiWorks = (function() {
+var QtiWorksRendering = (function() {
 
     var submitCallbacks = [];
     var resetCallbacks = [];

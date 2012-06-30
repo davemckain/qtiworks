@@ -59,7 +59,7 @@
       </table>
       <xsl:if test="$isSessionInteracting">
         <script type='text/javascript'>
-          QtiWorks.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
+          QtiWorksRendering.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
             <xsl:value-of select="@maxAssociations"/>,
             {<xsl:for-each select="$orderedSet1">
               <xsl:if test="position() > 1">,</xsl:if>

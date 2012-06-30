@@ -45,7 +45,7 @@
         <input type="hidden" name="qtiworks_response_{@responseIdentifier}" value="{$value}"/>
         <script type="text/javascript">
           $(document).ready(function() {
-            QtiWorks.registerSliderInteraction('<xsl:value-of
+            QtiWorksRendering.registerSliderInteraction('<xsl:value-of
                 select="@responseIdentifier"/>', {
               min: <xsl:value-of select="$min"/>,
               max: <xsl:value-of select="$max"/>,

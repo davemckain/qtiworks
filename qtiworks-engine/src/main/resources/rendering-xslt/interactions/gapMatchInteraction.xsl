@@ -55,7 +55,7 @@
         </xsl:for-each>
       </table>
       <script type='text/javascript'>
-        QtiWorks.registerGapMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
+        QtiWorksRendering.registerGapMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
         {<xsl:for-each select="$orderedVisibleGapTexts"><xsl:if test="position() > 1">, </xsl:if><xsl:value-of select="@identifier"/>:<xsl:value-of select="@matchMax"/></xsl:for-each>},
         {<xsl:for-each select="$visibleGaps"><xsl:if test="position() > 1">, </xsl:if><xsl:value-of select="@identifier"/>:<xsl:value-of select="boolean(@required)"/></xsl:for-each>});
       </script>

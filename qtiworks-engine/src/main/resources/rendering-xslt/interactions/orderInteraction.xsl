@@ -61,7 +61,7 @@
         <!-- Register with JavaScript -->
         <script type="text/javascript">
           $(document).ready(function() {
-            QtiWorks.registerOrderInteraction('<xsl:value-of
+            QtiWorksRendering.registerOrderInteraction('<xsl:value-of
               select="@responseIdentifier"/>', [<xsl:value-of
               select="qw:to-javascript-arguments(for $s in $unselectedVisibleChoices return $s/@identifier)"/>], [<xsl:value-of
               select="qw:to-javascript-arguments(for $s in $respondedVisibleChoices return $s/@identifier)"/>], <xsl:value-of

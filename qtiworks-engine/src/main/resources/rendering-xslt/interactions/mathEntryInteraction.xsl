@@ -37,7 +37,7 @@
         </div>
       </div>
       <script type="text/javascript">
-        QtiWorks.registerReadyCallback(function() {
+        QtiWorksRendering.registerReadyCallback(function() {
           var inputControlId = 'qtiworks_id_mathEntryInput_<xsl:value-of select="@responseIdentifier"/>';
           var messageContainerId = 'qtiworks_id_mathEntryMessages_<xsl:value-of select="@responseIdentifier"/>';
           var previewContainerId = 'qtiworks_id_mathEntryPreview_<xsl:value-of select="@responseIdentifier"/>';

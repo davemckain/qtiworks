@@ -70,7 +70,7 @@
         </object>
         <script type="text/javascript">
           $(document).ready(function() {
-            QtiWorks.registerAppletBasedInteractionContainer('<xsl:value-of
+            QtiWorksRendering.registerAppletBasedInteractionContainer('<xsl:value-of
               select="$appletContainerId"/>', [<xsl:value-of
               select="qw:to-javascript-arguments(for $i in qti:positionObjectInteraction return $i/@responseIdentifier)"/>]);
           });

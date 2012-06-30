@@ -96,7 +96,7 @@ Renders a standalone assessmentItem
         <title><xsl:value-of select="@title"/></title>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
         <xsl:if test="$authorMode">
           <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js" type="text/javascript"/>
         </xsl:if>
@@ -376,8 +376,8 @@ Renders a standalone assessmentItem
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post" action="{$webappContextPath}{$attemptUrl}"
-        onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
-        onreset="QtiWorks.reset()" autocomplete="off">
+        onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
+        onreset="QtiWorksRendering.reset()" autocomplete="off">
 
         <xsl:apply-templates/>
 

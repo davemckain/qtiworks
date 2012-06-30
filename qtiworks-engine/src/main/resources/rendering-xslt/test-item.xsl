@@ -74,7 +74,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
       <head>
         <title><xsl:value-of select="concat($title, ' :: ', @title)"/></title>
 
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorks.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
         <!-- The following are used for certain interactions and time limits -->
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
@@ -219,8 +219,8 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
       <form method="post"
-        onsubmit="return QtiWorks.submit()" enctype="multipart/form-data"
-        onreset="QtiWorks.reset()" autocomplete="off">
+        onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
+        onreset="QtiWorksRendering.reset()" autocomplete="off">
         <div class="outer-box">
           <input type="hidden" name="questionId" value="{$questionId}"/>
           <span class="box-title">Question</span>

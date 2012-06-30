@@ -31,7 +31,7 @@ DM: I don't have anything to test this out with!
         </xsl:if>
       </xsl:variable>
       <xsl:variable name="checkJavaScript" select="if (exists($checks))
-        then concat('QtiWorks.validateInput(this, ',
+        then concat('QtiWorksRendering.validateInput(this, ',
           qw:to-javascript-arguments($checks), ')')
         else ()" as="xs:string?"/>
 
@@ -143,7 +143,7 @@ DM: I don't have anything to test this out with!
           <xsl:attribute name="onchange" select="$checkJavaScript"/>
         </xsl:if>
         <xsl:if test="$allowCreate and $i=$stringsCount">
-          <xsl:attribute name="onkeyup" select="'QtiWorks.addNewTextBox(this)'"/>
+          <xsl:attribute name="onkeyup" select="'QtiWorksRendering.addNewTextBox(this)'"/>
         </xsl:if>
       </input>
       <br/>

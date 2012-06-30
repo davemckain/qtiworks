@@ -26,7 +26,7 @@
           <xsl:sequence select="('regex', @patternMask)"/>
         </xsl:if>
       </xsl:variable>
-      <xsl:variable name="checkJavaScript" select="concat('QtiWorks.validateInput(this, ',
+      <xsl:variable name="checkJavaScript" select="concat('QtiWorksRendering.validateInput(this, ',
         qw:to-javascript-arguments($checks),
         ')')" as="xs:string"/>
 
