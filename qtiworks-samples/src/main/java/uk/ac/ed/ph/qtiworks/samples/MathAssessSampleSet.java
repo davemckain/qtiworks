@@ -51,7 +51,6 @@ public final class MathAssessSampleSet {
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinRP.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD04-ltgt-tVars.xml"),
