@@ -103,8 +103,8 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private AssessmentPackage assessmentPackage;
 
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="doid")
-    private ItemDeliveryOptions itemDeliveryOptions;
+    @JoinColumn(name="dsid")
+    private ItemDeliverySettings itemDeliverySettings;
 
     @Basic(optional=false)
     @Column(name="type", updatable=false, length=15)
@@ -155,12 +155,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
-    public ItemDeliveryOptions getItemDeliveryOptions() {
-        return itemDeliveryOptions;
+    public ItemDeliverySettings getItemDeliverySettings() {
+        return itemDeliverySettings;
     }
 
-    public void setItemDeliveryOptions(final ItemDeliveryOptions itemDeliveryOptions) {
-        this.itemDeliveryOptions = itemDeliveryOptions;
+    public void setItemDeliverySettings(final ItemDeliverySettings itemDeliverySettings) {
+        this.itemDeliverySettings = itemDeliverySettings;
     }
 
 

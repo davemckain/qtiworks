@@ -46,18 +46,18 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class StandaloneDeliveryCommand {
 
-    private long doid;
+    private long dsid;
 
     @MultipartFileExists
     private MultipartFile file;
 
 
-    public long getDoid() {
-        return doid;
+    public long getDsid() {
+        return dsid;
     }
 
-    public void setDoid(final long doid) {
-        this.doid = doid;
+    public void setDsid(final long dsid) {
+        this.dsid = dsid;
     }
 
 

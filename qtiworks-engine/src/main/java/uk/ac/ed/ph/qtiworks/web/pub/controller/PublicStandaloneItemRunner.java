@@ -39,7 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -82,7 +82,7 @@ public class PublicStandaloneItemRunner {
     @RequestMapping(value="/standalonerunner", method=RequestMethod.GET)
     public String showUploadAndRunForm(final Model model) {
         final StandaloneDeliveryCommand command = new StandaloneDeliveryCommand();
-        command.setDoid(1L); /* FIXME: Make this more clever */
+        command.setDsid(1L); /* FIXME: Make this more clever */
 
         model.addAttribute(command);
         return "public/standalonerunner/uploadForm";
@@ -96,8 +96,8 @@ public class PublicStandaloneItemRunner {
             return "public/standalonerunner/uploadForm";
         }
 
-        /* Make sure the required ItemDeliveryOptions exists */
-        final ItemDeliveryOptions itemDeliveryOptions = assessmentManagementService.lookupItemDeliveryOptions(command.getDoid());
+        /* Make sure the required ItemDeliverySettings exists */
+        final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
 
         /* Now upload the Assessment and validate it */
         final Assessment assessment;
@@ -126,7 +126,7 @@ public class PublicStandaloneItemRunner {
         }
 
         /* If still here, start new delivery and get going */
-        final ItemDelivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliveryOptions);
+        final ItemDelivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(delivery.getId().longValue());
 
         /* Redirect to rendering */

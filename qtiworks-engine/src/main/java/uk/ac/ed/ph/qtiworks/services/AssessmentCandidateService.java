@@ -56,7 +56,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -235,7 +235,7 @@ public class AssessmentCandidateService {
         /* Check whether an attempt is allowed. This is a bit pathological here,
          * but it makes sense to be consistent.
          */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliveryOptions().getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
 
         /* Create new session and put into appropriate state */
         final CandidateItemSession candidateSession = new CandidateItemSession();
@@ -423,7 +423,7 @@ public class AssessmentCandidateService {
         candidateItemAttemptDao.persist(candidateItemAttempt);
 
         /* Update session state */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliveryOptions().getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
@@ -458,11 +458,11 @@ public class AssessmentCandidateService {
         /* Check this is allowed in current state */
         final User caller = ensureSessionNotTerminated(candidateSession);
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateSession.getState()==CandidateSessionState.CLOSED) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED, candidateSession);
         }
-        else if (!itemDeliveryOptions.isAllowClose()) {
+        else if (!itemDeliverySettings.isAllowClose()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING, candidateSession);
         }
 
@@ -506,11 +506,11 @@ public class AssessmentCandidateService {
         final User caller = ensureSessionNotTerminated(candidateSession);
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliveryOptions.isAllowReinitWhenInteracting()) {
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, candidateSession);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliveryOptions.isAllowReinitWhenClosed()) {
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowReinitWhenClosed()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED, candidateSession);
         }
 
@@ -527,7 +527,7 @@ public class AssessmentCandidateService {
         recordEvent(candidateSession, CandidateItemEventType.REINIT, itemSessionState);
 
         /* Update state */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliveryOptions.getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
@@ -563,11 +563,11 @@ public class AssessmentCandidateService {
         final User caller = ensureSessionNotTerminated(candidateSession);
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliveryOptions.isAllowResetWhenInteracting()) {
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliveryOptions.isAllowResetWhenClosed()) {
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED, candidateSession);
         }
 
@@ -592,7 +592,7 @@ public class AssessmentCandidateService {
 
         /* Update state */
         final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliveryOptions.getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
 
@@ -625,11 +625,11 @@ public class AssessmentCandidateService {
         final User caller = ensureSessionNotTerminated(candidateSession);
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliveryOptions.isAllowSolutionWhenInteracting()) {
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_INTERACTING, candidateSession);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliveryOptions.isAllowResetWhenClosed()) {
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_CLOSED, candidateSession);
         }
 
@@ -673,11 +673,11 @@ public class AssessmentCandidateService {
         final User caller = ensureSessionNotTerminated(candidateSession);
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateSessionState==CandidateSessionState.INTERACTING) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_WHEN_INTERACTING, candidateSession);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliveryOptions.isAllowPlayback()) {
+        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowPlayback()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK, candidateSession);
         }
 
@@ -894,15 +894,15 @@ public class AssessmentCandidateService {
     private ItemRenderingRequest createItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
 
         final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
-        renderingRequest.setCloseAllowed(itemDeliveryOptions.isAllowClose());
-        renderingRequest.setReinitAllowed(itemDeliveryOptions.isAllowReinitWhenInteracting());
-        renderingRequest.setResetAllowed(itemDeliveryOptions.isAllowResetWhenInteracting());
-        renderingRequest.setSolutionAllowed(itemDeliveryOptions.isAllowSolutionWhenInteracting());
+        renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
+        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
+        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
+        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
-        renderingRequest.setSourceAllowed(itemDeliveryOptions.isAllowSource());
+        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
         renderingRequest.setBadResponseIdentifiers(null);
         renderingRequest.setInvalidResponseIdentifiers(null);
         renderingRequest.setResponseInputs(null);
@@ -943,7 +943,7 @@ public class AssessmentCandidateService {
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -952,8 +952,8 @@ public class AssessmentCandidateService {
         renderingRequest.setCandidateSessionState(candidateSessionState);
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setPrompt(itemDeliveryOptions.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliveryOptions.isAuthorMode());
+        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
         return renderingRequest;
     }
 
@@ -995,7 +995,7 @@ public class AssessmentCandidateService {
 
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -1005,15 +1005,15 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(playbackEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setPrompt(itemDeliveryOptions.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliveryOptions.isAuthorMode());
+        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
 
         renderingRequest.setCloseAllowed(false);
-        renderingRequest.setSolutionAllowed(itemDeliveryOptions.isAllowSolutionWhenClosed());
-        renderingRequest.setReinitAllowed(itemDeliveryOptions.isAllowReinitWhenClosed());
-        renderingRequest.setResetAllowed(itemDeliveryOptions.isAllowResetWhenClosed());
-        renderingRequest.setResultAllowed(itemDeliveryOptions.isAllowResult());
-        renderingRequest.setSourceAllowed(itemDeliveryOptions.isAllowSource());
+        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
+        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
+        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
+        renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
+        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
 
         /* If it's an attempt, pull out the raw response data */
         final CandidateItemAttempt playbackAttempt = candidateItemAttemptDao.getForEvent(playbackEvent);
@@ -1029,8 +1029,8 @@ public class AssessmentCandidateService {
         }
 
         /* Register playback events */
-        renderingRequest.setPlaybackAllowed(itemDeliveryOptions.isAllowPlayback());
-        if (itemDeliveryOptions.isAllowPlayback()) {
+        renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
+        if (itemDeliverySettings.isAllowPlayback()) {
             renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
             renderingRequest.setCurrentPlaybackEvent(playbackEvent);
         }
@@ -1044,7 +1044,7 @@ public class AssessmentCandidateService {
     private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -1053,19 +1053,19 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
-        renderingRequest.setPrompt(itemDeliveryOptions.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliveryOptions.isAuthorMode());
+        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
 
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
-        renderingRequest.setSolutionAllowed(itemDeliveryOptions.isAllowSolutionWhenClosed());
-        renderingRequest.setReinitAllowed(itemDeliveryOptions.isAllowReinitWhenClosed());
-        renderingRequest.setResetAllowed(itemDeliveryOptions.isAllowResetWhenClosed());
-        renderingRequest.setResultAllowed(itemDeliveryOptions.isAllowResult());
-        renderingRequest.setSourceAllowed(itemDeliveryOptions.isAllowSource());
+        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
+        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
+        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
+        renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
+        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
 
-        renderingRequest.setPlaybackAllowed(itemDeliveryOptions.isAllowPlayback());
-        if (itemDeliveryOptions.isAllowPlayback()) {
+        renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
+        if (itemDeliverySettings.isAllowPlayback()) {
             renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
         }
         return renderingRequest;
@@ -1169,8 +1169,8 @@ public class AssessmentCandidateService {
     private User ensureCallerMayViewSource(final ItemDelivery itemDelivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
-        if (!itemDeliveryOptions.isAllowSource()) {
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        if (!itemDeliverySettings.isAllowSource()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE, itemDelivery);
         }
         return caller;
@@ -1214,8 +1214,8 @@ public class AssessmentCandidateService {
     private User ensureCallerMayViewResult(final ItemDelivery itemDelivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        final ItemDeliveryOptions itemDeliveryOptions = itemDelivery.getItemDeliveryOptions();
-        if (!itemDeliveryOptions.isAllowResult()) {
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        if (!itemDeliverySettings.isAllowResult()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_RESULT, itemDelivery);
         }
         return caller;

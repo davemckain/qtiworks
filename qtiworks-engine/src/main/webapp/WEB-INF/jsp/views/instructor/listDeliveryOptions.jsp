@@ -3,12 +3,12 @@
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
-Lists ItemDeliveryOptions owned by caller
+Lists ItemDeliverySettings owned by caller
 
 Model:
 
-itemDeliveryOptionsList
-itemDeliveryOptionsRouting: doid -> action -> URL
+itemDeliverySettingsList
+itemDeliverySettingsRouting: dsid -> action -> URL
 instructorAssessmentRouting
 
 --%>
@@ -18,7 +18,7 @@ instructorAssessmentRouting
   <h2>Your Item Delivery Configurations</h2>
 
   <c:choose>
-    <c:when test="${!empty itemDeliveryOptionsList}">
+    <c:when test="${!empty itemDeliverySettingsList}">
       <table>
         <thead>
           <tr>
@@ -27,10 +27,10 @@ instructorAssessmentRouting
           </tr>
         </thead>
         <tbody>
-          <c:forEach var="itemDeliveryOptions" items="${itemDeliveryOptionsList}">
+          <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}">
             <tr>
-              <td><c:out value="${itemDeliveryOptions.title}"/></td>
-              <td><a href="${utils:escapeLink(itemDeliveryOptionsRouting[itemDeliveryOptions.id]['show'])}">Show / Edit</a></td>
+              <td><c:out value="${itemDeliverySettings.title}"/></td>
+              <td><a href="${utils:escapeLink(itemDeliverySettingsRouting[itemDeliverySettings.id]['show'])}">Show / Edit</a></td>
             </tr>
           </c:forEach>
         </tbody>
@@ -43,7 +43,7 @@ instructorAssessmentRouting
 
   <h3>Actions</h3>
   <ul>
-    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliveryOptions'])}">Create new Item Delivery Configuration</a></li>
+    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Configuration</a></li>
   </ul>
 
 </page:page>

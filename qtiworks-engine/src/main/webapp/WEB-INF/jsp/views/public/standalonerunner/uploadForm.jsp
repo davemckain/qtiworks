@@ -26,9 +26,9 @@ standaloneDeliveryCommand:
         <dd>
           <form:input path="file" type="file"/>
         </dd>
-        <dt><label for="deliveryOptions">Select delivery configuration:</label></dt>
+        <dt><label for="deliverySettings">Select delivery configuration:</label></dt>
         <dd>
-          <form:input path="doid" type="text"/>
+          <form:input path="dsid" type="text"/>
         </dd>
         <dt><label for="submit">Hit "Upload and Validate!"</label></dt>
         <dd>

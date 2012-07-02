@@ -44,11 +44,11 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryOptionsDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -132,7 +132,7 @@ public class AssessmentManagementService {
     private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
-    private ItemDeliveryOptionsDao itemDeliveryOptionsDao;
+    private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
     @Resource
     private QtiXmlReader qtiXmlReader;
@@ -425,57 +425,57 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // CRUD for ItemDelviveryOptions
 
-    public long countCallerItemDeliveryOptions() {
-        return itemDeliveryOptionsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    public long countCallerItemDeliverySettings() {
+        return itemDeliverySettingsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
-    public List<ItemDeliveryOptions> getCallerItemDeliveryOptions() {
-        return itemDeliveryOptionsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    public List<ItemDeliverySettings> getCallerItemDeliverySettings() {
+        return itemDeliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
-    public ItemDeliveryOptions lookupItemDeliveryOptions(final long doid)
+    public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsDao.requireFindById(doid);
-        ensureCallerMayAccess(itemDeliveryOptions);
-        return itemDeliveryOptions;
+        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(itemDeliverySettings);
+        return itemDeliverySettings;
     }
 
-    private void ensureCallerMayAccess(final ItemDeliveryOptions itemDeliveryOptions)
+    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDeliveryOptions.isPublic() && !caller.equals(itemDeliveryOptions.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliveryOptions);
+        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
         }
     }
 
-    public ItemDeliveryOptions createItemDeliveryOptions(final ItemDeliveryOptions template) {
+    public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettings template) {
         Assert.ensureNotNull(template, "template");
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Create and persist new options from template */
-        final ItemDeliveryOptions result = new ItemDeliveryOptions();
+        final ItemDeliverySettings result = new ItemDeliverySettings();
         result.setOwner(caller);
-        mergeItemDeliveryOptions(template, result);
-        itemDeliveryOptionsDao.persist(result);
+        mergeItemDeliverySettings(template, result);
+        itemDeliverySettingsDao.persist(result);
 
-        auditor.recordEvent("Created ItemDeliveryOptions #" + result.getId());
+        auditor.recordEvent("Created ItemDeliverySettings #" + result.getId());
         return result;
     }
 
-    public ItemDeliveryOptions updateItemDeliveryOptions(final long doid, final ItemDeliveryOptions template)
+    public ItemDeliverySettings updateItemDeliverySettings(final long dsid, final ItemDeliverySettings template)
             throws PrivilegeException, DomainEntityNotFoundException {
         Assert.ensureNotNull(template, "template");
-        final ItemDeliveryOptions itemDeliveryOptions = lookupItemDeliveryOptions(doid);
+        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
 
         /* Merge template into options and update */
-        mergeItemDeliveryOptions(template, itemDeliveryOptions);
-        itemDeliveryOptionsDao.update(itemDeliveryOptions);
+        mergeItemDeliverySettings(template, itemDeliverySettings);
+        itemDeliverySettingsDao.update(itemDeliverySettings);
 
-        auditor.recordEvent("Updated ItemDeliveryOptions #" + itemDeliveryOptions.getId());
-        return itemDeliveryOptions;
+        auditor.recordEvent("Updated ItemDeliverySettings #" + itemDeliverySettings.getId());
+        return itemDeliverySettings;
     }
 
-    private void mergeItemDeliveryOptions(final ItemDeliveryOptions source, final ItemDeliveryOptions target) {
+    private void mergeItemDeliverySettings(final ItemDeliverySettings source, final ItemDeliverySettings target) {
         target.setAllowClose(source.isAllowClose());
         target.setAllowPlayback(source.isAllowPlayback());
         target.setAllowReinitWhenClosed(source.isAllowReinitWhenClosed());
@@ -499,21 +499,21 @@ public class AssessmentManagementService {
             throws PrivilegeException {
         Assert.ensureNotNull(assessment, "assessment");
 
-        /* Select suitable delivery options */
+        /* Select suitable delivery settings */
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        ItemDeliveryOptions deliveryOptions = assessment.getDefaultDeliveryOptions();
-        if (deliveryOptions==null) {
-            deliveryOptions = getFirstDeliveryOptions(caller);
+        ItemDeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
+        if (deliverySettings==null) {
+            deliverySettings = getFirstDeliverySettings(caller);
         }
 
         /* Now create demo delivery using these options */
-        return createDemoDelivery(assessment, deliveryOptions);
+        return createDemoDelivery(assessment, deliverySettings);
     }
 
-    public ItemDelivery createDemoDelivery(final Assessment assessment, final ItemDeliveryOptions itemDeliveryOptions)
+    public ItemDelivery createDemoDelivery(final Assessment assessment, final ItemDeliverySettings itemDeliverySettings)
             throws PrivilegeException {
         Assert.ensureNotNull(assessment, "assessment");
-        Assert.ensureNotNull(itemDeliveryOptions, "itemDeliveryOptions");
+        Assert.ensureNotNull(itemDeliverySettings, "itemDeliverySettings");
 
         /* Make sure caller is allowed to run this Assessment */
         final User caller = ensureCallerMayRun(assessment);
@@ -529,7 +529,7 @@ public class AssessmentManagementService {
         /* Create demo Delivery */
         final ItemDelivery delivery = new ItemDelivery();
         delivery.setAssessmentPackage(currentAssessmentPackage);
-        delivery.setItemDeliveryOptions(itemDeliveryOptions);
+        delivery.setItemDeliverySettings(itemDeliverySettings);
         delivery.setItemDeliveryType(ItemDeliveryType.USER_TRANSIENT);
         delivery.setOpen(true);
         delivery.setTitle("Temporary demo delivery");
@@ -540,24 +540,24 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    private ItemDeliveryOptions getFirstDeliveryOptions(final User owner) {
-        ItemDeliveryOptions firstDeliveryOptions = itemDeliveryOptionsDao.getFirstForOwner(owner);
-        if (firstDeliveryOptions==null) {
-            firstDeliveryOptions = createItemDeliveryOptionsTemplate();
-            firstDeliveryOptions.setOwner(owner);
-            firstDeliveryOptions.setTitle("Default delivery options");
-            firstDeliveryOptions.setPrompt("This assessment item is being delivered using a set of default 'delivery options'"
+    private ItemDeliverySettings getFirstDeliverySettings(final User owner) {
+        ItemDeliverySettings firstDeliverySettings = itemDeliverySettingsDao.getFirstForOwner(owner);
+        if (firstDeliverySettings==null) {
+            firstDeliverySettings = createItemDeliverySettingsTemplate();
+            firstDeliverySettings.setOwner(owner);
+            firstDeliverySettings.setTitle("Default delivery settings");
+            firstDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
                     + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
                     + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
                     + " which you can edit or remove to suit.");
-            itemDeliveryOptionsDao.persist(firstDeliveryOptions);
-            auditor.recordEvent("Created default ItemDeliveryOptions for this user");
+            itemDeliverySettingsDao.persist(firstDeliverySettings);
+            auditor.recordEvent("Created default ItemDeliverySettings for this user");
         }
-        return firstDeliveryOptions;
+        return firstDeliverySettings;
     }
 
-    public ItemDeliveryOptions createItemDeliveryOptionsTemplate() {
-        final ItemDeliveryOptions template = new ItemDeliveryOptions();
+    public ItemDeliverySettings createItemDeliverySettingsTemplate() {
+        final ItemDeliverySettings template = new ItemDeliverySettings();
         template.setAllowClose(true);
         template.setAllowPlayback(true);
         template.setAllowReinitWhenClosed(true);

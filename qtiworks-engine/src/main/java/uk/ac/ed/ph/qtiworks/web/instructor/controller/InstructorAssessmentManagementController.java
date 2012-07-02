@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -137,8 +137,8 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
         primaryRouting.put("listAssessments", buildActionPath("/assessments"));
-        primaryRouting.put("listItemDeliveryOptions", buildActionPath("/deliveryoptions"));
-        primaryRouting.put("createItemDeliveryOptions", buildActionPath("/deliveryoptions/create"));
+        primaryRouting.put("listItemDeliverySettings", buildActionPath("/deliveryoptions"));
+        primaryRouting.put("createItemDeliverySettings", buildActionPath("/deliveryoptions/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
@@ -152,11 +152,11 @@ public final class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
-        final List<ItemDeliveryOptions> itemDeliveryOptionsList = assessmentManagementService.getCallerItemDeliveryOptions();
+        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
 
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
-        model.addAttribute(itemDeliveryOptionsList);
+        model.addAttribute(itemDeliverySettingsList);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "showAssessment";
     }
@@ -303,94 +303,94 @@ public final class InstructorAssessmentManagementController {
         return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
     }
 
-    @RequestMapping(value="/assessment/{aid}/try/{doid}", method=RequestMethod.POST)
-    public String tryLatestAssessmentPackage(final @PathVariable long aid, final @PathVariable long doid)
+    @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
+    public String tryLatestAssessmentPackage(final @PathVariable long aid, final @PathVariable long dsid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final ItemDeliveryOptions itemDeliveryOptions = assessmentManagementService.lookupItemDeliveryOptions(doid);
-        final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliveryOptions);
+        final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
+        final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
         return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
     }
 
     //------------------------------------------------------
-    // Management of ItemDeliveryOptions
+    // Management of ItemDeliverySettings
 
     @RequestMapping(value="/deliveryoptions", method=RequestMethod.GET)
-    public String listItemDeliveryOptions(final Model model) {
-        final List<ItemDeliveryOptions> itemDeliveryOptionsList = assessmentManagementService.getCallerItemDeliveryOptions();
-        model.addAttribute(itemDeliveryOptionsList);
-        model.addAttribute("itemDeliveryOptionsRouting", buildDeliveryOptionsListRouting(itemDeliveryOptionsList));
-        return "listDeliveryOptions";
+    public String listItemDeliverySettings(final Model model) {
+        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
+        model.addAttribute(itemDeliverySettingsList);
+        model.addAttribute("itemDeliverySettingsRouting", buildDeliverySettingsListRouting(itemDeliverySettingsList));
+        return "listDeliverySettings";
     }
 
-    @RequestMapping(value="/deliveryoptions/{doid}", method=RequestMethod.GET)
-    public String showEditItemDeliveryOptionsForm(final Model model, @PathVariable final long doid)
+    @RequestMapping(value="/deliveryoptions/{dsid}", method=RequestMethod.GET)
+    public String showEditItemDeliverySettingsForm(final Model model, @PathVariable final long dsid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDeliveryOptions itemDeliveryOptions = assessmentManagementService.lookupItemDeliveryOptions(doid);
+        final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
 
-        model.addAttribute(itemDeliveryOptions);
-        return "editItemDeliveryOptionsForm";
+        model.addAttribute(itemDeliverySettings);
+        return "editItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliveryoptions/{doid}", method=RequestMethod.POST)
-    public String handleEditItemDeliveryOptionsForm(@PathVariable final long doid,
-            final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result)
+    @RequestMapping(value="/deliveryoptions/{dsid}", method=RequestMethod.POST)
+    public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid,
+            final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "editItemDeliveryOptionsForm";
+            return "editItemDeliverySettingsForm";
         }
 
         /* Perform update */
-        assessmentManagementService.updateItemDeliveryOptions(doid, command);
+        assessmentManagementService.updateItemDeliverySettings(dsid, command);
 
         /* Return to show/edit
          * FIXME: Add some flash message here so that it's not confusing.
          */
-        return buildActionRedirect("/deliveryoptions/" + doid);
+        return buildActionRedirect("/deliveryoptions/" + dsid);
     }
 
     @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.GET)
-    public String showCreateItemDeliveryOptionsForm(final Model model) {
-        final long existingOptionCount = assessmentManagementService.countCallerItemDeliveryOptions();
-        final ItemDeliveryOptions template = assessmentManagementService.createItemDeliveryOptionsTemplate();
+    public String showCreateItemDeliverySettingsForm(final Model model) {
+        final long existingOptionCount = assessmentManagementService.countCallerItemDeliverySettings();
+        final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Configuration #" + (existingOptionCount+1));
 
         model.addAttribute(template);
-        return "createItemDeliveryOptionsForm";
+        return "createItemDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.POST)
-    public String handleCreateItemDeliveryOptionsForm(final @Valid @ModelAttribute ItemDeliveryOptions command, final BindingResult result) {
+    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result) {
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "createItemDeliveryOptionsForm";
+            return "createItemDeliverySettingsForm";
         }
 
         /* Try to create new entity */
-        assessmentManagementService.createItemDeliveryOptions(command);
+        assessmentManagementService.createItemDeliverySettings(command);
 
         /* TODO: Redirect to options page */
         return buildActionRedirect("/deliveryoptions");
     }
 
-    public Map<Long, Map<String, String>> buildDeliveryOptionsListRouting(final List<ItemDeliveryOptions> itemDeliveryOptionsList) {
+    public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<ItemDeliverySettings> itemDeliverySettingsList) {
         final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final ItemDeliveryOptions itemDeliveryOptions : itemDeliveryOptionsList) {
-            result.put(itemDeliveryOptions.getId(), buildDeliveryOptionsRouting(itemDeliveryOptions));
+        for (final ItemDeliverySettings itemDeliverySettings : itemDeliverySettingsList) {
+            result.put(itemDeliverySettings.getId(), buildDeliverySettingsRouting(itemDeliverySettings));
         }
         return result;
     }
 
-    public Map<String, String> buildDeliveryOptionsRouting(final ItemDeliveryOptions itemDeliveryOptions) {
-        return buildDeliveryOptionsRouting(itemDeliveryOptions.getId().longValue());
+    public Map<String, String> buildDeliverySettingsRouting(final ItemDeliverySettings itemDeliverySettings) {
+        return buildDeliverySettingsRouting(itemDeliverySettings.getId().longValue());
     }
 
-    public Map<String, String> buildDeliveryOptionsRouting(final long doid) {
+    public Map<String, String> buildDeliverySettingsRouting(final long dsid) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildActionPath("/deliveryoptions/" + doid));
-        result.put("update", buildActionPath("/deliveryoptions/" + doid + "/update"));
+        result.put("show", buildActionPath("/deliveryoptions/" + dsid));
+        result.put("update", buildActionPath("/deliveryoptions/" + dsid + "/update"));
         return result;
     }
 }
