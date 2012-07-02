@@ -50,7 +50,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
-import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
+import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -262,12 +262,12 @@ public final class InstructorAssessmentManagementController {
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "uploadAssessmentPackageCommand");
+            failure.registerErrors(result, "assessmentPackageUpload");
             return "updateAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "uploadAssessmentPackageCommand");
+            failure.registerErrors(result, "assessmentPackageUpload");
             return "updateAssessmentPackageForm";
         }
         try {

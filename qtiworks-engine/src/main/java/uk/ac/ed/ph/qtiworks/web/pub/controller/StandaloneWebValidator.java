@@ -84,7 +84,7 @@ public class StandaloneWebValidator {
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(errors, "validator.assessmentPackageImportException");
+            failure.registerErrors(errors, "assessmentPackageUpload");
             return "public/validator/uploadForm";
         }
     }

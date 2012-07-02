@@ -19,12 +19,8 @@ All Rights Reserved
   <h3>Public/anonymous functionality</h3>
   <ul>
     <li><a href="web/public/samples/list">Browse public QTI samples</a></li>
-  </ul>
-
-
-  <h3>Public/anonymous function sketches</h3>
-  <ul>
-    <li><a href="web/public/validator">Validation Demo</a></li>
+    <li><a href="web/public/validator">QTI Validator</a></li>
+    <li><a href="web/public/standalonerunner">Upload and run a QTI Assessment Item</a></li>
   </ul>
 
 </page:page>
