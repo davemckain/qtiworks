@@ -7,6 +7,22 @@ All Rights Reserved
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Release notes">
 
+  <h2>1.0-DEV9 (03/07/2012)</h2>
+
+  <p>
+    This snapshot adds a standalone "upload and run" feature that can be run without requiring a login,
+    allowing candidates to choose from a number of pre-defined "delivery settings". (This is similar but
+    more flexible than existing functionality in MathAssessEngine.)
+  </p>
+  <p>
+    This snapshot also adds a "run" feature for logged in users, as well as filling in more functionality
+    for logged-in users. It's just about usable for storing, debugging and trying out your own assessment
+    items now.
+  </p>
+  <p>
+    The next snapshot will consolidate on this work and improve the user experience somewhat...
+  </p>
+
   <h2>1.0-DEV8 (31/05/2012)</h2>
 
   <p>
@@ -14,9 +30,8 @@ All Rights Reserved
     I have written a
     <a href="http://qtisupport.blogspot.co.uk/2012/05/enhanced-item-rendering-in-qtiworks.html">blog post for this release</a>,
     so it's probably more useful to
-    link to it than try to paraphrase it badly here:
-    </li>
-  </ul>
+    link to it than try to paraphrase it badly here.
+    </p>
 
   <h2>1.0-DEV7 (25/05/2012)</h2>
 
