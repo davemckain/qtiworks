@@ -23,46 +23,32 @@ All Rights Reserved
     <meta name="author" content="David McKain">
     <meta name="publisher" content="The University of Edinburgh">
     <title>QTIWorks - <c:out value="${title}" default="QTIWorks"/></title>
-    <link rel="stylesheet" type="text/css" href="${utils:internalLink(pageContext, '/includes/webapp-base.css')}">
-    <link rel="stylesheet" type="text/css" href="${utils:internalLink(pageContext, '/includes/content-styles.css')}">
-    <link rel="stylesheet" type="text/css" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}">
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}"></script>
-    <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css"/>
+    <!-- FIXME: Need HTTPS versions of the following 3 libs, or pull them in -->
+    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/reset.css">
+    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/text.css">
+    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/960.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Comfortaa:700">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks-NEW.css')}">
+    <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}"></script>
   </head>
   <body>
-    <div id="container">
-      <div id="header">
-        <div id="identities">
-          <div id="edlogo"><a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/ed_logo.gif')}" alt="University of Edinburgh Logo"/></a></div>
-          <div id="edname"><a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uofe2.gif')}" alt="University of Edinburgh"></a></div>
-          <div id="schoolname"><a href="/"><img src="${utils:internalLink(pageContext, '/includes/images/panda.gif')}" alt="School of Physics &amp; Astronomy"></a></div>
-        </div>
-        <div id="GlobalNav">
-          <ul>
-            <li class="active"><a href="http://www2.ph.ed.ac.uk/elearning/" class="active"><span>e-Learning</span></a></li>
-          </ul>
-        </div>
-        <div id="utility">
-          <a class="utilContact" href="http://www2.ph.ed.ac.uk/elearning/contacts/#dmckain">Contact us</a>
-        </div>
-      </div>
-      <div id="sectionHeader">
-        <div id="sectionHeaderTitle">
-          <a href="${utils:internalLink(pageContext, '/')}">QTIWorks ${qtiWorksVersion}</a>
-        </div>
-      </div>
-      <div id="contentArea">
-        <%-- Main content goes in this container --%>
-        <div id="content" class="content">
+    <header>
+      <h1>QTIWorks</h1>
+    </header>
+    <div id="contentArea">
+      <%-- Main content goes in this container --%>
+      <div id="content" class="content">
 
-          <jsp:doBody/>
+        <jsp:doBody/>
 
-        </div>
       </div>
     </div>
-    <div id="footer">
+    <footer>
       <div id="copyright">
         <div id="footer-text">
           <%-- Usual Copyright stuff --%>
@@ -83,6 +69,6 @@ All Rights Reserved
         </div>
         <div class="clearFloat"></div>
       </div>
-    </div>
+    </footer>
   </body>
 </html>
