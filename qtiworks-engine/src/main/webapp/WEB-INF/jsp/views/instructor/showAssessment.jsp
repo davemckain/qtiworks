@@ -9,7 +9,7 @@ Model:
 
 assessment
 assessmentPackage (most recent)
-itemDeliveryOptionsList (List<ItemDeliveryOptions> - possibly empty)
+itemDeliverySettingsList (List<ItemDeliverySettings> - possibly empty)
 assessmentRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
 
@@ -66,13 +66,13 @@ instructorAssessmentRouting (action -> URL)
       <c:choose>
         <c:when test="${assessmentPackage.valid}">
         <c:choose>
-          <c:when test="${!empty itemDeliveryOptionsList}">
+          <c:when test="${!empty itemDeliverySettingsList}">
             Try out using:
             <ul>
-              <c:forEach var="itemDeliveryOptions" items="${itemDeliveryOptionsList">
+              <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}">
                 <li>
-                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${itemDeliveryOptions.id}" method="post">
-                    <input type="submit" value="${fn:escapeHtml(itemDeliveryOptions.title)}" />
+                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${itemDeliverySettings.id}" method="post">
+                    <input type="submit" value="${fn:escapeXml(itemDeliverySettings.title)}" />
                   </form>
                 </li>
               </c:forEach>

@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.services.StandaloneValidationService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.web.instructor.domain.UploadAssessmentPackageCommand;
+import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
@@ -60,7 +60,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class StandaloneWebValidator {
 
     @Resource
-    private StandaloneValidationService uploadService;
+    private StandaloneValidationService validationService;
 
     @RequestMapping(value="/validator", method=RequestMethod.GET)
     public String showValidatorForm(final Model model) {
@@ -72,19 +72,19 @@ public class StandaloneWebValidator {
     @RequestMapping(value="/validator", method=RequestMethod.POST)
     public String handleValidatorForm(final Model model, @Valid @ModelAttribute final UploadAssessmentPackageCommand command,
             final BindingResult errors) {
-        /* Catch any binding/validation errors */
+        /* Catch any binding errors */
         if (errors.hasErrors()) {
             return "public/validator/uploadForm";
         }
 
         try {
-            final AssessmentObjectValidationResult<?> result = uploadService.importAndValidate(command.getFile());
+            final AssessmentObjectValidationResult<?> result = validationService.importAndValidate(command.getFile());
             model.addAttribute("validationResult", result);
             return "public/validator/htmlResult";
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(errors, "validator.assessmentPackageImportException");
+            failure.registerErrors(errors, "assessmentPackageUpload");
             return "public/validator/uploadForm";
         }
     }

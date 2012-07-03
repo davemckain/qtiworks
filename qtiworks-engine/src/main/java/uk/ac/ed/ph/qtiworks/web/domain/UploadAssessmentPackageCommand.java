@@ -31,42 +31,35 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web.domain;
 
+import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Various constants for the domain layer
+ * Command for the "upload assessment package" action
  *
  * @author David McKain
  */
-public final class DomainConstants {
+public class UploadAssessmentPackageCommand {
 
-    public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
-    public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
-    public static final int USER_NAME_COMPONENT_MAX_LENGTH = 64;
-    public static final int SHA1_DIGEST_LENGTH = 40;
-    public static final int FILE_CONTENT_TYPE_LENGTH = 64;
+    @MultipartFileExists
+    private MultipartFile file;
 
-    public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
-    public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
+    public MultipartFile getFile() {
+        return file;
+    }
 
-    /** FIXME: What limit should we use here? */
-    public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
+    public void setFile(final MultipartFile file) {
+        this.file = file;
+    }
 
-    /**
-     * NB: Should be set to the maximum length of the permitted values of
-     * the QTI <code>completionStatus</code> variable.
-     */
-    public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
 
-    //----------------------------------------------
-
-    public static final String QTI_DEFAULT_OWNER_LOGIN_NAME = "qtiworks";
-    public static final String QTI_DEFAULT_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_DEFAULT_OWNER_LAST_NAME = "Works";
-
-    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
-
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

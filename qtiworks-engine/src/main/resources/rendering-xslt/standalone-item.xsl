@@ -286,7 +286,7 @@ Renders a standalone assessmentItem
         </xsl:if>
         <li>
           <form action="{$webappContextPath}{$terminateUrl}" method="post">
-            <input type="submit" value="Terminate session"/>
+            <input type="submit" value="Exit"/>
           </form>
         </li>
       </ul>

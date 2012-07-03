@@ -34,20 +34,18 @@
 package uk.ac.ed.ph.qtiworks.tools.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryOptionsDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryOptions;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.samples.DeliveryStyle;
@@ -97,6 +95,9 @@ public class SampleResourceImporter {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
+    private BootstrapServices bootstrapServices;
+
+    @Resource
     private AssessmentDao assessmentDao;
 
     @Resource
@@ -109,13 +110,7 @@ public class SampleResourceImporter {
     private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
-    private ItemDeliveryOptionsDao itemDeliveryOptionsDao;
-
-    @Resource
-    private InstructorUserDao instructorUserDao;
-
-    @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
     //-------------------------------------------------
 
@@ -125,10 +120,11 @@ public class SampleResourceImporter {
      */
     public void importQtiSamples() {
         /* Create sample owner if required */
-        final InstructorUser sampleOwner = importSampleOwnerUserIfRequired();
+        final InstructorUser sampleOwner = bootstrapServices.createInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
+                DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
 
-        /* Set up sample ItemDeliveryOptions */
-        final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap = importDeliveryOptions(sampleOwner);
+        /* Set up sample ItemDeliverySettings */
+        final Map<DeliveryStyle, ItemDeliverySettings> itemDeliverySettingsMap = importDeliverySettings(sampleOwner);
 
         /* Find out which SampleCategories already exist */
         final List<SampleCategory> sampleCategories = getExistingSampleCategories();
@@ -143,63 +139,47 @@ public class SampleResourceImporter {
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
-            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, itemDeliveryOptionsMap);
+            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, itemDeliverySettingsMap);
         }
-    }
-
-    private InstructorUser importSampleOwnerUserIfRequired() {
-        InstructorUser sampleOwner = instructorUserDao.findByLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
-        if (sampleOwner==null) {
-            sampleOwner = new InstructorUser();
-            sampleOwner.setLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
-            sampleOwner.setFirstName(DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME);
-            sampleOwner.setLastName(DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
-            sampleOwner.setEmailAddress(qtiWorksSettings.getEmailAdminAddress());
-            sampleOwner.setPasswordDigest(ServiceUtilities.computePasswordDigest("Doesn't matter as login to this account is disabled"));
-            sampleOwner.setLoginDisabled(true);
-            sampleOwner.setSysAdmin(false);
-            instructorUserDao.persist(sampleOwner);
-            logger.info("Created User {} to own the sample assessments", sampleOwner);
-        }
-        return sampleOwner;
     }
 
     private List<SampleCategory> getExistingSampleCategories() {
         return sampleCategoryDao.getAll();
     }
 
-    private Map<DeliveryStyle, ItemDeliveryOptions> importDeliveryOptions(final InstructorUser sampleOwner) {
-        final Map<String, ItemDeliveryOptions> deliveryOptionsByTitleMap = new HashMap<String, ItemDeliveryOptions>();
-        for (final ItemDeliveryOptions existingOptions : itemDeliveryOptionsDao.getForOwner(sampleOwner)) {
-            deliveryOptionsByTitleMap.put(existingOptions.getTitle(), existingOptions);
+    private Map<DeliveryStyle, ItemDeliverySettings> importDeliverySettings(final InstructorUser sampleOwner) {
+        final Map<String, ItemDeliverySettings> deliverySettingsByTitleMap = new HashMap<String, ItemDeliverySettings>();
+        for (final ItemDeliverySettings existingOptions : itemDeliverySettingsDao.getForOwner(sampleOwner)) {
+            deliverySettingsByTitleMap.put(existingOptions.getTitle(), existingOptions);
         }
 
         /* Go through all sample options, persisting any that aren't yet in the DB.
          * NB: This does not update existing options!
          */
-        final Map<DeliveryStyle, ItemDeliveryOptions> deliveryOptionsMap = buildDeliveryOptionsMap();
-        for (final ItemDeliveryOptions options : deliveryOptionsMap.values()) {
-            if (!deliveryOptionsByTitleMap.containsKey(options.getTitle())) {
+        final Map<DeliveryStyle, ItemDeliverySettings> deliverySettingsMap = buildDeliverySettingsMap();
+        for (final ItemDeliverySettings options : deliverySettingsMap.values()) {
+            if (!deliverySettingsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
                 options.setOwner(sampleOwner);
-                itemDeliveryOptionsDao.persist(options);
-                logger.info("Created ItemDeliveryOptions {}", options);
-                deliveryOptionsByTitleMap.put(options.getTitle(), options);
+                options.setPublic(true);
+                itemDeliverySettingsDao.persist(options);
+                logger.info("Created ItemDeliverySettings {}", options);
+                deliverySettingsByTitleMap.put(options.getTitle(), options);
             }
         }
         /* Now convert back to Map keyed on DeliveryStyle. */
-        final Map<DeliveryStyle, ItemDeliveryOptions> result = new HashMap<DeliveryStyle, ItemDeliveryOptions>();
+        final Map<DeliveryStyle, ItemDeliverySettings> result = new HashMap<DeliveryStyle, ItemDeliverySettings>();
         for (final DeliveryStyle deliveryStyle : DeliveryStyle.values()) {
-            result.put(deliveryStyle, deliveryOptionsByTitleMap.get(deliveryOptionsMap.get(deliveryStyle).getTitle()));
+            result.put(deliveryStyle, deliverySettingsByTitleMap.get(deliverySettingsMap.get(deliveryStyle).getTitle()));
         }
         return result;
     }
 
-    private Map<DeliveryStyle, ItemDeliveryOptions> buildDeliveryOptionsMap() {
-        final Map<DeliveryStyle, ItemDeliveryOptions> result = new HashMap<DeliveryStyle, ItemDeliveryOptions>();
+    private Map<DeliveryStyle, ItemDeliverySettings> buildDeliverySettingsMap() {
+        final Map<DeliveryStyle, ItemDeliverySettings> result = new HashMap<DeliveryStyle, ItemDeliverySettings>();
         /* Yes, the next bit is not efficient but it's readable! */
         for (final DeliveryStyle deliveryStyle : DeliveryStyle.values()) {
-            final ItemDeliveryOptions options = new ItemDeliveryOptions();
+            final ItemDeliverySettings options = new ItemDeliverySettings();
             options.setMaxAttempts(Integer.valueOf(0));
             options.setAuthorMode(true);
             options.setAllowPlayback(true);
@@ -326,7 +306,7 @@ public class SampleResourceImporter {
     private void importSampleSet(final InstructorUser sampleOwner,
             final QtiSampleSet qtiSampleSet, final List<SampleCategory> existingSampleCategories,
             final Map<String, Assessment> importedSampleAssessments,
-            final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap) {
+            final Map<DeliveryStyle, ItemDeliverySettings> itemDeliverySettingsMap) {
         final String sampleCategoryTitle = qtiSampleSet.getTitle();
         SampleCategory resultingSampleCategory = null;
         for (final SampleCategory sampleCategory : existingSampleCategories) {
@@ -345,14 +325,14 @@ public class SampleResourceImporter {
         }
         for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
             if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
-                importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory, itemDeliveryOptionsMap);
+                importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory, itemDeliverySettingsMap);
             }
         }
     }
 
     private Assessment importSampleAssessment(final InstructorUser owner,
             final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory,
-            final Map<DeliveryStyle, ItemDeliveryOptions> itemDeliveryOptionsMap) {
+            final Map<DeliveryStyle, ItemDeliverySettings> itemDeliverySettingsMap) {
         Assert.ensureNotNull(qtiSampleAssessment, "qtiSampleAssessment");
         logger.info("Importing QTI sample {}", qtiSampleAssessment);
 
@@ -393,9 +373,9 @@ public class SampleResourceImporter {
         assessmentPackageDao.persist(assessmentPackage);
 
         if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM) {
-            /* Create default delivery options */
-            final ItemDeliveryOptions itemDeliveryOptions = itemDeliveryOptionsMap.get(qtiSampleAssessment.getDeliveryStyle());
-            assessment.setDefaultDeliveryOptions(itemDeliveryOptions);
+            /* Create default delivery settings */
+            final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsMap.get(qtiSampleAssessment.getDeliveryStyle());
+            assessment.setDefaultDeliverySettings(itemDeliverySettings);
             assessmentDao.update(assessment);
 
             /* Create a Delivery using these options (if there isn't one already) */
@@ -404,7 +384,7 @@ public class SampleResourceImporter {
                 final ItemDelivery defaultDelivery = new ItemDelivery();
                 defaultDelivery.setAssessmentPackage(assessmentPackage);
                 defaultDelivery.setItemDeliveryType(ItemDeliveryType.SYSTEM_DEMO);
-                defaultDelivery.setItemDeliveryOptions(itemDeliveryOptions);
+                defaultDelivery.setItemDeliverySettings(itemDeliverySettings);
                 defaultDelivery.setOpen(true);
                 defaultDelivery.setTitle("System demo delivery");
                 itemDeliveryDao.persist(defaultDelivery);

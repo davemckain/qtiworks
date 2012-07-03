@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.instructor.domain;
+package uk.ac.ed.ph.qtiworks.web.domain;
 
 import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
 
@@ -44,10 +44,22 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author David McKain
  */
-public final class UploadAssessmentPackageCommand {
+public class StandaloneDeliveryCommand {
+
+    private long dsid;
 
     @MultipartFileExists
     private MultipartFile file;
+
+
+    public long getDsid() {
+        return dsid;
+    }
+
+    public void setDsid(final long dsid) {
+        this.dsid = dsid;
+    }
+
 
     public MultipartFile getFile() {
         return file;

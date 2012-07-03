@@ -34,8 +34,11 @@
 package uk.ac.ed.ph.qtiworks.tools.services;
 
 import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import javax.annotation.Resource;
@@ -63,18 +66,88 @@ public class BootstrapServices {
     @Resource
     private InstructorUserDao instructorUserDao;
 
-    public InstructorUser createProjectTeamUser(final String loginName, final String firstName, final String lastName, final String emailAddress) {
-        final InstructorUser user = new InstructorUser();
-        user.setLoginName(loginName);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmailAddress(emailAddress);
-        user.setPasswordDigest(ServiceUtilities.computePasswordDigest(qtiWorksSettings.getBootstrapUserPassword()));
-        user.setSysAdmin(true);
-        instructorUserDao.persist(user);
-        logger.info("Creating sysadmin user {}", user);
-        return user;
+    @Resource
+    private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
+    public InstructorUser createInternalSystemUser(final String loginName, final String firstName,
+            final String lastName) {
+        final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
+                qtiWorksSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
+        logger.info("Created internal system user {}", user);
+        return user;
     }
 
+    public InstructorUser createProjectTeamUser(final String loginName, final String firstName,
+            final String lastName, final String emailAddress) {
+        final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
+                emailAddress, qtiWorksSettings.getBootstrapUserPassword(), true, false);
+        logger.info("Created project team user {}", user);
+        return user;
+    }
+
+    private InstructorUser createUserIfRequired(final String loginName, final String firstName,
+            final String lastName, final String emailAddress, final String password,
+            final boolean sysAdmin, final boolean loginDisabled) {
+        InstructorUser result = instructorUserDao.findByLoginName(loginName);
+        if (result==null) {
+            result = new InstructorUser();
+            result.setLoginName(loginName);
+            result.setFirstName(firstName);
+            result.setLastName(lastName);
+            result.setEmailAddress(emailAddress);
+            result.setPasswordDigest(ServiceUtilities.computePasswordDigest(password));
+            result.setSysAdmin(sysAdmin);
+            result.setLoginDisabled(loginDisabled);
+            instructorUserDao.persist(result);
+        }
+        return result;
+    }
+
+    public void setupSystemDefaults() {
+        /* Create system defalt user */
+        final InstructorUser systemDefaultUser = createInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
+                DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
+
+        /* Add some default delivery settings (if they don't already exist) */
+        if (itemDeliverySettingsDao.getFirstForOwner(systemDefaultUser)==null) {
+            importDefaultDeliverySettings(systemDefaultUser);
+        }
+    }
+
+    private void importDefaultDeliverySettings(final InstructorUser systemDefaultUser) {
+        /* Full-featured settings */
+        final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
+        fullSettings.setAllowClose(true);
+        fullSettings.setAllowPlayback(true);
+        fullSettings.setAllowReinitWhenClosed(true);
+        fullSettings.setAllowReinitWhenInteracting(true);
+        fullSettings.setAllowResetWhenClosed(true);
+        fullSettings.setAllowResetWhenInteracting(true);
+        fullSettings.setAllowResult(true);
+        fullSettings.setAllowSolutionWhenClosed(true);
+        fullSettings.setAllowSolutionWhenInteracting(true);
+        fullSettings.setAllowSource(true);
+        fullSettings.setAuthorMode(true);
+        fullSettings.setMaxAttempts(0);
+        fullSettings.setPublic(true);
+        fullSettings.setOwner(systemDefaultUser);
+        fullSettings.setTitle("Example QTI debugging settings");
+        fullSettings.setPrompt("These delivery settings let the candidate do pretty much anything, "
+                + "so might be very useful for debugging QTI items. "
+                + "Just remember that some features will only make sense if the item has been authored to support it, "
+                + "such as model solutions and re-initialisation.");
+        itemDeliverySettingsDao.persist(fullSettings);
+
+        /* Summative example settings */
+        final ItemDeliverySettings summativeSettings = new ItemDeliverySettings();
+        summativeSettings.setAllowClose(true);
+        summativeSettings.setMaxAttempts(1);
+        summativeSettings.setPublic(true);
+        summativeSettings.setOwner(systemDefaultUser);
+        summativeSettings.setTitle("Example summative settings");
+        summativeSettings.setPrompt("These delivery settings allow the candidate to make only 1 attempt "
+                + "at the item, and lock down many of the optional features. You might use something like "
+                + "this for summative assessment.");
+        itemDeliverySettingsDao.persist(summativeSettings);
+    }
 }

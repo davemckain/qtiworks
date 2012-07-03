@@ -3,11 +3,11 @@
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
-Form for creating a new Item Delivery Options
+Form for creating a new Item Delivery settings
 
 Model:
 
-itemDeliveryOptions - form backing template
+itemDeliverySettings - form backing template
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -15,7 +15,7 @@ itemDeliveryOptions - form backing template
 
   <h2>Create Item Delivery Configuration</h2>
 
-  <form:form method="post" acceptCharset="UTF-8" commandName="itemDeliveryOptions">
+  <form:form method="post" acceptCharset="UTF-8" commandName="itemDeliverySettings">
     <form:errors element="div" cssClass="error" path="*"/>
     (<span class="required">*</span> denotes a required field.)
 

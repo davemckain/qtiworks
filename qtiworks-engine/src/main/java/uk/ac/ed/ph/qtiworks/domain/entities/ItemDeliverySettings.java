@@ -61,7 +61,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Type;
 
 /**
- * Specifies options controlling the delivery of an {@link AssessmentItem} to a group of candidates.
+ * Specifies settings controlling the delivery of an {@link AssessmentItem} to a group of candidates.
  * <p>
  * NB: This is also used a command/template, with separate validation.
  * <p>
@@ -71,20 +71,25 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="item_delivery_options")
-@SequenceGenerator(name="itemDeliveryOptionsSequence", sequenceName="item_delivery_options_sequence", initialValue=1, allocationSize=5)
+@Table(name="item_delivery_settings")
+@SequenceGenerator(name="itemDeliverySettingsSequence", sequenceName="item_delivery_settings_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
-    @NamedQuery(name="ItemDeliveryOptions.getForOwner",
-            query="SELECT do"
-                + "  FROM ItemDeliveryOptions do"
-                + "  WHERE do.owner = :user"
+    @NamedQuery(name="ItemDeliverySettings.getAllPublicSettings",
+            query="SELECT ds"
+                + "  FROM ItemDeliverySettings ds"
+                + "  WHERE ds.isPublic IS TRUE"
                 + "  ORDER BY creationTime"),
-    @NamedQuery(name="ItemDeliveryOptions.countForOwner",
-            query="SELECT COUNT(do)"
-                + "  FROM ItemDeliveryOptions do"
-                + "  WHERE do.owner = :user")
+    @NamedQuery(name="ItemDeliverySettings.getForOwner",
+            query="SELECT ds"
+                + "  FROM ItemDeliverySettings ds"
+                + "  WHERE ds.owner = :user"
+                + "  ORDER BY creationTime"),
+    @NamedQuery(name="ItemDeliverySettings.countForOwner",
+            query="SELECT COUNT(ds)"
+                + "  FROM ItemDeliverySettings ds"
+                + "  WHERE ds.owner = :user")
 })
-public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
+public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
     // These properties would probably apply to both items and tests
@@ -92,8 +97,8 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
     private static final long serialVersionUID = 2631174138240856511L;
 
     @Id
-    @GeneratedValue(generator="itemDeliveryOptionsSequence")
-    @Column(name="doid")
+    @GeneratedValue(generator="itemDeliverySettingsSequence")
+    @Column(name="dsid")
     private Long id;
 
     /** {@link User} who owns these options */
@@ -114,6 +119,11 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="title")
     private String title;
+
+    /** Available to all users */
+    @Basic(optional=false)
+    @Column(name="public")
+    private boolean isPublic;
 
     //------------------------------------------------------------
     // Next ones are probably for items only
@@ -225,6 +235,15 @@ public class ItemDeliveryOptions implements BaseEntity, TimestampedOnCreation {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(final boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
 

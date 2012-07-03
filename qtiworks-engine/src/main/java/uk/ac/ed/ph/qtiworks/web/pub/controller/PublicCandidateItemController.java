@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
@@ -227,10 +228,22 @@ public class PublicCandidateItemController {
     @RequestMapping(value="/session/{xid}/terminate", method=RequestMethod.POST)
     public String terminateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        candidateControllerService.terminateCandidateSession(xid);
+        final CandidateItemSession candidateSession = candidateControllerService.terminateCandidateSession(xid);
+        final ItemDeliveryType itemDeliveryType = candidateSession.getItemDelivery().getItemDeliveryType();
 
-        /* Go back to the public item list */
-        return redirectToListing();
+        /* Redirect somewhere sensible.
+         * TODO: We should probably allow the redirect to be specified explicitly!
+         */
+        String view;
+        if (itemDeliveryType==ItemDeliveryType.SYSTEM_DEMO) {
+            /* (Trying a sample) */
+            view = redirectToListing();
+        }
+        else {
+            /* (This was a "upload & run", so go somewhere sensible) */
+            view = "redirect:/";
+        }
+        return view;
     }
 
     //----------------------------------------------------
