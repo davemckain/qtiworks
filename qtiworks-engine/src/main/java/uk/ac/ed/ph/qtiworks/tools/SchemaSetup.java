@@ -64,12 +64,15 @@ public final class SchemaSetup {
         ctx.register(JpaSetupConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
         ctx.refresh();
 
+        logger.info("Added system default user and default public options");
+        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
+        bootstrapServices.setupSystemDefaults();
+
         logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
         sampleResourceImporter.importQtiSamples();
 
         logger.info("Creating accounts for project team");
-        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
         bootstrapServices.createProjectTeamUser("dmckain", "David", "McKain", "david.mckain@ed.ac.uk");
         bootstrapServices.createProjectTeamUser("suem", "Sue", "Milne", "sue@elandweb.co.uk");
         bootstrapServices.createProjectTeamUser("niallb", "Niall", "Barr", "niall.barr@glasgow.ac.uk");

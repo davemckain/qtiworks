@@ -61,9 +61,12 @@ public final class DomainConstants {
 
     //----------------------------------------------
 
+    public static final String QTI_DEFAULT_OWNER_LOGIN_NAME = "qtiworks";
+    public static final String QTI_DEFAULT_OWNER_FIRST_NAME = "QTI";
+    public static final String QTI_DEFAULT_OWNER_LAST_NAME = "Works";
+
     public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
     public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Works";
-    public static final String QTI_SAMPLE_OWNER_EMAIL_ADDRESS = "Works";
+    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
 
 }

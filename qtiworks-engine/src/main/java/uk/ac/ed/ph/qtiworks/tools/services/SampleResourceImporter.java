@@ -34,11 +34,9 @@
 package uk.ac.ed.ph.qtiworks.tools.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
@@ -97,6 +95,9 @@ public class SampleResourceImporter {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
+    private BootstrapServices bootstrapServices;
+
+    @Resource
     private AssessmentDao assessmentDao;
 
     @Resource
@@ -111,12 +112,6 @@ public class SampleResourceImporter {
     @Resource
     private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
-    @Resource
-    private InstructorUserDao instructorUserDao;
-
-    @Resource
-    private QtiWorksSettings qtiWorksSettings;
-
     //-------------------------------------------------
 
     /**
@@ -125,7 +120,8 @@ public class SampleResourceImporter {
      */
     public void importQtiSamples() {
         /* Create sample owner if required */
-        final InstructorUser sampleOwner = importSampleOwnerUserIfRequired();
+        final InstructorUser sampleOwner = bootstrapServices.createInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
+                DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
 
         /* Set up sample ItemDeliverySettings */
         final Map<DeliveryStyle, ItemDeliverySettings> itemDeliverySettingsMap = importDeliverySettings(sampleOwner);
@@ -145,23 +141,6 @@ public class SampleResourceImporter {
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
             importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, itemDeliverySettingsMap);
         }
-    }
-
-    private InstructorUser importSampleOwnerUserIfRequired() {
-        InstructorUser sampleOwner = instructorUserDao.findByLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
-        if (sampleOwner==null) {
-            sampleOwner = new InstructorUser();
-            sampleOwner.setLoginName(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME);
-            sampleOwner.setFirstName(DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME);
-            sampleOwner.setLastName(DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
-            sampleOwner.setEmailAddress(qtiWorksSettings.getEmailAdminAddress());
-            sampleOwner.setPasswordDigest(ServiceUtilities.computePasswordDigest("Doesn't matter as login to this account is disabled"));
-            sampleOwner.setLoginDisabled(true);
-            sampleOwner.setSysAdmin(false);
-            instructorUserDao.persist(sampleOwner);
-            logger.info("Created User {} to own the sample assessments", sampleOwner);
-        }
-        return sampleOwner;
     }
 
     private List<SampleCategory> getExistingSampleCategories() {

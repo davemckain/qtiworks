@@ -74,6 +74,11 @@ import org.hibernate.annotations.Type;
 @Table(name="item_delivery_settings")
 @SequenceGenerator(name="itemDeliverySettingsSequence", sequenceName="item_delivery_settings_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
+    @NamedQuery(name="ItemDeliverySettings.getAllPublicSettings",
+            query="SELECT ds"
+                + "  FROM ItemDeliverySettings ds"
+                + "  WHERE ds.isPublic IS TRUE"
+                + "  ORDER BY creationTime"),
     @NamedQuery(name="ItemDeliverySettings.getForOwner",
             query="SELECT ds"
                 + "  FROM ItemDeliverySettings ds"

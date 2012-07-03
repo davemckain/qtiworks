@@ -69,6 +69,11 @@ public class ItemDeliverySettingsDao extends GenericDao<ItemDeliverySettings> {
         return extractCountResult(query);
     }
 
+    public List<ItemDeliverySettings> getAllPublicSettings() {
+        final TypedQuery<ItemDeliverySettings> query = em.createNamedQuery("ItemDeliverySettings.getAllPublicSettings", ItemDeliverySettings.class);
+        return query.getResultList();
+    }
+
     public List<ItemDeliverySettings> getForOwner(final User user) {
         final TypedQuery<ItemDeliverySettings> query = em.createNamedQuery("ItemDeliverySettings.getForOwner", ItemDeliverySettings.class);
         query.setParameter("user", user);

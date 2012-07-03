@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.web.pub.controller;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
@@ -50,6 +51,8 @@ import uk.ac.ed.ph.qtiworks.web.domain.StandaloneDeliveryCommand;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -79,10 +82,24 @@ public class PublicStandaloneItemRunner {
     @Resource
     private AssessmentCandidateService assessmentCandidateService;
 
+    @Resource
+    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+
+    @ModelAttribute
+    public void setupDeliverySettings(final Model model) {
+        final List<ItemDeliverySettings> itemDeliverySettingsList = itemDeliverySettingsDao.getAllPublicSettings();
+        model.addAttribute("itemDeliverySettingsList", itemDeliverySettingsList);
+    }
+
+    //--------------------------------------------------------------------
+
     @RequestMapping(value="/standalonerunner", method=RequestMethod.GET)
     public String showUploadAndRunForm(final Model model) {
         final StandaloneDeliveryCommand command = new StandaloneDeliveryCommand();
-        command.setDsid(1L); /* FIXME: Make this more clever */
+
+        @SuppressWarnings("unchecked")
+        final List<ItemDeliverySettings> itemDeliverySettingsList = (List<ItemDeliverySettings>) model.asMap().get("itemDeliverySettingsList");
+        command.setDsid(itemDeliverySettingsList.get(0).getId());
 
         model.addAttribute(command);
         return "public/standalonerunner/uploadForm";

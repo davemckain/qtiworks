@@ -7,7 +7,8 @@ Validator service submission form
 
 Model attributes:
 
-standaloneDeliveryCommand:
+standaloneDeliveryCommand
+itemDeliverySettingsList
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -26,13 +27,24 @@ standaloneDeliveryCommand:
         <dd>
           <form:input path="file" type="file"/>
         </dd>
-        <dt><label for="deliverySettings">Select delivery configuration:</label></dt>
+        <dt><label for="deliverySettings">Select delivery settings:</label></dt>
         <dd>
-          <form:input path="dsid" type="text"/>
+          (NB: You can create your own delivery settings if you log in.)
+          <ul>
+            <c:forEach var="ds" items="${itemDeliverySettingsList}">
+              <c:set var="checked" value="${standaloneDeliveryCommand.dsid==ds.id}"/>
+              <li>
+              <input type="radio" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
+                ${ds.title}
+                <br />
+                ${ds.prompt}
+              </li>
+            </c:forEach>
+          </ul>
         </dd>
-        <dt><label for="submit">Hit "Upload and Validate!"</label></dt>
+        <dt><label for="submit">Hit "Upload and Run!"</label></dt>
         <dd>
-          <input id="submit" name="submit" type="submit" value="Upload and Validate!">
+          <input id="submit" name="submit" type="submit" value="Upload and Run!">
         </dd>
       </dl>
     </form:form>
