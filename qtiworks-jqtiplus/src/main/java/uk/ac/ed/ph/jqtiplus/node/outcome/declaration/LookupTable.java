@@ -54,7 +54,7 @@ import java.util.List;
  * how the response value is mapped onto A target numeric value.
  * <p>
  * The transformation takes place using the lookupOutcomeValue rule within responseProcessing or outcomeProcessing.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class LookupTable extends AbstractNode {
@@ -67,7 +67,7 @@ public abstract class LookupTable extends AbstractNode {
     /** Name of defaultValue attribute in xml schema. */
     public static final String ATTR_DEFAULT_VALUE_NAME = "defaultValue";
 
-    public LookupTable(OutcomeDeclaration parent, String localName) {
+    public LookupTable(final OutcomeDeclaration parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_DEFAULT_VALUE_NAME, getTargetValueBaseType(), false));
@@ -80,7 +80,7 @@ public abstract class LookupTable extends AbstractNode {
 
     /**
      * Gets required baseType of target value.
-     * 
+     *
      * @return required baseType of target value
      */
     public BaseType getTargetValueBaseType() {
@@ -89,7 +89,7 @@ public abstract class LookupTable extends AbstractNode {
 
     /**
      * Gets value of defaultValue attribute.
-     * 
+     *
      * @return value of defaultValue attribute
      * @see #setDefaultValue
      */
@@ -99,32 +99,32 @@ public abstract class LookupTable extends AbstractNode {
 
     /**
      * Sets new value of defaultValue attribute.
-     * 
+     *
      * @param defaultValue new value of defaultValue attribute
      * @see #getDefaultValue
      */
-    public void setDefaultValue(SingleValue defaultValue) {
+    public void setDefaultValue(final SingleValue defaultValue) {
         getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }
 
     /**
      * Gets lookupTableEntry children.
-     * 
+     *
      * @return lookupTableEntry children
      */
     public abstract List<? extends LookupTableEntry> getLookupEntries();
 
     /**
      * Gets target value for given source value.
-     * 
+     *
      * @param sourceValue given source value
      * @return target value for given source value
      */
-    public SingleValue getTargetValue(NumberValue sourceValue) {
+    public SingleValue getTargetValue(final NumberValue sourceValue) {
         SingleValue targetValue = getDefaultValue();
         if (targetValue == null) {
             if (getParent().getCardinality().isSingle() && getParent().getBaseType().isInteger()) {
-                targetValue = new IntegerValue(0);
+                targetValue = IntegerValue.ZERO;
             }
             else if (getParent().getCardinality().isSingle() && getParent().getBaseType().isFloat()) {
                 targetValue = new FloatValue(0);
@@ -135,7 +135,7 @@ public abstract class LookupTable extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         final Cardinality cardinality = getParent().getCardinality();
@@ -151,7 +151,7 @@ public abstract class LookupTable extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         for (int i = 0; i < getLookupEntries().size(); i++) {

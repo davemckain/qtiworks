@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * words, the size of the container. If the sub-expression is NULL the result is 0.
  * <p>
  * This operator can be used for determining how many choices were selected in A multiple-response choiceInteraction, for example.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -57,14 +57,14 @@ public class ContainerSize extends AbstractFunctionalExpression {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "containerSize";
 
-    public ContainerSize(ExpressionParent parent) {
+    public ContainerSize(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected IntegerValue evaluateSelf(Value[] childValues) {
+    protected IntegerValue evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
-            return new IntegerValue(0);
+            return IntegerValue.ZERO;
         }
 
         final int size = ((ListValue) childValues[0]).size();
