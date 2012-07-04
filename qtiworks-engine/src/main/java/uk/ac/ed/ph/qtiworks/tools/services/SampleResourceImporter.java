@@ -355,8 +355,11 @@ public class SampleResourceImporter {
         assessment.setPublic(true);
         assessment.setSampleCategory(sampleCategory);
 
-        /* FIXME: This is not great! */
-        assessment.setName(ServiceUtilities.trimString(qtiSampleAssessment.getAssessmentHref(), DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
+        /* We'll use last part of href as assessment name.
+         * This works OK as all of our samples are of the form set/name.xml */
+        final String assessmentHref = qtiSampleAssessment.getAssessmentHref();
+        final String assessmentName = assessmentHref.replaceFirst("^.+/", "");
+        assessment.setName(ServiceUtilities.trimString(assessmentName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
 
         /* Guess a title */
         final String guessedTitle = assessmentManagementService.guessAssessmentTitle(assessmentPackage);

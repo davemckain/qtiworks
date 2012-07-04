@@ -29,7 +29,7 @@ uploadAssessmentPackageCommand:
     <form:form id="uploadForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
 
       <%-- Show any validation errors discovered --%>
-      <form:errors element="div" cssClass="error" path="*"/>
+      <form:errors element="div" cssClass="formErrors" path="*"/>
 
       <fieldset>
         <div class="grid_1">
