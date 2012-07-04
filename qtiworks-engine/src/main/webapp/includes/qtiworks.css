@@ -5,12 +5,46 @@ All Rights Reserved
 
 ************************************************************/
 
-header {
-  font-family: 'Comfortaa', cursive;
+/* General */
+
+body {
+  font-family: 'Open Sans', sans-serif;
 }
 
-#content {
-  font-family: 'Open Sans', sans-serif;
+/* Page header */
+
+header {
+  x-background-color: #25476c;
+  x-border-bottom: #cad8e5 10px solid;
+  height: 70px;
+}
+
+header h1 {
+  x-color: white;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 40px;
+  line-height: 40px;
+  padding: 11px 0.2em;
+}
+
+header h1 a, header h1 a:hover {
+  x-color: white;
+  color: black;
+  text-decoration: none;
+}
+
+/* Footer */
+
+footer {
+  margin-top: 2em;
+  border-top: 1px solid #cccccc;
+  padding-top: 1em;
+}
+
+/* Content area */
+
+#contentArea {
+  margin-top: 2em;
 }
 
 .hints {

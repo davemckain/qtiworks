@@ -20,33 +20,28 @@ All Rights Reserved
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="author" content="David McKain">
-    <meta name="publisher" content="The University of Edinburgh">
     <title>QTIWorks - <c:out value="${title}" default="QTIWorks"/></title>
-    <!-- FIXME: Need HTTPS versions of the following 3 libs, or pull them in -->
+    <%-- FIXME: Need HTTPS versions of the following 3 libs, or pull them in --%>
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/reset.css">
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/text.css">
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/960.css">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Comfortaa:700">
-    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700|Ubuntu:500">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
     <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-    <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}"></script>
+    <%-- TODO: Move the next script into a single library --%>
+    <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
   </head>
   <body>
     <header>
-      <h1>QTIWorks</h1>
+      <h1><a href="${utils:internalLink(pageContext, '/')}">QTIWorks</a></h1>
     </header>
-    <div id="contentArea">
-      <%-- Main content goes in this container --%>
-      <div id="content" class="content">
+    <div id="contentArea" class="container_12">
 
-        <jsp:doBody/>
+      <jsp:doBody/>
 
-      </div>
     </div>
     <footer>
       <div id="copyright">
