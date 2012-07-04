@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.BaseValue;
@@ -59,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.DurationLt;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Equal;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.EqualRounded;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.FieldValue;
+import uk.ac.ed.ph.jqtiplus.node.expression.operator.Gcd;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Gt;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Gte;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Index;
@@ -67,6 +67,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerDivide;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerModulus;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.IntegerToFloat;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.IsNull;
+import uk.ac.ed.ph.jqtiplus.node.expression.operator.Lcm;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Lt;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Lte;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Match;
@@ -114,7 +115,7 @@ import java.util.Set;
  * This class creates all supported expressions from given QTI_CLASS_NAME.
  * <p>
  * Supported expressions: and, anyN, baseValue, containerSize, contains, correct, customOperator, default, delete, divide, durationGTE, durationLT, equal,
- * equalRounded, fieldValue, gt, gte, index, inside, integerDivide, integerModulus, integerToFloat, isNull, lt, lte, mapResponse, mapResponsePoint, match,
+ * equalRounded, fieldValue, gcd, gt, gte, index, inside, integerDivide, integerModulus, integerToFloat, isNull, lcm, lt, lte, mapResponse, mapResponsePoint, match,
  * member, multiple, not, null, numberCorrect, numberIncorrect, numberPresented, numberResponded, numberSelected, or, ordered, outcomeMaximum, outcomeMinimum,
  * patternMatch, power, product, random, randomFloat, randomInteger, round, stringMatch, substring, subtract, sum, testVariables, truncate, variable,
  * customOperator, mapResponse, mapResponsePoint.
@@ -393,6 +394,23 @@ public enum ExpressionType {
     },
 
     /**
+     * Creates gcd expression.
+     *
+     * @see Gcd
+     */
+    GCD(Gcd.QTI_CLASS_NAME, 1, null
+            , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
+            , new BaseType[] { BaseType.INTEGER }
+            , new Cardinality[] { Cardinality.SINGLE }
+            , new BaseType[] { BaseType.INTEGER }) {
+
+        @Override
+        public Expression create(final ExpressionParent parent) {
+            return new Gcd(parent);
+        }
+    },
+
+    /**
      * Creates gt expression.
      *
      * @see Gt
@@ -525,6 +543,23 @@ public enum ExpressionType {
         @Override
         public Expression create(final ExpressionParent parent) {
             return new IsNull(parent);
+        }
+    },
+
+    /**
+     * Creates lcm expression.
+     *
+     * @see Lcm
+     */
+    LCM(Lcm.QTI_CLASS_NAME, 1, null
+            , new Cardinality[] { Cardinality.SINGLE, Cardinality.MULTIPLE, Cardinality.ORDERED }
+            , new BaseType[] { BaseType.INTEGER }
+            , new Cardinality[] { Cardinality.SINGLE }
+            , new BaseType[] { BaseType.INTEGER }) {
+
+        @Override
+        public Expression create(final ExpressionParent parent) {
+            return new Lcm(parent);
         }
     },
 

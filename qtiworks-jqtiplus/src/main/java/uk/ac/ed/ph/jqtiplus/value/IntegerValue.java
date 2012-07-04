@@ -54,6 +54,8 @@ public final class IntegerValue extends NumberValue {
 
     private static final long serialVersionUID = -2229184387480773991L;
 
+    public static final IntegerValue ZERO = new IntegerValue(0);
+
     private final int intValue;
 
     /**

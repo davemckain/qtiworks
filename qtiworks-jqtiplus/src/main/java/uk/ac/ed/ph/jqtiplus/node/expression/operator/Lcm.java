@@ -37,66 +37,68 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.math.BigInteger;
+
 /**
- * Convenience base class for expressions like <tt>sum</tt>, <tt>max</tt> that
- * are evaluated by "mapping" over their values in a certain way.
+ * Implementation of the <tt>lcm</tt> expression
  *
  * @author David McKain
  */
-public abstract class MathMapExpression extends AbstractFunctionalExpression {
+public final class Lcm extends AbstractFunctionalExpression {
 
-    private static final long serialVersionUID = 5311729106818194456L;
+    private static final long serialVersionUID = 4387596452540364752L;
 
-    public MathMapExpression(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    /** Name of this class in xml schema. */
+    public static final String QTI_CLASS_NAME = "lcm";
+
+    public Lcm(final ExpressionParent parent) {
+        super(parent, QTI_CLASS_NAME);
     }
 
     @Override
     public final BaseType[] getProducedBaseTypes(final ValidationContext context) {
-        return getProducedNumericalBaseTypes(context);
+        return new BaseType[] { BaseType.INTEGER };
     }
 
     @Override
     protected final Value evaluateSelf(final Value[] childValues) {
-        BaseType baseType = BaseType.INTEGER;
-        double running = initialValue();
-
+        BigInteger runningLcm = BigInteger.valueOf(1L);
         for (final Value childValue : childValues) {
+            /* (Spec says any NULL -> NULL) */
             if (childValue.isNull()) {
                 return NullValue.INSTANCE;
             }
 
-            if (!childValue.getBaseType().isInteger()) {
-                baseType = BaseType.FLOAT;
-            }
             if (childValue.getCardinality().isSingle()) {
-                running = foldr(running, ((NumberValue) childValue).doubleValue());
+                final int childInteger = ((IntegerValue) childValue).intValue();
+                if (childInteger==0) {
+                    return IntegerValue.ZERO;
+                }
+                runningLcm = lcm(runningLcm, BigInteger.valueOf(childInteger));
             }
             else {
                 final ListValue container = (ListValue) childValue;
                 for (int i = 0; i < container.size(); i++) {
-                    running = foldr(running, ((NumberValue) container.get(i)).doubleValue());
+                    final int descendantInteger = ((IntegerValue) container.get(i)).intValue();
+                    if (descendantInteger==0) {
+                        return IntegerValue.ZERO;
+                    }
+                    runningLcm = lcm(runningLcm, BigInteger.valueOf(descendantInteger));
                 }
             }
         }
-
-        return baseType.isInteger() ? new IntegerValue((int) running) : new FloatValue(running);
+        return new IntegerValue(runningLcm.intValue());
     }
 
-    /** Subclasses should return the initial running "total" to use */
-    protected abstract double initialValue();
-
-    /**
-     * Subclasses should fill in to "fold" the current running "total"
-     * with a new "value"
-     */
-    protected abstract double foldr(double running, double value);
-
+    /* (This is not the cleverest algorithm) */
+    private static BigInteger lcm(final BigInteger a, final BigInteger b) {
+        final BigInteger gcd = a.gcd(b);
+        final BigInteger product = a.multiply(b);
+        return product.abs().divide(gcd);
+    }
 }
