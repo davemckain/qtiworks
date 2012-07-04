@@ -45,10 +45,6 @@ public final class MathAssessSampleSet {
     private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/Diff-001.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml"),
@@ -59,6 +55,8 @@ public final class MathAssessSampleSet {
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD06-Diff.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01CP.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01SR.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/Diff-001.xml"),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/diag00001.xml")
     );
     
