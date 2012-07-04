@@ -14,39 +14,105 @@ itemDeliverySettingsList
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="QTI Validator">
 
-  <h2>Run Assessment Item</h2>
+  <div class="container_12">
+    <h2>QTI Quick Try</h2>
 
-  <div class="uploadForm">
+    <div class="hints">
+      <p>
+        This lets you quickly upload, validate then try out a QTI Assessment
+        Item, using some pre-defined "delivery settings". (Tests will come
+        later!)
+      </p>
+      <p>
+        If you log in, you'll be able to do much more.
+      </p>
+    </div>
+
     <form:form id="uploadForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="standaloneDeliveryCommand">
 
       <%-- Show any validation errors discovered --%>
       <form:errors element="div" cssClass="error" path="*"/>
 
-      <dl>
-        <dt><label for="submissionFile">Select a Content Package or Assessment Item XML file to upload and validate:</label></dt>
-        <dd>
+      <fieldset>
+        <div class="grid_1">
+          <div class="workflowStep">1</div>
+        </div>
+        <div class="grid_6">
+          <label for="file">Select a Content Package ZIP file or Assessment Item XML file to upload and validate:</label>
+          <br/>
           <form:input path="file" type="file"/>
-        </dd>
-        <dt><label for="deliverySettings">Select delivery settings:</label></dt>
-        <dd>
-          (NB: You can create your own delivery settings if you log in.)
-          <ul>
+        </div>
+        <div class="grid_5">
+          <aside>
+            <p>
+              You may upload any of the following to the validator:
+            </p>
+            <ul>
+              <li>An IMS Content Package containing a QTI 2.1 Assessment Item plus any related resources, such as images, response processing templates...</li>
+              <li>An IMS Content Package containing a QTI 2.1 Assessment Test, its Assessment Items, plus any related resources.</li>
+              <li>A self-contained QTI 2.1 Assessment Item XML file.</li>
+            </ul>
+          </aside>
+        </div>
+      </fieldset>
+      <div class="clear"></div>
+
+      <fieldset>
+        <div class="grid_1">
+          <div class="workflowStep">2</div>
+        </div>
+        <div class="grid_6">
+          <label for="deliverySettings">Select delivery settings:</label>
+          <br/>
+          <ul class="dsSelector">
             <c:forEach var="ds" items="${itemDeliverySettingsList}">
               <c:set var="checked" value="${standaloneDeliveryCommand.dsid==ds.id}"/>
               <li>
-              <input type="radio" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
-                ${ds.title}
-                <br />
-                ${ds.prompt}
+                <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
+                <label for="dsid${ds.id}" class="dsTitle">
+                  ${ds.title}
+                </label>
+                <div class="dsPrompt">
+                  ${ds.prompt}
+                </div>
               </li>
             </c:forEach>
           </ul>
-        </dd>
-        <dt><label for="submit">Hit "Upload and Run!"</label></dt>
-        <dd>
-          <input id="submit" name="submit" type="submit" value="Upload and Run!">
-        </dd>
-      </dl>
+        </div>
+        <div class="grid_5">
+          <aside>
+            <p>
+              These "delivery settings" control how your assessment should be delivered.
+              We have picked a few basic examples for you to choose from. You can create
+              and manage your own delivery settings if you log in.
+            </p>
+            <p id="deliverySettingsHoverInfo"></p>
+            <script type="text/javascript">
+              $(document).ready(function() {
+                  $('.dsTitle').hover(function() {
+                    var text = $(this).next().text();
+                    $('#deliverySettingsHoverInfo').text(text);
+                  });
+                  $('.dsSelector').hover(function() {}, function() {
+                    $('#deliverySettingsHoverInfo').text('');
+                  });
+              });
+            </script>
+          </aside>
+        </div>
+      </fieldset>
+
+      <div class="clear"></div>
+      <fieldset>
+        <div class="grid_1">
+          <div class="workflowStep">3</div>
+        </div>
+        <div class="grid_11">
+          <label for="submit">Hit "Upload and Validate!"</label>
+          <br/>
+          <input id="submit" name="submit" type="submit" value="Upload and Validate!"/>
+        </div>
+      </fieldset>
     </form:form>
   </div>
 

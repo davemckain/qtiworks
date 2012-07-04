@@ -78,12 +78,12 @@ import org.hibernate.annotations.Type;
             query="SELECT ds"
                 + "  FROM ItemDeliverySettings ds"
                 + "  WHERE ds.isPublic IS TRUE"
-                + "  ORDER BY creationTime"),
+                + "  ORDER BY creationTime, id"),
     @NamedQuery(name="ItemDeliverySettings.getForOwner",
             query="SELECT ds"
                 + "  FROM ItemDeliverySettings ds"
                 + "  WHERE ds.owner = :user"
-                + "  ORDER BY creationTime"),
+                + "  ORDER BY creationTime, id"),
     @NamedQuery(name="ItemDeliverySettings.countForOwner",
             query="SELECT COUNT(ds)"
                 + "  FROM ItemDeliverySettings ds"

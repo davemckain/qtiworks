@@ -12,3 +12,37 @@ header {
 #content {
   font-family: 'Open Sans', sans-serif;
 }
+
+.hints {
+  font-style: italic;
+}
+
+aside {
+  font-size: smaller;
+}
+
+.workflowStep {
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+ul.dsSelector {
+  list-style: none;
+}
+
+ul.dsSelector li {
+  margin: 0;
+  padding: 0;
+}
+
+ul.dsSelector li div.dsPrompt {
+  display: none;
+}
+
+/* Error messages (e.g. bad form data) */
+.error {
+  font-weight: bold;
+  color: red;
+}
