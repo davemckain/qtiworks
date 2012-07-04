@@ -29,7 +29,7 @@ All Rights Reserved
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/960.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,700">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Comfortaa:700">
-    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks-NEW.css')}">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}">
     <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
