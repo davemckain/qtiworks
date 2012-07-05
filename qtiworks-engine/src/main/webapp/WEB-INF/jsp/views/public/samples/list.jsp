@@ -29,13 +29,17 @@ sampleAssessmentMap (SampleCategory -> List<Assessment>)
     <c:set var="assessmentList" value="${entry.value}"/>
     <div class="sampleList">
       <h3><c:out value="${sampleCategory.title}"/></h3>
+      <div class="hints">
+        ${fn:escapeXml(sampleCategory.description)}
+      </div>
       <ul class="sampleList">
         <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">
           <li>
+            <c:if test="${loopStatus.index%2 == 0}">
+              <div class="clear"></div>
+            </c:if>
             <div class="grid_1">
-              <div class="workflowStep">
-                ${loopStatus.index + 1}
-              </div>
+              <div class="workflowStep">${loopStatus.index + 1}</div>
             </div>
             <div class="grid_1 launch">
               <%-- Play option TODO: Create template for this --%>
@@ -49,9 +53,6 @@ sampleAssessmentMap (SampleCategory -> List<Assessment>)
               <span class="title"><c:out value="${assessment.title}"/></span>
             </div>
           </li>
-          <c:if test="${loopStatus.index % 2 == 1}">
-            <div class="clear"></div>
-          </c:if>
         </c:forEach>
       </ul>
       <div class="clear"></div>

@@ -38,7 +38,7 @@ header h1 a, header h1 a:hover {
 footer {
   margin-top: 2em;
   border-top: 1px solid #cccccc;
-  padding-top: 1em;
+  padding: 1em;
 }
 
 /* Content area */
@@ -93,6 +93,7 @@ div.sampleList h3 {
 }
 
 div.sampleList ul {
+  margin-top: 1em;
   list-style: none;
 }
 
