@@ -44,9 +44,20 @@ All Rights Reserved
       <jsp:doBody/>
       <div class="clear"></div>
       <footer>
-        <div id="copyright">
-          <div id="footer-text">
-            <%-- Usual Copyright stuff --%>
+        <div class="grid_4">
+          <ul>
+            <li><a href="http://www.jisc.ac.uk/whatwedo/programmes/elearning/assessmentandfeedback/qtidi.aspx">QTI Delivery Integration (QTIDI)</a></li>
+            <li><a href="https://github.com/davemckain/qtiworks">Source code on github</a></li>
+            <li><a href="http://qtisupport.blogspot.co.uk">QTI Support Blog</a></li>
+            <li><a href="http://www.imsglobal.org/question/">IMS Question &amp; Test Interoperability Specification</a></li>
+          </ul>
+        </div>
+        <div class="grid_4">
+          <div class="logos">
+            <a href="http://www.jisc.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/jisc75.png')}" width="75" height="50" alt="JISC Logo" /></a>
+            <a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uoe.png')}" width="60" height="60" alt="University of Edinburgh Logo" /></a>
+          </div>
+          <div class="copyright">
             <p>
               QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
               <br />
@@ -62,7 +73,6 @@ All Rights Reserved
               with registration number SC005336.
             </p>
           </div>
-          <div class="clearFloat"></div>
         </div>
       </footer>
     </div>

@@ -34,7 +34,7 @@ Top page for public functionality
         <h3>QTI Examples</h3>
         <a href="${utils:internalLink(pageContext, '/web/public/samples/list')}" class="iconButton" title="Samples">&#x2708;</a>
         <p>
-          Browser and run our selection of QTI 2.1 examples.
+          Browse and run our selection of QTI 2.1 examples.
         </p>
       </div>
     </div>

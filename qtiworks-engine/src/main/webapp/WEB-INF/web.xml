@@ -54,7 +54,7 @@ Web deployment descriptor
   <!-- Authentication filter for instructor-only resources -->
   <filter>
     <filter-name>InstructorAuthenticationFilter</filter-name>
-    <filter-class>${qtiworks.web.authn.filter}</filter-class>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFakeAuthenticationFilter</filter-class>
     <!--
     Allowed target values for the above placeholder are:
     <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFormAuthenticationFilter</filter-class>
@@ -68,7 +68,7 @@ Web deployment descriptor
     <!-- Params for InstructorFakeAuthenticationFilter (if used) -->
     <init-param>
       <param-name>fakeLoginName</param-name>
-      <param-value>${qtiworks.web.authn.fake.login}</param-value>
+      <param-value>dmckain</param-value>
     </init-param>
   </filter>
   <filter-mapping>
