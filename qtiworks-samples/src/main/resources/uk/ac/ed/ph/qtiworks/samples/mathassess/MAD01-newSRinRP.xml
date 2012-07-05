@@ -6,7 +6,7 @@
  http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
 	xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="true" timeDependent="false"
 	identifier="MAD01-newSRinRP"
-	title="Rand-ScriptRule-MathEntry-CasCompare - Expand brackets in a(x+b)+cx and simplify">
+	title="Expand brackets in a(x+b)+cx and simplify (randomised with scriptRule, math entry, casCondition)">
 	<!-- This is MAD01-SRinRPRealCode.xml -->
 	<!-- 
 template processing with randomisation using ScriptRule, MathEntryInteraction and casCompare in response processing

@@ -1,4 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="true" identifier="MAD04-ltgt-tVars" timeDependent="false" title="2inputs-template-ScriptRule-CasConditioninRP-FeedbackShowInput - Give value of x where derivative of quadratic is less than 0, greater than 0 " toolName="Mathqurate" toolVersion="0.9.7b" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0"
+  xmlns:m="http://www.w3.org/1998/Math/MathML"
+  xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  adaptive="true"
+  identifier="MAD04-ltgt-tVars"
+  timeDependent="false"
+  title="Give value of x where derivative of quadratic is less than 0, greater than 0"
+  toolName="Mathqurate"
+  toolVersion="0.9.7b"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
     <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE1"/>
     <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE2"/>
     <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
