@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 public final class LanguageSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("Language examples",
+            "These examples demonstrate some uses of QTI in the areas of language. We hope to add some further examples soon!",
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/habenprompt.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/pburg1g.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.LANGUAGE_STANDARD, "language/qcyril2gV2.xml")

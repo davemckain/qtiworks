@@ -43,6 +43,9 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 public final class MathAssessSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
+            "These are the 'MathAssess' examples, which demonstrate the MathAssess QTI extensions "
+            + "that allow you to use the Maxima Computer Algebra system for some very sophisticated "
+            + "assessment.",
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml"),

@@ -43,6 +43,8 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 public final class StandardQtiSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("Standard QTI 2.1 reference examples",
+            "These are the standard QTI 2.1 reference examples that can be downloaded from the IMS website, "
+            + "as well as a few additional ones that have been been useful to try out some other features.",
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.IMS_ADAPTIVE, "ims/adaptive_template.xml", new String[] { "ims/images/red_door.png", "ims/images/green_door.png", "ims/images/blue_door.png", "ims/images/open_goat.png", "ims/images/open_car.png" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.IMS_ADAPTIVE, "ims/adaptive.xml", new String[] { "ims/images/red_door.png", "ims/images/green_door.png", "ims/images/blue_door.png", "ims/images/open_goat.png", "ims/images/open_car.png" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.IMS_STANDARD, "ims/associate.xml"),

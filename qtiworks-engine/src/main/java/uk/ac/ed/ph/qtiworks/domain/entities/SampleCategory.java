@@ -38,10 +38,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Represents the various categories of sample {@link Assessment}s included in the system.
@@ -68,9 +71,17 @@ public class SampleCategory implements BaseEntity {
     @Column(name="id")
     private Long id;
 
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="title")
     private String title;
+
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=false)
+    @Column(name="description")
+    private String description;
 
     //------------------------------------------------------------
 
@@ -91,5 +102,14 @@ public class SampleCategory implements BaseEntity {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 }

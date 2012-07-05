@@ -319,6 +319,7 @@ public class SampleResourceImporter {
             /* Category doesn't exist yet */
             resultingSampleCategory = new SampleCategory();
             resultingSampleCategory.setTitle(sampleCategoryTitle);
+            resultingSampleCategory.setDescription(qtiSampleSet.getDescription());
             logger.info("Creating new sample category {}", sampleCategoryTitle);
             sampleCategoryDao.persist(resultingSampleCategory);
 

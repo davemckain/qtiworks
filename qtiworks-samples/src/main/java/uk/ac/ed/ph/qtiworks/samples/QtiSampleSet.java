@@ -53,14 +53,16 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
     private static final long serialVersionUID = 5889801740586064839L;
     
     private final String title;
+    private final String description;
     private final List<QtiSampleAssessment> assessments;
     
-    public QtiSampleSet(String title, QtiSampleAssessment... assessments) {
-        this(title, Arrays.asList(assessments));
+    public QtiSampleSet(String title, String description, QtiSampleAssessment... assessments) {
+        this(title, description, Arrays.asList(assessments));
     }
     
-    public QtiSampleSet(String title, List<QtiSampleAssessment> assessments) {
+    public QtiSampleSet(String title, String description, List<QtiSampleAssessment> assessments) {
         this.title = title;
+        this.description = description;
         this.assessments = assessments;
     }
     
@@ -68,6 +70,10 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
         return title;
     }
     
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public Iterator<QtiSampleAssessment> iterator() {
         return assessments.iterator();
@@ -84,7 +90,7 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(title, filtered);
+        return new QtiSampleSet(title, description, filtered);
     }
     
     public QtiSampleSet havingFeature(QtiSampleAssessment.Feature feature) {
@@ -94,7 +100,7 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(title, filtered);
+        return new QtiSampleSet(title, description, filtered);
     }
     
     public QtiSampleSet withoutFeature(QtiSampleAssessment.Feature feature) {
@@ -104,7 +110,7 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
                 filtered.add(resource);
             }
         }
-        return new QtiSampleSet(title, filtered);
+        return new QtiSampleSet(title, description, filtered);
     }
     
     @Override
