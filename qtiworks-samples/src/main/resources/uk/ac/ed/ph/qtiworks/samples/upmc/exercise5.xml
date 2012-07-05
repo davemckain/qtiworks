@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+	xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="Plage de cellules" adaptive="false" timeDependent="false"> 
+
+<responseDeclaration identifier="REPONSE0" cardinality="multiple" baseType="identifier" > 
+<correctResponse> 
+<value>Item1</value> 
+</correctResponse> 
+</responseDeclaration> 
+<outcomeDeclaration identifier="FEEDBACK0" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK1" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE0" cardinality="single" baseType="float" /> 
+<itemBody> 
+    <div>
+<em> 
+ 
+</em> 
+<em> 
+ 
+</em> 
+In a spreadsheet, what is the notation corresponding to a group of cells? 
+<choiceInteraction responseIdentifier="REPONSE0" shuffle="true" maxChoices="1"> 
+<simpleChoice identifier="Item0" fixed="false"> 
+AB:56 
+</simpleChoice> 
+<simpleChoice identifier="Item1" fixed="false"> 
+B4:D4 
+</simpleChoice> 
+<simpleChoice identifier="Item2" fixed="false"> 
+(B4;E6) 
+</simpleChoice> 
+<simpleChoice identifier="Item3" fixed="false"> 
+C\$4 
+</simpleChoice> 
+</choiceInteraction> 
+        </div>
+</itemBody> 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<match> 
+<variable identifier="REPONSE0" /> 
+<correct identifier="REPONSE0"/>  
+</match> 
+<setOutcomeValue identifier="FEEDBACK0"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">3.0</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK1"><baseValue baseType="identifier">FEEDBACK1</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">-1.0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+<modalFeedback outcomeIdentifier="FEEDBACK0" identifier="FEEDBACK0" showHide="show"> 
+It is the good answer. 
+<br/></modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK1" identifier="FEEDBACK1" showHide="show"> 
+It is false. 
+<br/></modalFeedback> 
+</assessmentItem> 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+	xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="Styles" adaptive="false" timeDependent="false"> 
+<responseDeclaration identifier="REPONSE0" cardinality="single" baseType="identifier" > 
+<correctResponse> 
+<value>Item3</value> 
+</correctResponse> 
+</responseDeclaration> 
+<outcomeDeclaration identifier="FEEDBACK0" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK1" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE0" cardinality="single" baseType="float" /> 
+<templateDeclaration identifier="i" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" />   
+<templateDeclaration identifier="styles" cardinality="ordered" baseType="string" mathVariable="true" paramVariable="true" />   
+<templateProcessing> 
+<setTemplateValue identifier="styles"><ordered><baseValue baseType="string">Title1</baseValue><baseValue baseType="string">Title2</baseValue><baseValue baseType="string">Title3</baseValue><baseValue baseType="string">Title4</baseValue></ordered></setTemplateValue>   
+<setTemplateValue identifier="i"><randomInteger min="0" max="3" /></setTemplateValue>   
+</templateProcessing> 
+<itemBody><div> 
+<em> 
+ 
+</em> 
+<em> 
+ 
+</em> 
+The style  
+<m:math><m:mi>styles[i]</m:mi></m:math> 
+ is:<br/> 
+ 
+<choiceInteraction responseIdentifier="REPONSE0" shuffle="true" maxChoices="1"> 
+<simpleChoice identifier="Item0" fixed="false"> 
+A style applicable to some words in a sentence 
+</simpleChoice> 
+<simpleChoice identifier="Item1" fixed="false"> 
+A style for characters 
+</simpleChoice> 
+<simpleChoice identifier="Item2" fixed="false"> 
+A style for sections 
+</simpleChoice> 
+<simpleChoice identifier="Item3" fixed="false"> 
+A style for paragraphs  
+</simpleChoice> 
+</choiceInteraction> 
+</div></itemBody> 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<match> 
+<variable identifier="REPONSE0" /> 
+<correct identifier="REPONSE0"/>  
+</match> 
+<setOutcomeValue identifier="FEEDBACK0"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">5.0</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK1"><baseValue baseType="identifier">FEEDBACK1</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">0.0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+<modalFeedback outcomeIdentifier="FEEDBACK0" identifier="FEEDBACK0" showHide="show"> 
+It is the good answer. 
+<br/></modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK1" identifier="FEEDBACK1" showHide="show"> 
+No, it is a style for paragraphs. 
+<br/></modalFeedback> 
+</assessmentItem> 

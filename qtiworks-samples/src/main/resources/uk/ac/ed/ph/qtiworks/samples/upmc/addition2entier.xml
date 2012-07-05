@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+	
+xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="Addition of two integer" adaptive="false" timeDependent="false"> 
+ 
+<responseDeclaration identifier="REPONSE1" cardinality="single" baseType="integer" /> 
+ 
+<outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" /> 
+ 
+<templateDeclaration identifier="a" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" />  
+ 
+<templateDeclaration identifier="b" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" />  
+ 
+<templateDeclaration identifier="SOLUTION1" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" /> 
+ 
+<templateProcessing> 
+ 
+<setTemplateValue identifier="a"><randomInteger min="10" max="100" /></setTemplateValue>  
+<setTemplateValue identifier="b"><randomInteger min="10" max="100" /></setTemplateValue>  
+ 
+<setTemplateValue identifier="SOLUTION1"><sum><variable identifier="a" /><variable identifier="b" /></sum></setTemplateValue> 
+ 
+ 
+<setCorrectResponse identifier="REPONSE1"><variable identifier="SOLUTION1" /></setCorrectResponse> 
+ 
+</templateProcessing> 
+<itemBody> 
+<div>
+<em> 
+ 
+</em> 
+<em> 
+Complete: 
+</em> 
+<m:math><m:mrow><m:mi>a</m:mi><m:mo>+</m:mo><m:mi>b</m:mi></m:mrow><m:mo>=</m:mo></m:math><textEntryInteraction responseIdentifier="REPONSE1" expectedLength="5" /><m:math></m:math> 
+</div>
+</itemBody> 
+ 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<and> 
+<match><variable identifier="REPONSE1" /><correct identifier="REPONSE1" /> 
+</match> 
+</and> 
+<setOutcomeValue identifier="FEEDBACK"><baseValue baseType="identifier">_1V</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE"><baseValue baseType="float">2</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK"><baseValue baseType="identifier">_0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+ 
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="_1V" showHide="show"> 
+bravo, continue<br/></modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="_0" showHide="show"> 
+Sorry, it is wrong<br/><m:math><m:mrow><m:mi>a</m:mi><m:mo>+</m:mo><m:mi>b</m:mi></m:mrow><m:mo>=</m:mo><m:mi>SOLUTION1</m:mi></m:math> 
+ 
+</modalFeedback> 
+</assessmentItem> 

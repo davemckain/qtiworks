@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="Calcul d'une différence de décimaux" adaptive="false" timeDependent="false"> 
+<responseDeclaration identifier="REPONSE0" cardinality="multiple" baseType="identifier" > 
+<correctResponse> 
+<value>Item1</value> 
+</correctResponse> 
+</responseDeclaration> 
+<outcomeDeclaration identifier="FEEDBACK1" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK0" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK2" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK3" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE0" cardinality="single" baseType="float" /> 
+<templateDeclaration identifier="a" cardinality="single" baseType="float" mathVariable="true" paramVariable="true" />  
+<templateDeclaration identifier="b" cardinality="single" baseType="float" mathVariable="true" paramVariable="true" />  
+<templateDeclaration identifier="Choix0" cardinality="single" baseType="float" mathVariable="true" paramVariable="true" /> 
+<templateDeclaration identifier="Choix1" cardinality="single" baseType="float" mathVariable="true" paramVariable="true" /> 
+<templateDeclaration identifier="Choix2" cardinality="single" baseType="float" mathVariable="true" paramVariable="true" /> 
+<templateProcessing> 
+<setTemplateValue identifier="a"><divide><truncate><product><randomFloat min="2.0" max="10.0" /><baseValue baseType="integer">10</baseValue></product></truncate><baseValue baseType="integer">10</baseValue></divide></setTemplateValue>  
+<setTemplateValue identifier="b"><divide><truncate><product><randomFloat min="-9.0" max="-2.0" /><baseValue baseType="integer">10</baseValue></product></truncate><baseValue baseType="integer">10</baseValue></divide></setTemplateValue>  
+<setTemplateValue identifier="Choix0"><sum><variable identifier="a" /><variable identifier="b" /></sum></setTemplateValue> 
+<setTemplateValue identifier="Choix1"><subtract><variable identifier="a" /><variable identifier="b" /></subtract></setTemplateValue> 
+<setTemplateValue identifier="Choix2"><subtract><subtract><baseValue baseType="integer">0</baseValue><variable identifier="a" /></subtract><variable identifier="b" /></subtract></setTemplateValue> 
+</templateProcessing> 
+<itemBody> 
+<div>
+<em> 
+</em> 
+<choiceInteraction responseIdentifier="REPONSE0" shuffle="true" maxChoices="1"> 
+<prompt> 
+<m:math><m:mi>a</m:mi></m:math> 
+-( 
+<m:math><m:mi>b</m:mi></m:math> 
+) is equal to: 
+ 
+</prompt> 
+<simpleChoice identifier="Item0" fixed="false"> 
+<m:math><m:mi>Choix0</m:mi></m:math> 
+</simpleChoice> 
+<simpleChoice identifier="Item1" fixed="false"> 
+<m:math><m:mi>Choix1</m:mi></m:math> 
+</simpleChoice> 
+<simpleChoice identifier="Item2" fixed="false"> 
+<m:math><m:mi>Choix2</m:mi></m:math> 
+</simpleChoice> 
+</choiceInteraction> 
+</div>
+</itemBody> 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<match> 
+<variable identifier="REPONSE0" /> 
+<correct identifier="REPONSE0"/>  
+</match> 
+<setOutcomeValue identifier="FEEDBACK1"><baseValue baseType="identifier">FEEDBACK1</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="identifier">2</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElseIf> 
+<match> 
+<multiple> 
+<baseValue baseType="identifier">Item0</baseValue></multiple> 
+<variable identifier="REPONSE0" /> 
+</match> 
+<setOutcomeValue identifier="FEEDBACK0"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="identifier">0</baseValue></setOutcomeValue> 
+</responseElseIf> 
+<responseElseIf> 
+<match> 
+<multiple> 
+<baseValue baseType="identifier">Item2</baseValue></multiple> 
+<variable identifier="REPONSE0" /> 
+</match> 
+<setOutcomeValue identifier="FEEDBACK2"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="identifier">0</baseValue></setOutcomeValue> 
+</responseElseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK3"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="identifier">0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+<modalFeedback outcomeIdentifier="FEEDBACK1" identifier="FEEDBACK1" showHide="show"> 
+Good answer. 
+</modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK0" identifier="FEEDBACK0" showHide="show"> 
+No, it is false. 
+</modalFeedback> 
+
+</assessmentItem> 

@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
@@ -91,7 +92,8 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
                 MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
         );
     }
     

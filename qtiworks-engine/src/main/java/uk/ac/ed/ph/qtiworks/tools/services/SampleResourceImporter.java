@@ -56,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
@@ -136,6 +137,7 @@ public class SampleResourceImporter {
         final QtiSampleCollection qtiSampleCollection = new QtiSampleCollection(
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
+                UpmcSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {

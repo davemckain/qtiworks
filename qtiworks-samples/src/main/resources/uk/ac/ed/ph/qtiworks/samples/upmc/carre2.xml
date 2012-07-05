@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="cc" adaptive="false" timeDependent="false"> 
+ 
+<responseDeclaration identifier="REPONSE1" cardinality="single" baseType="integer" /> 
+ 
+<outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" /> 
+ 
+<templateDeclaration identifier="a" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" />  
+ 
+<templateDeclaration identifier="SOLUTION1" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" /> 
+ 
+<templateProcessing> 
+ 
+<setTemplateValue identifier="a"><randomInteger min="0" max="100" /></setTemplateValue>  
+ 
+<setTemplateValue identifier="SOLUTION1"><truncate><power><variable identifier="a" /><baseValue baseType='float'>0.5</baseValue></power></truncate></setTemplateValue> 
+ 
+ 
+<setCorrectResponse identifier="REPONSE1"><variable identifier="SOLUTION1" /></setCorrectResponse> 
+ 
+</templateProcessing> 
+<itemBody> 
+<div>
+<em> 
+ 
+</em> 
+<m:math></m:math><textEntryInteraction responseIdentifier="REPONSE1" expectedLength="5" /><m:math><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+ 
+</div>
+</itemBody> 
+ 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<and> 
+<match><variable identifier="REPONSE1" /><correct identifier="REPONSE1" /> 
+</match> 
+</and> 
+<setOutcomeValue identifier="FEEDBACK"><baseValue baseType="identifier">_1V</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE"><baseValue baseType="float">1</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK"><baseValue baseType="identifier">_1F</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+ 
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="_1V" showHide="show"> 
+Congratulations!<m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+</modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK" identifier="_1F" showHide="show"> 
+No correct answer <m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+</modalFeedback> 
+</assessmentItem> 

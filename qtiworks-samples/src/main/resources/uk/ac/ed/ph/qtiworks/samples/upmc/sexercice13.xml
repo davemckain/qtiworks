@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+	xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="IF test" adaptive="false" timeDependent="false"> 
+<responseDeclaration identifier="REPONSE0" cardinality="single" baseType="identifier" > 
+<correctResponse> 
+<value>Item0</value> 
+</correctResponse> 
+</responseDeclaration> 
+<outcomeDeclaration identifier="FEEDBACK0" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="FEEDBACK1" cardinality="single" baseType="identifier" /> 
+<outcomeDeclaration identifier="SCORE0" cardinality="single" baseType="float" /> 
+<templateDeclaration identifier="a" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" />  
+<templateDeclaration identifier="Choix0" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" /> 
+<templateDeclaration identifier="Choix1" cardinality="single" baseType="integer" mathVariable="true" paramVariable="true" /> 
+<templateProcessing> 
+<setTemplateValue identifier="a"><randomInteger min="260" max="500" /></setTemplateValue>  
+<setTemplateValue identifier="Choix0"><product><baseValue baseType="integer">4</baseValue><variable identifier="a" /></product></setTemplateValue> 
+<setTemplateValue identifier="Choix1"><product><baseValue baseType="integer">3</baseValue><variable identifier="a" /></product></setTemplateValue> 
+</templateProcessing> 
+<itemBody><div> 
+<em> 
+ 
+</em> 
+<em> 
+ 
+</em> 
+In a spreadsheet, cell A4 contains  
+<m:math><m:mi>a</m:mi></m:math> 
+ and cell A5 contains the formula =IF(A4&lt;250;3*A4;4*A4). <br/> 
+What is the content of cell A5?<br/> 
+ 
+<choiceInteraction responseIdentifier="REPONSE0" shuffle="true" maxChoices="1"> 
+<simpleChoice identifier="Item0" fixed="false"> 
+<m:math><m:mi>Choix0</m:mi></m:math> 
+</simpleChoice> 
+<simpleChoice identifier="Item1" fixed="false"> 
+<m:math><m:mi>Choix1</m:mi></m:math> 
+</simpleChoice> 
+<simpleChoice identifier="Item2" fixed="false"> 
+<m:math><m:ci>1000</m:ci></m:math> 
+</simpleChoice> 
+<simpleChoice identifier="Item3" fixed="false"> 
+<m:math><m:ci>750</m:ci></m:math> 
+</simpleChoice> 
+</choiceInteraction> 
+</div></itemBody> 
+<responseProcessing> 
+<responseCondition> 
+<responseIf> 
+<match> 
+<variable identifier="REPONSE0" /> 
+<correct identifier="REPONSE0"/>  
+</match> 
+<setOutcomeValue identifier="FEEDBACK0"><baseValue baseType="identifier">FEEDBACK0</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">5.0</baseValue></setOutcomeValue> 
+</responseIf> 
+<responseElse> 
+<setOutcomeValue identifier="FEEDBACK1"><baseValue baseType="identifier">FEEDBACK1</baseValue></setOutcomeValue> 
+<setOutcomeValue identifier="SCORE0"><baseValue baseType="float">0.0</baseValue></setOutcomeValue> 
+</responseElse> 
+</responseCondition> 
+</responseProcessing> 
+<modalFeedback outcomeIdentifier="FEEDBACK0" identifier="FEEDBACK0" showHide="show"> 
+Good answer! 
+<br/></modalFeedback> 
+<modalFeedback outcomeIdentifier="FEEDBACK1" identifier="FEEDBACK1" showHide="show"> 
+It is false. 
+<br/></modalFeedback> 
+</assessmentItem> 
