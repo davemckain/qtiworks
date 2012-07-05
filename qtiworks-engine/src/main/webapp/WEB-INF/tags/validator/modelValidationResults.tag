@@ -53,7 +53,7 @@ All Rights Reserved
               <c:set var="node" value="${i.node}"/>
               <tr>
                <td class="center">Error</td>
-               <td class="center">${node!=null ? node.classTag : 'Not available'}</td>
+               <td class="center">${node!=null ? node.qtiClassName : 'Not available'}</td>
                <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
                <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
                <td><c:out value="${i.message}"/></td>
@@ -63,7 +63,7 @@ All Rights Reserved
               <c:set var="node" value="${i.node}"/>
               <tr>
                <td class="center">Warning</td>
-               <td class="center">${node!=null ? node.classTag : 'Not available'}</td>
+               <td class="center">${node!=null ? node.qtiClassName : 'Not available'}</td>
                <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
                <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
                <td><c:out value="${i.message}"/></td>

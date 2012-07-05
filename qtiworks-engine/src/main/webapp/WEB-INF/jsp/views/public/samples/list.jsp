@@ -15,6 +15,9 @@ sampleAssessmentMap (SampleCategory -> List<Assessment>)
 --%>
 <page:page title="Public QTI Samples">
 
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;
+  </nav>
   <h2>QTI examples</h2>
 
   <div class="hints">

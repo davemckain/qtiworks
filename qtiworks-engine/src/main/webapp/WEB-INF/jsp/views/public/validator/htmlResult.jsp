@@ -14,6 +14,12 @@ validationResult (AssessmentObjectValidationResult)
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="QTI Validator Result">
 
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;
+    <a href="${utils:internalLink(pageContext, '/web/public/validator')}">QTI Validator</a> &#xbb;
+  </nav>
+  <h2>QTI Validator Results</h2>
+
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
 
   <div class="validationResult">

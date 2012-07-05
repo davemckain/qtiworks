@@ -11,15 +11,12 @@ Top page for public functionality
 --%>
 <page:page title="Public QTI Samples">
 
-  <div class="grid_12">
-    <h2>Demos</h2>
+  <h2>Demos</h2>
 
-    <div class="hints">
-      Try some demos of QTIWorks to see some of the things it can do.
-      You'll be able to do all of this (and much more) if you log in!
-    </div>
+  <div class="hints">
+    Try some demos of QTIWorks to see some of the things it can do.
+    You'll be able to do all of this (and much more) if you log in!
   </div>
-  <div class="clear"></div>
 
   <div class="boxes">
     <div class="grid_4">

@@ -241,7 +241,7 @@ public class PublicCandidateItemController {
         }
         else {
             /* (This was a "upload & run", so go somewhere sensible) */
-            view = "redirect:/";
+            view = "redirect:/public/";
         }
         return view;
     }
