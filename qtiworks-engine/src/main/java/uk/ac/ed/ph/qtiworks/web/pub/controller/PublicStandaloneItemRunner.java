@@ -132,10 +132,8 @@ public class PublicStandaloneItemRunner {
             }
         }
         catch (final AssessmentPackageFileImportException e) {
-            System.out.println("HERE with " + e);
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
-            System.out.println(errors);
             return "public/standalonerunner/uploadForm";
         }
         catch (final DomainEntityNotFoundException e) {
