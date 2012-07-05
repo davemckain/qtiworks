@@ -1,6 +1,6 @@
 <%--
 
-Skeleton for a general page
+Home page skeleton
 
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
@@ -20,7 +20,7 @@ All Rights Reserved
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>QTIWorks - <c:out value="${title}" default="QTIWorks"/></title>
+    <title>QTIWorks</title>
     <%-- FIXME: Need HTTPS versions of the following 3 libs, or pull them in --%>
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/reset.css">
     <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/text.css">
@@ -36,35 +36,36 @@ All Rights Reserved
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
   </head>
-  <body>
-    <header>
-      <h1><a href="${utils:internalLink(pageContext, '/')}">QTIWorks</a></h1>
-    </header>
+  <body class="homepage">
     <div id="contentArea" class="container_12">
+      <header>
+        <h1>QTIWorks</h1>
+      </header>
       <jsp:doBody/>
       <div class="clear"></div>
-    </div>
-    <footer>
-      <div id="copyright">
-        <div id="footer-text">
-          <%-- Usual Copyright stuff --%>
-          <p>
-            QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
-            <br />
-            Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
-            <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
-            <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
-            <br />
-            For more information, contact
-            <a href="http://www.ph.ed.ac.uk/elearning/contacts/#dmckain">David McKain</a>.
-          </p>
-          <p>
-            The University of Edinburgh is a charitable body, registered in Scotland,
-            with registration number SC005336.
-          </p>
+      <footer>
+        <div id="copyright">
+          <div id="footer-text">
+            <%-- Usual Copyright stuff --%>
+            <p>
+              QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
+              <br />
+              Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
+              <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
+              <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
+              <br />
+              For more information, contact
+              <a href="http://www.ph.ed.ac.uk/elearning/contacts/#dmckain">David McKain</a>.
+            </p>
+            <p>
+              The University of Edinburgh is a charitable body, registered in Scotland,
+              with registration number SC005336.
+            </p>
+          </div>
+          <div class="clearFloat"></div>
         </div>
-        <div class="clearFloat"></div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   </body>
 </html>
+

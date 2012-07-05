@@ -5,6 +5,7 @@ All Rights Reserved
 
 ************************************************************/
 
+/***********************************************************/
 /* General */
 
 body {
@@ -12,9 +13,6 @@ body {
 }
 
 /* Page header */
-
-header {
-}
 
 header h1 {
   font-family: 'Ubuntu', sans-serif;
@@ -160,3 +158,20 @@ div.sampleList .launch {
   font-size: 20px;
   line-height: 20px;
 }
+
+/************************************************************
+Home Page
+************************************************************/
+
+.homepage header h1 {
+  font-size: 80px;
+}
+
+.homepage header h1:before {
+  content: '\2699'; /* (Cog symbol) */
+  color: red;
+  font-size: 60px;
+  vertical-align: middle;
+  font-size: 100px;
+}
+
