@@ -39,9 +39,8 @@ All Rights Reserved
       <h1><a href="${utils:internalLink(pageContext, '/')}">QTIWorks</a></h1>
     </header>
     <div id="contentArea" class="container_12">
-
       <jsp:doBody/>
-
+      <div class="clear"></div>
     </div>
     <footer>
       <div id="copyright">

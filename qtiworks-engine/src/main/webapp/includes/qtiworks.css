@@ -35,7 +35,6 @@ header h1 a:before {
   vertical-align: middle;
 }
 
-
 /* Footer */
 
 footer {
@@ -84,6 +83,30 @@ ul.dsSelector li div.dsPrompt {
   font-weight: bold;
   color: red;
 }
+
+/* Public page */
+
+div.boxes {
+  margin-top: 2em;
+}
+
+.box {
+  background-color: #fffafa;
+  padding: 1em;
+  border-radius: 1em;
+  text-align: center;
+}
+
+div.box .iconButton {
+  display: block;
+  font-size: 150px;
+  line-height: 250px;
+  height: 250px;
+  color: black;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
 
 /* QTI samples */
 
