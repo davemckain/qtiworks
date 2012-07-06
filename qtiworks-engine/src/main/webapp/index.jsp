@@ -5,7 +5,7 @@ All Rights Reserved
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:homepage>
+<page:page cssClass="homepage" title="x">
 
   <div class="grid_12">
     <div class="intro">
@@ -51,4 +51,4 @@ All Rights Reserved
     </div>
   </div>
 
-</page:homepage>
+</page:page>

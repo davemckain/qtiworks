@@ -13,8 +13,7 @@ body {
   background: white url(images/headergradient.png) repeat-x top center;
 }
 
-a, a:link, a:visited, a:hover {
-  x-color: #430000;
+a, a:link, a:visited {
   color: #66455e;
 }
 
@@ -195,6 +194,7 @@ Home Page
 }
 
 .homepage header h1 {
+  display: block;
   font-size: 80px;
   line-height: 120px;
   border-bottom: none;

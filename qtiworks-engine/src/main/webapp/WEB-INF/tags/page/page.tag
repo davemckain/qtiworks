@@ -12,6 +12,7 @@ All Rights Reserved
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ attribute name="title" required="false" %>
+<%@ attribute name="cssClass" required="false" %>
 
 <jsp:useBean id="now" class="java.util.Date"/>
 <c:set var="qtiWorksVersion" value="1.0-DEV10"/>
@@ -34,10 +35,17 @@ All Rights Reserved
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
   </head>
-  <body>
+  <body class="<c:out value='${cssClass}' default='page'/>">
     <div id="contentArea" class="container_12">
       <header>
-        <h1><a href="${utils:internalLink(pageContext, '/')}">QTIWorks</a></h1>
+        <c:choose>
+          <c:when test="${cssClass=='homepage'}">
+            <h1>QTIWorks</h1>
+          </c:when>
+          <c:otherwise>
+            <h1><a href="${utils:internalLink(pageContext, '/')}">QTIWorks</a></h1>
+          </c:otherwise>
+        </c:choose>
       </header>
       <jsp:doBody/>
       <div class="clear"></div>
