@@ -10,10 +10,12 @@ All Rights Reserved
 
 body {
   font-family: 'Open Sans', sans-serif;
+  background: white url(images/headergradient.png) repeat-x top center;
 }
 
 a, a:link, a:visited, a:hover {
-  color: #430000;
+  x-color: #430000;
+  color: #66455e;
 }
 
 /* Page header */
@@ -188,6 +190,10 @@ div.sampleList .launch {
 Home Page
 ************************************************************/
 
+.homepage header {
+  margin-bottom: 1.5em;
+}
+
 .homepage header h1 {
   font-size: 80px;
   line-height: 120px;
@@ -197,7 +203,7 @@ Home Page
 
 .homepage header h1:before {
   content: '\2699'; /* (Cog symbol) */
-  color: red;
+  color: #cd1753;
   vertical-align: middle;
   font-size: 100px;
   line-height: 100px;
@@ -206,14 +212,16 @@ Home Page
 .homepage .intro {
   font-size: 1.5em;
   font-style: italic;
-  color: #996666;
-  padding: 0 0 1em 0;
+  font-weight: bold;
+  color: #cd1753;
+  margin: 1.2em 0;
 }
 
 .homepage .box {
-  background-color: #fafafa;
+  background: white url(images/bluegradient.png) repeat-x top center;
+  border: 1px solid #ccdbf0;
   padding: 1em;
-  border-radius: 1em;
+  border-radius: 0.5em;
   text-align: center;
 }
 
@@ -226,11 +234,13 @@ Home Page
 .homepage .box .boxButton h3 {
   font-family: 'Ubuntu', Sans-Serif;
   font-weight: normal;
+  color: #2466bf;
 }
 
 .homepage .box .boxButton h3:after {
   display: block;
-  font-size: 150px;
+  font-size: 100px;
+  color: #2466bf;
 }
 
 .boxButton.about h3:after {
@@ -255,6 +265,7 @@ Home Page
 }
 
 .homepage footer {
+  margin-top: 3em;
   border-top: none;
 }
 
