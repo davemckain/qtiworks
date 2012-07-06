@@ -12,7 +12,7 @@ Form for editing Assessment properties
   <h2>Edit Assessment properties</h2>
 
   <form:form method="post" acceptCharset="UTF-8" commandName="updateAssessmentCommand">
-    <form:errors element="div" cssClass="error" path="*"/>
+    <form:errors element="div" cssClass="formError" path="*"/>
     (<span class="required">*</span> denotes a required field.)
 
     <div>

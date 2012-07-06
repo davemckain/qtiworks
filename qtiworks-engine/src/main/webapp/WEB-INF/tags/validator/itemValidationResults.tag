@@ -18,7 +18,7 @@ All Rights Reserved
 <c:set var="itemLookup" value="${resolvedAssessmentItem.rootObjectLookup}"/>
 <c:set var="itemSystemId" value="${itemLookup.systemId}"/>
 <div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
-  <h3>
+  <h4>
     <c:choose>
       <c:when test="${test}">
         Test Item at ${utils:extractContentPackagePath(itemSystemId)} validation
@@ -29,7 +29,7 @@ All Rights Reserved
         ${validationResult.valid ? 'success' : 'failure'}
       </c:otherwise>
     </c:choose>
-  </h3>
+  </h4>
   <div class="details">
     <p>
       <c:choose>
@@ -58,7 +58,7 @@ All Rights Reserved
       <c:choose>
         <c:when test="${templateLookup.rootObjectHolder!=null}">
           <div class="resultPanel success">
-            <h3>The referenced response processing template was successfully resolved</h3>
+            <h4>The referenced response processing template was successfully resolved</h4>
             <div class="details">
               <%-- (These are in context of RP) --%>
               <validator:xmlFindResult rootObjectLookup="${templateLookup}"/>
@@ -69,7 +69,7 @@ All Rights Reserved
         </c:when>
         <c:otherwise>
           <div class="resultPanel failure">
-            <h3>The referenced response processing template was not successfully resolved</h3>
+            <h4>The referenced response processing template was not successfully resolved</h4>
             <div class="details">
               <p>
                 We could not read in and parse the response processing template with href

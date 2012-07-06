@@ -21,7 +21,7 @@ All Rights Reserved
   </c:when>
   <c:when test="${xmlParseResult.schemaValid}">
     <div class="resultPanel success">
-      <h3>Schema validation success</h3>
+      <h4>Schema validation success</h4>
       <div class="details">
         <p>
           The QTI XML was successfully validated against our golden copies of
@@ -39,7 +39,7 @@ All Rights Reserved
   </c:when>
   <c:otherwise>
     <div class="resultPanel failure">
-      <h3>Schema validation failed</h3>
+      <h4>Schema validation failed</h4>
       <div class="details">
         <c:choose>
           <c:when test="${!empty xmlParseResult.unsupportedSchemaNamespaces}">

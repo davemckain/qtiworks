@@ -10,7 +10,7 @@ All Rights Reserved
   <h2>Update assessment package</h2>
 
   <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
-    <form:errors element="div" cssClass="error" path="*"/>
+    <form:errors element="div" cssClass="formError" path="*"/>
 
     <label for="file">Select a Content Package or Assessment Item XML file to upload:</label>
     <input name="file" type="file" />

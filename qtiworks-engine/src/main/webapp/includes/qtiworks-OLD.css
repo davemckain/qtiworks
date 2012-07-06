@@ -62,7 +62,7 @@ h2, h3 {
 }
 
 .resultPanel.success {
-  background-color: #f0fff0;
+  background: white url(images/invalidgraident.png) top left repeat-x;
 }
 
 .resultPanel.failure {

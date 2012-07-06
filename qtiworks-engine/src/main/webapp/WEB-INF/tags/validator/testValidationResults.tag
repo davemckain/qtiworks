@@ -15,7 +15,7 @@ All Rights Reserved
 <c:set var="resolvedAssessmentTest" value="${validationResult.resolvedAssessmentTest}"/>
 
 <div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
-  <h3>Test validation ${validationResult.valid ? 'success' : 'failure'}</h3>
+  <h4>Test validation ${validationResult.valid ? 'success' : 'failure'}</h4>
   <div class="details">
     <p>
       Your test

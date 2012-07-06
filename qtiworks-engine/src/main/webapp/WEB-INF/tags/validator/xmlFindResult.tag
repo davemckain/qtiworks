@@ -17,7 +17,7 @@ All Rights Reserved
 <c:choose>
   <c:when test="${xmlResourceNotFoundException==null}">
     <div class="resultPanel success">
-      <h3>XML successfully found</h3>
+      <h4>XML successfully found</h4>
       <div class="details">
         <p>
           The XML resource at path
@@ -29,7 +29,7 @@ All Rights Reserved
   </c:when>
   <c:otherwise>
     <div class="resultPanel failure">
-      <h3>XML not found</h3>
+      <h4>XML not found</h4>
       <div class="details">
         <p>
           We could not locate the XML resource at path

@@ -23,7 +23,7 @@ All Rights Reserved
     <c:choose>
       <c:when test="${xmlParseResult.parsed}">
         <div class="resultPanel success">
-          <h3>XML parse success</h3>
+          <h4>XML parse success</h4>
           <div class="details">
             <p>The QTI XML was successfully parsed.</p>
           </div>
@@ -31,7 +31,7 @@ All Rights Reserved
       </c:when>
       <c:otherwise>
         <div class="resultPanel failure">
-          <h3>XML parse failed</h3>
+          <h4>XML parse failed</h4>
           <div class="details">
             <c:choose>
               <c:when test="${empty xmlParseResult.unresolvedEntitySystemIds}">

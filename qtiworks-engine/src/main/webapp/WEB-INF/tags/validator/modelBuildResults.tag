@@ -17,7 +17,7 @@ All Rights Reserved
 <c:choose>
   <c:when test="${qtiXmlObjectReadResult!=null}">
     <div class="resultPanel success">
-      <h3>JQTI+ model building success</h3>
+      <h4>JQTI+ model building success</h4>
       <div class="details">
         <p>
           A JQTI+ model was successfully constructed from the XML.
@@ -33,7 +33,7 @@ All Rights Reserved
       </c:when>
       <c:when test="${failureReason=='UNSUPPORTED_ROOT_NODE'}">
         <div class="resultPanel failure">
-          <h3>Wrong XML</h3>
+          <h4>Wrong XML</h4>
           <div class="details">
             <p>
               This XML was expected to be a QTI ${qtiXmlInterpretationException.requiredResultClass.simpleName}
@@ -44,7 +44,7 @@ All Rights Reserved
       </c:when>
       <c:when test="${failureReason=='WRONG_RESULT_TYPE'}">
         <div class="resultPanel failure">
-          <h3>Wrong QTI Content</h3>
+          <h4>Wrong QTI Content</h4>
           <div class="details">
             <p>
               This XML was expected to be a QTI ${qtiXmlInterpretationException.requiredResultClass.simpleName}
@@ -56,7 +56,7 @@ All Rights Reserved
       <c:when test="${failureReason=='JQTI_MODEL_BUILD_FAILED'}">
         <c:set var="modelErrors" value="${qtiXmlInterpretationException.qtiModelBuildingErrors}"/>
         <div class="resultPanel failure">
-          <h3>JQTI model building failure</h3>
+          <h4>JQTI model building failure</h4>
           <div class="details">
             <p>
             We could not build a JQTI+ model from your XML. This indicates a problem with

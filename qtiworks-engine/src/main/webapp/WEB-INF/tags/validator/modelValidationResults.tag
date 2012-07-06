@@ -22,7 +22,7 @@ All Rights Reserved
   </c:when>
   <c:when test="${empty validationResult.errors && empty validationResult.warnings}">
     <div class="resultPanel success">
-      <h3>JQTI+ validation succeeded</h3>
+      <h4>JQTI+ validation succeeded</h4>
       <div class="details">
         <p>
           Additional validation of the resulting JQTI+ model of your XML was successful.
@@ -32,7 +32,7 @@ All Rights Reserved
   </c:when>
   <c:otherwise>
     <div class="resultPanel failure">
-      <h3>JQTI+ validation failure</h3>
+      <h4>JQTI+ validation failure</h4>
       <div class="details">
         <p>
           Additional validation of the resulting JQTI+ model detected some

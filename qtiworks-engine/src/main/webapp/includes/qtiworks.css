@@ -89,44 +89,7 @@ nav.breadcrumbs a:hover {
   text-decoration: underline;
 }
 
-/* ========== Webapp Stylings ========== */
-
-.hints {
-  font-style: italic;
-}
-
-aside {
-  font-style: italic;
-}
-
-.workflowStep {
-  line-height: 40px;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-}
-
-ul.dsSelector {
-  list-style: none;
-}
-
-ul.dsSelector li {
-  margin: 0;
-  padding: 0;
-}
-
-ul.dsSelector li div.dsPrompt {
-  display: none;
-}
-
-/* Form error messages */
-.formErrors {
-  margin: 1em 0;
-  font-weight: bold;
-  color: red;
-}
-
-/* QTI samples */
+/* ========== QTI samples listing ========== */
 
 div.sampleList {
   margin-bottom: 2em;
@@ -163,7 +126,7 @@ div.sampleList .launch {
 }
 
 .launch .playButton:before {
-  content: '\25b6 ';
+  content: '\25b6';
   color: #99ff99;
   font-size: 20px;
   line-height: 20px;
@@ -266,5 +229,114 @@ div.sampleList .launch {
 .boxButton div {
   min-height: 4em;
   vertical-align: middle;
+}
+
+/* ========== QTI Validator ========== */
+
+.toggler {
+  float: right;
+  color: black;
+}
+
+.toggler.plus {
+  float: right;
+}
+
+.toggler.minus {
+  float: right;
+  display: none;
+}
+
+.resultPanel {
+  border-top-left-radius: 2em;
+}
+
+.resultPanel .resultPanel {
+  margin: 1em 0 1em 2em;
+  padding-right: 0.5em;
+}
+
+.resultPanel.success {
+  background: white url(images/bluegradient.png) left top repeat-x;
+}
+
+.resultPanel.failure {
+  background: white url(images/bluegradient.png) left top repeat-x;
+}
+
+.resultPanel > h4 {
+  margin: 0;
+  padding: 0.4em 0 0.4em 28px;
+  color: black;
+  font-size: 1.25em;
+}
+
+.resultPanel.success > h4 {
+  background: url(images/accept.png) 5px center no-repeat;
+  color: black;
+}
+
+.resultPanel.failure > h4 {
+  background: url(images/error.png) 5px center no-repeat;
+  color: #cd1753;
+}
+
+.resultPanel .details {
+  padding: 0 0.5em 0.5em 0.5em;
+}
+
+.validationResult table {
+  border-collapse: collapse;
+  margin: 1em;
+}
+
+.validationResult table th, .validationResult table td {
+  padding: 0.5em;
+  border: 1px solid #ccdbf0;
+}
+
+.validationResult table td.center, .validationResult table th.center {
+  text-align: center;
+}
+
+.validationResult table th {
+  background-color: #ccdbf0;
+}
+
+/* ========== General Stylings ========== */
+
+.hints {
+  font-style: italic;
+}
+
+aside {
+  font-style: italic;
+}
+
+.workflowStep {
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+}
+
+ul.dsSelector {
+  list-style: none;
+}
+
+ul.dsSelector li {
+  margin: 0;
+  padding: 0;
+}
+
+ul.dsSelector li div.dsPrompt {
+  display: none;
+}
+
+/* Form error messages */
+.formErrors {
+  margin: 1em 0;
+  font-weight: bold;
+  color: red;
 }
 
