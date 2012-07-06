@@ -35,7 +35,7 @@ All Rights Reserved
     </div>
     <div class="grid_3">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/public/validator')}" class="boxButton signup" title="Sign Up">
+        <a href="${utils:internalLink(pageContext, '/signup/')}" class="boxButton signup" title="Sign Up">
           <h3>Sign Up</h3>
           <div>Sign up for a free QTIWorks account</div>
         </a>
