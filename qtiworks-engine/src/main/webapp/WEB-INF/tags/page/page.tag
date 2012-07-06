@@ -14,7 +14,7 @@ All Rights Reserved
 <%@ attribute name="title" required="false" %>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<c:set var="qtiWorksVersion" value="1.0-DEV9"/>
+<c:set var="qtiWorksVersion" value="1.0-DEV10"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,9 +28,7 @@ All Rights Reserved
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700|Ubuntu:500">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
-    <%-- Next one is not used yet
     <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
-    --%>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>

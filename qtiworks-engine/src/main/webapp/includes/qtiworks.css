@@ -12,6 +12,10 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+a, a:link, a:visited, a:hover {
+  color: #430000;
+}
+
 /* Page header */
 
 header h1 {
@@ -186,13 +190,71 @@ Home Page
 
 .homepage header h1 {
   font-size: 80px;
+  line-height: 120px;
+  border-bottom: none;
+  letter-spacing: -0.05em;
 }
 
 .homepage header h1:before {
   content: '\2699'; /* (Cog symbol) */
   color: red;
-  font-size: 60px;
   vertical-align: middle;
   font-size: 100px;
+  line-height: 100px;
+}
+
+.homepage .intro {
+  font-size: 1.5em;
+  font-style: italic;
+  color: #996666;
+  padding: 0 0 1em 0;
+}
+
+.homepage .box {
+  background-color: #fafafa;
+  padding: 1em;
+  border-radius: 1em;
+  text-align: center;
+}
+
+.homepage .box a.boxButton {
+  display: block;
+  color: black;
+  text-decoration: none;
+}
+
+.homepage .box .boxButton h3 {
+  font-family: 'Ubuntu', Sans-Serif;
+  font-weight: normal;
+}
+
+.homepage .box .boxButton h3:after {
+  display: block;
+  font-size: 150px;
+}
+
+.boxButton.about h3:after {
+  content: '\27b2'; /* Arrow thing */
+}
+
+.boxButton.demos h3:after {
+  content: '\261b'; /* Finger */
+}
+
+.boxButton.signup h3:after {
+  content: '\2709'; /* Envelope */
+}
+
+.boxButton.login h3:after {
+  content: '\2710'; /* Pencil */
+}
+
+.homepage .box .boxButton div {
+  min-height: 4em;
+  vertical-align: middle;
+}
+
+.homepage footer {
+  border-top: none;
 }
 
