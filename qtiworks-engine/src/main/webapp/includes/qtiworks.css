@@ -52,6 +52,27 @@ footer {
   padding: 1em;
 }
 
+footer .logos {
+  float: right;
+}
+
+footer .logos img {
+  margin-left: 0.5em;
+}
+
+footer .copyright {
+  color: #666666;
+  font-size: smaller;
+}
+
+footer .copyright p {
+  margin: 0;
+}
+
+footer .copyright a, footer .copyright a:hover {
+  color: #666666;
+}
+
 /* Content area */
 
 #contentArea {

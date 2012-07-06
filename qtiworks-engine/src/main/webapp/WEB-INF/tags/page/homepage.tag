@@ -44,35 +44,23 @@ All Rights Reserved
       <jsp:doBody/>
       <div class="clear"></div>
       <footer>
-        <div class="grid_4">
-          <ul>
-            <li><a href="http://www.jisc.ac.uk/whatwedo/programmes/elearning/assessmentandfeedback/qtidi.aspx">QTI Delivery Integration (QTIDI)</a></li>
-            <li><a href="https://github.com/davemckain/qtiworks">Source code on github</a></li>
-            <li><a href="http://qtisupport.blogspot.co.uk">QTI Support Blog</a></li>
-            <li><a href="http://www.imsglobal.org/question/">IMS Question &amp; Test Interoperability Specification</a></li>
-          </ul>
+        <div class="logos">
+          <a href="http://www.jisc.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/jisc75.png')}" width="75" height="50" alt="JISC Logo" /></a>
+          <a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uoe.png')}" width="60" height="60" alt="University of Edinburgh Logo" /></a>
         </div>
-        <div class="grid_4">
-          <div class="logos">
-            <a href="http://www.jisc.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/jisc75.png')}" width="75" height="50" alt="JISC Logo" /></a>
-            <a href="http://www.ed.ac.uk"><img src="${utils:internalLink(pageContext, '/includes/images/uoe.png')}" width="60" height="60" alt="University of Edinburgh Logo" /></a>
-          </div>
-          <div class="copyright">
-            <p>
-              QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
-              <br />
-              Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
-              <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
-              <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
-              <br />
-              For more information, contact
-              <a href="http://www.ph.ed.ac.uk/elearning/contacts/#dmckain">David McKain</a>.
-            </p>
-            <p>
-              The University of Edinburgh is a charitable body, registered in Scotland,
-              with registration number SC005336.
-            </p>
-          </div>
+        <div class="copyright">
+          <p>
+            QTIWorks ${qtiWorksVersion} &#x2012; <a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">Release notes</a>
+          </p>
+          <p>
+            Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
+            <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
+            <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
+          </p>
+          <p>
+            The University of Edinburgh is a charitable body, registered in Scotland,
+            with registration number SC005336.
+          </p>
         </div>
       </footer>
     </div>
