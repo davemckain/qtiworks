@@ -16,7 +16,7 @@ uploadAssessmentPackageCommand:
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;
   </nav>
-  <h2>QTI validator</h2>
+  <h2>QTI Validator</h2>
 
   <div class="hints">
     <p>

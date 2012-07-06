@@ -9,9 +9,9 @@ All Rights Reserved
 
   <div class="grid_12">
     <div class="intro">
-      QTIWorks is a new open-source tool for managing and delivering Question &amp; Test
+      QTIWorks is a new open-source system for managing, verifying and delivering Question &amp; Test
       Interoperability (QTI) v2.1 assessment items and tests.
-      <a href="${utils:internalLink(pageContext, '/about/')}">Find out more about QTIWorks</a>.
+      <a href="${utils:internalLink(pageContext, '/about/')}" title="About QTIWorks">Find out more about QTIWorks</a>.
     </div>
   </div>
   <div class="clear"></div>

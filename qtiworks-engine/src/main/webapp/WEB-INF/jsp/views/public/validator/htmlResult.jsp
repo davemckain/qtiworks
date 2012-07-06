@@ -18,7 +18,7 @@ validationResult (AssessmentObjectValidationResult)
     <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;
     <a href="${utils:internalLink(pageContext, '/web/public/validator')}">QTI Validator</a> &#xbb;
   </nav>
-  <h2>QTI Validator Results</h2>
+  <h2>QTI Validation Result</h2>
 
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
 

@@ -21,31 +21,28 @@ Top page for public functionality
   <div class="boxes">
     <div class="grid_4">
       <div class="box">
-        <h3>QTI Quick Run</h3>
-        <a href="${utils:internalLink(pageContext, '/web/public/standalonerunner')}" class="iconButton" title="Run">&#x25b6;</a>
-        <p>
-          Upload and run your own QTI 2.1 assessment items.
-        </p>
+        <a href="${utils:internalLink(pageContext, '/web/public/standalonerunner')}" class="boxButton run" title="Run">
+          <h3>Quick Upload &amp; Run</h3>
+          <div>Upload and run your own QTI 2.1 assessment items</div>
+        </a>
       </div>
     </div>
 
     <div class="grid_4">
       <div class="box">
-        <h3>QTI Examples</h3>
-        <a href="${utils:internalLink(pageContext, '/web/public/samples/list')}" class="iconButton" title="Samples">&#x2708;</a>
-        <p>
-          Browse and run our selection of QTI 2.1 examples.
-        </p>
+        <a href="${utils:internalLink(pageContext, '/web/public/samples/list')}" class="boxButton samples" title="Samples">
+          <h3>QTI Examples</h3>
+          <div>Browse and try out our selection of QTI 2.1 examples</div>
+        </a>
       </div>
     </div>
 
     <div class="grid_4">
       <div class="box">
-        <h3>QTI Validator</h3>
-        <a href="${utils:internalLink(pageContext, '/web/public/validator')}" class="iconButton" title="Validator">&#x2714;</a>
-        <p>
-          Verify your QTI assessment items and tests.
-        </p>
+        <a href="${utils:internalLink(pageContext, '/web/public/validator')}" class="boxButton validator" title="Validator">
+          <h3>QTI Validator</h3>
+          <div>Verify your QTI assessment items and tests</div>
+        </a>
       </div>
     </div>
   </div>

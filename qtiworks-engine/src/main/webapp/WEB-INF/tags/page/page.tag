@@ -22,11 +22,10 @@ All Rights Reserved
   <head>
     <meta charset="UTF-8">
     <title>QTIWorks - <c:out value="${title}" default="QTIWorks"/></title>
-    <%-- FIXME: Need HTTPS versions of the following 3 libs, or pull them in --%>
-    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/reset.css">
-    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/text.css">
-    <link rel="stylesheet" href="http://cachedcommons.org/cache/960/0.0.0/stylesheets/960.css">
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700|Ubuntu:500">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Ubuntu:500">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/reset.css')}">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/text.css')}">
+    <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/960.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
@@ -36,7 +35,7 @@ All Rights Reserved
     <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
   </head>
   <body class="<c:out value='${cssClass}' default='page'/>">
-    <div id="contentArea" class="container_12">
+    <div class="container_12">
       <header>
         <c:choose>
           <c:when test="${cssClass=='homepage'}">
