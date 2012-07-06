@@ -137,8 +137,8 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
         primaryRouting.put("listAssessments", buildActionPath("/assessments"));
-        primaryRouting.put("listItemDeliverySettings", buildActionPath("/deliveryoptions"));
-        primaryRouting.put("createItemDeliverySettings", buildActionPath("/deliveryoptions/create"));
+        primaryRouting.put("listItemDeliverySettings", buildActionPath("/deliverysettings"));
+        primaryRouting.put("createItemDeliverySettings", buildActionPath("/deliverysettings/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
@@ -316,7 +316,7 @@ public final class InstructorAssessmentManagementController {
     //------------------------------------------------------
     // Management of ItemDeliverySettings
 
-    @RequestMapping(value="/deliveryoptions", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
     public String listItemDeliverySettings(final Model model) {
         final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
         model.addAttribute(itemDeliverySettingsList);
@@ -324,7 +324,7 @@ public final class InstructorAssessmentManagementController {
         return "listDeliverySettings";
     }
 
-    @RequestMapping(value="/deliveryoptions/{dsid}", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(final Model model, @PathVariable final long dsid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
@@ -333,7 +333,7 @@ public final class InstructorAssessmentManagementController {
         return "editItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliveryoptions/{dsid}", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/{dsid}", method=RequestMethod.POST)
     public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid,
             final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -348,10 +348,10 @@ public final class InstructorAssessmentManagementController {
         /* Return to show/edit
          * FIXME: Add some flash message here so that it's not confusing.
          */
-        return buildActionRedirect("/deliveryoptions/" + dsid);
+        return buildActionRedirect("/deliverysettings/" + dsid);
     }
 
-    @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
         final long existingOptionCount = assessmentManagementService.countCallerItemDeliverySettings();
         final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
@@ -361,7 +361,7 @@ public final class InstructorAssessmentManagementController {
         return "createItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliveryoptions/create", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.POST)
     public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result) {
         /* Validate command Object */
         if (result.hasErrors()) {
@@ -372,7 +372,7 @@ public final class InstructorAssessmentManagementController {
         assessmentManagementService.createItemDeliverySettings(command);
 
         /* TODO: Redirect to options page */
-        return buildActionRedirect("/deliveryoptions");
+        return buildActionRedirect("/deliverysettings");
     }
 
     public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<ItemDeliverySettings> itemDeliverySettingsList) {
@@ -389,8 +389,8 @@ public final class InstructorAssessmentManagementController {
 
     public Map<String, String> buildDeliverySettingsRouting(final long dsid) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildActionPath("/deliveryoptions/" + dsid));
-        result.put("update", buildActionPath("/deliveryoptions/" + dsid + "/update"));
+        result.put("show", buildActionPath("/deliverysettings/" + dsid));
+        result.put("update", buildActionPath("/deliverysettings/" + dsid + "/update"));
         return result;
     }
 }
