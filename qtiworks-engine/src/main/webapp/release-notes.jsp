@@ -7,7 +7,12 @@ All Rights Reserved
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Release notes">
 
-  <h2>1.0-DEV9 (03/07/2012)</h2>
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
+  </nav>
+  <h2>QTIWorks Release Notes</h2>
+
+  <h3>1.0-DEV9 (03/07/2012)</h3>
 
   <p>
     This snapshot adds a standalone "upload and run" feature that can be run without requiring a login,
@@ -23,7 +28,7 @@ All Rights Reserved
     The next snapshot will consolidate on this work and improve the user experience somewhat...
   </p>
 
-  <h2>1.0-DEV8 (31/05/2012)</h2>
+  <h3>1.0-DEV8 (31/05/2012)</h3>
 
   <p>
     This adds further enhancements to the rendering process for single items.
@@ -33,7 +38,7 @@ All Rights Reserved
     link to it than try to paraphrase it badly here.
     </p>
 
-  <h2>1.0-DEV7 (25/05/2012)</h2>
+  <h3>1.0-DEV7 (25/05/2012)</h3>
 
   <p>
     This snapshot finally includes all of the internal logic for successfully
@@ -46,7 +51,7 @@ All Rights Reserved
     not enough to be truly usable yet.
   </p>
 
-  <h2>1.0-DEV6 (02/05/2012)</h2>
+  <h3>1.0-DEV6 (02/05/2012)</h3>
 
   <p>
     The only real visible change in this snapshot is the addition of
@@ -59,7 +64,7 @@ All Rights Reserved
     protocol if they come in via HTTP.)
   </p>
 
-  <h2>1.0-DEV5 (25/04/2012)</h2>
+  <h3>1.0-DEV5 (25/04/2012)</h3>
 
   <p>
     Further tweaks to logic determining whether submit button should
@@ -69,7 +74,7 @@ All Rights Reserved
     I've also hidden the RESET button to see if anyone misses it...
   </p>
 
-  <h2>1.0-DEV4 (24/04/2012)</h2>
+  <h3>1.0-DEV4 (24/04/2012)</h3>
 
   <p>
     Fixed bug introduced when refactoring endAttemptInteraction,
@@ -81,7 +86,7 @@ All Rights Reserved
   </p>
 
 
-  <h2>1.0-DEV3 (11/04/2012)</h2>
+  <h3>1.0-DEV3 (11/04/2012)</h3>
 
   <p>
     This snapshot adds in the MathAssess examples, as well as the
@@ -90,7 +95,7 @@ All Rights Reserved
     been made within JQTI+.
   </p>
 
-  <h2>1.0-DEV2 (23/03/2012)</h2>
+  <h3>1.0-DEV2 (23/03/2012)</h3>
 
   <p>
     Demonstrates the newly-refactored assessmentItem state &amp; logic
@@ -100,7 +105,7 @@ All Rights Reserved
     API for getting your items into the system.
   </p>
 
-  <h2>1.0-DEV1 (26/01/2012)</h2>
+  <h3>1.0-DEV1 (26/01/2012)</h3>
   <p>
     Demonstrates the newly-refactored validation functionality in JQTI+,
     with more general JQTI -&gt; JQTI+ refactoring work continuing apace.
