@@ -99,7 +99,7 @@ public final class InstructorAssessmentManagementController {
         final List<Assessment> assessments = assessmentManagementService.getCallerAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", buildAssessmentListRouting(assessments));
-        return "assessmentList";
+        return "listAssessments";
     }
 
     public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {

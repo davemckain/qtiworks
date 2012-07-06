@@ -80,7 +80,7 @@ public class StandaloneWebValidator {
         try {
             final AssessmentObjectValidationResult<?> result = validationService.importAndValidate(command.getFile());
             model.addAttribute("validationResult", result);
-            return "public/validator/htmlResult";
+            return "public/validator/validationResult";
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
