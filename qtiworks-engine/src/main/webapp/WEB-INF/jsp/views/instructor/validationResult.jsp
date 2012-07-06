@@ -7,23 +7,24 @@ Validation results
 
 Model:
 
-* validationResult (AssessmentObjectValidationResult)
-* assessmentId (Long)
+validationResult (AssessmentObjectValidationResult)
+assessment
+assessmentRouting (action -> URL)
+instructorAssessmentRouting (action -> URL)
 
 --%>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Validation result">
 
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(assessment.name)}</a>
+  </nav>
+  <h2>Assessment Validation Status</h2>
+
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
-
-  <h3>Actions</h3>
-  <ul>
-    <li><a href="<c:url value='/web/instructor/assessment/${assessmentId}'/>">Back to assessment</a></li>
-  </ul>
-
-  <h3>Results</h3>
-
   <div class="validationResult">
     <c:choose>
       <c:when test="${assessmentType=='ASSESSMENT_ITEM'}">

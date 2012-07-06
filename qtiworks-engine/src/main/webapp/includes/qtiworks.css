@@ -223,20 +223,6 @@ div.sampleList .launch {
 
 /* ========== QTI Validator ========== */
 
-.toggler {
-  float: right;
-  color: black;
-}
-
-.toggler.plus {
-  float: right;
-}
-
-.toggler.minus {
-  float: right;
-  display: none;
-}
-
 .resultPanel {
   border-top-left-radius: 2em;
 }
@@ -293,6 +279,25 @@ div.sampleList .launch {
   background-color: #ccdbf0;
 }
 
+.toggler {
+  float: right;
+  color: black;
+}
+
+.toggler.plus {
+  float: right;
+}
+
+.toggler.minus {
+  float: right;
+  display: none;
+}
+
+.toggler:hover {
+  color: #66455e;
+  cursor: hand;
+}
+
 /* ========== General Stylings ========== */
 
 .hints {
@@ -330,3 +335,30 @@ ul.dsSelector li div.dsPrompt {
   color: red;
 }
 
+/* ========== Instructor Assigment List ========== */
+
+table.assessmentList {
+  width: 100%;
+  margin-bottom: 2em;
+  margin-top: 1em;
+}
+
+table.assessmentList th {
+  background: url(images/bluegradient.png) left top repeat-x;
+}
+
+table.assessmentList th,
+table.assessmentList td {
+  padding: 0.3em;
+  border: 1px solid #ccdbf0;
+  vertical-align: middle;
+}
+
+td.center {
+  text-align: center;
+}
+
+table.assessmentList td h4 {
+  font-size: 1.2em;
+  margin: 0;
+}

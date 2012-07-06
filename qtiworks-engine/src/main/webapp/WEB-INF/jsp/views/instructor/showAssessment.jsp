@@ -17,7 +17,11 @@ instructorAssessmentRouting (action -> URL)
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Assessment details">
 
-  <h2>Assessment details</h2>
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+  </nav>
+  <h2>Assessment ${fn:escapeXml(assessment.name)}</h2>
 
   <dl>
     <dt>Name:</dt>
@@ -91,5 +95,8 @@ instructorAssessmentRouting (action -> URL)
         </c:otherwise>
       </c:choose>
     </li>
+    <li>Delete Assignment (coming soon)</li>
+    <li>Create a Delivery (coming soon)</li>
+    <li>Manage Deliveries of this Assignment</li>
   </ul>
 </page:page>

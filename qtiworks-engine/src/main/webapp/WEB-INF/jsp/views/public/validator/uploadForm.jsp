@@ -27,9 +27,9 @@ uploadAssessmentPackageCommand:
     </p>
   </div>
 
-  <form:form id="uploadForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
+  <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
 
-    <%-- Show any validation errors discovered --%>
+    <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>
 
     <fieldset>

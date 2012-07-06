@@ -286,9 +286,12 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
     public String validateAssessment(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
         model.addAttribute("assessmentId", aid);
+        model.addAttribute("assessment", assessment);
         model.addAttribute("validationResult", validationResult);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "validationResult";
     }
 

@@ -52,6 +52,14 @@ All Rights Reserved.
       java.lang.String
     )</function-signature>
   </function>
+  <function>
+    <description>Date formatting</description>
+    <name>formatDayDateAndTime</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatDayDateAndTime(
+      java.util.Date
+    )</function-signature>
+  </function>
 
 </taglib>
 

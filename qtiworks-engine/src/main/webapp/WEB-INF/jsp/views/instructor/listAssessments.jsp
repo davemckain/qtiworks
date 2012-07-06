@@ -15,38 +15,58 @@ instructorAssessmentRouting
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Your Assessments">
 
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+  </nav>
   <h2>Your Assessments</h2>
 
   <c:choose>
     <c:when test="${!empty assessmentList}">
-      <table>
+      <table class="assessmentList">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Title</th>
-            <th>Created</th>
-            <th>Actions</th>
-          </tr>
+          <th colspan="2"></th>
+          <th>Details</th>
+          <th>Assessment Type</th>
+          <th>Version</th>
+          <th>Created</th>
         </thead>
         <tbody>
-          <c:forEach var="assessment" items="${assessmentList}">
+          <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">
             <tr>
-              <td><c:out value="${assessment.name}"/></td>
-              <td><c:out value="${assessment.title}"/></td>
-              <td><c:out value="${assessment.creationTime}"/></td>
-              <td><a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}">Show</a></td>
+              <td align="center">
+                <div class="workflowStep">${loopStatus.index + 1}</div>
+              </td>
+              <td align="center">
+                <a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}">Show</a>
+              </td>
+              <td>
+                <h4><c:out value="${assessment.name}"/></h4>
+                <span class="title"><c:out value="${assessment.title}"/></span>
+              </td>
+              <td class="center">
+                <c:choose>
+                  <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
+                  <c:otherwise>Test</c:otherwise>
+                </c:choose>
+              </td>
+              <td class="center">
+                <c:out value="${assessment.packageImportVersion}"/>
+              </td>
+              <td class="center">
+                <c:out value="${utils:formatDayDateAndTime(assessment.creationTime)}"/>
+              </td>
             </tr>
           </c:forEach>
         </tbody>
       </table>
     </c:when>
     <c:otherwise>
-      <p>You have not uploaded any assessments yet</p>
+      <p>You have not uploaded any assessments yet.</p>
     </c:otherwise>
   </c:choose>
 
-  <h3>Actions</h3>
-  <ul>
+  <h4>Actions</h4>
+  <ul class="menu">
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['uploadAssessment'])}">Upload a new assessment</a></li>
   </ul>
 
