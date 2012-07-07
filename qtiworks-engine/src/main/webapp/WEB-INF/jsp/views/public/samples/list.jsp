@@ -42,7 +42,7 @@ sampleAssessmentMap (SampleCategory -> List<Assessment>)
               <div class="clear"></div>
             </c:if>
             <div class="grid_1">
-              <div class="workflowStep">${loopStatus.index + 1}</div>
+              <div class="sampleIndex">${loopStatus.index + 1}</div>
             </div>
             <div class="grid_1 launch">
               <%-- Play option TODO: Create template for this --%>

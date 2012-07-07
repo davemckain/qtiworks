@@ -221,6 +221,15 @@ div.sampleList .launch {
   vertical-align: middle;
 }
 
+/* ========== QTI Examples ========== */
+
+.sampleIndex {
+  text-align: center;
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
 /* ========== QTI Validator ========== */
 
 .resultPanel {
@@ -308,13 +317,6 @@ aside {
   font-style: italic;
 }
 
-.workflowStep {
-  line-height: 40px;
-  font-size: 40px;
-  font-weight: bold;
-  text-align: center;
-}
-
 ul.dsSelector {
   list-style: none;
 }
@@ -328,11 +330,34 @@ ul.dsSelector li div.dsPrompt {
   display: none;
 }
 
+/* ========== Form Stuff ========== */
+
 /* Form error messages */
 .formErrors {
   margin: 1em 0;
   font-weight: bold;
   color: red;
+}
+
+.required {
+  color: red;
+}
+
+.expandy {
+  width: 100%;
+}
+
+.workflowStep {
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+fieldset {
+}
+
+.stdFormRow {
+  line-height: 40px;
 }
 
 /* ========== Instructor Assigment List ========== */
