@@ -5,7 +5,7 @@ All Rights Reserved
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page cssClass="homepage" title="x">
+<page:page cssClass="homepage" title="QTIWorks">
 
   <div class="grid_12">
     <div class="intro">
