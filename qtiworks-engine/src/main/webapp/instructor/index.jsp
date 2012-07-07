@@ -14,11 +14,34 @@ All Rights Reserved
     at first, so please be patient for a while!
   </div>
 
-  <ul>
-    <li><a href="${utils:internalLink(pageContext, '/web/instructor/assessments')}">Manage your Assessments</a></li>
-    <li><a href="${utils:internalLink(pageContext, '/web/instructor/assessments/upload')}">Upload new Assessment</a></li>
-    <li><a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Manage your Item Delivery Settings</a></li>
-  </ul>
+  <div class="boxes">
+    <div class="grid_4">
+      <div class="box">
+        <a href="${utils:internalLink(pageContext, '/web/instructor/assessments')}" class="boxButton assessments" title="Run">
+          <h3>Manage Assessments</h3>
+          <div>Upload and manage your Assessments</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid_4">
+      <div class="box">
+        <a href="${utils:internalLink(pageContext, '/instructor/')}" class="boxButton deliveries" title="Samples">
+          <h3>Deliver Assessments</h3>
+          <div>COMING SOON!</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid_4">
+      <div class="box">
+        <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}" class="boxButton deliverysettings" title="Samples">
+          <h3>Manage Delivery Settings</h3>
+          <div>Manage your delivery settings</div>
+        </a>
+      </div>
+    </div>
+  </div>
 
 </page:page>
 

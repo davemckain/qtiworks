@@ -7,7 +7,7 @@ All Rights Reserved
 
 body {
   font-family: 'Open Sans', sans-serif;
-  x-background: white url(images/headergradient.png) repeat-x top center;
+  background: white url(images/headergradient.png) repeat-x top center;
 }
 
 a, a:link, a:visited {
@@ -214,6 +214,18 @@ div.sampleList .launch {
 
 .boxButton.login h3:after {
   content: '\2710'; /* Pencil */
+}
+
+.boxButton.assessments h3:after {
+  content: '\2615'; /* Pencil */
+}
+
+.boxButton.deliveries h3:after {
+  content: '\2620'; /* Skull and Crossbones(!) */
+}
+
+.boxButton.deliverysettings h3:after {
+  content: '\2672'; /* Recycling symbol */
 }
 
 .boxButton div {
