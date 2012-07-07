@@ -23,43 +23,79 @@ instructorAssessmentRouting (action -> URL)
   </nav>
   <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
 
-  <dl>
-    <dt>Name:</dt>
-    <dd><c:out value="${assessment.name}"/></dd>
+  <div class="grid_4">
+    <div class="infoBox">
+      <div class="cat">Title</div>
+      <div class="value">${fn:escapeXml(assessment.title)}</div>
+    </div>
+  </div>
 
-    <dt>Title</dt>
-    <dd><c:out value="${assessment.title}"/></dd>
+  <div class="grid_2">
+    <div class="infoBox">
+      <div class="cat">Assessment Type</div>
+      <div class="value">
+        <c:choose>
+          <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
+          <c:otherwise>Test</c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+  </div>
 
-    <dt>Package Import Version:</dt>
-    <dd>${assessment.packageImportVersion}</dd>
+  <div class="grid_1">
+    <div class="infoBox">
+      <div class="cat">Shared?</div>
+      <div class="value">${assessment.public ? 'Yes' : 'No'}</div>
+    </div>
+  </div>
 
-    <dt>Type:</dt>
-    <dd>${assessment.assessmentType}</dd>
+  <div class="grid_4">
+    <div class="infoBox">
+      <div class="cat">Created</div>
+      <div class="value">${utils:formatDayDateAndTime(assessment.creationTime)}</div>
+    </div>
+  </div>
 
-    <dt>Public?</dt>
-    <dd>${assessment.public}</dd>
-  </dl>
+  <div class="clear"></div>
 
-  <h3>Current package content</h3>
+  <div class="grid_2">
+    <div class="infoBox">
+      <div class="cat">Upload Version</div>
+      <div class="value">${assessment.packageImportVersion}</div>
+    </div>
+  </div>
 
-  <dl>
-    <dt>Version:</dt>
-    <dd>${assessmentPackage.importVersion}</dd>
+  <div class="grid_4">
+    <div class="infoBox">
+      <div class="cat">Uploaded From</div>
+      <div class="value">
+        <c:choose>
+          <c:when test="${assessmentPackage.importType=='CONTENT_PACKAGE'}">IMS Content Package</c:when>
+          <c:when test="${assessmentPackage.importType=='STANDALONE_ITEM_XML'}">Standalone Item XML</c:when>
+          <c:otherwise>(System sample)</c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+  </div>
 
-    <dt>Uploaded:</dt>
-    <dd>${assessmentPackage.creationTime}</dd>
+  <div class="grid_1">
+    <div class="infoBox">
+      <div class="cat">Valid?</div>
+      <div class="value">${assessmentPackage.valid ? 'Yes' : 'No'}</div>
+    </div>
+  </div>
 
-    <dt>Import type:</dt>
-    <dd>${assessmentPackage.importType}</dd>
+  <div class="grid_4">
+    <div class="infoBox">
+      <div class="cat">Last Upload</div>
+      <div class="value">${utils:formatDayDateAndTime(assessmentPackage.creationTime)}</div>
+    </div>
+  </div>
 
-    <dt>Validated?</dt>
-    <dd>${assessmentPackage.validated}</dd>
 
-    <dt>Valid?</dt>
-    <dd>${assessmentPackage.valid}</dd>
-  </dl>
+  <div class="clear"></div>
 
-  <h3>Actions</h3>
+  <h4>Actions</h4>
 
   <ul>
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
@@ -86,6 +122,7 @@ instructorAssessmentRouting (action -> URL)
             <form action="${utils:escapeLink(assessmentRouting['try'])}" method="post">
               <input type="submit" value="Try out">
             </form>
+            (You probably want to create some delivery settings to get more control over this!)
           </c:otherwise>
         </c:choose>
         </c:when>

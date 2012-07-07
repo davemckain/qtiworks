@@ -7,7 +7,7 @@ All Rights Reserved
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background: white url(images/headergradient.png) repeat-x top center;
+  x-background: white url(images/headergradient.png) repeat-x top center;
 }
 
 a, a:link, a:visited {
@@ -389,7 +389,7 @@ form.deliverySettings .stdFormRow {
   margin: 0.5em 0;
 }
 
-/* ========== Instructor Assigment List ========== */
+/* ========== Instructor Assessment List ========== */
 
 table.assessmentList {
   width: 100%;
@@ -415,4 +415,24 @@ td.center {
 table.assessmentList td h4 {
   font-size: 1.2em;
   margin: 0;
+}
+
+/* ========== Instructor Assessment Info ========== */
+
+.infoBox {
+  border: 2px solid #ccbdf0;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  background: url(images/bluegradient.png) left top repeat-x;
+}
+
+.infoBox .cat {
+  display: block;
+  font-size: smaller;
+}
+
+.infoBox .value {
+  display: block;
+  font-weight: bold;
+  font-size: 1.3em;
 }
