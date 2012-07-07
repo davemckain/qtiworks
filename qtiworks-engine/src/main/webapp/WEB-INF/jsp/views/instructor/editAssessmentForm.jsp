@@ -84,6 +84,7 @@ instructorAssessmentRouting (action -> URL)
           <input name="submit" type="submit" value="Save"/>
         </div>
       </div>
+      <div class="clear"></div>
     </fieldset>
     <div class="hints">
       (<span class="required">*</span> denotes a required field.)

@@ -360,6 +360,23 @@ fieldset {
   line-height: 40px;
 }
 
+form.deliverySettings fieldset {
+  margin: 1em 0;
+  border-top: 2px solid #ccdbf0;
+  padding: 1em 0;
+}
+
+form.deliverySettings fieldset legend {
+  padding: 0 1em 0 0;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+form.deliverySettings .stdFormRow {
+  line-height: inherit;
+  margin: 0.5em 0;
+}
+
 /* ========== Instructor Assigment List ========== */
 
 table.assessmentList {

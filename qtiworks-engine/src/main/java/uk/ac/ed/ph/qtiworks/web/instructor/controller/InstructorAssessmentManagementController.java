@@ -341,6 +341,31 @@ public final class InstructorAssessmentManagementController {
         return "listDeliverySettings";
     }
 
+    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.GET)
+    public String showCreateItemDeliverySettingsForm(final Model model) {
+        final long existingOptionCount = assessmentManagementService.countCallerItemDeliverySettings();
+        final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
+        template.setTitle("Item Delivery Settings #" + (existingOptionCount+1));
+
+        model.addAttribute(template);
+        return "createItemDeliverySettingsForm";
+    }
+
+    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.POST)
+    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result) {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            System.out.println(result);
+            return "createItemDeliverySettingsForm";
+        }
+
+        /* Try to create new entity */
+        assessmentManagementService.createItemDeliverySettings(command);
+
+        /* Go back to list */
+        return buildActionRedirect("/deliverysettings");
+    }
+
     @RequestMapping(value="/deliverysettings/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(final Model model, @PathVariable final long dsid)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -366,30 +391,6 @@ public final class InstructorAssessmentManagementController {
          * FIXME: Add some flash message here so that it's not confusing.
          */
         return buildActionRedirect("/deliverysettings/" + dsid);
-    }
-
-    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.GET)
-    public String showCreateItemDeliverySettingsForm(final Model model) {
-        final long existingOptionCount = assessmentManagementService.countCallerItemDeliverySettings();
-        final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
-        template.setTitle("Item Delivery Configuration #" + (existingOptionCount+1));
-
-        model.addAttribute(template);
-        return "createItemDeliverySettingsForm";
-    }
-
-    @RequestMapping(value="/deliverysettings/create", method=RequestMethod.POST)
-    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result) {
-        /* Validate command Object */
-        if (result.hasErrors()) {
-            return "createItemDeliverySettingsForm";
-        }
-
-        /* Try to create new entity */
-        assessmentManagementService.createItemDeliverySettings(command);
-
-        /* TODO: Redirect to options page */
-        return buildActionRedirect("/deliverysettings");
     }
 
     public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<ItemDeliverySettings> itemDeliverySettingsList) {

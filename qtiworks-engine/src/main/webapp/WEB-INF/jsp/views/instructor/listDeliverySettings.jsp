@@ -51,7 +51,9 @@ instructorAssessmentRouting
                     <c:out value="${itemDeliverySettings.title}"/>
                   </a>
                 </h4>
-                <span class="title">"${fn:escapeXml(utils:trimSentence(itemDeliverySettings.prompt, 200))}"</span>
+                <c:if test="${!empty itemDeliverySettings.prompt}">
+                  <span class="title">"${fn:escapeXml(utils:trimSentence(itemDeliverySettings.prompt, 200))}"</span>
+                </c:if>
               </td>
               <td class="center">
                 <c:out value="${utils:formatDayDateAndTime(itemDeliverySettings.creationTime)}"/>
@@ -62,13 +64,13 @@ instructorAssessmentRouting
       </table>
     </c:when>
     <c:otherwise>
-      <p>You have not created any Item Delivery Configurations yet.</p>
+      <p>You have not created any Item Delivery Settings yet.</p>
     </c:otherwise>
   </c:choose>
 
   <h4>Actions</h4>
   <ul>
-    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Configuration</a></li>
+    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Settings</a></li>
   </ul>
 
 </page:page>

@@ -220,7 +220,6 @@ public class AssessmentManagementService {
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(caller);
 
-        /* Try to create Assessment name from the name of the MultipartFile */
         final String fileName = multipartFile.getOriginalFilename();
         String assessmentName;
         if (StringUtilities.isNullOrBlank(fileName)) {
@@ -488,7 +487,7 @@ public class AssessmentManagementService {
         target.setAllowSource(source.isAllowSource());
         target.setAuthorMode(source.isAuthorMode());
         target.setMaxAttempts(source.getMaxAttempts());
-        target.setPrompt(source.getPrompt());
+        target.setPrompt(StringUtilities.nullIfEmpty(source.getPrompt()));
         target.setTitle(source.getTitle());
     }
 
@@ -570,7 +569,7 @@ public class AssessmentManagementService {
         template.setAllowSource(true);
         template.setAuthorMode(true);
         template.setMaxAttempts(Integer.valueOf(0));
-        template.setTitle("Item Delivery Configuration");
+        template.setTitle("Item Delivery Settings");
         template.setPrompt(null);
         return template;
     }
