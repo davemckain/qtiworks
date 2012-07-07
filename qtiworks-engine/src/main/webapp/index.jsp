@@ -35,17 +35,17 @@ All Rights Reserved
     </div>
     <div class="grid_3">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/signup/')}" class="boxButton signup" title="Sign Up">
-          <h3>Sign Up</h3>
-          <div>Sign up for a free QTIWorks account</div>
+        <a href="${utils:internalLink(pageContext, '/instructor/')}" class="boxButton login" title="Log In">
+          <h3>Log In</h3>
+          <div>Sign into your QTIWorks account</div>
         </a>
       </div>
     </div>
     <div class="grid_3">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/instructor/')}" class="boxButton login" title="Log In">
-          <h3>Log In</h3>
-          <div>Sign into your QTIWorks account</div>
+        <a href="${utils:internalLink(pageContext, '/signup/')}" class="boxButton signup" title="Sign Up">
+          <h3>Sign Up</h3>
+          <div>Sign up for a free QTIWorks account</div>
         </a>
       </div>
     </div>
