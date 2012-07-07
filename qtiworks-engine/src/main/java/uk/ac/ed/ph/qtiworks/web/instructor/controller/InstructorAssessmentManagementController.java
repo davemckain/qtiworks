@@ -161,6 +161,8 @@ public final class InstructorAssessmentManagementController {
         return "showAssessment";
     }
 
+    //------------------------------------------------------
+
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
     public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -235,9 +237,17 @@ public final class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
-    public String showUpdateAssessmentPackageForm(@SuppressWarnings("unused") final @PathVariable long aid,
-            final Model model) {
+    public String showUpdateAssessmentPackageForm(final @PathVariable long aid,
+            final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
+        return setupUpdateAssessmentPackageForm(aid, model);
+    }
+
+    private String setupUpdateAssessmentPackageForm(final long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        model.addAttribute("assessment", assessmentManagementService.lookupAssessment(aid));
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
         return "updateAssessmentPackageForm";
     }
 
@@ -246,13 +256,13 @@ public final class InstructorAssessmentManagementController {
      * these into 2 steps and find some way of showing progress.
      */
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
-    public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
+    public String handleUploadAssessmentPackageForm(final @PathVariable long aid, final Model model,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Make sure something was submitted */
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "updateAssessmentPackageForm";
+            return setupUpdateAssessmentPackageForm(aid, model);
         }
 
         /* Attempt to import the package */
@@ -263,12 +273,12 @@ public final class InstructorAssessmentManagementController {
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            return "updateAssessmentPackageForm";
+            return setupUpdateAssessmentPackageForm(aid, model);
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            return "updateAssessmentPackageForm";
+            return setupUpdateAssessmentPackageForm(aid, model);
         }
         try {
             assessmentManagementService.validateAssessment(aid);

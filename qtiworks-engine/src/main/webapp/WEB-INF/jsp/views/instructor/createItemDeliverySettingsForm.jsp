@@ -16,7 +16,7 @@ itemDeliverySettings - form backing template
   <h2>Create Item Delivery Configuration</h2>
 
   <form:form method="post" acceptCharset="UTF-8" commandName="itemDeliverySettings">
-    <form:errors element="div" cssClass="formError" path="*"/>
+    <form:errors element="div" cssClass="formErrors" path="*"/>
     (<span class="required">*</span> denotes a required field.)
 
     <fieldset>

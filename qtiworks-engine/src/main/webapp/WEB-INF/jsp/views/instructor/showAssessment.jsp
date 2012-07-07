@@ -63,7 +63,7 @@ instructorAssessmentRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
-    <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Upload and replace package files</a></li>
+    <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a></li>
     <li>

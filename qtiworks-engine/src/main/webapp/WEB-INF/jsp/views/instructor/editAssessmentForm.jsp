@@ -5,14 +5,23 @@ All Rights Reserved
 
 Form for editing Assessment properties
 
+Model:
+
+assessmentRouting (action -> URL)
+instructorAssessmentRouting (action -> URL)
+
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Edit Assessment properties">
 
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+  </nav>
   <h2>Edit Assessment properties</h2>
 
   <form:form method="post" acceptCharset="UTF-8" commandName="updateAssessmentCommand">
-    <form:errors element="div" cssClass="formError" path="*"/>
+    <form:errors element="div" cssClass="formErrors" path="*"/>
     (<span class="required">*</span> denotes a required field.)
 
     <div>
