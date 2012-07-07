@@ -12,6 +12,14 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>1.0-DEV10 (07/07/2012)</h3>
+
+  <p>
+    This consolidates the work in the last snapshot by making it look a bit nicer and easier to use.
+    More details can be found in the accompanying
+    <a href="http://qtisupport.blogspot.co.uk/2012/07/qtiworks-snapshot-10-has-been-released.html">blog post about this release</a>.
+  </p>
+
   <h3>1.0-DEV9 (03/07/2012)</h3>
 
   <p>
