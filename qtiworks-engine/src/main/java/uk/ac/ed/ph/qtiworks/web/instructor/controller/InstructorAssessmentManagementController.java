@@ -142,56 +142,14 @@ public final class InstructorAssessmentManagementController {
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
-    //------------------------------------------------------
-
-    /**
-     * Shows the Assessment having the given ID (aid)
-     */
-    @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
-    public String showAssessment(final Model model, @PathVariable final long aid)
+    private void setupModelForAssessment(final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
-        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
-
-        model.addAttribute(assessment);
-        model.addAttribute(assessmentPackage);
-        model.addAttribute(itemDeliverySettingsList);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
-        return "showAssessment";
+        setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
     }
 
-    //------------------------------------------------------
-
-    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
-    public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-
-        final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
-        command.setName(assessment.getName());
-        command.setTitle(assessment.getTitle());
-        command.setPublic(assessment.isPublic());
-        model.addAttribute(command);
-
-        return "editAssessmentForm";
-    }
-
-    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
-    public String handleEditAssessmentForm(@PathVariable final long aid,
-            final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Validate command Object */
-        if (result.hasErrors()) {
-            return "editAssessmentForm";
-        }
-        try {
-            assessmentManagementService.updateAssessment(aid, command);
-        }
-        catch (final BindException e) {
-            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
-        }
-        return buildActionRedirect("/assessment/" + aid);
+    private void setupModelForAssessment(final Assessment assessment, final Model model) {
+        model.addAttribute("assessment", assessment);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
     }
 
     //------------------------------------------------------
@@ -234,6 +192,58 @@ public final class InstructorAssessmentManagementController {
         return buildActionRedirect("/assessment/" + assessment.getId());
     }
 
+    /**
+     * Shows the Assessment having the given ID (aid)
+     */
+    @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
+    public String showAssessment(final Model model, @PathVariable final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
+        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
+
+        model.addAttribute(assessment);
+        model.addAttribute(assessmentPackage);
+        model.addAttribute(itemDeliverySettingsList);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
+        return "showAssessment";
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
+    public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+
+        final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
+        command.setName(assessment.getName());
+        command.setTitle(assessment.getTitle());
+        command.setPublic(assessment.isPublic());
+        model.addAttribute(command);
+
+        setupModelForAssessment(assessment, model);
+        return "editAssessmentForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
+    public String handleEditAssessmentForm(@PathVariable final long aid, final Model model,
+            final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForAssessment(aid, model);
+            return "editAssessmentForm";
+        }
+        try {
+            assessmentManagementService.updateAssessment(aid, command);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+        return buildActionRedirect("/assessment/" + aid);
+    }
+
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
@@ -241,13 +251,7 @@ public final class InstructorAssessmentManagementController {
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
-        return setupUpdateAssessmentPackageForm(aid, model);
-    }
-
-    private String setupUpdateAssessmentPackageForm(final long aid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        model.addAttribute("assessment", assessmentManagementService.lookupAssessment(aid));
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
+        setupModelForAssessment(aid, model);
         return "updateAssessmentPackageForm";
     }
 
@@ -262,7 +266,8 @@ public final class InstructorAssessmentManagementController {
         /* Make sure something was submitted */
         /* Validate command Object */
         if (result.hasErrors()) {
-            return setupUpdateAssessmentPackageForm(aid, model);
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
         }
 
         /* Attempt to import the package */
@@ -273,12 +278,14 @@ public final class InstructorAssessmentManagementController {
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            return setupUpdateAssessmentPackageForm(aid, model);
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            return setupUpdateAssessmentPackageForm(aid, model);
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
         }
         try {
             assessmentManagementService.validateAssessment(aid);
@@ -296,12 +303,9 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
     public String validateAssessment(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
-        model.addAttribute("assessmentId", aid);
-        model.addAttribute("assessment", assessment);
         model.addAttribute("validationResult", validationResult);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
+        setupModelForAssessment(aid, model);
         return "validationResult";
     }
 

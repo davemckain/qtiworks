@@ -24,7 +24,7 @@ instructorAssessmentRouting
     <c:when test="${!empty assessmentList}">
       <table class="assessmentList">
         <thead>
-          <th colspan="2"></th>
+          <th></th>
           <th>Details</th>
           <th>Assessment Type</th>
           <th>Version</th>
@@ -36,11 +36,8 @@ instructorAssessmentRouting
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
-              <td align="center">
-                <a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}">Show</a>
-              </td>
               <td>
-                <h4><c:out value="${assessment.name}"/></h4>
+                <h4><a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}"><c:out value="${assessment.name}"/></a></h4>
                 <span class="title"><c:out value="${assessment.title}"/></span>
               </td>
               <td class="center">

@@ -18,7 +18,7 @@ instructorAssessmentRouting (action -> URL)
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
     <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(assessment.name)}</a>
+    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a>
   </nav>
   <h2>Edit Assessment Properties</h2>
 
