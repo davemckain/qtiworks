@@ -13,24 +13,49 @@ instructorAssessmentRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Your Item Delivery Configurations">
+<page:page title="Your Item Delivery Settings">
 
-  <h2>Your Item Delivery Configurations</h2>
+  <nav class="breadcrumbs">
+    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+  </nav>
+  <h2>Your Item Delivery Settings</h2>
+
+  <div class="hints">
+    <p>
+      "Delivery Settings" are reusable sets of options for specifying how your assessmnts should
+      be delivered. You can use this to control things that fall outside the scope of QTI, such as
+      whether candidates can request a solution,
+      how many attempts should be allowed, etc.
+    </p>
+  </div>
 
   <c:choose>
     <c:when test="${!empty itemDeliverySettingsList}">
-      <table>
+      <table class="assessmentList">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Actions</th>
+            <th></th>
+            <th>Details</th>
+            <th>Created</th>
           </tr>
         </thead>
         <tbody>
-          <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}">
+          <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}" varStatus="loopStatus">
             <tr>
-              <td><c:out value="${itemDeliverySettings.title}"/></td>
-              <td><a href="${utils:escapeLink(itemDeliverySettingsRouting[itemDeliverySettings.id]['show'])}">Show / Edit</a></td>
+              <td align="center">
+                <div class="workflowStep">${loopStatus.index + 1}</div>
+              </td>
+              <td>
+                <h4>
+                  <a href="${utils:escapeLink(itemDeliverySettingsRouting[itemDeliverySettings.id]['show'])}">
+                    <c:out value="${itemDeliverySettings.title}"/>
+                  </a>
+                </h4>
+                <span class="title">"${fn:escapeXml(itemDeliverySettings.prompt)}"</span>
+              </td>
+              <td class="center">
+                <c:out value="${utils:formatDayDateAndTime(itemDeliverySettings.creationTime)}"/>
+              </td>
             </tr>
           </c:forEach>
         </tbody>
@@ -41,7 +66,7 @@ instructorAssessmentRouting
     </c:otherwise>
   </c:choose>
 
-  <h3>Actions</h3>
+  <h4>Actions</h4>
   <ul>
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Configuration</a></li>
   </ul>
