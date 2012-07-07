@@ -53,6 +53,15 @@ All Rights Reserved.
     )</function-signature>
   </function>
   <function>
+    <description>Trims sentence nicely</description>
+    <name>trimSentence</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String trimSentence(
+      java.lang.String,
+      java.lang.Integer
+    )</function-signature>
+  </function>
+  <function>
     <description>Date formatting</description>
     <name>formatDayDateAndTime</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>

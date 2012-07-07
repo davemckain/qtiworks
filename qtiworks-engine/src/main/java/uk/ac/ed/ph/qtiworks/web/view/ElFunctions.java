@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
@@ -86,6 +87,10 @@ public final class ElFunctions {
     }
 
     //-------------------------------------------------
+
+    public static String trimSentence(final String sentence, final Integer maxLength) {
+        return ServiceUtilities.trimSentence(sentence, maxLength.intValue());
+    }
 
     public static String formatTime(final Date time) {
         return ViewUtilities.getTimeFormat().format(time);

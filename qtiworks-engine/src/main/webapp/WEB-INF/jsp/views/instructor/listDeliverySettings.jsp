@@ -51,7 +51,7 @@ instructorAssessmentRouting
                     <c:out value="${itemDeliverySettings.title}"/>
                   </a>
                 </h4>
-                <span class="title">"${fn:escapeXml(itemDeliverySettings.prompt)}"</span>
+                <span class="title">"${fn:escapeXml(utils:trimSentence(itemDeliverySettings.prompt, 200))}"</span>
               </td>
               <td class="center">
                 <c:out value="${utils:formatDayDateAndTime(itemDeliverySettings.creationTime)}"/>
