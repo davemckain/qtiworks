@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="imsqti_v2p1.xsd"
-	
+xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
 xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title="Recalcul" adaptive="false" timeDependent="false"> 
 
 <responseDeclaration identifier="REPONSE0" cardinality="multiple" baseType="identifier" > 
