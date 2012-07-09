@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_2_3" title="Graphic hotspot ordering" 
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="ordered" baseType="identifier">
+        <correctResponse>
+            <value>A</value>
+            <value>D</value>
+            <value>C</value>
+            <value>B</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue><value>0.0</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier">
+        <defaultValue><value>NULL</value></defaultValue>
+    </outcomeDeclaration>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+        <p class="heading"><b>Hotspot ordering.</b></p>
+        <p class="instruct">
+             This style of question allows an ordering to be applied to a series of 
+             hotspots in an image.</p>
+        <p>Lorna is flying back home to the UK. Ideally, she would like to fly in directly to her
+            home town of Glasgow. Edinburgh is her second choice and, if necessary, she could fly
+            into London and pick up an internal connecting flight. Although she has been offered a
+            cheap flight to Manchester it remains her least favourite option as connecting flights
+            to Glasgow are not very reliable from there.</p>
+        <graphicOrderInteraction responseIdentifier="RESPONSE">
+            <prompt>Mark the airports shown on the map according to Lorna's preferences.</prompt>
+            <object type="image/png" width="206" height="280" data="images/ukair.png">UK Map</object>
+            <hotspotChoice shape="circle" coords="77,115,8" identifier="A"/>
+            <hotspotChoice shape="circle" coords="118,184,8" identifier="B"/>
+            <hotspotChoice shape="circle" coords="150,235,8" identifier="C"/>
+            <hotspotChoice shape="circle" coords="96,114,8" identifier="D"/>
+        </graphicOrderInteraction>
+    </itemBody>
+
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <index n="1">
+                        <variable identifier="RESPONSE"/>
+                    </index>
+                    <baseValue baseType="identifier">A</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <sum>
+                        <variable identifier="SCORE"/>
+                        <baseValue baseType="float">1.0</baseValue>
+                    </sum>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <variable identifier="FEEDBACK"/>
+                        <baseValue baseType="identifier">A_OK</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <index n="2">
+                        <variable identifier="RESPONSE"/>
+                    </index>
+                    <baseValue baseType="identifier">D</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <sum>
+                        <variable identifier="SCORE"/>
+                        <baseValue baseType="float">1.0</baseValue>
+                    </sum>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <variable identifier="FEEDBACK"/>
+                        <baseValue baseType="identifier">D_OK</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+             </responseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <index n="3">
+                        <variable identifier="RESPONSE"/>
+                    </index>
+                    <baseValue baseType="identifier">C</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <sum>
+                        <variable identifier="SCORE"/>
+                        <baseValue baseType="float">1.0</baseValue>
+                    </sum>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <variable identifier="FEEDBACK"/>
+                        <baseValue baseType="identifier">C_OK</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <index n="4">
+                        <variable identifier="RESPONSE"/>
+                    </index>
+                    <baseValue baseType="identifier">B</baseValue>
+                </match>
+                <setOutcomeValue identifier="SCORE">
+                    <sum>
+                        <variable identifier="SCORE"/>
+                        <baseValue baseType="float">1.0</baseValue>
+                    </sum>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <variable identifier="FEEDBACK"/>
+                        <baseValue baseType="identifier">B_OK</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="A_OK" showHide="show">
+       <p class="modalfeedback"><b>Yes</b>, Glasgow is her first choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="A_OK" showHide="hide">
+       <p class="modalfeedback"><b>No</b>, Glasgow is her first choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="D_OK" showHide="show">
+       <p class="modalfeedback"><b>Yes</b>, Edinburgh is her second choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="D_OK" showHide="hide">
+       <p class="modalfeedback"><b>No</b>, Edinburgh is her second choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="C_OK" showHide="show">
+       <p class="modalfeedback"><b>Yes</b>, London is her third choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="C_OK" showHide="hide">
+       <p class="modalfeedback"><b>No</b>, London is her third choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="B_OK" showHide="show">
+       <p class="modalfeedback"><b>Yes</b>, Manchester is her last choice.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="B_OK" showHide="hide">
+       <p class="modalfeedback"><b>No</b>, Manchester is her last choice.</p>
+     </modalFeedback>
+
+</assessmentItem>
+

@@ -138,6 +138,7 @@ public class SampleResourceImporter {
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 UpmcSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
+//                StompSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
         );
         for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {

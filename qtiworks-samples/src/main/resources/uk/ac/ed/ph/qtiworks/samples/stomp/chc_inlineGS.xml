@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- various -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="Demo_1_4" title="Inline text selection" adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPA" cardinality="single" baseType="identifier">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="springA" mappedValue="0"/>
+            <mapEntry mapKey="summerA" mappedValue="0"/>
+            <mapEntry mapKey="autumnA" mappedValue="0"/>
+            <mapEntry mapKey="winterA" mappedValue="1"/>
+        </mapping>
+    </responseDeclaration>
+    <responseDeclaration identifier="RESPB" cardinality="single" baseType="identifier">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="springB" mappedValue="0"/>
+            <mapEntry mapKey="summerB" mappedValue="1"/>
+            <mapEntry mapKey="autumnB" mappedValue="0"/>
+            <mapEntry mapKey="winterB" mappedValue="0"/>
+        </mapping>
+    </responseDeclaration>
+    <responseDeclaration identifier="RESPC" cardinality="single" baseType="identifier">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="Gloucester" mappedValue="0"/>
+            <mapEntry mapKey="Lancaster" mappedValue="0"/>
+            <mapEntry mapKey="York" mappedValue="1"/>
+            <mapEntry mapKey="Trent" mappedValue="0"/>
+        </mapping>
+    </responseDeclaration>
+    <responseDeclaration identifier="RESPD" cardinality="single" baseType="identifier">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="sorrow" mappedValue="0"/>
+            <mapEntry mapKey="clouds" mappedValue="1"/>
+            <mapEntry mapKey="weeds" mappedValue="0"/>
+            <mapEntry mapKey="curses" mappedValue="0"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="FBA" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="FBB" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="FBC" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="FBD" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="4.0"/>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+        <div><p class="heading">
+                <b>In-line selection.</b></p><p class="instruct"> An option may have unique feedback
+                when selected or not selected.<br/> Each option may have its own mark value, and
+                these can be negative (not used here).<br/> Options can be put in random order (the
+                third and fourth lists are randomised here).</p>
+            <p>Identify the missing words in this famous quote from Shakespeare's Richard III.</p>
+            <blockquote>
+                <div>Now is the <inlineChoiceInteraction responseIdentifier="RESPA" shuffle="false">
+                        <inlineChoice identifier="springA">spring</inlineChoice>
+                        <inlineChoice identifier="summerA">summer</inlineChoice>
+                        <inlineChoice identifier="autumnA">autumn</inlineChoice>
+                        <inlineChoice identifier="winterA">winter</inlineChoice>
+                    </inlineChoiceInteraction> of our discontent<br/> Made glorious
+                        <inlineChoiceInteraction responseIdentifier="RESPB" shuffle="false">
+                        <inlineChoice identifier="springB">spring</inlineChoice>
+                        <inlineChoice identifier="summerB">summer</inlineChoice>
+                        <inlineChoice identifier="autumnB">autumn</inlineChoice>
+                        <inlineChoice identifier="winterB">winter</inlineChoice>
+                    </inlineChoiceInteraction> by this sun of <inlineChoiceInteraction
+                        responseIdentifier="RESPC" shuffle="true">
+                        <inlineChoice identifier="Gloucester">Gloucester</inlineChoice>
+                        <inlineChoice identifier="Lancaster">Lancaster</inlineChoice>
+                        <inlineChoice identifier="York">York</inlineChoice>
+                        <inlineChoice identifier="Trent">Trent</inlineChoice>
+                    </inlineChoiceInteraction>; <br/> And all the <inlineChoiceInteraction
+                        responseIdentifier="RESPD" shuffle="true">
+                        <inlineChoice identifier="sorrows">sorrows</inlineChoice>
+                        <inlineChoice identifier="clouds">clouds</inlineChoice>
+                        <inlineChoice identifier="weeds">weeds</inlineChoice>
+                        <inlineChoice identifier="curses">curses</inlineChoice>
+                    </inlineChoiceInteraction> that lour'd upon our house<br/> In the deep bosom of
+                    the ocean buried.</div>
+            </blockquote>
+        </div>
+    </itemBody>
+
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="RESPA"/>
+                    <baseValue baseType="identifier">springA</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBA">
+                    <baseValue baseType="identifier">spring</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPA"/>
+                    <baseValue baseType="identifier">summerA</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBA">
+                    <baseValue baseType="identifier">summer</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPA"/>
+                    <baseValue baseType="identifier">autumnA</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBA">
+                    <baseValue baseType="identifier">autumn</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPA"/>
+                    <baseValue baseType="identifier">winterA</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBA">
+                    <baseValue baseType="identifier">winter</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="RESPB"/>
+                    <baseValue baseType="identifier">springB</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBB">
+                    <baseValue baseType="identifier">spring</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPB"/>
+                    <baseValue baseType="identifier">summerB</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBB">
+                    <baseValue baseType="identifier">summer</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPB"/>
+                    <baseValue baseType="identifier">autumnB</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBB">
+                    <baseValue baseType="identifier">autumn</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <match>
+                    <variable identifier="RESPB"/>
+                    <baseValue baseType="identifier">winterB</baseValue>
+                </match>
+                <setOutcomeValue identifier="FBB">
+                    <baseValue baseType="identifier">winter</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+        </responseCondition>
+        <setOutcomeValue identifier="FBC">
+            <variable identifier="RESPC"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="FBD">
+            <variable identifier="RESPD"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="SCORE">
+            <sum>
+                <mapResponse identifier="RESPA"/>
+                <mapResponse identifier="RESPB"/>
+                <mapResponse identifier="RESPC"/>
+                <mapResponse identifier="RESPD"/>
+            </sum>
+        </setOutcomeValue>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FBA" identifier="winter" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>: the winter of our discontent.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBA" identifier="winter" showHide="hide">
+        <p class="modalfeedback"><b>No</b>: it should be the <b>winter</b> of our discontent, not
+            the <printedVariable identifier="FBA"/>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBB" identifier="summer" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>: glorious summer.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBB" identifier="summer" showHide="hide">
+        <p class="modalfeedback"><b>No</b>: it should be glorious <b>summer</b>, not the glorious
+                <printedVariable identifier="FBB"/>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBC" identifier="York" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>: this sun of York.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBC" identifier="York" showHide="hide">
+        <p class="modalfeedback"><b>No</b>: it should be this sun of <b>York</b>, not of
+                <printedVariable identifier="FBC"/>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBD" identifier="clouds" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>: the clouds that lour'd upon our house.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBD" identifier="clouds" showHide="hide">
+        <p class="modalfeedback"><b>No</b>: it should be the <b>clouds</b> that lour'd upon our
+            house, not the <printedVariable identifier="FBD"/>.</p>
+    </modalFeedback>
+</assessmentItem>

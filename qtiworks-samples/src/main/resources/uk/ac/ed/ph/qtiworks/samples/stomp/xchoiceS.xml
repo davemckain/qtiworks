@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author:  Dick Bacon                 -->
+<!-- Mod and Conversion to QTI Version 2 Graham Smith  -->
+<!-- Date:  January 2007 -->
+<!-- Dick converted it to adaptive in 2009 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_3_5" title="Numeric choice with mal-rules" 
+    adaptive="true" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+    <templateDeclaration identifier="V9_1" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="pi" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_2" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_3" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_4" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_5" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_6" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="V9_7" cardinality="single" baseType="float"/>
+    
+    <templateProcessing>
+         <setTemplateValue identifier="V9_1">
+              <divide>
+                   <round>
+                        <randomFloat min="900.0" max="999.0"/>
+                   </round>
+                   <baseValue baseType = "float">10.0</baseValue>
+              </divide>
+         </setTemplateValue>
+         <setTemplateValue identifier="pi">  <!-- e.g. 2.16 -->
+              <baseValue baseType = "float">3.1415926</baseValue>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_2"> <!-- pi * r -->
+                   <product>
+                        <variable identifier="pi"/>
+                        <variable identifier="V9_1"/>
+                   </product>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_3"> <!-- 2 * pi * r -->
+                   <product>
+                        <product>
+                             <variable identifier="pi"/>
+                             <variable identifier="V9_1"/>
+                        </product>
+                        <baseValue baseType = "float">2.0</baseValue>
+                   </product>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_4"> <!-- pi * r ^ 2 -->
+                   <product>
+                        <product>
+                             <variable identifier="pi"/>
+                             <variable identifier="V9_1"/>
+                        </product>
+                        <variable identifier="V9_1"/>
+                   </product>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_5"> <!-- 4 * pi * r ^ 2 -->
+                   <product>
+                        <product>
+                             <product>
+                                  <variable identifier="pi"/>
+                                  <variable identifier="V9_1"/>
+                             </product>
+                             <variable identifier="V9_1"/>
+                        </product>
+                        <baseValue baseType = "float">4.0</baseValue>
+                   </product>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_6"> <!-- 4/3 * pi * r ^ 2 -->
+                   <product>
+                        <product>
+                             <product>
+                                  <variable identifier="pi"/>
+                                  <variable identifier="V9_1"/>
+                             </product>
+                             <variable identifier="V9_1"/>
+                        </product>
+                        <divide>
+                             <baseValue baseType = "float">4.0</baseValue>
+                             <baseValue baseType = "float">3.0</baseValue>
+                        </divide>
+                   </product>
+         </setTemplateValue>
+         <setTemplateValue identifier="V9_7"> <!-- 4/3 * pi * r ^ 3 -->
+                   <product>
+                        <product>
+                             <product>
+                                  <product>
+                                       <variable identifier="pi"/>
+                                       <variable identifier="V9_1"/>
+                                  </product>
+                                  <variable identifier="V9_1"/>
+                             </product>
+                             <variable identifier="V9_1"/>
+                        </product>
+                        <divide>
+                             <baseValue baseType = "float">4.0</baseValue>
+                             <baseValue baseType = "float">3.0</baseValue>
+                        </divide>
+                   </product>
+         </setTemplateValue>
+    </templateProcessing>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+    <p class="heading"><b>Numeric MCQ with mal-rules.</b></p>
+           <p class="instruct">
+               Each wrong value is based upon a recognisable mistake (mal-rule), and has
+               specific feedback relating to that mistake.<br/>
+               Values and option ordering are randomised.
+               Each option may have its own mark value.</p>
+           <p class="instruct">This question also lets you keep trying different answers
+              until you get it right. The correct answer is shown in bold, so try the other answers
+              and see what sort of errors have been assumed for the distractors.</p>
+         <p> A sphere has a radius of <printedVariable identifier="V9_1" format="%.1f"/> mm.
+                Which of the following is the best approximation to its surface area?</p>
+         <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+            <simpleChoice identifier="A" fixed="false">
+                 <printedVariable identifier="V9_2" format="%.3r"/> mm<sup>2</sup>   
+            </simpleChoice>    
+            <simpleChoice identifier="B" fixed="false">
+                 <printedVariable identifier="V9_3" format="%.3r"/> mm<sup>2</sup>    
+            </simpleChoice>    
+            <simpleChoice identifier="C" fixed="false">
+                 <printedVariable identifier="V9_4" format="%.3r"/> mm<sup>2</sup>    
+            </simpleChoice>    
+            <simpleChoice identifier="D" fixed="false"><b>
+                 <printedVariable identifier="V9_5" format="%.3r"/> mm<sup>2</sup></b>
+            </simpleChoice>    
+            <simpleChoice identifier="E" fixed="false">
+                 <printedVariable identifier="V9_6" format="%.3r"/> mm<sup>2</sup>    
+            </simpleChoice>    
+            <simpleChoice identifier="F" fixed="false">
+                 <printedVariable identifier="V9_7" format="%.3r"/> mm<sup>2</sup>    
+            </simpleChoice>    
+         </choiceInteraction>
+         <p/>
+    </itemBody>
+
+    <responseProcessing>
+        <setOutcomeValue identifier="completionStatus">
+            <baseValue baseType="identifier">incomplete</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="FEEDBACK">
+            <multiple>
+                <variable identifier="RESPONSE"/>
+            </multiple>
+        </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="RESPONSE"/>
+                    <baseValue baseType="identifier">D</baseValue>
+                </match>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">complete</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="A">
+          <p class="modalfeedback">
+          <b> No.</b> This value was obtained from an incorrect version
+                          of the expression for the circumference of a circle of the same
+                         radius as the sphere, and is actually half the circumference.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="B">
+          <p class="modalfeedback">
+         <b> No.</b> This value was obtained from the expression for
+                          the circumference of a circle of the same radius as the sphere.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="C">
+          <p class="modalfeedback">
+         <b> No.</b>This value was obtained from the expression
+                          for the area of a circle of the same radius as the sphere.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="D">
+          <p class="modalfeedback">
+         <b> Yes.</b> That's right, you find the surface area of a sphere
+                               by applying the formula 4 <i>&#x3c0; r</i><sup>2</sup>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="E">
+          <p class="modalfeedback">
+         <b> No.</b> This value was obtained from a
+                         corruption of the expression for the volume of the sphere, but
+                         using r<sup>2</sup> rather than r<sup>3</sup>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="F">
+          <p class="modalfeedback">
+         <b> No.</b> This value was obtained from
+                         the expression for the volume of the sphere.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="hide" identifier="D">
+          <p class="modalfeedback">
+         The surface area of a sphere is given by
+                        4 <i>&#x3c0; r</i><sup>2</sup> which, with <i>r</i> =
+                        <printedVariable identifier="V9_1" format="%.1f"/> mm, comes to
+                        <printedVariable identifier="V9_5" format="%.3r"/> mm<sup>2</sup></p>
+    </modalFeedback>
+</assessmentItem>

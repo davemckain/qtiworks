@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demonstration MCQ written by Dick Bacon, University of Surrey. 10_09 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+     identifier="Demo_1_1"  title="Demonstrating multiple choice questions (MCQ)" 
+     adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+        <value>ChoiceA</value>
+      </correctResponse>
+        <mapping lowerBound="0" upperBound="5" defaultValue="0">
+            <mapEntry mapKey="ChoiceA" mappedValue="5"/>
+            <mapEntry mapKey="ChoiceB" mappedValue="1"/>
+            <mapEntry mapKey="ChoiceC" mappedValue="0"/>
+            <mapEntry mapKey="ChoiceD" mappedValue="3"/>
+            <mapEntry mapKey="ChoiceE" mappedValue="0"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="5.0">
+      <defaultValue>
+        <value>0</value>
+      </defaultValue>
+    </outcomeDeclaration>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+    <div><p class="heading"><b>Single choice (MCQ).</b></p>
+    <p class="instruct">
+      Each option may have unique feedback when selected or not selected.<br/>
+      Each option may have its own mark value.</p>
+    <p>Select the one correct answer from this list, which can be (and is here) displayed in a randomised order.
+    </p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+        <simpleChoice identifier="ChoiceA">This option is correct and scores 5.</simpleChoice>
+        <simpleChoice identifier="ChoiceB">This option looks correct, but isn't, and scores 1.</simpleChoice>
+        <simpleChoice identifier="ChoiceC">This option is not correct and scores 0.</simpleChoice>
+        <simpleChoice identifier="ChoiceD">This option is neither correct nor totally incorrect and scores 3.</simpleChoice>
+        <simpleChoice identifier="ChoiceE">This option is not at all correct and scores 0.</simpleChoice>
+      </choiceInteraction><br/>[ 5 marks ]</div>
+    </itemBody>
+
+    <responseProcessing>
+      <setOutcomeValue identifier="FEEDBACK">
+        <variable identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+      </setOutcomeValue>
+    </responseProcessing>
+
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="show">
+    <p class="modalfeedback"><b>Yes</b>, you have selected the correct option.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="hide">
+    <p class="modalfeedback"><b>No</b>, you have not selected the option that says it is correct.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceB" showHide="show">
+    <p class="modalfeedback"><b>No</b>, you have selected the option that looks correct, but isn't.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceC" showHide="show">
+    <p class="modalfeedback"><b>No</b>, the option you have selected says that it is not correct.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceD" showHide="show">
+    <p class="modalfeedback"><b>OK</b>, you have selected the option that says it is neither correct nor totally incorrect.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceE" showHide="show">
+    <p class="modalfeedback"><b>No</b>, the option you have selected says that it is not at all correct.</p>
+     </modalFeedback>
+  </assessmentItem>

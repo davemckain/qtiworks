@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written by Prof Ben Murdin for level 1 datahandling, University of Surrey -->
+<!-- Transcribed into QTI v2.1 by DIck Bacon Summer 2009 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+      identifier="Demo_4_5" title="Adaptive example of instructional selt test" 
+     adaptive="true" timeDependent="false">
+
+    <responseDeclaration identifier="RSPV0B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV1" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV1B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV1C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV2" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV2B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV2C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV3" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV3B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV3C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV4" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV4B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV4C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV5" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV5B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV5C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV6" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV6B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV6C" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV7" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV7B" cardinality="single" baseType="integer"/>
+    <responseDeclaration identifier="RSPV7C" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="BINFB" cardinality="single" baseType="identifier"/>
+    <templateDeclaration identifier="V0" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V0p" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V0b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V0r" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V1" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V1b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V2" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V2b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V3" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V3b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V4" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V4b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V5" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V5b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V6" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V6b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V7" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateDeclaration identifier="V7b" cardinality="single" baseType="integer"
+				      	paramVariable="false" mathVariable="false"/>
+    <templateProcessing>
+      <setTemplateValue identifier="V0">
+        <randomInteger min="65" max="127" step="4"/>
+     </setTemplateValue>
+      <setTemplateValue identifier="V1">
+        <integerDivide>
+          <variable identifier="V0"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V1b">
+        <integerModulus>
+          <variable identifier="V0"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V2">
+        <integerDivide>
+          <variable identifier="V1"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V2b">
+        <integerModulus>
+          <variable identifier="V1"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V3">
+        <integerDivide>
+          <variable identifier="V2"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V3b">
+        <integerModulus>
+          <variable identifier="V2"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V4">
+        <integerDivide>
+          <variable identifier="V3"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V4b">
+        <integerModulus>
+          <variable identifier="V3"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V5">
+        <integerDivide>
+          <variable identifier="V4"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V5b">
+        <integerModulus>
+          <variable identifier="V4"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V6">
+        <integerDivide>
+          <variable identifier="V5"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V6b">
+        <integerModulus>
+          <variable identifier="V5"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V7">
+        <integerDivide>
+          <variable identifier="V6"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V7b">
+        <integerModulus>
+          <variable identifier="V6"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0p">
+          <variable identifier="V0"/>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0r">
+          <baseValue baseType = "integer">0</baseValue>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+        <setTemplateValue identifier="V0r">
+            <sum>
+                <variable identifier="V0r"/>
+                <baseValue baseType = "integer">64</baseValue>
+            </sum>
+        </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+      <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+        <setTemplateValue identifier="V0r">
+            <sum>
+                <variable identifier="V0r"/>
+                <baseValue baseType = "integer">32</baseValue>
+            </sum>
+        </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+      <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+        <setTemplateValue identifier="V0r">
+            <sum>
+                <variable identifier="V0r"/>
+                <baseValue baseType = "integer">16</baseValue>
+            </sum>
+        </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+     <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+        <setTemplateValue identifier="V0r">
+            <sum>
+                <variable identifier="V0r"/>
+                <baseValue baseType = "integer">8</baseValue>
+            </sum>
+        </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+     <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+        <setTemplateValue identifier="V0r">
+            <sum>
+                <variable identifier="V0r"/>
+                <baseValue baseType = "integer">4</baseValue>
+            </sum>
+        </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+     <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+            <setTemplateValue identifier="V0r">
+                <sum>
+                    <variable identifier="V0r"/>
+                    <baseValue baseType = "integer">2</baseValue>
+                </sum>
+            </setTemplateValue>
+        </templateIf>
+     </templateCondition>
+     <setTemplateValue identifier="V0p">
+        <integerDivide>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerDivide>
+     </setTemplateValue>
+      <setTemplateValue identifier="V0b">
+        <integerModulus>
+          <variable identifier="V0p"/>
+          <baseValue baseType = "integer">2</baseValue>
+        </integerModulus>
+     </setTemplateValue>
+     <templateCondition>
+        <templateIf>
+            <equal toleranceMode="exact">
+                <variable identifier="V0b"/>
+                <baseValue baseType = "integer">1</baseValue>
+            </equal>
+            <setTemplateValue identifier="V0r">
+                <sum>
+                    <variable identifier="V0r"/>
+                    <baseValue baseType = "integer">1</baseValue>
+                </sum>
+            </setTemplateValue>
+        </templateIf>
+     </templateCondition> 
+    </templateProcessing>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+        <table class="table1">
+             <colgroup>
+                 <col  class="width55pc"/><col/>
+            </colgroup>
+        <tbody>
+        <tr><td><span class="center"><b>Method</b></span>
+        <p>To convert a decimal value into binary, successively divide by 2. The remainders of 
+         these successive divisions are the digits of the binary value.</p>
+<p>e.g.  Convert 13<sub>10</sub> into binary:</p>
+<table><tbody>
+<tr><td></td><td>13	= <b>6</b>  × 2 +	1</td><td>&#xa0;(least significant bit - lsb)</td></tr>
+<tr><td>&#xa0;&#xa0;&#xa0;use the <b>6</b>&#xa0;&#xa0;&#xa0;&#xa0;</td><td><b>6</b>	= 3 × 2 + 	0</td><td></td></tr>
+<tr><td>&#xa0;&#xa0;&#xa0;use the 3 </td><td>3	= 1 × 2 + 	1</td></tr>
+<tr><td>&#xa0;&#xa0;&#xa0;etc. </td><td>1	= 0 × 2 + 	1</td><td>&#xa0;(most significant bit - msb)</td></tr>
+<tr><td> </td><td> </td></tr>
+<tr><td>&#xa0;&#xa0;&#xa0;so that</td><td>13<sub>10</sub> = 1101<sub>2</sub></td><td></td></tr>
+</tbody></table>
+<p>A <b>bit</b> is a <b>b</b>inary dig<b>it</b>.</p>
+<p>N.B. The first bit you find is the <b>least significant bit</b> (it is the result of the 
+value being odd or even) and therefore goes on the <b>right hand</b> end of the final binary number.</p>        
+        </td><td><span class="center"><b>Example</b></span>
+        <p>Convert the value
+            <printedVariable identifier="V0" /><sub>10</sub> to binary,
+            using the method shown on the left.<br/>
+        </p>
+            <table class="table1">
+            <colgroup>
+                <col class="width25"/><col class="width5"/><col class="width20"/>
+                <col class="width5"/><col/><col class="width5"/>
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>a)</td>
+                    <td class="center"><printedVariable identifier="V0" /></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV1" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV1B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>b)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV1C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV2" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV2B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>c)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV2C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV3" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV3B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>d)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV3C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV4" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV4B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>e)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV4C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV5" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV5B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>f)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV5C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV6" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV6B" expectedLength="1"/></td>
+                </tr><tr>
+                    <td>g)</td>
+                    <td><textEntryInteraction responseIdentifier="RSPV6C" expectedLength="1"/></td>
+                    <td class="center"> = </td>
+                    <td><textEntryInteraction responseIdentifier="RSPV7" expectedLength="1"/></td>
+                    <td> &#xd7; 2 + </td> 
+                    <td><textEntryInteraction responseIdentifier="RSPV7B" expectedLength="1"/></td>
+                </tr><tr><td></td>
+                    <td colspan="5">so <printedVariable identifier="V0" /><sub>10</sub> = 
+                    <textEntryInteraction responseIdentifier="RSPV0B" expectedLength="8" base="2"/> <sub>2</sub></td>
+                </tr>
+            </tbody>
+        </table>
+        <rubricBlock view="tutor"><p class="tutorView">This information is visible only in 'tutor' view:
+           <br/><printedVariable identifier="V0" /><sub>10</sub> = 
+           <printedVariable identifier="V0"  format="%i" base="2"/><sub>2</sub>,&#xa0;&#xa0;(
+            <printedVariable identifier="V0r"  format="%i" base="2"/><sub>2</sub>)</p>
+         </rubricBlock>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    </itemBody>
+    <responseProcessing>
+        <setOutcomeValue identifier="completionStatus">
+            <baseValue baseType="identifier">incomplete</baseValue>
+        </setOutcomeValue>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">unknown</baseValue>
+                </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV1"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV1B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L1N</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV1"/>
+                            <variable identifier="V1"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV1B"/>
+                            <variable identifier="V1b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L1W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV1C"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV2"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV2B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L2N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV1C"/>
+                            <variable identifier="V1"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV2"/>
+                            <variable identifier="V2"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV2B"/>
+                            <variable identifier="V2b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L2W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV2C"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV3"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV3B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L3N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV2C"/>
+                            <variable identifier="V2"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV3"/>
+                            <variable identifier="V3"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV3B"/>
+                            <variable identifier="V3b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L3W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+ <!--                   <isNull>
+                        <variable identifier="RSPV3C"/>
+                    </isNull> -->
+                    <isNull>
+                        <variable identifier="RSPV4"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV4B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L4N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV3C"/>
+                            <variable identifier="V3"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV4"/>
+                            <variable identifier="V4"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV4B"/>
+                            <variable identifier="V4b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L4W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV4C"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV5"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV5B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L5N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV4C"/>
+                            <variable identifier="V4"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV5"/>
+                            <variable identifier="V5"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV5B"/>
+                            <variable identifier="V5b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L5W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV5C"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV6"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV6B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L6N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV5C"/>
+                            <variable identifier="V5"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV6"/>
+                            <variable identifier="V6"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV6B"/>
+                            <variable identifier="V6b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L6W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <isNull>
+                        <variable identifier="RSPV6C"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV7"/>
+                    </isNull>
+                    <isNull>
+                        <variable identifier="RSPV7B"/>
+                    </isNull>
+                </or>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L7N</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <not>
+                    <and>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV6C"/>
+                            <variable identifier="V6"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV7"/>
+                            <variable identifier="V7"/>
+                        </equal>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV7B"/>
+                            <variable identifier="V7b"/>
+                        </equal>
+                    </and>
+                </not>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">L7W</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+           <responseElseIf>
+                    <isNull>
+                        <variable identifier="RSPV0B"/>
+                    </isNull>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">anull</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV0B"/>
+                            <variable identifier="V0"/>
+                        </equal>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">right</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">complete</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                        <equal toleranceMode="exact">
+                            <variable identifier="RSPV0B"/>
+                            <variable identifier="V0r"/>
+                        </equal>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">rev</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <setOutcomeValue identifier="BINFB">
+                   <baseValue baseType = "identifier">wrong</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L1N" showHide="show">
+        <p>line a) is not complete.</p>
+        <p>It should be <printedVariable identifier="V0" /> = 
+                 <printedVariable identifier="V1" />  &#xd7; 2 + 
+                 <printedVariable identifier="V1b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L1W" showHide="show">
+        <p>line a) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V0" /> = 
+                 <printedVariable identifier="V1" />  &#xd7; 2 + 
+                 <printedVariable identifier="V1b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L2N" showHide="show">
+        <p>line b) is not complete.</p>
+        <p>It should be <printedVariable identifier="V1" /> = 
+                 <printedVariable identifier="V2" />  &#xd7; 2 + 
+                 <printedVariable identifier="V2b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L2W" showHide="show">
+        <p>line b) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V1" /> = 
+                 <printedVariable identifier="V2" />  &#xd7; 2 + 
+                 <printedVariable identifier="V2b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L3N" showHide="show">
+        <p>line c) is not complete.</p>
+        <p>It should be <printedVariable identifier="V2" /> = 
+                 <printedVariable identifier="V3" />  &#xd7; 2 + 
+                 <printedVariable identifier="V3b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L3W" showHide="show">
+        <p>line c) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V2" /> = 
+                 <printedVariable identifier="V3" />  &#xd7; 2 + 
+                 <printedVariable identifier="V3b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L4N" showHide="show">
+        <p>line d) is not complete.</p>
+        <p>It should be <printedVariable identifier="V3" /> = 
+                 <printedVariable identifier="V4" />  &#xd7; 2 + 
+                 <printedVariable identifier="V4b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L4W" showHide="show">
+        <p>line d) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V3" /> = 
+                 <printedVariable identifier="V4" />  &#xd7; 2 + 
+                 <printedVariable identifier="V4b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L5N" showHide="show">
+        <p>line e) is not complete.</p>
+        <p>It should be <printedVariable identifier="V4" /> = 
+                 <printedVariable identifier="V5" />  &#xd7; 2 + 
+                 <printedVariable identifier="V5b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L5W" showHide="show">
+        <p>line e) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V4" /> = 
+                 <printedVariable identifier="V5" />  &#xd7; 2 + 
+                 <printedVariable identifier="V5b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L6N" showHide="show">
+        <p>line f) is not complete.</p>
+        <p>It should be <printedVariable identifier="V5" /> = 
+                 <printedVariable identifier="V6" />  &#xd7; 2 + 
+                 <printedVariable identifier="V6b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L6W" showHide="show">
+        <p>line f) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V5" /> = 
+                 <printedVariable identifier="V6" />  &#xd7; 2 + 
+                 <printedVariable identifier="V6b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L7N" showHide="show">
+        <p>line g) is not complete.</p>
+        <p>It should be <printedVariable identifier="V6" /> = 
+                 <printedVariable identifier="V7" />  &#xd7; 2 + 
+                 <printedVariable identifier="V7b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="L7W" showHide="show">
+        <p>line g) is incorrect.</p>
+        <p>It should be <printedVariable identifier="V6" /> = 
+                 <printedVariable identifier="V7" />  &#xd7; 2 + 
+                 <printedVariable identifier="V7b" />
+         </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="right" showHide="show">
+        <p>Yes, that's right.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="anull" showHide="show">
+        <p>OK, you have calculated all the bits correctly, now you need to write them
+              into the final answer box at the bottom.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="rev" showHide="show">
+        <p>No. You have written the final value with the bits in reverse order. <br/>
+            The least significant bit is the <span class="underline">first</span> one you calculated and is therefore at the <span class="underline">top</span> of the table.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="wrong" showHide="show">
+        <p>No. You have calculated all the remainders correctly, but have not copied them into the final value correctly.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="BINFB" identifier="unknown" showHide="show">
+      <p>no feedback</p>
+      </modalFeedback>
+
+  </assessmentItem>

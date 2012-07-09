@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demonstration selection written by Dick Bacon, University of Surrey. 10_09 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_1_3" title="Pairing style"  
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
+        <mapping lowerBound="0" upperBound="6" defaultValue="0">
+            <mapEntry mapKey="A K" mappedValue="1"/>
+            <mapEntry mapKey="B L" mappedValue="1"/>
+            <mapEntry mapKey="C M" mappedValue="1"/>
+            <mapEntry mapKey="D N" mappedValue="1"/>
+            <mapEntry mapKey="E O" mappedValue="1"/>
+            <mapEntry mapKey="F P" mappedValue="-1"/>
+            <mapEntry mapKey="G M" mappedValue="1"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="6.0">
+      <defaultValue>
+        <value>0</value>
+      </defaultValue>
+    </outcomeDeclaration>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+    <div><p class="heading">
+      <b>Pairing.</b></p><p class="instruct">
+        Select matches for items in a list.
+        The number of matches does not have to match the number of items.<br/> 
+        Matches can be used more than once or not at all.<br/>
+        Both lists can be randomised (and are here), but any one item can be fixed in a given position if required.
+        The number of matches can be given a fixed limit.</p>
+        <matchInteraction responseIdentifier="RESPONSE" shuffle="true" maxAssociations="7">
+            <prompt>Select the appropriate number for each text value, where you can : </prompt>
+            <simpleMatchSet>
+                <simpleAssociableChoice identifier="A" matchMax="1">five</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="B" matchMax="1">eight</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="C" matchMax="1">twelve</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="D" matchMax="1">fourteen</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="E" matchMax="1">twenty four</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="F" matchMax="1">thirty seven</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="G" matchMax="1">dozen</simpleAssociableChoice>
+            </simpleMatchSet>
+            <simpleMatchSet>
+                <simpleAssociableChoice identifier="K" matchMax="5">5</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="L" matchMax="5">8</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="M" matchMax="5">12</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="N" matchMax="5">14</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="O" matchMax="5">24</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="P" matchMax="5">31</simpleAssociableChoice>
+            </simpleMatchSet>
+        </matchInteraction>
+        <p/>
+      </div>
+    </itemBody>
+
+    <responseProcessing>
+      <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+      </setOutcomeValue>
+     <responseCondition>
+	<responseIf>
+		<member>
+		    <baseValue baseType="directedPair">A K</baseValue>
+			<variable identifier="RESPONSE"/>
+		</member>
+		<setOutcomeValue identifier="FEEDBACK">
+			<multiple>
+				<variable identifier="FEEDBACK"/>
+				<baseValue baseType="identifier">AK</baseValue>
+			</multiple>
+		</setOutcomeValue>
+	</responseIf>
+     </responseCondition>
+     <responseCondition>
+	<responseIf>
+		<member>
+		    <baseValue baseType="directedPair">B L</baseValue>
+			<variable identifier="RESPONSE"/>
+		</member>
+		<setOutcomeValue identifier="FEEDBACK">
+			<multiple>
+				<variable identifier="FEEDBACK"/>
+				<baseValue baseType="identifier">BL</baseValue>
+			</multiple>
+		</setOutcomeValue>
+	</responseIf>
+	</responseCondition>
+	<responseCondition>
+		<responseIf>
+			<member>
+			    <baseValue baseType="directedPair">C M</baseValue>
+				<variable identifier="RESPONSE"/>
+			</member>
+			<setOutcomeValue identifier="FEEDBACK">
+				<multiple>
+					<variable identifier="FEEDBACK"/>
+					<baseValue baseType="identifier">CM</baseValue>
+				</multiple>
+			</setOutcomeValue>
+		</responseIf>
+	     </responseCondition>
+	     <responseCondition>
+		<responseIf>
+			<member>
+			    <baseValue baseType="directedPair">G M</baseValue>
+				<variable identifier="RESPONSE"/>
+			</member>
+			<setOutcomeValue identifier="FEEDBACK">
+				<multiple>
+					<variable identifier="FEEDBACK"/>
+					<baseValue baseType="identifier">GM</baseValue>
+				</multiple>
+			</setOutcomeValue>
+		</responseIf>
+	</responseCondition>
+	<responseCondition>
+		<responseIf>
+			<member>
+			    <baseValue baseType="directedPair">D N</baseValue>
+				<variable identifier="RESPONSE"/>
+			</member>
+			<setOutcomeValue identifier="FEEDBACK">
+				<multiple>
+					<variable identifier="FEEDBACK"/>
+					<baseValue baseType="identifier">DN</baseValue>
+				</multiple>
+			</setOutcomeValue>
+		</responseIf>
+	     </responseCondition>
+	     <responseCondition>
+		<responseIf>
+			<member>
+			    <baseValue baseType="directedPair">E O</baseValue>
+				<variable identifier="RESPONSE"/>
+			</member>
+			<setOutcomeValue identifier="FEEDBACK">
+				<multiple>
+					<variable identifier="FEEDBACK"/>
+					<baseValue baseType="identifier">EO</baseValue>
+				</multiple>
+			</setOutcomeValue>
+		</responseIf>
+	     </responseCondition>
+     		<responseCondition>
+		<responseIf>
+			<member>
+			    <baseValue baseType="directedPair">F P</baseValue>
+				<variable identifier="RESPONSE"/>
+			</member>
+			<setOutcomeValue identifier="FEEDBACK">
+				<multiple>
+					<variable identifier="FEEDBACK"/>
+					<baseValue baseType="identifier">FP</baseValue>
+				</multiple>
+			</setOutcomeValue>
+		</responseIf>
+		</responseCondition>
+	</responseProcessing>
+    
+    
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="AK" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, five is 5.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="BL" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, eight is 8.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="CM" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, twelve is 12.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="GM" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, a dozen is 12.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="DN" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, fourteen is 14.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="EO" showHide="show">
+       <span class="modalfeedback"><br/><b>Yes</b>, that's right, twenty four is 24.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="AK" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that five is 5.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="BL" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that eight is 8.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="CM" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that twelve is 12.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="GM" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that a dozen is 12.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="DN" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that fourteen is 14.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="EO" showHide="hide">
+       <span class="modalfeedback"><br/><b>No</b>, you do not seem to have recognised that twenty four is 24.</span>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="FP" showHide="show">
+       <span class="modalfeedback"><br/><b>No</b>, thirty seven is not 31.</span>
+     </modalFeedback>
+  </assessmentItem>

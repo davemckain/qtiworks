@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author:  Dick Bacon                 -->
+<!-- Mod and converted to QTI version 2 Graham Smith                -->
+<!-- Date:  January 2005              -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_3_4" title="number bases" 
+    adaptive="false" timeDependent="false">
+
+   <responseDeclaration identifier="RESPONSE_HEX" cardinality="single" baseType="integer"/>
+   <responseDeclaration identifier="RESPONSE_OCT" cardinality="single" baseType="integer"/>
+   <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+   <outcomeDeclaration identifier="HEX_FDBACK" cardinality="single" baseType="identifier"/>
+   <outcomeDeclaration identifier="OCTAL_FDBACK" cardinality="single" baseType="identifier"/>
+   <templateDeclaration identifier="NVAL" cardinality="single" baseType="integer"
+      paramVariable="false" mathVariable="false"/>
+   
+   <templateProcessing>
+          <setTemplateValue identifier="NVAL">
+                  <randomInteger min="1" max="255"/>
+           </setTemplateValue>
+    </templateProcessing>
+       
+    <stylesheet type="text/css" href="ststyle.css"/>    
+   <itemBody>
+           <p class="heading"><b>Other number bases.</b></p>
+           <p class="instruct">
+            Number bases from 2 (binary) to 16 (hexadecimal) and above are supported and<br/>
+            values can be displayed and entered in these alternative number bases.</p>
+           <p>Convert the 8-bit binary number
+           <printedVariable identifier="NVAL" format="%i" base="2"/><sub>2</sub>
+           to hexadecimal and octal, and enter the values below:</p>
+           <p>( i.e &#xa0;&#xa0;<printedVariable identifier="NVAL" format="%i" base="16"/><sub>16</sub>&#xa0;&#xa0; 
+           and &#xa0;&#xa0;<printedVariable identifier="NVAL" format="%i" base="8"/><sub>8</sub>&#xa0; )</p>
+           <div>Hexadecimal = <textEntryInteraction responseIdentifier="RESPONSE_HEX" expectedLength="6" base="16"/><sub>16</sub></div>
+           <div>Octal = <textEntryInteraction responseIdentifier="RESPONSE_OCT" expectedLength="6" base="8"/><sub>8</sub></div>
+       </itemBody>
+   
+<responseProcessing>
+    <responseCondition>
+          <responseIf>
+              <isNull>
+                  <variable identifier="RESPONSE_HEX"/>
+              </isNull>
+              <setOutcomeValue identifier="HEX_FDBACK">
+                   <baseValue baseType = "identifier">isnull</baseValue>
+              </setOutcomeValue>
+          </responseIf>
+          <responseElseIf>
+            <equal toleranceMode="exact">
+                  <variable identifier="RESPONSE_HEX"/>
+                  <variable identifier="NVAL"/>
+              </equal>
+              <setOutcomeValue identifier="HEX_FDBACK">
+                   <baseValue baseType = "identifier">right</baseValue>
+              </setOutcomeValue>
+          </responseElseIf>
+          <responseElse>
+              <setOutcomeValue identifier="HEX_FDBACK">
+                   <baseValue baseType = "identifier">wrong</baseValue>
+              </setOutcomeValue>
+          </responseElse>
+    </responseCondition>
+    <responseCondition>
+          <responseIf>
+              <isNull>
+                  <variable identifier="RESPONSE_OCT"/>
+              </isNull>
+              <setOutcomeValue identifier="OCTAL_FDBACK">
+                   <baseValue baseType = "identifier">isnull</baseValue>
+              </setOutcomeValue>
+          </responseIf>
+          <responseElseIf>
+            <equal toleranceMode="exact">
+                  <variable identifier="RESPONSE_OCT"/>
+                  <variable identifier="NVAL"/>
+              </equal>
+              <setOutcomeValue identifier="OCTAL_FDBACK">
+                   <baseValue baseType = "identifier">right</baseValue>
+              </setOutcomeValue>
+          </responseElseIf>
+          <responseElse>
+              <setOutcomeValue identifier="OCTAL_FDBACK">
+                   <baseValue baseType = "identifier">wrong</baseValue>
+              </setOutcomeValue>
+          </responseElse>
+    </responseCondition>
+</responseProcessing>
+   
+
+   <modalFeedback outcomeIdentifier = "HEX_FDBACK" showHide = "show" identifier = "right">
+       <p class="modalfeedback">Yes, your hexadecimal value is correct.</p>
+   </modalFeedback>
+   <modalFeedback outcomeIdentifier = "HEX_FDBACK" showHide = "show" identifier = "wrong">
+       <p class="modalfeedback">No, your hexadecimal value is not correct.</p>
+   </modalFeedback>
+   <modalFeedback outcomeIdentifier = "HEX_FDBACK" showHide = "show" identifier = "isnull">
+       <p class="modalfeedback">You have not entered a hexadecimal value.</p>
+   </modalFeedback>
+   <modalFeedback outcomeIdentifier = "OCTAL_FDBACK" showHide = "show" identifier = "right">
+       <p class="modalfeedback">Yes, your octal value is correct.</p>
+   </modalFeedback>
+   <modalFeedback outcomeIdentifier = "OCTAL_FDBACK" showHide = "show" identifier = "wrong">
+       <p class="modalfeedback">No, your octal value is not correct.</p>
+   </modalFeedback>
+   <modalFeedback outcomeIdentifier = "OCTAL_FDBACK" showHide = "show" identifier = "isnull">
+       <p class="modalfeedback">You have not entered an octal value.</p>
+   </modalFeedback>
+</assessmentItem>
+

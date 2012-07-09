@@ -1,0 +1,72 @@
+
+body.quest {
+  font-family: "Times New Roman";
+  font-size	: 1.0em;
+  background-color	: rgb(255,255,225);
+}
+
+div.modalfeedback {
+    display : none;
+    background-color : rgb(235,255,230);
+}
+
+div.nmfeedback {
+
+}
+
+span.nmfeedback {
+
+}
+
+p.heading {
+  color : rgb( 128, 0, 0);
+}
+
+p.tutorView {
+  color : rgb(200,64,64);
+}
+
+p.hint {
+    background-color : rgb(235,255,230);
+}
+
+p.instruct {
+   color : rgb(0,0,180); 
+}
+
+span.instruct {
+   color : rgb(0,0,180); 
+}
+
+p.alert {
+  color : rgb(190,0,0);
+    background-color : rgb(255,255,200);
+}
+
+span.alert {
+  color : rgb(190,0,0);
+    background-color : rgb(255,255,200);
+}
+
+.center{
+    text-align:center;
+}
+.underline{
+    text-decoration:underline;
+}
+.table1{
+    padding:3px;
+    border:1px;
+}
+.width25{
+    width:25px;
+}
+.width20{
+    width:20px;
+}
+.width5{
+    width:5px;
+}
+.width55pc{
+    width:55%;
+}

@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DIck Bacon, 2009 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+     identifier="Demo_3_2" title="Numeric precision" 
+     adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPA" cardinality="record"/>
+    <responseDeclaration identifier="RESPB" cardinality="record"/>
+    <responseDeclaration identifier="RESPC" cardinality="record"/>
+    <outcomeDeclaration identifier="NDPA" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="NSFB" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="NSFC" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="FBACKA" cardinality="single" baseType="identifier">
+      <defaultValue><value>Awrong</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FBACKB" cardinality="single" baseType="identifier">
+      <defaultValue><value>Bwrong</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FBACKC" cardinality="single" baseType="identifier">
+      <defaultValue><value>Cwrong</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="ASCORE" cardinality="single" baseType="float" normalMaximum="8.0">
+      <defaultValue><value>0</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="BSCORE" cardinality="single" baseType="float" normalMaximum="8.0">
+      <defaultValue><value>0</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="CSCORE" cardinality="single" baseType="float" normalMaximum="8.0">
+      <defaultValue><value>0</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="24.0">
+      <defaultValue><value>0</value></defaultValue>
+    </outcomeDeclaration>
+
+    <templateDeclaration identifier="val1" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="val2" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="val3" cardinality="single" baseType="float"/>
+    <templateProcessing>
+     <setTemplateValue identifier="val1">
+        <randomFloat min="0.02" max="1.09"/>
+     </setTemplateValue>
+     <setTemplateValue identifier="val2">
+        <randomFloat min="0.02" max="1.09"/>
+     </setTemplateValue>
+     <setTemplateValue identifier="val3">
+        <randomFloat min="101.1" max="999999.8"/>
+     </setTemplateValue>
+    </templateProcessing>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+    <div><p class="heading"><b>Numeric precision</b></p><p class="instruct">
+           Integers or floating point values can be initialised to literal or randomised values.
+           <br/>They can be used in expression to create further values (e.g. answers).
+           <br/>The values of student responses can be checked for absolute or relative accuracy.
+           <br/>They can also be checked for precision as either decimal places or significant figures
+           <br/>If a number is too large to be able to limit the precision, then scientific format (e.g. 4.5e6 ) must be used.</p><div>
+          a) Enter the value <printedVariable identifier="val1" format="%0.6f"/> to four decimal places:
+         <textEntryInteraction responseIdentifier="RESPA" expectedLength="7"/>
+          <br/>b) Enter the value <printedVariable identifier="val2" format="%0.6r"/> to three significant figures:
+         <textEntryInteraction responseIdentifier="RESPB" expectedLength="7"/>
+          <br/>c) Enter the value <printedVariable identifier="val3" format="%0.1f"/> to two significant figures:
+         <textEntryInteraction responseIdentifier="RESPC" expectedLength="7"/>
+       </div>
+        <rubricBlock view="tutor"><p>This information is visible only in 'tutor' view:
+           <br/>a) = <printedVariable identifier="val1" format="%0.4f"/>,&#xa0;&#xa0;&#xa0;
+           b) = <printedVariable identifier="val2" format="%0.3r"/>,&#xa0;&#xa0;&#xa0;
+           c) = <printedVariable identifier="val3" format="%0.2r"/>.</p>
+         </rubricBlock>
+        [ 24 marks ]
+      </div>
+    </itemBody>
+
+    <responseProcessing>
+        <setOutcomeValue identifier="NDPA">
+             <fieldValue fieldIdentifier="ndp">
+                  <variable identifier="RESPA"/>
+             </fieldValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="NSFB">
+             <fieldValue fieldIdentifier="nsf">
+                  <variable identifier="RESPB"/>
+             </fieldValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="NSFC">
+             <fieldValue fieldIdentifier="nsf">
+                  <variable identifier="RESPC"/>
+             </fieldValue>
+        </setOutcomeValue>
+        <responseCondition>
+          <responseIf>
+              <isNull>
+                  <variable identifier="RESPA"/>
+              </isNull>
+              <setOutcomeValue identifier="FBACKA">
+                   <baseValue baseType = "identifier">Anull</baseValue>
+              </setOutcomeValue>
+          </responseIf>
+          <responseElseIf>
+              <equalRounded roundingMode="decimalPlaces" figures="{NDPA}">
+                  <fieldValue fieldIdentifier="floatValue">
+                      <variable identifier="RESPA"/>
+                  </fieldValue>
+                  <variable identifier="val1"/>
+              </equalRounded>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NDPA"/>
+                          <baseValue baseType = "integer">4</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKA">
+                           <baseValue baseType = "identifier">Aright</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="ASCORE">
+                           <baseValue baseType = "float">8.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElseIf>
+                      <lt>
+                          <variable identifier="NDPA"/>
+                          <baseValue baseType = "integer">4</baseValue>
+                      </lt>
+                      <setOutcomeValue identifier="FBACKA">
+                           <baseValue baseType = "identifier">Afewsig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="ASCORE">
+                           <baseValue baseType = "float">3.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKA">
+                           <baseValue baseType = "identifier">Asigfig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="ASCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+          <responseElseIf>
+              <!-- checking a) response approximately equal to value sum -->
+              <equal toleranceMode="relative" tolerance="8 8">
+                   <fieldValue fieldIdentifier="floatValue">
+                        <variable identifier="RESPA"/>
+                   </fieldValue>
+                   <variable identifier="val1"/>
+              </equal>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NDPA"/>
+                          <baseValue baseType = "integer">4</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKA">
+                           <baseValue baseType = "identifier">Aapprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="ASCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKA">
+                           <baseValue baseType = "identifier">Asigapprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="ASCORE">
+                           <baseValue baseType = "float">2.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+      </responseCondition>
+        <responseCondition>
+          <responseIf>
+              <isNull>
+                  <variable identifier="RESPB"/>
+              </isNull>
+              <setOutcomeValue identifier="FBACKB">
+                   <baseValue baseType = "identifier">Bnull</baseValue>
+              </setOutcomeValue>
+          </responseIf>
+          <responseElseIf>
+              <equalRounded roundingMode="significantFigures" figures="{NSFB}">
+                  <fieldValue fieldIdentifier="floatValue">
+                      <variable identifier="RESPB"/>
+                  </fieldValue>
+                  <variable identifier="val2"/>
+              </equalRounded>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NSFB"/>
+                          <baseValue baseType = "integer">3</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKB">
+                           <baseValue baseType = "identifier">Bright</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="BSCORE">
+                           <baseValue baseType = "float">8.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElseIf>
+                      <lt>
+                          <variable identifier="NSFB"/>
+                          <baseValue baseType = "integer">3</baseValue>
+                      </lt>
+                      <setOutcomeValue identifier="FBACKB">
+                           <baseValue baseType = "identifier">Bfewsig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="BSCORE">
+                           <baseValue baseType = "float">3.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKB">
+                           <baseValue baseType = "identifier">Bsigfig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="BSCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+          <responseElseIf>
+              <!-- checking b) response approximately equal to value sum -->
+              <equal toleranceMode="relative" tolerance="8 8">
+                   <fieldValue fieldIdentifier="floatValue">
+                        <variable identifier="RESPB"/>
+                   </fieldValue>
+                   <variable identifier="val2"/>
+              </equal>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NSFB"/>
+                          <baseValue baseType = "integer">3</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKB">
+                           <baseValue baseType = "identifier">Bapprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="BSCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKB">
+                           <baseValue baseType = "identifier">Bsigapprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="BSCORE">
+                           <baseValue baseType = "float">2.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+      </responseCondition>
+        <responseCondition>
+          <responseIf>
+              <isNull>
+                  <variable identifier="RESPC"/>
+              </isNull>
+              <setOutcomeValue identifier="FBACKC">
+                   <baseValue baseType = "identifier">Cnull</baseValue>
+              </setOutcomeValue>
+          </responseIf>
+          <responseElseIf>
+              <equalRounded roundingMode="significantFigures" figures="{NSFC}">
+                  <fieldValue fieldIdentifier="floatValue">
+                      <variable identifier="RESPC"/>
+                  </fieldValue>
+                  <variable identifier="val3"/>
+              </equalRounded>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NSFC"/>
+                          <baseValue baseType = "integer">2</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKC">
+                           <baseValue baseType = "identifier">Cright</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="CSCORE">
+                           <baseValue baseType = "float">8.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElseIf>
+                      <lt>
+                          <variable identifier="NSFC"/>
+                          <baseValue baseType = "integer">2</baseValue>
+                      </lt>
+                      <setOutcomeValue identifier="FBACKC">
+                           <baseValue baseType = "identifier">Cfewsig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="CSCORE">
+                           <baseValue baseType = "float">3.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKC">
+                           <baseValue baseType = "identifier">Csigfig</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="CSCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+          <responseElseIf>
+              <!-- checking c) response approximately equal to value sum -->
+              <equal toleranceMode="relative" tolerance="8 8">
+                   <fieldValue fieldIdentifier="floatValue">
+                        <variable identifier="RESPC"/>
+                   </fieldValue>
+                   <variable identifier="val3"/>
+              </equal>
+              <responseCondition>
+                  <responseIf>
+                      <equal toleranceMode="exact" >
+                          <variable identifier="NSFC"/>
+                          <baseValue baseType = "integer">2</baseValue>
+                      </equal>
+                      <setOutcomeValue identifier="FBACKC">
+                           <baseValue baseType = "identifier">Capprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="CSCORE">
+                           <baseValue baseType = "float">4.0</baseValue>
+                      </setOutcomeValue>
+                  </responseIf>
+                  <responseElse>
+                      <setOutcomeValue identifier="FBACKC">
+                           <baseValue baseType = "identifier">Csigapprox</baseValue>
+                      </setOutcomeValue>
+                      <setOutcomeValue identifier="CSCORE">
+                           <baseValue baseType = "float">2.0</baseValue>
+                      </setOutcomeValue>
+                  </responseElse>
+              </responseCondition>
+          </responseElseIf>
+      </responseCondition>
+      <setOutcomeValue identifier="SCORE">
+           <sum>
+                <variable identifier="ASCORE"/>
+                <variable identifier="BSCORE"/>
+                <variable identifier="CSCORE"/>
+           </sum>
+      </setOutcomeValue>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Aright" showHide="show">
+    <p><b>a) Yes</b>, that's right.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Afewsig" showHide="show">
+    <p><b>a) Yes</b>, but you have quoted the value to insufficient decimal places.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Asigfig" showHide="show">
+    <p><b>a) Yes</b>, but you have quoted the value to too many decimal places.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Aapprox" showHide="show">
+    <p><b>a) OK</b>, but your value is only approximately correct</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Asigapprox" showHide="show">
+    <p><b>a) OK</b>, but your value is only approximately correct and is not quoted to the requested
+                    number of decimal places.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKA" identifier="Awrong" showHide="show">
+    <p><b>a) No</b>, that is not the right value.</p>
+     </modalFeedback>
+      <modalFeedback outcomeIdentifier="FBACKA" identifier="Anull" showHide="show">
+        <p>You have not answerd part a.</p>
+      </modalFeedback>
+
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bright" showHide="show">
+    <p><b>b) Yes</b>, that's right.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bfewsig" showHide="show">
+    <p><b>b) Yes</b>, but you have quoted the value to insufficient significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bsigfig" showHide="show">
+    <p><b>b) Yes</b>, but you have quoted the value to too many significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bapprox" showHide="show">
+    <p><b>b) OK</b>, but your value is only approximately correct</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bsigapprox" showHide="show">
+    <p><b>b) OK</b>, but your value is only approximately correct and is not quoted to the requested
+                    number of significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKB" identifier="Bwrong" showHide="show">
+    <p><b>b) No</b>, that is not the right value.</p>
+     </modalFeedback>
+      <modalFeedback outcomeIdentifier="FBACKB" identifier="Bnull" showHide="show">
+        <p>You have not answerd part b.</p>
+      </modalFeedback>
+
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Cright" showHide="show">
+    <p class="modalfeedback"><b>c) Yes</b>, that's right.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Cfewsig" showHide="show">
+    <p class="modalfeedback"><b>c) Yes</b>, but you have quoted the value to insufficient significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Csigfig" showHide="show">
+    <p class="modalfeedback"><b>c) Yes</b>, but you have quoted the value to too many significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Capprox" showHide="show">
+    <p class="modalfeedback"><b>c) OK</b>, but your value is only approximately correct</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Csigapprox" showHide="show">
+    <p class="modalfeedback"><b>c) OK</b>, 
+                    but your value is only approximately correct and is not quoted to the requested
+                    number of significant figures.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FBACKC" identifier="Cwrong" showHide="show">
+    <p class="modalfeedback"><b>c) No</b>, that is not the right value.</p>
+     </modalFeedback>
+      <modalFeedback outcomeIdentifier="FBACKC" identifier="Cnull" showHide="show">
+        <p class="modalfeedback">You have not answerd part c.</p>
+      </modalFeedback>
+  </assessmentItem>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Not sure where this came from -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="DEMO_3_1" title="Digging a Hole" 
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+    <templateDeclaration identifier="PEOPLE" cardinality="single" baseType="string"/>
+    <templateDeclaration identifier="nums" cardinality="multiple" baseType="integer"/>
+    <templateDeclaration identifier="m" cardinality="single" baseType="integer"/>
+    <templateDeclaration identifier="n" cardinality="single" baseType="integer"/>
+    <templateDeclaration identifier="K" cardinality="single" baseType="integer"/>
+    <templateDeclaration identifier="T" cardinality="single" baseType="integer"/>
+    <templateDeclaration identifier="ANS" cardinality="single" baseType="float"/>
+    <templateProcessing>
+        <setTemplateValue identifier="PEOPLE">
+            <random>
+                <multiple>
+                    <baseValue baseType="string">men</baseValue>
+                    <baseValue baseType="string">boys</baseValue>
+                    <baseValue baseType="string">women</baseValue>
+                    <baseValue baseType="string">girls</baseValue>
+                    <baseValue baseType="string">children</baseValue>
+                </multiple>
+            </random>
+        </setTemplateValue>
+        <setTemplateValue identifier="nums">
+            <multiple>
+                <baseValue baseType="integer">2</baseValue>
+                <baseValue baseType="integer">3</baseValue>
+                <baseValue baseType="integer">4</baseValue>
+                <baseValue baseType="integer">5</baseValue>
+                <baseValue baseType="integer">6</baseValue>
+                <baseValue baseType="integer">7</baseValue>
+                <baseValue baseType="integer">8</baseValue>
+            </multiple>
+        </setTemplateValue>
+        <setTemplateValue identifier="m">
+            <random>
+                <variable identifier="nums"/>
+            </random>
+        </setTemplateValue>
+        <setTemplateValue identifier="nums">
+            <delete>
+                <variable identifier="m"/>
+                <variable identifier="nums"/>
+            </delete>
+        </setTemplateValue>
+        <setTemplateValue identifier="n">
+            <random>
+                <variable identifier="nums"/>
+            </random>
+        </setTemplateValue>
+        <!-- nump take 'time', so nump2 take ( (nump * time) / nump2 ) -->
+        <!-- we create time from nump2 * integer M, so the division always works in whole numbers -->
+        <setTemplateValue identifier="K">
+            <randomInteger min="2" max="5"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="T">
+            <product>
+                <variable identifier="n"/>
+                <variable identifier="K"/>
+            </product>
+        </setTemplateValue>
+       <!-- make answer float in case user enters a float -->
+        <setTemplateValue identifier="ANS">
+            <integerToFloat>
+                <product>
+                   <variable identifier="m"/>
+                   <variable identifier="K"/>
+                </product>
+            </integerToFloat>
+        </setTemplateValue>
+    </templateProcessing>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody><p class="heading"><b>Randomising text and values</b></p>
+        <p class="instruct">Question values (numeric or text) may be randomised 
+           and further numeric values may be calculated to test for correctness or for
+           other plausable or alternative answers.</p> 
+        <p>If it takes <printedVariable identifier="m"/>
+            <printedVariable identifier="PEOPLE"/>
+            <printedVariable identifier="T"/> minutes to dig a hole, how long would it take
+                <printedVariable identifier="n"/>
+            <printedVariable identifier="PEOPLE"/> to dig a similar hole?</p>
+        <div>Answer: <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="8"/> minutes.</div>
+    </itemBody>
+
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <equal toleranceMode="exact">
+                    <variable identifier="RESPONSE"/>
+                    <variable identifier="ANS"/>
+                </equal>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">1.0</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">right</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType="identifier">wrong</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="right">
+         <p class="modalfeedback">Yes, thats right.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="wrong">
+         <p class="modalfeedback">No, it is just 
+             ( <printedVariable identifier="m"/> &#xd7;<printedVariable identifier="T"/> )
+          / <printedVariable identifier="n"/> = <printedVariable identifier="ANS"/> minutes.</p>
+    </modalFeedback>
+</assessmentItem>
+

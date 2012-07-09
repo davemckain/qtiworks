@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+     identifier="Demo_2_1" title="Hotspots - UK Airports" 
+     adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+        <correctResponse>
+            <value>A</value>
+            <value>B</value>
+        </correctResponse>
+        <mapping lowerBound="0" upperBound="2" defaultValue="0">
+            <mapEntry mapKey="A" mappedValue="1"/>
+            <mapEntry mapKey="B" mappedValue="1"/>
+            <mapEntry mapKey="C" mappedValue="-1"/>
+            <mapEntry mapKey="D" mappedValue="-1"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+        <p class="heading"><b>Multiple hotspot selection.</b></p>
+        <p>The picture illustrates four of the most popular destinations for air travellers arriving
+            in the United Kingdom: London, Manchester, Edinburgh and Glasgow.</p>
+        <hotspotInteraction responseIdentifier="RESPONSE" maxChoices="2">
+            <prompt>Select Glasgow and Manchester.</prompt>
+            <object type="image/png" width="206" height="280" data="images/ukair.png">UK Map</object>
+            <hotspotChoice shape="circle" coords="77,115,8" identifier="A"/>
+            <hotspotChoice shape="circle" coords="118,184,8" identifier="B"/>
+            <hotspotChoice shape="circle" coords="150,235,8" identifier="C"/>
+            <hotspotChoice shape="circle" coords="96,114,8" identifier="D"/>
+        </hotspotInteraction>
+    </itemBody>
+
+    <responseProcessing>
+      <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="FEEDBACK">
+          <variable identifier="RESPONSE"/>
+      </setOutcomeValue>
+    </responseProcessing>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="A" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>, you have correctly selected Glasgow airport</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="A" showHide="hide">
+        <p class="modalfeedback"><b>No</b>, you have not selected Glasgow airport </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="B" showHide="show">
+        <p class="modalfeedback"><b>Yes</b>, you have correctly selected Manchester airport</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="B" showHide="hide">
+        <p class="modalfeedback"><b>No</b>, you have not selected Manchester airport </p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="C" showHide="show">
+        <p class="modalfeedback"><b>No</b>, you have incorrectly selected London airport</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="D" showHide="show">
+        <p class="modalfeedback"><b>No</b>, you have incorrectly selected Edinburgh airport</p>
+      </modalFeedback>
+</assessmentItem>
+
