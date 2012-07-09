@@ -54,9 +54,13 @@ rendering.
   <xsl:variable name="templateValues" select="$itemSessionState/qw:templateVariable" as="element(qw:templateVariable)*"/>
   <xsl:variable name="responseValues" select="$itemSessionState/qw:responseVariable" as="element(qw:responseVariable)*"/>
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
+  <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
 
   <!-- Has the candidate made a response? -->
   <xsl:variable name="isResponded" as="xs:boolean" select="exists($responseInputs)"/>
+
+  <!-- Is a model solution provided? -->
+  <xsl:variable name="hasModelSolution" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseDeclaration/qti:correctResponse) or exists($overriddenCorrectResponses)"/>
 
   <!-- Codebase URL for engine-provided applets -->
   <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
@@ -162,8 +166,18 @@ rendering.
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:variable name="responseDeclaration" select="qw:get-response-declaration($document, $identifier)" as="element(qti:responseDeclaration)?"/>
     <xsl:choose>
+      <xsl:when test="$renderingMode='SOLUTION' and $overriddenCorrectResponses[@identifier=$identifier]">
+        <!-- Correct response has been set during template processing -->
+        <xsl:for-each select="$overriddenCorrectResponses[@identifier=$identifier]">
+          <qw:responseVariable>
+            <xsl:copy-of select="@cardinality, @baseType"/>
+            <xsl:copy-of select="qw:value"/>
+          </qw:responseVariable>
+        </xsl:for-each>
+      </xsl:when>
       <xsl:when test="$renderingMode='SOLUTION' and $responseDeclaration/qti:correctResponse">
-        <!-- Need to convert QTI <qti:correctResponse/> to <qw:responseVariable/> -->
+        <!-- <correctResponse> has been set in the QTI -->
+        <!-- (We need to convert QTI <qti:correctResponse/> to <qw:responseVariable/>) -->
         <xsl:for-each select="$responseDeclaration/qti:correctResponse">
           <qw:responseVariable>
             <xsl:copy-of select="../@cardinality, ../@baseType"/>

@@ -297,7 +297,7 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$solutionAllowed">
+        <xsl:if test="$solutionAllowed and $hasModelSolution">
           <li>
             <form action="{$webappContextPath}{$solutionUrl}" method="post">
               <input type="submit" value="Show model solution"/>
