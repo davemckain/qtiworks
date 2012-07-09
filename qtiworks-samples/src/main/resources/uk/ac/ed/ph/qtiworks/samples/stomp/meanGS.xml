@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author:  Dick Bacon -->
+<!-- Date:  Autumn 2009  -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+     identifier="Demo_3_3" title="numerical marking with error propagation"
+     adaptive="false" timeDependent="false">
+    
+    <responseDeclaration identifier="RESP_SUM" cardinality="single" baseType="float"/>
+    <responseDeclaration identifier="RESP_MEAN" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="SUM_FDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="MEAN_FDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="COMMON_FDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="ALTMEAN_2dp" cardinality="single" baseType="float"/>
+
+   <!-- declaring variables used in question and answers --> 
+   <templateDeclaration identifier="VAL_1" cardinality="single" baseType="float"
+          paramVariable="false" mathVariable="false"/>
+   <templateDeclaration identifier="VAL_2" cardinality="single" baseType="float"
+          paramVariable="false" mathVariable="false"/>
+   <templateDeclaration identifier="VAL_3" cardinality="single" baseType="float"
+          paramVariable="false" mathVariable="false"/>
+   <templateDeclaration identifier="SUM_0dp" cardinality="single" baseType="float"
+          paramVariable="false" mathVariable="false"/>
+   <templateDeclaration identifier="MEAN_2dp" cardinality="single" baseType="float"
+          paramVariable="false" mathVariable="false"/>
+
+   <!-- initialising random and answer variable values -->
+   <templateProcessing>
+        <setTemplateValue identifier="VAL_1"> <!-- random integer 2 .. 8 -->
+            <integerToFloat>
+                <randomInteger min="2" max="8"/>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="VAL_2">  <!-- random integer 2 .. 8  -->
+            <integerToFloat>
+                <randomInteger min="2" max="8"/>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="VAL_3">  <!-- random integer 2 .. 8  -->
+            <integerToFloat>
+                <randomInteger min="2" max="8"/>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="SUM_0dp"> <!-- calculate sum -->
+            <sum>
+                <variable identifier="VAL_1"/>
+                <variable identifier="VAL_2"/>
+                <variable identifier="VAL_3"/>
+            </sum>
+        </setTemplateValue>
+        <setTemplateValue identifier="MEAN_2dp"> <!-- calculate mean to 2dp -->
+            <divide>
+                <round>
+                    <divide>
+                        <variable identifier="SUM_0dp"/>
+                        <baseValue baseType = "float">0.03</baseValue>
+                    </divide>
+                </round>
+                <baseValue baseType = "float">100.0</baseValue>
+            </divide>
+        </setTemplateValue>
+    </templateProcessing>
+
+    <!-- question to be displayed -->
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+         <p  class="heading"><b>Error propagation</b></p>
+        <p>A question might ask something like<br/> 
+                "Calculate the sum and then the mean of the three values
+            <printedVariable identifier="VAL_1"/>,
+            <printedVariable identifier="VAL_2"/> and 
+            <printedVariable identifier="VAL_3"/>.
+            Enter the value for the mean to three significant figures."</p>
+        <p class="instruct">The feature being demonstrated here concerns the marking of the 
+        second value (the mean) if the student gets the first answer (the sum) wrong.
+             The correct answers are
+              <b>sum = <printedVariable identifier="SUM_0dp"/></b> and 
+             <b>mean = <printedVariable identifier="MEAN_2dp" format="%.2f"/></b>.
+             Try entering 300 and 100, or any other such pair (<i>x</i> and <i>x</i>/3).<br/>
+             This feature can be used to give part marks for correct working, even when
+             an error has been made that renders subsequent answers wrong.
+         </p>
+         <div>sum = <textEntryInteraction responseIdentifier="RESP_SUM" expectedLength="6"/> 
+          and mean = <textEntryInteraction responseIdentifier="RESP_MEAN" expectedLength="6"/> </div>
+    </itemBody>
+
+    <!-- checking user responses -->
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <!-- checking response-sum exactly equal to value sum -->
+                <equal toleranceMode="exact" >
+                    <variable identifier="RESP_SUM"/>
+                    <variable identifier="SUM_0dp"/>
+                </equal>
+                <setOutcomeValue identifier="SUM_FDBACK">
+                    <baseValue baseType = "identifier">SUM_OK</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <!-- checking response-sum approximately equal to value sum -->
+                <equal toleranceMode="relative" tolerance="5 5">
+                    <variable identifier="RESP_SUM"/>
+                    <variable identifier="SUM_0dp"/>
+                </equal>
+                <setOutcomeValue identifier="SUM_FDBACK">
+                    <baseValue baseType = "identifier">SUM_APPROX</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <!-- otherwise use wrong answer to calculate an alternative mean -->
+                <setOutcomeValue identifier="ALTMEAN_2dp"> <!-- e.g. 3.3264 -->
+                    <divide>
+                        <round>
+                            <divide>
+                                <variable identifier="RESP_SUM"/>
+                                <baseValue baseType = "float">.03</baseValue>
+                            </divide>
+                        </round>
+                        <baseValue baseType = "float">100.0</baseValue>
+                    </divide>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SUM_FDBACK">
+                    <baseValue baseType = "identifier">BAD_SUM</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <!-- check response-mean exactly equal to the mean -->
+                <equal toleranceMode="exact">
+                    <variable identifier="RESP_MEAN"/>
+                    <variable identifier="MEAN_2dp"/>
+                </equal>
+                <setOutcomeValue identifier="MEAN_FDBACK">
+                    <baseValue baseType = "identifier">MEAN_OK</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <!-- check response-mean approx equal to the mean -->
+                <equal toleranceMode="relative" tolerance="5 5">
+                    <variable identifier="RESP_MEAN"/>
+                    <variable identifier="MEAN_2dp"/>
+                </equal>
+                <setOutcomeValue identifier="MEAN_FDBACK">
+                    <baseValue baseType = "identifier">MEAN_APPROX</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <!-- check response-mean exactly equal to the alternative mean -->
+                <equal toleranceMode="exact">
+                    <variable identifier="RESP_MEAN"/>
+                    <variable identifier="ALTMEAN_2dp"/>
+                </equal>
+                <setOutcomeValue identifier="MEAN_FDBACK">
+                    <baseValue baseType = "identifier">ALT_OK</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <!-- check response-mean approx equal to the alternative mean -->
+                <equal toleranceMode="relative" tolerance="5 5">
+                    <variable identifier="RESP_MEAN"/>
+                    <variable identifier="ALTMEAN_2dp"/>
+                </equal>
+                <setOutcomeValue identifier="MEAN_FDBACK">
+                    <baseValue baseType = "identifier">ALT_APPROX</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <setOutcomeValue identifier="MEAN_FDBACK">
+                    <baseValue baseType = "identifier">BAD_MEAN</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>       
+        <responseCondition>
+            <responseIf> <!-- to get a single message out when both are wrong -->
+                <and>
+                    <match>
+                        <variable identifier="SUM_FDBACK"/>
+                        <baseValue baseType = "identifier">BAD_SUM</baseValue>
+                    </match>
+                    <match>
+                        <variable identifier="MEAN_FDBACK"/>
+                        <baseValue baseType = "identifier">BAD_MEAN</baseValue>
+                    </match>
+                </and>
+                <setOutcomeValue identifier="COMMON_FDBACK">
+                    <baseValue baseType = "identifier">BOTH_BAD</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+                <setOutcomeValue identifier="COMMON_FDBACK">
+                    <baseValue baseType = "identifier">NOT_BAD</baseValue>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>       
+    </responseProcessing>
+
+    <!-- Feedback messages -->
+    <modalFeedback outcomeIdentifier="SUM_FDBACK" showHide="show" identifier="SUM_OK">
+          Yes. You have the correct value for the sum..
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="SUM_FDBACK" showHide="show" identifier="SUM_APPROX">
+          OK. Your value for the sum is approximately correct.
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="SUM_FDBACK" showHide="show" identifier="BAD_SUM">
+          No. Your value for the sum is wrong.
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="MEAN_FDBACK" showHide="show" identifier="MEAN_OK">
+          <p>Yes. You have the correct value for the mean.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="MEAN_FDBACK" showHide="show" identifier="MEAN_APPROX">
+          <p>OK. Your value for the mean is approximately correct.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="MEAN_FDBACK" showHide="show" identifier="ALT_OK">
+          <p>OK. Your value for the mean matches the incorrect value you have entered for the sum.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="MEAN_FDBACK" showHide="show" identifier="ALT_APPROX">
+          <p>OK. Your value for the mean approximately matches the incorrect value you have entered for the sum.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="MEAN_FDBACK" showHide="show" identifier="BAD_MEAN">
+         <p>No. Your value for the mean is wrong.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="COMMON_FDBACK" showHide="show" identifier="BOTH_BAD">
+         <p>You calculate the sum by adding the values together (
+         <printedVariable identifier="VAL_1"/> + <printedVariable identifier="VAL_2"/> +
+         <printedVariable identifier="VAL_3"/> =  <printedVariable identifier="SUM_0dp"/> ) 
+         <br/> and then divide this sum by the number of values to obtain the mean ( 
+         <printedVariable identifier="SUM_0dp"/> / 3 = 
+         <printedVariable identifier="MEAN_2dp"/> ).</p>
+    </modalFeedback>
+</assessmentItem>
+

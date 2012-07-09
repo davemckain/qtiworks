@@ -35,12 +35,9 @@ package uk.ac.ed.ph.qtiworks.test.integration;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
-import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -66,10 +63,11 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
-                StandardQtiSampleSet.instance(),
-                MathAssessSampleSet.instance(),
-                LanguageSampleSet.instance(),
-                UpmcSampleSet.instance() 
+//                StandardQtiSampleSet.instance(),
+//                MathAssessSampleSet.instance(),
+//                UpmcSampleSet.instance(),
+                StompSampleSet.instance()
+//                LanguageSampleSet.instance()
         );
     }
     

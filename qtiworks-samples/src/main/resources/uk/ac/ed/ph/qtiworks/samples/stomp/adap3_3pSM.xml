@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written by David Lancefield for level 1 electronics, University of Surrey -->
+<!-- Transcribed into QTI v2.1 by DIck Bacon Summer 2009 -->
+<!-- converted to adaptive by Dick in 2010 -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="adap3_3pSM" title="Electronics Coursework" adaptive="true" timeDependent="false">
+    <responseDeclaration identifier="Q33RESPA" cardinality="record"/>
+    <responseDeclaration identifier="Q33RESPB" cardinality="record"/>
+    <outcomeDeclaration identifier="AOK" cardinality="single" baseType="boolean"/>
+    <outcomeDeclaration identifier="BOK" cardinality="single" baseType="boolean"/>
+    <outcomeDeclaration identifier="RESPA_0" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPB_0" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPA_1" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPB_1" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPA_2" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPB_2" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPA_3" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="RESPB_3" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="Q33ANSF" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="Q33BNSF" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="Q33AFBACK" cardinality="single" baseType="identifier">
+        <defaultValue>
+            <value>none</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="Q33BFBACK" cardinality="single" baseType="identifier">
+        <defaultValue>
+            <value>none</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="AGAIN" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="PARTA" cardinality="single" baseType="identifier">
+        <defaultValue>
+            <value>open</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="PARTB" cardinality="single" baseType="identifier">
+        <defaultValue>
+            <value>open</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"
+        normalMaximum="20.0" normalMinimum="0.0">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="Q3ASCORE" cardinality="single" baseType="float"
+        normalMaximum="10.0" normalMinimum="0.0">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="Q3BSCORE" cardinality="single" baseType="float"
+        normalMaximum="10.0" normalMinimum="0.0">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="MARKA" cardinality="single" baseType="float" normalMinimum="0.0">
+        <defaultValue>
+            <value>10</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="MARKB" cardinality="single" baseType="float" normalMinimum="0.0">
+        <defaultValue>
+            <value>10</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="MARK" cardinality="single" baseType="float" normalMinimum="0.0">
+        <defaultValue>
+            <value>20</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <templateDeclaration identifier="q33v1" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v2" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v3" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8w1" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9w1" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8w2" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9w2" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8w3" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9w3" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8w4" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9w4" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v8w5" cardinality="single" baseType="float"/>
+    <templateDeclaration identifier="q33v9w5" cardinality="single" baseType="float"/>
+    <templateProcessing>
+        <setTemplateValue identifier="q33v1">
+            <integerToFloat>
+                <randomInteger min="2" max="8" step="2"/>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v2">
+            <integerToFloat>
+                <randomInteger min="3" max="9" step="2"/>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v3">
+            <integerToFloat>
+                <random>
+                    <multiple>
+                        <baseValue baseType="integer">50</baseValue>
+                        <baseValue baseType="integer">75</baseValue>
+                        <baseValue baseType="integer">100</baseValue>
+                        <baseValue baseType="integer">125</baseValue>
+                        <baseValue baseType="integer">150</baseValue>
+                        <baseValue baseType="integer">175</baseValue>
+                        <baseValue baseType="integer">200</baseValue>
+                    </multiple>
+                </random>
+            </integerToFloat>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8">
+            <!-- [q33v2] * [q33v3] / ( [q33v1] + [33v2] ) -->
+            <divide>
+                <product>
+                    <variable identifier="q33v2"/>
+                    <variable identifier="q33v3"/>
+                </product>
+                <sum>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                </sum>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9">
+            <!-- [q33v3] - [q33v2] * [q33v3] / ( [q33v1] + [q33v2] ) -->
+            <divide>
+                <product>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v3"/>
+                </product>
+                <sum>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                </sum>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8w1">
+            <!-- [q33v9] -->
+            <variable identifier="q33v9"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9w1">
+            <!-- [q33v8] -->
+            <variable identifier="q33v8"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8w2">
+            <!-- [q33v2] / ( [q33v1] + [33v2] ) -->
+            <divide>
+                <variable identifier="q33v2"/>
+                <sum>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                </sum>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9w2">
+            <!-- [q33v1] / ( [q33v1] + [q33v2] ) -->
+            <divide>
+                <variable identifier="q33v1"/>
+                <sum>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                </sum>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8w3">
+            <!-- [q33v9w2] -->
+            <variable identifier="q33v9w2"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9w3">
+            <!-- [q33v8w2] -->
+            <variable identifier="q33v8w2"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8w4">
+            <!-- [q33v3] / 2.0 -->
+            <divide>
+                <variable identifier="q33v3"/>
+                <baseValue baseType="float">2.0</baseValue>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9w4">
+            <!-- [q33v3] / 2.0 -->
+            <variable identifier="q33v8w4"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v8w5">
+            <!-- [q33v1] * [q33v2]* [q33v3] / ( [q33v1] + [33v2] ) -->
+            <divide>
+                <product>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                    <variable identifier="q33v3"/>
+                </product>
+                <sum>
+                    <variable identifier="q33v1"/>
+                    <variable identifier="q33v2"/>
+                </sum>
+            </divide>
+        </setTemplateValue>
+        <setTemplateValue identifier="q33v9w5">
+            <!-- [q33v8w5] -->
+            <variable identifier="q33v8w5"/>
+        </setTemplateValue>
+    </templateProcessing>
+    <stylesheet href="Demo-styles.css" type="text/css"/>
+    <itemBody>
+        <div><p> Consider two capacitors connected in series, but with values
+                    <i>C</i><sub>1</sub> = <printedVariable identifier="q33v1"/> &#x3bc;F and
+                    <i>C</i><sub>2</sub> = <printedVariable identifier="q33v2"/> &#x3bc;F. Calculate
+                the potentials <i>V</i><sub>1</sub> and <i>V</i><sub>2</sub> across each capacitor
+                in volts, when the potential across the two capacitors is <printedVariable
+                    identifier="q33v3"/> V. Enter the values below, quoting each to three
+                significant figures.<br/>
+            </p>
+            <p>
+                <feedbackInline outcomeIdentifier="PARTA" showHide="show" identifier="open">
+                    <b>a</b>) Potential <i>V</i><sub>1</sub> = <textEntryInteraction
+                        responseIdentifier="Q33RESPA" expectedLength="7"/> V </feedbackInline>
+                <feedbackInline outcomeIdentifier="PARTA" showHide="show" identifier="closed">
+                    <b>a</b>) Potential <i>V</i><sub>1</sub> = <printedVariable identifier="RESPA_0"
+                    />V (completed) </feedbackInline>
+            </p>
+            <p>
+                <feedbackInline outcomeIdentifier="PARTB" showHide="show" identifier="open">
+                    <b>b</b>) Potential <i>V</i><sub>2</sub> = <textEntryInteraction
+                        responseIdentifier="Q33RESPB" expectedLength="7"/> V </feedbackInline>
+                <feedbackInline outcomeIdentifier="PARTB" showHide="show" identifier="closed">
+                    <b>b</b>) Potential <i>V</i><sub>2</sub> = <printedVariable identifier="RESPB_0"
+                    />V (completed) </feedbackInline>
+            </p>
+            <feedbackBlock outcomeIdentifier="Q33AFBACK" showHide="hide" identifier="showit">
+                <p>[ <printedVariable identifier="MARK"/> marks ]</p>
+            </feedbackBlock>
+            <rubricBlock view="tutor">
+                <p class="tutor">Tutor crib : <br/> a) = <printedVariable identifier="q33v8"
+                        format="%10.6f"/>V, &#xa0;( <printedVariable identifier="q33v8w2"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v8w3"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v8w4"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v8w5"
+                        format="%10.5f"/>V ) <br/> b) = <printedVariable identifier="q33v9"
+                        format="%10.6f"/>V. &#xa0;( <printedVariable identifier="q33v9w2"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v9w3"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v9w4"
+                        format="%10.5f"/>V, &#xa0; <printedVariable identifier="q33v9w5"
+                        format="%10.5f"/>V) </p>
+            </rubricBlock>
+            <feedbackBlock outcomeIdentifier="Q33AFBACK" showHide="show" identifier="none">
+                <p class="rubricStyle">If you get either answer seriously wrong, then you might be
+                    given some feedback and another try (although with fewer marks available).</p>
+            </feedbackBlock>
+        </div>
+    </itemBody>
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PARTA"/>
+                    <baseValue baseType="identifier">open</baseValue>
+                </match>
+                <setOutcomeValue identifier="Q33ANSF">
+                    <fieldValue fieldIdentifier="nsf">
+                        <variable identifier="Q33RESPA"/>
+                    </fieldValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPA_3">
+                    <variable identifier="RESPA_2"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPA_2">
+                    <variable identifier="RESPA_1"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPA_1">
+                    <variable identifier="RESPA_0"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPA_0">
+                    <fieldValue fieldIdentifier="floatValue">
+                        <variable identifier="Q33RESPA"/>
+                    </fieldValue>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PARTB"/>
+                    <baseValue baseType="identifier">open</baseValue>
+                </match>
+                <setOutcomeValue identifier="Q33BNSF">
+                    <fieldValue fieldIdentifier="nsf">
+                        <variable identifier="Q33RESPB"/>
+                    </fieldValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPB_3">
+                    <variable identifier="RESPB_2"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPB_2">
+                    <variable identifier="RESPB_1"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPB_1">
+                    <variable identifier="RESPB_0"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="RESPB_0">
+                    <fieldValue fieldIdentifier="floatValue">
+                        <variable identifier="Q33RESPB"/>
+                    </fieldValue>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+        <setOutcomeValue identifier="AGAIN">
+            <baseValue baseType="identifier">none</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="completionStatus">
+            <baseValue baseType="identifier">complete</baseValue>
+        </setOutcomeValue>
+
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PARTA"/>
+                    <baseValue baseType="identifier">open</baseValue>
+                </match>
+                <responseCondition>
+                    <responseIf>
+                        <isNull>
+                            <variable identifier="Q33RESPA"/>
+                        </isNull>
+                        <setOutcomeValue identifier="Q33AFBACK">
+                            <baseValue baseType="identifier">Q33Anull</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElse>
+                        <responseCondition>
+                            <responseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">1</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="1">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">2</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="2">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">3</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="3">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">4</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="4">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">5</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="5">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33ANSF"/>
+                                    <baseValue baseType="integer">6</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="6">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="AOK">
+                                    <equalRounded roundingMode="significantFigures" figures="7">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPA_0"/>
+                                        <variable identifier="q33v8"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                        <responseCondition>
+                            <responseIf>
+                                <variable identifier="AOK"/>
+                                <setOutcomeValue identifier="PARTA">
+                                    <baseValue baseType="identifier">closed</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="exact">
+                                            <variable identifier="Q33ANSF"/>
+                                            <baseValue baseType="integer">3</baseValue>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Aright</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3ASCORE">
+                                            <variable identifier="MARKA"/>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Asigfig</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3ASCORE">
+                                            <subtract>
+                                                <variable identifier="MARKA"/>
+                                                <baseValue baseType="integer">2</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                            </responseIf>
+                            <responseElseIf>
+                                <!-- checking Q2 response approximately equal to value sum -->
+                                <equal toleranceMode="relative" tolerance="2 2">
+                                    <fieldValue fieldIdentifier="floatValue">
+                                        <variable identifier="Q33RESPA"/>
+                                    </fieldValue>
+                                    <variable identifier="q33v8"/>
+                                </equal>
+                                <setOutcomeValue identifier="PARTA">
+                                    <baseValue baseType="identifier">closed</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="exact">
+                                            <variable identifier="Q33ANSF"/>
+                                            <baseValue baseType="integer">3</baseValue>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Aapprox</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3ASCORE">
+                                            <subtract>
+                                                <variable identifier="MARKA"/>
+                                                <baseValue baseType="integer">2</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Asigapprox</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3ASCORE">
+                                            <subtract>
+                                                <variable identifier="MARKA"/>
+                                                <baseValue baseType="integer">3</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <gt>
+                                    <variable identifier="MARKA"/>
+                                    <baseValue baseType="integer">5</baseValue>
+                                </gt>
+                                <setOutcomeValue identifier="completionStatus">
+                                    <baseValue baseType="identifier">incomplete</baseValue>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="MARKA">
+                                    <subtract>
+                                        <variable identifier="MARKA"/>
+                                        <baseValue baseType="integer">3</baseValue>
+                                    </subtract>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="AGAIN">
+                                    <baseValue baseType="identifier">morea</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPA"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v8w1"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong1</baseValue>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPA"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v8w2"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong2</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPA"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v8w3"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong3</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPA"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v8w4"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong4</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPA"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v8w5"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong5</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33AFBACK">
+                                            <baseValue baseType="identifier">Q33Awrong6</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="Q33AFBACK">
+                                    <baseValue baseType="identifier">Q33Awrong</baseValue>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                    </responseElse>
+                </responseCondition>
+            </responseIf>
+        </responseCondition>
+
+        <responseCondition>
+            <responseIf>
+                <match>
+                    <variable identifier="PARTB"/>
+                    <baseValue baseType="identifier">open</baseValue>
+                </match>
+                <responseCondition>
+                    <responseIf>
+                        <isNull>
+                            <variable identifier="Q33RESPB"/>
+                        </isNull>
+                        <setOutcomeValue identifier="Q33BFBACK">
+                            <baseValue baseType="identifier">Q33Bnull</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElse>
+                        <responseCondition>
+                            <responseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">1</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="1">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">2</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="2">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">3</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="3">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">4</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="4">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">5</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="5">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <equal toleranceMode="exact">
+                                    <variable identifier="Q33BNSF"/>
+                                    <baseValue baseType="integer">6</baseValue>
+                                </equal>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="6">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="BOK">
+                                    <equalRounded roundingMode="significantFigures" figures="7">
+                                        <!-- should be template var, not outcome ({Q33ANSF}) -->
+                                        <variable identifier="RESPB_0"/>
+                                        <variable identifier="q33v9"/>
+                                    </equalRounded>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                        <responseCondition>
+                            <responseIf>
+                                <variable identifier="BOK"/>
+                                <setOutcomeValue identifier="PARTB">
+                                    <baseValue baseType="identifier">closed</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="exact">
+                                            <variable identifier="Q33BNSF"/>
+                                            <baseValue baseType="integer">3</baseValue>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bright</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3BSCORE">
+                                            <variable identifier="MARKB"/>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bsigfig</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3BSCORE">
+                                            <subtract>
+                                                <variable identifier="MARKB"/>
+                                                <baseValue baseType="integer">2</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                            </responseIf>
+                            <responseElseIf>
+                                <!-- checking Q2 response approximately equal to value sum -->
+                                <equal toleranceMode="relative" tolerance="2 2">
+                                    <fieldValue fieldIdentifier="floatValue">
+                                        <variable identifier="Q33RESPB"/>
+                                    </fieldValue>
+                                    <variable identifier="q33v9"/>
+                                </equal>
+                                <setOutcomeValue identifier="PARTB">
+                                    <baseValue baseType="identifier">closed</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="exact">
+                                            <variable identifier="Q33BNSF"/>
+                                            <baseValue baseType="integer">3</baseValue>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bapprox</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3BSCORE">
+                                            <subtract>
+                                                <variable identifier="MARKB"/>
+                                                <baseValue baseType="integer">2</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bsigapprox</baseValue>
+                                        </setOutcomeValue>
+                                        <setOutcomeValue identifier="Q3BSCORE">
+                                            <subtract>
+                                                <variable identifier="MARKB"/>
+                                                <baseValue baseType="integer">3</baseValue>
+                                            </subtract>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <gt>
+                                    <variable identifier="MARKB"/>
+                                    <baseValue baseType="integer">5</baseValue>
+                                </gt>
+                                <setOutcomeValue identifier="MARKB">
+                                    <subtract>
+                                        <variable identifier="MARKB"/>
+                                        <baseValue baseType="integer">3</baseValue>
+                                    </subtract>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPB"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v9w1"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong1</baseValue>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPB"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v9w2"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong2</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPB"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v9w3"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong3</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPB"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v9w4"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong4</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElseIf>
+                                        <equal toleranceMode="relative" tolerance="2 2">
+                                            <fieldValue fieldIdentifier="floatValue">
+                                                <variable identifier="Q33RESPB"/>
+                                            </fieldValue>
+                                            <variable identifier="q33v9w5"/>
+                                        </equal>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong5</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElseIf>
+                                    <responseElse>
+                                        <setOutcomeValue identifier="Q33BFBACK">
+                                            <baseValue baseType="identifier">Q33Bwrong6</baseValue>
+                                        </setOutcomeValue>
+                                    </responseElse>
+                                </responseCondition>
+                                <responseCondition>
+                                    <responseIf>
+                                        <not>
+                                            <match>
+                                                <variable identifier="Q33BFBACK"/>
+                                                <baseValue baseType="identifier">Q33Bwrong</baseValue>
+                                            </match>
+                                        </not>
+                                        <responseCondition>
+                                            <responseIf>
+                                                <match>
+                                                  <variable identifier="AGAIN"/>
+                                                  <baseValue baseType="identifier">morea</baseValue>
+                                                </match>
+                                                <setOutcomeValue identifier="AGAIN">
+                                                  <baseValue baseType="identifier">moreboth</baseValue>
+                                                </setOutcomeValue>
+                                            </responseIf>
+                                            <responseElse>
+                                                <setOutcomeValue identifier="AGAIN">
+                                                  <baseValue baseType="identifier">moreb</baseValue>
+                                                </setOutcomeValue>
+                                                <setOutcomeValue identifier="completionStatus">
+                                                  <baseValue baseType="identifier">incomplete</baseValue>
+                                                </setOutcomeValue>
+                                            </responseElse>
+                                        </responseCondition>
+                                    </responseIf>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="Q33BFBACK">
+                                    <baseValue baseType="identifier">Q33Bwrong</baseValue>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                    </responseElse>
+                </responseCondition>
+            </responseIf>
+        </responseCondition>
+        <setOutcomeValue identifier="SCORE">
+            <sum>
+                <variable identifier="Q3ASCORE"/>
+                <variable identifier="Q3BSCORE"/>
+            </sum>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="MARK">
+            <sum>
+                <variable identifier="MARKA"/>
+                <variable identifier="MARKB"/>
+            </sum>
+        </setOutcomeValue>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Aright" showHide="show">
+        <p><b>a) Yes</b>, your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> is correct.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Asigfig" showHide="show">
+        <p><b>a) Yes</b>, but your answer of <printedVariable identifier="RESPA_0"/>V does not give
+            the potential <i>V</i><sub>1</sub> to the requested number of significant figures.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Aapprox" showHide="show">
+        <p><b>a) OK</b>, but your answer of <printedVariable identifier="RESPA_0"/>V for the
+            potential <i>V</i><sub>1</sub> is only approximately correct</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Asigapprox" showHide="show">
+        <p><b>a) OK</b>, but your answer of <printedVariable identifier="RESPA_0"/>V for the
+            potential <i>V</i><sub>1</sub> is only approximately correct and you have not quoted it
+            to the requested number of significant figures.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong1" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> looks as if you have entered the value of the potential
+                <i>V</i><sub>2</sub> instead.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong2" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> looks as if you have calculated the fraction of the total
+            potential that is across <i>C</i><sub>1</sub>, rather than the actual potential.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong3" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> looks as if you have calculated the fraction of the total
+            potential that is across <i>C</i><sub>2</sub>, rather than the actual potential across
+                <i>C</i><sub>1</sub>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong4" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> looks as if you have assumed that the potential is evenly
+            shared across the two capacitors in series. This is not true. It is the current and thus
+            the charge that is the same for each. Use this information to calculate the true
+            potential across each. </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong5" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>2</sub> looks as if you have calculated the charge on
+                <i>C</i><sub>1</sub> rather than the potential across it.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong6" showHide="show">
+        <p><b>a) No</b>. Your answer of <printedVariable identifier="RESPA_0"/>V for the potential
+                <i>V</i><sub>1</sub> is not correct, but it is not clear where you have gone wrong.
+            <br/>You can solve this problem by first obtaining an expression for the combined
+            capacitance of the series pair. From this you can obtain an expression for the charge on
+            the equivalent single capacitor due to the applied potential. Since the integrated
+            current through both the capacitors is the same as that of the equivalent capacitor, you
+            can deduce the charge on each, from which you can obtain the expression for the
+            potential across each individual capacitor.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Awrong" showHide="show">
+        <p><b>a) No</b>, Your answer of <printedVariable identifier="RESPA_0"/>V is not the correct
+            value for the potential <i>V</i><sub>1</sub>.</p>
+        <p class="warning"> Make sure you discuss this question with your tutor or with a friend who
+            can help.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33AFBACK" identifier="Q33Anull" showHide="show">
+        <p><b>a)</b> You have not entered a value for the potential <i>V</i><sub>1</sub>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bright" showHide="show">
+        <p><b>a) Yes</b>, your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> is correct.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bsigfig" showHide="show">
+        <p><b>b) Yes</b>, but your answer of <printedVariable identifier="RESPB_0"/>V for the
+            potential <i>V</i><sub>2</sub> is not given to the requested number of significant
+            figures.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bapprox" showHide="show">
+        <p><b>b) OK</b>, but your answer of <printedVariable identifier="RESPB_0"/>V for the
+            potential <i>V</i><sub>2</sub> is only approximately correct</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bsigapprox" showHide="show">
+        <p><b>b) OK</b>, but your answer of <printedVariable identifier="RESPB_0"/>V for the
+            potential <i>V</i><sub>2</sub> is only approximately correct and you have not quoted it
+            to the requested number of significant figures.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong1" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> looks as if you have entered the value for the potential
+                <i>V</i><sub>2</sub> instead.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong2" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> looks as if you have calculated the fraction of the total
+            potential that is across <i>C</i><sub>2</sub>, rather than the actual potential.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong3" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> looks as if you have calculated the fraction of the total
+            potential that is across <i>C</i><sub>1</sub>, rather than the actual potential across
+                <i>C</i><sub>2</sub>.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong4" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>1</sub> looks as if you have assumed that the potential is evenly
+            shared across the two capacitors in series. This is not true. It is the current and thus
+            the charge that is the same for each. Use this information to calculate the true
+            potential across each. </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong5" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> looks as if you have calculated the charge on
+                <i>C</i><sub>2</sub> rather than the potential across it.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong6" showHide="show">
+        <p><b>b) No</b>. Your answer of <printedVariable identifier="RESPB_0"/>V for the potential
+                <i>V</i><sub>2</sub> is not correct, but it is not clear where you have gone wrong.
+            <br/>You can solve this problem by first obtaining an expression for the combined
+            capacitance of the series pair. From this you can obtain an expression for the charge on
+            the equivalent single capacitor due to the applied potential. Since the integrated
+            current through both the capacitors is the same as that of the equivalent capacitor, you
+            can deduce the charge on each, from which you can obtain the expression for the
+            potential across each individual capacitor.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bwrong" showHide="show">
+        <p><b>b) No</b>, your answer of <printedVariable identifier="RESPB_0"/>V is not the right
+            value for the potential <i>V</i><sub>2</sub>.</p>
+        <p class="warning"> Make sure you discuss this question with your tutor or with a friend who
+            can help.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="Q33BFBACK" identifier="Q33Bnull" showHide="show">
+        <p>You have not answerd part b.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="AGAIN" identifier="morea" showHide="show">
+        <p class="rubricStyle">You may make a further attempt at part <b>a</b>, but make sure you
+            read and apply the feedback you have been given above, before you do so.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="AGAIN" identifier="moreb" showHide="show">
+        <p class="rubricStyle">You may make a further attempt at part <b>b</b>, but make sure you
+            read and apply the feedback you have been given above, before you do so.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="AGAIN" identifier="moreboth" showHide="show">
+        <p class="rubricStyle">You may make further attempts at both parts, but make sure you read
+            and apply the feedback you have been given above, before you do so.</p>
+    </modalFeedback>
+
+</assessmentItem>

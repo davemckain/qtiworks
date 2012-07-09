@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
@@ -69,8 +70,9 @@ public class QtiXmlReaderSampleTests extends AbstractIntegrationTest {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance(),
                 MathAssessSampleSet.instance(),
-                LanguageSampleSet.instance(),
-                UpmcSampleSet.instance()
+                UpmcSampleSet.instance(),
+                StompSampleSet.instance(),
+                LanguageSampleSet.instance()
         );
     }
     

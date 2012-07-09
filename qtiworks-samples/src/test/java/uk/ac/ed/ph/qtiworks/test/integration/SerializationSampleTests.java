@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
@@ -92,8 +93,9 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         return TestUtils.makeTestParameters(
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
                 MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                StompSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
         );
     }
     
@@ -175,12 +177,21 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                     if (isEqualFloat(inputValue, outputValue)) {
                         return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }
+                    /* Test for equal float pairs */
+                    if (isEqualFloatPair(inputValue, outputValue)) {
+                        return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    }
+                    /* If still here, then assume it's a difference */
                     return DifferenceListener.RETURN_ACCEPT_DIFFERENCE;
                     
                 case DifferenceConstants.ATTR_VALUE_ID:
                     /* Different attribute values */
                     /* Test for equal floats */
                     if (isEqualFloat(inputValue, outputValue)) {
+                        return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
+                    }
+                    /* Test for equal float pairs */
+                    if (isEqualFloatPair(inputValue, outputValue)) {
                         return DifferenceListener.RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }
                     /* If still here, then assume it's a difference */
@@ -234,7 +245,7 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         
         /**
          * Tests whether two floats are exactly equal when parsed. This allows 2 and 2.0 to be considered
-         * equal, even though they're differet as Strings.
+         * equal, even though they're different as Strings.
          * 
          * @param controlValue
          * @param testValue
@@ -251,6 +262,15 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
                 return false;
             }
             return controlFloat==testFloat; /* Yes, really == here! */
+        }
+        
+        private boolean isEqualFloatPair(String controlValue, String testValue) {
+            String[] controlSplit = controlValue.split("\\s+");
+            String[] testSplit = testValue.split("\\s+");
+            return controlSplit.length==2
+                    && testSplit.length==2
+                    && isEqualFloat(controlSplit[0], testSplit[0])
+                    && isEqualFloat(controlSplit[1], testSplit[1]);
         }
     }
 }

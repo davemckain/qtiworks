@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author, David lancefield and Dick Bacon-->
+<!-- original in SToMPqtiv1, transcribed to qtiv2 in 2009 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_2_2" title="Hot areas" 
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="point">
+        <areaMapping defaultValue="-5">
+            <areaMapEntry shape="rect" coords="219,102,229,112"  mappedValue="1"/>
+            <areaMapEntry shape="rect" coords="61,0,300,101" mappedValue="-1"/>
+            <areaMapEntry shape="rect" coords="61,113,300,214" mappedValue="-2"/>
+            <areaMapEntry shape="rect" coords="121,102,131,112" mappedValue="-3"/>
+            <areaMapEntry shape="rect" coords="0,0,60,214" mappedValue="-4"/>
+        </areaMapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+    
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+        <p class="heading"><b>Graphical area selection.</b></p>
+        <p class="instruct">This question shows how positions and areas can be identified in a picture or diagram.</p>
+         <p>The following graph shows acceleration plotted against time, for the motion 
+               of a particle along the x axis. If the particle is stationary at time <i>t</i>&#xa0;=&#xa0;0s, at 
+               what time does it become stationary again?</p>
+        <selectPointInteraction responseIdentifier="RESPONSE" maxChoices="1">
+            <object type="image/gif" width="406" height="212" data="images/q5accel.gif">graph</object>
+        </selectPointInteraction>
+          <p>Click on the time axis at the time the particle will become stationary.</p>
+    </itemBody>
+
+    <responseProcessing>
+        <setOutcomeValue identifier="SCORE">
+            <round>
+            	<mapResponsePoint identifier="RESPONSE"/>
+            </round>
+        </setOutcomeValue>
+        <responseCondition>
+        	<responseIf>
+        		<match>
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">1.0</baseValue>
+        		 </match>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">P1</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+        		
+         <responseCondition>
+        	<responseIf>
+        		<equal toleranceMode = "exact">
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">-1.0</baseValue>
+        		 </equal>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">M1</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+        <responseCondition>
+        	<responseIf>
+        		<equal toleranceMode = "exact">
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">-2.0</baseValue>
+        		 </equal>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">M2</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+        <responseCondition>
+        	<responseIf>
+        		<equal toleranceMode = "exact">
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">-3.0</baseValue>
+        		 </equal>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">M3</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+        <responseCondition>
+        	<responseIf>
+        		<equal toleranceMode = "exact">
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">-4.0</baseValue>
+        		 </equal>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">M4</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+        <responseCondition>
+        	<responseIf>
+        		<equal toleranceMode = "exact">
+        			<variable identifier="SCORE"/>
+        		 	<baseValue baseType="float">-5</baseValue>
+        		 </equal>
+        		 <setOutcomeValue identifier="FEEDBACK">
+            			<baseValue baseType="identifier">M5</baseValue>
+        		</setOutcomeValue>
+        	</responseIf>
+        </responseCondition>
+       <responseCondition>
+            <responseIf>
+                <lt>
+                    <variable identifier="SCORE"/>
+                    <baseValue baseType="float">0.0</baseValue>
+                </lt>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+    </responseProcessing>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="P1" showHide="show">
+          <p class="modalfeedback">
+           Yes, thats right. It takes three seconds of deceleration at 4ms<sup>-2</sup> 
+            from 12ms<sup>-1</sup> until it becomes stationary.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="M3" showHide="show">
+            <p class="modalfeedback">
+           You have selected the time at which the acceleration
+                          changes from positive to negative. The <i>acceleration</i> is momentarily
+                          zero at this time, but the particle is not stationary.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="M1" showHide="show">
+         <p class="modalfeedback">
+                          You were asked to place the marker on the time axis.
+                          The time axis is the horizontal axis.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="M2" showHide="show">
+         <p class="modalfeedback">
+                          You were asked to place the marker on the time axis.
+                          The time axis is the horizontal axis.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="M4" showHide="show">
+          <p class="modalfeedback">
+                        The question only deals with positive time values. Please place the
+                        marker to the right of the acceleration axis.</p>
+      </modalFeedback>
+      <modalFeedback outcomeIdentifier="FEEDBACK" identifier="M5" showHide="show">
+          <p class="modalfeedback">No. That is not right.<br/>
+                The particle accelerates
+                         at 6ms<sup>-2</sup> for 2s, reaching a speed of 12ms<sup>-1</sup>.
+                         It then accelerates in the opposite direction (or decelerates) at
+                         4ms<sup>-2</sup>, requiring 3s to change speed by 12ms<sup>-1</sup>,
+                        when it will again (momentarily) become stationary.</p>
+      </modalFeedback>
+</assessmentItem>
+

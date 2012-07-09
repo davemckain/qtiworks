@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Written by David Lancefield for level 1 electronics, University of Surrey -->
+<!-- Transcribed into QTI v2.1 by DIck Bacon Summer 2009 -->
+ 
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+   identifier="LV1_ELEC_1_Q_1" title="Electronics Coursework"
+    adaptive="true" timeDependent="false">
+    
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+      <correctResponse>
+        <value>ChoiceB</value>
+      </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="RESP_0" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="RESP_1" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="RESP_2" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="RESP_3" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="RESP_4" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="MARK" cardinality="single" baseType="float" normalMinimum="0.0">
+        <defaultValue><value>4.0</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="STAGE" cardinality="single" baseType="identifier">
+        <defaultValue><value>try_1</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="QSTAGE" cardinality="single" baseType="identifier">
+        <defaultValue><value>with_dk</value></defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="4.0" normalMinimum="0.0">
+      <defaultValue><value>0.0</value></defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+    <div><p>
+        A charge of 2 C moves from point A to point B, starting and finishing at rest. 
+        The potential at point A is 5V greater than at point B. 
+        Is energy gained or lost by the charge as it moves from A to B?
+    </p>
+    <feedbackBlock outcomeIdentifier="QSTAGE" showHide="show" identifier="with_dk">
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+        <simpleChoice identifier="ChoiceA">The charge gains energy.</simpleChoice>
+        <simpleChoice identifier="ChoiceB">The charge loses energy.</simpleChoice>
+        <simpleChoice identifier="ChoiceC">The charge does not change energy.</simpleChoice>
+        <simpleChoice identifier="ChoiceD" fixed="true">Don't know.</simpleChoice>
+      </choiceInteraction>
+     </feedbackBlock>
+    <feedbackBlock outcomeIdentifier="QSTAGE" showHide="show" identifier="without_dk">
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+        <simpleChoice identifier="ChoiceA">The charge gains energy.</simpleChoice>
+        <simpleChoice identifier="ChoiceB">The charge loses energy.</simpleChoice>
+        <simpleChoice identifier="ChoiceC">The charge does not change energy.</simpleChoice>
+      </choiceInteraction>
+    </feedbackBlock>
+        <rubricBlock view="tutor"><p>Tutor crib : correct = 
+                       it loses energy.</p>
+         </rubricBlock>
+        <feedbackBlock outcomeIdentifier="STAGE" showHide="show" identifier="try_1">
+            <p>[ 4 marks ]</p>
+            <p>If you are not sure of the answer you may select "don't know", and be 
+             given (a) a hint and (b) another try at the same or a similar question. 
+             The marks available for a subsequent try will be reduced.</p>
+        </feedbackBlock>
+        <feedbackBlock outcomeIdentifier="STAGE" showHide="show" identifier="try_2">
+              <p><b>Hint</b>. 
+              The question states that the potential energy at the start is higher than the
+              potential energy at the end of the move.
+              The question also states that the charge starts and ends at rest.
+              Therefore the only energy change that you need consider is the change
+              in potential energy.</p>
+            <p>[ 3 marks ]</p>
+            <p>If you are not sure of the answer you may select "don't know", and be 
+             given (a) a more detailed hint and (b) another try at the same or a similar question. 
+             The marks available for a subsequent try will be reduced.</p>
+        </feedbackBlock></div>
+        <feedbackBlock outcomeIdentifier="STAGE" showHide="show" identifier="try_3">
+            <p><b>Hint</b>. 
+             The charge is moved from a higher potential to a lower. Would you expect that work 
+             would be done <i>by</i> the charge during this change, or would you expect work to have to 
+             be done <i>on</i> the charge to move it?</p>
+            <p>[ 2 marks ]</p>
+            <p>If you are not sure of the answer you may select "don't know", and be 
+             given (a) a further hint and (b) another try at the same or a similar question. 
+             The marks available for a subsequent try will be reduced.</p>
+        </feedbackBlock>
+        <feedbackBlock outcomeIdentifier="STAGE" showHide="show" identifier="try_4">
+            <p><b>Hint</b>. 
+             Consider the total energy of the charge: <br/>Has its kinetic energy changed during the move?
+             <br/>Has its potential energy changed during the move?
+            <br/>
+             You should get the same answers if you ask yourself the same questions considering
+              the system as if it was a simple mechanical system with a mass being moved in
+              a gravitational field.</p>
+            <p>[ 1 mark ]</p>
+        </feedbackBlock>
+    </itemBody>
+    <responseProcessing>
+      <setOutcomeValue identifier="completionStatus">
+          <baseValue baseType="identifier">incomplete</baseValue>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="RESP_4">
+         <variable identifier="RESP_3"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="RESP_3">
+         <variable identifier="RESP_2"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="RESP_2">
+         <variable identifier="RESP_1"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="RESP_1">
+         <variable identifier="RESP_0"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="RESP_0">
+         <variable identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <responseCondition>
+        <responseIf>
+          <match>
+            <variable identifier="RESPONSE"/>
+            <correct identifier="RESPONSE"/>
+          </match>
+          <setOutcomeValue identifier="SCORE">
+            <variable identifier="MARK"/>
+          </setOutcomeValue>
+          <setOutcomeValue identifier="completionStatus">
+             <baseValue baseType="identifier">complete</baseValue>
+          </setOutcomeValue>
+          <setOutcomeValue identifier="STAGE">
+              <baseValue baseType="identifier">finish</baseValue>
+          </setOutcomeValue>
+          <setOutcomeValue identifier="FEEDBACK">
+              <baseValue baseType="identifier">correct</baseValue>
+          </setOutcomeValue>
+        </responseIf>
+        <responseElseIf>
+          <match>
+             <variable identifier="RESPONSE"/>
+             <baseValue baseType="identifier">ChoiceD</baseValue>
+          </match>
+          <setOutcomeValue identifier="FEEDBACK">
+              <baseValue baseType="identifier">dontknow</baseValue>
+          </setOutcomeValue>
+          <responseCondition>
+            <responseIf>
+              <match>
+                  <variable identifier="STAGE"/>
+                  <baseValue baseType="identifier">try_1</baseValue>
+               </match>
+               <setOutcomeValue identifier="STAGE">
+                  <baseValue baseType="identifier">try_2</baseValue>
+               </setOutcomeValue>
+               <setOutcomeValue identifier="MARK">
+                  <baseValue baseType="float">3.0</baseValue>
+               </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+              <match>
+                  <variable identifier="STAGE"/>
+                  <baseValue baseType="identifier">try_2</baseValue>
+               </match>
+               <setOutcomeValue identifier="STAGE">
+                  <baseValue baseType="identifier">try_3</baseValue>
+               </setOutcomeValue>
+               <setOutcomeValue identifier="MARK">
+                  <baseValue baseType="float">2.0</baseValue>
+               </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+              <match>
+                  <variable identifier="STAGE"/>
+                  <baseValue baseType="identifier">try_3</baseValue>
+               </match>
+               <setOutcomeValue identifier="STAGE">
+                  <baseValue baseType="identifier">try_4</baseValue>
+               </setOutcomeValue>
+               <setOutcomeValue identifier="QSTAGE">
+                  <baseValue baseType="identifier">without_dk</baseValue>
+               </setOutcomeValue>
+               <setOutcomeValue identifier="MARK">
+                  <baseValue baseType="float">1.0</baseValue>
+               </setOutcomeValue>
+            </responseElseIf>
+          </responseCondition>
+        </responseElseIf>
+        <responseElse>
+          <setOutcomeValue identifier="completionStatus">
+             <baseValue baseType="identifier">complete</baseValue>
+          </setOutcomeValue>
+          <responseCondition>
+            <responseIf>
+              <match>
+                  <variable identifier="STAGE"/>
+                  <baseValue baseType="identifier">try_4</baseValue>
+               </match>
+              <setOutcomeValue identifier="FEEDBACK">
+                  <baseValue baseType="identifier">badlywrong</baseValue>
+              </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+              <setOutcomeValue identifier="FEEDBACK">
+                  <variable identifier="RESPONSE"/>
+              </setOutcomeValue>
+            </responseElse>
+          </responseCondition>
+        </responseElse>
+      </responseCondition>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="correct" showHide="show">
+    <b>Yes</b>, that's right. Moving from  a higher potential to a lower potential means that it has
+    less energy after the move. Thus, it has lost energy.
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="show">
+    <b>No</b>, it does not gain energy. Moving from  a higher potential to a lower potential means that it has
+    less energy after the move. Therefore, it loses energy.
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceC" showHide="show">
+    <b>No</b>, it will not have the same energy. Moving from  a higher potential to a lower potential means that it has
+    less energy after the move. Therefore, it loses lost enregy.
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="dontknow" showHide="show">
+    You have selected "don't know". The hint is provided within the question. 
+    Make sure you read it carefully before answering the question again..
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="wrong" showHide="show">
+    <b>No</b>, that isn't right.
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="badlywrong" showHide="show">
+    <b>No</b>, that isn't right. It might be a good idea for you to go and see your tutor about how to approach this problem.
+     </modalFeedback>
+  </assessmentItem>

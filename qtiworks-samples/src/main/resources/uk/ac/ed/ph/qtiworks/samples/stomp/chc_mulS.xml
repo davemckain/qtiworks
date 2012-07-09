@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demonstration selection written by Dick Bacon, University of Surrey. 10_09 -->
+  <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" 
+    identifier="Demo_1_2" title="Demonstrating multiple selection" 
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+      <correctResponse>
+        <value>ChoiceA</value>
+        <value>ChoiceB</value>
+      </correctResponse>
+        <mapping lowerBound="0" upperBound="5" defaultValue="0">
+            <mapEntry mapKey="ChoiceA" mappedValue="2"/>
+            <mapEntry mapKey="ChoiceB" mappedValue="2"/>
+            <mapEntry mapKey="ChoiceC" mappedValue="-2"/>
+            <mapEntry mapKey="ChoiceD" mappedValue="-2"/>
+            <mapEntry mapKey="ChoiceE" mappedValue="-2"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="5.0">
+      <defaultValue>
+        <value>0</value>
+      </defaultValue>
+    </outcomeDeclaration>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody>
+    <div><p class="heading">
+      <b>Multiple selection.</b></p><p class="instruct">
+      Each option may have unique feedback when selected or not selected.<br/>
+      Each option may have its own mark value, +ve or -ve.<br/>
+      Alternatively, there can be a single mark for the correct selection.
+      Or a mixture, as here.<br/>
+      Mark bounds can be set, in this case the score >= 0.<br/>
+      The number of options selected can be limited (as here).</p><p>
+        Select the correct statements from this list, which can be (and is here) displayed in a randomised order.
+        Each correct item scores 2, each incorrect scores -2, and there is a bonus of 1 for identifying both 
+        correct statements.</p><p>
+        Notice that in this example a limit has been set so that you may not select more than three options.
+    </p>
+      <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="3">
+        <simpleChoice identifier="ChoiceA">This statement is true.</simpleChoice>
+        <simpleChoice identifier="ChoiceB">This statement is true, too.</simpleChoice>
+        <simpleChoice identifier="ChoiceC">The statement is incorrect.</simpleChoice>
+        <simpleChoice identifier="ChoiceD">The statement is not true.</simpleChoice>
+        <simpleChoice identifier="ChoiceE">Not even a statement.</simpleChoice>
+      </choiceInteraction><br/>[ 5 marks ]</div>
+    </itemBody>
+
+    <responseProcessing>
+      <setOutcomeValue identifier="FEEDBACK">
+        <variable identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+      </setOutcomeValue>
+      <responseCondition>
+           <responseIf>
+               <match>
+                  <variable identifier="RESPONSE"/>
+                  <correct identifier="RESPONSE"/>
+               </match>
+               <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">5</baseValue>
+                </setOutcomeValue>
+           </responseIf>
+      </responseCondition>
+    </responseProcessing>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="show">
+    <p class="modalfeedback"><b>Yes</b>,
+          that's right. You have chosen the statement that says it is true.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceB" showHide="show">
+    <p class="modalfeedback"><b>Yes</b>, 
+          that's right. You have chosen the statement that says it is true, too.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceA" showHide="hide">
+    <p class="modalfeedback"><b>No</b>, 
+         you have <b>not chosen</b> the statement that says it is true.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceB" showHide="hide">
+    <p class="modalfeedback"><b>No</b>, 
+         you have <b>not chosen</b> the statement that says it is true, too.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceC" showHide="show">
+    <p class="modalfeedback"><b>No</b>, 
+         you have chosen the statement that says it is incorrect.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceD" showHide="show">
+    <p class="modalfeedback"><b>No</b>, 
+         you have chosen the statement that says it is not true.</p>
+     </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ChoiceE" showHide="show">
+    <p class="modalfeedback"><b>No</b>, you have selected the option that says that it is not even a statement.</p>
+     </modalFeedback>
+  </assessmentItem>

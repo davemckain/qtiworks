@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd" 
+    identifier="Demo_1_6" title="Numeric entry by slider" 
+    adaptive="false" timeDependent="false">
+
+    <responseDeclaration identifier="RESP1" cardinality="single" baseType="integer">
+        <defaultValue>
+            <value>5</value>
+        </defaultValue>
+    </responseDeclaration>
+    <responseDeclaration identifier="RESP2" cardinality="single" baseType="integer">
+        <defaultValue>
+            <value>14</value>
+        </defaultValue>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SUM" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="VAL1" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="VAL2" cardinality="single" baseType="integer"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier">
+        <defaultValue>
+            <value>wrong</value>
+        </defaultValue>
+    </outcomeDeclaration>
+
+    <stylesheet type="text/css" href="ststyle.css"/>
+    <itemBody><div><p class="heading"><b>Slider interaction for numeric values.</b></p>
+        <p class="instruct">Sliders can be used to let the user select a value from a range, and the values
+              can be used in a variety of conditions to test for correctness 
+              (e.g. try the product or difference as well as the sum).</p>
+        <sliderInteraction responseIdentifier="RESP1" lowerBound="2" upperBound="12" step="1" 
+                stepLabel="true" orientation="horizontal" reverse="false">
+                <prompt>Adjust these two sliders so that their values, when added together, come to 36;</prompt>
+        </sliderInteraction>
+        plus
+        <sliderInteraction responseIdentifier="RESP2" lowerBound="8" upperBound="40" step="2" 
+                stepLabel="true" orientation="horizontal" reverse="false">
+        </sliderInteraction></div>
+    </itemBody>
+
+    <responseProcessing>
+        <responseCondition>
+             <responseIf>
+                <isNull>
+                    <variable identifier="RESP1"/>
+                </isNull>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType = "identifier">noresp1</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <isNull>
+                    <variable identifier="RESP2"/>
+                </isNull>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <baseValue baseType = "identifier">noresp2</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <setOutcomeValue identifier="VAL1">
+                    <variable identifier="RESP1"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="VAL2">
+                    <variable identifier="RESP2"/>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SUM">
+                    <sum>
+                        <variable identifier="VAL1"/>
+                        <variable identifier="VAL2"/>
+                    </sum>
+                </setOutcomeValue>
+                <responseCondition>
+                    <responseIf>
+                        <equal toleranceMode="exact" >
+                            <variable identifier="SUM"/>
+                            <baseValue baseType = "integer">36</baseValue>
+                        </equal>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType = "identifier">correct</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType = "float">5.0</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElseIf>
+                        <equal toleranceMode="absolute" tolerance="3 2">
+                            <variable identifier="SUM"/>
+                            <baseValue baseType = "integer">36</baseValue>
+                        </equal>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType = "identifier">approx</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">3.0</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <equal toleranceMode="exact" >
+                            <product>
+                               <variable identifier="RESP1"/>
+                               <variable identifier="RESP2"/>
+                            </product>
+                            <baseValue baseType="integer">36</baseValue>
+                        </equal>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType = "float">1.0</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType = "identifier">product</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElseIf>
+                        <equal toleranceMode="exact" >
+                            <subtract>
+                                <variable identifier="RESP2"/>
+                                <variable identifier="RESP1"/>
+                            </subtract>
+                            <baseValue baseType = "integer">36</baseValue>
+                        </equal>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <baseValue baseType = "identifier">difference</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType = "float">1.0</baseValue>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                </responseCondition>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+ 
+   <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="correct">
+         <p class="modalfeedback">Yes, <printedVariable identifier="VAL1"/> added to 
+          <printedVariable identifier="VAL2"/> is equal to 36. Well done.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="approx">
+         <p class="modalfeedback">No, <printedVariable identifier="VAL1"/> added to 
+          <printedVariable identifier="VAL2"/> comes to 
+          <printedVariable identifier="SUM"/>, not 36. Have a closer look at your arithmetic.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="product">
+         <p class="modalfeedback">No. It looks as if you have selected two values which come to 36 when multiplied
+              together rather than when added together.
+          ( <printedVariable identifier="VAL1"/>&#xa0;&#xd7;&#xa0;<printedVariable identifier="VAL2"/> = 36 ) 
+          </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="difference">
+         <p class="modalfeedback">No. It looks as if you have selected two values which come to 36 when the smaller
+              is subtracted from the larger, rather than when they are added together.
+          ( <printedVariable identifier="VAL2"/>&#xa0;-&#xa0;<printedVariable identifier="VAL1"/> = 36 ) 
+          </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="wrong">
+         <p class="modalfeedback">No, <printedVariable identifier="VAL1"/> added to 
+          <printedVariable identifier="VAL2"/> comes to 
+          <printedVariable identifier="SUM"/>, not 36.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="noresp1">
+         <p class="modalfeedback">No, you have not moved the upper slider. All possible correct answers
+              require both sliders to be adjusted.</p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="noresp2">
+         <p class="modalfeedback">No, you have not moved the lower slider. All possible correct answers
+              require both sliders to be adjusted.</p>
+    </modalFeedback>
+</assessmentItem>
+
