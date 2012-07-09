@@ -37,9 +37,8 @@ All Rights Reserved
           within your submitted content package.
         </p>
         <p>
-          <strong>Note:</strong> We do not currently support loading arbitrary HTTP resources, though that feature
-          will be added shortly. We also don't currently have the legacy QTI 2.0 responce processing templates loaded
-          into the system.
+          <strong>Note:</strong> We don't currently support the legacy QTI 2.0 responce processing
+          templates.
         </p>
       </div>
     </div>
