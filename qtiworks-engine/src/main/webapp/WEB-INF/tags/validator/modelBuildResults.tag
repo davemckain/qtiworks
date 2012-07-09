@@ -1,6 +1,6 @@
 <%--
 
-This fragment formats the results of JQTI module building
+This fragment formats the results of JQTI model building
 
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved

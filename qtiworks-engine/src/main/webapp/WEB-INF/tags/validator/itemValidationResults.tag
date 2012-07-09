@@ -76,15 +76,15 @@ All Rights Reserved
                 <b>${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}</b>.
               </p>
               <%-- (These are in context of RP) --%>
-              <validator:xmlFindResult rootObjectLookup="${rootObjectLookup}"/>
-              <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
-              <validator:xmlSchemaValidationResults rootObjectLookup="${rootObjectLookup}"/>
+              <validator:xmlFindResult rootObjectLookup="${templateLookup}"/>
+              <validator:xmlParseResults rootObjectLookup="${templateLookup}"/>
+              <validator:xmlSchemaValidationResults rootObjectLookup="${templateLookup}"/>
             </div>
           </div>
         </c:otherwise>
       </c:choose>
     </c:if>
-    <validator:modelBuildResults rootObjectLookup="${rootObjectLookup}"/>
+    <validator:modelBuildResults rootObjectLookup="${itemLookup}"/>
     <validator:modelValidationResults validationResult="${validationResult}"/>
   </div>
 </div>
