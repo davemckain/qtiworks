@@ -39,10 +39,10 @@ import java.io.Serializable;
 
 /**
  * Abstract partial implementation of ValidationItem.
- * 
+ *
  * @author Jiri Kajaba
  */
-abstract class AbstractValidationItem implements ValidationItem, Serializable {
+public abstract class AbstractValidationItem implements ValidationItem, Serializable {
 
     private static final long serialVersionUID = -965289438371398086L;
 
@@ -59,16 +59,16 @@ abstract class AbstractValidationItem implements ValidationItem, Serializable {
 
     /**
      * Constructs validation item.
-     * 
+     *
      * @param source source of constructed item
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public AbstractValidationItem(Validatable source, XmlNode node, String message) {
+    public AbstractValidationItem(final Validatable source, final XmlNode node, final String message) {
         this(source, node, message, null);
     }
 
-    public AbstractValidationItem(Validatable source, XmlNode node, String message, Throwable cause) {
+    public AbstractValidationItem(final Validatable source, final XmlNode node, final String message, final Throwable cause) {
         this.source = source;
         this.node = node;
         this.message = message;
