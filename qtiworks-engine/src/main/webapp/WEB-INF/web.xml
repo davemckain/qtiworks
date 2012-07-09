@@ -11,6 +11,11 @@ Web deployment descriptor
   <display-name>QTIWorks</display-name>
   <description>QTIWorks Delivery Engine</description>
 
+  <!-- Set large enough session timeout -->
+  <session-config>
+    <session-timeout>600</session-timeout>
+  </session-config>
+
   <!-- Root ApplicationContext bootstrap -->
   <context-param>
     <param-name>contextClass</param-name>
