@@ -75,10 +75,46 @@ Renders a standalone assessmentItem
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="*"/>
+    <xsl:variable name="root-element" select="*[1]" as="element()"/>
+    <xsl:variable name="root-namespace" select="namespace-uri($root-element)" as="xs:anyURI"/>
+    <xsl:variable name="input-as-qti21" as="document-node()">
+      <xsl:choose>
+        <xsl:when test="$root-namespace='http://www.imsglobal.org/xsd/imsqti_v2p1'">
+          <xsl:sequence select="/"/>
+        </xsl:when>
+        <xsl:when test="$root-namespace='http://www.imsglobal.org/xsd/imsqti_v2p0'">
+          <!-- Convert QTI 2.0 to QTI 2.1 -->
+          <xsl:document>
+            <xsl:apply-templates select="$root-element" mode="qti20-to-21"/>
+          </xsl:document>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:message terminate="yes">
+            Unexpected namespace URI '<xsl:value-of select="$root-namespace"/>' for root element
+          </xsl:message>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
+    <!-- Now generate resulting HTML tree -->
+    <xsl:variable name="unserialized-output" as="element()">
+      <xsl:apply-templates select="$input-as-qti21/*[1]"/>
+    </xsl:variable>
+    <!-- Finally serialize -->
     <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
+  <!-- QTI 2.0 to 2.1 -->
+
+  <xsl:template match="*" mode="qti20-to-21">
+    <xsl:element name="{local-name()}" namespace="http://www.imsglobal.org/xsd/imsqti_v2p1">
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates mode="qti20-to-21"/>
+    </xsl:element>
+  </xsl:template>
+
+  <xsl:template match="text()" mode="qti20-to-21">
+    <xsl:copy/>
   </xsl:template>
 
   <!-- ************************************************************ -->

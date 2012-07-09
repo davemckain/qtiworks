@@ -54,31 +54,31 @@ import org.w3c.dom.Element;
  * @author Jiri Kajaba
  */
 public enum RootObjectTypes {
-    
+
     /**
      * Creates assessmentTest root node.
-     * 
+     *
      * @see AssessmentTest
      */
     ASSESSMENT_TEST(AssessmentTest.QTI_CLASS_NAME, AssessmentTest.class),
 
     /**
      * Creates assessmentItem root node.
-     * 
+     *
      * @see AssessmentItem
      */
     ASSESSMENT_ITEM(AssessmentItem.QTI_CLASS_NAME, AssessmentItem.class),
 
     /**
      * Creates responseProcessing root node.
-     * 
+     *
      * @see AssessmentItem
      */
     RESPONSE_PROCESSING(ResponseProcessing.QTI_CLASS_NAME, ResponseProcessing.class),
 
     /**
      * Creates assessmentResult root node.
-     * 
+     *
      * @see AssessmentResult
      */
     ASSESSMENT_RESULT(AssessmentResult.QTI_CLASS_NAME, AssessmentResult.class),
@@ -98,7 +98,7 @@ public enum RootObjectTypes {
     private final String rootObjectName;
     private final Class<? extends RootObject> rootObjectClass;
 
-    private RootObjectTypes(String rootObjectType, Class<? extends RootObject> rootObjectClass) {
+    private RootObjectTypes(final String rootObjectType, final Class<? extends RootObject> rootObjectClass) {
         this.rootObjectName = rootObjectType;
         this.rootObjectClass = rootObjectClass;
     }
@@ -118,13 +118,13 @@ public enum RootObjectTypes {
 
     /**
      * Creates a QTI root node with given class name.
-     * 
+     *
      * @param qtiClassName QTI_CLASS_NAME of created root node
      * @return created root node
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a QTI root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
-    public static RootObject getInstance(String qtiClassName, URI systemId, ModelRichness modelRichness) {
+    public static RootObject getInstance(final String qtiClassName, final URI systemId, final ModelRichness modelRichness) {
         final RootObjectTypes rootObjectType = rootObjectTypesMap.get(qtiClassName);
         RootObject result = null;
         if (rootObjectType == null) {
@@ -143,17 +143,18 @@ public enum RootObjectTypes {
 
     /**
      * Loads root node from given source node.
-     * 
+     *
      * @param sourceElement source node
      * @return loaded root node
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a root Node
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
-    public static RootObject load(Element sourceElement, URI systemId, ModelRichness modelRichness, LoadingContext context) {
-        if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(sourceElement.getNamespaceURI())) {
-            throw new IllegalArgumentException("Element {" + sourceElement.getNamespaceURI()
+    public static RootObject load(final Element sourceElement, final URI systemId, final ModelRichness modelRichness, final LoadingContext context) {
+        final String namespaceUri = sourceElement.getNamespaceURI();
+        if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
+            throw new IllegalArgumentException("Element {" + namespaceUri
                     + "}" + sourceElement.getLocalName()
-                    + " is not in the QTI 2.1 namespace");
+                    + " is not in either the QTI 2.1 or 2.0 namespaces");
         }
         final RootObject root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
         root.load(sourceElement, context);

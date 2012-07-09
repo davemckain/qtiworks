@@ -42,9 +42,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 /**
  * Encapsulates the result of instantiating a QTI {@link RootObject} from XML, as returned
  * by {@link QtiXmlObjectReader}.
- * 
+ *
  * @see QtiXmlObjectReader
- * 
+ *
  * @author David McKain
  */
 public final class QtiXmlObjectReadResult<E extends RootObject> implements RootObjectHolder<E> {
@@ -54,19 +54,23 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
     private final Class<E> requestedRootObjectClass;
     private final E rootObject;
     private final XmlParseResult xmlParseResult;
-    
-    QtiXmlObjectReadResult(final Class<E> requestedRootObjectClass, final E rootObject,
-            final XmlParseResult xmlParseResult) {
+
+    /** This will be either the QTI 2.1 or QTI 2.0 namespace */
+    private final String qtiNamespaceUri;
+
+    QtiXmlObjectReadResult(final Class<E> requestedRootObjectClass, final XmlParseResult xmlParseResult,
+            final String qtiNamespace, final E rootObject) {
         this.requestedRootObjectClass = requestedRootObjectClass;
         this.rootObject = rootObject;
         this.xmlParseResult = xmlParseResult;
+        this.qtiNamespaceUri = qtiNamespace;
     }
-    
+
     @Override
     public Class<E> getRequestedRootObjectClass() {
         return requestedRootObjectClass;
     }
-    
+
     @Override
     public E getRootObject() {
         return rootObject;
@@ -77,13 +81,17 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
         return xmlParseResult;
     }
 
+    public String getQtiNamespaceUri() {
+        return qtiNamespaceUri;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(rootObjectClass=" + requestedRootObjectClass
                 + ",xmlParseResult=" + xmlParseResult
+                + ",qtiNamespaceUri=" + qtiNamespaceUri
                 + ",rootObject=" + rootObject
                 + ")";
     }
-
 }

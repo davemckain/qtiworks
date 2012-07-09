@@ -142,8 +142,9 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
         final List<QtiModelBuildingError> qtiModelBuildingErrors = new ArrayList<QtiModelBuildingError>();
         final LoadingContext loadingContext = new LoadingContextImpl(qtiModelBuildingErrors);
         logger.trace("Instantiating JQTI Object hierarchy from root Element {}");
-        final Element rootElement = document.getDocumentElement();
         final RootObject rootObject;
+        final Element rootElement = document.getDocumentElement();
+        final String rootNamespaceUri = rootElement.getNamespaceURI();
         try {
             rootObject = RootObjectTypes.load(rootElement, systemId, requiredModelRichness, loadingContext);
         }
@@ -151,7 +152,7 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
             /* Unsupported root Node type */
             logger.debug("QTI Object read of system ID {} yielded unsupported root Node {}", systemId, rootElement.getLocalName());
             throw new QtiXmlInterpretationException(UNSUPPORTED_ROOT_NODE, "XML parse succeeded but had an unsupported root Node {"
-                    + rootElement.getNamespaceURI() + "}:" + rootElement.getLocalName(),
+                    + rootNamespaceUri + "}:" + rootElement.getLocalName(),
                     requiredModelRichness, requiredResultClass, xmlParseResult, null, qtiModelBuildingErrors);
         }
         catch (final QtiParseException e) {
@@ -175,7 +176,8 @@ public final class QtiXmlObjectReader implements RootObjectProvider {
 
         /* Success! */
         final QtiXmlObjectReadResult<E> result = new QtiXmlObjectReadResult<E>(requiredResultClass,
-                requiredResultClass.cast(rootObject), xmlParseResult);
+                xmlParseResult, rootNamespaceUri,
+                requiredResultClass.cast(rootObject));
         logger.debug("Result of QTI Object read from system ID {} is {}", systemId, result);
         return result;
     }

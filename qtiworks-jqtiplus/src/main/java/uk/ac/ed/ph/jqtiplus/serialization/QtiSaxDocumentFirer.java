@@ -102,7 +102,9 @@ public final class QtiSaxDocumentFirer {
     public static Map<String, String> createSchemaLocationMap(final Set<JqtiExtensionPackage<?>> usedExtensionPackages) {
         final Map<String, String> result = new HashMap<String, String>();
 
-        /* First do QTI 2.1 namespace */
+        /* First do QTI 2.1 namespace.
+         * NB: We are ONLY writing out QTI 2.1 here.
+         */
         /* TODO: If we add support for APIP, we'll need to change namespace here */
         result.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
 
