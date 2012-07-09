@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
+import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
@@ -87,6 +88,8 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
 
     private InstructorUserDao instructorUserDao;
 
+    private Auditor auditor;
+
     @Override
     public void init(final ServletConfig config) throws ServletException {
         /* Check required <init-param>s */
@@ -99,6 +102,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
         /* Extract relevant business Objects */
         try {
             final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+            auditor = appContext.getBean(Auditor.class);
             instructorUserDao = appContext.getBean(InstructorUserDao.class);
         }
         catch (final Exception e) {
@@ -128,12 +132,14 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
+            auditor.recordEvent("Instructor authentication succeeded for " + userId);
             logger.debug("Authentication succeeded - redirecting to {}", protectedRequestUrl);
             request.getSession().setAttribute(AbstractInstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedRequestUrl);
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
+            auditor.recordEvent("Instructor authentication failed for " + userId);
             logger.debug("Authentication failed - redirecting to {}", loginErrorJspPath);
             request.setAttribute("errors", errors);
             request.getRequestDispatcher(loginErrorJspPath).forward(request, response);
