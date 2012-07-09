@@ -201,7 +201,7 @@ public class Mapping extends AbstractNode {
      * @return target value for given source value
      */
     public FloatValue getTargetValue(final Value sourceValue) {
-        if (sourceValue != null) {
+        if (!sourceValue.isNull()) {
             /*
              * If the response variable has single cardinality then the value
              * returned is simply the mapped target value from the map. If the
