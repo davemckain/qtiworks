@@ -43,6 +43,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
+import javax.activation.FileTypeMap;
+import javax.activation.MimetypesFileTypeMap;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -86,5 +89,14 @@ public class ServicesConfiguration {
     @Bean
     public QtiSerializer qtiSerializer() {
         return new QtiSerializer(jqtiExtensionManager());
+    }
+
+    /**
+     * MIME type definitions used when serving up content. I have copied a generic Linux
+     * <code>/etc/mime.types</code> into the project so that we don't get OS-specific results.
+     */
+    @Bean
+    public FileTypeMap fileTypeMap() {
+        return new MimetypesFileTypeMap(getClass().getClassLoader().getResourceAsStream("mime.types"));
     }
 }

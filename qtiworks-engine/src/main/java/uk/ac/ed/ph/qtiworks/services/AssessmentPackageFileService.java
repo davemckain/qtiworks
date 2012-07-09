@@ -55,8 +55,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URLConnection;
 
+import javax.activation.FileTypeMap;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.FileUtils;
@@ -75,11 +75,17 @@ public class AssessmentPackageFileService {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageFileService.class);
 
-    public static final String FALLBACK_CONTENT_TYPE = "application/octet-stream";
-    public static final String QTI_CONTENT_TYPE = "application/xml";
+    /** Fallback content type used when streaming an unknown content type */
+    private static final String FALLBACK_CONTENT_TYPE = "application/octet-stream";
+
+    /** Content type used when streaming QTI sources */
+    private static final String QTI_CONTENT_TYPE = "application/xml";
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private FileTypeMap fileTypeMap;
 
     /**
      * {@link ResourceLocator} for reading in sample assessment resources. These are bundled
@@ -291,10 +297,12 @@ public class AssessmentPackageFileService {
     }
 
     private String getResourceContentType(final String href) {
-        String result = URLConnection.getFileNameMap().getContentTypeFor(href);
-        if (result==null) {
-            logger.warn("Could not establish content type for href {} - using {}", href, FALLBACK_CONTENT_TYPE);
-            result = FALLBACK_CONTENT_TYPE;
+        final String result;
+        synchronized (fileTypeMap) {
+            result = fileTypeMap.getContentType(href);
+        }
+        if (result.equals(FALLBACK_CONTENT_TYPE)) {
+            logger.warn("MIME type lookup for href {} yielded fallback {}", href, FALLBACK_CONTENT_TYPE);
         }
         return result;
     }
