@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    identifier="brainStructures" title="Structures in the Brain" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="pair">
+        <mapping defaultValue="0">
+    <mapEntry mapKey="cerebellum_source cerebellum_target" mappedValue="1"/>
+    <mapEntry mapKey="corpuscallosum_source corpuscallosum_target" mappedValue="1"/>
+    <mapEntry mapKey="hypothalamus_source hypothalamus_target" mappedValue="1"/>
+    <mapEntry mapKey="medulla_source medulla_target" mappedValue="1"/>
+    <mapEntry mapKey="midbrain_source midbrain_target" mappedValue="1"/>
+    <mapEntry mapKey="opticnerve_source opticnerve_target" mappedValue="1"/>
+    <mapEntry mapKey="pituitary_source pituitary_target" mappedValue="1"/>
+    <mapEntry mapKey="pons_source pons_target" mappedValue="1"/>
+    <mapEntry mapKey="thalamus_source thalamus_target" mappedValue="1"/>
+    <mapEntry mapKey="cerebral_source cerebral_target" mappedValue="1"/>
+</mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+<outcomeDeclaration identifier="FEEDBACK" cardinality="multiple" baseType="identifier"/>
+    <itemBody>
+        <p>Move the labels to the correct positions to identify structures in the brain.     </p>         
+    <graphicGapMatchInteraction responseIdentifier="RESPONSE">
+                <prompt>
+            A point will be awarded for every correct answer.
+        </prompt>
+                <object type="image/gif" data="images/Brain.gif" width="800" height="500"/>
+                <gapImg identifier="cerebellum_source" matchMax="1">
+                    <object type="text/html" data =" Cerebellum"/>
+                </gapImg>
+                <gapImg identifier="corpuscallosum_source" matchMax="1">
+                    <object type="text/html" data ="Corpus callosum"/>
+                </gapImg>
+                <gapImg identifier="hypothalamus_source" matchMax="1">
+                    <object type="text/html" data = "Hypothalamus"/>
+                </gapImg>
+                <gapImg identifier="medulla_source" matchMax="1">
+                    <object type="text/html" data = "Medulla"/>
+                </gapImg>
+                <gapImg identifier="midbrain_source" matchMax="1">
+                    <object type="text/html" data = "Mid brain"/>
+                </gapImg>
+                <gapImg identifier="opticnerve_source" matchMax="1">
+                    <object type="text/html" data = "Optic nerve"/>
+                </gapImg>
+                <gapImg identifier="pituitary_source" matchMax="1">
+                    <object type="text/html" data = "Pituitary"/>
+                </gapImg>
+                <gapImg identifier="pons_source" matchMax="1">
+                    <object type="text/html" data = "Pons"/>
+                </gapImg>
+                <gapImg identifier="thalamus_source" matchMax="1">
+                    <object type="text/html" data = "Thalamus"/>
+                </gapImg>
+                <gapImg identifier="cerebral_source" matchMax="1">
+                    <object type="text/html" data = "Cerebral Cortex"/>
+                </gapImg>
+        <associableHotspot identifier = "cerebellum_target" matchMax="1" shape="rect" coords="573,262,653,282"/>
+        <associableHotspot identifier = "corpuscallosum_target" matchMax="1" shape="rect" coords="512,99,594,119"/>
+        <associableHotspot identifier = "hypothalamus_target" matchMax="1" shape="rect" coords="292,417,372,437"/>
+        <associableHotspot identifier = "medulla_target" matchMax="1" shape="rect" coords="570,329,652,349"/>
+        <associableHotspot identifier = "midbrain_target" matchMax="1" shape="rect" coords="469,37,549,57"/>
+        <associableHotspot identifier = "opticnerve_target" matchMax="1" shape="rect" coords="144,392,224,412"/>
+        <associableHotspot identifier = "pituitary_target" matchMax="1" shape="rect" coords="185,425,265,435"/>
+        <associableHotspot identifier = "pons_target" matchMax="1" shape="rect" coords="402,415,482,435"/>
+        <associableHotspot identifier = "thalamus_target" matchMax="1" shape="rect" coords="321,36,410,56"/>
+        <associableHotspot identifier = "cerebral_target" matchMax="1" shape="rect" coords="159,36,239,56"/>
+    </graphicGapMatchInteraction>
+</itemBody>
+    <responseProcessing>
+        <!-- processing for score -->
+        <responseCondition>
+            <responseIf>
+                <isNull>
+                            <variable identifier="RESPONSE"/>
+                        </isNull>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0.0</baseValue>
+                        </setOutcomeValue>
+                </responseIf>
+                <responseElse>
+                        <setOutcomeValue identifier="SCORE">
+                            <mapResponse identifier="RESPONSE"/>
+                    </setOutcomeValue>
+                </responseElse>
+            </responseCondition>
+    <!-- processing for feedback -->
+    
+        <responseCondition>
+            <responseIf>
+                <equal toleranceMode = "exact">
+                    <variable identifier = "SCORE"/>
+                    <baseValue baseType="float">0.0</baseValue>
+                </equal>
+                <setOutcomeValue identifier = "FEEDBACK">
+                            <baseValue baseType = "identifier">NoneRight</baseValue>
+                     </setOutcomeValue> 
+            </responseIf>
+            <responseElseIf>
+                <equal toleranceMode = "exact">
+                    <variable identifier = "SCORE"/>
+                    <baseValue baseType="float">1.0</baseValue>
+                </equal>
+                <setOutcomeValue identifier = "FEEDBACK">
+                            <baseValue baseType = "identifier">OneRight</baseValue>
+                     </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <equal toleranceMode = "exact">
+                    <variable identifier = "SCORE"/>
+                    <baseValue baseType="float">10.0</baseValue>
+                </equal>
+                <setOutcomeValue identifier = "FEEDBACK">
+                            <baseValue baseType = "identifier">AllRight</baseValue>
+                     </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+            <setOutcomeValue identifier = "FEEDBACK">
+                            <baseValue baseType = "identifier">SomeRight</baseValue>
+                     </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+            <responseCondition>
+            <responseIf>
+                <and>
+                    <gt>
+                        <variable identifier = "SCORE"/>
+                        <baseValue baseType="float">1.0</baseValue>
+                    </gt>
+                    <lt>
+                        <variable identifier = "SCORE"/>
+                        <baseValue baseType="float">10.0</baseValue>
+                    </lt>
+                </and>
+                <!-- processing for correct labels-->
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">cerebellum_source cerebellum_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">cerebellum</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">corpuscallosum_source corpuscallosum_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">corpuscallosum</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">hypothalamus_source hypothalamus_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">hypothalamus</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">medulla_source medulla_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">medulla</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">midbrain_source midbrain_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">midbrain</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">opticnerve_source opticnerve_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">opticnerve</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">pituitary_source pituitary_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">pituitary</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">pons_source pons_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">pons</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">thalamus_source thalamus_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">thalamus</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+
+                <responseCondition>
+                    <responseIf>
+                    <member>
+                        <baseValue baseType="pair">cerebral_source cerebral_target</baseValue>
+                        <variable identifier="RESPONSE"/>
+                    </member>
+                    <setOutcomeValue identifier="FEEDBACK">
+                        <multiple>
+                            <variable identifier="FEEDBACK"/>
+                            <baseValue baseType="identifier">cerebral</baseValue>
+                        </multiple>
+                    </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+            </responseIf>
+        </responseCondition>
+    </responseProcessing>
+        
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="NoneRight">
+        <p>
+            Sorry, none of your labels are correctly placed.
+        </p>
+    </modalFeedback>
+
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="OneRight">
+        <p>
+            Only one of your labels is correctly placed.
+        </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="SomeRight">
+        <p>
+            These labels are correctly placed:
+        </p>
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="AllRight">
+        <p>
+            All your labels are correctly placed.
+        </p>
+    </modalFeedback>
+    
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="cerebellum">
+        Cerebellum <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="corpuscallosum">
+        Corpus callosum <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="hypothalamus">
+        Hypothalamus <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="medulla">
+        Medulla <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="midbrain">
+        Mid brain <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="opticnerve">
+        Optic nerve <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="pituitary">
+        Pituitary <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="pons">
+        Pons <br />
+    </modalFeedback>
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="thalamus">
+        Thalamus <br />
+    </modalFeedback><modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="cerebral">
+        Cerebral cortex<br />
+    </modalFeedback>
+</assessmentItem>
+

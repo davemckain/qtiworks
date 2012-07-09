@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:m="http://www.w3.org/1998/Math/MathML"
+    xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="true"
+    identifier="Test01-multFrac-q01" timeDependent="false" title="Multiply fractions"
+    toolName="Mathqurate" toolVersion="1.0" xml:lang="en"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd">
+    <responseDeclaration cardinality="single" baseType="integer" identifier="RESPONSEN"/>
+    <responseDeclaration cardinality="single" baseType="integer" identifier="RESPONSED"/>
+    <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
+    <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
+    <outcomeDeclaration cardinality="single" baseType="boolean" identifier="okNum"/>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="okDen"/>
+    <outcomeDeclaration cardinality="single" baseType="boolean" identifier="nsNum"/>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="nsDen"/>
+    <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
+    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0"
+        normalMinimum="0.0">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenHint">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
+        <defaultValue>
+            <value>askhint</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
+        <defaultValue>
+            <value>asksolution</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iB" mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iC" mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iD" mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iNum"
+        mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iNum1"
+        mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iDen"
+        mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iDen1"
+        mathVariable="true"/>
+    <templateDeclaration baseType="integer" cardinality="single" identifier="iGCD"
+        mathVariable="true"/>
+    <templateDeclaration baseType="identifier" cardinality="single" identifier="tSol"/>
+    <templateDeclaration baseType="identifier" cardinality="single" identifier="tSoli"/>
+    <templateProcessing>
+        <setTemplateValue identifier="iA">
+            <randomInteger max="9" min="1"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="iB">
+            <randomInteger max="9" min="2"/>
+        </setTemplateValue>
+        <templateConstraint>
+            <equal toleranceMode="exact">
+                <gcd>
+                    <variable identifier="iA"/>
+                    <variable identifier="iB"/>
+                </gcd>
+                <baseValue baseType="integer">1</baseValue>
+            </equal>
+        </templateConstraint>
+        <setTemplateValue identifier="iC">
+            <randomInteger max="9" min="1"/>
+        </setTemplateValue>
+        <setTemplateValue identifier="iD">
+            <randomInteger max="9" min="2"/>
+        </setTemplateValue>
+        <templateConstraint>
+            <equal toleranceMode="exact">
+                <gcd>
+                    <variable identifier="iC"/>
+                    <variable identifier="iD"/>
+                </gcd>
+                <baseValue baseType="integer">1</baseValue>
+            </equal>
+        </templateConstraint>
+        <setTemplateValue identifier="iNum1">
+            <product>
+                <variable identifier="iA"/>
+                <variable identifier="iC"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iDen1">
+            <product>
+                <variable identifier="iB"/>
+                <variable identifier="iD"/>
+            </product>
+        </setTemplateValue>
+        <setTemplateValue identifier="iGCD">
+            <gcd>
+                <variable identifier="iNum1"/>
+                <variable identifier="iDen1"/>
+            </gcd>
+        </setTemplateValue>
+        <setTemplateValue identifier="iNum">
+            <integerDivide>
+                <variable identifier="iNum1"/>
+                <variable identifier="iGCD"/>
+            </integerDivide>
+        </setTemplateValue>
+        <setTemplateValue identifier="iDen">
+            <integerDivide>
+                <variable identifier="iDen1"/>
+                <variable identifier="iGCD"/>
+            </integerDivide>
+        </setTemplateValue>
+        <templateCondition>
+            <templateIf>
+                <equal toleranceMode="exact">
+                    <variable identifier="iGCD"/>
+                    <baseValue baseType="integer">1</baseValue>
+                </equal>
+                <setTemplateValue identifier="tSol">
+                    <baseValue baseType="identifier">SolGCD1</baseValue>
+                </setTemplateValue>
+            </templateIf>
+            <templateElse>
+                <templateCondition>
+                    <templateIf>
+                        <equal toleranceMode="exact">
+                            <variable identifier="iDen"/>
+                            <baseValue baseType="integer">1</baseValue>
+                        </equal>
+                        <setTemplateValue identifier="tSol">
+                            <baseValue baseType="identifier">SolDen1</baseValue>
+                        </setTemplateValue>
+                        <setTemplateValue identifier="tSoli">
+                            <baseValue baseType="identifier">SolDen1i</baseValue>
+                        </setTemplateValue>
+                    </templateIf>
+                    <templateElse>
+                        <setTemplateValue identifier="tSol">
+                            <baseValue baseType="identifier">SolDenGT1</baseValue>
+                        </setTemplateValue>
+                    </templateElse>
+                </templateCondition>
+            </templateElse>
+        </templateCondition>
+    </templateProcessing>
+    <itemBody class="">
+        <div class="">Simplify</div>
+        <div class="">
+            <m:math display="block" id="mathML0">
+                <m:semantics>
+                    <m:mrow>
+                        <m:mfrac>
+                            <m:mi>iA</m:mi>
+                            <m:mi>iB</m:mi>
+                        </m:mfrac>
+                        <m:mo>&#xd7;</m:mo>
+                        <m:mfrac>
+                            <m:mi>iC</m:mi>
+                            <m:mi>iD</m:mi>
+                        </m:mfrac>
+                    </m:mrow>
+                    <m:annotation encoding="SnuggleTeX"
+                        >\[\frac{\qv{iA}}{\qv{iB}}\times\frac{\qv{iC}}{\qv{iD}}\]</m:annotation>
+                </m:semantics>
+            </m:math>
+        </div>
+        <div class="">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            Numerator:
+                        </td>
+                        <td>
+                            <textEntryInteraction expectedLength="20" id="textEntryInteraction0" label="mathInput" responseIdentifier="RESPONSEN"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Denominator:
+                        </td>
+                        <td>
+                            <textEntryInteraction expectedLength="20" id="textEntryInteraction0" label="mathInput" responseIdentifier="RESPONSED"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <feedbackInline outcomeIdentifier="FEEDBACK" identifier="noDen" showHide="show"> You must enter a number in both boxes.</feedbackInline>
+        </div>
+        <div>
+            <p>Enter your answer as a fraction in its lowest terms. Type the numerator and the denominator in the boxes above. If your answer is a whole number, type the answer in the first box and 1 in the second box.</p>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline1" identifier="CORRECT" outcomeIdentifier="FEEDBACK"
+                showHide="show"> Correct </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline1" identifier="CORRECTnum" outcomeIdentifier="FEEDBACK"
+                showHide="show"> You have entered the correct numerator. </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline1" identifier="CORRECTden" outcomeIdentifier="FEEDBACK"
+                showHide="show"> You have entered the correct denominator.  </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline2" identifier="INCORRECT" outcomeIdentifier="FEEDBACK"
+                showHide="show"> Incorrect </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline3" identifier="NOTSIMP" outcomeIdentifier="FEEDBACK"
+                showHide="show"> Your answer is not completely simplified. </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline3" identifier="NOTSIMPnum" outcomeIdentifier="FEEDBACK"
+                showHide="show"> You have not divided the numerator by <printedVariable identifier="iGCD"/>. </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackInline id="feedbackInline3" identifier="NOTSIMPden" outcomeIdentifier="FEEDBACK"
+                showHide="show"> You have not divided the denominator by <printedVariable identifier="iGCD"/>. </feedbackInline>
+        </div>
+        <div class="">
+            <feedbackBlock id="feedbackBlock5" identifier="THREETRIES" outcomeIdentifier="FEEDBACK"
+                showHide="show">
+                <p>You have had three attempts at answering this question, so here is the
+                    solution:</p>
+            </feedbackBlock>
+            <feedbackBlock class="" id="feedbackBlock6" identifier="SOLUTION"
+                outcomeIdentifier="FEEDBACK" showHide="show">
+                <div class="">To multiply fractions, just multiply the numerators together to get
+                    the numerator, then multiply the denominators together to get the denominator,
+                    and then simplify if needed: </div>
+                <templateBlock class="" identifier="SolGCD1" templateIdentifier="tSol" showHide="show">
+                    <div class="">
+                        <m:math display="block" id="mathML1">
+                            <m:semantics>
+                                <m:mtable>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right">
+                                            <m:mfrac>
+                                                <m:mi>iA</m:mi>
+                                                <m:mi>iB</m:mi>
+                                            </m:mfrac>
+                                            <m:mo>&#xd7;</m:mo>
+                                            <m:mfrac>
+                                                <m:mi>iC</m:mi>
+                                                <m:mi>iD</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mrow>
+                                                    <m:mi>iA</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iC</m:mi>
+                                                </m:mrow>
+                                                <m:mrow>
+                                                    <m:mi>iB</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iD</m:mi>
+                                                </m:mrow>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right"/>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mi>iNum</m:mi>
+                                                <m:mi>iDen</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                </m:mtable>
+                                <m:annotation encoding="SnuggleTeX"
+                                    >\begin{eqnarray*}\frac{\qv{iA}}{\qv{iB}}\times\frac{\qv{iC}}{\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iA}\times\qv{iC}}{\qv{iB}\times\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iNum}}{\qv{iDen}} \end{eqnarray*}</m:annotation>
+                            </m:semantics>
+                        </m:math>
+                    </div>
+                </templateBlock>
+                <templateBlock class="" identifier="SolDen1" templateIdentifier="tSol" showHide="show">
+                    <div class="">
+                        <m:math display="block" id="mathML2">
+                            <m:semantics>
+                                <m:mtable>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right">
+                                            <m:mfrac>
+                                                <m:mi>iA</m:mi>
+                                                <m:mi>iB</m:mi>
+                                            </m:mfrac>
+                                            <m:mo>&#xd7;</m:mo>
+                                            <m:mfrac>
+                                                <m:mi>iC</m:mi>
+                                                <m:mi>iD</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mrow>
+                                                    <m:mi>iA</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iC</m:mi>
+                                                </m:mrow>
+                                                <m:mrow>
+                                                    <m:mi>iB</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iD</m:mi>
+                                                </m:mrow>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right"/>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mi>iNum</m:mi>
+                                                <m:mi>iDen</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right"/>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mi>iNum</m:mi>
+                                        </m:mtd>
+                                    </m:mtr>
+                                </m:mtable>
+                                <m:annotation encoding="SnuggleTeX"
+                                    >\begin{eqnarray*}\frac{\qv{iA}}{\qv{iB}}\times\frac{\qv{iC}}{\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iA}\times\qv{iC}}{\qv{iB}\times\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iNum}}{\qv{iDen}} &amp;=&amp;\qv{iNum}} \end{eqnarray*}</m:annotation>
+                            </m:semantics>
+                        </m:math>
+                    </div>
+                </templateBlock>
+                <templateBlock class="" identifier="SolDenGT1" templateIdentifier="tSol" showHide="show">
+                    <div class="">
+                        <m:math display="block" id="mathML3">
+                            <m:semantics>
+                                <m:mtable>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right">
+                                            <m:mfrac>
+                                                <m:mi>iA</m:mi>
+                                                <m:mi>iB</m:mi>
+                                            </m:mfrac>
+                                            <m:mo>&#xd7;</m:mo>
+                                            <m:mfrac>
+                                                <m:mi>iC</m:mi>
+                                                <m:mi>iD</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mrow>
+                                                    <m:mi>iA</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iC</m:mi>
+                                                </m:mrow>
+                                                <m:mrow>
+                                                    <m:mi>iB</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iD</m:mi>
+                                                </m:mrow>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right"/>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mrow>
+                                                    <m:mi>iNum</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iGCD</m:mi>
+                                                </m:mrow>
+                                                <m:mrow>
+                                                    <m:mi>iDen</m:mi>
+                                                    <m:mo>×</m:mo>
+                                                    <m:mi>iGCD</m:mi>
+                                                </m:mrow>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                    <m:mtr>
+                                        <m:mtd columnalign="right"/>
+                                        <m:mtd columnalign="center">
+                                            <m:mo>=</m:mo>
+                                        </m:mtd>
+                                        <m:mtd columnalign="left">
+                                            <m:mfrac>
+                                                <m:mi>iNum</m:mi>
+                                                <m:mi>iDen</m:mi>
+                                            </m:mfrac>
+                                        </m:mtd>
+                                    </m:mtr>
+                                </m:mtable>
+                                <m:annotation encoding="SnuggleTeX"
+                                    >\begin{eqnarray*}\frac{\qv{iA}}{\qv{iB}}\times\frac{\qv{iC}}{\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iA}\times\qv{iC}}{\qv{iB}\times\qv{iD}}
+                                    &amp;=&amp;\frac{\qv{iNum}\times\qv{iGCD}}{\qv{iDen}\times\qv{iGCD}}
+                                    &amp;=&amp;\frac{\qv{iNum}}{\qv{iDen}} \end{eqnarray*}</m:annotation>
+                            </m:semantics>
+                        </m:math>
+                    </div>
+                </templateBlock>
+                <p>So the expected answers are <printedVariable identifier="iNum"/> and <printedVariable identifier="iDen"/> <templateInline templateIdentifier="tSol" identifier="SolDen1i" showHide="show"><span> since the fraction simplifies to the integer value <printedVariable identifier="iNum"/></span></templateInline>.</p>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock9" identifier="HINT" outcomeIdentifier="FEEDBACK"
+                showHide="show">
+                <div>
+                    <p>To multiply fractions, just multiply the numerators and denominators.</p>
+                </div>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock10" identifier="SEEN-SOLUTION"
+                outcomeIdentifier="FEEDBACK" showHide="show">
+                <p> Since you have viewed the solution, your score for this question will be 0. </p>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock11" identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK"
+                showHide="show">
+                <p> Since you have viewed the hint, your score for this question will be halved.
+                </p>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock12" identifier="askhint" outcomeIdentifier="ASKHINT"
+                showHide="show">
+                <p>
+                    <endAttemptInteraction id="endAttemptInteraction1"
+                        responseIdentifier="HINTREQUEST" title="Show Hint"/>
+                </p>
+            </feedbackBlock>
+            <feedbackBlock id="feedbackBlock13" identifier="asksolution"
+                outcomeIdentifier="ASKSOLUTION" showHide="show">
+                <p>
+                    <endAttemptInteraction id="endAttemptInteraction2"
+                        responseIdentifier="SOLREQUEST" title="Show Solution"/>
+                </p>
+            </feedbackBlock>
+        </div>
+    </itemBody>
+    <responseProcessing>
+        <setOutcomeValue identifier="FEEDBACK">
+            <multiple>
+                <variable identifier="EMPTY"/>
+            </multiple>
+        </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <variable identifier="HINTREQUEST"/>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <baseValue baseType="identifier">HINT</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="seenHint">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <variable identifier="SOLREQUEST"/>
+                <responseCondition>
+                    <responseIf>
+                        <equal toleranceMode="exact">
+                            <variable identifier="iGCD"/>
+                            <baseValue baseType="integer">1</baseValue>
+                        </equal>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <baseValue baseType="identifier">SOLUTION</baseValue>
+                                <baseValue baseType="identifier">Sol1</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElse>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <baseValue baseType="identifier">SOLUTION</baseValue>
+                                <baseValue baseType="identifier">Sol2</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                    </responseElse>
+                </responseCondition>
+                <setOutcomeValue identifier="seenSolution">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">completed</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <responseCondition>
+                    <responseIf>
+                        <and>
+                            <isNull>
+                                <variable identifier="RESPONSEN"/>
+                            </isNull>
+                            <isNull>
+                                <variable identifier="RESPONSED"/>
+                            </isNull>
+                        </and>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0.0</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElseIf>
+                        <or>
+                            <isNull>
+                                <variable identifier="RESPONSEN"/>
+                            </isNull>
+                            <isNull>
+                                <variable identifier="RESPONSED"/>
+                            </isNull>
+                        </or>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0.0</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <baseValue baseType="identifier">noDen</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                    <responseElse>
+                        <setOutcomeValue identifier="okNum">
+                            <equal toleranceMode="exact">
+                                <variable identifier="RESPONSEN"/>
+                                <variable identifier="iNum"/>
+                            </equal>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="okDen">
+                            <equal toleranceMode="exact">
+                                <variable identifier="RESPONSED"/>
+                                <variable identifier="iDen"/>
+                            </equal>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="nsNum">
+                            <equal toleranceMode="exact">
+                                <variable identifier="RESPONSEN"/>
+                                <variable identifier="iNum1"/>
+                            </equal>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="nsDen">
+                            <equal toleranceMode="exact">
+                                <variable identifier="RESPONSED"/>
+                                <variable identifier="iDen1"/>
+                            </equal>
+                        </setOutcomeValue>
+                        <responseCondition>
+                            <responseIf>
+                                <and>
+                                    <variable identifier="okNum"/>
+                                    <variable identifier="okDen"/>
+                                </and>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">CORRECT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">0.0</baseValue>
+                                </setOutcomeValue>
+                            </responseIf>
+                            <responseElseIf>
+                                <and>
+                                    <variable identifier="nsNum"/>
+                                    <variable identifier="nsDen"/>
+                                </and>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">NOTSIMP</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1.0</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <variable identifier="okNum"/>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">CORRECTnum</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1.0</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <variable identifier="nsDen"/>
+                                        <setOutcomeValue identifier="FEEDBACK">
+                                            <multiple>
+                                                <variable identifier="FEEDBACK"/>
+                                                <baseValue baseType="identifier">NOTSIMPden</baseValue>
+                                            </multiple>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <variable identifier="okNum"/>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">CORRECTden</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1.0</baseValue>
+                                </setOutcomeValue>
+                                <responseCondition>
+                                    <responseIf>
+                                        <variable identifier="nsNum"/>
+                                        <setOutcomeValue identifier="FEEDBACK">
+                                            <multiple>
+                                                <variable identifier="FEEDBACK"/>
+                                                <baseValue baseType="identifier">NOTSIMPnum</baseValue>
+                                            </multiple>
+                                        </setOutcomeValue>
+                                    </responseIf>
+                                </responseCondition>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">INCORRECT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">0.0</baseValue>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                    </responseElse>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                        <variable identifier="seenSolution"/>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <variable identifier="FEEDBACK"/>
+                                <baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0.0</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElseIf>
+                        <variable identifier="seenHint"/>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <variable identifier="FEEDBACK"/>
+                                <baseValue baseType="identifier">SEEN-HINT</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="SCORE">
+                            <divide>
+                                <variable identifier="SCORE"/>
+                                <baseValue baseType="float">2.0</baseValue>
+                            </divide>
+                        </setOutcomeValue>
+                    </responseElseIf>
+                </responseCondition>
+                <responseCondition>
+                    <responseIf>
+                        <gt>
+                            <variable identifier="numAttempts"/>
+                            <baseValue baseType="integer">3</baseValue>
+                        </gt>
+                        <setOutcomeValue identifier="FEEDBACK">
+                            <multiple>
+                                <baseValue baseType="identifier">THREETRIES</baseValue>
+                                <baseValue baseType="identifier">SOLUTION</baseValue>
+                            </multiple>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="completionStatus">
+                            <baseValue baseType="identifier">completed</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="ASKHINT">
+                            <baseValue baseType="identifier">null</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="ASKSOLUTION">
+                            <baseValue baseType="identifier">null</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                </responseCondition>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>
