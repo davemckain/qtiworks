@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -48,10 +47,10 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 public abstract class AssessmentObjectValidationResult<E extends AssessmentObject> extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
-    
+
     private final ResolvedAssessmentObject<E> resolvedAssessmentObject;
-    
-    public AssessmentObjectValidationResult(ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+
+    public AssessmentObjectValidationResult(final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
         this.resolvedAssessmentObject = resolvedAssessmentObject;
     }
 
@@ -59,7 +58,7 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
     public ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
         return resolvedAssessmentObject;
     }
-    
+
     public boolean isValid() {
         return resolvedAssessmentObject.getRootObjectLookup().getRootObjectHolder()!=null
                 && getErrors().isEmpty()

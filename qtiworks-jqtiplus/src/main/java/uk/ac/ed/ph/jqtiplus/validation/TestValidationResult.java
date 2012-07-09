@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -50,11 +49,11 @@ import java.util.List;
 public final class TestValidationResult extends AssessmentObjectValidationResult<AssessmentTest> {
 
     private static final long serialVersionUID = -6570165277334622467L;
-    
+
     /** Results of validating each item */
     private final List<ItemValidationResult> itemValidationResults;
-    
-    public TestValidationResult(ResolvedAssessmentTest resolvedAssessmentTest) {
+
+    public TestValidationResult(final ResolvedAssessmentTest resolvedAssessmentTest) {
         super(resolvedAssessmentTest);
         this.itemValidationResults = new ArrayList<ItemValidationResult>();
     }
@@ -63,16 +62,16 @@ public final class TestValidationResult extends AssessmentObjectValidationResult
     public ResolvedAssessmentTest getResolvedAssessmentTest() {
         return (ResolvedAssessmentTest) getResolvedAssessmentObject();
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
     public List<ItemValidationResult> getItemValidationResults() {
         return itemValidationResults;
     }
 
-    public void addItemValidationResult(ItemValidationResult result) {
+    public void addItemValidationResult(final ItemValidationResult result) {
         itemValidationResults.add(result);
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
