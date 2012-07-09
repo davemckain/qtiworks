@@ -36,10 +36,6 @@ All Rights Reserved
           <b><c:out value="${utils:extractContentPackagePath(rootObjectLookup.systemId)}"/></b>
           within your submitted content package.
         </p>
-        <p>
-          <strong>Note:</strong> We don't currently support the legacy QTI 2.0 responce processing
-          templates.
-        </p>
       </div>
     </div>
   </c:otherwise>
