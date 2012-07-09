@@ -12,6 +12,16 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>1.0-DEV11 (09/07/2012)</h3>
+
+  <p>
+    This snapshot fixes a number of minor bugs found after the release of 1.0-DEV10, including
+    a couple of regressions in the display of validation results. The item rendering now handles
+    overridden correct response values correctly, and the "show solution" button is only shown if
+    there is something to show, which should cut down the number of delivery settings that people
+    need to manage.
+  </p>
+
   <h3>1.0-DEV10 (07/07/2012)</h3>
 
   <p>
