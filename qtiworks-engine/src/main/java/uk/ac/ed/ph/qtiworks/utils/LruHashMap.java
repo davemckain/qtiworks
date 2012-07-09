@@ -77,7 +77,7 @@ public class LruHashMap<K,V> extends LinkedHashMap<K,V> {
     protected final boolean removeEldestEntry(final Entry<K,V> eldest) {
         final boolean shouldRemove = (maxSize > 0 && size() > maxSize);
         if (shouldRemove) {
-            logger.info("Removing eldest entry " + eldest.getKey());
+            logger.debug("Removing eldest entry " + eldest.getKey());
             purgeCount++;
         }
         return shouldRemove;
