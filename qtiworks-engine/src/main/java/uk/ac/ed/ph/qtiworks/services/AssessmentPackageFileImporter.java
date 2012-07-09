@@ -80,10 +80,21 @@ public class AssessmentPackageFileImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageFileImporter.class);
 
-    public static final String QTI_CONTENT_TYPE = "application/xml";
-    public static final String FALLBACK_MIME_TYPE = "application/octet-stream";
+    /** File name that will be used when uploading standalone XML */
+    private static final String STANDALONE_XML_IMPORT_FILE_NAME = "qti.xml";
 
-    public static final String SINGLE_FILE_NAME = "qti.xml";
+    /** Allowed MIME types for ZIP files */
+    private static String[] ZIP_MIME_TYPES = new String[] {
+            "application/zip",
+            "application/x-zip",
+            "application/x-zip-compressed",
+            "application/x-compress",
+            "application/x-compressed",
+            "multipart/x-zip"
+    };
+    static {
+        Arrays.sort(ZIP_MIME_TYPES);
+    }
 
     /**
      * Imports the assessment data from the given {@link InputStream} into the given
@@ -104,7 +115,7 @@ public class AssessmentPackageFileImporter {
         Assert.ensureNotNull(inputStream, "inputStream");
         Assert.ensureNotNull(contentType, "contentType");
         AssessmentPackage result = null;
-        if ("application/zip".equals(contentType)) {
+        if (Arrays.binarySearch(ZIP_MIME_TYPES, contentType) >= 0) {
             logger.debug("Import is ZIP. Attempting to unpack into {}", importSandboxDirectory);
             result = unpackZipFile(importSandboxDirectory, inputStream);
         }
@@ -113,7 +124,7 @@ public class AssessmentPackageFileImporter {
             result = importXml(importSandboxDirectory, inputStream);
         }
         else {
-            logger.debug("Don't know how to handle MIME type {}", contentType);
+            logger.warn("User uploaded content with unsupported MIME type {}", contentType);
             throw new AssessmentPackageFileImportException(new EnumerableClientFailure<APFIFailureReason>(APFIFailureReason.NOT_XML_OR_ZIP));
         }
         logger.debug("Successfully imported files for new {}", result);
@@ -122,7 +133,7 @@ public class AssessmentPackageFileImporter {
 
     private AssessmentPackage importXml(final File importSandboxDirectory, final InputStream inputStream) {
         /* Save XML */
-        final File resultFile = new File(importSandboxDirectory, SINGLE_FILE_NAME);
+        final File resultFile = new File(importSandboxDirectory, STANDALONE_XML_IMPORT_FILE_NAME);
         try {
             IoUtilities.transfer(inputStream, new FileOutputStream(resultFile), false, true);
         }
@@ -134,9 +145,9 @@ public class AssessmentPackageFileImporter {
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
         assessmentPackage.setAssessmentType(AssessmentObjectType.ASSESSMENT_ITEM);
         assessmentPackage.setImportType(AssessmentPackageImportType.STANDALONE_ITEM_XML);
-        assessmentPackage.setAssessmentHref(SINGLE_FILE_NAME);
+        assessmentPackage.setAssessmentHref(STANDALONE_XML_IMPORT_FILE_NAME);
         assessmentPackage.setSandboxPath(importSandboxDirectory.getAbsolutePath());
-        assessmentPackage.setQtiFileHrefs(new HashSet<String>(Arrays.asList(SINGLE_FILE_NAME)));
+        assessmentPackage.setQtiFileHrefs(new HashSet<String>(Arrays.asList(STANDALONE_XML_IMPORT_FILE_NAME)));
         return assessmentPackage;
     }
 
