@@ -61,7 +61,7 @@ public final class IntegerAttribute extends SingleAttribute<Integer> {
 
     /**
      * Wrapper on {@link #getComputedValue()} that ensures that the result is non-null,
-     * returning a raw boolean
+     * returning a primitive int.
      */
     public int getComputedNonNullValue() {
         final Integer computed = super.getComputedValue();
