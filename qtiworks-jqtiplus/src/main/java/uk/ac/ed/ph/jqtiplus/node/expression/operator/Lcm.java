@@ -95,10 +95,8 @@ public final class Lcm extends AbstractFunctionalExpression {
         return new IntegerValue(runningLcm.intValue());
     }
 
-    /* (This is not the cleverest algorithm) */
     private static BigInteger lcm(final BigInteger a, final BigInteger b) {
         final BigInteger gcd = a.gcd(b);
-        final BigInteger product = a.multiply(b);
-        return product.abs().divide(gcd);
+        return a.multiply(b.divide(gcd));
     }
 }
