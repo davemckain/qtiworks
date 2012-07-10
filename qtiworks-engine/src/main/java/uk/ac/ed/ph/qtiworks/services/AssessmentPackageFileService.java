@@ -290,9 +290,8 @@ public class AssessmentPackageFileService {
             fileInputStream = new FileInputStream(file);
             outputStreamer.stream(contentType, contentLength, assessmentPackage.getCreationTime(), fileInputStream);
         }
-        catch (final IOException e) {
+        finally {
             IOUtils.closeQuietly(fileInputStream);
-            throw e;
         }
     }
 
