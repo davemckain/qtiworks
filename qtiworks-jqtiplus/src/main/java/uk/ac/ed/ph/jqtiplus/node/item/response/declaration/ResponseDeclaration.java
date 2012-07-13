@@ -40,13 +40,12 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 /**
  * Response variables are declared by response declarations and bound to interactions in the itemBody.
- * 
+ *
  * @author Jonathon Hare
  */
 public class ResponseDeclaration extends VariableDeclaration {
@@ -56,7 +55,7 @@ public class ResponseDeclaration extends VariableDeclaration {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseDeclaration";
 
-    public ResponseDeclaration(AssessmentItem parent) {
+    public ResponseDeclaration(final AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new CorrectResponseGroup(this));
@@ -71,7 +70,7 @@ public class ResponseDeclaration extends VariableDeclaration {
 
     /**
      * Gets correctResponse child.
-     * 
+     *
      * @return correctResponse child
      * @see #setCorrectResponse
      */
@@ -81,17 +80,17 @@ public class ResponseDeclaration extends VariableDeclaration {
 
     /**
      * Sets new correctResponse child.
-     * 
+     *
      * @param correctResponse new correctResponse child
      * @see #getCorrectResponse
      */
-    public void setCorrectResponse(CorrectResponse correctResponse) {
+    public void setCorrectResponse(final CorrectResponse correctResponse) {
         getNodeGroups().getCorrectResponseGroup().setCorrectResponse(correctResponse);
     }
 
     /**
      * Gets mapping child.
-     * 
+     *
      * @return mapping child
      * @see #setMapping
      */
@@ -101,17 +100,17 @@ public class ResponseDeclaration extends VariableDeclaration {
 
     /**
      * Sets new mapping child.
-     * 
+     *
      * @param mapping new mapping child
      * @see #getMapping
      */
-    public void setMapping(Mapping mapping) {
+    public void setMapping(final Mapping mapping) {
         getNodeGroups().getMappingGroup().setMapping(mapping);
     }
 
     /**
      * Gets areaMapping child.
-     * 
+     *
      * @return areaMapping child
      * @see #setAreaMapping
      */
@@ -121,24 +120,20 @@ public class ResponseDeclaration extends VariableDeclaration {
 
     /**
      * Sets new areaMapping child.
-     * 
+     *
      * @param areaMapping new areaMapping child
      * @see #getAreaMapping
      */
-    public void setAreaMapping(AreaMapping areaMapping) {
+    public void setAreaMapping(final AreaMapping areaMapping) {
         getNodeGroups().getAreaMappingGroup().setAreaMapping(areaMapping);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getAreaMapping() != null && getBaseType() != null && !getBaseType().isPoint()) {
             context.add(new ValidationError(this, "Base type must be point when using areaMapping."));
         }
-    }
-
-    public Boolean isCorrectResponse(ItemSessionController itemController) {
-        return itemController.isCorrectResponse(this);
     }
 }

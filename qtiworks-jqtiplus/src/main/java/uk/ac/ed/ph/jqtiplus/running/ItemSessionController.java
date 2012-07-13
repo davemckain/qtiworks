@@ -556,6 +556,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     /**
+     * FIXME: Returning Boolean is dodgy. Fix this API!
+     *
      * Returns true if this declarations value matches its correctValue.
      * Returns null if there is no correct value
      * NOTE: This only tests for "the" "correct" response, not "a" correct response.
@@ -693,7 +695,7 @@ public final class ItemSessionController implements ItemProcessingContext {
             }
         }
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
+            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
                 return Boolean.FALSE;
             }
         }
@@ -711,7 +713,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public int countCorrect() {
         int count = 0;
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
+            if (Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
                 count++;
             }
         }
@@ -739,7 +741,7 @@ public final class ItemSessionController implements ItemProcessingContext {
             }
         }
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
+            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
                 return Boolean.TRUE;
             }
         }
@@ -757,7 +759,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public int countIncorrect() {
         int count = 0;
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(responseDeclaration.isCorrectResponse(this))) {
+            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
                 count++;
             }
         }
