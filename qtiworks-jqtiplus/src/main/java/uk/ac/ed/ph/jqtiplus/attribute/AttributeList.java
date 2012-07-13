@@ -81,7 +81,7 @@ import org.w3c.dom.Node;
 
 /**
  * Container for all attributes of one node.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class AttributeList implements Validatable, Iterable<Attribute<?>> {
@@ -96,10 +96,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     /**
      * Constructs container.
-     * 
+     *
      * @param owner parent of constructed container
      */
-    public AttributeList(XmlNode owner) {
+    public AttributeList(final XmlNode owner) {
         Assert.ensureNotNull(owner);
         this.owner = owner;
         this.attributes = new ArrayList<Attribute<?>>();
@@ -107,7 +107,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     /**
      * Gets owner of this container.
-     * 
+     *
      * @return parent of this container
      */
     public XmlNode getOwner() {
@@ -116,7 +116,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     /**
      * Gets number of attributes in this container.
-     * 
+     *
      * @return number of attributes in this container
      */
     public int size() {
@@ -126,16 +126,15 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     /**
      * Adds given attribute into this container.
      * Checks duplicities in attribute's names.
-     * 
+     *
      * @param attribute given attribute
      * @throws QtiAttributeException if container already contains attribute
      *             with same name
      */
-    public void add(Attribute<?> attribute) {
+    public void add(final Attribute<?> attribute) {
         for (final Attribute<?> child : attributes) {
             if (child.getLocalName().equals(attribute.getLocalName())) {
-                final QtiAttributeException ex = new QtiAttributeException("Duplicate attribute name: " + attribute.computeXPath());
-                throw ex;
+                throw new QtiAttributeException("Duplicate attribute name: " + attribute.computeXPath());
             }
         }
 
@@ -144,10 +143,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     /**
      * Removes given attribute from this container.
-     * 
+     *
      * @param attribute given attribute
      */
-    public void remove(Attribute<?> attribute) {
+    public void remove(final Attribute<?> attribute) {
         for (final Attribute<?> child : attributes) {
             if (child.getLocalName().equals(attribute.getLocalName())) {
                 attributes.remove(child);
@@ -159,13 +158,13 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     /**
      * Adds given attribute into this container at given position.
      * Checks duplicities in attribute's names.
-     * 
+     *
      * @param index position
      * @param attribute attribute
      * @throws QtiAttributeException if container already contains attribute
      *             with same name
      */
-    public void add(int index, Attribute<?> attribute) throws QtiAttributeException {
+    public void add(final int index, final Attribute<?> attribute) {
         attributes.add(index, attribute);
     }
 
@@ -173,10 +172,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      * Loads attribute's values from given source node.
      * If there is a foreign attribute, it creates new optional
      * ForeignAttribute with its foreign property set.
-     * 
+     *
      * @param element source node
      */
-    public void load(Element element, LoadingContext context) {
+    public void load(final Element element, final LoadingContext context) {
         /* First clear existing attributes */
         for (int i = 0; i < attributes.size(); i++) {
             final Attribute<?> attribute = attributes.get(i);
@@ -192,13 +191,13 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
         /* Set set values from element */
         for (int i = 0; i < element.getAttributes().getLength(); i++) {
-            Node attributeNode = element.getAttributes().item(i);
-            String localName = attributeNode.getLocalName();
+            final Node attributeNode = element.getAttributes().item(i);
+            final String localName = attributeNode.getLocalName();
             String namespaceUri = attributeNode.getNamespaceURI();
             if (namespaceUri==null) {
                 namespaceUri = "";
             }
-            
+
             if (XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(namespaceUri)) {
                 /* (xsi attributes get ignored in our model) */
             }
@@ -225,57 +224,56 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     /**
      * Returns true if this container contains specified attribute; false
      * otherwise.
-     * 
+     *
      * @param name attribute's name
      * @return true if this container contains specified attribute; false
      *         otherwise
      */
-    public boolean contains(String name) {
+    public boolean contains(final String name) {
         for (final Attribute<?> attribute : attributes) {
             if (attribute.getLocalName().equals(name)) {
                 return true;
             }
         }
-
         return false;
     }
 
     /**
      * Gets attribute at given index.
-     * 
+     *
      * @param index index of requested attribute
      * @return attribute at given index
      */
-    public Attribute<?> get(int index) {
+    public Attribute<?> get(final int index) {
         return attributes.get(index);
     }
 
     /**
      * Gets attribute with given local name in no namespace.
-     * 
+     *
      * @param localName name of requested attributes
-     * @return requested attribute 
+     * @return requested attribute
      * @throws QtiAttributeException if attribute is not found
      */
-    public Attribute<?> get(String localName) {
+    public Attribute<?> get(final String localName) {
         return get(localName, "", false);
     }
-    
+
     /**
      * Gets attribute with given local name and namespace URI
-     * 
+     *
      * @param localName name of requested attribute
      * @return requested attribute
      * @throws QtiAttributeException if attribute is not found
      */
-    public Attribute<?> get(String localName, String namespaceUri) {
+    public Attribute<?> get(final String localName, final String namespaceUri) {
         return get(localName, namespaceUri, false);
     }
 
     /**
      * Gets attribute with given local name and namespace URI or null (if attribute is not found).
      * Silent parameter is useful for support of unknown attributes.
-     * 
+     *
      * @param localName name of requested attribute
      * @param silent if exception should be thrown in case attribute is not
      *            found
@@ -283,7 +281,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      * @throws QtiAttributeException if silent is false and if attribute is not
      *             found
      */
-    private Attribute<?> get(String localName, String namespaceUri, boolean silent) {
+    private Attribute<?> get(final String localName, final String namespaceUri, final boolean silent) {
         Assert.ensureNotNull(localName, "localName");
         Assert.ensureNotNull(namespaceUri, "namespaceUri");
         for (final Attribute<?> attribute : attributes) {
@@ -305,7 +303,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         for (final Attribute<?> attribute : attributes) {
             attribute.validate(context);
         }
@@ -313,331 +311,331 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public BaseTypeAttribute getBaseTypeAttribute(String name) throws QtiAttributeException {
+    public BaseTypeAttribute getBaseTypeAttribute(final String name) {
         return (BaseTypeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public BooleanAttribute getBooleanAttribute(String name) throws QtiAttributeException {
+    public BooleanAttribute getBooleanAttribute(final String name) {
         return (BooleanAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public CardinalityAttribute getCardinalityAttribute(String name) throws QtiAttributeException {
+    public CardinalityAttribute getCardinalityAttribute(final String name) {
         return (CardinalityAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public DateAttribute getDateAttribute(String name) throws QtiAttributeException {
+    public DateAttribute getDateAttribute(final String name) {
         return (DateAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public DurationAttribute getDurationAttribute(String name) throws QtiAttributeException {
+    public DurationAttribute getDurationAttribute(final String name) {
         return (DurationAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public FloatAttribute getFloatAttribute(String name) throws QtiAttributeException {
+    public FloatAttribute getFloatAttribute(final String name) {
         return (FloatAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public FloatMultipleAttribute getFloatMultipleAttribute(String name) throws QtiAttributeException {
+    public FloatMultipleAttribute getFloatMultipleAttribute(final String name) {
         return (FloatMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public IdentifierAttribute getIdentifierAttribute(String name) throws QtiAttributeException {
+    public IdentifierAttribute getIdentifierAttribute(final String name) {
         return (IdentifierAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public IdentifierMultipleAttribute getIdentifierMultipleAttribute(String name) throws QtiAttributeException {
+    public IdentifierMultipleAttribute getIdentifierMultipleAttribute(final String name) {
         return (IdentifierMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public IntegerAttribute getIntegerAttribute(String name) throws QtiAttributeException {
+    public IntegerAttribute getIntegerAttribute(final String name) {
         return (IntegerAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public CoordsAttribute getCoordsAttribute(String name) throws QtiAttributeException {
+    public CoordsAttribute getCoordsAttribute(final String name) {
         return (CoordsAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public LongAttribute getLongAttribute(String name) throws QtiAttributeException {
+    public LongAttribute getLongAttribute(final String name) {
         return (LongAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public NavigationModeAttribute getNavigationModeAttribute(String name) throws QtiAttributeException {
+    public NavigationModeAttribute getNavigationModeAttribute(final String name) {
         return (NavigationModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public RoundingModeAttribute getRoundingModeAttribute(String name) throws QtiAttributeException {
+    public RoundingModeAttribute getRoundingModeAttribute(final String name) {
         return (RoundingModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public SessionStatusAttribute getSessionStatusAttribute(String name) throws QtiAttributeException {
+    public SessionStatusAttribute getSessionStatusAttribute(final String name) {
         return (SessionStatusAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public ShapeAttribute getShapeAttribute(String name) throws QtiAttributeException {
+    public ShapeAttribute getShapeAttribute(final String name) {
         return (ShapeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public SingleValueAttribute getSingleValueAttribute(String name) throws QtiAttributeException {
+    public SingleValueAttribute getSingleValueAttribute(final String name) {
         return (SingleValueAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public StringAttribute getStringAttribute(String name) throws QtiAttributeException {
+    public StringAttribute getStringAttribute(final String name) {
         return (StringAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public StringMultipleAttribute getStringMultipleAttribute(String name) throws QtiAttributeException {
+    public StringMultipleAttribute getStringMultipleAttribute(final String name) {
         return (StringMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public SubmissionModeAttribute getSubmissionModeAttribuye(String name) throws QtiAttributeException {
+    public SubmissionModeAttribute getSubmissionModeAttribuye(final String name) {
         return (SubmissionModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public TestFeedbackAccessAttribute getTestFeedbackAttribute(String name) throws QtiAttributeException {
+    public TestFeedbackAccessAttribute getTestFeedbackAttribute(final String name) {
         return (TestFeedbackAccessAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public ToleranceModeAttribute getToleranceModeAttribute(String name) throws QtiAttributeException {
+    public ToleranceModeAttribute getToleranceModeAttribute(final String name) {
         return (ToleranceModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public UriAttribute getUriAttribute(String name) throws QtiAttributeException {
+    public UriAttribute getUriAttribute(final String name) {
         return (UriAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public ViewMultipleAttribute getViewMultipleAttribute(String name) throws QtiAttributeException {
+    public ViewMultipleAttribute getViewMultipleAttribute(final String name) {
         return (ViewMultipleAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public VisibilityModeAttribute getVisibilityModeAttribute(String name) throws QtiAttributeException {
+    public VisibilityModeAttribute getVisibilityModeAttribute(final String name) {
         return (VisibilityModeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public OrientationAttribute getOrientationAttribute(String name) throws QtiAttributeException {
+    public OrientationAttribute getOrientationAttribute(final String name) {
         return (OrientationAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public ParamTypeAttribute getParamTypeAttribute(String name) throws QtiAttributeException {
+    public ParamTypeAttribute getParamTypeAttribute(final String name) {
         return (ParamTypeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public TableCellScopeAttribute getTableCellScopeAttribute(String name) throws QtiAttributeException {
+    public TableCellScopeAttribute getTableCellScopeAttribute(final String name) {
         return (TableCellScopeAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public TextFormatAttribute getTextFormatAttribute(String name) throws QtiAttributeException {
+    public TextFormatAttribute getTextFormatAttribute(final String name) {
         return (TextFormatAttribute) get(name);
     }
 
     /**
      * Gets attribute with given name.
-     * 
+     *
      * @param name name of requested attribute
      * @return attribute with given name
      * @throws QtiAttributeException if attribute is not found
      */
-    public VariableReferenceIdentifierAttribute getVariableReferenceIdentifierAttribute(String name) throws QtiAttributeException {
+    public VariableReferenceIdentifierAttribute getVariableReferenceIdentifierAttribute(final String name) {
         return (VariableReferenceIdentifierAttribute) get(name);
     }
 }

@@ -53,9 +53,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 /**
- * Parent of all groups.
+ * Partial implementation of {@link NodeGroup}
  *
- * @author Jiri Kajaba
+ * @param <P> type of parent {@link XmlNode}
+ * @param <C> type of child {@link XmlNode}
+ *
+ * @author Jiri Kajaba (original)
+ * @author David McKain (refactored)
  */
 public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> implements NodeGroup<P,C> {
 
