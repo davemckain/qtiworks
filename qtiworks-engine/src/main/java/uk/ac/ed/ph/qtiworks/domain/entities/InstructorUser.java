@@ -74,6 +74,10 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     private String emailAddress;
 
     @Basic(optional=false)
+    @Column(name="password_salt", length=DomainConstants.USER_PASSWORD_SALT_LENGTH)
+    private String passwordSalt;
+
+    @Basic(optional=false)
     @Column(name="password_digest", length=DomainConstants.SHA1_DIGEST_LENGTH)
     private String passwordDigest;
 
@@ -116,6 +120,15 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     public void setEmailAddress(final String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(final String passwordSalt) {
+        this.passwordSalt = passwordSalt;
     }
 
 

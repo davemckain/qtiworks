@@ -161,7 +161,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
             return null;
         }
         /* Then check password */
-        final String passwordDigest = ServiceUtilities.computePasswordDigest(password);
+        final String passwordDigest = ServiceUtilities.computePasswordDigest(user.getPasswordSalt(), password);
         if (!passwordDigest.equals(user.getPasswordDigest())) {
             errors.add("Invalid Password");
             return null;

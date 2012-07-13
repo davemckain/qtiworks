@@ -34,12 +34,14 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,8 +95,8 @@ public final class ServiceUtilities {
     /**
      * Computes a hex-encoded SHA1 digest of the given password String
      */
-    public static String computePasswordDigest(final String password) {
-        return computeSha1Digest(password);
+    public static String computePasswordDigest(final String salt, final String password) {
+        return computeSha1Digest(salt + password);
     }
 
     /**
@@ -102,6 +104,15 @@ public final class ServiceUtilities {
      */
     public static String computeSha1Digest(final String string) {
         return Hashing.sha1().hashString(string, Charset.forName("UTF-8")).toString();
+    }
+
+    public static String createSalt() {
+        final char[] saltBuilder = new char[DomainConstants.USER_PASSWORD_SALT_LENGTH];
+        final Random random = new Random(System.currentTimeMillis());
+        for (int i=0; i<DomainConstants.USER_PASSWORD_SALT_LENGTH; i++) {
+            saltBuilder[i] = Character.valueOf((char) (0x20 + random.nextInt(0x5f)));
+        }
+        return new String(saltBuilder);
     }
 
     //-----------------------------------------------------

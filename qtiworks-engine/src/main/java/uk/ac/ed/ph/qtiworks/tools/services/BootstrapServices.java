@@ -90,12 +90,14 @@ public class BootstrapServices {
             final boolean sysAdmin, final boolean loginDisabled) {
         InstructorUser result = instructorUserDao.findByLoginName(loginName);
         if (result==null) {
+            final String passwordSalt = ServiceUtilities.createSalt();
             result = new InstructorUser();
             result.setLoginName(loginName);
             result.setFirstName(firstName);
             result.setLastName(lastName);
             result.setEmailAddress(emailAddress);
-            result.setPasswordDigest(ServiceUtilities.computePasswordDigest(password));
+            result.setPasswordSalt(passwordSalt);
+            result.setPasswordDigest(ServiceUtilities.computePasswordDigest(passwordSalt, password));
             result.setSysAdmin(sysAdmin);
             result.setLoginDisabled(loginDisabled);
             instructorUserDao.persist(result);
