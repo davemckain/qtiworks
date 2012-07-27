@@ -49,6 +49,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -56,6 +57,10 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
@@ -111,6 +116,10 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Enumerated(EnumType.STRING)
     private ItemDeliveryType itemDeliveryType;
 
+    @NotNull
+    @Size(min=1)
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
     @Column(name="title")
     private String title;
