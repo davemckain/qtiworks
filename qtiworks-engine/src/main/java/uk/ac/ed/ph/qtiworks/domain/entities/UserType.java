@@ -43,6 +43,7 @@ public enum UserType {
 
     INSTRUCTOR,
     ANONYMOUS,
+    LTI
     ;
 
 }

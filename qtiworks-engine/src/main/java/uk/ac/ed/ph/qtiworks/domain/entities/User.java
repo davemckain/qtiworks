@@ -155,6 +155,10 @@ public class User implements BaseEntity, TimestampedOnCreation {
         return userType==UserType.ANONYMOUS;
     }
 
+    public boolean isLti() {
+        return userType==UserType.LTI;
+    }
+
     public boolean isSysAdmin() {
         return userType==UserType.INSTRUCTOR && ((InstructorUser) this).isSysAdmin();
     }
