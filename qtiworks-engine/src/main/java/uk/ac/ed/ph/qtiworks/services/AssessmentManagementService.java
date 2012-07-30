@@ -54,7 +54,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -73,10 +72,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -117,6 +114,9 @@ public class AssessmentManagementService {
     private Validator jsr303Validator;
 
     @Resource
+    private EntityGraphService entityGraphService;
+
+    @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
@@ -143,11 +143,6 @@ public class AssessmentManagementService {
     /**
      * Looks up the {@link Assessment} having the given ID (aid) and checks that
      * the caller may access it.
-     *
-     * @param aid
-     * @return
-     * @throws DomainEntityNotFoundException
-     * @throws PrivilegeException
      */
     public Assessment lookupAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -167,27 +162,6 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-
-    public void streamPackageSource(final AssessmentPackage assessmentPackage, final OutputStreamer outputStreamer)
-            throws PrivilegeException, IOException {
-        Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
-        ensureCallerMayViewSource(assessmentPackage.getAssessment());
-        assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
-    }
-
-    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
-        Assert.ensureNotNull(assessment, "assessment");
-        final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
-        if (result==null) {
-            throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
-        }
-        return result;
-    }
-
-    public List<Assessment> getCallerAssessments() {
-        return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
-    }
 
     /**
      * Creates and persists a new {@link Assessment} and initial {@link AssessmentPackage}
@@ -362,7 +336,7 @@ public class AssessmentManagementService {
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = lookupAssessment(aid);
-        final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
+        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
         final AssessmentObjectValidationResult<?> validationResult = validateAssessment(currentAssessmentPackage);
@@ -377,11 +351,9 @@ public class AssessmentManagementService {
 
     /**
      * (This is not private as it is also called by the anonymous upload/validate action featured
-     * in the first iteration of QTI Works. TODO: Decide whether we'll keep this kind of
-     * functionality.)
+     * in the first iteration of QTI Works.
      *
-     * @param assessmentPackage
-     * @return
+     * TODO: Decide whether we'll keep this kind of functionality.)
      */
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
@@ -405,32 +377,7 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // System samples (this is probably the wrong place for this?)
-
-    public ItemDelivery lookupSystemSampleDelivery(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Assessment assessment = lookupAssessment(aid);
-        final AssessmentPackage assessmentPackage = getCurrentAssessmentPackage(assessment);
-        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
-        if (systemDemoDeliveries.size()!=1) {
-            logger.info("Assessment #{} did not yield exactly 1 ItemDelivery of type {}",
-                    Long.valueOf(aid), ItemDeliveryType.SYSTEM_DEMO);
-            final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-            throw new PrivilegeException(caller, assessment, Privilege.ACCESS_ASSESSMENT_SYSTEM_DEMO);
-        }
-        return systemDemoDeliveries.get(0);
-    }
-
-    //-------------------------------------------------
-    // CRUD for ItemDelviveryOptions
-
-    public long countCallerItemDeliverySettings() {
-        return itemDeliverySettingsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
-    }
-
-    public List<ItemDeliverySettings> getCallerItemDeliverySettings() {
-        return itemDeliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
-    }
+    // CRUD for ItemDeliveryOptions
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -518,7 +465,7 @@ public class AssessmentManagementService {
         final User caller = ensureCallerMayRun(assessment);
 
         /* Get most recent package */
-        final AssessmentPackage currentAssessmentPackage = getCurrentAssessmentPackage(assessment);
+        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Make sure package is valid */
         if (!currentAssessmentPackage.isValid()) {
@@ -659,15 +606,6 @@ public class AssessmentManagementService {
      * their own Assessments.
      */
     private User ensureCallerMayRun(final Assessment assessment)
-            throws PrivilegeException {
-        return ensureCallerMayAccess(assessment);
-    }
-
-    /**
-     * TODO: Currently allowing people to view the source of public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayViewSource(final Assessment assessment)
             throws PrivilegeException {
         return ensureCallerMayAccess(assessment);
     }

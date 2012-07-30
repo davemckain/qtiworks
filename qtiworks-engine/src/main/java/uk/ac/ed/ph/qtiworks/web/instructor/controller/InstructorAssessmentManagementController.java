@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -86,6 +87,9 @@ public final class InstructorAssessmentManagementController {
     private String contextPath;
 
     @Resource
+    private EntityGraphService entityGraphService;
+
+    @Resource
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
@@ -96,7 +100,7 @@ public final class InstructorAssessmentManagementController {
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listCallerAssessments(final Model model) {
-        final List<Assessment> assessments = assessmentManagementService.getCallerAssessments();
+        final List<Assessment> assessments = entityGraphService.getCallerAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", buildAssessmentListRouting(assessments));
         return "listAssessments";
@@ -199,8 +203,8 @@ public final class InstructorAssessmentManagementController {
     public String showAssessment(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final AssessmentPackage assessmentPackage = assessmentManagementService.getCurrentAssessmentPackage(assessment);
-        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+        final List<ItemDeliverySettings> itemDeliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
 
         model.addAttribute(assessment);
         model.addAttribute(assessmentPackage);
@@ -335,7 +339,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
     public String listItemDeliverySettings(final Model model) {
-        final List<ItemDeliverySettings> itemDeliverySettingsList = assessmentManagementService.getCallerItemDeliverySettings();
+        final List<ItemDeliverySettings> itemDeliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
         model.addAttribute(itemDeliverySettingsList);
         model.addAttribute("itemDeliverySettingsRouting", buildDeliverySettingsListRouting(itemDeliverySettingsList));
         return "listDeliverySettings";
@@ -343,7 +347,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
-        final long existingOptionCount = assessmentManagementService.countCallerItemDeliverySettings();
+        final long existingOptionCount = entityGraphService.countCallerItemDeliverySettings();
         final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingOptionCount+1));
 

@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
@@ -57,6 +58,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -140,6 +142,9 @@ public class AssessmentCandidateService {
     private QtiSerializer qtiSerializer;
 
     @Resource
+    private EntityGraphService entityGraphService;
+
+    @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
@@ -158,6 +163,9 @@ public class AssessmentCandidateService {
     private JqtiExtensionManager jqtiExtensionManager;
 
     @Resource
+    private AssessmentDao assessmentDao;
+
+    @Resource
     private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
@@ -168,6 +176,31 @@ public class AssessmentCandidateService {
 
     @Resource
     private CandidateItemAttemptDao candidateItemAttemptDao;
+
+    //-------------------------------------------------
+    // System samples
+
+    public ItemDelivery lookupSystemSampleDelivery(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final Assessment assessment = lookupSampleAssessment(aid);
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
+        if (systemDemoDeliveries.size()!=1) {
+            throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
+                    + " to have exactly 1 system demo deliverable associated with it");
+        }
+        return systemDemoDeliveries.get(0);
+    }
+
+    private Assessment lookupSampleAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_SAMPLE_ASSESSMENT, assessment);
+        }
+        return assessment;
+    }
 
     //----------------------------------------------------
     // Candidate delivery access

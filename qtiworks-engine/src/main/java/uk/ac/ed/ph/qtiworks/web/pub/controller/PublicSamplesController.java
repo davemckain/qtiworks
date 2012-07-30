@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 
@@ -72,7 +72,7 @@ public class PublicSamplesController {
     private AssessmentDao assessmentDao;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentCandidateService assessmentCandidateService;
 
     @Resource
     private PublicCandidateItemController publicCandidateItemController;
@@ -99,7 +99,7 @@ public class PublicSamplesController {
     @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final ItemDelivery sampleItemDelivery = assessmentManagementService.lookupSystemSampleDelivery(aid);
+        final ItemDelivery sampleItemDelivery = assessmentCandidateService.lookupSystemSampleDelivery(aid);
         return publicCandidateItemController.startCandidateItemSession(sampleItemDelivery.getId().longValue());
     }
 }
