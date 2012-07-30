@@ -129,6 +129,25 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="open")
     private boolean open;
 
+    /** LTI enabled? */
+    @Basic(optional=false)
+    @Column(name="lti_enabled")
+    private boolean ltiEnabled;
+
+    /** LTI consumer key (if used) */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="lti_consumer_key", updatable=false, unique=false)
+    private String ltiConsumerKey;
+
+    /** LTI consumer secret (if used) */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="lti_consumer_secret", updatable=false, unique=false)
+    private String ltiConsumerSecret;
+
     //------------------------------------------------------------
 
     @Override
@@ -198,6 +217,34 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     public void setOpen(final boolean open) {
         this.open = open;
     }
+
+
+    public boolean isLtiEnabled() {
+        return ltiEnabled;
+    }
+
+    public void setLtiEnabled(final boolean ltiEnabled) {
+        this.ltiEnabled = ltiEnabled;
+    }
+
+
+    public String getLtiConsumerKey() {
+        return ltiConsumerKey;
+    }
+
+    public void setLtiConsumerKey(final String ltiConsumerKey) {
+        this.ltiConsumerKey = ltiConsumerKey;
+    }
+
+
+    public String getLtiConsumerSecret() {
+        return ltiConsumerSecret;
+    }
+
+    public void setLtiConsumerSecret(final String ltiConsumerSecret) {
+        this.ltiConsumerSecret = ltiConsumerSecret;
+    }
+
 
     //------------------------------------------------------------
 
