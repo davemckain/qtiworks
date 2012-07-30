@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -491,6 +492,84 @@ public class AssessmentManagementService {
             throw new PrivilegeException(caller, Privilege.CREATE_ITEM_DELIVERY_OPTIONS);
         }
         return caller;
+    }
+
+    //-------------------------------------------------
+    // CRUD for ItemDelivery
+    // (access controls are governed by owning Assessment)
+
+    public ItemDelivery lookupItemDelivery(final long did)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
+        ensureCallerMayAccess(itemDelivery.getAssessmentPackage().getAssessment());
+        return itemDelivery;
+    }
+
+    public ItemDelivery createItemDelivery(final long apid, final long dsid, final ItemDeliveryTemplate template)
+            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+        /* Validate template */
+        validateItemDeliveryTemplate(template);
+
+        /* Look up AssessmentPackage and check caller and change owning Assessment */
+        final AssessmentPackage assessmentPackage = lookupAssessmentPackage(apid);
+        ensureCallerMayChange(assessmentPackage.getAssessment());
+
+        /* Look up settings and check privileges */
+        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
+
+        /* Create and persist entity */
+        final ItemDelivery delivery = new ItemDelivery();
+        delivery.setAssessmentPackage(assessmentPackage);
+        delivery.setItemDeliverySettings(itemDeliverySettings);
+        delivery.setItemDeliveryType(ItemDeliveryType.USER_CREATED);
+        delivery.setOpen(template.isOpen());
+        delivery.setTitle(template.getTitle());
+        itemDeliveryDao.persist(delivery);
+        return delivery;
+    }
+
+    public ItemDelivery updateItemDelivery(final long did, final ItemDeliveryTemplate template)
+            throws BindException, PrivilegeException, DomainEntityNotFoundException {
+        /* Validate template */
+        validateItemDeliveryTemplate(template);
+
+        /* Look up delivery and check privileges */
+        final ItemDelivery delivery = lookupItemDelivery(did);
+        ensureCallerMayChange(delivery.getAssessmentPackage().getAssessment());
+
+        /* Update data */
+        delivery.setOpen(template.isOpen());
+        delivery.setTitle(template.getTitle());
+        itemDeliveryDao.update(delivery);
+        return delivery;
+    }
+
+    /**
+     * Changes the {@link ItemDeliverySettings} used by the given {@link ItemDelivery}
+     */
+    public ItemDelivery updateItemDelivery(final long did, final long dsid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up delivery and check privileges */
+        final ItemDelivery delivery = lookupItemDelivery(did);
+        ensureCallerMayChange(delivery.getAssessmentPackage().getAssessment());
+
+        /* Look up settings and check privileges */
+        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
+
+        /* Update data */
+        delivery.setItemDeliverySettings(itemDeliverySettings);
+        itemDeliveryDao.update(delivery);
+        return delivery;
+    }
+
+    private void validateItemDeliveryTemplate(final ItemDeliveryTemplate template)
+            throws BindException {
+        Assert.ensureNotNull(template, "itemDeliveryTemplate");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliveryTemplate");
+        jsr303Validator.validate(template, errors);
+        if (errors.hasErrors()) {
+            throw new BindException(errors);
+        }
     }
 
     //-------------------------------------------------
