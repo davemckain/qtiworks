@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
@@ -377,7 +378,43 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // CRUD for ItemDeliveryOptions
+
+    /**
+     * TODO: Currently only permitting people to see either public Assessments, or
+     * their own Assessments.
+     */
+    private User ensureCallerMayAccess(final Assessment assessment)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
+        }
+        return caller;
+    }
+
+    private User ensureCallerMayChange(final Assessment assessment)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!assessment.getOwner().equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT, assessment);
+        }
+        return caller;
+    }
+
+    /**
+     * NB: Currently allowing INSTRUCTOR and ANONYMOUS (demo) users to create assignments.
+     */
+    private User ensureCallerMayCreateAssessment() throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final UserType userType = caller.getUserType();
+        if (!(userType==UserType.ANONYMOUS || userType==UserType.INSTRUCTOR)) {
+            throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
+        }
+        return caller;
+    }
+
+    //-------------------------------------------------
+    // CRUD for ItemDeliverySettings
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -386,17 +423,10 @@ public class AssessmentManagementService {
         return itemDeliverySettings;
     }
 
-    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
+    public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettings template)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
-        }
-    }
-
-    public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettings template) {
         Assert.ensureNotNull(template, "template");
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = ensureCallerMayCreateItemDeliverySettings();
 
         /* Create and persist new options from template */
         final ItemDeliverySettings result = new ItemDeliverySettings();
@@ -412,6 +442,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException {
         Assert.ensureNotNull(template, "template");
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
+        ensureCallerMayChange(itemDeliverySettings);
 
         /* Merge template into options and update */
         mergeItemDeliverySettings(template, itemDeliverySettings);
@@ -438,6 +469,30 @@ public class AssessmentManagementService {
         target.setTitle(source.getTitle());
     }
 
+    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+        }
+    }
+
+    private void ensureCallerMayChange(final ItemDeliverySettings itemDeliverySettings)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.equals(itemDeliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.CHANGE_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+        }
+    }
+
+    private User ensureCallerMayCreateItemDeliverySettings() throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (caller.getUserType()!=UserType.INSTRUCTOR) {
+            throw new PrivilegeException(caller, Privilege.CREATE_ITEM_DELIVERY_OPTIONS);
+        }
+        return caller;
+    }
+
     //-------------------------------------------------
     // Assessment trying
 
@@ -462,7 +517,7 @@ public class AssessmentManagementService {
         Assert.ensureNotNull(itemDeliverySettings, "itemDeliverySettings");
 
         /* Make sure caller is allowed to run this Assessment */
-        final User caller = ensureCallerMayRun(assessment);
+        final User caller = ensureCallerMayAccess(assessment);
 
         /* Get most recent package */
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
@@ -585,49 +640,4 @@ public class AssessmentManagementService {
         final Document document = xmlReadResult.getDocument();
         return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
-
-    //-------------------------------------------------
-
-    /**
-     * TODO: Currently only permitting people to see either public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayAccess(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
-        }
-        return caller;
-    }
-
-    /**
-     * TODO: Currently allowing people to view the source of public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayRun(final Assessment assessment)
-            throws PrivilegeException {
-        return ensureCallerMayAccess(assessment);
-    }
-
-    private User ensureCallerMayChange(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT, assessment);
-        }
-        return caller;
-    }
-
-    /**
-     * TODO: We are currently allowing anyone to create an assessment, since the public
-     * upload/run functionality allows this.
-     *
-     * @throws PrivilegeException
-     */
-    private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        return caller;
-    }
-
 }

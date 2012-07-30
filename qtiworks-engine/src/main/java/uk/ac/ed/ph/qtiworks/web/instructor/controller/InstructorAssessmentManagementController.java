@@ -356,7 +356,8 @@ public final class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/deliverysettings/create", method=RequestMethod.POST)
-    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result) {
+    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result)
+            throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
             System.out.println(result);

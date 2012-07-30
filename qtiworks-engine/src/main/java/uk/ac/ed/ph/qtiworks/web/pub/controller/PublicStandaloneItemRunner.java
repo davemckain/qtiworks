@@ -114,7 +114,7 @@ public class PublicStandaloneItemRunner {
         }
 
         /* Make sure the required ItemDeliverySettings exists */
-        final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
+        final ItemDeliverySettings itemDeliverySettings = assessmentCandidateService.lookupItemDeliverySettings(command.getDsid());
 
         /* Now upload the Assessment and validate it */
         final Assessment assessment;

@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
@@ -169,6 +170,9 @@ public class AssessmentCandidateService {
     private ItemDeliveryDao itemDeliveryDao;
 
     @Resource
+    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+
+    @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
 
     @Resource
@@ -227,6 +231,21 @@ public class AssessmentCandidateService {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
         return caller;
+    }
+
+    public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(itemDeliverySettings);
+        return itemDeliverySettings;
+    }
+
+    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+        }
     }
 
     //----------------------------------------------------
