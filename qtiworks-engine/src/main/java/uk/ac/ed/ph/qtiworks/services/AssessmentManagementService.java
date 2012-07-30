@@ -92,7 +92,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 
 /**
- * Services for managing {@link Assessment}s
+ * Top layer services for *managing* {@link Assessment}s and related entities.
  *
  * @author David McKain
  */
