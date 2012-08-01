@@ -34,17 +34,18 @@
 package uk.ac.ed.ph.qtiworks.web.domain;
 
 import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
+import uk.ac.ed.ph.qtiworks.web.pub.controller.PublicStandaloneItemRunner;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Command for the "upload assessment package" action
+ * Command Object used in {@link PublicStandaloneItemRunner}
  *
  * @author David McKain
  */
-public class StandaloneDeliveryCommand {
+public class StandaloneRunCommand {
 
     private long dsid;
 

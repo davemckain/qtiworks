@@ -46,7 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.web.domain.StandaloneDeliveryCommand;
+import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -95,7 +95,7 @@ public class PublicStandaloneItemRunner {
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.GET)
     public String showUploadAndRunForm(final Model model) {
-        final StandaloneDeliveryCommand command = new StandaloneDeliveryCommand();
+        final StandaloneRunCommand command = new StandaloneRunCommand();
 
         @SuppressWarnings("unchecked")
         final List<ItemDeliverySettings> itemDeliverySettingsList = (List<ItemDeliverySettings>) model.asMap().get("itemDeliverySettingsList");
@@ -106,7 +106,7 @@ public class PublicStandaloneItemRunner {
     }
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String handleUploadAndRunForm(final Model model, @Valid @ModelAttribute final StandaloneDeliveryCommand command,
+    public String handleUploadAndRunForm(final Model model, @Valid @ModelAttribute final StandaloneRunCommand command,
             final BindingResult errors) throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
