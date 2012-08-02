@@ -60,10 +60,10 @@ public class RandomInteger extends RandomExpression {
     public static final String QTI_CLASS_NAME = "randomInteger";
 
     /** Name of min attribute in xml schema. */
-    public static final String ATTR_MINIMUM_NAME = "min";
+    public static final String ATTR_MIN_NAME = "min";
 
     /** Name of max attribute in xml schema. */
-    public static final String ATTR_MAXIMUM_NAME = "max";
+    public static final String ATTR_MAX_NAME = "max";
 
     /** Name of step attribute in xml schema. */
     public static final String ATTR_STEP_NAME = "step";
@@ -78,8 +78,8 @@ public class RandomInteger extends RandomExpression {
     protected RandomInteger(ExpressionParent parent, String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_NAME, true));
+        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_NAME, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, ATTR_STEP_DEFAULT_VALUE, false));
     }
 
@@ -89,8 +89,8 @@ public class RandomInteger extends RandomExpression {
      * @return value of min attribute
      * @see #setMinimum
      */
-    public int getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
+    public int getMin() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -99,8 +99,8 @@ public class RandomInteger extends RandomExpression {
      * @param minimum new value of min attribute
      * @see #getMinimum
      */
-    public void setMinimum(Integer minimum) {
-        getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
+    public void setMin(Integer minimum) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_NAME).setValue(minimum);
     }
 
     /**
@@ -109,8 +109,8 @@ public class RandomInteger extends RandomExpression {
      * @return value of max attribute
      * @see #setMaximum
      */
-    public int getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
+    public int getMax() {
+        return getAttributes().getIntegerAttribute(ATTR_MAX_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -119,8 +119,8 @@ public class RandomInteger extends RandomExpression {
      * @param maximum new value of max attribute
      * @see #getMaximum
      */
-    public void setMaximum(Integer maximum) {
-        getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
+    public void setMax(Integer maximum) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_NAME).setValue(maximum);
     }
 
     /**
@@ -152,9 +152,9 @@ public class RandomInteger extends RandomExpression {
     protected void validateAttributes(ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getMaximum() < getMinimum()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + getMaximum() +
-                    ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + getMinimum() + ")."));
+        if (getMax() < getMin()) {
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME), "Attribute " + ATTR_MAX_NAME + " (" + getMax() +
+                    ") cannot be lower than " + ATTR_MIN_NAME + " (" + getMin() + ")."));
         }
 
         if (getStep() < 1) {
@@ -168,8 +168,8 @@ public class RandomInteger extends RandomExpression {
     @Override
     protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
         final Random randomGenerator = getRandomGenerator(depth);
-        final int randomNumber = randomGenerator.nextInt((getMaximum() - getMinimum()) / getStep() + 1);
-        final int randomInteger = getMinimum() + randomNumber * getStep();
+        final int randomNumber = randomGenerator.nextInt((getMax() - getMin()) / getStep() + 1);
+        final int randomInteger = getMin() + randomNumber * getStep();
 
         return new IntegerValue(randomInteger);
     }

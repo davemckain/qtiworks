@@ -735,7 +735,7 @@ public class AssessmentCandidateService {
 
         /* Look up target event, make sure it belongs to this session and make sure it can be played back */
         final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
-        if (targetEvent.getCandidateItemSession().getId()!=candidateSession.getId()) {
+        if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateSession.getId().longValue()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_OTHER_SESSION, candidateSession);
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();

@@ -61,10 +61,10 @@ public class RandomFloat extends RandomExpression {
     public static final String QTI_CLASS_NAME = "randomFloat";
 
     /** Name of min attribute in xml schema. */
-    public static final String ATTR_MINIMUM_NAME = "min";
+    public static final String ATTR_MIN_NAME = "min";
 
     /** Name of max attribute in xml schema. */
-    public static final String ATTR_MAXIMUM_NAME = "max";
+    public static final String ATTR_MAX_NAME = "max";
 
     public RandomFloat(final ExpressionParent parent) {
         this(parent, QTI_CLASS_NAME);
@@ -73,8 +73,8 @@ public class RandomFloat extends RandomExpression {
     protected RandomFloat(final ExpressionParent parent, final String localName) {
         super(parent, localName);
 
-        getAttributes().add(new FloatAttribute(this, ATTR_MINIMUM_NAME, true));
-        getAttributes().add(new FloatAttribute(this, ATTR_MAXIMUM_NAME, true));
+        getAttributes().add(new FloatAttribute(this, ATTR_MIN_NAME, true));
+        getAttributes().add(new FloatAttribute(this, ATTR_MAX_NAME, true));
     }
 
     /**
@@ -83,8 +83,8 @@ public class RandomFloat extends RandomExpression {
      * @return value of min attribute
      * @see #setMinimum
      */
-    public double getMinimum() {
-        return getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
+    public double getMin() {
+        return getAttributes().getFloatAttribute(ATTR_MIN_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -93,8 +93,8 @@ public class RandomFloat extends RandomExpression {
      * @param minimum new value of min attribute
      * @see #getMinimum
      */
-    public void setMinimum(final Double minimum) {
-        getAttributes().getFloatAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
+    public void setMin(final Double minimum) {
+        getAttributes().getFloatAttribute(ATTR_MIN_NAME).setValue(minimum);
     }
 
     /**
@@ -103,8 +103,8 @@ public class RandomFloat extends RandomExpression {
      * @return value of max attribute
      * @see #setMaximum
      */
-    public double getMaximum() {
-        return getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
+    public double getMax() {
+        return getAttributes().getFloatAttribute(ATTR_MAX_NAME).getComputedNonNullValue();
     }
 
     /**
@@ -113,8 +113,8 @@ public class RandomFloat extends RandomExpression {
      * @param maximum new value of max attribute
      * @see #getMaximum
      */
-    public void setMaximum(final Double maximum) {
-        getAttributes().getFloatAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
+    public void setMax(final Double maximum) {
+        getAttributes().getFloatAttribute(ATTR_MAX_NAME).setValue(maximum);
     }
 
     @Override
@@ -125,19 +125,19 @@ public class RandomFloat extends RandomExpression {
     @Override
     protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
-        final double minimum = getMinimum();
-        final double maximum = getMaximum();
+        final double minimum = getMin();
+        final double maximum = getMax();
 
         if (maximum < minimum) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAXIMUM_NAME), "Attribute " + ATTR_MAXIMUM_NAME + " (" + maximum +
-                    ") cannot be lower than " + ATTR_MINIMUM_NAME + " (" + minimum + ")."));
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME), "Attribute " + ATTR_MAX_NAME + " (" + maximum +
+                    ") cannot be lower than " + ATTR_MIN_NAME + " (" + minimum + ")."));
         }
     }
 
     @Override
     protected FloatValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final double minimum = getMinimum();
-        final double maximum = getMaximum();
+        final double minimum = getMin();
+        final double maximum = getMax();
         final Random randomGenerator = getRandomGenerator(depth);
         final double randomNumber = randomGenerator.nextDouble();
         final double randomFloat = minimum + (maximum - minimum) * randomNumber;
