@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -64,7 +63,7 @@ final class CachedResourceProvider {
     private final ModelRichness modelRichness;
     private final Map<URI, RootObjectLookup<?>> cacheData;
 
-    public CachedResourceProvider(final RootObjectProvider rootObjectProvider, ModelRichness modelRichness) {
+    public CachedResourceProvider(final RootObjectProvider rootObjectProvider, final ModelRichness modelRichness) {
         this.rootObjectProvider = rootObjectProvider;
         this.modelRichness = modelRichness;
         this.cacheData = new HashMap<URI, RootObjectLookup<?>>();
@@ -84,7 +83,7 @@ final class CachedResourceProvider {
     }
 
     @SuppressWarnings("unchecked")
-    public <E extends RootObject> RootObjectLookup<E> getLookup(URI systemId, Class<E> resultClass) {
+    public <E extends RootObject> RootObjectLookup<E> getLookup(final URI systemId, final Class<E> resultClass) {
         RootObjectLookup<E> frozenResult = (RootObjectLookup<E>) cacheData.get(systemId);
         if (frozenResult!=null) {
             /* Cache hit */
@@ -93,13 +92,13 @@ final class CachedResourceProvider {
         else {
             /* Cache miss */
             try {
-                RootObjectHolder<E> result = rootObjectProvider.lookupRootObject(systemId, modelRichness, resultClass);
+                final RootObjectHolder<E> result = rootObjectProvider.lookupRootObject(systemId, modelRichness, resultClass);
                 frozenResult = new RootObjectLookup<E>(systemId, result);
             }
-            catch (BadResourceException e) {
+            catch (final BadResourceException e) {
                 frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
             }
-            catch (ResourceNotFoundException e) {
+            catch (final ResourceNotFoundException e) {
                 frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
             }
             cacheData.put(systemId, frozenResult);

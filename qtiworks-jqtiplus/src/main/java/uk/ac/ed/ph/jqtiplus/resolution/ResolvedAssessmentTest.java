@@ -53,36 +53,36 @@ import java.util.Map;
 /**
  * Wraps up the lookup of an {@link AssessmentTest} and all of the unique
  * {@link AssessmentItem}s it refers to, as well as some other useful information.
- * 
+ *
  * @author David McKain
  */
 public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<AssessmentTest> {
 
     private static final long serialVersionUID = -8302050952592265206L;
-    
+
     /** {@link AssessmentTest} lookup */
     private final RootObjectLookup<AssessmentTest> testLookup;
 
-    /** 
+    /**
      * Lookup map for {@link AssessmentItemRef} by identifier. Valid tests should have one
      * entry in the value per key, but invalid tests might have multiple entries.
      */
     private final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap;
-    
+
     /** Resolved System ID for each {@link AssessmentItemRef} */
     private final Map<AssessmentItemRef, URI> systemIdByItemRefMap;
-    
+
     /** List of {@link AssessmentItemRef}s corresponding to each unique resolved item System ID */
     private final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap;
-    
+
     /** {@link ResolvedAssessmentItem} for each unique item System ID. */
     private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap;
 
-    public ResolvedAssessmentTest(final ModelRichness modelRichness, 
+    public ResolvedAssessmentTest(final ModelRichness modelRichness,
             final RootObjectLookup<AssessmentTest> testLookup,
             final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
-            final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap, 
+            final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap,
             final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap) {
         super(modelRichness, testLookup);
         this.testLookup = testLookup;
@@ -91,12 +91,12 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         this.itemRefsBySystemIdMap = Collections.unmodifiableMap(itemRefsBySystemIdMap);
         this.resolvedAssessmentItemMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
     }
-    
+
     @Override
     public AssessmentObjectType getType() {
         return AssessmentObjectType.ASSESSMENT_TEST;
     }
-    
+
     public RootObjectLookup<AssessmentTest> getTestLookup() {
         return testLookup;
     }
@@ -104,45 +104,45 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     public Map<AssessmentItemRef, URI> getSystemIdByItemRefMap() {
         return systemIdByItemRefMap;
     }
-    
+
     public Map<Identifier, List<AssessmentItemRef>> getItemRefsByIdentifierMap() {
         return itemRefsByIdentifierMap;
     }
-    
+
     public Map<URI, List<AssessmentItemRef>> getItemRefsBySystemIdMap() {
         return itemRefsBySystemIdMap;
     }
-    
+
     @ObjectDumperOptions(DumpMode.TO_STRING)
     public Map<URI, ResolvedAssessmentItem> getResolvedAssessmentItemMap() {
         return resolvedAssessmentItemMap;
     }
-    
-    public ResolvedAssessmentItem getResolvedAssessmentItem(AssessmentItemRef itemRef) {
-        URI systemId = systemIdByItemRefMap.get(itemRef);
+
+    public ResolvedAssessmentItem getResolvedAssessmentItem(final AssessmentItemRef itemRef) {
+        final URI systemId = systemIdByItemRefMap.get(itemRef);
         return systemId!=null ? resolvedAssessmentItemMap.get(systemId) : null;
     }
 
     @Override
-    public VariableDeclaration resolveVariableReference(Identifier variableDeclarationIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveVariableReference(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
         /* (These only ever reference variables within the current test) */
         if (!testLookup.wasSuccessful()) {
             throw new VariableResolutionException(variableDeclarationIdentifier, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
         }
-        AssessmentTest test = testLookup.extractIfSuccessful();
-        VariableDeclaration result = test.getVariableDeclaration(variableDeclarationIdentifier);
+        final AssessmentTest test = testLookup.extractIfSuccessful();
+        final VariableDeclaration result = test.getVariableDeclaration(variableDeclarationIdentifier);
         if (result==null) {
             throw new VariableResolutionException(variableDeclarationIdentifier, VariableResolutionFailureReason.TEST_VARIABLE_NOT_DECLARED);
         }
         return result;
     }
-    
-    public VariableDeclaration resolveItemVariableReference(Identifier itemRefIdentifier, Identifier itemVarIdentifier) throws VariableResolutionException {
-        VariableReferenceIdentifier dottedVariableReference = new VariableReferenceIdentifier(itemRefIdentifier, itemVarIdentifier);
+
+    public VariableDeclaration resolveItemVariableReference(final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
+        final VariableReferenceIdentifier dottedVariableReference = new VariableReferenceIdentifier(itemRefIdentifier, itemVarIdentifier);
         return resolveItemVariableReference(dottedVariableReference, itemRefIdentifier, itemVarIdentifier);
     }
-    
-    private VariableDeclaration resolveItemVariableReference(VariableReferenceIdentifier dottedVariableReference, Identifier itemRefIdentifier, Identifier itemVarIdentifier) throws VariableResolutionException {
+
+    private VariableDeclaration resolveItemVariableReference(final VariableReferenceIdentifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
         if (!testLookup.wasSuccessful()) {
             throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
         }
@@ -160,7 +160,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         else {
             final AssessmentItemRef itemRef = itemRefs.get(0);
             final ResolvedAssessmentItem resolvedItem = getResolvedAssessmentItem(itemRef);
-            RootObjectLookup<AssessmentItem> itemLookup = resolvedItem.getItemLookup();
+            final RootObjectLookup<AssessmentItem> itemLookup = resolvedItem.getItemLookup();
             if (!itemLookup.wasSuccessful()) {
                 throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.TEST_ITEM_LOOKUP_FAILURE);
             }
@@ -173,12 +173,12 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         }
         return result;
     }
-    
+
     @Override
-    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveVariableReference(final VariableReferenceIdentifier variableReferenceIdentifier) throws VariableResolutionException {
         VariableDeclaration result;
         if (variableReferenceIdentifier.isDotted()) {
-            result = resolveItemVariableReference(variableReferenceIdentifier, 
+            result = resolveItemVariableReference(variableReferenceIdentifier,
                     variableReferenceIdentifier.getAssessmentItemRefIdentifier(), variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier());
         }
         else {
@@ -186,8 +186,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         }
         return result;
     }
-    
-    
+
     //-------------------------------------------------------------------
 
     @Override
