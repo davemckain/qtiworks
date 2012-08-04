@@ -53,7 +53,7 @@ public final class MultipleValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container and adds given <code>SingleValue</code> into it.
+     * Constructs <code>MultipleValue</code> containing the given value.
      *
      * @param value added <code>SingleValue</code>
      */
@@ -62,7 +62,7 @@ public final class MultipleValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container and adds all given <code>SingleValue</code>s into it.
+     * Constructs <code>MultipleValue</code> containing the given values.
      *
      * @param values added <code>SingleValue</code>s
      */

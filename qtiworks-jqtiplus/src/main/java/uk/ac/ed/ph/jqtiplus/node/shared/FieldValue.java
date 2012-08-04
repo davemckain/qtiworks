@@ -66,7 +66,7 @@ import org.xml.sax.SAXException;
  * with record cardinality.
  * <p>
  * This class has different name (fieldValue instead of value) in specification. Name value was already taken.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class FieldValue extends AbstractNode {
@@ -85,7 +85,7 @@ public class FieldValue extends AbstractNode {
     /** Single value of this fieldValue. */
     private SingleValue singleValue;
 
-    public FieldValue(FieldValueParent parent) {
+    public FieldValue(final FieldValueParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
@@ -107,7 +107,7 @@ public class FieldValue extends AbstractNode {
 
     /**
      * Gets value of fieldIdentifier attribute.
-     * 
+     *
      * @return value of fieldIdentifier attribute
      * @see #setIdentifier
      */
@@ -117,17 +117,17 @@ public class FieldValue extends AbstractNode {
 
     /**
      * Sets new value of fieldIdentifier attribute.
-     * 
+     *
      * @param identifier new value of fieldIdentifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of baseType attribute.
-     * 
+     *
      * @return value of baseType attribute
      * @see #setBaseTypeAttrValue
      */
@@ -137,11 +137,11 @@ public class FieldValue extends AbstractNode {
 
     /**
      * Sets new value of baseType attribute.
-     * 
+     *
      * @param baseType new value of baseType attribute
      * @see #getBaseTypeAttrValue
      */
-    public void setBaseTypeAttrValue(BaseType baseType) {
+    public void setBaseTypeAttrValue(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
@@ -151,7 +151,7 @@ public class FieldValue extends AbstractNode {
      * <li>if cardinality of parent variableDeclaration is not record, uses parent's baseType</li>
      * <li>if cardinality of parent variableDeclaration is record, uses its own baseType</li>
      * </ol>
-     * 
+     *
      * @return baseType of this fieldValue
      */
     public BaseType getBaseType() {
@@ -168,7 +168,7 @@ public class FieldValue extends AbstractNode {
 
     /**
      * Gets single value of this fieldValue.
-     * 
+     *
      * @return single value of this fieldValue
      * @see #setSingleValue
      */
@@ -178,19 +178,19 @@ public class FieldValue extends AbstractNode {
 
     /**
      * Sets new single value of this fieldValue.
-     * 
+     *
      * @param singleValue new single value of this fieldValue
      * @see #getSingleValue
      */
-    public void setSingleValue(SingleValue singleValue) {
+    public void setSingleValue(final SingleValue singleValue) {
         this.singleValue = singleValue;
     }
 
     @Override
-    protected void loadChildren(Element element, LoadingContext context) {
-        if (getBaseType() != null && element.getTextContent().length() != 0) {
+    protected void loadChildren(final Element element, final LoadingContext context) {
+        if (getBaseType() != null) {
             try {
-                singleValue = getBaseType().parseSingleValue(element.getTextContent());
+                singleValue = getBaseType().parseSingleValue(element.getTextContent().trim());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
@@ -199,12 +199,12 @@ public class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(final QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(singleValue.toQtiString());
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         final Cardinality cardinality = getParent().getCardinality();
@@ -228,7 +228,7 @@ public class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (singleValue == null) {
@@ -243,13 +243,13 @@ public class FieldValue extends AbstractNode {
     /**
      * Constructs value (of any cardinality) from given list of fieldValues (list of single values).
      * If list of fieldValues is empty returns NullValue.
-     * 
+     *
      * @param cardinality requested cardinality
      * @param values given list of fieldValues (list of single values)
      * @return value (of any cardinality) from given list of fieldValues (list of single values)
      * @see #getValues
      */
-    public static Value computeValue(Cardinality cardinality, List<FieldValue> values) {
+    public static Value computeValue(final Cardinality cardinality, final List<FieldValue> values) {
         if (values.size() == 0) {
             return NullValue.INSTANCE;
         }
@@ -293,13 +293,13 @@ public class FieldValue extends AbstractNode {
     /**
      * Constructs list of fieldValues (list of single values) from given value (of any cardinality).
      * If given value is null (java) or NULL (qti) returns empty list.
-     * 
+     *
      * @param parent parent of constructed fieldValues
      * @param value given value (of any cardinality)
      * @return list of fieldValues (list of single values) from given value (of any cardinality)
      * @see #getValue
      */
-    public static List<FieldValue> computeValues(FieldValueParent parent, Value value) {
+    public static List<FieldValue> computeValues(final FieldValueParent parent, final Value value) {
         final List<FieldValue> values = new ArrayList<FieldValue>();
 
         if (value == null || value.isNull()) {

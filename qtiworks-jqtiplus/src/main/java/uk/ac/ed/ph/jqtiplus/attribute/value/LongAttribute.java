@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Attribute with long value.
@@ -51,31 +51,12 @@ public final class LongAttribute extends SingleAttribute<Long> {
     }
 
     @Override
-    protected Long parseQtiString(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid long '" + value + "'. Length is not valid.");
-        }
-
-        final String originalValue = value;
-
-        // Removes + sign because of Long.parseLong cannot handle it.
-        if (value.startsWith("+")) {
-            value = value.substring(1);
-            if (value.length() == 0 || !Character.isDigit(value.codePointAt(0))) {
-                throw new QtiParseException("Invalid long '" + originalValue + "'.");
-            }
-        }
-
-        try {
-            return Long.valueOf(value);
-        }
-        catch (final NumberFormatException ex) {
-            throw new QtiParseException("Invalid long '" + originalValue + "'.", ex);
-        }
+    protected Long parseQtiString(final String value) {
+        return DataTypeBinder.parseLong(value);
     }
 
     @Override
     protected String toQtiString(final Long value) {
-        return value.toString();
+        return DataTypeBinder.toString(value.longValue());
     }
 }

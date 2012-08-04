@@ -97,6 +97,30 @@ public final class DataTypeBinder {
 
     //--------------------------------------------
 
+    public static long parseLong(final String string) {
+        Assert.ensureNotNull(string);
+
+        String s = string;
+        if (string.startsWith("+")) {
+            s  = string.substring(1);
+            if (s.length() == 0 || !Character.isDigit(s.codePointAt(0))) {
+                throw new QtiParseException("Invalid integer '" + string + "'");
+            }
+        }
+        try {
+            return Long.parseLong(s);
+        }
+        catch (final NumberFormatException e) {
+            throw new QtiParseException("Invalid long '" + s + "'", e);
+        }
+    }
+
+    public static String toString(final long value) {
+        return Long.toString(value);
+    }
+
+    //--------------------------------------------
+
     public static double parseFloat(final String string) {
         Assert.ensureNotNull(string);
 
