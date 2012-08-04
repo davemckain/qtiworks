@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  * Sections group together individual item references and/or sub-sections.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
@@ -66,14 +66,14 @@ public class AssessmentSection extends SectionPart {
     public static final String ATTR_KEEP_TOGETHER_NAME = "keepTogether";
 
     /** Default value of keepTogether attribute. */
-    public static final Boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = Boolean.TRUE;
+    public static final boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = true;
 
     /**
      * Constructs section.
-     * 
+     *
      * @param parent parent of constructed section
      */
-    public AssessmentSection(AbstractPart parent) {
+    public AssessmentSection(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
@@ -93,7 +93,7 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Gets value of title attribute.
-     * 
+     *
      * @return value of title attribute
      * @see #setTitle
      */
@@ -103,17 +103,17 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Sets new value of title attribute.
-     * 
+     *
      * @param title new value of title attribute
      * @see #getTitle
      */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
     /**
      * Gets value of visible attribute.
-     * 
+     *
      * @return value of visible attribute
      * @see #setVisible
      */
@@ -123,17 +123,17 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Sets new value of visible attribute.
-     * 
+     *
      * @param visible new value of visible attribute
      * @see #getVisible
      */
-    public void setVisible(Boolean visible) {
+    public void setVisible(final Boolean visible) {
         getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).setValue(visible);
     }
 
     /**
      * Gets value of keepTogether attribute.
-     * 
+     *
      * @return value of keepTogether attribute
      * @see #setKeepTogether
      */
@@ -143,17 +143,17 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Sets new value of keepTogether attribute.
-     * 
+     *
      * @param keepTogether new value of keepTogether attribute
      * @see #getKeepTogether
      */
-    public void setKeepTogether(Boolean keepTogether) {
+    public void setKeepTogether(final Boolean keepTogether) {
         getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).setValue(keepTogether);
     }
 
     /**
      * Gets selection child.
-     * 
+     *
      * @return selection child
      * @see #setSelection
      */
@@ -163,17 +163,17 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Sets new selection child.
-     * 
+     *
      * @param selection new selection child
      * @see #getSelection
      */
-    public void setSelection(Selection selection) {
+    public void setSelection(final Selection selection) {
         getNodeGroups().getSelectionGroup().setSelection(selection);
     }
 
     /**
      * Gets ordering child.
-     * 
+     *
      * @return ordering child
      * @see #setOrdering
      */
@@ -183,17 +183,17 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Sets new ordering child.
-     * 
+     *
      * @param ordering new ordering child
      * @see #getOrdering
      */
-    public void setOrdering(Ordering ordering) {
+    public void setOrdering(final Ordering ordering) {
         getNodeGroups().getOrderingGroup().setOrdering(ordering);
     }
 
     /**
      * Gets rubricBlock children.
-     * 
+     *
      * @return rubricBlock children
      */
     public List<RubricBlock> getRubricBlocks() {
@@ -202,7 +202,7 @@ public class AssessmentSection extends SectionPart {
 
     /**
      * Gets sectionPart children.
-     * 
+     *
      * @return sectionPart children
      */
     public List<SectionPart> getSectionParts() {

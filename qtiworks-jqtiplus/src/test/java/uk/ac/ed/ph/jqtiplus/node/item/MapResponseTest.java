@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
@@ -57,22 +58,22 @@ public class MapResponseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { "MapResponse-Single.xml", new String[] { "A" }, 0.0 },
-                { "MapResponse-Single.xml", new String[] { "B" }, 1.0 }, 
+                { "MapResponse-Single.xml", new String[] { "B" }, 1.0 },
                 { "MapResponse-Single.xml", new String[] { "C" }, 0.5 },
                 { "MapResponse-Single.xml", new String[] { "D" }, 0.0 },
-                { "MapResponse-Single.xml", new String[] { "X" }, -1.0 }, 
+                { "MapResponse-Single.xml", new String[] { "X" }, -1.0 },
                 { "MapResponse-Multiple.xml", new String[] { "A" }, 0.0 },
                 { "MapResponse-Multiple.xml", new String[] { "B" }, 1.0 },
-                { "MapResponse-Multiple.xml", new String[] { "C" }, 0.5 }, 
+                { "MapResponse-Multiple.xml", new String[] { "C" }, 0.5 },
                 { "MapResponse-Multiple.xml", new String[] { "D" }, 0.0 },
-                { "MapResponse-Multiple.xml", new String[] { "A", "B" }, 1.0 }, 
+                { "MapResponse-Multiple.xml", new String[] { "A", "B" }, 1.0 },
                 { "MapResponse-Multiple.xml", new String[] { "C", "B" }, 1.5 },
                 { "MapResponse-Multiple.xml", new String[] { "B", "C" }, 1.5 },
                 { "MapResponse-Multiple.xml", new String[] { "A", "B", "B" }, 1.0 },
@@ -84,17 +85,17 @@ public class MapResponseTest {
     private Value response;
     private final double expectedOutcome;
 
-    public MapResponseTest(String fileName, String[] responses, double expectedOutcome) {
+    public MapResponseTest(final String fileName, final String[] responses, final double expectedOutcome) {
         this.fileName = fileName;
         this.expectedOutcome = expectedOutcome;
 
         if (responses.length == 1) {
-            response = new IdentifierValue(responses[0]);
+            response = new IdentifierValue(new Identifier(responses[0]));
         }
         else {
             response = new MultipleValue();
             for (final String s : responses) {
-                ((MultipleValue) response).add(new IdentifierValue(s));
+                ((MultipleValue) response).add(new IdentifierValue(new Identifier(s)));
             }
         }
     }
@@ -103,16 +104,16 @@ public class MapResponseTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class);
         itemSessionController.initialize();
-        
-        ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        AssessmentItem item = itemSessionController.getItem();
+
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        final AssessmentItem item = itemSessionController.getItem();
 
         if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
             response = new MultipleValue((SingleValue) response);
         }
         itemSessionState.setResponseValue("RESPONSE", response);
         itemSessionController.processResponses();
-        
+
         assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
     }
 }

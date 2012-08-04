@@ -222,7 +222,7 @@ public final class ItemSessionState implements Serializable {
 
     public void setCompletionStatus(final String completionStatus) {
         Assert.ensureNotNull(completionStatus);
-        setCompletionStatusValue(new IdentifierValue(completionStatus));
+        setCompletionStatusValue(new IdentifierValue(new Identifier(completionStatus)));
     }
 
     //----------------------------------------------------------------

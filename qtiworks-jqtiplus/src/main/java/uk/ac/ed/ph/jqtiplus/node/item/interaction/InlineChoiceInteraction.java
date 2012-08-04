@@ -80,15 +80,15 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
 
     /** Name of required attribute in xml schema. */
     public static final String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static final Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
 
-    public InlineChoiceInteraction(XmlNode parent) {
+    public InlineChoiceInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
@@ -109,7 +109,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
@@ -130,7 +130,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @param required new value of required attribute
      * @see #getRequired
      */
-    public void setRequired(Boolean required) {
+    public void setRequired(final Boolean required) {
         getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
     }
 
@@ -159,7 +159,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public InlineChoice getInlineChoice(Identifier identifier) {
+    public InlineChoice getInlineChoice(final Identifier identifier) {
         for (final InlineChoice choice : getInlineChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -169,7 +169,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -185,13 +185,13 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
     }
 
     @Override
-    public void initialize(ItemSessionController itemSessionController) {
+    public void initialize(final ItemSessionController itemSessionController) {
         super.initialize(itemSessionController);
         itemSessionController.shuffleInteractionChoiceOrder(this, getInlineChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         if (responseValue.isNull()) {
             if (getRequired()) {
                 return false;

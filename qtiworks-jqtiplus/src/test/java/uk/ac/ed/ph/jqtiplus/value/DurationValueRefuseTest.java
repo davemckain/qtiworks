@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>DurationValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.DurationValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +56,13 @@ public class DurationValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "-1" }, { "-1.2" }, { "-12.34E+5" },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { "-1" }, { "-1.2" }, { "-12.34E+5" },
         });
     }
 
@@ -68,20 +70,20 @@ public class DurationValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public DurationValueRefuseTest(String string) {
+    public DurationValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParseDuration() throws QtiParseException {
-        BooleanValue.parseBoolean(string);
+        DataTypeBinder.parseBoolean(string);
     }
 }

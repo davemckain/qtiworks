@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>UriValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  * @see java.net.URI
  */
@@ -56,12 +57,13 @@ public class UriValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { " http://www.example.com/" }, { "http://www.example.com/ " },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { " http://www.example.com/" }, { "http://www.example.com/ " },
                 { " http://www.example.com/ " },
         });
     }
@@ -70,20 +72,20 @@ public class UriValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public UriValueRefuseTest(String string) {
+    public UriValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParseUri() throws QtiParseException {
-        UriValue.parseUri(string);
+        DataTypeBinder.parseUri(string);
     }
 }

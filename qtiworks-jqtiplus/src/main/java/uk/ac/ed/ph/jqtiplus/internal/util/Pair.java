@@ -36,19 +36,19 @@ package uk.ac.ed.ph.jqtiplus.internal.util;
 /**
  * Trivial utility class describing a pair/tuple, which can occasionally be
  * useful.
- * 
+ *
  * @param <E> type for the first element of the pair
  * @param <F> type for the second element of the pair
- * 
+ *
  * @author David McKain
  */
-public class Pair<E, F> {
+public class Pair<E,F> {
 
     private final E first;
 
     private final F second;
 
-    public Pair(E first, F second) {
+    public Pair(final E first, final F second) {
         this.first = first;
         this.second = second;
     }

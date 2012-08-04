@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -86,6 +88,6 @@ public class IntegerValueAcceptTest {
      */
     @Test
     public void testParseInteger() {
-        Assert.assertTrue(expectedInteger == IntegerValue.parseInteger(string));
+        Assert.assertTrue(expectedInteger == DataTypeBinder.parseInteger(string));
     }
 }

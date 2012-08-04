@@ -36,7 +36,6 @@ package org.qtitools.qti.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
-import uk.ac.ed.ph.jqtiplus.value.FileValue;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -47,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.UriValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.value.ValueTestUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -138,7 +138,7 @@ public class RecordAcceptTest extends ExpressionAcceptTest {
                 // file
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new FileValue("file")) },
+                        "</recordEx>", new RecordValue("key_1", ValueTestUtils.createTestFileValue("file")) },
                 // uri
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +

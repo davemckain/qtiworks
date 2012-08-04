@@ -53,23 +53,23 @@ public abstract class ValueTest {
 
     /**
      * Constructs test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public ValueTest(boolean equals, Value value1, Value value2) {
+    public ValueTest(final boolean equals, final Value value1, final Value value2) {
         this.equals = equals;
         this.value1 = value1;
         this.value2 = value2;
     }
 
     /**
-     * Tests implementation of <code>equals</code> method.
+     * Tests implementation of <code>qtiEquals</code> method.
      */
     @Test
     public void testEquals() {
-        assertEquals(equals, value1.equals(value2));
+        assertEquals(equals, value1.qtiEquals(value2));
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class ValueTest {
      */
     @Test
     public void testHashCode() {
-        if (equals) {
+        if (value1.equals(value2)) {
             assertEquals(value1.hashCode(), value2.hashCode());
         }
     }

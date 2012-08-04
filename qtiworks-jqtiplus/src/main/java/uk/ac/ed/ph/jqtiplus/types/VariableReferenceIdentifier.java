@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.Serializable;
 
@@ -41,7 +42,7 @@ import java.io.Serializable;
  * Encapsulates the special case of QTI "identifiers" that may contain a single
  * period character within them, which is used in test outcome processing to
  * refer to variables within particular items.
- * 
+ *
  * @author David McKain
  */
 public final class VariableReferenceIdentifier implements Serializable {
@@ -59,18 +60,16 @@ public final class VariableReferenceIdentifier implements Serializable {
     /**
      * @throws QtiParseException if value is not a valid identifier (definition)
      */
-    public VariableReferenceIdentifier(String value) {
-        if (value != null) {
-            value = value.trim();
-        }
+    public VariableReferenceIdentifier(final String value) {
+        Assert.ensureNotNull(value);
 
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid reference identifier '" + value + "'. Must not be empty or blank.");
+        if (value.isEmpty()) {
+            throw new QtiParseException("Invalid identifier '" + value + "': Must not be empty");
         }
 
         /* First character. */
         if (!Character.isLetter(value.codePointAt(0)) && value.charAt(0) != '_') {
-            throw new QtiParseException("Invalid reference identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
+            throw new QtiParseException("Invalid reference identifier '" + value + "': First character '" + value.charAt(0) + "' is not valid");
         }
 
         /* Rest of characters. */
@@ -78,13 +77,13 @@ public final class VariableReferenceIdentifier implements Serializable {
         for (int i = 1; i < value.length(); i++) {
             if (value.charAt(i) == '.') {
                 if (dotPos != -1) {
-                    throw new QtiParseException("Invalid reference identifier '" + value + "'. Only one period (.) character is allowed in this identifier.");
+                    throw new QtiParseException("Invalid reference identifier '" + value + "': Only one period (.) character is allowed in this identifier");
                 }
                 dotPos = i;
             }
             else if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-') {
-                throw new QtiParseException("Invalid reference identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1)
-                        + " is not valid.");
+                throw new QtiParseException("Invalid reference identifier '" + value + "': Character '" + value.charAt(i) + "' at position " + (i + 1)
+                        + " is not valid");
             }
         }
         this.value = value;
@@ -103,14 +102,14 @@ public final class VariableReferenceIdentifier implements Serializable {
     /**
      * @see Identifier#toVariableReferenceIdentifier()
      */
-    public VariableReferenceIdentifier(Identifier localIdentifier) {
+    public VariableReferenceIdentifier(final Identifier localIdentifier) {
         this.localIdentifier = localIdentifier;
         this.assessmentItemItemVariableIdentifier = null;
         this.assessmentItemRefIdentifier = null;
         this.value = localIdentifier.toString();
     }
-    
-    public VariableReferenceIdentifier(Identifier assessmentItemRefIdentifier, Identifier assessmentItemItemVariableIdentifier) {
+
+    public VariableReferenceIdentifier(final Identifier assessmentItemRefIdentifier, final Identifier assessmentItemItemVariableIdentifier) {
         this.localIdentifier = null;
         this.assessmentItemRefIdentifier = assessmentItemRefIdentifier;
         this.assessmentItemItemVariableIdentifier = assessmentItemItemVariableIdentifier;
@@ -128,7 +127,7 @@ public final class VariableReferenceIdentifier implements Serializable {
     public Identifier getAssessmentItemItemVariableIdentifier() {
         return assessmentItemItemVariableIdentifier;
     }
-    
+
     public boolean isDotted() {
         return localIdentifier==null;
     }
@@ -144,7 +143,7 @@ public final class VariableReferenceIdentifier implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof VariableReferenceIdentifier)) {
             return false;
         }

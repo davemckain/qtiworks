@@ -34,9 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Implementation of <code>BaseType</code> uri value.
@@ -50,7 +51,7 @@ import java.net.URISyntaxException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always uri.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see java.net.URI
@@ -62,23 +63,19 @@ public final class UriValue extends SingleValue {
 
     private final URI uriValue;
 
-    /**
-     * Constructs <code>UriValue</code> from given <code>URI</code>.
-     * 
-     * @param value <code>URI</code>
-     */
-    public UriValue(URI value) {
+    public UriValue(final URI value) {
+        Assert.ensureNotNull(value);
         this.uriValue = value;
     }
 
     /**
      * Constructs <code>UriValue</code> from given <code>String</code> representation.
-     * 
+     *
      * @param value <code>String</code> representation of <code>UriValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>UriValue</code> is not valid
      */
-    public UriValue(String value) {
-        this.uriValue = parseUri(value);
+    public UriValue(final String value) {
+        this.uriValue = DataTypeBinder.parseUri(value);
     }
 
     @Override
@@ -88,7 +85,7 @@ public final class UriValue extends SingleValue {
 
     /**
      * Returns the value of this <code>UriValue</code> as A <code>URI</code>.
-     * 
+     *
      * @return the value of this <code>UriValue</code> as A <code>URI</code>
      */
     public URI uriValue() {
@@ -96,7 +93,7 @@ public final class UriValue extends SingleValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof UriValue)) {
             return false;
         }
@@ -109,29 +106,9 @@ public final class UriValue extends SingleValue {
     public int hashCode() {
         return uriValue.hashCode();
     }
-    
+
     @Override
     public String toQtiString() {
-        return uriValue.toString();
-    }
-
-    /**
-     * Parses the <code>String</code> argument as A <code>URI</code>.
-     * 
-     * @param value <code>String</code> representation of <code>URI</code>
-     * @return parsed <code>URI</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>URI</code> is not valid
-     */
-    public static URI parseUri(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid uri '" + value + "'. Length is not valid.");
-        }
-
-        try {
-            return new URI(value);
-        }
-        catch (final URISyntaxException ex) {
-            throw new QtiParseException("Invalid uri '" + value + "'.", ex);
-        }
+        return DataTypeBinder.toString(uriValue);
     }
 }

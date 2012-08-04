@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
 
     @Override
     protected Double parseItemValue(final String value) {
-        return Double.valueOf(FloatValue.parseFloat(value));
+        return Double.valueOf(DataTypeBinder.parseFloat(value));
     }
 
     @Override

@@ -86,12 +86,12 @@ public class MapResponsePointTest {
         this.expectedOutcome = expectedOutcome;
 
         if (responses.length == 1) {
-            response = new PointValue(responses[0]);
+            response = PointValue.parseString(responses[0]);
         }
         else {
             response = new MultipleValue();
             for (final String s : responses) {
-                ((MultipleValue) response).add(new PointValue(s));
+                ((MultipleValue) response).add(PointValue.parseString(s));
             }
         }
     }

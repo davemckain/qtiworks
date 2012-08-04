@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>IntegerValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +56,13 @@ public class IntegerValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "+" }, { "-" }, { "2147483648" }, { "+2147483648" }, { "-2147483649" }, { "1.0" },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { "+" }, { "-" }, { "2147483648" }, { "+2147483648" }, { "-2147483649" }, { "1.0" },
                 { "++1" }, { "--1" }, { "+-1" }, { "-+1" },
         });
     }
@@ -69,20 +71,20 @@ public class IntegerValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public IntegerValueRefuseTest(String string) {
+    public IntegerValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParseInteger() throws QtiParseException {
-        IntegerValue.parseInteger(string);
+        DataTypeBinder.parseInteger(string);
     }
 }

@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests <code>BooleanValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.BooleanValue
  */
 @RunWith(Parameterized.class)
@@ -50,39 +50,55 @@ public class BooleanValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null {false, BooleanValue.TRUE, null}, {false, BooleanValue.FALSE, null},
-                // NullValue {false, BooleanValue.TRUE, NullValue.INSTANCE}, {false, BooleanValue.FALSE, NullValue.INSTANCE},
-                // IdentifierValue {false, BooleanValue.TRUE, new IdentifierValue("identifier")}, {false, BooleanValue.FALSE, new IdentifierValue("identifier")},
-                // BooleanValue {true, BooleanValue.TRUE, BooleanValue.TRUE}, {true, BooleanValue.FALSE, BooleanValue.FALSE}, {false, BooleanValue.TRUE, BooleanValue.FALSE}, {false, BooleanValue.FALSE, BooleanValue.TRUE},
-                // IntegerValue {false, BooleanValue.TRUE, new IntegerValue(1)}, {false, BooleanValue.FALSE, new IntegerValue(1)},
-                // FloatValue {false, BooleanValue.TRUE, new FloatValue(1)}, {false, BooleanValue.FALSE, new FloatValue(1)},
-                // StringValue {false, BooleanValue.TRUE, new StringValue("string")}, {false, BooleanValue.FALSE, new StringValue("string")},
-                // PointValue {false, BooleanValue.TRUE, new PointValue(1, 1)}, {false, BooleanValue.FALSE, new PointValue(1, 1)},
-                // PairValue {false, BooleanValue.TRUE, new PairValue("ident1", "ident2")}, {false, BooleanValue.FALSE, new PairValue("ident1", "ident2")},
-                // DirectedPairValue {false, BooleanValue.TRUE, new DirectedPairValue("ident1", "ident2")}, {false, BooleanValue.FALSE, new DirectedPairValue("ident1", "ident2")},
-                // DurationValue {false, BooleanValue.TRUE, new DurationValue(1)}, {false, BooleanValue.FALSE, new DurationValue(1)},
-                // FileValue {false, BooleanValue.TRUE, new FileValue("file")}, {false, BooleanValue.FALSE, new FileValue("file")},
-                // UriValue {false, BooleanValue.TRUE, new UriValue("uri")}, {false, BooleanValue.FALSE, new UriValue("uri")},
-                // MultipleValue {false, BooleanValue.TRUE, new MultipleValue()}, {false, BooleanValue.TRUE, new MultipleValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new MultipleValue()}, {false, BooleanValue.FALSE, new MultipleValue(BooleanValue.FALSE)},
-                // OrderedValue {false, BooleanValue.TRUE, new OrderedValue()}, {false, BooleanValue.TRUE, new OrderedValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new OrderedValue()}, {false, BooleanValue.FALSE, new OrderedValue(BooleanValue.FALSE)},
-                // RecordValue {false, BooleanValue.TRUE, new RecordValue()}, {false, BooleanValue.TRUE, new RecordValue("identifier", BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new RecordValue()}, {false, BooleanValue.FALSE, new RecordValue("identifier", BooleanValue.FALSE)},
+                // null
+                {false, BooleanValue.TRUE, null}, {false, BooleanValue.FALSE, null},
+                // NullValue
+                {false, BooleanValue.TRUE, NullValue.INSTANCE}, {false, BooleanValue.FALSE, NullValue.INSTANCE},
+                // IdentifierValue
+                {false, BooleanValue.TRUE, new IdentifierValue("identifier")}, {false, BooleanValue.FALSE, new IdentifierValue("identifier")},
+                // BooleanValue
+                {true, BooleanValue.TRUE, BooleanValue.TRUE}, {true, BooleanValue.FALSE, BooleanValue.FALSE}, {false, BooleanValue.TRUE, BooleanValue.FALSE}, {false, BooleanValue.FALSE, BooleanValue.TRUE},
+                // IntegerValue
+                {false, BooleanValue.TRUE, new IntegerValue(1)}, {false, BooleanValue.FALSE, new IntegerValue(1)},
+                // FloatValue
+                {false, BooleanValue.TRUE, new FloatValue(1)}, {false, BooleanValue.FALSE, new FloatValue(1)},
+                // StringValue
+                {false, BooleanValue.TRUE, new StringValue("string")}, {false, BooleanValue.FALSE, new StringValue("string")},
+                // PointValue
+                {false, BooleanValue.TRUE, new PointValue(1, 1)}, {false, BooleanValue.FALSE, new PointValue(1, 1)},
+                // PairValue
+                {false, BooleanValue.TRUE, new PairValue("ident1", "ident2")}, {false, BooleanValue.FALSE, new PairValue("ident1", "ident2")},
+                // DirectedPairValue
+                {false, BooleanValue.TRUE, new DirectedPairValue("ident1", "ident2")}, {false, BooleanValue.FALSE, new DirectedPairValue("ident1", "ident2")},
+                // DurationValue
+                {false, BooleanValue.TRUE, new DurationValue(1)}, {false, BooleanValue.FALSE, new DurationValue(1)},
+                // FileValue
+                {false, BooleanValue.TRUE, ValueTestUtils.createTestFileValue("file")}, {false, BooleanValue.FALSE, ValueTestUtils.createTestFileValue("file")},
+                // UriValue
+                {false, BooleanValue.TRUE, new UriValue("uri")}, {false, BooleanValue.FALSE, new UriValue("uri")},
+                // MultipleValue
+                {false, BooleanValue.TRUE, new MultipleValue()}, {false, BooleanValue.TRUE, new MultipleValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new MultipleValue()}, {false, BooleanValue.FALSE, new MultipleValue(BooleanValue.FALSE)},
+                // OrderedValue
+                {false, BooleanValue.TRUE, new OrderedValue()}, {false, BooleanValue.TRUE, new OrderedValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new OrderedValue()}, {false, BooleanValue.FALSE, new OrderedValue(BooleanValue.FALSE)},
+                // RecordValue
+                {false, BooleanValue.TRUE, new RecordValue()}, {false, BooleanValue.TRUE, new RecordValue("identifier", BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new RecordValue()}, {false, BooleanValue.FALSE, new RecordValue("identifier", BooleanValue.FALSE)},
                 });
     }
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public BooleanValueTest(boolean equals, Value value1, Value value2) {
+    public BooleanValueTest(final boolean equals, final Value value1, final Value value2) {
         super(equals, value1, value2);
     }
 }

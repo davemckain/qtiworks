@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Implementation of <code>BaseType</code> float value.
@@ -47,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always float.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -60,21 +61,21 @@ public final class FloatValue extends NumberValue {
 
     /**
      * Constructs <code>FloatValue</code> from given <code>double</code>.
-     * 
+     *
      * @param value <code>double</code>
      */
-    public FloatValue(double value) {
+    public FloatValue(final double value) {
         this.doubleValue = value;
     }
 
     /**
      * Constructs <code>FloatValue</code> from given <code>String</code> representation.
-     * 
+     *
      * @param value <code>String</code> representation of <code>FloatValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>FloatValue</code> is not valid
      */
-    public FloatValue(String value) {
-        this.doubleValue = parseFloat(value);
+    public FloatValue(final String value) {
+        this.doubleValue = DataTypeBinder.parseFloat(value);
     }
 
     @Override
@@ -93,12 +94,12 @@ public final class FloatValue extends NumberValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof FloatValue)) {
             return false;
         }
-        
-        FloatValue other = (FloatValue) object;
+
+        final FloatValue other = (FloatValue) object;
         return doubleValue == other.doubleValue;
     }
 
@@ -109,43 +110,6 @@ public final class FloatValue extends NumberValue {
 
     @Override
     public String toQtiString() {
-        return Double.toString(doubleValue);
-    }
-
-    /**
-     * Parses the <code>String</code> argument as A <code>double</code>.
-     * 
-     * @param value <code>String</code> representation of <code>double</code>
-     * @return parsed <code>double</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>double</code> is not valid
-     */
-    public static double parseFloat(String value) {
-        if (value != null) {
-            value = value.trim();
-        }
-
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid float '" + value + "'. Length is not valid.");
-        }
-
-        double result;
-        if (value.equals("INF")) {
-            result = Double.POSITIVE_INFINITY;
-        }
-        else if (value.equals("-INF")) {
-            result = Double.NEGATIVE_INFINITY;
-        }
-        else if (value.equals("NaN")) {
-            result = Double.NaN;
-        }
-        else {
-            try {
-                result = Double.parseDouble(value);
-            }
-            catch (final NumberFormatException ex) {
-                throw new QtiParseException("Invalid float '" + value + "'.", ex);
-            }
-        }
-        return result;
+        return DataTypeBinder.toString(doubleValue);
     }
 }

@@ -47,7 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>PairValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.PairValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +55,13 @@ public class PairValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "1_identifier 2_identifier" },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { "1_identifier 2_identifier" },
         });
     }
 
@@ -68,20 +69,20 @@ public class PairValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public PairValueRefuseTest(String string) {
+    public PairValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParsePair() throws QtiParseException {
-        new PairValue(string);
+        PairValue.parseString(string);
     }
 }

@@ -116,4 +116,17 @@ public final class MultipleValue extends ListValue {
         }
         return container.containsAll(other.container);
     }
+
+    @Override
+    public final int hashCode() {
+        /* Need an alternative calculation from usual in order to be compatible with equals().
+         * So let's add up the hashCode of each element, taking advantage of the commutativity
+         * of addition
+         */
+        int sum = 0;
+        for (final SingleValue singleValue : container) {
+            sum += singleValue.hashCode();
+        }
+        return sum;
+    }
 }

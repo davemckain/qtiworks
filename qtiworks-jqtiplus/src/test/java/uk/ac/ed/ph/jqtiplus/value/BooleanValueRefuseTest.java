@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>BooleanValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.BooleanValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +56,13 @@ public class BooleanValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "True" }, { "TRUE" }, { "yes" }, { "Yes" }, { "YES" }, { "+1" }, { "False" },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { "True" }, { "TRUE" }, { "yes" }, { "Yes" }, { "YES" }, { "+1" }, { "False" },
                 { "FALSE" }, { "no" }, { "No" }, { "NO" }, { "+0" }, { "-0" },
         });
     }
@@ -69,20 +71,20 @@ public class BooleanValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public BooleanValueRefuseTest(String string) {
+    public BooleanValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParseBoolean() throws QtiParseException {
-        BooleanValue.parseBoolean(string);
+        DataTypeBinder.parseBoolean(string);
     }
 }

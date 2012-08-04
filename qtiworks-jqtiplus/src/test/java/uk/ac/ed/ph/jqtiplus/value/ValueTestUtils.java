@@ -27,61 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import java.io.File;
 
 /**
- * Tests <code>StringValue</code> implementation of parsing value from <code>String</code>.
- * <p>
- * This test contains only invalid <code>String</code> representations.
- * 
- * @see uk.ac.ed.ph.jqtiplus.value.StringValue
+ * Some random helpers for the value/type tests
+ *
+ * @author David McKain
  */
-@RunWith(Parameterized.class)
-public class StringValueRefuseTest {
+public class ValueTestUtils {
 
-    /**
-     * Creates test data for this test.
-     * 
-     * @return test data for this test
-     */
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" },
-        });
+    public static FileValue createTestFileValue(final String s) {
+        return new FileValue(new File(System.getProperty("user.home")), "text/plain", s);
     }
 
-    private final String string;
-
-    /**
-     * Constructs this test.
-     * 
-     * @param string parsed <code>String</code>
-     */
-    public StringValueRefuseTest(String string) {
-        this.string = string;
-    }
-
-    /**
-     * Tests parsing value from <code>String</code> representation.
-     * 
-     * @throws QtiParseException if test was successful
-     */
-    @Test(expected = QtiParseException.class)
-    public void testParseString() throws QtiParseException {
-        new StringValue(string);
-    }
 }

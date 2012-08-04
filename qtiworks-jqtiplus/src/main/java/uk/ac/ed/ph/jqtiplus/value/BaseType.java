@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.Map;
  * This class describes single data types.
  * <p>
  * Supported single data types: identifier, boolean, integer, float, string, point, pair, directedPair, duration, file, uri.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  * @see uk.ac.ed.ph.jqtiplus.value.BooleanValue
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
@@ -61,68 +62,68 @@ import java.util.Map;
  * @author Jiri Kajaba
  */
 public enum BaseType implements Stringifiable {
-    
+
     /**
      * Identifier baseType.
-     * 
+     *
      * @see IdentifierValue
      */
     IDENTIFIER("identifier") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
-            return new IdentifierValue(singleValue);
+        public SingleValue parseSingleValue(final String singleValue) {
+            return new IdentifierValue(new Identifier(singleValue));
         }
     },
 
     /**
      * Boolean baseType.
-     * 
+     *
      * @see BooleanValue
      */
     BOOLEAN("boolean") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             return BooleanValue.valueOf(singleValue);
         }
     },
 
     /**
      * Integer baseType.
-     * 
+     *
      * @see IntegerValue
      */
     INTEGER("integer") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
-            return new IntegerValue(singleValue);
+        public SingleValue parseSingleValue(final String singleValue) {
+            return IntegerValue.parseString(singleValue);
         }
     },
 
     /**
      * Float baseType.
-     * 
+     *
      * @see FloatValue
      */
     FLOAT("float") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             return new FloatValue(singleValue);
         }
     },
 
     /**
      * String baseType.
-     * 
+     *
      * @see StringValue
      */
     STRING("string") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             if (singleValue == null || singleValue.length() == 0) {
                 return null;
             }
@@ -132,78 +133,78 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Point baseType.
-     * 
+     *
      * @see PointValue
      */
     POINT("point") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
-            return new PointValue(singleValue);
+        public SingleValue parseSingleValue(final String singleValue) {
+            return PointValue.parseString(singleValue);
         }
     },
 
     /**
      * Pair baseType.
-     * 
+     *
      * @see PairValue
      */
     PAIR("pair") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
-            return new PairValue(singleValue);
+        public SingleValue parseSingleValue(final String singleValue) {
+            return PairValue.parseString(singleValue);
         }
     },
 
     /**
      * DirectedPair baseType.
-     * 
+     *
      * @see DirectedPairValue
      */
     DIRECTED_PAIR("directedPair") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
-            return new DirectedPairValue(singleValue);
+        public SingleValue parseSingleValue(final String singleValue) {
+            return DirectedPairValue.parseString(singleValue);
         }
     },
 
     /**
      * Duration baseType.
-     * 
+     *
      * @see DurationValue
      */
     DURATION("duration") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             return new DurationValue(singleValue);
         }
     },
 
     /**
      * File baseType.
-     * 
+     *
      * @see FileValue
      */
     FILE("file") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             throw new IllegalStateException("Values of baseType file cannot be instantiated from a string");
         }
     },
 
     /**
      * URI baseType.
-     * 
+     *
      * @see UriValue
      */
     URI("uri") {
 
         @Override
-        public SingleValue parseSingleValue(String singleValue) {
+        public SingleValue parseSingleValue(final String singleValue) {
             return new UriValue(singleValue);
         }
     };
@@ -223,13 +224,13 @@ public enum BaseType implements Stringifiable {
 
     private String baseType;
 
-    private BaseType(String baseType) {
+    private BaseType(final String baseType) {
         this.baseType = baseType;
     }
 
     /**
      * Returns true if this baseType is identifier; false otherwise.
-     * 
+     *
      * @return true if this baseType is identifier; false otherwise
      */
     public boolean isIdentifier() {
@@ -238,7 +239,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is boolean; false otherwise.
-     * 
+     *
      * @return true if this baseType is boolean; false otherwise
      */
     public boolean isBoolean() {
@@ -247,7 +248,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is integer or float; false otherwise.
-     * 
+     *
      * @return true if this baseType is integer or float; false otherwise
      */
     public boolean isNumeric() {
@@ -256,7 +257,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is integer; false otherwise.
-     * 
+     *
      * @return true if this baseType is integer; false otherwise
      */
     public boolean isInteger() {
@@ -265,7 +266,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is float; false otherwise.
-     * 
+     *
      * @return true if this baseType is float; false otherwise
      */
     public boolean isFloat() {
@@ -274,7 +275,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is string; false otherwise.
-     * 
+     *
      * @return true if this baseType is string; false otherwise
      */
     public boolean isString() {
@@ -283,7 +284,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is point; false otherwise.
-     * 
+     *
      * @return true if this baseType is point; false otherwise
      */
     public boolean isPoint() {
@@ -292,7 +293,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is pair; false otherwise.
-     * 
+     *
      * @return true if this baseType is pair; false otherwise
      */
     public boolean isPair() {
@@ -301,7 +302,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is directedPair; false otherwise.
-     * 
+     *
      * @return true if this baseType is directedPair; false otherwise
      */
     public boolean isDirectedPair() {
@@ -310,7 +311,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is duration; false otherwise.
-     * 
+     *
      * @return true if this baseType is duration; false otherwise
      */
     public boolean isDuration() {
@@ -319,7 +320,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is file; false otherwise.
-     * 
+     *
      * @return true if this baseType is file; false otherwise
      */
     public boolean isFile() {
@@ -328,7 +329,7 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns true if this baseType is uri; false otherwise.
-     * 
+     *
      * @return true if this baseType is uri; false otherwise
      */
     public boolean isUri() {
@@ -337,13 +338,13 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Parses the <code>String</code> argument as A <code>SingleValue</code>.
-     * 
+     *
      * @param singleValue <code>String</code> representation of <code>SingleValue</code>
      * @return parsed <code>SingleValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>SingleValue</code> is not valid
      */
     public abstract SingleValue parseSingleValue(String singleValue);
-    
+
     @Override
     public String toQtiString() {
         return baseType;
@@ -351,12 +352,12 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns parsed <code>BaseType</code> from given <code>String</code>.
-     * 
+     *
      * @param baseType <code>String</code> representation of <code>BaseType</code>
      * @return parsed <code>BaseType</code> from given <code>String</code>
      * @throws QtiParseException if given <code>String</code> is not valid <code>BaseType</code>
      */
-    public static BaseType parseBaseType(String baseType) {
+    public static BaseType parseBaseType(final String baseType) {
         final BaseType result = baseTypes.get(baseType);
         if (result == null) {
             throw new QtiParseException("Invalid " + QTI_CLASS_NAME + " '" + baseType + "'.");
@@ -368,11 +369,11 @@ public enum BaseType implements Stringifiable {
     /**
      * Returns all supported baseTypes except of baseTypes in given parameter.
      * Result is baseType.values() - exclude.
-     * 
+     *
      * @param exclude excluded baseTypes
      * @return all supported baseTypes except of baseTypes in given parameter
      */
-    public static BaseType[] values(BaseType[] exclude) {
+    public static BaseType[] values(final BaseType[] exclude) {
         final List<BaseType> baseTypes = new ArrayList<BaseType>();
 
         for (final BaseType baseType : BaseType.values()) {
@@ -386,12 +387,12 @@ public enum BaseType implements Stringifiable {
 
     /**
      * Returns intersection of two given baseTypes sets (order is not important).
-     * 
+     *
      * @param firstSet first set of baseTypes
      * @param secondSet second set of baseType
      * @return intersection of two given baseTypes sets
      */
-    public static BaseType[] intersection(BaseType[] firstSet, BaseType[] secondSet) {
+    public static BaseType[] intersection(final BaseType[] firstSet, final BaseType[] secondSet) {
         final List<BaseType> baseTypes = new ArrayList<BaseType>();
 
         for (final BaseType baseType : firstSet) {

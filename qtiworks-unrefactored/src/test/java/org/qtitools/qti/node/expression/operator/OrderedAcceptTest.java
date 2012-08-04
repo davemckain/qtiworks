@@ -36,7 +36,6 @@ package org.qtitools.qti.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
-import uk.ac.ed.ph.jqtiplus.value.FileValue;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -47,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.PointValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.UriValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.value.ValueTestUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -160,7 +160,7 @@ public class OrderedAcceptTest extends ExpressionAcceptTest {
                 // file
                 { "<ordered>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</ordered>", new OrderedValue(new FileValue("file")) },
+                        "</ordered>", new OrderedValue(ValueTestUtils.createTestFileValue("file")) },
                 // uri
                 { "<ordered>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +

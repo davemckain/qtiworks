@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.value;
 
 /**
  * Superclass for all numeric <code>BaseType</code>s.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
@@ -45,17 +45,7 @@ public abstract class NumberValue extends SingleValue {
 
     private static final long serialVersionUID = 8904041700853751210L;
 
-    /**
-     * Returns the value of this <code>NumberValue</code> as A <code>int</code>.
-     * 
-     * @return the value of this <code>NumberValue</code> as A <code>int</code>
-     */
     public abstract int intValue();
 
-    /**
-     * Returns the value of this <code>NumberValue</code> as A <code>double</code>.
-     * 
-     * @return the value of this <code>NumberValue</code> as A <code>double</code>
-     */
     public abstract double doubleValue();
 }

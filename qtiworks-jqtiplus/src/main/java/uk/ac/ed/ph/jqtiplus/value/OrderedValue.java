@@ -140,20 +140,16 @@ public final class OrderedValue extends ListValue {
 
     @Override
     public boolean equals(final Object object) {
-        if (object == null) {
+        if (!(object instanceof OrderedValue)) {
             return false;
         }
 
-        if (isNull() && object instanceof Value && ((Value) object).isNull()) {
-            return true;
-        }
+        final OrderedValue other = (OrderedValue) object;
+        return container.equals(other.container);
+    }
 
-        if (!getClass().equals(object.getClass())) {
-            return false;
-        }
-
-        final OrderedValue value = (OrderedValue) object;
-
-        return container.equals(value.container);
+    @Override
+    public final int hashCode() {
+        return container.hashCode();
     }
 }

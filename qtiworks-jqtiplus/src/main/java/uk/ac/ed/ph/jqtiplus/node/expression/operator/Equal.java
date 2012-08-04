@@ -78,7 +78,7 @@ import java.util.List;
  * Attribute : includeUpperBound [0..1]: boolean = true
  * <p>
  * Controls whether or not the upper bound is included in the comparison
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -100,15 +100,15 @@ public class Equal extends AbstractFunctionalExpression {
     public static final String ATTR_INCLUDE_LOWER_BOUND_NAME = "includeLowerBound";
 
     /** Default value of includeLowerBound attribute. */
-    public static final Boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = Boolean.TRUE;
+    public static final boolean ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE = true;
 
     /** Name of includeUpperBound attribute in xml schema. */
     public static final String ATTR_INCLUDE_UPPER_BOUND_NAME = "includeUpperBound";
 
     /** Default value of incluseUpperBound attribute. */
-    public static final Boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = Boolean.TRUE;
+    public static final boolean ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE = true;
 
-    public Equal(ExpressionParent parent) {
+    public Equal(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ToleranceModeAttribute(this, ATTR_TOLERANCE_MODE_NAME, true));
@@ -119,7 +119,7 @@ public class Equal extends AbstractFunctionalExpression {
 
     /**
      * Gets value of toleranceMode attribute.
-     * 
+     *
      * @return value of toleranceMode attribute
      * @see #setToleranceMode
      */
@@ -129,50 +129,50 @@ public class Equal extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of toleranceMode attribute.
-     * 
+     *
      * @param toleranceMode new value of toleranceMode attribute
      * @see #getToleranceMode
      */
-    public void setToleranceMode(ToleranceMode toleranceMode) {
+    public void setToleranceMode(final ToleranceMode toleranceMode) {
         getAttributes().getToleranceModeAttribute(ATTR_TOLERANCE_MODE_NAME).setValue(toleranceMode);
     }
 
     /**
      * Gets value of tolerance attribute.
-     * 
+     *
      * @return value of tolerance attribute
      */
     public List<Double> getTolerances() {
         return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getComputedValue();
     }
-    
-    public void setTolerances(List<Double> value) {
+
+    public void setTolerances(final List<Double> value) {
         getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).setValue(value);
     }
 
     /**
      * Gets first tolerance if defined; zero otherwise.
-     * 
+     *
      * @return first tolerance if defined; zero otherwise
      */
     protected double getFirstTolerance() {
-        List<Double> tolerances = getTolerances();
+        final List<Double> tolerances = getTolerances();
         return tolerances!=null && tolerances.size()>0 ? tolerances.get(0).doubleValue() : 0;
     }
 
     /**
      * Gets second tolerance if defined; first tolerance otherwise.
-     * 
+     *
      * @return second tolerance if defined; first tolerance otherwise
      */
     protected double getSecondTolerance() {
-        List<Double> tolerances = getTolerances();
+        final List<Double> tolerances = getTolerances();
         return tolerances!=null && tolerances.size()>1 ? tolerances.get(1).doubleValue() : 0;
     }
 
     /**
      * Gets value of includeLowerBound attribute.
-     * 
+     *
      * @return value of includeLowerBound attribute
      * @see #setIncludeLowerBound
      */
@@ -182,17 +182,17 @@ public class Equal extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of includeLowerBound attribute.
-     * 
+     *
      * @param includeLowerBound new value of includeLowerBound attribute
      * @see #getIncludeLowerBound
      */
-    public void setIncludeLowerBound(Boolean includeLowerBound) {
+    public void setIncludeLowerBound(final Boolean includeLowerBound) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).setValue(includeLowerBound);
     }
 
     /**
      * Gets value of includeUpperBound attribute.
-     * 
+     *
      * @return value of includeUpperBound attribute
      * @see #setIncludeUpperBound
      */
@@ -202,16 +202,16 @@ public class Equal extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of includeUpperBound attribute.
-     * 
+     *
      * @param includeUpperBound new value of includeUpperBound attribute
      * @see #getIncludeUpperBound
      */
-    public void setIncludeUpperBound(Boolean includeUpperBound) {
+    public void setIncludeUpperBound(final Boolean includeUpperBound) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).setValue(includeUpperBound);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getFirstTolerance() < 0) {
@@ -232,7 +232,7 @@ public class Equal extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

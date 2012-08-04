@@ -83,7 +83,7 @@ public final class EndAttemptInteraction extends InlineInteraction {
     public static final String ATTR_COUNT_ATTEMPT_NAME = "countAttempt";
 
     /** Default value of countAttempt attribute in xml schema. */
-    public static final Boolean ATTR_COUNT_ATTEMPT_DEFAULT_VALUE = Boolean.TRUE;
+    public static final boolean ATTR_COUNT_ATTEMPT_DEFAULT_VALUE = true;
 
     /**
      * Construct new interaction.
