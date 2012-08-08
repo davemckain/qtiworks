@@ -35,17 +35,22 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
- * Template for creating/updating an {@link ItemDelivery}
+ * Template for creating/editing an {@link ItemDelivery}
  *
  * @author David McKain
  */
 public final class ItemDeliveryTemplate {
 
     @NotNull
+    @NotBlank
     @Size(min=1)
     private String title;
 
@@ -78,5 +83,12 @@ public final class ItemDeliveryTemplate {
 
     public void setLtiEnabled(final boolean ltiEnabled) {
         this.ltiEnabled = ltiEnabled;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

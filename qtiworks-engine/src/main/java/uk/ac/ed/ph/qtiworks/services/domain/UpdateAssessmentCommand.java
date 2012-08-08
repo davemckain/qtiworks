@@ -41,6 +41,8 @@ import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
  * Command Object containing the bits of an {@link Assessment} that can
  * be directly updated.
@@ -50,12 +52,14 @@ import javax.validation.constraints.Size;
 public final class UpdateAssessmentCommand {
 
     @NotNull
+    @NotBlank
     @Size(min=1, max=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH)
     private String name;
 
     @Basic(optional=false)
     @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     @NotNull
+    @NotBlank
     @Size(min=1, max=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     private String title;
 

@@ -50,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
@@ -385,9 +386,8 @@ public final class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.POST)
-    public String handleEditItemDeliveryForm(@PathVariable final long did,
-            final @Valid @ModelAttribute ItemDeliveryTemplate template, final Model model,
-            final BindingResult result)
+    public String handleEditItemDeliveryForm(final Model model, @PathVariable final long did,
+            final @Valid @ModelAttribute ItemDeliveryTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
@@ -453,7 +453,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/deliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
         final long existingOptionCount = entityGraphService.countCallerItemDeliverySettings();
-        final ItemDeliverySettings template = assessmentManagementService.createItemDeliverySettingsTemplate();
+        final ItemDeliverySettingsTemplate template = assessmentManagementService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingOptionCount+1));
 
         model.addAttribute(template);
@@ -461,16 +461,21 @@ public final class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/deliverysettings/create", method=RequestMethod.POST)
-    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result)
+    public String handleCreateItemDeliverySettingsForm(final @Valid @ModelAttribute ItemDeliverySettingsTemplate template,
+            final BindingResult result)
             throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            System.out.println(result);
             return "createItemDeliverySettingsForm";
         }
 
         /* Try to create new entity */
-        assessmentManagementService.createItemDeliverySettings(command);
+        try {
+            assessmentManagementService.createItemDeliverySettings(template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
 
         /* Go back to list */
         return buildActionRedirect("/deliverysettings");
@@ -480,22 +485,31 @@ public final class InstructorAssessmentManagementController {
     public String showEditItemDeliverySettingsForm(final Model model, @PathVariable final long dsid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
+        final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
+        assessmentManagementService.mergeItemDeliverySettings(itemDeliverySettings, template);
 
         model.addAttribute(itemDeliverySettings);
+        model.addAttribute(template);
         return "editItemDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}", method=RequestMethod.POST)
-    public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid,
-            final @Valid @ModelAttribute ItemDeliverySettings command, final BindingResult result)
+    public String handleEditItemDeliverySettingsForm( final Model model, @PathVariable final long dsid,
+            final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
+            setupModelForItemDeliverySettings(dsid, model);
             return "editItemDeliverySettingsForm";
         }
 
         /* Perform update */
-        assessmentManagementService.updateItemDeliverySettings(dsid, command);
+        try {
+            assessmentManagementService.updateItemDeliverySettings(dsid, template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
 
         /* Return to show/edit
          * FIXME: Add some flash message here so that it's not confusing.
@@ -520,5 +534,14 @@ public final class InstructorAssessmentManagementController {
         result.put("show", buildActionPath("/deliverysettings/" + dsid));
         result.put("update", buildActionPath("/deliverysettings/" + dsid + "/update"));
         return result;
+    }
+
+    private void setupModelForItemDeliverySettings(final long dsid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        setupModelForItemDeliverySettings(assessmentManagementService.lookupItemDeliverySettings(dsid), model);
+    }
+
+    private void setupModelForItemDeliverySettings(final ItemDeliverySettings itemDeliverySettings, final Model model) {
+        model.addAttribute("itemDeliverySettings", itemDeliverySettings);
     }
 }

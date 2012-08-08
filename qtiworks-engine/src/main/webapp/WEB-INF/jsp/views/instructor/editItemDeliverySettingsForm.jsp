@@ -7,7 +7,8 @@ Form for creating a new Item Delivery settings
 
 Model:
 
-itemDeliverySettings - current options
+itemDeliverySettings - current settings
+itemDeliverySettingsTemplate - form backing template
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -29,7 +30,7 @@ itemDeliverySettings - current options
   </div>
 
   <%-- TODO: Cut & paste below. Ack! --%>
-  <form:form cssClass="deliverySettings" method="post" acceptCharset="UTF-8" commandName="itemDeliverySettings">
+  <form:form cssClass="deliverySettings" method="post" acceptCharset="UTF-8" commandName="itemDeliverySettingsTemplate">
 
     <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>

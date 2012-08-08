@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
@@ -246,8 +247,8 @@ public class AssessmentManagementService {
         ensureCallerMayChange(assessment);
 
         /* Make changes */
-        assessment.setName(command.getName());
-        assessment.setTitle(command.getTitle());
+        assessment.setName(command.getName().trim());
+        assessment.setTitle(command.getTitle().trim());
         assessment.setPublic(command.isPublic());
         assessmentDao.update(assessment);
         return assessment;
@@ -424,10 +425,13 @@ public class AssessmentManagementService {
         return itemDeliverySettings;
     }
 
-    public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettings template)
-            throws PrivilegeException {
-        Assert.ensureNotNull(template, "template");
+    public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettingsTemplate template)
+            throws PrivilegeException, BindException {
+        /* Check caller privileges */
         final User caller = ensureCallerMayCreateItemDeliverySettings();
+
+        /* Validate template */
+        validateItemDeliverySettingsTemplate(template);
 
         /* Create and persist new options from template */
         final ItemDeliverySettings result = new ItemDeliverySettings();
@@ -439,11 +443,24 @@ public class AssessmentManagementService {
         return result;
     }
 
-    public ItemDeliverySettings updateItemDeliverySettings(final long dsid, final ItemDeliverySettings template)
-            throws PrivilegeException, DomainEntityNotFoundException {
+    private void validateItemDeliverySettingsTemplate(final ItemDeliverySettingsTemplate template)
+            throws BindException {
         Assert.ensureNotNull(template, "template");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliverySettingsTemplate");
+        jsr303Validator.validate(template, errors);
+        if (errors.hasErrors()) {
+            throw new BindException(errors);
+        }
+    }
+
+    public ItemDeliverySettings updateItemDeliverySettings(final long dsid, final ItemDeliverySettingsTemplate template)
+            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+        /* Check caller privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
         ensureCallerMayChange(itemDeliverySettings);
+
+        /* Validate template */
+        validateItemDeliverySettingsTemplate(template);
 
         /* Merge template into options and update */
         mergeItemDeliverySettings(template, itemDeliverySettings);
@@ -453,21 +470,38 @@ public class AssessmentManagementService {
         return itemDeliverySettings;
     }
 
-    private void mergeItemDeliverySettings(final ItemDeliverySettings source, final ItemDeliverySettings target) {
-        target.setAllowClose(source.isAllowClose());
-        target.setAllowPlayback(source.isAllowPlayback());
-        target.setAllowReinitWhenClosed(source.isAllowReinitWhenClosed());
-        target.setAllowReinitWhenInteracting(source.isAllowReinitWhenInteracting());
-        target.setAllowResetWhenClosed(source.isAllowResetWhenClosed());
-        target.setAllowResetWhenInteracting(source.isAllowResetWhenInteracting());
-        target.setAllowResult(source.isAllowResult());
-        target.setAllowSolutionWhenClosed(source.isAllowSolutionWhenClosed());
-        target.setAllowSolutionWhenInteracting(source.isAllowSolutionWhenInteracting());
-        target.setAllowSource(source.isAllowSource());
-        target.setAuthorMode(source.isAuthorMode());
-        target.setMaxAttempts(source.getMaxAttempts());
-        target.setPrompt(StringUtilities.nullIfEmpty(source.getPrompt()));
-        target.setTitle(source.getTitle());
+    private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
+        target.setAllowClose(template.isAllowClose());
+        target.setAllowPlayback(template.isAllowPlayback());
+        target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
+        target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
+        target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
+        target.setAllowResetWhenInteracting(template.isAllowResetWhenInteracting());
+        target.setAllowResult(template.isAllowResult());
+        target.setAllowSolutionWhenClosed(template.isAllowSolutionWhenClosed());
+        target.setAllowSolutionWhenInteracting(template.isAllowSolutionWhenInteracting());
+        target.setAllowSource(template.isAllowSource());
+        target.setAuthorMode(template.isAuthorMode());
+        target.setMaxAttempts(template.getMaxAttempts().intValue());
+        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
+        target.setTitle(template.getTitle().trim());
+    }
+
+    public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
+        target.setAllowClose(template.isAllowClose());
+        target.setAllowPlayback(template.isAllowPlayback());
+        target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
+        target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
+        target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
+        target.setAllowResetWhenInteracting(template.isAllowResetWhenInteracting());
+        target.setAllowResult(template.isAllowResult());
+        target.setAllowSolutionWhenClosed(template.isAllowSolutionWhenClosed());
+        target.setAllowSolutionWhenInteracting(template.isAllowSolutionWhenInteracting());
+        target.setAllowSource(template.isAllowSource());
+        target.setAuthorMode(template.isAuthorMode());
+        target.setMaxAttempts(Integer.valueOf(template.getMaxAttempts()));
+        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
+        target.setTitle(template.getTitle());
     }
 
     private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
@@ -550,7 +584,7 @@ public class AssessmentManagementService {
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
         delivery.setOpen(template.isOpen());
         delivery.setLtiEnabled(template.isLtiEnabled());
-        delivery.setTitle(template.getTitle());
+        delivery.setTitle(template.getTitle().trim());
         itemDeliveryDao.persist(delivery);
         return delivery;
     }
@@ -566,7 +600,7 @@ public class AssessmentManagementService {
 
         /* Update data */
         delivery.setOpen(template.isOpen());
-        delivery.setTitle(template.getTitle());
+        delivery.setTitle(template.getTitle().trim());
         delivery.setLtiEnabled(template.isLtiEnabled());
         itemDeliveryDao.update(delivery);
         return delivery;
@@ -651,7 +685,9 @@ public class AssessmentManagementService {
     public ItemDeliverySettings requireFirstDeliverySettings(final User owner) {
         ItemDeliverySettings firstDeliverySettings = itemDeliverySettingsDao.getFirstForOwner(owner);
         if (firstDeliverySettings==null) {
-            firstDeliverySettings = createItemDeliverySettingsTemplate();
+            final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
+            firstDeliverySettings = new ItemDeliverySettings();
+            mergeItemDeliverySettings(template, firstDeliverySettings);
             firstDeliverySettings.setOwner(owner);
             firstDeliverySettings.setTitle("Default delivery settings");
             firstDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
@@ -664,8 +700,8 @@ public class AssessmentManagementService {
         return firstDeliverySettings;
     }
 
-    public ItemDeliverySettings createItemDeliverySettingsTemplate() {
-        final ItemDeliverySettings template = new ItemDeliverySettings();
+    public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
+        final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         template.setAllowClose(true);
         template.setAllowPlayback(true);
         template.setAllowReinitWhenClosed(true);
@@ -677,7 +713,7 @@ public class AssessmentManagementService {
         template.setAllowSolutionWhenInteracting(true);
         template.setAllowSource(true);
         template.setAuthorMode(true);
-        template.setMaxAttempts(Integer.valueOf(0));
+        template.setMaxAttempts(0);
         template.setTitle("Item Delivery Settings");
         template.setPrompt(null);
         return template;
