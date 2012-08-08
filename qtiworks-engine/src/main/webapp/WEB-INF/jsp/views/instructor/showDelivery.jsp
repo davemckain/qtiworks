@@ -64,5 +64,13 @@ instructorAssessmentRouting (action -> URL)
 
   <div class="clear"></div>
 
+  <h4>Actions</h4>
+
+  <ul>
+    <li>Edit Delivery Properties</li>
+    <li>Change Delivery Settings</li>
+    <li>Get LTI Link</li>
+    <li>Delete Delivery</li>
+    <li>View Candidate attempt data</li>
 
 </page:page>

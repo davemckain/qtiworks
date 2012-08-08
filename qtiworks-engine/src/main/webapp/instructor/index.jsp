@@ -15,25 +15,16 @@ All Rights Reserved
   </div>
 
   <div class="boxes">
-    <div class="grid_4">
+    <div class="grid_6">
       <div class="box">
         <a href="${utils:internalLink(pageContext, '/web/instructor/assessments')}" class="boxButton assessments" title="Run">
           <h3>Manage Assessments</h3>
-          <div>Upload and manage your Assessments</div>
+          <div>Upload, manage and deliver your Assessments</div>
         </a>
       </div>
     </div>
 
-    <div class="grid_4">
-      <div class="box">
-        <a href="${utils:internalLink(pageContext, '/instructor/')}" class="boxButton deliveries" title="Samples">
-          <h3>Deliver Assessments</h3>
-          <div>COMING SOON!</div>
-        </a>
-      </div>
-    </div>
-
-    <div class="grid_4">
+    <div class="grid_6">
       <div class="box">
         <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}" class="boxButton deliverysettings" title="Samples">
           <h3>Manage Delivery Settings</h3>
