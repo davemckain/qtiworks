@@ -50,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
@@ -354,13 +355,9 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
     public String showDelivery(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery itemDelivery = assessmentManagementService.lookupItemDelivery(did);
-        final Assessment assessment = itemDelivery.getAssessment();
+        final ItemDelivery delivery = assessmentManagementService.lookupItemDelivery(did);
+        setupModelForDelivery(delivery, model);
 
-        model.addAttribute(itemDelivery);
-        model.addAttribute(assessment);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
-        model.addAttribute("deliveryRouting", buildDeliveryRouting(itemDelivery));
         return "showDelivery";
     }
 
@@ -370,6 +367,44 @@ public final class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = assessmentManagementService.createItemDelivery(aid);
         return buildActionRedirect("/delivery/" + itemDelivery.getId().longValue());
+    }
+
+    @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
+    public String showEditDeliveryForm(final Model model, @PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final ItemDelivery delivery = assessmentManagementService.lookupItemDelivery(did);
+
+        final ItemDeliveryTemplate template = new ItemDeliveryTemplate();
+        template.setTitle(delivery.getTitle());
+        template.setOpen(delivery.isOpen());
+        template.setLtiEnabled(delivery.isLtiEnabled());
+
+        model.addAttribute(template);
+        setupModelForDelivery(delivery, model);
+        return "editItemDeliveryForm";
+    }
+
+    @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.POST)
+    public String handleEditItemDeliveryForm(@PathVariable final long did,
+            final @Valid @ModelAttribute ItemDeliveryTemplate template, final Model model,
+            final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForDelivery(did, model);
+            return "editItemDeliveryForm";
+        }
+
+        /* Perform update */
+        try {
+            assessmentManagementService.updateItemDelivery(did, template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Return to show */
+        return buildActionRedirect("/delivery/" + did);
     }
 
     public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<ItemDelivery> deliveries) {
@@ -387,8 +422,21 @@ public final class InstructorAssessmentManagementController {
     public Map<String, String> buildDeliveryRouting(final long did) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildActionPath("/delivery/" + did));
-        result.put("update", buildActionPath("/delivery/" + did + "/update"));
+        result.put("edit", buildActionPath("/delivery/" + did + "/edit"));
         return result;
+    }
+
+    private void setupModelForDelivery(final long did, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        setupModelForDelivery(assessmentManagementService.lookupItemDelivery(did), model);
+    }
+
+    private void setupModelForDelivery(final ItemDelivery delivery, final Model model) {
+        final Assessment assessment = delivery.getAssessment();
+        model.addAttribute(delivery);
+        model.addAttribute(assessment);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
+        model.addAttribute("deliveryRouting", buildDeliveryRouting(delivery));
     }
 
     //------------------------------------------------------
