@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Encapsulates the legality of a {@link CandidateItemResponse}
+ * Encapsulates the various types of {@link ItemDelivery}
  *
  * @author David McKain
  */
-public enum ItemDeliveryType {
+public enum DeliveryType {
 
     /** Explicitly-created delivery */
     USER_CREATED,

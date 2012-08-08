@@ -59,7 +59,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -188,7 +188,7 @@ public class AssessmentCandidateService {
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = lookupSampleAssessment(aid);
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
+        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, DeliveryType.SYSTEM_DEMO);
         if (systemDemoDeliveries.size()!=1) {
             throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
                     + " to have exactly 1 system demo deliverable associated with it");

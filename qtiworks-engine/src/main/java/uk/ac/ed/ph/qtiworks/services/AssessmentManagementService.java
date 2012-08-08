@@ -49,7 +49,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -521,7 +521,7 @@ public class AssessmentManagementService {
         final ItemDelivery delivery = new ItemDelivery();
         delivery.setAssessmentPackage(assessmentPackage);
         delivery.setItemDeliverySettings(itemDeliverySettings);
-        delivery.setItemDeliveryType(ItemDeliveryType.USER_CREATED);
+        delivery.setDeliveryType(DeliveryType.USER_CREATED);
         delivery.setOpen(template.isOpen());
         delivery.setTitle(template.getTitle());
         itemDeliveryDao.persist(delivery);
@@ -610,7 +610,7 @@ public class AssessmentManagementService {
         final ItemDelivery delivery = new ItemDelivery();
         delivery.setAssessmentPackage(currentAssessmentPackage);
         delivery.setItemDeliverySettings(itemDeliverySettings);
-        delivery.setItemDeliveryType(ItemDeliveryType.USER_TRANSIENT);
+        delivery.setDeliveryType(DeliveryType.USER_TRANSIENT);
         delivery.setOpen(true);
         delivery.setTitle("Temporary demo delivery");
         itemDeliveryDao.persist(delivery);

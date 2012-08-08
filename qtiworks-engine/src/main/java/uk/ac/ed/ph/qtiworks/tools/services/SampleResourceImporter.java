@@ -46,7 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.samples.DeliveryStyle;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
@@ -386,11 +386,11 @@ public class SampleResourceImporter {
             assessmentDao.update(assessment);
 
             /* Create a Delivery using these options (if there isn't one already) */
-            final List<ItemDelivery> demoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, ItemDeliveryType.SYSTEM_DEMO);
+            final List<ItemDelivery> demoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, DeliveryType.SYSTEM_DEMO);
             if (demoDeliveries.isEmpty()) {
                 final ItemDelivery defaultDelivery = new ItemDelivery();
                 defaultDelivery.setAssessmentPackage(assessmentPackage);
-                defaultDelivery.setItemDeliveryType(ItemDeliveryType.SYSTEM_DEMO);
+                defaultDelivery.setDeliveryType(DeliveryType.SYSTEM_DEMO);
                 defaultDelivery.setItemDeliverySettings(itemDeliverySettings);
                 defaultDelivery.setOpen(true);
                 defaultDelivery.setTitle("System demo delivery");

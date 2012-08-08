@@ -38,8 +38,8 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
@@ -229,13 +229,13 @@ public class PublicCandidateItemController {
     public String terminateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = candidateControllerService.terminateCandidateSession(xid);
-        final ItemDeliveryType itemDeliveryType = candidateSession.getItemDelivery().getItemDeliveryType();
+        final DeliveryType deliveryType = candidateSession.getItemDelivery().getDeliveryType();
 
         /* Redirect somewhere sensible.
          * TODO: We should probably allow the redirect to be specified explicitly!
          */
         String view;
-        if (itemDeliveryType==ItemDeliveryType.SYSTEM_DEMO) {
+        if (deliveryType==DeliveryType.SYSTEM_DEMO) {
             /* (Trying a sample) */
             view = redirectToListing();
         }

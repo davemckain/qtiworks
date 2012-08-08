@@ -84,7 +84,7 @@ import org.hibernate.annotations.Type;
             query="SELECT d"
                 + "  FROM ItemDelivery d"
                 + "  WHERE d.assessmentPackage = :assessmentPackage"
-                + "    AND d.itemDeliveryType = :itemDeliveryType")
+                + "    AND d.deliveryType = :deliveryType")
 })
 public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
@@ -114,7 +114,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="type", updatable=false, length=15)
     @Enumerated(EnumType.STRING)
-    private ItemDeliveryType itemDeliveryType;
+    private DeliveryType deliveryType;
 
     @NotNull
     @Size(min=1)
@@ -192,12 +192,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public ItemDeliveryType getItemDeliveryType() {
-        return itemDeliveryType;
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
     }
 
-    public void setItemDeliveryType(final ItemDeliveryType itemDeliveryType) {
-        this.itemDeliveryType = itemDeliveryType;
+    public void setDeliveryType(final DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
     }
 
 

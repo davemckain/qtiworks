@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliveryType;
 
 import java.util.List;
 
@@ -69,10 +69,10 @@ public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
         return query.getResultList();
     }
 
-    public List<ItemDelivery> getForAssessmentPackageAndType(final AssessmentPackage assessmentPackage, final ItemDeliveryType itemDeliveryType) {
+    public List<ItemDelivery> getForAssessmentPackageAndType(final AssessmentPackage assessmentPackage, final DeliveryType deliveryType) {
         final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackageAndType", ItemDelivery.class);
         query.setParameter("assessmentPackage", assessmentPackage);
-        query.setParameter("itemDeliveryType", itemDeliveryType);
+        query.setParameter("deliveryType", deliveryType);
         return query.getResultList();
     }
 }
