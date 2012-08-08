@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Filter that intercepts any {@link Exception}s and logs them in an appropriate way.
+ * Filter that intercepts any {@link RuntimeException}s and logs them in an appropriate way.
  *
  * @author David McKain
  */
@@ -71,8 +71,8 @@ public final class ExceptionLoggingFilter extends AbstractFilterUsingApplication
             filterChain.doFilter(request, response);
         }
         catch (final RuntimeException e) {
-            logger.warn("Intercepted Exception", e);
-            auditor.recordEvent("Intercepted Exception: " + e.getMessage());
+            logger.warn("Intercepted RuntimeException", e);
+            auditor.recordEvent("Intercepted RuntimeException: " + e.getMessage());
             throw e;
         }
     }
