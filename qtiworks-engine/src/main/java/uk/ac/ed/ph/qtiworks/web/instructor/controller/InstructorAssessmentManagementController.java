@@ -351,6 +351,19 @@ public final class InstructorAssessmentManagementController {
         return "listDeliveries";
     }
 
+    @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
+    public String showDelivery(final Model model, @PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final ItemDelivery itemDelivery = assessmentManagementService.lookupItemDelivery(did);
+        final Assessment assessment = itemDelivery.getAssessment();
+
+        model.addAttribute(itemDelivery);
+        model.addAttribute(assessment);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
+        model.addAttribute("deliveryRouting", buildDeliveryRouting(itemDelivery));
+        return "showDelivery";
+    }
+
     /** (Deliveries are currently very simple so created using a sensible default) */
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
     public String createItemDelivery(final @PathVariable long aid)
@@ -374,6 +387,7 @@ public final class InstructorAssessmentManagementController {
     public Map<String, String> buildDeliveryRouting(final long did) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildActionPath("/delivery/" + did));
+        result.put("update", buildActionPath("/delivery/" + did + "/update"));
         return result;
     }
 

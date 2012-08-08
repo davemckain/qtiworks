@@ -26,10 +26,12 @@ instructorAssessmentRouting
 
   <c:choose>
     <c:when test="${!empty itemDeliveryList}">
-      <table class="itemDeliveryList">
+      <table class="assessmentList">
         <thead>
           <th></th>
           <th>Title</th>
+          <th>Open?</th>
+          <th>Delivery Settings</th>
         </thead>
         <tbody>
           <c:forEach var="itemDelivery" items="${itemDeliveryList}" varStatus="loopStatus">
@@ -38,7 +40,13 @@ instructorAssessmentRouting
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
               <td>
-                <h4><a href="${utils:escapeLink(itemDeliveryListRouting[itemDelivery.id]['show'])}"><c:out value="${itemDelivery.title}"/></a></h4>
+                <a href="${utils:escapeLink(deliveryListRouting[itemDelivery.id]['show'])}"><c:out value="${itemDelivery.title}"/></a>
+              </td>
+              <td>
+                ${itemDelivery.open ? 'Yes' : 'No' }
+              </td>
+              <td>
+                ${fn:escapeXml(itemDelivery.itemDeliverySettings.title)}
               </td>
             </tr>
           </c:forEach>
