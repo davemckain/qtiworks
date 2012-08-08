@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -74,5 +75,12 @@ public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
         query.setParameter("assessment", assessment);
         query.setParameter("deliveryType", deliveryType);
         return query.getResultList();
+    }
+
+    public long countForAssessmentAndType(final Assessment assessment, final DeliveryType deliveryType) {
+        final Query query = em.createNamedQuery("ItemDelivery.countForAssessmentAndType");
+        query.setParameter("assessment", assessment);
+        query.setParameter("deliveryType", deliveryType);
+        return extractCountResult(query);
     }
 }

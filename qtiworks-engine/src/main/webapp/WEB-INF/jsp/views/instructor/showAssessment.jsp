@@ -81,17 +81,18 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_1">
     <div class="infoBox">
       <div class="cat">Valid?</div>
-      <div class="value">${assessmentPackage.valid ? 'Yes' : 'No'}</div>
+      <div class="value">
+        <a href="${utils:escapeLink(assessmentRouting['validate'])}">${assessmentPackage.valid ? 'Yes' : 'No'}</a>
+      </div>
     </div>
   </div>
 
   <div class="grid_4">
     <div class="infoBox">
-      <div class="cat">Last Upload</div>
+      <div class="cat">Last QTI Upload</div>
       <div class="value">${utils:formatDayDateAndTime(assessmentPackage.creationTime)}</div>
     </div>
   </div>
-
 
   <div class="clear"></div>
 
@@ -132,7 +133,6 @@ instructorAssessmentRouting (action -> URL)
       </c:choose>
     </li>
     <li>Delete Assignment (coming soon)</li>
-    <li>Create a Delivery (coming soon)</li>
-    <li>Manage Deliveries of this Assignment</li>
+    <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
   </ul>
 </page:page>

@@ -505,6 +505,27 @@ public class AssessmentManagementService {
         return itemDelivery;
     }
 
+    /** Creates a new {@link ItemDelivery} for the given Assignment using reasonable default values */
+    public ItemDelivery createItemDelivery(final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up Assessment and check caller and change it */
+        final Assessment assessment = lookupAssessment(aid);
+        final User caller = ensureCallerMayChange(assessment);
+
+        /* Get first ItemDeliverySettings (creating if required) */
+        final ItemDeliverySettings itemDeliverySettings = requireFirstDeliverySettings(caller);
+
+        /* Create ItemDelivery template with reasonable defaults */
+        final ItemDeliveryTemplate template = new ItemDeliveryTemplate();
+        final long existingDeliveryCount = entityGraphService.countCallerDeliveries(assessment);
+        template.setTitle("Item Delivery #" + (existingDeliveryCount+1));
+        template.setOpen(false);
+        template.setLtiEnabled(false);
+
+        /* Create and return new entity */
+        return createItemDelivery(assessment, itemDeliverySettings, template);
+    }
+
     public ItemDelivery createItemDelivery(final long aid, final long dsid, final ItemDeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
@@ -517,12 +538,18 @@ public class AssessmentManagementService {
         /* Look up settings and check privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
 
-        /* Create and persist entity */
+        /* Create and return new entity */
+        return createItemDelivery(assessment, itemDeliverySettings, template);
+    }
+
+    private ItemDelivery createItemDelivery(final Assessment assessment,
+            final ItemDeliverySettings itemDeliverySettings, final ItemDeliveryTemplate template) {
         final ItemDelivery delivery = new ItemDelivery();
         delivery.setAssessment(assessment);
         delivery.setItemDeliverySettings(itemDeliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
         delivery.setOpen(template.isOpen());
+        delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setTitle(template.getTitle());
         itemDeliveryDao.persist(delivery);
         return delivery;
@@ -540,6 +567,7 @@ public class AssessmentManagementService {
         /* Update data */
         delivery.setOpen(template.isOpen());
         delivery.setTitle(template.getTitle());
+        delivery.setLtiEnabled(template.isLtiEnabled());
         itemDeliveryDao.update(delivery);
         return delivery;
     }
@@ -583,7 +611,7 @@ public class AssessmentManagementService {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         ItemDeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
         if (deliverySettings==null) {
-            deliverySettings = getFirstDeliverySettings(caller);
+            deliverySettings = requireFirstDeliverySettings(caller);
         }
 
         /* Now create demo delivery using these options */
@@ -620,7 +648,7 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    private ItemDeliverySettings getFirstDeliverySettings(final User owner) {
+    public ItemDeliverySettings requireFirstDeliverySettings(final User owner) {
         ItemDeliverySettings firstDeliverySettings = itemDeliverySettingsDao.getFirstForOwner(owner);
         if (firstDeliverySettings==null) {
             firstDeliverySettings = createItemDeliverySettingsTemplate();

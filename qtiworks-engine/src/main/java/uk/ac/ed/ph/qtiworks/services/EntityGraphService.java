@@ -38,9 +38,11 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 
@@ -78,6 +80,9 @@ public class EntityGraphService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
+    private ItemDeliveryDao itemDeliveryDao;
+
+    @Resource
     private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
     //-------------------------------------------------
@@ -108,6 +113,16 @@ public class EntityGraphService {
     public AssessmentPackage getCurrentAssessmentPackage(final ItemDelivery delivery) {
         Assert.ensureNotNull(delivery, "delivery");
         return getCurrentAssessmentPackage(delivery.getAssessment());
+    }
+
+    //-------------------------------------------------
+
+    public List<ItemDelivery> getCallerDeliveries(final Assessment assessment) {
+        return itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
+    }
+
+    public long countCallerDeliveries(final Assessment assessment) {
+        return itemDeliveryDao.countForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
     //-------------------------------------------------

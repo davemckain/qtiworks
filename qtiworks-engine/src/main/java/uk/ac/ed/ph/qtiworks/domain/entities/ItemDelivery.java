@@ -84,6 +84,11 @@ import org.hibernate.annotations.Type;
             query="SELECT d"
                 + "  FROM ItemDelivery d"
                 + "  WHERE d.assessment = :assessment"
+                + "    AND d.deliveryType = :deliveryType"),
+    @NamedQuery(name="ItemDelivery.countForAssessmentAndType",
+            query="SELECT COUNT(*)"
+                + "  FROM ItemDelivery d"
+                + "  WHERE d.assessment = :assessment"
                 + "    AND d.deliveryType = :deliveryType")
 })
 public class ItemDelivery implements BaseEntity, TimestampedOnCreation {

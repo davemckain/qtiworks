@@ -51,6 +51,8 @@ public final class ItemDeliveryTemplate {
 
     private boolean open;
 
+    private boolean ltiEnabled;
+
 
     public String getTitle() {
         return title;
@@ -67,5 +69,14 @@ public final class ItemDeliveryTemplate {
 
     public void setOpen(final boolean open) {
         this.open = open;
+    }
+
+
+    public boolean isLtiEnabled() {
+        return ltiEnabled;
+    }
+
+    public void setLtiEnabled(final boolean ltiEnabled) {
+        this.ltiEnabled = ltiEnabled;
     }
 }

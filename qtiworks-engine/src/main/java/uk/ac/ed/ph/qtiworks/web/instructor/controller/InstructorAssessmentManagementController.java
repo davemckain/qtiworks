@@ -125,6 +125,8 @@ public final class InstructorAssessmentManagementController {
         result.put("upload", buildActionPath("/assessment/" + aid + "/upload"));
         result.put("validate", buildActionPath("/assessment/" + aid + "/validate"));
         result.put("try", buildActionPath("/assessment/" + aid + "/try"));
+        result.put("deliveries", buildActionPath("/assessment/" + aid + "/deliveries"));
+        result.put("createDelivery", buildActionPath("/assessment/" + aid + "/deliveries/create"));
         return result;
     }
 
@@ -332,6 +334,47 @@ public final class InstructorAssessmentManagementController {
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
         return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
+    }
+
+    //------------------------------------------------------
+    // Management of ItemDeliveries
+
+    @RequestMapping(value="/assessment/{aid}/deliveries", method=RequestMethod.GET)
+    public String listDeliveries(final @PathVariable long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final List<ItemDelivery> deliveries = entityGraphService.getCallerDeliveries(assessment);
+        model.addAttribute(assessment);
+        model.addAttribute(deliveries);
+        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
+        model.addAttribute("deliveryListRouting", buildDeliveryListRouting(deliveries));
+        return "listDeliveries";
+    }
+
+    /** (Deliveries are currently very simple so created using a sensible default) */
+    @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
+    public String createItemDelivery(final @PathVariable long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final ItemDelivery itemDelivery = assessmentManagementService.createItemDelivery(aid);
+        return buildActionRedirect("/delivery/" + itemDelivery.getId().longValue());
+    }
+
+    public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<ItemDelivery> deliveries) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final ItemDelivery delivery : deliveries) {
+            result.put(delivery.getId(), buildDeliveryRouting(delivery));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildDeliveryRouting(final ItemDelivery delivery) {
+        return buildDeliveryRouting(delivery.getId().longValue());
+    }
+
+    public Map<String, String> buildDeliveryRouting(final long did) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", buildActionPath("/delivery/" + did));
+        return result;
     }
 
     //------------------------------------------------------
