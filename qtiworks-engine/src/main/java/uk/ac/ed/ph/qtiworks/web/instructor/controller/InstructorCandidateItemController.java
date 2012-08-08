@@ -211,7 +211,7 @@ public class InstructorCandidateItemController {
     public String terminateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = candidateControllerService.terminateCandidateSession(xid);
-        final Assessment assessment = candidateSession.getItemDelivery().getAssessmentPackage().getAssessment();
+        final Assessment assessment = candidateSession.getItemDelivery().getAssessment();
 
         /* FIXME: This should clear up data! */
         return redirectToAssessment(assessment.getId().longValue());

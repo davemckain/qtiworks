@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -97,6 +98,16 @@ public class EntityGraphService {
             throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
         }
         return result;
+    }
+
+    /**
+     * Retrieves the current (=most recent) {@link AssessmentPackage} for the given {@link ItemDelivery}.
+     * <p>
+     * This will return a non-null result.
+     */
+    public AssessmentPackage getCurrentAssessmentPackage(final ItemDelivery delivery) {
+        Assert.ensureNotNull(delivery, "delivery");
+        return getCurrentAssessmentPackage(delivery.getAssessment());
     }
 
     //-------------------------------------------------

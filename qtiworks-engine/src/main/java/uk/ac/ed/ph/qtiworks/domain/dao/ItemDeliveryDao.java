@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 
@@ -63,15 +63,15 @@ public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
         super(ItemDelivery.class);
     }
 
-    public List<ItemDelivery> getForAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackage", ItemDelivery.class);
-        query.setParameter("assessmentPackage", assessmentPackage);
+    public List<ItemDelivery> getForAssessment(final Assessment assessment) {
+        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessment", ItemDelivery.class);
+        query.setParameter("assessment", assessment);
         return query.getResultList();
     }
 
-    public List<ItemDelivery> getForAssessmentPackageAndType(final AssessmentPackage assessmentPackage, final DeliveryType deliveryType) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentPackageAndType", ItemDelivery.class);
-        query.setParameter("assessmentPackage", assessmentPackage);
+    public List<ItemDelivery> getForAssessmentAndType(final Assessment assessment, final DeliveryType deliveryType) {
+        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentAndType", ItemDelivery.class);
+        query.setParameter("assessment", assessment);
         query.setParameter("deliveryType", deliveryType);
         return query.getResultList();
     }

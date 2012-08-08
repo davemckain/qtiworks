@@ -76,6 +76,9 @@ public final class FilespaceManager {
     @Resource
     private RequestTimestampContext requestTimestampContext;
 
+    @Resource
+    private EntityGraphService entityGraphService;
+
     private File filesystemBaseDirectory;
 
     @PostConstruct
@@ -108,7 +111,7 @@ public final class FilespaceManager {
         Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
         Assert.ensureNotNull(candidate, "candidate");
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()

@@ -76,14 +76,14 @@ import org.hibernate.annotations.Type;
 @Table(name="item_deliveries")
 @SequenceGenerator(name="itemDeliverySequence", sequenceName="item_delivery_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
-    @NamedQuery(name="ItemDelivery.getForAssessmentPackage",
+    @NamedQuery(name="ItemDelivery.getForAssessment",
             query="SELECT d"
                 + "  FROM ItemDelivery d"
-                + "  WHERE d.assessmentPackage = :assessmentPackage"),
-    @NamedQuery(name="ItemDelivery.getForAssessmentPackageAndType",
+                + "  WHERE d.assessment = :assessment"),
+    @NamedQuery(name="ItemDelivery.getForAssessmentAndType",
             query="SELECT d"
                 + "  FROM ItemDelivery d"
-                + "  WHERE d.assessmentPackage = :assessmentPackage"
+                + "  WHERE d.assessment = :assessment"
                 + "    AND d.deliveryType = :deliveryType")
 })
 public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
@@ -104,8 +104,8 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private Date creationTime;
 
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="apid")
-    private AssessmentPackage assessmentPackage;
+    @JoinColumn(name="aid")
+    private Assessment assessment;
 
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="dsid")
@@ -173,12 +173,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
+    public Assessment getAssessment() {
+        return assessment;
     }
 
-    public void setAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        this.assessmentPackage = assessmentPackage;
+    public void setAssessment(final Assessment assessment) {
+        this.assessment = assessment;
     }
 
 

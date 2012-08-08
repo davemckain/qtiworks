@@ -47,9 +47,9 @@ import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -501,25 +501,25 @@ public class AssessmentManagementService {
     public ItemDelivery lookupItemDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
-        ensureCallerMayAccess(itemDelivery.getAssessmentPackage().getAssessment());
+        ensureCallerMayAccess(itemDelivery.getAssessment());
         return itemDelivery;
     }
 
-    public ItemDelivery createItemDelivery(final long apid, final long dsid, final ItemDeliveryTemplate template)
+    public ItemDelivery createItemDelivery(final long aid, final long dsid, final ItemDeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
         validateItemDeliveryTemplate(template);
 
-        /* Look up AssessmentPackage and check caller and change owning Assessment */
-        final AssessmentPackage assessmentPackage = lookupAssessmentPackage(apid);
-        ensureCallerMayChange(assessmentPackage.getAssessment());
+        /* Look up Assessment and check caller and change it */
+        final Assessment assessment = lookupAssessment(aid);
+        ensureCallerMayChange(assessment);
 
         /* Look up settings and check privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
 
         /* Create and persist entity */
         final ItemDelivery delivery = new ItemDelivery();
-        delivery.setAssessmentPackage(assessmentPackage);
+        delivery.setAssessment(assessment);
         delivery.setItemDeliverySettings(itemDeliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
         delivery.setOpen(template.isOpen());
@@ -535,7 +535,7 @@ public class AssessmentManagementService {
 
         /* Look up delivery and check privileges */
         final ItemDelivery delivery = lookupItemDelivery(did);
-        ensureCallerMayChange(delivery.getAssessmentPackage().getAssessment());
+        ensureCallerMayChange(delivery.getAssessment());
 
         /* Update data */
         delivery.setOpen(template.isOpen());
@@ -551,7 +551,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up delivery and check privileges */
         final ItemDelivery delivery = lookupItemDelivery(did);
-        ensureCallerMayChange(delivery.getAssessmentPackage().getAssessment());
+        ensureCallerMayChange(delivery.getAssessment());
 
         /* Look up settings and check privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
@@ -608,7 +608,7 @@ public class AssessmentManagementService {
 
         /* Create demo Delivery */
         final ItemDelivery delivery = new ItemDelivery();
-        delivery.setAssessmentPackage(currentAssessmentPackage);
+        delivery.setAssessment(assessment);
         delivery.setItemDeliverySettings(itemDeliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_TRANSIENT);
         delivery.setOpen(true);

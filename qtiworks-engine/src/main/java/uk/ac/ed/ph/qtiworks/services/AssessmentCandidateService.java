@@ -57,9 +57,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -187,8 +187,7 @@ public class AssessmentCandidateService {
     public ItemDelivery lookupSystemSampleDelivery(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = lookupSampleAssessment(aid);
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentPackageAndType(assessmentPackage, DeliveryType.SYSTEM_DEMO);
+        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
         if (systemDemoDeliveries.size()!=1) {
             throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
                     + " to have exactly 1 system demo deliverable associated with it");
@@ -226,7 +225,7 @@ public class AssessmentCandidateService {
         if (!itemDelivery.isOpen()) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
-        final Assessment assessment = itemDelivery.getAssessmentPackage().getAssessment();
+        final Assessment assessment = itemDelivery.getAssessment();
         if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
@@ -306,7 +305,7 @@ public class AssessmentCandidateService {
 
     private ItemSessionController createItemSessionController(final ItemDelivery itemDelivery, final ItemSessionState itemSessionState) {
         /* Get the resolved JQTI+ Object for the underlying package */
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
         return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
@@ -996,7 +995,7 @@ public class AssessmentCandidateService {
         final CandidateSessionState candidateSessionState = candidateSession.getState();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
@@ -1048,7 +1047,7 @@ public class AssessmentCandidateService {
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
@@ -1097,7 +1096,7 @@ public class AssessmentCandidateService {
         final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
@@ -1180,7 +1179,7 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
-        final AssessmentPackage assessmentPackage = itemDelivery.getAssessmentPackage();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
             final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
@@ -1213,8 +1212,9 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
         ensureCallerMayViewSource(itemDelivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
-        assessmentPackageFileService.streamAssessmentPackageSource(itemDelivery.getAssessmentPackage(), outputStreamer);
+        assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
         auditor.recordEvent("Candidate streamed source for delivery #" + itemDelivery.getId());
     }
 
@@ -1318,7 +1318,8 @@ public class AssessmentCandidateService {
     }
 
     private ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {
-        final AssessmentPackage assessmentPackage = candidateEvent.getCandidateItemSession().getItemDelivery().getAssessmentPackage();
+        final ItemDelivery itemDelivery = candidateEvent.getCandidateItemSession().getItemDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
         final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
         return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
