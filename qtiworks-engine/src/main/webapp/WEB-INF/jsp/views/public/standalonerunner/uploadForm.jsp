@@ -7,7 +7,7 @@ Validator service submission form
 
 Model attributes:
 
-standaloneDeliveryCommand
+standaloneRunCommand
 itemDeliverySettingsList
 
 --%>
@@ -28,7 +28,7 @@ itemDeliverySettingsList
     </p>
   </div>
 
-  <form:form id="uploadForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="standaloneDeliveryCommand">
+  <form:form id="uploadForm" method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="standaloneRunCommand">
 
     <%-- Show any validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>
@@ -65,7 +65,7 @@ itemDeliverySettingsList
         Select delivery settings:
         <ul class="dsSelector">
           <c:forEach var="ds" items="${itemDeliverySettingsList}">
-            <c:set var="checked" value="${standaloneDeliveryCommand.dsid==ds.id}"/>
+            <c:set var="checked" value="${standaloneRunCommand.dsid==ds.id}"/>
             <li>
               <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
               <label for="dsid${ds.id}" class="dsTitle">
