@@ -192,9 +192,10 @@ public class CandidateSessionStarter {
      * @return
      * @throws RuntimeValidationException
      */
-    private CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
+    public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
             throws RuntimeValidationException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
+        Assert.ensureNotNull(exitUrl, "exitUrl");
 
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();

@@ -41,8 +41,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
@@ -80,7 +80,7 @@ public class AnonymousStandaloneItemRunner {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private AssessmentCandidateService assessmentCandidateService;
+    private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
     private ItemDeliverySettingsDao itemDeliverySettingsDao;
@@ -107,18 +107,20 @@ public class AnonymousStandaloneItemRunner {
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
     public String handleUploadAndRunForm(final Model model, @Valid @ModelAttribute final StandaloneRunCommand command,
-            final BindingResult errors) throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            final BindingResult errors)
+            throws RuntimeValidationException {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
             return "standalonerunner/uploadForm";
         }
 
-        /* Make sure the required ItemDeliverySettings exists */
-        final ItemDeliverySettings itemDeliverySettings = assessmentCandidateService.lookupItemDeliverySettings(command.getDsid());
-
-        /* Now upload the Assessment and validate it */
-        final Assessment assessment;
+        /* FIXME: Delete the uploaded data if there is an Exception here! */
         try {
+            /* Make sure the required ItemDeliverySettings exists */
+            final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
+
+            /* Now upload the Assessment and validate it */
+            final Assessment assessment;
             assessment = assessmentManagementService.importAssessment(command.getFile());
             final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment.getId().longValue());
             if (assessment.getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
@@ -130,21 +132,26 @@ public class AnonymousStandaloneItemRunner {
                 model.addAttribute("validationResult", validationResult);
                 return "standalonerunner/invalidUpload";
             }
+
+            /* If still here, start new delivery and get going */
+            final ItemDelivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
+            final String exitUrl = "/web/anonymous/standalonerunner";
+            final CandidateItemSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
+
+            /* Redirect to candidate dispatcher */
+            return "redirect:/candidate/session/" + candidateSession.getId().longValue() + "/" + candidateSession.getSessionHash();
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
             return "standalonerunner/uploadForm";
         }
+        catch (final PrivilegeException e) {
+            /* This should not happen if access control logic has been done correctly */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
         catch (final DomainEntityNotFoundException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-
-        /* If still here, start new delivery and get going */
-        final ItemDelivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
-        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(delivery.getId().longValue());
-
-        /* Redirect to rendering */
-        return "redirect:/web/anonymous/session/" + candidateSession.getId().longValue();
     }
 }

@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
@@ -103,10 +104,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service the manages the real-time delivery of an {@link Assessment}
- * to a particular candidate {@link User}.
+ * to a particular candidate.
  * <p>
- * DEV NOTE: MVC Controllers should use the public methods taking IDs to ensure
- * that work is done in a single transaction and avoid detached entities.
+ * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * @author David McKain
  */
@@ -167,106 +167,6 @@ public class AssessmentCandidateService {
     private CandidateItemAttemptDao candidateItemAttemptDao;
 
     //----------------------------------------------------
-    // Candidate delivery access
-
-    public ItemDelivery lookupItemDelivery(final long did)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
-        ensureCandidateMayAccess(itemDelivery);
-        return itemDelivery;
-    }
-
-    /**
-     * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
-     * to be relaxed in order to allow "real" deliveries to be done.
-     */
-    private User ensureCandidateMayAccess(final ItemDelivery itemDelivery)
-            throws CandidatePrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDelivery.isOpen()) {
-            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
-        }
-        final Assessment assessment = itemDelivery.getAssessment();
-        if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
-            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
-        }
-        return caller;
-    }
-
-    public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(itemDeliverySettings);
-        return itemDeliverySettings;
-    }
-
-    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
-            throws CandidatePrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
-            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
-        }
-    }
-
-    //----------------------------------------------------
-    // Session creation and initialisation
-
-    /**
-     * Starts a new {@link CandidateItemSession} for the {@link ItemDelivery}
-     * having the given ID (did).
-     *
-     * @param did
-     * @return
-     * @throws RuntimeValidationException
-     * @throws CandidatePrivilegeException
-     * @throws DomainEntityNotFoundException
-     */
-    @Deprecated
-    public CandidateItemSession createCandidateSession(final long did)
-            throws RuntimeValidationException, CandidatePrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        return createCandidateSession(itemDelivery);
-    }
-
-    /**
-     * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
-     * @param itemDelivery
-     * @return
-     * @throws RuntimeValidationException
-     */
-    @Deprecated
-    private CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery)
-            throws RuntimeValidationException {
-        Assert.ensureNotNull(itemDelivery, "itemDelivery");
-
-        /* Create fresh JQTI+ state Object */
-        final ItemSessionState itemSessionState = new ItemSessionState();
-
-        /* Initialise state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
-        itemSessionController.initialize();
-
-        /* Check whether an attempt is allowed. This is a bit pathological here,
-         * but it makes sense to be consistent.
-         */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
-
-        /* Create new session and put into appropriate state */
-        final CandidateItemSession candidateItemSession = new CandidateItemSession();
-        candidateItemSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
-        candidateItemSession.setItemDelivery(itemDelivery);
-        candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
-        candidateItemSessionDao.persist(candidateItemSession);
-
-        /* Record initialisation event */
-        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.INIT, itemSessionState);
-
-        auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateItemSession.getId()
-                + " on ItemDelivery #" + itemDelivery.getId());
-        return candidateItemSession;
-    }
-
-    //----------------------------------------------------
     // Session access after creation
 
     /**
@@ -292,6 +192,13 @@ public class AssessmentCandidateService {
             throws CandidatePrivilegeException {
         if (!sessionHash.equals(candidateItemSession.getSessionHash())) {
             throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+        }
+    }
+
+    private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
+        if (candidateItemSession.getState()==CandidateSessionState.TERMINATED) {
+            /* No access when session has been is closed */
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_TERMINATED_SESSION);
         }
     }
 
@@ -331,12 +238,6 @@ public class AssessmentCandidateService {
         return caller;
     }
 
-    private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
-        if (candidateItemSession.getState()==CandidateSessionState.TERMINATED) {
-            /* No access when session has been is closed */
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_TERMINATED_SESSION);
-        }
-    }
 
     //----------------------------------------------------
     // Attempt
