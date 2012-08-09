@@ -31,37 +31,37 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * This {@link Exception} is used to post a problem extracting the
+ * response data from an HTTP POST payload when the candidate makes
+ * an attempt.
+ * <p>
+ * NOTE: This is currently the fault of the either rendering system or
+ * a malicious payload, so this Exception is a {@link RuntimeException}.
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class BadResponseWebPayloadException extends QtiWorksRuntimeException {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = 3135925339577129843L;
 
-    CREATE_ASSESSMENT,
-    CHANGE_ASSESSMENT,
-    VIEW_ASSESSMENT,
-    VIEW_ASSESSMENT_SOURCE,
-    RUN_INVALID_ASSESSMENT,
-    CREATE_ITEM_DELIVERY_OPTIONS,
-    ACCESS_ITEM_DELIVERY_OPTIONS,
-    CHANGE_ITEM_DELIVERY_OPTIONS,
+    public BadResponseWebPayloadException() {
+        super();
+    }
 
-    CANDIDATE_ACCESS_ASSESSMENT,
-    CANDIDATE_ACCESS_ITEM_DELIVERY,
-    CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS,
+    public BadResponseWebPayloadException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-    ;
+    public BadResponseWebPayloadException(final String message) {
+        super(message);
+    }
 
+    public BadResponseWebPayloadException(final Throwable cause) {
+        super(cause);
+    }
 }

@@ -99,13 +99,12 @@ public class AnonymousSamplesController {
     @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/" + aid);
+        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list");
 
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
         return redirectToCandidateSession(candidateItemSession);
     }
 
-    /** FIXME: Move this! */
     private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
         return "redirect:/candidate/session/" + candidateItemSession.getId()
                 + "/" + candidateItemSession.getSessionHash();

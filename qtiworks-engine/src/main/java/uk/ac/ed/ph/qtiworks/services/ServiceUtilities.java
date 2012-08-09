@@ -119,12 +119,12 @@ public final class ServiceUtilities {
         final char[] hashBuilder = new char[DomainConstants.CANDIDATE_SESSION_HASH_LENGTH];
         final Random random = new Random(System.currentTimeMillis());
         for (int i=0; i<DomainConstants.CANDIDATE_SESSION_HASH_LENGTH; i++) {
-            hashBuilder[i] = hexChars[random.nextInt(36)];
+            hashBuilder[i] = hexChars[random.nextInt(62)];
         }
         return new String(hashBuilder);
     }
 
-    private static final char[] hexChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZ".toCharArray();
+    private static final char[] hexChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
     //-----------------------------------------------------
 

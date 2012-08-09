@@ -31,37 +31,41 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This {@link Exception} is used to post a problem extracting the
- * response data from an HTTP POST payload when the candidate makes
- * an attempt.
- * <p>
- * NOTE: This is currently the fault of the either rendering system or
- * a malicious payload, so this Exception is a {@link RuntimeException}.
+ * Concrete "not allowed" {@link Exception} thrown when a {@link User} does
+ * not have an appropriate {@link CandidatePrivilege} (possibly to access a particular
+ * entity, but not necessarily).
  *
  * @author David McKain
  */
-public final class BadResponseWebPayloadException extends QtiWorksRuntimeException {
+@ResponseStatus(value=HttpStatus.FORBIDDEN)
+public final class CandidatePrivilegeException extends NotAllowedException {
 
-    private static final long serialVersionUID = 3135925339577129843L;
+    private static final long serialVersionUID = 963799679125087234L;
 
-    public BadResponseWebPayloadException() {
-        super();
+    private final CandidateItemSession candidateItemSession;
+    private final CandidatePrivilege privilege;
+
+    public CandidatePrivilegeException(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege) {
+        super("Candidate does not have privilege " + privilege + " on CandidateItemSession xid=" + candidateItemSession);
+        this.candidateItemSession = candidateItemSession;
+        this.privilege = privilege;
     }
 
-    public BadResponseWebPayloadException(final String message, final Throwable cause) {
-        super(message, cause);
+    public CandidateItemSession getCandidateItemSession() {
+        return candidateItemSession;
     }
 
-    public BadResponseWebPayloadException(final String message) {
-        super(message);
-    }
-
-    public BadResponseWebPayloadException(final Throwable cause) {
-        super(cause);
+    public CandidatePrivilege getPrivilege() {
+        return privilege;
     }
 }

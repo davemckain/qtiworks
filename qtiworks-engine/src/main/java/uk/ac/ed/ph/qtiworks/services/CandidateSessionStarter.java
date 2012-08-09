@@ -114,7 +114,7 @@ public class CandidateSessionStarter {
         final Assessment assessment = assessmentDao.requireFindById(aid);
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_SAMPLE_ASSESSMENT, assessment);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ASSESSMENT, assessment);
         }
         return assessment;
     }

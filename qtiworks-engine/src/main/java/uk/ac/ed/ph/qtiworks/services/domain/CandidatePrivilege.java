@@ -31,36 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
+ * Represents the various privileges a candidate user can have against a particular session.
  *
- * @see PrivilegeException
+ * @see CandidatePrivilegeException
  *
  * @author David McKain
  */
-public enum Privilege {
+public enum CandidatePrivilege {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
-
-    CREATE_ASSESSMENT,
-    CHANGE_ASSESSMENT,
-    VIEW_ASSESSMENT,
-    VIEW_ASSESSMENT_SOURCE,
-    RUN_INVALID_ASSESSMENT,
-    CREATE_ITEM_DELIVERY_OPTIONS,
-    ACCESS_ITEM_DELIVERY_OPTIONS,
-    CHANGE_ITEM_DELIVERY_OPTIONS,
-
-    CANDIDATE_ACCESS_ASSESSMENT,
+    ACCESS_CANDIDATE_SESSION,
+    CANDIDATE_ACCESS_SAMPLE_ASSESSMENT,
+    CANDIDATE_MAKE_ATTEMPT,
     CANDIDATE_ACCESS_ITEM_DELIVERY,
     CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS,
+    CANDIDATE_ACCESS_BLACKLISTED_ASSESSMENT_FILE,
+    CANDIDATE_ACCESS_ASSESSMENT_FILE,
+    CANDIDATE_ACCESS_TERMINATED_SESSION,
+    CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING,
+    CANDIDATE_CLOSE_SESSION_WHEN_CLOSED,
+    CANDIDATE_RESET_SESSION_WHEN_INTERACTING,
+    CANDIDATE_RESET_SESSION_WHEN_CLOSED,
+    CANDIDATE_REINIT_SESSION_WHEN_INTERACTING,
+    CANDIDATE_REINIT_SESSION_WHEN_CLOSED,
+    CANDIDATE_SOLUTION_WHEN_INTERACTING,
+    CANDIDATE_SOLUTION_WHEN_CLOSED,
+    CANDIDATE_PLAYBACK_WHEN_INTERACTING,
+    CANDIDATE_PLAYBACK,
+    CANDIDATE_PLAYBACK_OTHER_SESSION,
+    CANDIDATE_PLAYBACK_EVENT,
+    CANDIDATE_VIEW_ASSESSMENT_SOURCE,
+    CANDIDATE_VIEW_ASSESSMENT_RESULT,
 
     ;
 

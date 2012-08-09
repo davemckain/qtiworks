@@ -37,9 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.Privilege;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
@@ -56,7 +53,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
@@ -65,6 +61,8 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidatePrivilege;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidatePrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -116,6 +114,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(propagation=Propagation.REQUIRED)
 public class AssessmentCandidateService {
 
+    /** FIXME: Change to Candidate auditor */
     @Resource
     private Auditor auditor;
 
@@ -123,12 +122,10 @@ public class AssessmentCandidateService {
     private RequestTimestampContext requestTimestampContext;
 
     @Resource
-    private IdentityContext identityContext;
-
-    @Resource
     private QtiSerializer qtiSerializer;
 
-    @Resource EntityGraphService entityGraphService;
+    @Resource
+    private EntityGraphService entityGraphService;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
@@ -136,7 +133,8 @@ public class AssessmentCandidateService {
     @Resource
     private FilespaceManager filespaceManager;
 
-    @Resource AssessmentObjectManagementService assessmentObjectManagementService;
+    @Resource
+    private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -147,7 +145,8 @@ public class AssessmentCandidateService {
     @Resource
     private CandidateUploadService candidateUploadService;
 
-    @Resource JqtiExtensionManager jqtiExtensionManager;
+    @Resource
+    private JqtiExtensionManager jqtiExtensionManager;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -167,35 +166,11 @@ public class AssessmentCandidateService {
     @Resource
     private CandidateItemAttemptDao candidateItemAttemptDao;
 
-    //-------------------------------------------------
-    // System samples
-
-    public ItemDelivery lookupSystemSampleDelivery(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Assessment assessment = lookupSampleAssessment(aid);
-        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
-        if (systemDemoDeliveries.size()!=1) {
-            throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
-                    + " to have exactly 1 system demo deliverable associated with it");
-        }
-        return systemDemoDeliveries.get(0);
-    }
-
-    private Assessment lookupSampleAssessment(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Assessment assessment = assessmentDao.requireFindById(aid);
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_SAMPLE_ASSESSMENT, assessment);
-        }
-        return assessment;
-    }
-
     //----------------------------------------------------
     // Candidate delivery access
 
     public ItemDelivery lookupItemDelivery(final long did)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, CandidatePrivilegeException {
         final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
         ensureCandidateMayAccess(itemDelivery);
         return itemDelivery;
@@ -206,30 +181,30 @@ public class AssessmentCandidateService {
      * to be relaxed in order to allow "real" deliveries to be done.
      */
     private User ensureCandidateMayAccess(final ItemDelivery itemDelivery)
-            throws PrivilegeException {
+            throws CandidatePrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!itemDelivery.isOpen()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
         final Assessment assessment = itemDelivery.getAssessment();
         if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
         return caller;
     }
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, CandidatePrivilegeException {
         final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
         ensureCallerMayAccess(itemDeliverySettings);
         return itemDeliverySettings;
     }
 
     private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
-            throws PrivilegeException {
+            throws CandidatePrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+            throw new CandidatePrivilegeException(CandidatePrivilege.CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
         }
     }
 
@@ -243,11 +218,12 @@ public class AssessmentCandidateService {
      * @param did
      * @return
      * @throws RuntimeValidationException
-     * @throws PrivilegeException
+     * @throws CandidatePrivilegeException
      * @throws DomainEntityNotFoundException
      */
+    @Deprecated
     public CandidateItemSession createCandidateSession(final long did)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws RuntimeValidationException, CandidatePrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
         return createCandidateSession(itemDelivery);
     }
@@ -258,6 +234,7 @@ public class AssessmentCandidateService {
      * @return
      * @throws RuntimeValidationException
      */
+    @Deprecated
     private CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery)
             throws RuntimeValidationException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
@@ -275,21 +252,48 @@ public class AssessmentCandidateService {
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
 
         /* Create new session and put into appropriate state */
-        final CandidateItemSession candidateSession = new CandidateItemSession();
-        candidateSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
-        candidateSession.setItemDelivery(itemDelivery);
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
-        candidateItemSessionDao.persist(candidateSession);
+        final CandidateItemSession candidateItemSession = new CandidateItemSession();
+        candidateItemSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
+        candidateItemSession.setItemDelivery(itemDelivery);
+        candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
+        candidateItemSessionDao.persist(candidateItemSession);
 
         /* Record initialisation event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.INIT, itemSessionState);
 
-        auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
+        auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateItemSession.getId()
                 + " on ItemDelivery #" + itemDelivery.getId());
-        return candidateSession;
+        return candidateItemSession;
     }
 
+    //----------------------------------------------------
+    // Session access after creation
 
+    /**
+     * Looks up the {@link CandidateItemSession} having the given ID (xid)
+     * and checks the given sessionHash against that stored in the session as a means of
+     * "authentication".
+     *
+     * @param xid
+     * @return
+     * @throws DomainEntityNotFoundException
+     * @throws CandidatePrivilegeException
+     * @throws CandidateCandidatePrivilegeException
+     */
+    public CandidateItemSession lookupCandidateSession(final long xid, final String sessionHash)
+            throws DomainEntityNotFoundException, CandidatePrivilegeException {
+        Assert.ensureNotNull(sessionHash, "sessionHash");
+        final CandidateItemSession session = candidateItemSessionDao.requireFindById(xid);
+        ensureCallerMayAccess(session, sessionHash);
+        return session;
+    }
+
+    private void ensureCallerMayAccess(final CandidateItemSession candidateItemSession, final String sessionHash)
+            throws CandidatePrivilegeException {
+        if (!sessionHash.equals(candidateItemSession.getSessionHash())) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+        }
+    }
 
     //----------------------------------------------------
     // Session access after creation
@@ -301,10 +305,11 @@ public class AssessmentCandidateService {
      * @param xid
      * @return
      * @throws DomainEntityNotFoundException
-     * @throws PrivilegeException
+     * @throws CandidatePrivilegeException
      */
+    @Deprecated
     public CandidateItemSession lookupCandidateSession(final long xid)
-            throws DomainEntityNotFoundException, PrivilegeException {
+            throws DomainEntityNotFoundException, CandidatePrivilegeException {
         final CandidateItemSession session = candidateItemSessionDao.requireFindById(xid);
         ensureCallerMayAccess(session);
         return session;
@@ -313,50 +318,47 @@ public class AssessmentCandidateService {
     /**
      * (Currently we're restricting access to sessions to their owners.)
      */
-    private User ensureCallerMayAccess(final CandidateItemSession candidateSession) throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.equals(candidateSession.getCandidate())) {
+    @Deprecated
+    private User ensureCallerMayAccess(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
+        if (!caller.equals(candidateItemSession.getCandidate())) {
             /* TOOD: Only allow access to session owner */
-            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
-        if (!candidateSession.getItemDelivery().isOpen()) {
+        if (!candidateItemSession.getItemDelivery().isOpen()) {
             /* No access when delivery is closed */
-            throw new PrivilegeException(caller, Privilege.ACCESS_CANDIDATE_SESSION, candidateSession);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
         return caller;
     }
 
-    private User ensureSessionNotTerminated(final CandidateItemSession candidateSession) throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (candidateSession.getState()==CandidateSessionState.TERMINATED) {
+    private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
+        if (candidateItemSession.getState()==CandidateSessionState.TERMINATED) {
             /* No access when session has been is closed */
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_TERMINATED_SESSION, candidateSession);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_TERMINATED_SESSION);
         }
-        return caller;
     }
 
     //----------------------------------------------------
     // Attempt
 
-    public CandidateItemAttempt handleAttempt(final long xid,
+    public CandidateItemAttempt handleAttempt(final long xid, final String sessionHash,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
+            throws RuntimeValidationException, CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateSession = lookupCandidateSession(xid, sessionHash);
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
-    public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateSession,
+    public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateItemSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+            throws RuntimeValidationException, CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
 
         /* Make sure an attempt is allowed */
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (candidateSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_MAKE_ATTEMPT, candidateSession);
+        if (candidateItemSession.getState()!=CandidateSessionState.INTERACTING) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_MAKE_ATTEMPT);
         }
 
         /* Build response map in required format for JQTI+.
@@ -376,7 +378,7 @@ public class AssessmentCandidateService {
             for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
                 final Identifier identifier = fileResponseEntry.getKey();
                 final MultipartFile multipartFile = fileResponseEntry.getValue();
-                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateItemSession, multipartFile);
                 final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
                 responseMap.put(identifier, fileResponseData);
                 fileSubmissionMap.put(identifier, fileSubmission);
@@ -414,7 +416,7 @@ public class AssessmentCandidateService {
         candidateItemAttempt.setResponses(candidateItemResponses);
 
         /* Get current JQTI state and create JQTI controller */
-        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
 
         /* Attempt to bind responses */
@@ -448,19 +450,19 @@ public class AssessmentCandidateService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, eventType, itemSessionController.getItemSessionState());
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, eventType, itemSessionController.getItemSessionState());
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
 
         /* Update session state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
-        candidateItemSessionDao.update(candidateSession);
+        candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateItemSession);
 
         auditor.recordEvent("Recorded candidate attempt #" + candidateItemAttempt.getId()
-                + " on session #" + candidateSession.getId()
-                + " on delivery #" + candidateSession.getItemDelivery().getId());
+                + " on session #" + candidateItemSession.getId()
+                + " on delivery #" + candidateItemSession.getItemDelivery().getId());
         return candidateItemAttempt;
     }
 
@@ -470,43 +472,38 @@ public class AssessmentCandidateService {
     /**
      * Closes the {@link CandidateItemSession} having the given ID (xid), moving it
      * into {@link CandidateSessionState#CLOSED} state.
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession closeCandidateSession(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return closeCandidateSession(candidateSession);
+    public CandidateItemSession closeCandidateSession(final long xid, final String sessionHash)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return closeCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Check this is allowed in current state */
-        final User caller = ensureSessionNotTerminated(candidateSession);
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureSessionNotTerminated(candidateItemSession);
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        if (candidateSession.getState()==CandidateSessionState.CLOSED) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED, candidateSession);
+        if (candidateItemSession.getState()==CandidateSessionState.CLOSED) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING, candidateSession);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING);
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.CLOSE, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.CLOSE, itemSessionState);
 
         /* Update state */
-        candidateSession.setState(CandidateSessionState.CLOSED);
-        candidateItemSessionDao.update(candidateSession);
+        candidateItemSession.setState(CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateItemSession);
 
-        auditor.recordEvent("Candidate ended session #" + candidateSession.getId());
-        return candidateSession;
+        auditor.recordEvent("Candidate ended session #" + candidateItemSession.getId());
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -516,33 +513,27 @@ public class AssessmentCandidateService {
      * Re-initialises the {@link CandidateItemSession} having the given ID (xid), returning the
      * updated {@link CandidateItemSession}. At QTI level, this reruns template processing, so
      * randomised values will change as a result of this process.
-     *
-     * @param xid
-     * @return
-     * @throws RuntimeValidationException
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession reinitCandidateSession(final long xid)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return reinitCandidateSession(candidateSession);
+    public CandidateItemSession reinitCandidateSession(final long xid, final String sessionHash)
+            throws RuntimeValidationException, CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return reinitCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateSession)
-            throws RuntimeValidationException, PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateItemSession)
+            throws RuntimeValidationException, CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reinit the session */
-        final User caller = ensureSessionNotTerminated(candidateSession);
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureSessionNotTerminated(candidateItemSession);
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING, candidateSession);
+        if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowReinitWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED, candidateSession);
+        else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowReinitWhenClosed()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED);
         }
 
         /* Create fresh JQTI+ state */
@@ -555,15 +546,15 @@ public class AssessmentCandidateService {
         itemSessionController.initialize();
 
         /* Record event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.REINIT, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState);
 
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
-        candidateItemSessionDao.update(candidateSession);
+        candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateItemSession);
 
-        auditor.recordEvent("Candidate re-intialized session #" + candidateSession.getId());
-        return candidateSession;
+        auditor.recordEvent("Candidate re-intialized session #" + candidateItemSession.getId());
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -574,36 +565,31 @@ public class AssessmentCandidateService {
      * updated {@link CandidateItemSession}. This takes the session back to the state it
      * was in immediately after the last {@link CandidateItemEvent#REINIT_WHEN_INTERACTING} (if applicable),
      * or after the original {@link CandidateItemEvent#INIT}.
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession resetCandidateSession(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return resetCandidateSession(candidateSession);
+    public CandidateItemSession resetCandidateSession(final long xid, final String sessionHash)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return resetCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reset the session */
-        final User caller = ensureSessionNotTerminated(candidateSession);
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureSessionNotTerminated(candidateItemSession);
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING, candidateSession);
+        if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED, candidateSession);
+        else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED);
         }
 
         /* Find the last REINIT, falling back to original INIT if none present */
-        final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateSession);
+        final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateItemSession);
         CandidateItemEvent lastInitEvent = null;
         for (final CandidateItemEvent event : events) {
             if (event.getEventType()==CandidateItemEventType.REINIT) {
@@ -619,16 +605,16 @@ public class AssessmentCandidateService {
         final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(lastInitEvent);
 
         /* Record event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.RESET, itemSessionState);
 
         /* Update state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
-        candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
-        candidateItemSessionDao.update(candidateSession);
+        candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
+        candidateItemSessionDao.update(candidateItemSession);
 
-        auditor.recordEvent("Candidate reset session #" + candidateSession.getId());
-        return candidateSession;
+        auditor.recordEvent("Candidate reset session #" + candidateItemSession.getId());
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -636,46 +622,41 @@ public class AssessmentCandidateService {
 
     /**
      * Transitions the {@link CandidateItemSession} having the given ID (xid) into solution state.
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return transitionCandidateSessionToSolutionState(candidateSession);
+    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid, final String sessionHash)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return transitionCandidateSessionToSolutionState(candidateItemSession);
     }
 
-    public CandidateItemSession transitionCandidateSessionToSolutionState(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession transitionCandidateSessionToSolutionState(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
-        final User caller = ensureSessionNotTerminated(candidateSession);
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureSessionNotTerminated(candidateItemSession);
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        if (candidateSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_INTERACTING, candidateSession);
+        if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_SOLUTION_WHEN_INTERACTING);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_SOLUTION_WHEN_CLOSED, candidateSession);
+        else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_SOLUTION_WHEN_CLOSED);
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.SOLUTION, itemSessionState);
 
         /* Change session state to CLOSED if it's not already there */
-        if (candidateSessionState==CandidateSessionState.INTERACTING) {
-            candidateSession.setState(CandidateSessionState.CLOSED);
-            candidateItemSessionDao.update(candidateSession);
+        if (candidateItemSessionState==CandidateSessionState.INTERACTING) {
+            candidateItemSession.setState(CandidateSessionState.CLOSED);
+            candidateItemSessionDao.update(candidateItemSession);
         }
 
-        auditor.recordEvent("Candidate moved session #" + candidateSession.getId() + " to solution state");
-        return candidateSession;
+        auditor.recordEvent("Candidate moved session #" + candidateItemSession.getId() + " to solution state");
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -684,53 +665,48 @@ public class AssessmentCandidateService {
     /**
      * Updates the state of the {@link CandidateItemSession} having the given ID (xid)
      * so that it will play back the {@link CandidateItemEvent} having the given ID (xeid).
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession setPlaybackState(final long xid, final long xeid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return setPlaybackState(candidateSession, xeid);
+    public CandidateItemSession setPlaybackState(final long xid, final String sessionHash, final long xeid)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return setPlaybackState(candidateItemSession, xeid);
     }
 
-    public CandidateItemSession setPlaybackState(final CandidateItemSession candidateSession, final long xeid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession setPlaybackState(final CandidateItemSession candidateItemSession, final long xeid)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
-        final User caller = ensureSessionNotTerminated(candidateSession);
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        ensureSessionNotTerminated(candidateItemSession);
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        if (candidateSessionState==CandidateSessionState.INTERACTING) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_WHEN_INTERACTING, candidateSession);
+        if (candidateItemSessionState==CandidateSessionState.INTERACTING) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_WHEN_INTERACTING);
         }
-        else if (candidateSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowPlayback()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK, candidateSession);
+        else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowPlayback()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK);
         }
 
         /* Look up target event, make sure it belongs to this session and make sure it can be played back */
         final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
-        if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateSession.getId().longValue()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_OTHER_SESSION, candidateSession);
+        if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateItemSession.getId().longValue()) {
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_OTHER_SESSION);
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK
                 || targetEventType==CandidateItemEventType.CLOSE
                 || targetEventType==CandidateItemEventType.TERMINATE) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_PLAYBACK_EVENT, candidateSession);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_EVENT);
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
 
         auditor.recordEvent("Candidate played back event #" + targetEvent.getId()
-                + " in session #" + candidateSession.getId());
-        return candidateSession;
+                + " in session #" + candidateItemSession.getId());
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -743,35 +719,30 @@ public class AssessmentCandidateService {
      * Currently we're always allowing this action to be made when in
      * {@link CandidateSessionState#INTERACTING} or {@link CandidateSessionState#CLOSED}
      * states.
-     *
-     * @param xid
-     * @return
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
-    public CandidateItemSession terminateCandidateSession(final long xid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        return terminateCandidateSession(candidateSession);
+    public CandidateItemSession terminateCandidateSession(final long xid, final String sessionHash)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        return terminateCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession terminateCandidateSession(final CandidateItemSession candidateSession)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public CandidateItemSession terminateCandidateSession(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
 
         /* Check session has not already been terminated */
-        ensureSessionNotTerminated(candidateSession);
+        ensureSessionNotTerminated(candidateItemSession);
 
         /* Record event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.TERMINATE, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.TERMINATE, itemSessionState);
 
         /* Update state */
-        candidateSession.setState(CandidateSessionState.TERMINATED);
-        candidateItemSessionDao.update(candidateSession);
+        candidateItemSession.setState(CandidateSessionState.TERMINATED);
+        candidateItemSessionDao.update(candidateItemSession);
 
-        auditor.recordEvent("Candidate terminated session #" + candidateSession.getId());
-        return candidateSession;
+        auditor.recordEvent("Candidate terminated session #" + candidateItemSession.getId());
+        return candidateItemSession;
     }
 
     //----------------------------------------------------
@@ -780,32 +751,24 @@ public class AssessmentCandidateService {
     /**
      * Renders the current state of the {@link CandidateItemSession} having
      * the given ID (xid).
-     *
-     * @param candidateSession
-     * @return
-     * @throws DomainEntityNotFoundException
-     * @throws PrivilegeException
-     * @throws IOException
      */
-    public void renderCurrentState(final long xid, final RenderingOptions renderingOptions,
+    public void renderCurrentState(final long xid, final String sessionHash,
+            final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer)
-            throws PrivilegeException, DomainEntityNotFoundException, IOException {
-        Assert.ensureNotNull(renderingOptions, "renderingOptions");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
-
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        renderCurrentState(candidateSession, renderingOptions, outputStreamer);
+            throws CandidatePrivilegeException, DomainEntityNotFoundException, IOException {
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        renderCurrentState(candidateItemSession, renderingOptions, outputStreamer);
     }
 
-    public void renderCurrentState(final CandidateItemSession candidateSession,
+    public void renderCurrentState(final CandidateItemSession candidateItemSession,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
         Assert.ensureNotNull(renderingOptions, "renderingOptions");
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -814,7 +777,7 @@ public class AssessmentCandidateService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderEvent(candidateSession, latestEvent, renderingOptions, resultOutputStream);
+                renderEvent(candidateItemSession, latestEvent, renderingOptions, resultOutputStream);
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -850,11 +813,11 @@ public class AssessmentCandidateService {
         }
     }
 
-    private void renderEvent(final CandidateItemSession candidateSession,
+    private void renderEvent(final CandidateItemSession candidateItemSession,
             final CandidateItemEvent candidateEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        switch (candidateSessionState) {
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        switch (candidateItemSessionState) {
             case INTERACTING:
                 renderEventWhenInteracting(candidateEvent, renderingOptions, resultStream);
                 break;
@@ -868,7 +831,7 @@ public class AssessmentCandidateService {
                 break;
 
             default:
-                throw new QtiWorksLogicException("Unexpected state " + candidateSessionState);
+                throw new QtiWorksLogicException("Unexpected state " + candidateItemSessionState);
         }
     }
 
@@ -923,8 +886,8 @@ public class AssessmentCandidateService {
     }
 
     private ItemRenderingRequest createItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final CandidateItemSession candidateItemSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
 
         final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateEvent, renderingOptions);
@@ -971,16 +934,16 @@ public class AssessmentCandidateService {
     }
 
     private ItemRenderingRequest createPartialItemRenderingRequest(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final CandidateSessionState candidateSessionState = candidateSession.getState();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final CandidateItemSession candidateItemSession = candidateEvent.getCandidateItemSession();
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setCandidateSessionState(candidateSessionState);
+        renderingRequest.setCandidateSessionState(candidateItemSessionState);
         renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
@@ -1024,8 +987,8 @@ public class AssessmentCandidateService {
     private void renderPlayback(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEvent playbackEvent = candidateEvent.getPlaybackEvent();
 
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final CandidateItemSession candidateItemSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
@@ -1062,7 +1025,7 @@ public class AssessmentCandidateService {
         /* Register playback events */
         renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
         if (itemDeliverySettings.isAllowPlayback()) {
-            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
+            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateItemSession));
             renderingRequest.setCurrentPlaybackEvent(playbackEvent);
         }
 
@@ -1073,8 +1036,8 @@ public class AssessmentCandidateService {
     }
 
     private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateEvent, final RenderingOptions renderingOptions) {
-        final CandidateItemSession candidateSession = candidateEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
+        final CandidateItemSession candidateItemSession = candidateEvent.getCandidateItemSession();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
@@ -1097,7 +1060,7 @@ public class AssessmentCandidateService {
 
         renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
         if (itemDeliverySettings.isAllowPlayback()) {
-            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
+            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateItemSession));
         }
         return renderingRequest;
     }
@@ -1142,23 +1105,15 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
-    public void streamAssessmentFile(final long did, final String fileSystemIdString,
+    public void streamAssessmentFile(final CandidateItemSession candidateItemSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
-            throws PrivilegeException, IOException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
-        final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        streamAssessmentFile(itemDelivery, fileSystemIdString, outputStreamer);
-    }
-
-    public void streamAssessmentFile(final ItemDelivery itemDelivery, final String fileSystemIdString,
-            final OutputStreamer outputStreamer)
-            throws PrivilegeException, IOException {
-        Assert.ensureNotNull(itemDelivery, "itemDelivery");
+            throws CandidatePrivilegeException, IOException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
         Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
@@ -1169,8 +1124,7 @@ public class AssessmentCandidateService {
             }
         }
         if (resultingFileHref==null) {
-            final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ASSESSMENT_FILE, assessmentPackage);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
 
         /* Finally stream the required resource */
@@ -1180,58 +1134,56 @@ public class AssessmentCandidateService {
     //----------------------------------------------------
     // Candidate Source access
 
-    public void streamAssessmentSource(final long did, final OutputStreamer outputStreamer)
-            throws PrivilegeException, IOException, DomainEntityNotFoundException {
+    public void streamAssessmentSource(final long xid, final String sessionHash, final OutputStreamer outputStreamer)
+            throws CandidatePrivilegeException, IOException, DomainEntityNotFoundException {
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
-        final ItemDelivery itemDelivery = lookupItemDelivery(did);
-        streamAssessmentSource(itemDelivery, outputStreamer);
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        streamAssessmentSource(candidateItemSession, outputStreamer);
     }
 
-    public void streamAssessmentSource(final ItemDelivery itemDelivery, final OutputStreamer outputStreamer)
-            throws PrivilegeException, IOException {
-        Assert.ensureNotNull(itemDelivery, "itemDelivery");
+    public void streamAssessmentSource(final CandidateItemSession candidateItemSession, final OutputStreamer outputStreamer)
+            throws CandidatePrivilegeException, IOException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
-        ensureCallerMayViewSource(itemDelivery);
+        ensureCallerMayViewSource(candidateItemSession);
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
-        auditor.recordEvent("Candidate streamed source for delivery #" + itemDelivery.getId());
+        auditor.recordEvent("Candidate streamed source for session #" + candidateItemSession.getId());
     }
 
-    private User ensureCallerMayViewSource(final ItemDelivery itemDelivery)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+    private void ensureCallerMayViewSource(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowSource()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE, itemDelivery);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE);
         }
-        return caller;
     }
 
     //----------------------------------------------------
     // Candidate Result access
 
-    public void streamItemResult(final long xid, final OutputStream outputStream)
-            throws PrivilegeException, DomainEntityNotFoundException {
+    public void streamItemResult(final long xid, final String sessionHash, final OutputStream outputStream)
+            throws CandidatePrivilegeException, DomainEntityNotFoundException {
         Assert.ensureNotNull(outputStream, "outputStream");
-        final CandidateItemSession candidateSession = lookupCandidateSession(xid);
-        streamItemResult(candidateSession, outputStream);
+        final CandidateItemSession candidateItemSession = lookupCandidateSession(xid, sessionHash);
+        streamItemResult(candidateItemSession, outputStream);
     }
 
-    public void streamItemResult(final CandidateItemSession candidateSession, final OutputStream outputStream)
-            throws PrivilegeException {
-        Assert.ensureNotNull(candidateSession, "candidateSession");
+    public void streamItemResult(final CandidateItemSession candidateItemSession, final OutputStream outputStream)
+            throws CandidatePrivilegeException {
+        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
         Assert.ensureNotNull(outputStream, "outputStream");
 
         /* Forbid results if the candidate session is closed */
-        ensureSessionNotTerminated(candidateSession);
+        ensureSessionNotTerminated(candidateItemSession);
 
         /* Make sure candidate is actually allowed to get results for this delivery */
-        final ItemDelivery itemDelivery = candidateSession.getItemDelivery();
-        ensureCallerMayViewResult(itemDelivery);
+        ensureCallerMayViewResult(candidateItemSession);
 
         /* Get current state */
-        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
 
         /* Generate result Object from state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
@@ -1239,18 +1191,16 @@ public class AssessmentCandidateService {
 
         /* Send result */
         qtiSerializer.serializeJqtiObject(itemResult, outputStream);
-        auditor.recordEvent("Candidate streamed result for session #" + candidateSession.getId()
-                + " on delivery #" + candidateSession.getItemDelivery().getId());
+        auditor.recordEvent("Candidate streamed result for session #" + candidateItemSession.getId()
+                + " on delivery #" + candidateItemSession.getItemDelivery().getId());
     }
 
-    private User ensureCallerMayViewResult(final ItemDelivery itemDelivery)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+    private void ensureCallerMayViewResult(final CandidateItemSession candidateItemSession)
+            throws CandidatePrivilegeException {
+        final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowResult()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_VIEW_ASSESSMENT_RESULT, itemDelivery);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_VIEW_ASSESSMENT_RESULT);
         }
-        return caller;
     }
 
     //----------------------------------------------------
@@ -1260,11 +1210,11 @@ public class AssessmentCandidateService {
      * Returns a List of IDs (xeid) of all {@link CandidateItemEvent}s in the given
      * {@link CandidateItemSession} that a candidate may play back.
      *
-     * @param candidateSession
+     * @param candidateItemSession
      * @return
      */
-    private List<CandidateItemEvent> getPlaybackEvents(final CandidateItemSession candidateSession) {
-        final List<CandidateItemEvent> events = candidateItemEventDao.getForSession(candidateSession);
+    private List<CandidateItemEvent> getPlaybackEvents(final CandidateItemSession candidateItemSession) {
+        final List<CandidateItemEvent> events = candidateItemEventDao.getForSession(candidateItemSession);
         final List<CandidateItemEvent> result = new ArrayList<CandidateItemEvent>(events.size());
         for (final CandidateItemEvent event : events) {
             if (isCandidatePlaybackCapable(event)) {

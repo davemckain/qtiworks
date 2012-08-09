@@ -152,4 +152,27 @@ Web deployment descriptor
     <url-pattern>/web/anonymous/*</url-pattern>
   </servlet-mapping>
 
+  <!-- ========== CANDIDATE SERVICES ========== -->
+
+  <!-- Dispatcher for candidate web functionality -->
+  <servlet>
+    <servlet-name>CandidateDispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>0</load-on-startup>
+    <init-param>
+      <param-name>contextClass</param-name>
+      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+    </init-param>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+        uk.ac.ed.ph.qtiworks.config.CandidateMvcConfiguration
+      </param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CandidateDispatcher</servlet-name>
+    <url-pattern>/candidate/*</url-pattern>
+  </servlet-mapping>
+
 </web-app>
