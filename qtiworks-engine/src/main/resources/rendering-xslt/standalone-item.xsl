@@ -145,7 +145,7 @@ Renders a standalone assessmentItem
           <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js" type="text/javascript"/>
           <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js" type="text/javascript"/>
           <script type="text/javascript">
-            UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/web/public/verifyAsciiMath');
+            UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/candidate/verifyAsciiMath');
             UpConversionAjaxController.setDelay(300);
           </script>
         </xsl:if>
