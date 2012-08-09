@@ -178,7 +178,7 @@ public class AssessmentCandidateService {
     private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
         if (candidateItemSession.getState()==CandidateSessionState.TERMINATED) {
             /* No access when session has been is closed */
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_TERMINATED_SESSION);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
         }
     }
 
@@ -202,7 +202,7 @@ public class AssessmentCandidateService {
 
         /* Make sure an attempt is allowed */
         if (candidateItemSession.getState()!=CandidateSessionState.INTERACTING) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_MAKE_ATTEMPT);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.MAKE_ATTEMPT);
         }
 
         /* Build response map in required format for JQTI+.
@@ -332,10 +332,10 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSession.getState()==CandidateSessionState.CLOSED) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_CLOSE_SESSION_WHEN_CLOSED);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_CLOSE_SESSION_WHEN_INTERACTING);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_INTERACTING);
         }
 
         /* Record event */
@@ -374,10 +374,10 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_REINIT_SESSION_WHEN_INTERACTING);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowReinitWhenClosed()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_REINIT_SESSION_WHEN_CLOSED);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
         /* Create fresh JQTI+ state */
@@ -426,10 +426,10 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_RESET_SESSION_WHEN_INTERACTING);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_RESET_SESSION_WHEN_CLOSED);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
         /* Find the last REINIT, falling back to original INIT if none present */
@@ -483,10 +483,10 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_SOLUTION_WHEN_INTERACTING);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_SOLUTION_WHEN_CLOSED);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
         /* Record event */
@@ -526,22 +526,22 @@ public class AssessmentCandidateService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_WHEN_INTERACTING);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowPlayback()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.PLAYBACK);
         }
 
         /* Look up target event, make sure it belongs to this session and make sure it can be played back */
         final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
         if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateItemSession.getId().longValue()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_OTHER_SESSION);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK
                 || targetEventType==CandidateItemEventType.CLOSE
                 || targetEventType==CandidateItemEventType.TERMINATE) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_PLAYBACK_EVENT);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.PLAYBACK_EVENT);
         }
 
         /* Record event */
@@ -968,7 +968,7 @@ public class AssessmentCandidateService {
             }
         }
         if (resultingFileHref==null) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
 
         /* Finally stream the required resource */
@@ -1001,7 +1001,7 @@ public class AssessmentCandidateService {
             throws CandidatePrivilegeException {
         final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowSource()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_VIEW_ASSESSMENT_SOURCE);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
         }
     }
 
@@ -1043,7 +1043,7 @@ public class AssessmentCandidateService {
             throws CandidatePrivilegeException {
         final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowResult()) {
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_VIEW_ASSESSMENT_RESULT);
+            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
         }
     }
 

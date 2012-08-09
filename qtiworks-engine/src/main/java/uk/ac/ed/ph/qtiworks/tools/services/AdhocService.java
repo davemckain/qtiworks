@@ -41,10 +41,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
-import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
@@ -60,8 +60,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -83,21 +81,12 @@ public class AdhocService {
     private AssessmentCandidateService assessmentCandidateService;
 
     @Resource
-    private InstructorUserDao instructorUserDao;
+    private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private Validator jsr303Validator;
+    private InstructorUserDao instructorUserDao;
 
-    public void doWork() {
-        final UploadAssessmentPackageCommand cmd = new UploadAssessmentPackageCommand();
-        cmd.setFile(new NullMultipartFile());
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(cmd, "CMD");
-        jsr303Validator.validate(cmd, errors);
-        System.out.println(cmd);
-        System.out.println(errors);
-    }
-
-    public void doWork1() throws Exception {
+    public void doWork() throws Exception {
         requestTimestampContext.setCurrentRequestTimestamp(new Date());
 
         final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
@@ -105,8 +94,9 @@ public class AdhocService {
         identityContext.setCurrentThreadUnderlyingIdentity(dave);
 
         final long did = 4L; /* ID of delivery to try out (choice.xml) */
+        final String exitUrl = "/exit";
 
-        final CandidateItemSession candidateItemSession = assessmentCandidateService.createCandidateSession(did);
+        final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
         final RenderingOptions renderingOptions = new RenderingOptions();
