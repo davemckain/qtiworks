@@ -31,25 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.instructor;
+package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 /**
- * Router for the Instructor MVC
+ * Router for the Anonymous MVC
  *
  * @author David McKain
  */
 @Service
-public class InstructorRouter {
+public class AnonymousRouter {
 
     @Resource
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        return "/web/instructor" + actionUrl;
+        return "/web/anonymous" + actionUrl;
     }
 
     public String buildWebUrl(final String actionUrl) {
@@ -59,4 +59,5 @@ public class InstructorRouter {
     public String buildInstructorRedirect(final String actionUrl) {
         return "redirect:" + buildWithinContextUrl(actionUrl);
     }
+
 }

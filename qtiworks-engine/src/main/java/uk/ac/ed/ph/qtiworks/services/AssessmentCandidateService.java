@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
@@ -67,13 +66,11 @@ import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
-import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -83,16 +80,12 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
-import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
-import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,17 +96,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 /**
  * Service the manages the real-time delivery of an {@link Assessment}
@@ -128,8 +116,6 @@ import org.xml.sax.InputSource;
 @Transactional(propagation=Propagation.REQUIRED)
 public class AssessmentCandidateService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentCandidateService.class);
-
     @Resource
     private Auditor auditor;
 
@@ -142,8 +128,7 @@ public class AssessmentCandidateService {
     @Resource
     private QtiSerializer qtiSerializer;
 
-    @Resource
-    private EntityGraphService entityGraphService;
+    @Resource EntityGraphService entityGraphService;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
@@ -151,8 +136,10 @@ public class AssessmentCandidateService {
     @Resource
     private FilespaceManager filespaceManager;
 
+    @Resource AssessmentObjectManagementService assessmentObjectManagementService;
+
     @Resource
-    private AssessmentObjectManagementService assessmentObjectManagementService;
+    private CandidateDataServices candidateDataServices;
 
     @Resource
     private AssessmentRenderer assessmentRenderer;
@@ -160,8 +147,7 @@ public class AssessmentCandidateService {
     @Resource
     private CandidateUploadService candidateUploadService;
 
-    @Resource
-    private JqtiExtensionManager jqtiExtensionManager;
+    @Resource JqtiExtensionManager jqtiExtensionManager;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -280,7 +266,7 @@ public class AssessmentCandidateService {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Initialise state */
-        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
         itemSessionController.initialize();
 
         /* Check whether an attempt is allowed. This is a bit pathological here,
@@ -296,20 +282,14 @@ public class AssessmentCandidateService {
         candidateItemSessionDao.persist(candidateSession);
 
         /* Record initialisation event */
-        recordEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
                 + " on ItemDelivery #" + itemDelivery.getId());
         return candidateSession;
     }
 
-    private ItemSessionController createItemSessionController(final ItemDelivery itemDelivery, final ItemSessionState itemSessionState) {
-        /* Get the resolved JQTI+ Object for the underlying package */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
-        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-    }
 
     //----------------------------------------------------
     // Session access after creation
@@ -434,8 +414,8 @@ public class AssessmentCandidateService {
         candidateItemAttempt.setResponses(candidateItemResponses);
 
         /* Get current JQTI state and create JQTI controller */
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
-        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
 
         /* Attempt to bind responses */
         final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
@@ -468,7 +448,7 @@ public class AssessmentCandidateService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = recordEvent(candidateSession, eventType, itemSessionController.getItemSessionState());
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, eventType, itemSessionController.getItemSessionState());
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
@@ -518,8 +498,8 @@ public class AssessmentCandidateService {
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.CLOSE, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.CLOSE, itemSessionState);
 
         /* Update state */
         candidateSession.setState(CandidateSessionState.CLOSED);
@@ -569,13 +549,13 @@ public class AssessmentCandidateService {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Get the resolved JQTI+ Object for the underlying package */
-        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
 
         /* Initialise state */
         itemSessionController.initialize();
 
         /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.REINIT, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.REINIT, itemSessionState);
 
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
@@ -636,13 +616,13 @@ public class AssessmentCandidateService {
         }
 
         /* Pull the QTI state from this event */
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(lastInitEvent);
+        final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(lastInitEvent);
 
         /* Record event */
-        recordEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
 
         /* Update state */
-        final ItemSessionController itemSessionController = createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateSession);
@@ -685,8 +665,8 @@ public class AssessmentCandidateService {
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
 
         /* Change session state to CLOSED if it's not already there */
         if (candidateSessionState==CandidateSessionState.INTERACTING) {
@@ -745,8 +725,8 @@ public class AssessmentCandidateService {
         }
 
         /* Record event */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
 
         auditor.recordEvent("Candidate played back event #" + targetEvent.getId()
                 + " in session #" + candidateSession.getId());
@@ -783,8 +763,8 @@ public class AssessmentCandidateService {
         ensureSessionNotTerminated(candidateSession);
 
         /* Record event */
-        final ItemSessionState itemSessionState = getCurrentItemSessionState(candidateSession);
-        recordEvent(candidateSession, CandidateItemEventType.TERMINATE, itemSessionState);
+        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateSession);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.TERMINATE, itemSessionState);
 
         /* Update state */
         candidateSession.setState(CandidateSessionState.TERMINATED);
@@ -825,7 +805,7 @@ public class AssessmentCandidateService {
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateItemEvent latestEvent = getMostRecentEvent(candidateSession);
+        final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -1001,7 +981,7 @@ public class AssessmentCandidateService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setCandidateSessionState(candidateSessionState);
-        renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
+        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
@@ -1054,7 +1034,7 @@ public class AssessmentCandidateService {
         renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setItemSessionState(unmarshalItemSessionState(playbackEvent));
+        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(playbackEvent));
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
@@ -1103,7 +1083,7 @@ public class AssessmentCandidateService {
         renderingRequest.setRenderingMode(RenderingMode.CLOSED);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setItemSessionState(unmarshalItemSessionState(candidateEvent));
+        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateEvent));
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
 
@@ -1251,10 +1231,10 @@ public class AssessmentCandidateService {
         ensureCallerMayViewResult(itemDelivery);
 
         /* Get current state */
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
         /* Generate result Object from state */
-        final ItemSessionController itemSessionController = createItemSessionController(mostRecentEvent);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
         final ItemResult itemResult = itemSessionController.computeItemResult();
 
         /* Send result */
@@ -1302,74 +1282,5 @@ public class AssessmentCandidateService {
                 || eventType==CandidateItemEventType.INIT
                 || eventType==CandidateItemEventType.REINIT
                 || eventType==CandidateItemEventType.RESET;
-    }
-
-    private CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent==null) {
-            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
-        }
-        return mostRecentEvent;
-    }
-
-    private ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
-        return unmarshalItemSessionState(mostRecentEvent);
-    }
-
-    private ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {
-        final ItemDelivery itemDelivery = candidateEvent.getCandidateItemSession().getItemDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
-        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-    }
-
-    private ItemSessionState unmarshalItemSessionState(final CandidateItemEvent event) {
-        final String itemSessionStateXml = event.getItemSessionStateXml();
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
-        Document doc;
-        try {
-            doc = documentBuilder.parse(new InputSource(new StringReader(itemSessionStateXml)));
-        }
-        catch (final Exception e) {
-            throw new QtiWorksLogicException("Could not parse ItemSessionState XML. This is an internal error as we currently don't expose this data to clients", e);
-        }
-        return ItemSesssionStateXmlMarshaller.unmarshal(doc);
-    }
-
-    private CandidateItemEvent recordEvent(final CandidateItemSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
-        return recordEvent(candidateSession, eventType, itemSessionState, null);
-    }
-
-    private CandidateItemEvent recordEvent(final CandidateItemSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
-            final CandidateItemEvent playbackEvent) {
-        final CandidateItemEvent event = new CandidateItemEvent();
-        event.setCandidateItemSession(candidateSession);
-        event.setEventType(eventType);
-        event.setSessionState(candidateSession.getState());
-        event.setCompletionStatus(itemSessionState.getCompletionStatus());
-        event.setDuration(itemSessionState.getDuration());
-        event.setNumAttempts(itemSessionState.getNumAttempts());
-        event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
-        event.setPlaybackEvent(playbackEvent);
-
-        /* Record serialized ItemSessionState */
-        event.setItemSessionStateXml(marshalItemSessionState(itemSessionState));
-
-        /* Store */
-        candidateItemEventDao.persist(event);
-        logger.debug("Recorded {}", event);
-        return event;
-    }
-
-    private String marshalItemSessionState(final ItemSessionState itemSessionState) {
-        final Document marshalledState = ItemSesssionStateXmlMarshaller.marshal(itemSessionState);
-        final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();
-        xmlOptions.setIndenting(true);
-        xmlOptions.setIncludingXMLDeclaration(false);
-        return XMLUtilities.serializeNode(marshalledState, xmlOptions);
     }
 }

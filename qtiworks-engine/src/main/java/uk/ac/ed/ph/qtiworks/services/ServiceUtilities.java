@@ -115,6 +115,17 @@ public final class ServiceUtilities {
         return new String(saltBuilder);
     }
 
+    public static String createSessionHash() {
+        final char[] hashBuilder = new char[DomainConstants.CANDIDATE_SESSION_HASH_LENGTH];
+        final Random random = new Random(System.currentTimeMillis());
+        for (int i=0; i<DomainConstants.CANDIDATE_SESSION_HASH_LENGTH; i++) {
+            hashBuilder[i] = hexChars[random.nextInt(36)];
+        }
+        return new String(hashBuilder);
+    }
+
+    private static final char[] hexChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZ".toCharArray();
+
     //-----------------------------------------------------
 
     public static InputStream ensureInputSream(final MultipartFile multipartFile) {

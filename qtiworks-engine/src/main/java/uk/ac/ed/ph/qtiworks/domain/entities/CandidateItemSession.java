@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,6 +66,24 @@ public class CandidateItemSession implements BaseEntity {
     @Column(name="xid")
     private Long id;
 
+    /**
+     * Randomly-generated hash for this session. Used in conjunction with the <code>xid</code>
+     * in URLs referring to sessions to make it more difficult to hijack sessions.
+     * <p>
+     * The hash is not necessarily unique so should not be used as a lookup key.
+     */
+    @Basic(optional=false)
+    @Column(name="hash", length=DomainConstants.CANDIDATE_SESSION_HASH_LENGTH)
+    private String sessionHash;
+
+    /**
+     * URL to go to once the session has been terminated.
+     * This URL is expected to be within the QTIWorks webapp, so must start with '/'
+     */
+    @Basic(optional=false)
+    @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
+    private String exitUrl;
+
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
     private ItemDelivery itemDelivery;
@@ -90,6 +110,24 @@ public class CandidateItemSession implements BaseEntity {
         this.id = id;
     }
 
+
+    public String getSessionHash() {
+        return sessionHash;
+    }
+
+    public void setSessionHash(final String sessionHash) {
+        this.sessionHash = sessionHash;
+    }
+
+
+    public String getExitUrl() {
+        return exitUrl;
+    }
+
+
+    public void setExitUrl(final String exitUrl) {
+        this.exitUrl = exitUrl;
+    }
 
     public ItemDelivery getItemDelivery() {
         return itemDelivery;

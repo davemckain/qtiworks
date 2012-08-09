@@ -51,6 +51,9 @@ public final class DomainConstants {
     public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
     public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
 
+    public static final int CANDIDATE_SESSION_HASH_LENGTH = 32;
+    public static final int CANDIDATE_SESSION_EXIT_URL_LENGTH = 128;
+
     /** FIXME: What limit should we use here? */
     public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
 

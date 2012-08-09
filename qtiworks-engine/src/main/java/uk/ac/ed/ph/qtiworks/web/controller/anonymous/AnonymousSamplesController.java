@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 
@@ -72,10 +72,10 @@ public class AnonymousSamplesController {
     private AssessmentDao assessmentDao;
 
     @Resource
-    private AssessmentCandidateService assessmentCandidateService;
+    private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private AnonymousCandidateItemController publicCandidateItemController;
+    private AnonymousRouter anonymousRouter;
 
     @RequestMapping(value="/samples/list", method=RequestMethod.GET)
     public String listSamples(final Model model) {
@@ -99,7 +99,15 @@ public class AnonymousSamplesController {
     @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final ItemDelivery sampleItemDelivery = assessmentCandidateService.lookupSystemSampleDelivery(aid);
-        return publicCandidateItemController.startCandidateItemSession(sampleItemDelivery.getId().longValue());
+        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/" + aid);
+
+        final CandidateItemSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
+        return redirectToCandidateSession(candidateItemSession);
+    }
+
+    /** FIXME: Move this! */
+    private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
+        return "redirect:/candidate/session/" + candidateItemSession.getId()
+                + "/" + candidateItemSession.getSessionHash();
     }
 }
