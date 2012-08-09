@@ -39,12 +39,9 @@ import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
@@ -57,7 +54,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
@@ -66,7 +62,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.CandidatePrivilege;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidatePrivilegeException;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
@@ -114,7 +109,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(propagation=Propagation.REQUIRED)
 public class AssessmentCandidateService {
 
-    /** FIXME: Change to Candidate auditor */
+    /** FIXME: Change to Candidate auditor/logger */
     @Resource
     private Auditor auditor;
 
@@ -134,9 +129,6 @@ public class AssessmentCandidateService {
     private FilespaceManager filespaceManager;
 
     @Resource
-    private AssessmentObjectManagementService assessmentObjectManagementService;
-
-    @Resource
     private CandidateDataServices candidateDataServices;
 
     @Resource
@@ -144,18 +136,6 @@ public class AssessmentCandidateService {
 
     @Resource
     private CandidateUploadService candidateUploadService;
-
-    @Resource
-    private JqtiExtensionManager jqtiExtensionManager;
-
-    @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
-    private ItemDeliveryDao itemDeliveryDao;
-
-    @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
     @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
@@ -201,43 +181,6 @@ public class AssessmentCandidateService {
             throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.CANDIDATE_ACCESS_TERMINATED_SESSION);
         }
     }
-
-    //----------------------------------------------------
-    // Session access after creation
-
-    /**
-     * Looks up the {@link CandidateItemSession} having the given ID (xid)
-     * and ensures the caller has access to it.
-     *
-     * @param xid
-     * @return
-     * @throws DomainEntityNotFoundException
-     * @throws CandidatePrivilegeException
-     */
-    @Deprecated
-    public CandidateItemSession lookupCandidateSession(final long xid)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        final CandidateItemSession session = candidateItemSessionDao.requireFindById(xid);
-        ensureCallerMayAccess(session);
-        return session;
-    }
-
-    /**
-     * (Currently we're restricting access to sessions to their owners.)
-     */
-    @Deprecated
-    private User ensureCallerMayAccess(final CandidateItemSession candidateItemSession) throws CandidatePrivilegeException {
-        if (!caller.equals(candidateItemSession.getCandidate())) {
-            /* TOOD: Only allow access to session owner */
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
-        }
-        if (!candidateItemSession.getItemDelivery().isOpen()) {
-            /* No access when delivery is closed */
-            throw new CandidatePrivilegeException(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
-        }
-        return caller;
-    }
-
 
     //----------------------------------------------------
     // Attempt

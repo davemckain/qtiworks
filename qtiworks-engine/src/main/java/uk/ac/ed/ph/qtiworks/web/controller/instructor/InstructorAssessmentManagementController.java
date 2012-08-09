@@ -42,8 +42,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -93,7 +93,7 @@ public final class InstructorAssessmentManagementController {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private AssessmentCandidateService assessmentCandidateService;
+    private CandidateSessionStarter candidateSessionStarter;
 
     //------------------------------------------------------
 
@@ -310,22 +310,29 @@ public final class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
-    public String tryLatestAssessmentPackage(final @PathVariable long aid)
+    public String tryAssessment(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
-        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
-        return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
+
+        return runDelivery(aid, demoDelivery);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
-    public String tryLatestAssessmentPackage(final @PathVariable long aid, final @PathVariable long dsid)
+    public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
-        final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(demoDelivery.getId().longValue());
-        return "redirect:/web/instructor/session/" + candidateSession.getId().longValue();
+
+        return runDelivery(aid, demoDelivery);
+    }
+
+    private String runDelivery(final long aid, final ItemDelivery itemDelivery)
+            throws RuntimeValidationException {
+        final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);
+        return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionHash();
     }
 
     //------------------------------------------------------
