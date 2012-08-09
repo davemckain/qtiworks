@@ -83,10 +83,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public final class InstructorAssessmentManagementController {
 
-    private static final String controllerPath = "/web/instructor";
-
     @Resource
-    private String contextPath;
+    private InstructorRouter instructorRouter;
 
     @Resource
     private EntityGraphService entityGraphService;
@@ -122,31 +120,23 @@ public final class InstructorAssessmentManagementController {
 
     public Map<String, String> buildAssessmentRouting(final long aid) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildActionPath("/assessment/" + aid));
-        result.put("edit", buildActionPath("/assessment/" + aid + "/edit"));
-        result.put("upload", buildActionPath("/assessment/" + aid + "/upload"));
-        result.put("validate", buildActionPath("/assessment/" + aid + "/validate"));
-        result.put("try", buildActionPath("/assessment/" + aid + "/try"));
-        result.put("deliveries", buildActionPath("/assessment/" + aid + "/deliveries"));
-        result.put("createDelivery", buildActionPath("/assessment/" + aid + "/deliveries/create"));
+        result.put("show", instructorRouter.buildWebUrl("/assessment/" + aid));
+        result.put("edit", instructorRouter.buildWebUrl("/assessment/" + aid + "/edit"));
+        result.put("upload", instructorRouter.buildWebUrl("/assessment/" + aid + "/upload"));
+        result.put("validate", instructorRouter.buildWebUrl("/assessment/" + aid + "/validate"));
+        result.put("try", instructorRouter.buildWebUrl("/assessment/" + aid + "/try"));
+        result.put("deliveries", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries"));
+        result.put("createDelivery", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries/create"));
         return result;
-    }
-
-    private String buildActionPath(final String requestPath) {
-        return contextPath + controllerPath + requestPath;
-    }
-
-    private String buildActionRedirect(final String requestPath) {
-        return "redirect:" + controllerPath + requestPath;
     }
 
     @ModelAttribute
     public void setupPrimaryRouting(final Model model) {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
-        primaryRouting.put("uploadAssessment", buildActionPath("/assessments/upload"));
-        primaryRouting.put("listAssessments", buildActionPath("/assessments"));
-        primaryRouting.put("listItemDeliverySettings", buildActionPath("/deliverysettings"));
-        primaryRouting.put("createItemDeliverySettings", buildActionPath("/deliverysettings/create"));
+        primaryRouting.put("uploadAssessment", instructorRouter.buildWebUrl("/assessments/upload"));
+        primaryRouting.put("listAssessments", instructorRouter.buildWebUrl("/assessments"));
+        primaryRouting.put("listItemDeliverySettings", instructorRouter.buildWebUrl("/deliverysettings"));
+        primaryRouting.put("createItemDeliverySettings", instructorRouter.buildWebUrl("/deliverysettings/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
     }
 
@@ -197,7 +187,7 @@ public final class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        return buildActionRedirect("/assessment/" + assessment.getId());
+        return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
     /**
@@ -249,7 +239,7 @@ public final class InstructorAssessmentManagementController {
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
-        return buildActionRedirect("/assessment/" + aid);
+        return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
     //------------------------------------------------------
@@ -302,7 +292,7 @@ public final class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        return buildActionRedirect("/assessment/{aid}");
+        return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
     }
 
     //------------------------------------------------------
@@ -367,7 +357,7 @@ public final class InstructorAssessmentManagementController {
     public String createItemDelivery(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = assessmentManagementService.createItemDelivery(aid);
-        return buildActionRedirect("/delivery/" + itemDelivery.getId().longValue());
+        return instructorRouter.buildInstructorRedirect("/delivery/" + itemDelivery.getId().longValue());
     }
 
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
@@ -404,7 +394,7 @@ public final class InstructorAssessmentManagementController {
         }
 
         /* Return to show */
-        return buildActionRedirect("/delivery/" + did);
+        return instructorRouter.buildInstructorRedirect("/delivery/" + did);
     }
 
     public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<ItemDelivery> deliveries) {
@@ -421,8 +411,8 @@ public final class InstructorAssessmentManagementController {
 
     public Map<String, String> buildDeliveryRouting(final long did) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildActionPath("/delivery/" + did));
-        result.put("edit", buildActionPath("/delivery/" + did + "/edit"));
+        result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
+        result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
         return result;
     }
 
@@ -478,7 +468,7 @@ public final class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        return buildActionRedirect("/deliverysettings");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}", method=RequestMethod.GET)
@@ -514,7 +504,7 @@ public final class InstructorAssessmentManagementController {
         /* Return to show/edit
          * FIXME: Add some flash message here so that it's not confusing.
          */
-        return buildActionRedirect("/deliverysettings/" + dsid);
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid);
     }
 
     public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<ItemDeliverySettings> itemDeliverySettingsList) {
@@ -531,8 +521,8 @@ public final class InstructorAssessmentManagementController {
 
     public Map<String, String> buildDeliverySettingsRouting(final long dsid) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildActionPath("/deliverysettings/" + dsid));
-        result.put("update", buildActionPath("/deliverysettings/" + dsid + "/update"));
+        result.put("show", instructorRouter.buildWebUrl("/deliverysettings/" + dsid));
+        result.put("update", instructorRouter.buildWebUrl("/deliverysettings/" + dsid + "/update"));
         return result;
     }
 

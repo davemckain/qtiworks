@@ -70,6 +70,9 @@ import org.springframework.web.context.request.WebRequest;
 public class InstructorCandidateItemController {
 
     @Resource
+    private InstructorRouter instructorRouter;
+
+    @Resource
     private CandidateControllerService candidateControllerService;
 
     @Resource
@@ -78,11 +81,11 @@ public class InstructorCandidateItemController {
     //----------------------------------------------------
 
     private String redirectToAssessment(final long aid) {
-        return "redirect:/web/instructor/assessment/" + aid;
+        return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
     private String redirectToRenderSession(final long xid) {
-        return "redirect:/web/instructor/session/" + xid;
+        return instructorRouter.buildInstructorRedirect("/session/" + xid);
     }
 
     //----------------------------------------------------
