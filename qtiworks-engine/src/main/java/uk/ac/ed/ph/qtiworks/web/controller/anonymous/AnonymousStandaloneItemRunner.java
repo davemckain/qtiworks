@@ -74,7 +74,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author David McKain
  */
 @Controller
-public class PublicStandaloneItemRunner {
+public class AnonymousStandaloneItemRunner {
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -102,7 +102,7 @@ public class PublicStandaloneItemRunner {
         command.setDsid(itemDeliverySettingsList.get(0).getId());
 
         model.addAttribute(command);
-        return "public/standalonerunner/uploadForm";
+        return "standalonerunner/uploadForm";
     }
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
@@ -110,7 +110,7 @@ public class PublicStandaloneItemRunner {
             final BindingResult errors) throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
-            return "public/standalonerunner/uploadForm";
+            return "standalonerunner/uploadForm";
         }
 
         /* Make sure the required ItemDeliverySettings exists */
@@ -124,17 +124,17 @@ public class PublicStandaloneItemRunner {
             if (assessment.getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
                 /* FIXME! We're only supporting items at present */
                 errors.reject("testsNotSupportedYet");
-                return "public/standalonerunner/uploadForm";
+                return "standalonerunner/uploadForm";
             }
             if (!validationResult.isValid()) {
                 model.addAttribute("validationResult", validationResult);
-                return "public/standalonerunner/invalidUpload";
+                return "standalonerunner/invalidUpload";
             }
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
-            return "public/standalonerunner/uploadForm";
+            return "standalonerunner/uploadForm";
         }
         catch (final DomainEntityNotFoundException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -145,6 +145,6 @@ public class PublicStandaloneItemRunner {
         final CandidateItemSession candidateSession = assessmentCandidateService.createCandidateSession(delivery.getId().longValue());
 
         /* Redirect to rendering */
-        return "redirect:/web/public/session/" + candidateSession.getId().longValue();
+        return "redirect:/web/anonymous/session/" + candidateSession.getId().longValue();
     }
 }

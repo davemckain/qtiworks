@@ -63,7 +63,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author David McKain
  */
 @Controller
-public class PublicSamplesController {
+public class AnonymousSamplesController {
 
     @Resource
     private SampleCategoryDao sampleCategoryDao;
@@ -75,7 +75,7 @@ public class PublicSamplesController {
     private AssessmentCandidateService assessmentCandidateService;
 
     @Resource
-    private PublicCandidateItemController publicCandidateItemController;
+    private AnonymousCandidateItemController publicCandidateItemController;
 
     @RequestMapping(value="/samples/list", method=RequestMethod.GET)
     public String listSamples(final Model model) {
@@ -89,7 +89,7 @@ public class PublicSamplesController {
         }
 
         model.addAttribute("sampleAssessmentMap", sampleAssessmentMap);
-        return "public/samples/list";
+        return "samples/list";
     }
 
     /**

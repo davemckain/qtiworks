@@ -128,10 +128,10 @@ Web deployment descriptor
   <filter-mapping>
     <filter-name>AnonymousAuthenticationFilter</filter-name>
     <url-pattern>/dispatcher/*</url-pattern>
-    <url-pattern>/web/public/*</url-pattern>
+    <url-pattern>/web/anonymous/*</url-pattern>
   </filter-mapping>
 
-  <!-- Dispatcher for public web functionality -->
+  <!-- Dispatcher for anonymous web functionality -->
   <servlet>
     <servlet-name>AnonymousDispatcher</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -149,7 +149,7 @@ Web deployment descriptor
   </servlet>
   <servlet-mapping>
     <servlet-name>AnonymousDispatcher</servlet-name>
-    <url-pattern>/web/public/*</url-pattern>
+    <url-pattern>/web/anonymous/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

@@ -84,7 +84,7 @@ public class AnonymousMvcConfiguration extends WebMvcConfigurerAdapter {
         final UrlBasedViewResolver result = new UrlBasedViewResolver();
         result.setRedirectHttp10Compatible(false);
         result.setViewClass(JstlView.class);
-        result.setPrefix("/WEB-INF/jsp/views/");
+        result.setPrefix("/WEB-INF/jsp/views/anonymous/");
         result.setSuffix(".jsp");
         return result;
     }

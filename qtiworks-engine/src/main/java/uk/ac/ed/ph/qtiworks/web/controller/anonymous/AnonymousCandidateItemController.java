@@ -68,7 +68,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author David McKain
  */
 @Controller
-public class PublicCandidateItemController {
+public class AnonymousCandidateItemController {
 
     @Resource
     private CandidateControllerService candidateControllerService;
@@ -79,7 +79,7 @@ public class PublicCandidateItemController {
     //----------------------------------------------------
 
     private String redirectToListing() {
-        return "redirect:/web/public/samples/list";
+        return "redirect:/web/anonymous/samples/list";
     }
 
     private String redirectToRenderSession(final CandidateItemSession candidateSession) {
@@ -87,7 +87,7 @@ public class PublicCandidateItemController {
     }
 
     private String redirectToRenderSession(final long xid) {
-        return "redirect:/web/public/session/" + xid;
+        return "redirect:/web/anonymous/session/" + xid;
     }
 
     //----------------------------------------------------
@@ -118,8 +118,8 @@ public class PublicCandidateItemController {
         final Long did = candidateSession.getItemDelivery().getId();
 
         /* Create appropriate options that link back to this controller */
-        final String sessionBaseUrl = "/web/public/session/" + xid;
-        final String deliveryBaseUrl = "/web/public/delivery/" + did;
+        final String sessionBaseUrl = "/web/anonymous/session/" + xid;
+        final String deliveryBaseUrl = "/web/anonymous/delivery/" + did;
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
