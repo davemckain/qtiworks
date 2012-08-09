@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
-import uk.ac.ed.ph.qtiworks.web.pub.controller.BadResponseWebPayloadException;
+import uk.ac.ed.ph.qtiworks.web.controller.anonymous.BadResponseWebPayloadException;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.domain;
 
 import uk.ac.ed.ph.qtiworks.services.validation.MultipartFileExists;
-import uk.ac.ed.ph.qtiworks.web.pub.controller.PublicStandaloneItemRunner;
+import uk.ac.ed.ph.qtiworks.web.controller.anonymous.PublicStandaloneItemRunner;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 

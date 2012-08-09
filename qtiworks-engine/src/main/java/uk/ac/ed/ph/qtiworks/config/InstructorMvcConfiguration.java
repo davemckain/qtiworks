@@ -49,7 +49,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  */
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.instructor.controller"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.controller.instructor"})
 public class InstructorMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean

@@ -51,14 +51,14 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
- * Defines beans for the public web dispatcher
+ * Defines beans for the anonymous MVC dispatcher
  *
  * @author David McKain
  */
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.pub.controller"})
-public class PublicMvcConfiguration extends WebMvcConfigurerAdapter {
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.controller.anonymous"})
+public class AnonymousMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 

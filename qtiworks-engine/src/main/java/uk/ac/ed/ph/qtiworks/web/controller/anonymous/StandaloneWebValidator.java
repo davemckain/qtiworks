@@ -31,46 +31,61 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.controller;
+package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
-import uk.ac.ed.ph.qtiworks.mathassess.XsltStylesheetCacheAdapter;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.AsciiMathHelper;
+import uk.ac.ed.ph.qtiworks.services.StandaloneValidationService;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
-import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
-
-import java.util.Map;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Controller for candidate helpers, such as math input verifiers.
+ * Standalone web-based validator
  *
  * @author David McKain
  */
 @Controller
-public class CandidateHelperController {
+public class StandaloneWebValidator {
 
     @Resource
-    private XsltStylesheetCache stylesheetCache;
+    private StandaloneValidationService validationService;
 
-    /**
-     * Runs {@link ASCIIMathMLHelper} helper on the given 'input' parameter, expecting to return
-     * JSON.
-     *
-     * Accept: application/json from client expected
-     */
-    @RequestMapping(value="/verifyAsciiMath", method=RequestMethod.POST)
-    @ResponseBody
-    public Map<String, String>  verifyASCIIMath(@RequestParam("input") final String asciiMathInput) {
-        final AsciiMathHelper asciiMathHelper = new AsciiMathHelper(new XsltStylesheetCacheAdapter(stylesheetCache));
-        final Map<String, String> upConvertedASCIIMathInput = asciiMathHelper.upConvertASCIIMathInput(asciiMathInput);
-        return upConvertedASCIIMathInput;
+    @RequestMapping(value="/validator", method=RequestMethod.GET)
+    public String showValidatorForm(final Model model) {
+        final UploadAssessmentPackageCommand command = new UploadAssessmentPackageCommand();
+        model.addAttribute(command);
+        return "public/validator/uploadForm";
     }
 
+    @RequestMapping(value="/validator", method=RequestMethod.POST)
+    public String handleValidatorForm(final Model model, @Valid @ModelAttribute final UploadAssessmentPackageCommand command,
+            final BindingResult errors) {
+        /* Catch any binding errors */
+        if (errors.hasErrors()) {
+            return "public/validator/uploadForm";
+        }
+
+        try {
+            final AssessmentObjectValidationResult<?> result = validationService.importAndValidate(command.getFile());
+            model.addAttribute("validationResult", result);
+            return "public/validator/validationResult";
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            failure.registerErrors(errors, "assessmentPackageUpload");
+            return "public/validator/uploadForm";
+        }
+    }
 }

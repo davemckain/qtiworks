@@ -31,15 +31,14 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.pub.controller;
+package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
@@ -63,12 +62,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * Controller for candidate item sessions (as part of the public API)
+ * Controller for candidate item sessions (as part of the instructor API)
  *
  * @author David McKain
  */
 @Controller
-public class PublicCandidateItemController {
+public class InstructorCandidateItemController {
 
     @Resource
     private CandidateControllerService candidateControllerService;
@@ -78,29 +77,12 @@ public class PublicCandidateItemController {
 
     //----------------------------------------------------
 
-    private String redirectToListing() {
-        return "redirect:/web/public/samples/list";
-    }
-
-    private String redirectToRenderSession(final CandidateItemSession candidateSession) {
-        return redirectToRenderSession(candidateSession.getId().longValue());
+    private String redirectToAssessment(final long aid) {
+        return "redirect:/web/instructor/assessment/" + aid;
     }
 
     private String redirectToRenderSession(final long xid) {
-        return "redirect:/web/public/session/" + xid;
-    }
-
-    //----------------------------------------------------
-    // Session initialisation
-
-    /**
-     * Starts a new {@link CandidateItemSession} for the given {@link ItemDelivery}.
-     */
-    @RequestMapping(value="/delivery/{did}", method=RequestMethod.POST)
-    public String startCandidateItemSession(@PathVariable final long did)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final CandidateItemSession candidateSession = candidateControllerService.startCandidateItemSession(did);
-        return redirectToRenderSession(candidateSession);
+        return "redirect:/web/instructor/session/" + xid;
     }
 
     //----------------------------------------------------
@@ -118,8 +100,8 @@ public class PublicCandidateItemController {
         final Long did = candidateSession.getItemDelivery().getId();
 
         /* Create appropriate options that link back to this controller */
-        final String sessionBaseUrl = "/web/public/session/" + xid;
-        final String deliveryBaseUrl = "/web/public/delivery/" + did;
+        final String sessionBaseUrl = "/web/instructor/session/" + xid;
+        final String deliveryBaseUrl = "/web/instructor/delivery/" + did;
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
@@ -229,21 +211,10 @@ public class PublicCandidateItemController {
     public String terminateSession(@PathVariable final long xid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = candidateControllerService.terminateCandidateSession(xid);
-        final DeliveryType deliveryType = candidateSession.getItemDelivery().getDeliveryType();
+        final Assessment assessment = candidateSession.getItemDelivery().getAssessment();
 
-        /* Redirect somewhere sensible.
-         * TODO: We should probably allow the redirect to be specified explicitly!
-         */
-        String view;
-        if (deliveryType==DeliveryType.SYSTEM_DEMO) {
-            /* (Trying a sample) */
-            view = redirectToListing();
-        }
-        else {
-            /* (This was a "upload & run", so go somewhere sensible) */
-            view = "redirect:/public/";
-        }
-        return view;
+        /* FIXME: This should clear up data! */
+        return redirectToAssessment(assessment.getId().longValue());
     }
 
     //----------------------------------------------------
