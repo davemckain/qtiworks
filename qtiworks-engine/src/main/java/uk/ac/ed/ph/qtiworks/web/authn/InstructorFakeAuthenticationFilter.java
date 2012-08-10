@@ -49,7 +49,7 @@ import org.springframework.web.context.WebApplicationContext;
  * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
  * assumes a configured identity for the current User.
  * <p>
- * This is extremely useful when debugging as it saves having to log in over and over again!
+ * (This is extremely useful during development but probably shouldn't be used in production.)
  *
  * @author David McKain
  */
