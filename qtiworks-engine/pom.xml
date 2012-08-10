@@ -228,12 +228,12 @@ All Rights Reserved
         </plugins>
       </build>
     </profile>
-    <!-- To run JPA custom code: "mvn -DJpaRunner exec:exec" -->
+    <!-- To run JPA custom code: "mvn -DAdhocRunner exec:exec" -->
     <profile>
-      <id>JpaRunner</id>
+      <id>AdhocRunner</id>
       <activation>
         <property>
-          <name>JpaRunner</name>
+          <name>AdhocRunner</name>
         </property>
       </activation>
       <build>
@@ -246,7 +246,7 @@ All Rights Reserved
               <arguments>
                 <argument>-classpath</argument>
                 <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.JpaRunner</argument>
+                <argument>uk.ac.ed.ph.qtiworks.tools.AdhocRunner</argument>
               </arguments>
             </configuration>
           </plugin>
