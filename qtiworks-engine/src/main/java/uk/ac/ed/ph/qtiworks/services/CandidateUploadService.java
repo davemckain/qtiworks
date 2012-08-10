@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
@@ -66,9 +65,6 @@ public class CandidateUploadService {
     private Auditor auditor;
 
     @Resource
-    private IdentityContext identityContext;
-
-    @Resource
     private FilespaceManager filespaceManager;
 
     @Resource
@@ -80,7 +76,7 @@ public class CandidateUploadService {
         Assert.ensureNotNull(multipartFile, "multipartFile");
 
         /* Save file into filesystem */
-        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final User candidate = candidateItemSession.getCandidate();
         final File uploadFile = filespaceManager.createCandidateUploadFile(candidateItemSession, candidate);
         try {
             multipartFile.transferTo(uploadFile);
