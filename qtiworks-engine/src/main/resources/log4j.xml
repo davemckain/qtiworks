@@ -32,9 +32,17 @@ Webapp logging configuration
     </filter>
   </appender>
 
-  <!-- Appender for logging audit messages -->
+  <!-- Appender for logging audit messages for logged in users -->
   <appender name="AUDITOR" class="org.apache.log4j.FileAppender">
     <param name="File" value="${qtiworks.logging.auditing}"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{ISO8601}] %m%n"/>
+    </layout>
+  </appender>
+
+  <!-- Appender for logging audit messages for candidates -->
+  <appender name="CANDIDATE_AUDITOR" class="org.apache.log4j.FileAppender">
+    <param name="File" value="${qtiworks.logging.auditing.candidate}"/>
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{ISO8601}] %m%n"/>
     </layout>
@@ -44,6 +52,12 @@ Webapp logging configuration
   <logger name="Auditor" additivity="false">
     <level value="INFO"/>
     <appender-ref ref="AUDITOR"/>
+  </logger>
+
+  <!-- Candidate Auditing log -->
+  <logger name="CandidateAuditor" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="CANDIDATE_AUDITOR"/>
   </logger>
 
   <!-- Root logger -->

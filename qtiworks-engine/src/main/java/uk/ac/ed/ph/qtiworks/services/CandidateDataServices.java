@@ -57,8 +57,6 @@ import java.io.StringReader;
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -71,8 +69,6 @@ import org.xml.sax.InputSource;
  */
 @Service
 public class CandidateDataServices {
-
-    private static final Logger logger = LoggerFactory.getLogger(CandidateDataServices.class);
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -110,17 +106,17 @@ public class CandidateDataServices {
         return ItemSesssionStateXmlMarshaller.unmarshal(doc);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
-        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null);
+        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState, final CandidateItemEvent playbackEvent) {
         final CandidateItemEvent event = new CandidateItemEvent();
-        event.setCandidateItemSession(candidateSession);
+        event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
-        event.setSessionState(candidateSession.getState());
+        event.setSessionState(candidateItemSession.getState());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());
@@ -132,13 +128,12 @@ public class CandidateDataServices {
 
         /* Store */
         candidateItemEventDao.persist(event);
-        logger.debug("Recorded {}", event);
         return event;
     }
 
-    public ItemSessionController createItemSessionController(final CandidateItemEvent candidateEvent) {
-        final ItemDelivery itemDelivery = candidateEvent.getCandidateItemSession().getItemDelivery();
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateEvent);
+    public ItemSessionController createItemSessionController(final CandidateItemEvent candidateItemEvent) {
+        final ItemDelivery itemDelivery = candidateItemEvent.getCandidateItemSession().getItemDelivery();
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
         return createItemSessionController(itemDelivery, itemSessionState);
     }
 
@@ -150,17 +145,16 @@ public class CandidateDataServices {
         return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
     }
 
-    public ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+    public ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateItemSession)  {
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateItemSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
-    public CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
+    public CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateItemSession)  {
+        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateItemSession);
         if (mostRecentEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentEvent;
     }
-
 }
