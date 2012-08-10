@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -115,16 +116,27 @@ public final class ServiceUtilities {
         return new String(saltBuilder);
     }
 
+    //-----------------------------------------------------
+    // Random data generation
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
+    /** "safe" characters used to encode random tokens */
+    private static final char[] randomChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
     public static String createSessionHash() {
-        final char[] hashBuilder = new char[DomainConstants.CANDIDATE_SESSION_HASH_LENGTH];
-        final Random random = new Random(System.currentTimeMillis());
-        for (int i=0; i<DomainConstants.CANDIDATE_SESSION_HASH_LENGTH; i++) {
-            hashBuilder[i] = hexChars[random.nextInt(62)];
-        }
-        return new String(hashBuilder);
+        return createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_HASH_LENGTH);
     }
 
-    private static final char[] hexChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+    public static String createRandomAlphanumericToken(final int length) {
+        final char[] tokenBuilder = new char[length];
+        synchronized (secureRandom) {
+            for (int i=0; i<length; i++) {
+                tokenBuilder[i] = randomChars[secureRandom.nextInt(randomChars.length)];
+            }
+        }
+        return new String(tokenBuilder);
+    }
 
     //-----------------------------------------------------
 
