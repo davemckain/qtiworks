@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
@@ -140,17 +142,13 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     private boolean ltiEnabled;
 
     /** LTI consumer key (if used) */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="lti_consumer_key", updatable=false, unique=false)
+    @Column(name="lti_consumer_key", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
     private String ltiConsumerKey;
 
     /** LTI consumer secret (if used) */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="lti_consumer_secret", updatable=false, unique=false)
+    @Column(name="lti_consumer_secret", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
 
     //------------------------------------------------------------
@@ -249,7 +247,6 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     public void setLtiConsumerSecret(final String ltiConsumerSecret) {
         this.ltiConsumerSecret = ltiConsumerSecret;
     }
-
 
     //------------------------------------------------------------
 
