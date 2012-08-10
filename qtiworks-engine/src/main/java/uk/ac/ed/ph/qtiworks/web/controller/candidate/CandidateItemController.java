@@ -39,10 +39,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.services.domain.CandidatePrivilegeException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
@@ -82,7 +82,7 @@ public class CandidateItemController {
     public static final long CACHEABLE_MAX_AGE = 60 * 60;
 
     @Resource
-    private AssessmentCandidateService assessmentCandidateService;
+    private CandidateItemDeliveryService candidateItemDeliveryService;
 
     //----------------------------------------------------
     // Rendering
@@ -91,12 +91,12 @@ public class CandidateItemController {
      * Renders the current state of the given session
      *
      * @throws IOException
-     * @throws CandidatePrivilegeException
+     * @throws CandidateForbiddenException
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}", method=RequestMethod.GET)
     public void renderItem(@PathVariable final long xid, @PathVariable final String sessionHash,
             final WebRequest webRequest, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidatePrivilegeException {
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionHash;
         final RenderingOptions renderingOptions = new RenderingOptions();
@@ -114,7 +114,7 @@ public class CandidateItemController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        assessmentCandidateService.renderCurrentState(xid, sessionHash, renderingOptions, outputStreamer);
+        candidateItemDeliveryService.renderCurrentState(xid, sessionHash, renderingOptions, outputStreamer);
     }
 
 
@@ -127,7 +127,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/{sessionHash}/attempt", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, RuntimeValidationException, CandidatePrivilegeException {
+            throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
 
@@ -138,7 +138,7 @@ public class CandidateItemController {
         }
 
         /* Call up service layer */
-        assessmentCandidateService.handleAttempt(xid, sessionHash, stringResponseMap, fileResponseMap);
+        candidateItemDeliveryService.handleAttempt(xid, sessionHash, stringResponseMap, fileResponseMap);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -202,13 +202,11 @@ public class CandidateItemController {
 
     /**
      * Resets the given {@link CandidateItemSession}
-     *
-     * @see AssessmentCandidateService#resetCandidateSession(long)
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/reset", method=RequestMethod.POST)
     public String resetCandidateSession(@PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        assessmentCandidateService.resetCandidateSession(xid, sessionHash);
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateItemDeliveryService.resetCandidateSession(xid, sessionHash);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -219,8 +217,8 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/reinit", method=RequestMethod.POST)
     public String reinitSession(@PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, RuntimeValidationException, CandidatePrivilegeException {
-        assessmentCandidateService.reinitCandidateSession(xid, sessionHash);
+            throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
+        candidateItemDeliveryService.reinitCandidateSession(xid, sessionHash);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -231,8 +229,8 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/close", method=RequestMethod.POST)
     public String closeSession(@PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        assessmentCandidateService.closeCandidateSession(xid, sessionHash);
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateItemDeliveryService.closeCandidateSession(xid, sessionHash);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -243,8 +241,8 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/solution", method=RequestMethod.POST)
     public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        assessmentCandidateService.transitionCandidateSessionToSolutionState(xid, sessionHash);
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateItemDeliveryService.transitionCandidateSessionToSolutionState(xid, sessionHash);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -256,8 +254,8 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/playback/{xeid}", method=RequestMethod.POST)
     public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final String sessionHash, @PathVariable final long xeid)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        assessmentCandidateService.setPlaybackState(xid, sessionHash, xeid);
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateItemDeliveryService.setPlaybackState(xid, sessionHash, xeid);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionHash);
@@ -268,8 +266,8 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/terminate", method=RequestMethod.POST)
     public String terminateSession(@PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, CandidatePrivilegeException {
-        final CandidateItemSession candidateSession = assessmentCandidateService.terminateCandidateSession(xid, sessionHash);
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateItemSession candidateSession = candidateItemDeliveryService.terminateCandidateSession(xid, sessionHash);
         return redirectToExitUrl(candidateSession.getExitUrl());
     }
 
@@ -282,9 +280,9 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionHash}/result", method=RequestMethod.GET)
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionHash)
-            throws DomainEntityNotFoundException, IOException, CandidatePrivilegeException {
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         response.setContentType("application/xml");
-        assessmentCandidateService.streamItemResult(xid, sessionHash, response.getOutputStream());
+        candidateItemDeliveryService.streamItemResult(xid, sessionHash, response.getOutputStream());
     }
 
     /**
@@ -296,7 +294,7 @@ public class CandidateItemController {
     public void streamPackageSource(@PathVariable final long xid,
             @PathVariable final String sessionHash,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidatePrivilegeException {
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
         final String requestEtag = request.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
@@ -304,13 +302,13 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            assessmentCandidateService.streamAssessmentSource(xid, sessionHash, outputStreamer);
+            candidateItemDeliveryService.streamAssessmentSource(xid, sessionHash, outputStreamer);
         }
     }
 
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
-     * @throws CandidatePrivilegeException
+     * @throws CandidateForbiddenException
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
@@ -318,8 +316,8 @@ public class CandidateItemController {
     public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionHash,
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidatePrivilegeException {
-        final CandidateItemSession candidateSession = assessmentCandidateService.lookupCandidateSession(xid, sessionHash);
+            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateItemSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionHash);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -328,7 +326,7 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            assessmentCandidateService.streamAssessmentFile(candidateSession, href, outputStreamer);
+            candidateItemDeliveryService.streamAssessmentFile(candidateSession, href, outputStreamer);
         }
     }
 

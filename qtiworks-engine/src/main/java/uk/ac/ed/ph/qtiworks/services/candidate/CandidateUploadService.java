@@ -31,14 +31,14 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services;
+package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -60,9 +60,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateUploadService {
-
-    @Resource
-    private Auditor auditor;
 
     @Resource
     private FilespaceManager filespaceManager;
@@ -92,8 +89,6 @@ public class CandidateUploadService {
         result.setFileName(multipartFile.getOriginalFilename());
         result.setStoredFilePath(uploadFile.getAbsolutePath());
         candidateFileSubmissionDao.persist(result);
-
-        auditor.recordEvent("Imported candidate file submission #" + result.getId());
         return result;
     }
 }

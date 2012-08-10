@@ -58,6 +58,8 @@ import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -68,6 +70,7 @@ import org.xml.sax.InputSource;
  * @author David McKain
  */
 @Service
+@Transactional(propagation=Propagation.SUPPORTS)
 public class CandidateDataServices {
 
     @Resource

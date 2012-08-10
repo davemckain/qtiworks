@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
 /**
- * Callback interface used to handle data emanating from {@link AssessmentCandidateService}
+ * Callback interface used to handle data emanating from {@link CandidateItemDeliveryService}
  * and friends.
  *
  * @author David McKain

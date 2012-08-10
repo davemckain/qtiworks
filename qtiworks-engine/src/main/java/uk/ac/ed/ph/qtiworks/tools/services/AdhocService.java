@@ -40,8 +40,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.services.AssessmentCandidateService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
@@ -78,7 +78,7 @@ public class AdhocService {
     private RequestTimestampContext requestTimestampContext;
 
     @Resource
-    private AssessmentCandidateService assessmentCandidateService;
+    private CandidateItemDeliveryService candidateItemDeliveryService;
 
     @Resource
     private CandidateSessionStarter candidateSessionStarter;
@@ -114,39 +114,39 @@ public class AdhocService {
         renderingOptions.setPlaybackUrlBase("/playback");
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
 
         /* Do bad attempt == file submission */
         final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
         fileResponseMap.put(new Identifier("RESPONSE"), new NullMultipartFile());
-        assessmentCandidateService.handleAttempt(candidateItemSession, null, fileResponseMap);
+        candidateItemDeliveryService.handleAttempt(candidateItemSession, null, fileResponseMap);
 
         /* Do invalid attempt */
         final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
         stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("x"));
-        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
         stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
-        assessmentCandidateService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */
-        assessmentCandidateService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after first proper attempt:\n" + utf8Streamer.getResult());
 
         /* Then reinit state */
-        assessmentCandidateService.reinitCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.reinitCandidateSession(candidateItemSession);
 
         /* Then reset state */
-        assessmentCandidateService.resetCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.resetCandidateSession(candidateItemSession);
 
         /* Then end session */
-        assessmentCandidateService.closeCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.closeCandidateSession(candidateItemSession);
 
         /* Then close session */
-        assessmentCandidateService.terminateCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.terminateCandidateSession(candidateItemSession);
     }
 
     public static class Utf8Streamer implements OutputStreamer {

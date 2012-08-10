@@ -31,41 +31,39 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
-
-import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+package uk.ac.ed.ph.qtiworks.services.candidate;
 
 /**
- * Concrete "not allowed" {@link Exception} thrown when a {@link User} does
- * not have an appropriate {@link CandidatePrivilege} (possibly to access a particular
- * entity, but not necessarily).
+ * Represents the various privileges a candidate user can have against a particular session.
+ *
+ * @see CandidateForbiddenException
  *
  * @author David McKain
  */
-@ResponseStatus(value=HttpStatus.FORBIDDEN)
-public final class CandidatePrivilegeException extends NotAllowedException {
+public enum CandidatePrivilege {
 
-    private static final long serialVersionUID = 963799679125087234L;
+    ACCESS_CANDIDATE_SESSION,
+    MAKE_ATTEMPT,
+    ACCESS_ITEM_DELIVERY,
+    ACCESS_ITEM_DELIVERY_OPTIONS,
+    ACCESS_BLACKLISTED_ASSESSMENT_FILE,
+    ACCESS_ASSESSMENT_FILE,
+    ACCESS_TERMINATED_SESSION,
+    CLOSE_SESSION_WHEN_INTERACTING,
+    CLOSE_SESSION_WHEN_CLOSED,
+    RESET_SESSION_WHEN_INTERACTING,
+    RESET_SESSION_WHEN_CLOSED,
+    REINIT_SESSION_WHEN_INTERACTING,
+    REINIT_SESSION_WHEN_CLOSED,
+    SOLUTION_WHEN_INTERACTING,
+    SOLUTION_WHEN_CLOSED,
+    PLAYBACK_WHEN_INTERACTING,
+    PLAYBACK,
+    PLAYBACK_OTHER_SESSION,
+    PLAYBACK_EVENT,
+    VIEW_ASSESSMENT_SOURCE,
+    VIEW_ASSESSMENT_RESULT,
 
-    private final CandidateItemSession candidateItemSession;
-    private final CandidatePrivilege privilege;
+    ;
 
-    public CandidatePrivilegeException(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege) {
-        super("Candidate does not have privilege " + privilege + " on CandidateItemSession xid=" + candidateItemSession);
-        this.candidateItemSession = candidateItemSession;
-        this.privilege = privilege;
-    }
-
-    public CandidateItemSession getCandidateItemSession() {
-        return candidateItemSession;
-    }
-
-    public CandidatePrivilege getPrivilege() {
-        return privilege;
-    }
 }
