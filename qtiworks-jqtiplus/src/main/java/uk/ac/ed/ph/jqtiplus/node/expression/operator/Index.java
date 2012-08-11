@@ -33,30 +33,31 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The index operator takes A sub-expression with an ordered container value and any base-type.
+ * The index operator takes a sub-expression with an ordered container value and any base-type.
  * The result is the nth value of the container. The result has the same base-type as the sub-expression
- * but single cardinality. The first value of A container has index 1, the second 2 and so on.
- * N must be A positive integer. If n exceeds the number of values in the container or the sub-expression
+ * but single cardinality. The first value of a container has index 1, the second 2 and so on.
+ * N must be a positive integer. If n exceeds the number of values in the container or the sub-expression
  * is NULL then the result of the index operator is NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Index extends AbstractFunctionalExpression {
+public class Index extends AbstractExpression {
 
     private static final long serialVersionUID = 909169733159523992L;
 
@@ -66,39 +67,39 @@ public class Index extends AbstractFunctionalExpression {
     /** Name of n attribute in xml schema. */
     public static final String ATTR_INDEX_NAME = "n";
 
-    public Index(ExpressionParent parent) {
+    public Index(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_INDEX_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_INDEX_NAME, true));
     }
 
     /**
      * Gets value of n attribute.
-     * 
+     *
      * @return value of n attribute
      * @see #setIndex
      */
-    public int getIndex() {
-        return getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getIndex() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_INDEX_NAME).getValue();
     }
 
     /**
      * Sets new value of n attribute.
-     * 
+     *
      * @param index new value of n attribute
      * @see #getIndex
      */
-    public void setIndex(Integer index) {
-        getAttributes().getIntegerAttribute(ATTR_INDEX_NAME).setValue(index);
+    public void setIndex(final IntegerOrVariableRef index) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_INDEX_NAME).setValue(index);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getChildren().size() == 1) {
             return getChildren().get(0).getProducedBaseTypes(context);
         }
@@ -107,40 +108,41 @@ public class Index extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
-        int index = getIndex();
+        final IntegerOrVariableRef indexComputer = getIndex();
+        if (indexComputer.isInteger()) {
+            final int index = indexComputer.getInteger().intValue();
+            if (index < 1) {
+                context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME),
+                        "Attribute " + ATTR_INDEX_NAME +
+                        " (" + index + ") must be positive"));
+            }
 
-        if (index < 1) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME +
-                    " (" + index + ") must be positive."));
-        }
-
-        if (getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
-            final Ordered ordered = (Ordered) getChildren().get(0);
-            if (ordered.getChildren().size() > 0 && index > ordered.getChildren().size()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME), "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
-                        ordered.getChildren().size() + ", but found: " + index));
+            if (getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
+                final Ordered ordered = (Ordered) getChildren().get(0);
+                if (ordered.getChildren().size() > 0 && index > ordered.getChildren().size()) {
+                    context.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME),
+                            "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
+                            ordered.getChildren().size() + ", but found: " + index));
+                }
             }
         }
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        if (getIndex() > ((OrderedValue) childValues[0]).size()) {
+        final OrderedValue childOrderedValue = (OrderedValue) childValues[0];
+        final int computedIndex = getIndex().evaluate(context);
+
+        if (computedIndex < 1 || computedIndex > childOrderedValue.size()) {
             return NullValue.INSTANCE;
         }
 
-        final Value value = ((ListValue) childValues[0]).get(getIndex() - 1);
-
-        if (value == null || value.isNull()) {
-            return NullValue.INSTANCE;
-        }
-
-        return value;
+        return childOrderedValue.get(computedIndex - 1);
     }
 }

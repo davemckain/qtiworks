@@ -49,7 +49,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>IntegerValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
  */
 @RunWith(Parameterized.class)
@@ -57,12 +57,13 @@ public class IntegerValueAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "2147483647", 2147483647 }, { "+2147483647", 2147483647 }, { "1234", 1234 }, { "+1234", 1234 }, { "3", 3 },
+        return Arrays.asList(new Object[][] {
+                { "2147483647", 2147483647 }, { "+2147483647", 2147483647 }, { "1234", 1234 }, { "+1234", 1234 }, { "3", 3 },
                 { "+3", 3 }, { "1", 1 }, { "+1", 1 }, { "0", 0 }, { "+0", 0 }, { "-0", 0 }, { "-1", -1 }, { "-3", -3 }, { "-1234", -1234 },
                 { "-2147483648", -2147483648 },
         });
@@ -74,11 +75,11 @@ public class IntegerValueAcceptTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      * @param expectedInteger expected parsed value
      */
-    public IntegerValueAcceptTest(String string, int expectedInteger) {
+    public IntegerValueAcceptTest(final String string, final int expectedInteger) {
         this.string = string;
         this.expectedInteger = expectedInteger;
     }

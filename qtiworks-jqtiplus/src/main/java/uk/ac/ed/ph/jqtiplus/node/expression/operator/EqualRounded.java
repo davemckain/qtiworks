@@ -136,6 +136,9 @@ public class EqualRounded extends AbstractExpression {
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
         final int computedFigures = getFigures().evaluate(context);
+        if (computedFigures<1) {
+            return NullValue.INSTANCE;
+        }
 
         final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, computedFigures);
 
