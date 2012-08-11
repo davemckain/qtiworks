@@ -35,32 +35,55 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * Attribute with {@link VariableReferenceIdentifier} value.
+ * Attribute with {@link IntegerOrVariableRef} value.
  *
  * @author David McKain
  */
-public final class VariableReferenceIdentifierAttribute extends SingleAttribute<VariableReferenceIdentifier> {
+public class IntegerOrVariableRefAttribute extends SingleAttribute<IntegerOrVariableRef> {
 
-    private static final long serialVersionUID = 797959114072746763L;
+    private static final long serialVersionUID = -2290502264287066199L;
 
-    public VariableReferenceIdentifierAttribute(final XmlNode owner, final String localName, final boolean required) {
+    public IntegerOrVariableRefAttribute(final XmlNode owner, final String localName, final boolean required) {
         super(owner, localName, required);
     }
 
-    public VariableReferenceIdentifierAttribute(final XmlNode owner, final String localName, final VariableReferenceIdentifier defaultValue, final boolean required) {
+    public IntegerOrVariableRefAttribute(final XmlNode owner, final String localName, final IntegerOrVariableRef defaultValue, final boolean required) {
         super(owner, localName, defaultValue, required);
     }
 
     @Override
-    protected VariableReferenceIdentifier parseQtiString(final String value) {
-        return new VariableReferenceIdentifier(value);
+    protected IntegerOrVariableRef parseQtiString(final String value) {
+        return IntegerOrVariableRef.parseString(value);
     }
 
     @Override
-    protected String toQtiString(final VariableReferenceIdentifier value) {
+    protected String toQtiString(final IntegerOrVariableRef value) {
         return value.toString();
     }
+
+    @Override
+    public void validate(final ValidationContext context) {
+        super.validate(context);
+
+        /* If variable reference, make sure it refers to the right type of variable */
+        if (value.isVariableRef()) {
+            final VariableReferenceIdentifier variableReferenceIdentifier = value.getVariableReferenceIdentifier();
+            final VariableDeclaration variableDeclaration = context.checkVariableDereference(owner, variableReferenceIdentifier);
+            if (variableDeclaration!=null) {
+                context.checkVariableType(owner, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
+                context.checkBaseType(owner, variableDeclaration, BaseType.INTEGER);
+                context.checkCardinality(owner, variableDeclaration, Cardinality.SINGLE);
+            }
+        }
+    }
+
 }

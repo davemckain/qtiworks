@@ -33,8 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -45,7 +46,7 @@ import java.util.Map;
 
 /**
  * Enumeration for equalRounded expression.
- * 
+ *
  * @see EqualRounded
  * @author Jiri Kajaba
  */
@@ -56,14 +57,12 @@ public enum RoundingMode implements Stringifiable {
     SIGNIFICANT_FIGURES("significantFigures") {
 
         @Override
-        public void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures) {
-            if (figures < 1) {
-                result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") must be positive."));
-            }
+        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
+            RoundingMode.validateFiguresAttribute(attribute, result);
         }
 
         @Override
-        public BigDecimal round(double number, int figures) {
+        public BigDecimal round(final double number, final int figures) {
             if (number == 0) {
                 return BigDecimal.ZERO;
             }
@@ -92,7 +91,7 @@ public enum RoundingMode implements Stringifiable {
 
             /* Now do a shift, round, then shift back */
             return numberDecimal.movePointLeft(requiredShift)
-                    .setScale(figures, java.math.RoundingMode.HALF_UP)
+                    .setScale(Math.min(1, figures), java.math.RoundingMode.HALF_UP)
                     .movePointRight(requiredShift);
         }
     },
@@ -103,17 +102,15 @@ public enum RoundingMode implements Stringifiable {
     DECIMAL_PLACES("decimalPlaces") {
 
         @Override
-        public void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures) {
-            if (figures < 0) {
-                result.add(new AttributeValidationError(attribute, "Figures count (" + figures + ") cannot be negative."));
-            }
+        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
+            RoundingMode.validateFiguresAttribute(attribute, result);
         }
 
         @Override
-        public BigDecimal round(double number, int figures) {
+        public BigDecimal round(final double number, final int figures) {
             final BigDecimal numberDecimal = new BigDecimal(Double.toString(number));
 
-            return numberDecimal.setScale(figures, java.math.RoundingMode.HALF_UP);
+            return numberDecimal.setScale(Math.min(1,figures), java.math.RoundingMode.HALF_UP);
         }
     };
 
@@ -132,21 +129,21 @@ public enum RoundingMode implements Stringifiable {
 
     private String roundingMode;
 
-    private RoundingMode(String roundingMode) {
+    private RoundingMode(final String roundingMode) {
         this.roundingMode = roundingMode;
     };
 
     /**
      * Validates figures attribute.
-     * 
+     *
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
      */
-    public abstract void validateFigures(IntegerAttribute attribute, AbstractValidationResult result, int figures);
+    public abstract void validateFigures(IntegerOrVariableRefAttribute attribute, AbstractValidationResult result);
 
     /**
      * Rounds given number for given number of figures.
-     * 
+     *
      * @param number number
      * @param figures number of figures
      * @return rounded number
@@ -155,13 +152,13 @@ public enum RoundingMode implements Stringifiable {
 
     /**
      * Returns true if given two numbers are equal after rounding; false otherwise.
-     * 
+     *
      * @param firstNumber first number to compare
      * @param secondNumber second number to compare
      * @param figures rounding figures
      * @return true if given two numbers are equal after rounding; false otherwise
      */
-    public boolean isEqual(double firstNumber, double secondNumber, int figures) {
+    public boolean isEqual(final double firstNumber, final double secondNumber, final int figures) {
         final BigDecimal firstBigDecimalNumber = round(firstNumber, figures);
         final BigDecimal secondBigDecimalNumber = round(secondNumber, figures);
 
@@ -173,13 +170,26 @@ public enum RoundingMode implements Stringifiable {
         return roundingMode;
     }
 
+    public static void validateFiguresAttribute(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
+        final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
+        if (integerOrVariableRef.isInteger()) {
+            final int intValue = integerOrVariableRef.getInteger().intValue();
+            if (intValue < 1) {
+                result.add(new AttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive."));
+            }
+        }
+        else {
+            /* FIXME: I've chosen not to say anything here, but it is possible for the resulting value to be illegal */
+        }
+    }
+
     /**
      * Parses string representation of <code>RoundingMode</code>.
-     * 
+     *
      * @param roundingMode string representation of <code>RoundingMode</code>
      * @return parsed <code>RoundingMode</code>
      */
-    public static RoundingMode parseRoundingMode(String roundingMode) {
+    public static RoundingMode parseRoundingMode(final String roundingMode) {
         final RoundingMode result = roundingModes.get(roundingMode);
 
         if (result == null) {

@@ -49,12 +49,12 @@ public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardina
 
     private static final long serialVersionUID = -9072772349022529567L;
 
-    public CardinalityAttribute(XmlNode parent, String localName, boolean required) {
-        super(parent, localName, required);
+    public CardinalityAttribute(final XmlNode parent, final String localName) {
+        super(parent, localName, true);
     }
 
     @Override
-    protected Cardinality parseQtiString(String value) {
+    protected Cardinality parseQtiString(final String value) {
         return Cardinality.parseCardinality(value);
     }
 

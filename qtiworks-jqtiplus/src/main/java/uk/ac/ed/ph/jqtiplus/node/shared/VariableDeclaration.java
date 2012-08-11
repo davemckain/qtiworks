@@ -54,7 +54,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * All variables must be declared except for the built-in session variables which are declared implicitly
  * and must not be declared. The purpose of the declaration is to associate an identifier with the variable
  * and to identify the runtime type of the variable's value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class VariableDeclaration extends AbstractNode implements UniqueNode<Identifier> {
@@ -67,24 +67,24 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    public VariableDeclaration(AssessmentObject parent, String localName) {
+    public VariableDeclaration(final AssessmentObject parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
-        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME, true));
+        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
 
         getNodeGroups().add(new DefaultValueGroup(this));
     }
 
     public abstract VariableType getVariableType();
-    
-    public boolean isType(VariableType... allowedTypes) {
+
+    public boolean isType(final VariableType... allowedTypes) {
         if (allowedTypes.length==0) {
             /* Interpret as "no restriction" */
             return true;
         }
-        for (VariableType type : allowedTypes) {
+        for (final VariableType type : allowedTypes) {
             if (type==getVariableType()) {
                 return true;
             }
@@ -94,7 +94,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -105,18 +105,18 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
     @Override
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of cardinality attribute.
-     * 
+     *
      * @return value of cardinality attribute
      * @see #setCardinality
      */
@@ -126,17 +126,17 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     /**
      * Sets new value of cardinality attribute.
-     * 
+     *
      * @param cardinality new value of cardinality attribute
      * @see #getCardinality
      */
-    public void setCardinality(Cardinality cardinality) {
+    public void setCardinality(final Cardinality cardinality) {
         getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).setValue(cardinality);
     }
 
     /**
      * Gets value of baseType attribute.
-     * 
+     *
      * @return value of baseType attribute
      * @see #setBaseType
      */
@@ -146,17 +146,17 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     /**
      * Sets new value of baseType attribute.
-     * 
+     *
      * @param baseType new value of baseType attribute
      * @see #getBaseType
      */
-    public void setBaseType(BaseType baseType) {
+    public void setBaseType(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
     /**
      * Gets defaultValue child.
-     * 
+     *
      * @return defaultValue child
      * @see #setDefaultValue
      */
@@ -166,16 +166,16 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
     /**
      * Sets new defaultValue child.
-     * 
+     *
      * @param defaultValue new defaultValue child
      * @see #getDefaultValue
      */
-    public void setDefaultValue(DefaultValue defaultValue) {
+    public void setDefaultValue(final DefaultValue defaultValue) {
         getNodeGroups().getDefaultValueGroup().setDefaultValue(defaultValue);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         validateUniqueIdentifier(context.getValidationResult(), getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());

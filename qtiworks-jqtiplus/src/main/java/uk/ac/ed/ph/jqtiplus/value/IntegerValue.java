@@ -70,6 +70,10 @@ public final class IntegerValue extends NumberValue {
         this.intValue = value;
     }
 
+    public IntegerValue(final Integer integerValue) {
+        this.intValue = integerValue.intValue();
+    }
+
     @Override
     public BaseType getBaseType() {
         return BaseType.INTEGER;

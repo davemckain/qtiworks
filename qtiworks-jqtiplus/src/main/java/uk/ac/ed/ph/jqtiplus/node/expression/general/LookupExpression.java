@@ -78,7 +78,7 @@ public abstract class LookupExpression extends AbstractExpression {
      *
      * @param parent parent of this expression
      */
-    public LookupExpression(ExpressionParent parent, String localName) {
+    public LookupExpression(final ExpressionParent parent, final String localName) {
         super(parent, localName);
         getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
@@ -99,19 +99,19 @@ public abstract class LookupExpression extends AbstractExpression {
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(VariableReferenceIdentifier identifier) {
+    public void setIdentifier(final VariableReferenceIdentifier identifier) {
         getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     //----------------------------------------------------------------------
 
     @Override
-    protected final void validateAttributes(ValidationContext context) {
+    protected final void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         /* Check reference */
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
-        VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
+        final VariableDeclaration resolvedDeclaration = context.checkVariableDereference(this, variableReferenceIdentifier);
 
         /* If reference was OK, let subclasses do any further validation as required */
         if (resolvedDeclaration!=null) {
@@ -125,7 +125,7 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         VariableDeclaration declaration;
         try {
             declaration = lookupTargetVariableDeclaration(context);
@@ -133,14 +133,14 @@ public abstract class LookupExpression extends AbstractExpression {
                 return new BaseType[] { declaration.getBaseType() };
             }
         }
-        catch (VariableResolutionException e) {
+        catch (final VariableResolutionException e) {
             logger.warn("Refactor this:", e);
         }
         return super.getProducedBaseTypes(context);
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         VariableDeclaration declaration;
         try {
             declaration = lookupTargetVariableDeclaration(context);
@@ -148,14 +148,14 @@ public abstract class LookupExpression extends AbstractExpression {
                 return new Cardinality[] { declaration.getCardinality() };
             }
         }
-        catch (VariableResolutionException e) {
+        catch (final VariableResolutionException e) {
             logger.warn("Refactor this:", e);
         }
         return super.getProducedCardinalities(context);
     }
 
     @ToRefactor
-    public VariableDeclaration lookupTargetVariableDeclaration(ValidationContext context)
+    public VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context)
             throws VariableResolutionException {
         return context.getResolvedAssessmentObject().resolveVariableReference(getIdentifier());
     }
@@ -163,7 +163,7 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
 
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();

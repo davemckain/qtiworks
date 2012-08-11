@@ -54,6 +54,8 @@ import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
 import java.util.List;
@@ -237,6 +239,91 @@ public final class AssessmentObjectValidator {
             }
             catch (final VariableResolutionException e) {
                 validationResult.add(new ValidationError(source, e.getMessage()));
+            }
+            return result;
+        }
+
+        @Override
+        public final VariableDeclaration checkVariableDereference(final XmlNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
+            try {
+                return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
+
+            }
+            catch (final VariableResolutionException e) {
+                validationResult.add(new ValidationError(owner, e.getMessage()));
+                return null;
+            }
+        }
+
+        @Override
+        public boolean checkVariableType(final XmlNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            if (variableDeclaration.isType(requiredTypes)) {
+                result = true;
+            }
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must be a ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].getName())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                messageBuilder.append(" variable but is a ")
+                    .append(variableDeclaration.getVariableType().getName())
+                    .append(" variable");
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
+            }
+            return result;
+        }
+
+        @Override
+        public boolean checkBaseType(final XmlNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            final BaseType baseType = variableDeclaration.getBaseType();
+            if (baseType!=null && baseType.isOneOf(requiredTypes)) {
+                result = true;
+            }
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must have baseType ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].toQtiString())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                if (baseType!=null) {
+                    messageBuilder.append(" but has baseType ")
+                        .append(variableDeclaration.getBaseType().toQtiString());
+                }
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
+            }
+            return result;
+        }
+
+        @Override
+        public boolean checkCardinality(final XmlNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            if (variableDeclaration.getCardinality().isOneOf(requiredTypes)) {
+                result = true;
+            }
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must have cardinality ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].toQtiString())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                messageBuilder.append(" but has cardinality ")
+                    .append(variableDeclaration.getCardinality().toQtiString());
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
             }
             return result;
         }

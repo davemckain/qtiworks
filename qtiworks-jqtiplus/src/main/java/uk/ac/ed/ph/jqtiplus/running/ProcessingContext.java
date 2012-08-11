@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -75,4 +76,6 @@ public interface ProcessingContext {
      * @param permittedTypes
      */
     Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes);
+
+    Value lookupVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
 }

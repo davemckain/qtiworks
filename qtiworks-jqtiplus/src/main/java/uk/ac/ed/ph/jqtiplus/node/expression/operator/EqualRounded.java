@@ -34,9 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.RoundingModeAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -48,12 +50,12 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * have A numerical base-type. The result is A single boolean with A value of true if the two
  * expressions are numerically equal after rounding and false if they are not.
  * If either sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class EqualRounded extends AbstractFunctionalExpression {
+public class EqualRounded extends AbstractExpression {
 
     private static final long serialVersionUID = 8925002756918753453L;
 
@@ -66,16 +68,16 @@ public class EqualRounded extends AbstractFunctionalExpression {
     /** Name of figures attribute in xml schema. */
     public static final String ATTR_FIGURES_NAME = "figures";
 
-    public EqualRounded(ExpressionParent parent) {
+    public EqualRounded(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_FIGURES_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_FIGURES_NAME, true));
     }
 
     /**
      * Gets value of roundingMode attribute.
-     * 
+     *
      * @return value of roundingMode attribute
      * @see #setRoundingMode
      */
@@ -85,46 +87,47 @@ public class EqualRounded extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of roundingMode attribute.
-     * 
+     *
      * @param roundingMode new value of roundingMode attribute
      * @see #getRoundingMode
      */
-    public void setRoundingMode(RoundingMode roundingMode) {
+    public void setRoundingMode(final RoundingMode roundingMode) {
         getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).setValue(roundingMode);
     }
 
     /**
      * Gets value of figures attribute.
-     * 
+     *
      * @return value of figures attribute
      * @see #setFigures
      */
-    public int getFigures() {
-        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getFigures() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).getValue();
     }
 
     /**
      * Sets new value of figures attribute.
-     * 
+     *
      * @param figures new value of figures attribute
      * @see #getFigures
      */
-    public void setFigures(Integer figures) {
-        getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).setValue(figures);
+    public void setFigures(final IntegerOrVariableRef figures) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).setValue(figures);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getRoundingMode() != null) {
-            getRoundingMode().validateFigures(getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME), context.getValidationResult(), getFigures());
+        final RoundingMode roundingMode = getRoundingMode();
+        if (roundingMode != null) {
+            roundingMode.validateFigures(getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME),
+                    context.getValidationResult());
         }
-
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
@@ -132,7 +135,9 @@ public class EqualRounded extends AbstractFunctionalExpression {
         final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
-        final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, getFigures());
+        final int computedFigures = getFigures().evaluate(context);
+
+        final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, computedFigures);
 
         return BooleanValue.valueOf(result);
     }

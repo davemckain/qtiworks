@@ -49,16 +49,12 @@ public final class BaseTypeAttribute extends SingleEnumerateAttribute<BaseType> 
 
     private static final long serialVersionUID = 5731708928910577525L;
 
-    public BaseTypeAttribute(XmlNode parent, String localName, boolean required) {
+    public BaseTypeAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public BaseTypeAttribute(XmlNode parent, String localName, BaseType defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
-    }
-
     @Override
-    protected BaseType parseQtiString(String value) {
+    protected BaseType parseQtiString(final String value) {
         return BaseType.parseBaseType(value);
     }
 

@@ -336,6 +336,15 @@ public enum BaseType implements Stringifiable {
         return this == URI;
     }
 
+    public boolean isOneOf(final BaseType... baseTypes) {
+        for (final BaseType other : baseTypes) {
+            if (this==other) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Parses the <code>String</code> argument as A <code>SingleValue</code>.
      *

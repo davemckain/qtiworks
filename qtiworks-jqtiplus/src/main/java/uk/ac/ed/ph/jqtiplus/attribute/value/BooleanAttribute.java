@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
+public final class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
 
     private static final long serialVersionUID = -6757069543350955429L;
 

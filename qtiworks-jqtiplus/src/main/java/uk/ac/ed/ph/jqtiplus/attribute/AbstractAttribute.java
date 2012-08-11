@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
  * Node's attribute implementation.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class AbstractAttribute<V> implements Attribute<V> {
@@ -48,27 +48,27 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     private static final long serialVersionUID = -3172377961902212482L;
 
     /** Owner of this attribute. */
-    private final XmlNode owner;
+    protected final XmlNode owner;
 
     /** Name of this attribute. */
-    private final String localName;
-    
-    private final String namespaceUri;
-    
+    protected final String localName;
+
+    protected final String namespaceUri;
+
     /** Is this attribute mandatory (true) or optional (false). */
-    private final boolean required;
-    
+    protected final boolean required;
+
     /** Attribute value (may be null) */
     protected V value;
-    
+
     /** Attribute default value (may be null) */
     protected V defaultValue;
 
-    public AbstractAttribute(XmlNode owner, String localName, V defaultValue, boolean required) {
+    public AbstractAttribute(final XmlNode owner, final String localName, final V defaultValue, final boolean required) {
         this(owner, localName, "", defaultValue, required);
     }
 
-    public AbstractAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue, boolean required) {
+    public AbstractAttribute(final XmlNode owner, final String localName, final String namespaceUri, final V defaultValue, final boolean required) {
         Assert.ensureNotNull(owner, "owner");
         Assert.ensureNotNull(localName, "localName");
         Assert.ensureNotNull(namespaceUri, "namespaceUri");
@@ -88,7 +88,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     public final String getLocalName() {
         return localName;
     }
-    
+
     @Override
     public final String getNamespaceUri() {
         return namespaceUri;
@@ -98,27 +98,27 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     public final boolean isRequired() {
         return required;
     }
-    
+
     @Override
     public final boolean isSet() {
         return value!=null;
     }
-    
+
     @Override
     public final V getDefaultValue() {
         return defaultValue;
     }
-    
+
     @Override
     public final V getValue() {
         return value;
     }
-    
+
     @Override
-    public final void setValue(V value) {
+    public final void setValue(final V value) {
         this.value = value;
     }
-    
+
     @Override
     public V getComputedValue() {
         return value!=null ? value : defaultValue;
@@ -126,7 +126,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
 
     @Override
     public final String computeXPath() {
-        return (owner != null ? owner.computeXPath() + "/" : "") 
+        return (owner != null ? owner.computeXPath() + "/" : "")
                 + "@"
                 + (!namespaceUri.isEmpty() ? "{" + namespaceUri + "}" : "")
                 + localName;
@@ -142,15 +142,15 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
                 + ",value=" + value
                 + ")";
     }
-    
+
     /**
      * Parses value from given QTI string.
-     * 
+     *
      * @param value string value
      * @return parsed value
      */
     protected abstract V parseQtiString(String value);
-    
+
     /**
      * Subclasses should implement to convert the given value to
      * the String format used in the QTI information model
@@ -158,7 +158,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     protected abstract String toQtiString(V value);
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         if (required && value==null) {
             context.add(new AttributeValidationError(this, "Required attribute has not been assigned a value: " + localName));
         }
