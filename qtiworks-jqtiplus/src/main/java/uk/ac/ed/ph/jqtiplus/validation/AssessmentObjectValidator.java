@@ -186,68 +186,20 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode source, final Identifier variableDeclarationIdentifier, final VariableType... allowedTypes) {
-            VariableDeclaration result = null;
+        public final VariableDeclaration checkVariableReference(final XmlNode owner, final Identifier variableDeclarationIdentifier) {
             try {
-                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    final StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
-                        .append(variableDeclarationIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
+                return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
             }
             catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
+                validationResult.add(new ValidationError(owner, e.getMessage()));
+                return null;
             }
-            return result;
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode source, final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... allowedTypes) {
-            VariableDeclaration result = null;
-            try {
-                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    final StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
-                        .append(variableReferenceIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
-            }
-            catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
-            }
-            return result;
-        }
-
-        @Override
-        public final VariableDeclaration checkVariableDereference(final XmlNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
+        public final VariableDeclaration checkVariableReference(final XmlNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
             try {
                 return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-
             }
             catch (final VariableResolutionException e) {
                 validationResult.add(new ValidationError(owner, e.getMessage()));

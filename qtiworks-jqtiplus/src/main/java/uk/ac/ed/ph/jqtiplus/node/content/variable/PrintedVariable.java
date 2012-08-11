@@ -55,7 +55,7 @@ import java.util.List;
 
 /**
  * This is the only way how to show variables to actor.
- * 
+ *
  * @author Jonathon Hare
  */
 public class PrintedVariable extends BodyElement implements FlowStatic, InlineStatic, TextOrVariable {
@@ -77,7 +77,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     /** Default value of base attribute. */
     public static final int ATTR_BASE_DEFAULT_VALUE = 10;
 
-    public PrintedVariable(XmlNode parent) {
+    public PrintedVariable(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -87,7 +87,7 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -97,17 +97,17 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of format attribute.
-     * 
+     *
      * @return value of format attribute
      * @see #setFormat
      */
@@ -117,17 +117,17 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
 
     /**
      * Sets new value of format attribute.
-     * 
+     *
      * @param format new value of format attribute
      * @see #getFormat
      */
-    public void setFormat(String format) {
+    public void setFormat(final String format) {
         getAttributes().getStringAttribute(ATTR_FORMAT_NAME).setValue(format);
     }
 
     /**
      * Gets value of base attribute.
-     * 
+     *
      * @return value of base attribute
      * @see #setBase
      */
@@ -137,35 +137,39 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
 
     /**
      * Sets new value of base attribute.
-     * 
+     *
      * @param base new value of base attribute
      * @see #getBase
      */
-    public void setBase(Integer base) {
+    public void setBase(final Integer base) {
         getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
     }
 
     @Override
-    public void validateAttributes(ValidationContext context) {
+    public void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getIdentifier() != null) {
-            VariableDeclaration declaration = context.checkVariableReference(this, getIdentifier(), VariableType.TEMPLATE, VariableType.OUTCOME);
+            final Identifier identifier = getIdentifier();
+            final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);
+            if (variableDeclaration!=null) {
+                context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
 
-            // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
-            // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
-            // pollute this code with too much MathAssess-specfic stuff.
-            //            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
-            //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()));
-            if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isRecord())) {
-                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()
-                        + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
+                // (FIXME! The following is now out of date wrt latest QTI 2.1 draft!)
+                // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
+                // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
+                // pollute this code with too much MathAssess-specfic stuff.
+                //            if (variableDeclaration != null && variableDeclaration.getCardinality() != null && !variableDeclaration.getCardinality().isSingle())
+                //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()));
+                if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
+                    context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
+                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
+                }
             }
         }
     }
 
-    public SingleValue evaluate(ProcessingContext context) {
+    public SingleValue evaluate(final ProcessingContext context) {
         final Identifier identifier = getIdentifier();
         final Value value = context.lookupVariableValue(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
         if (!value.isNull() && !(value.getCardinality() == Cardinality.SINGLE && value.getCardinality() == Cardinality.RECORD)) {

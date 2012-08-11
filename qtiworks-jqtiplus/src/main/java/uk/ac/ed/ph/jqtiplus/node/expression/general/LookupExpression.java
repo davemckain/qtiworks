@@ -111,7 +111,7 @@ public abstract class LookupExpression extends AbstractExpression {
 
         /* Check reference */
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
-        final VariableDeclaration resolvedDeclaration = context.checkVariableDereference(this, variableReferenceIdentifier);
+        final VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
 
         /* If reference was OK, let subclasses do any further validation as required */
         if (resolvedDeclaration!=null) {

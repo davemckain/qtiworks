@@ -77,7 +77,7 @@ public class IntegerOrVariableRefAttribute extends SingleAttribute<IntegerOrVari
         /* If variable reference, make sure it refers to the right type of variable */
         if (value.isVariableRef()) {
             final VariableReferenceIdentifier variableReferenceIdentifier = value.getVariableReferenceIdentifier();
-            final VariableDeclaration variableDeclaration = context.checkVariableDereference(owner, variableReferenceIdentifier);
+            final VariableDeclaration variableDeclaration = context.checkVariableReference(owner, variableReferenceIdentifier);
             if (variableDeclaration!=null) {
                 context.checkVariableType(owner, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
                 context.checkBaseType(owner, variableDeclaration, BaseType.INTEGER);

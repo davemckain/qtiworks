@@ -103,24 +103,12 @@ public interface ValidationContext {
     //------------------------------------------------------
 
     /**
-     * Attempts to deference the variable having the given {@link Identifier},
-     * checking that it is of the required types.
+     * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
+     * A {@link ValidationError} is recorded if this is unsuccessful.
      * <p>
-     * Returns the resulting {@link VariableDeclaration} if these checks are successful, otherwise a
-     * {@link ValidationError} is recorded and null is returned.
+     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
      */
-    @Deprecated
-    VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... requiredTypes);
-
-    /**
-     * Attempts to deference the variable referenced by the given {@link VariableReferenceIdentifier},
-     * checking that it is of the required types.
-     * <p>
-     * Returns the resulting {@link VariableDeclaration} if these checks are successful, otherwise a
-     * {@link ValidationError} is recorded and null is returned.
-     */
-    @Deprecated
-    VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes);
+    VariableDeclaration checkVariableReference(XmlNode owner, Identifier variableDeclarationIdentifier);
 
     /**
      * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
@@ -128,7 +116,7 @@ public interface ValidationContext {
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
      */
-    VariableDeclaration checkVariableDereference(XmlNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
+    VariableDeclaration checkVariableReference(XmlNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s, returning
