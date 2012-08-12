@@ -46,63 +46,63 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.Serializable;
 
 /**
- * Represents the <code>integerOrVariableRef</code> data type
+ * Represents the <code>floatOrVariableRef</code> data type
  *
  * @author David McKain
  */
-public final class IntegerOrVariableRef implements Serializable {
+public final class FloatOrVariableRef implements Serializable {
 
     private static final long serialVersionUID = 1215189767076373746L;
 
-    private final int integerValue;
+    private final double floatValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
     /**
-     * Creates a new integerOrVariableRef holding the given integer value
+     * Creates a new floatOrVariableRef holding the given float value
      */
-    public IntegerOrVariableRef(final int integerValue) {
-        this.integerValue = integerValue;
+    public FloatOrVariableRef(final double floatValue) {
+        this.floatValue = floatValue;
         this.variableReferenceValue = null;
-        this.serializedValue = Integer.toString(integerValue);
+        this.serializedValue = Double.toString(floatValue);
     }
 
     /**
-     * Creates a new integerOrVariableRef holding the given variable reference
+     * Creates a new floatOrVariableRef holding the given variable reference
      */
-    public IntegerOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
+    public FloatOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.integerValue = 0;
+        this.floatValue = 0;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
 
     /**
-     * Parses a new integerOrVariableRef from the given String, as defined in the QTI spec.
+     * Parses a new floatOrVariableRef from the given String, as defined in the QTI spec.
      *
      * @throws QtiParseException
      */
-    public static IntegerOrVariableRef parseString(final String string) {
+    public static FloatOrVariableRef parseString(final String string) {
         Assert.ensureNotNull(string);
 
         if (string.isEmpty()) {
-            throw new QtiParseException("integerOrVariableRef must not be empty");
+            throw new QtiParseException("floatOrVariableRef must not be empty");
         }
         final char firstCharacter = string.charAt(0);
         if (firstCharacter>='0' && firstCharacter<='9') {
-            /* It's an integer */
-            final int integer = DataTypeBinder.parseInteger(string);
-            return new IntegerOrVariableRef(integer);
+            /* It's a float */
+            final double floatValue = DataTypeBinder.parseFloat(string);
+            return new FloatOrVariableRef(floatValue);
         }
         else {
             /* It must be a variable reference */
             final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
-            return new IntegerOrVariableRef(variableReferenceIdentifier);
+            return new FloatOrVariableRef(variableReferenceIdentifier);
         }
     }
 
-    /** Returns true if this instance holds an explicit integer */
-    public boolean isInteger() {
+    /** Returns true if this instance holds an explicit float */
+    public boolean isFloat() {
         return variableReferenceValue==null;
     }
 
@@ -112,17 +112,17 @@ public final class IntegerOrVariableRef implements Serializable {
     }
 
     /**
-     * Returns the explicit integer held by this instance,
+     * Returns the explicit float held by this instance,
      * returning 0 if this actually holds a variable reference.
      * (The caller should use {@link #isInteger()} to check first.)
      */
-    public int getInteger() {
-        return integerValue;
+    public double getDouble() {
+        return floatValue;
     }
 
     /**
      * Returns the explicit variable reference identifier held by this instance,
-     *  returning null if this actually holds an integer.
+     *  returning null if this actually holds an float.
      * (The caller should use {@link #isVariableRef()} to check first.)
      */
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
@@ -141,28 +141,28 @@ public final class IntegerOrVariableRef implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof IntegerOrVariableRef)) {
+        if (!(obj instanceof FloatOrVariableRef)) {
             return false;
         }
-        final IntegerOrVariableRef other = (IntegerOrVariableRef) obj;
+        final FloatOrVariableRef other = (FloatOrVariableRef) obj;
         return serializedValue.equals(other.serializedValue);
     }
 
     /**
-     * Evaluates this instance. If this holds an explicit integer then its value is returned as-is.
+     * Evaluates this instance. If this holds an explicit float then its value is returned as-is.
      * Otherwise, the given {@link ProcessingContext} is used to look up the value of the variable
-     * that this type refers to. The result in all cases will be an integer.
+     * that this type refers to. The result in all cases will be a float.
      */
-    public int evaluate(final ProcessingContext context) {
+    public double evaluate(final ProcessingContext context) {
         if (isVariableRef()) {
             final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
-            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.INTEGER) {
-                return ((IntegerValue) result).intValue();
+            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.FLOAT) {
+                return ((IntegerValue) result).doubleValue();
             }
-            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
+            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to b float");
         }
         else {
-            return integerValue;
+            return floatValue;
         }
     }
 }

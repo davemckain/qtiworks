@@ -23,6 +23,21 @@
       <value>5</value>
     </defaultValue>
   </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MIN_FLOAT" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MAX_FLOAT" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>1.0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
+    <defaultValue>
+      <value>Hello.*</value>
+    </defaultValue>
+  </templateDeclaration>
   <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
     <defaultValue>
       <value>Hello.*</value>
@@ -31,6 +46,7 @@
   <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="string"/>
   <templateDeclaration identifier="INDEX" cardinality="single" baseType="string"/>
   <templateDeclaration identifier="RANDOM_INTEGER" cardinality="single" baseType="integer"/>
+  <templateDeclaration identifier="RANDOM_FLOAT" cardinality="single" baseType="integer"/>
   <templateProcessing>
     <setTemplateValue identifier="PATTERN_MATCH">
       <patternMatch pattern="{PATTERN}">
@@ -54,10 +70,19 @@
     <setTemplateValue identifier="RANDOM_INTEGER">
       <randomInteger min="1" max="5"/>
     </setTemplateValue>
+    <!-- NOT WORKING
+    <setTemplateValue identifier="RANDOM_FLOAT">
+      <randomFloat min="RANDOM_MIN_FLOAT" max="RANDOM_MAX_FLOAT"/>
+    </setTemplateValue>
+    -->
+    <setTemplateValue identifier="RANDOM_FLOAT">
+      <randomFloat min="0.0" max="5.0"/>
+    </setTemplateValue>
   </templateProcessing>
   <itemBody>
     <p>PATTERN_MATCH = <printedVariable identifier="PATTERN_MATCH"/></p>
     <p>N = <printedVariable identifier="INDEX"/></p>
     <p>RANDOM_INTEGER = <printedVariable identifier="RANDOM_INTEGER"/></p>
+    <p>RANDOM_FLOAT = <printedVariable identifier="RANDOM_FLOAT"/></p>
   </itemBody>
 </assessmentItem>

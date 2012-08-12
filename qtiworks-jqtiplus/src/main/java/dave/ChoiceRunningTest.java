@@ -29,7 +29,7 @@ import java.util.Set;
 public class ChoiceRunningTest {
 
     public static void main(final String[] args) throws RuntimeValidationException {
-        final URI inputUri = URI.create("classpath:/choice.xml");
+        final URI inputUri = URI.create("classpath:/variableRefs.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();

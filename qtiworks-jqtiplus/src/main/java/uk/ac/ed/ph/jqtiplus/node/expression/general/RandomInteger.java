@@ -101,7 +101,7 @@ public class RandomInteger extends RandomExpression {
     }
 
     public IntegerOrVariableRef getStep() {
-        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).getValue();
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).getComputedValue();
     }
 
     public void setStep(final IntegerOrVariableRef step) {
@@ -132,7 +132,7 @@ public class RandomInteger extends RandomExpression {
 
         }
 
-        if (stepComputer.isInteger() && stepComputer.getInteger() < 1) {
+        if (stepComputer!=null && stepComputer.isInteger() && stepComputer.getInteger() < 1) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
                     "Attribute " + ATTR_STEP_NAME
                     + " (" + stepComputer + ") must be positive."));

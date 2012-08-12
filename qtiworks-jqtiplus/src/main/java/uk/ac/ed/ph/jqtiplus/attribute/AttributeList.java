@@ -54,6 +54,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.DateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
@@ -433,6 +434,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     public IntegerOrVariableRefAttribute getIntegerOrVariableRefAttribute(final String name) {
         return (IntegerOrVariableRefAttribute) get(name);
+    }
+
+    public FloatOrVariableRefAttribute getFloatOrVariableRefAttribute(final String name) {
+        return (FloatOrVariableRefAttribute) get(name);
     }
 
     public StringOrVariableRefAttribute getStringOrVariableRefAttribute(final String name) {
