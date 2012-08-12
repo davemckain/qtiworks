@@ -124,14 +124,14 @@ public class AnyN extends AbstractExpression {
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef maxComputer = getMax();
         if (minComputer.isInteger()) {
-            final int min = minComputer.getInteger().intValue();
+            final int min = minComputer.getInteger();
             if (min < 0) {
                 context.add(new ValidationWarning(this,
                         "Attribute " + ATTR_MINIMUM_NAME
                         + " (" + min + ") should be positive."));
             }
             if (maxComputer.isInteger()) {
-                final int max = maxComputer.getInteger().intValue();
+                final int max = maxComputer.getInteger();
                 if (max < min) {
                     context.add(new ValidationWarning(this,
                             "Attribute " + ATTR_MAXIMUM_NAME

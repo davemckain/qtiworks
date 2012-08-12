@@ -173,7 +173,7 @@ public enum RoundingMode implements Stringifiable {
     public static void validateFiguresAttribute(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
         final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
         if (integerOrVariableRef.isInteger()) {
-            final int intValue = integerOrVariableRef.getInteger().intValue();
+            final int intValue = integerOrVariableRef.getInteger();
             if (intValue < 1) {
                 result.add(new AttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive."));
             }

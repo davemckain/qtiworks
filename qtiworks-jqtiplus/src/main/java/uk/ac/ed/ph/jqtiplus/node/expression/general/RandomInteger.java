@@ -122,8 +122,8 @@ public class RandomInteger extends RandomExpression {
         final IntegerOrVariableRef stepComputer = getStep();
 
         if (maxComputer.isInteger() && minComputer.isInteger()) {
-            final int max = maxComputer.getInteger().intValue();
-            final int min = minComputer.getInteger().intValue();
+            final int max = maxComputer.getInteger();
+            final int min = minComputer.getInteger();
             if (max < min) {
                 context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
                         "Attribute " + ATTR_MAX_NAME + " (" + max +
@@ -132,7 +132,7 @@ public class RandomInteger extends RandomExpression {
 
         }
 
-        if (stepComputer.isInteger() && stepComputer.getInteger().intValue() < 1) {
+        if (stepComputer.isInteger() && stepComputer.getInteger() < 1) {
             context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
                     "Attribute " + ATTR_STEP_NAME
                     + " (" + stepComputer + ") must be positive."));

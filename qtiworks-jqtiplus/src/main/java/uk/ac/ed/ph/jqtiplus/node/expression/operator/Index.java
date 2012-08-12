@@ -112,7 +112,7 @@ public class Index extends AbstractExpression {
         super.validateAttributes(context);
         final IntegerOrVariableRef indexComputer = getIndex();
         if (indexComputer.isInteger()) {
-            final int index = indexComputer.getInteger().intValue();
+            final int index = indexComputer.getInteger();
             if (index < 1) {
                 context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME),
                         "Attribute " + ATTR_INDEX_NAME +

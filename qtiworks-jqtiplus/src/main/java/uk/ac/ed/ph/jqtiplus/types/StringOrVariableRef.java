@@ -128,7 +128,6 @@ public final class StringOrVariableRef implements Serializable {
 
     public String evaluate(final ProcessingContext context) {
         if (isVariableRef()) {
-            System.out.println("Looking up " + variableReferenceValue);
             final Value result = context.lookupVariableValue(variableReferenceValue);
             if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.STRING) {
                 return ((StringValue) result).toQtiString();

@@ -53,24 +53,32 @@ public final class IntegerOrVariableRef implements Serializable {
 
     private static final long serialVersionUID = 1215189767076373746L;
 
-    private final Integer integerValue;
+    private final int integerValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
+    /**
+     * Creates a new integerOrVariableRef holding the given integer value
+     */
     public IntegerOrVariableRef(final int integerValue) {
-        this.integerValue = Integer.valueOf(integerValue);
+        this.integerValue = integerValue;
         this.variableReferenceValue = null;
         this.serializedValue = Integer.toString(integerValue);
     }
 
+    /**
+     * Creates a new integerOrVariableRef holding the given variable reference
+     */
     public IntegerOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.integerValue = null;
+        this.integerValue = 0;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
 
     /**
+     * Parses a new integerOrVariableRef from the given String, as defined in the QTI spec.
+     *
      * @throws QtiParseException
      */
     public static IntegerOrVariableRef parseString(final String string) {
@@ -92,18 +100,30 @@ public final class IntegerOrVariableRef implements Serializable {
         }
     }
 
+    /** Returns true if this instance holds an explicit integer */
     public boolean isInteger() {
-        return integerValue!=null;
+        return variableReferenceValue==null;
     }
 
+    /** Returns true of this instance holds a variable reference */
     public boolean isVariableRef() {
         return variableReferenceValue!=null;
     }
 
-    public Integer getInteger() {
+    /**
+     * Returns the explicit integer held by this instance,
+     * returning 0 if this actually holds a variable reference.
+     * (The caller should use {@link #isInteger()} to check first.)
+     */
+    public int getInteger() {
         return integerValue;
     }
 
+    /**
+     * Returns the explicit variable reference identifier held by this instance,
+     *  returning null if this actually holds an integer.
+     * (The caller should use {@link #isVariableRef()} to check first.)
+     */
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
         return variableReferenceValue;
     }
@@ -136,7 +156,7 @@ public final class IntegerOrVariableRef implements Serializable {
             throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
         }
         else {
-            return integerValue.intValue();
+            return integerValue;
         }
     }
 }
