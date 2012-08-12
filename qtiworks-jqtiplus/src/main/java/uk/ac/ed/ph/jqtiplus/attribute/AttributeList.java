@@ -62,6 +62,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.LongAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
@@ -432,5 +433,9 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     public IntegerOrVariableRefAttribute getIntegerOrVariableRefAttribute(final String name) {
         return (IntegerOrVariableRefAttribute) get(name);
+    }
+
+    public StringOrVariableRefAttribute getStringOrVariableRefAttribute(final String name) {
+        return (StringOrVariableRefAttribute) get(name);
     }
 }

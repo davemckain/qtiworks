@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
@@ -49,23 +49,24 @@ import java.io.Serializable;
  *
  * @author David McKain
  */
-public final class IntegerOrVariableRef implements Serializable {
+public final class StringOrVariableRef implements Serializable {
 
-    private static final long serialVersionUID = 1215189767076373746L;
+    private static final long serialVersionUID = 5566424487613057171L;
 
-    private final Integer integerValue;
+    private final String stringValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
-    public IntegerOrVariableRef(final int integerValue) {
-        this.integerValue = Integer.valueOf(integerValue);
+    public StringOrVariableRef(final String stringValue) {
+        Assert.ensureNotNull(stringValue);
+        this.stringValue = stringValue;
         this.variableReferenceValue = null;
-        this.serializedValue = Integer.toString(integerValue);
+        this.serializedValue = "{" + stringValue + "}";
     }
 
-    public IntegerOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
+    public StringOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.integerValue = null;
+        this.stringValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
@@ -73,35 +74,33 @@ public final class IntegerOrVariableRef implements Serializable {
     /**
      * @throws QtiParseException
      */
-    public static IntegerOrVariableRef parseString(final String string) {
+    public static StringOrVariableRef parseString(final String string) {
         Assert.ensureNotNull(string);
 
         if (string.isEmpty()) {
-            throw new QtiParseException("integerOrVariableRef must not be empty");
+            throw new QtiParseException("stringOrVariableRef must not be empty");
         }
-        final char firstCharacter = string.charAt(0);
-        if (firstCharacter>='0' && firstCharacter<='9') {
-            /* It's an integer */
-            final int integer = DataTypeBinder.parseInteger(string);
-            return new IntegerOrVariableRef(integer);
+        if (string.charAt(0)=='{' && string.charAt(string.length()-1)=='}') {
+            /* It's a variable reference */
+            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string.substring(1, string.length()-2));
+            return new StringOrVariableRef(variableReferenceIdentifier);
         }
         else {
-            /* It must be a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
-            return new IntegerOrVariableRef(variableReferenceIdentifier);
+            /* It's a string */
+            return new StringOrVariableRef(string);
         }
     }
 
-    public boolean isInteger() {
-        return integerValue!=null;
+    public boolean isString() {
+        return stringValue!=null;
     }
 
     public boolean isVariableRef() {
         return variableReferenceValue!=null;
     }
 
-    public Integer getInteger() {
-        return integerValue;
+    public String getString() {
+        return stringValue;
     }
 
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
@@ -120,23 +119,23 @@ public final class IntegerOrVariableRef implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof IntegerOrVariableRef)) {
+        if (!(obj instanceof StringOrVariableRef)) {
             return false;
         }
-        final IntegerOrVariableRef other = (IntegerOrVariableRef) obj;
+        final StringOrVariableRef other = (StringOrVariableRef) obj;
         return serializedValue.equals(other.serializedValue);
     }
 
-    public int evaluate(final ProcessingContext context) {
+    public String evaluate(final ProcessingContext context) {
         if (isVariableRef()) {
             final Value result = context.lookupVariableValue(variableReferenceValue);
-            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.INTEGER) {
-                return ((IntegerValue) result).intValue();
+            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.STRING) {
+                return ((StringValue) result).toString();
             }
             throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
         }
         else {
-            return integerValue.intValue();
+            return stringValue;
         }
     }
 }

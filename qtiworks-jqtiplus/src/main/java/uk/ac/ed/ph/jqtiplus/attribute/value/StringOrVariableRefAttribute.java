@@ -37,32 +37,32 @@ import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
+import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * Attribute with {@link IntegerOrVariableRef} value.
+ * Attribute with {@link StringOrVariableRef} value.
  *
  * @author David McKain
  */
-public final class IntegerOrVariableRefAttribute extends SingleAttribute<IntegerOrVariableRef> {
+public final class StringOrVariableRefAttribute extends SingleAttribute<StringOrVariableRef> {
 
     private static final long serialVersionUID = -2290502264287066199L;
 
-    public IntegerOrVariableRefAttribute(final XmlNode owner, final String localName, final boolean required) {
+    public StringOrVariableRefAttribute(final XmlNode owner, final String localName, final boolean required) {
         super(owner, localName, required);
     }
 
     @Override
-    protected IntegerOrVariableRef parseQtiString(final String value) {
-        return IntegerOrVariableRef.parseString(value);
+    protected StringOrVariableRef parseQtiString(final String value) {
+        return StringOrVariableRef.parseString(value);
     }
 
     @Override
-    protected String toQtiString(final IntegerOrVariableRef value) {
+    protected String toQtiString(final StringOrVariableRef value) {
         return value.toString();
     }
 
@@ -77,7 +77,7 @@ public final class IntegerOrVariableRefAttribute extends SingleAttribute<Integer
             if (variableDeclaration!=null) {
                 context.checkVariableType(owner, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
                 context.checkCardinality(owner, variableDeclaration, Cardinality.SINGLE);
-                context.checkBaseType(owner, variableDeclaration, BaseType.INTEGER);
+                context.checkBaseType(owner, variableDeclaration, BaseType.STRING);
             }
         }
     }
