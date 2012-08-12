@@ -35,9 +35,11 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ToleranceModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.FloatMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -83,7 +85,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Equal extends AbstractFunctionalExpression {
+public class Equal extends AbstractExpression {
 
     private static final long serialVersionUID = 2741395727993314516L;
 
@@ -112,7 +114,7 @@ public class Equal extends AbstractFunctionalExpression {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ToleranceModeAttribute(this, ATTR_TOLERANCE_MODE_NAME, true));
-        getAttributes().add(new FloatMultipleAttribute(this, ATTR_TOLERANCES_NAME, false));
+        getAttributes().add(new FloatOrVariableRefMultipleAttribute(this, ATTR_TOLERANCES_NAME, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_LOWER_BOUND_NAME, ATTR_INCLUDE_LOWER_BOUND_DEFAULT_VALUE, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_UPPER_BOUND_NAME, ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE, false));
     }
@@ -142,32 +144,28 @@ public class Equal extends AbstractFunctionalExpression {
      *
      * @return value of tolerance attribute
      */
-    public List<Double> getTolerances() {
-        return getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).getComputedValue();
+    public List<FloatOrVariableRef> getTolerances() {
+        return getAttributes().getFloatOrVariableRefMultipleAttribute(ATTR_TOLERANCES_NAME).getValue();
     }
 
-    public void setTolerances(final List<Double> value) {
-        getAttributes().getFloatMultipleAttribute(ATTR_TOLERANCES_NAME).setValue(value);
-    }
-
-    /**
-     * Gets first tolerance if defined; zero otherwise.
-     *
-     * @return first tolerance if defined; zero otherwise
-     */
-    protected double getFirstTolerance() {
-        final List<Double> tolerances = getTolerances();
-        return tolerances!=null && tolerances.size()>0 ? tolerances.get(0).doubleValue() : 0;
+    public void setTolerances(final List<FloatOrVariableRef> value) {
+        getAttributes().getFloatOrVariableRefMultipleAttribute(ATTR_TOLERANCES_NAME).setValue(value);
     }
 
     /**
-     * Gets second tolerance if defined; first tolerance otherwise.
-     *
-     * @return second tolerance if defined; first tolerance otherwise
+     * Gets first tolerance if defined; null otherwise.
      */
-    protected double getSecondTolerance() {
-        final List<Double> tolerances = getTolerances();
-        return tolerances!=null && tolerances.size()>1 ? tolerances.get(1).doubleValue() : 0;
+    protected FloatOrVariableRef getFirstTolerance() {
+        final List<FloatOrVariableRef> tolerances = getTolerances();
+        return tolerances!=null && tolerances.size()>0 ? tolerances.get(0) : null;
+    }
+
+    /**
+     * Gets second tolerance if defined; first tolerance otherwise, or null if none are defined
+     */
+    protected FloatOrVariableRef getSecondTolerance() {
+        final List<FloatOrVariableRef> tolerances = getTolerances();
+        return tolerances!=null && tolerances.size()>1 ? tolerances.get(1) : getFirstTolerance();
     }
 
     /**
@@ -214,25 +212,43 @@ public class Equal extends AbstractFunctionalExpression {
     protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getFirstTolerance() < 0) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                    getFirstTolerance() + ") cannot be negative."));
+        final List<FloatOrVariableRef> tolerances = getTolerances();
+        if (tolerances!=null && (tolerances.size()==0 || tolerances.size()>2)) {
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
+                    "Attribute " +
+                    ATTR_TOLERANCES_NAME + " must contain 1 or 2 floatOrVariableRefs when specified"));
         }
 
-        if (getSecondTolerance() < 0) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                    getSecondTolerance() + ") cannot be negative."));
+        final FloatOrVariableRef firstToleranceComputer = getFirstTolerance();
+        if (firstToleranceComputer!=null && firstToleranceComputer.isFloat()) {
+            final double firstToleranceValue = firstToleranceComputer.getDouble();
+            if (firstToleranceValue < 0) {
+                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
+                        firstToleranceValue + ") cannot be negative."));
+            }
+        }
+
+        final FloatOrVariableRef secondToleranceComputer = getSecondTolerance();
+        if (secondToleranceComputer!=null && secondToleranceComputer.isFloat()) {
+            final double secondToleranceValue = secondToleranceComputer.getDouble();
+            if (secondToleranceValue < 0) {
+                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
+                        getSecondTolerance() + ") cannot be negative."));
+            }
         }
 
         if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT &&
-                (getTolerances().size() == 0 || getTolerances().size() > 2)) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME), "Invalid attribute " +
-                    ATTR_TOLERANCES_NAME + " length (" + getTolerances().size() + ")."));
+                tolerances==null) {
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
+                    "Attribute " +
+                    ATTR_TOLERANCES_NAME + " must be specified when toleranceMode is absolute or relative"));
         }
     }
 
     @Override
-    protected Value evaluateSelf(final Value[] childValues) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
@@ -240,13 +256,20 @@ public class Equal extends AbstractFunctionalExpression {
         final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
-        final boolean result = getToleranceMode().isEqual
-                (firstNumber
-                        , secondNumber
-                        , getFirstTolerance()
-                        , getSecondTolerance()
-                        , getIncludeLowerBound()
-                        , getIncludeUpperBound());
+        double firstTolerance = 0.0;
+        double secondTolerance = 0.0;
+        final FloatOrVariableRef firstToleranceComputer = getFirstTolerance();
+        if (firstToleranceComputer!=null) {
+            firstTolerance = firstToleranceComputer.evaluate(context);
+        }
+        final FloatOrVariableRef secondToleranceComputer = getSecondTolerance();
+        if (secondToleranceComputer!=null) {
+            secondTolerance = secondToleranceComputer.evaluate(context);
+        }
+
+        final boolean result = getToleranceMode().isEqual(firstNumber, secondNumber,
+                firstTolerance, secondTolerance,
+                getIncludeLowerBound(), getIncludeUpperBound());
 
         return BooleanValue.valueOf(result);
     }

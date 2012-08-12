@@ -53,8 +53,8 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.FloatMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
@@ -336,9 +336,6 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
         return (FloatAttribute) get(name);
     }
 
-    public FloatMultipleAttribute getFloatMultipleAttribute(final String name) {
-        return (FloatMultipleAttribute) get(name);
-    }
 
     public IdentifierAttribute getIdentifierAttribute(final String name) {
         return (IdentifierAttribute) get(name);
@@ -438,6 +435,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
 
     public FloatOrVariableRefAttribute getFloatOrVariableRefAttribute(final String name) {
         return (FloatOrVariableRefAttribute) get(name);
+    }
+
+    public FloatOrVariableRefMultipleAttribute getFloatOrVariableRefMultipleAttribute(final String name) {
+        return (FloatOrVariableRefMultipleAttribute) get(name);
     }
 
     public StringOrVariableRefAttribute getStringOrVariableRefAttribute(final String name) {
