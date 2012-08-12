@@ -38,15 +38,16 @@
       <value>Hello.*</value>
     </defaultValue>
   </templateDeclaration>
-  <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
-    <defaultValue>
-      <value>Hello.*</value>
-    </defaultValue>
-  </templateDeclaration>
-  <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="string"/>
+  <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="boolean"/>
   <templateDeclaration identifier="INDEX" cardinality="single" baseType="string"/>
   <templateDeclaration identifier="RANDOM_INTEGER" cardinality="single" baseType="integer"/>
-  <templateDeclaration identifier="RANDOM_FLOAT" cardinality="single" baseType="integer"/>
+  <templateDeclaration identifier="RANDOM_FLOAT" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="REPEAT_NUMBER" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>2</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="REPEAT_RESULT" cardinality="ordered" baseType="integer"/>
   <templateProcessing>
     <setTemplateValue identifier="PATTERN_MATCH">
       <patternMatch pattern="{PATTERN}">
@@ -78,11 +79,18 @@
     <setTemplateValue identifier="RANDOM_FLOAT">
       <randomFloat min="0.0" max="5.0"/>
     </setTemplateValue>
+    <setTemplateValue identifier="REPEAT_RESULT">
+      <repeat numberRepeats="REPEAT_NUMBER">
+        <baseValue baseType="integer">0</baseValue>
+        <baseValue baseType="integer">1</baseValue>
+      </repeat>
+    </setTemplateValue>
   </templateProcessing>
   <itemBody>
     <p>PATTERN_MATCH = <printedVariable identifier="PATTERN_MATCH"/></p>
     <p>N = <printedVariable identifier="INDEX"/></p>
     <p>RANDOM_INTEGER = <printedVariable identifier="RANDOM_INTEGER"/></p>
     <p>RANDOM_FLOAT = <printedVariable identifier="RANDOM_FLOAT"/></p>
+    <p>REPEAT_RESULT = <printedVariable identifier="REPEAT_RESULT"/></p>
   </itemBody>
 </assessmentItem>

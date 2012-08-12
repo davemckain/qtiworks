@@ -84,6 +84,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.Product;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Random;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RandomEx;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RecordEx;
+import uk.ac.ed.ph.jqtiplus.node.expression.operator.Repeat;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Round;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RoundTo;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.StringMatch;
@@ -1116,6 +1117,23 @@ public enum ExpressionType {
         @Override
         public Expression create(final ExpressionParent parent) {
             return new RecordEx(parent);
+        }
+    },
+
+    /**
+     * Creates repeat expression.
+     *
+     * @see Repeat
+     */
+    REPEAT(Repeat.QTI_CLASS_NAME, 0, null
+            , new Cardinality[] { Cardinality.SINGLE }
+            , BaseType.values()
+            , new Cardinality[] { Cardinality.ORDERED }
+            , BaseType.values()) {
+
+        @Override
+        public Expression create(final ExpressionParent parent) {
+            return new Repeat(parent);
         }
     },
 
