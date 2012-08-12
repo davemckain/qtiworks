@@ -101,6 +101,7 @@ public class PatternMatch extends AbstractExpression {
 
         final String computedPattern = getPattern().evaluate(context);
         final String childString =  ((StringValue) childValues[0]).toQtiString();
+        System.out.println("Comparing " + childString + " with " + computedPattern);
         final boolean result = childString.matches(computedPattern);
         return BooleanValue.valueOf(result);
     }

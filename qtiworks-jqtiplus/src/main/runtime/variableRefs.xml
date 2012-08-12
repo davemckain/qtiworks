@@ -1,0 +1,43 @@
+<!-- Tests the various *OrVariableRef possibilities -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="minimal" title="*OrVariableRef Examples" adaptive="false" timeDependent="false">
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <templateDeclaration identifier="N" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>2</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
+    <defaultValue>
+      <value>Hello.*</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="string"/>
+  <templateDeclaration identifier="INDEX" cardinality="single" baseType="string"/>
+  <templateProcessing>
+    <setTemplateValue identifier="PATTERN_MATCH">
+      <patternMatch pattern="{PATTERN}">
+        <baseValue baseType="string">Hello There</baseValue>
+      </patternMatch>
+    </setTemplateValue>
+    <setTemplateValue identifier="INDEX">
+      <index n="N">
+        <ordered>
+          <baseValue baseType="string">Item 1</baseValue>
+          <baseValue baseType="string">Item 2</baseValue>
+          <baseValue baseType="string">Item 3</baseValue>
+        </ordered>
+      </index>
+    </setTemplateValue>
+  </templateProcessing>
+  <itemBody>
+    <p>PATTERN_MATCH = <printedVariable identifier="PATTERN_MATCH"/></p>
+    <p>N = <printedVariable identifier="INDEX"/></p>
+  </itemBody>
+</assessmentItem>

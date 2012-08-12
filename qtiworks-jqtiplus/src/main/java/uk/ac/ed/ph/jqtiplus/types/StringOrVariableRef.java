@@ -82,7 +82,7 @@ public final class StringOrVariableRef implements Serializable {
         }
         if (string.charAt(0)=='{' && string.charAt(string.length()-1)=='}') {
             /* It's a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string.substring(1, string.length()-2));
+            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string.substring(1, string.length()-1));
             return new StringOrVariableRef(variableReferenceIdentifier);
         }
         else {
@@ -128,9 +128,10 @@ public final class StringOrVariableRef implements Serializable {
 
     public String evaluate(final ProcessingContext context) {
         if (isVariableRef()) {
+            System.out.println("Looking up " + variableReferenceValue);
             final Value result = context.lookupVariableValue(variableReferenceValue);
             if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.STRING) {
-                return ((StringValue) result).toString();
+                return ((StringValue) result).toQtiString();
             }
             throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
         }

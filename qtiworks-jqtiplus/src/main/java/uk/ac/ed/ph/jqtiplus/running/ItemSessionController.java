@@ -486,7 +486,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         if (variableReferenceIdentifier.isDotted()) {
             throw new QtiEvaluationException("Dotted variables cannot be used in items");
         }
-        final Identifier itemVariableIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
+        final Identifier itemVariableIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         return lookupVariableValue(itemVariableIdentifier, permittedTypes);
     }
 
