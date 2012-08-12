@@ -88,14 +88,13 @@ public final class FloatOrVariableRef implements Serializable {
         if (string.isEmpty()) {
             throw new QtiParseException("floatOrVariableRef must not be empty");
         }
-        final char firstCharacter = string.charAt(0);
-        if (firstCharacter>='0' && firstCharacter<='9') {
-            /* It's a float */
+        try {
+            /* Try to parse as a float */
             final double floatValue = DataTypeBinder.parseFloat(string);
             return new FloatOrVariableRef(floatValue);
         }
-        else {
-            /* It must be a variable reference */
+        catch (final QtiParseException e) {
+            /* Try to parse as a variable reference */
             final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
             return new FloatOrVariableRef(variableReferenceIdentifier);
         }

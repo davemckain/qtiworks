@@ -88,14 +88,13 @@ public final class IntegerOrVariableRef implements Serializable {
         if (string.isEmpty()) {
             throw new QtiParseException("integerOrVariableRef must not be empty");
         }
-        final char firstCharacter = string.charAt(0);
-        if (firstCharacter>='0' && firstCharacter<='9') {
-            /* It's an integer */
+        try {
+            /* Try to parse as in integer */
             final int integer = DataTypeBinder.parseInteger(string);
             return new IntegerOrVariableRef(integer);
         }
-        else {
-            /* It must be a variable reference */
+        catch (final QtiParseException e) {
+            /* Parse as a variable reference */
             final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
             return new IntegerOrVariableRef(variableReferenceIdentifier);
         }
