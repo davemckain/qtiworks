@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -140,19 +141,19 @@ public class RandomInteger extends RandomExpression {
     }
 
     @Override
-    protected IntegerValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final Random randomGenerator = getRandomGenerator(depth);
 
         final int computedMin = getMin().evaluate(context);
-        int computedMax = getMax().evaluate(context);
-        int computedStep = getStep().evaluate(context);
+        final int computedMax = getMax().evaluate(context);
+        final int computedStep = getStep().evaluate(context);
 
-        /* Sanitise numbers */
+        /* Validate computed numbers */
         if (computedStep < 1) {
-            computedStep = 1;
+            return NullValue.INSTANCE;
         }
         if (computedMax < computedMin) {
-            computedMax = computedMin;
+            return NullValue.INSTANCE;
         }
 
         final int randomNumber = randomGenerator.nextInt((computedMax - computedMin) / computedStep + 1);

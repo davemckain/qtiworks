@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -119,9 +120,14 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected FloatValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final double computedMinimum = getMin().evaluate(context);
         final double computedMaximum = getMax().evaluate(context);
+
+        if (computedMinimum > computedMaximum) {
+            /* Bad computed values */
+            return NullValue.INSTANCE;
+        }
 
         final Random randomGenerator = getRandomGenerator(depth);
         final double randomNumber = randomGenerator.nextDouble();
