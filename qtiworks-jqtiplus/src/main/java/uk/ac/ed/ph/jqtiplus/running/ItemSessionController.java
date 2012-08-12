@@ -455,7 +455,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         else {
             /* Only allows specified types of variables */
-            for (final VariableType type : permittedTypes) {
+            CHECK_LOOP: for (final VariableType type : permittedTypes) {
                 switch (type) {
                     case TEMPLATE:
                         value = itemSessionState.getTemplateValue(identifier);
@@ -471,6 +471,9 @@ public final class ItemSessionController implements ItemProcessingContext {
 
                     default:
                         throw new QtiLogicException("Unexpected switch case");
+                }
+                if (value!=null) {
+                    break CHECK_LOOP;
                 }
             }
         }
