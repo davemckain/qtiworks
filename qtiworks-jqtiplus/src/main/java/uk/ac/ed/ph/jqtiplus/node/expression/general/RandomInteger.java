@@ -33,10 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -49,7 +50,7 @@ import java.util.Random;
  * For example, with min=2, max=11 and step=3 the values {2,5,8,11} are possible.
  * <p>
  * Additional conditions: max >= min, step >= 1
- * 
+ *
  * @author Jiri Kajaba
  */
 public class RandomInteger extends RandomExpression {
@@ -71,76 +72,40 @@ public class RandomInteger extends RandomExpression {
     /** Default value of step attribute. */
     public static final int ATTR_STEP_DEFAULT_VALUE = 1;
 
-    public RandomInteger(ExpressionParent parent) {
+    public RandomInteger(final ExpressionParent parent) {
         this(parent, QTI_CLASS_NAME);
     }
-    
-    protected RandomInteger(ExpressionParent parent, String localName) {
+
+    protected RandomInteger(final ExpressionParent parent, final String localName) {
         super(parent, localName);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MIN_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAX_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_STEP_NAME, ATTR_STEP_DEFAULT_VALUE, false));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MIN_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MAX_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_STEP_NAME, new IntegerOrVariableRef(ATTR_STEP_DEFAULT_VALUE), false));
     }
 
-    /**
-     * Gets value of min attribute.
-     * 
-     * @return value of min attribute
-     * @see #setMinimum
-     */
-    public int getMin() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getMin() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MIN_NAME).getValue();
     }
 
-    /**
-     * Sets new value of min attribute.
-     * 
-     * @param minimum new value of min attribute
-     * @see #getMinimum
-     */
-    public void setMin(Integer minimum) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_NAME).setValue(minimum);
+    public void setMin(final IntegerOrVariableRef minimum) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_MIN_NAME).setValue(minimum);
     }
 
-    /**
-     * Gets value of max attribute.
-     * 
-     * @return value of max attribute
-     * @see #setMaximum
-     */
-    public int getMax() {
-        return getAttributes().getIntegerAttribute(ATTR_MAX_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getMax() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAX_NAME).getValue();
     }
 
-    /**
-     * Sets new value of max attribute.
-     * 
-     * @param maximum new value of max attribute
-     * @see #getMaximum
-     */
-    public void setMax(Integer maximum) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_NAME).setValue(maximum);
+    public void setMax(final IntegerOrVariableRef maximum) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAX_NAME).setValue(maximum);
     }
 
-    /**
-     * Gets value of step attribute.
-     * 
-     * @return value of step attribute
-     * @see #setStep
-     */
-    public int getStep() {
-        return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getStep() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).getValue();
     }
 
-    /**
-     * Sets new value of step attribute.
-     * 
-     * @param step new value of step attribute
-     * @see #getStep
-     */
-    public void setStep(Integer step) {
-        getAttributes().getIntegerAttribute(ATTR_STEP_NAME).setValue(step);
+    public void setStep(final IntegerOrVariableRef step) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).setValue(step);
     }
 
     @Override
@@ -149,27 +114,49 @@ public class RandomInteger extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getMax() < getMin()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME), "Attribute " + ATTR_MAX_NAME + " (" + getMax() +
-                    ") cannot be lower than " + ATTR_MIN_NAME + " (" + getMin() + ")."));
+        final IntegerOrVariableRef maxComputer = getMax();
+        final IntegerOrVariableRef minComputer = getMin();
+        final IntegerOrVariableRef stepComputer = getStep();
+
+        if (maxComputer.isInteger() && minComputer.isInteger()) {
+            final int max = maxComputer.getInteger().intValue();
+            final int min = minComputer.getInteger().intValue();
+            if (max < min) {
+                context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
+                        "Attribute " + ATTR_MAX_NAME + " (" + max +
+                        ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")"));
+            }
+
         }
 
-        if (getStep() < 1) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME), "Attribute " + ATTR_STEP_NAME
-                    + " ("
-                    + getStep()
-                    + ") must be positive."));
+        if (stepComputer.isInteger() && stepComputer.getInteger().intValue() < 1) {
+            context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
+                    "Attribute " + ATTR_STEP_NAME
+                    + " (" + stepComputer + ") must be positive."));
         }
     }
 
     @Override
-    protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected IntegerValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final Random randomGenerator = getRandomGenerator(depth);
-        final int randomNumber = randomGenerator.nextInt((getMax() - getMin()) / getStep() + 1);
-        final int randomInteger = getMin() + randomNumber * getStep();
+
+        final int computedMin = getMin().evaluate(context);
+        int computedMax = getMax().evaluate(context);
+        int computedStep = getStep().evaluate(context);
+
+        /* Sanitise numbers */
+        if (computedStep < 1) {
+            computedStep = 1;
+        }
+        if (computedMax < computedMin) {
+            computedMax = computedMin;
+        }
+
+        final int randomNumber = randomGenerator.nextInt((computedMax - computedMin) / computedStep + 1);
+        final int randomInteger = computedMin + randomNumber * computedStep;
 
         return new IntegerValue(randomInteger);
     }

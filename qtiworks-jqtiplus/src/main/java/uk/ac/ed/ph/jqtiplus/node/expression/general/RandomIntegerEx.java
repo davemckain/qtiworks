@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
  * Extends randomInteger expression - supports seed attribute.
  * <p>
  * This expression should be used only for special purposes when you need repeatability (not for real assessments).
- * 
+ *
  * @author Jiri Kajaba
  */
 public class RandomIntegerEx extends RandomInteger {
@@ -53,7 +53,7 @@ public class RandomIntegerEx extends RandomInteger {
     /** Name of seed attribute in xml schema. */
     public static final String ATTR_SEED_NAME = "seed";
 
-    public RandomIntegerEx(ExpressionParent parent) {
+    public RandomIntegerEx(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, false));
@@ -64,13 +64,7 @@ public class RandomIntegerEx extends RandomInteger {
         return getAttributes().getLongAttribute(ATTR_SEED_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of seed attribute.
-     * 
-     * @param seed new value of seed attribute
-     * @see #getSeedAttributeValue
-     */
-    public void setSeedAttributeValue(Long seed) {
+    public void setSeedAttributeValue(final Long seed) {
         getAttributes().getLongAttribute(ATTR_SEED_NAME).setValue(seed);
     }
 }

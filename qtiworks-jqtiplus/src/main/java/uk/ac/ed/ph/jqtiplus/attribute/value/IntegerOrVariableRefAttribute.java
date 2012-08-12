@@ -56,6 +56,10 @@ public final class IntegerOrVariableRefAttribute extends SingleAttribute<Integer
         super(owner, localName, required);
     }
 
+    public IntegerOrVariableRefAttribute(final XmlNode owner, final String localName, final IntegerOrVariableRef defaultValue, final boolean required) {
+        super(owner, localName, defaultValue, required);
+    }
+
     @Override
     protected IntegerOrVariableRef parseQtiString(final String value) {
         return IntegerOrVariableRef.parseString(value);

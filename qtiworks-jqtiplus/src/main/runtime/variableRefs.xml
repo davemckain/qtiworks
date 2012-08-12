@@ -13,6 +13,16 @@
       <value>2</value>
     </defaultValue>
   </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MIN" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>1</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MAX" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>5</value>
+    </defaultValue>
+  </templateDeclaration>
   <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
     <defaultValue>
       <value>Hello.*</value>
@@ -20,6 +30,7 @@
   </templateDeclaration>
   <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="string"/>
   <templateDeclaration identifier="INDEX" cardinality="single" baseType="string"/>
+  <templateDeclaration identifier="RANDOM_INTEGER" cardinality="single" baseType="integer"/>
   <templateProcessing>
     <setTemplateValue identifier="PATTERN_MATCH">
       <patternMatch pattern="{PATTERN}">
@@ -35,9 +46,18 @@
         </ordered>
       </index>
     </setTemplateValue>
+    <!-- NOT WORKING
+    <setTemplateValue identifier="RANDOM_INTEGER">
+      <randomInteger min="RANDOM_MIN" max="RANDOM_MAX"/>
+    </setTemplateValue>
+    -->
+    <setTemplateValue identifier="RANDOM_INTEGER">
+      <randomInteger min="1" max="5"/>
+    </setTemplateValue>
   </templateProcessing>
   <itemBody>
     <p>PATTERN_MATCH = <printedVariable identifier="PATTERN_MATCH"/></p>
     <p>N = <printedVariable identifier="INDEX"/></p>
+    <p>RANDOM_INTEGER = <printedVariable identifier="RANDOM_INTEGER"/></p>
   </itemBody>
 </assessmentItem>
