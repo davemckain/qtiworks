@@ -131,14 +131,8 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             httpResponse.sendError(403, "Forbidden - bad consumer key");
             return;
         }
-
-        /* TODO: Move these to controller? */
-        if (!itemDelivery.isOpen()) {
-            httpResponse.sendError(403, "Delivery is not open");
-            return;
-        }
         if (!itemDelivery.isLtiEnabled()) {
-            httpResponse.sendError(403, "Delivery is not LTI enabled");
+            httpResponse.sendError(403, "Forbidden - delivery is not LTI enabled");
             return;
         }
 
@@ -210,7 +204,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         data.setContextId(requestMessage.getParameter("context_id")); /* Recommended */
         data.setLaunchPresentationReturnUrl(requestMessage.getParameter("launch_presentation_return_url")); /* Recommended */
         data.setToolConsumerInfoProductFamilyCode(requestMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
-        data.setToolConsumerInfoVersion(requestMessage.getParameter("tool_consume_info_version")); /* Optional but recommended */
+        data.setToolConsumerInfoVersion(requestMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */
         data.setToolConsumerInstanceGuid(requestMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
         data.setUserId(requestMessage.getParameter("user_id")); /* Recommended */
         data.setLisPersonNameFamily(requestMessage.getParameter("lis_person_name_family")); /* Recommended but possibly suppressed */
