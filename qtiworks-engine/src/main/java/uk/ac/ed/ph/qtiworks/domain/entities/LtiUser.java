@@ -33,12 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.web.authn.LtiAuthenticationFilter;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -46,25 +48,43 @@ import org.hibernate.annotations.Type;
 /**
  * Represents an LTI user
  *
+ * FIXME: Need to sort out constraints on LTI-specified columns.
+ *
  * @author David McKain
  */
 @Entity
 @Table(name="lti_users")
+@NamedQueries({
+    /* Looks up the LTI User having the given logicalKey */
+    @NamedQuery(name="LtiUser.findByLogicalKey",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                +"   WHERE u.logicalKey = :logicalKey")
+})
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     private static final long serialVersionUID = 7821803746245696405L;
 
-    @Basic(optional=false)
-    @Column(name="session_id", unique=true)
-    private String sessionId;
-
     /**
-     * LTI <code>user_id</code> column. Intended to be a primary key but uniqueness is
-     * only guaranteed within a single Tool Consumer, so we don't have uniqueness here.
+     * Logical key used for an LTI user.
+     * See {@link LtiAuthenticationFilter} for details
      */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
+    @Column(name="logical_key", updatable=false, unique=true)
+    private String logicalKey;
+
+    /** LTI <code>resource_link_id</code> launch parameter. (Spec says this is required) */
+    @Basic(optional=false)
+    @Column(name="lti_resource_link_id", updatable=false, unique=false)
+    private String ltiResourceLinkId;
+
+    /** LTI <code>context_id</code> launch parameter. (Spec says this is recommended) */
+    @Basic(optional=true)
+    @Column(name="lti_context_id", updatable=false, unique=false)
+    private String ltiContextId;
+
+    /** LTI <code>user_id</code> launch parameter. (Spec says this is recommended) */
+    @Basic(optional=true)
     @Column(name="lti_user_id", updatable=false, unique=false)
     private String ltiUserId;
 
@@ -100,12 +120,30 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     //------------------------------------------------------------
 
-    public String getSessionId() {
-        return sessionId;
+    public String getLogicalKey() {
+        return logicalKey;
     }
 
-    public void setSessionId(final String sessionId) {
-        this.sessionId = sessionId;
+    public void setLogicalKey(final String logicalKey) {
+        this.logicalKey = logicalKey;
+    }
+
+
+    public String getLtiContextId() {
+        return ltiContextId;
+    }
+
+    public void setLtiContextId(final String ltiContextId) {
+        this.ltiContextId = ltiContextId;
+    }
+
+
+    public String getLtiResourceLinkId() {
+        return ltiResourceLinkId;
+    }
+
+    public void setLtiResourceLinkId(final String ltiResourceLinkId) {
+        this.ltiResourceLinkId = ltiResourceLinkId;
     }
 
 
@@ -157,22 +195,13 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     @Override
     public String getBusinessKey() {
-        ensureSessionId(this);
-        return "lti/" + sessionId + "/" + ltiUserId;
+        return "lti/" + logicalKey;
     }
 
     //------------------------------------------------------------
 
     @Override
     public final int compareTo(final LtiUser o) {
-        ensureSessionId(this);
-        ensureSessionId(o);
-        return sessionId.compareTo(o.sessionId);
-    }
-
-    private void ensureSessionId(final LtiUser user) {
-        if (user.sessionId==null) {
-            throw new QtiWorksRuntimeException("Current logic branch requires sessionId to be non-null on " + user);
-        }
+        return logicalKey.compareTo(o.logicalKey);
     }
 }

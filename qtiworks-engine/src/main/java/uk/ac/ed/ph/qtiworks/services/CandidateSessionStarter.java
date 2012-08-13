@@ -43,15 +43,14 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -89,9 +88,6 @@ public class CandidateSessionStarter {
 
     @Resource
     private ItemDeliveryDao itemDeliveryDao;
-
-    @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
 
     @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
@@ -138,28 +134,15 @@ public class CandidateSessionStarter {
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!itemDelivery.isOpen()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_CLOSED_DELIVERY, itemDelivery);
         }
         final Assessment assessment = itemDelivery.getAssessment();
-        if (!assessment.isPublic() && !caller.equals(assessment.getOwner())) {
+        if (!(assessment.isPublic()
+                || (itemDelivery.isLtiEnabled() && caller.getUserType()==UserType.LTI)
+                || caller.equals(assessment.getOwner()))) {
             throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
         }
         return caller;
-    }
-
-    public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(itemDeliverySettings);
-        return itemDeliverySettings;
-    }
-
-    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
-        }
     }
 
     //----------------------------------------------------

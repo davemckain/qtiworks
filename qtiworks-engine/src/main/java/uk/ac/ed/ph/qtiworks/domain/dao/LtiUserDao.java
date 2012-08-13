@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,5 +57,11 @@ public class LtiUserDao extends GenericDao<LtiUser> {
 
     public LtiUserDao() {
         super(LtiUser.class);
+    }
+
+    public LtiUser findByLogicalKey(final String logicalKey) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByLogicalKey", LtiUser.class);
+        query.setParameter("logicalKey", logicalKey);
+        return extractNullableFindResult(query);
     }
 }

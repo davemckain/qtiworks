@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
@@ -74,8 +76,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private static final Logger logger = LoggerFactory.getLogger(LtiAuthenticationFilter.class);
 
-    private static final String LTI_USER_SESSION_ATTRIBUTE_NAME = "qtiworks.web.authn.ltiUser";
-
+    private RequestTimestampContext requestTimestampContext;
     private IdentityContext identityContext;
     private ItemDeliveryDao itemDeliveryDao;
     private LtiUserDao ltiUserDao;
@@ -83,6 +84,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
+        requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
         identityContext = webApplicationContext.getBean(IdentityContext.class);
         itemDeliveryDao = webApplicationContext.getBean(ItemDeliveryDao.class);
         ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
@@ -94,34 +96,17 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             final HttpSession session)
             throws IOException, ServletException {
 
-        final boolean isBasicLtiRequest = isBasicLtiRequest(httpRequest);
-        final LtiUser ltiUser = (LtiUser) session.getAttribute(LTI_USER_SESSION_ATTRIBUTE_NAME);
-        if (!isBasicLtiRequest && ltiUser!=null) {
-            doFilterWithIdentity(httpRequest, httpResponse, chain, ltiUser);
+        final boolean isBasicLtiRequest = isBasicLtiLaunchRequest(httpRequest);
+        if (isBasicLtiRequest) {
+            handleBasicLtiRequest(httpRequest, httpResponse, chain);
         }
         else {
-            if (isBasicLtiRequest) {
-                handleBasicLtiRequest(httpRequest, httpResponse, chain);
-            }
-            else {
-                httpResponse.sendError(401, "Unauthorized - No BasicLTI session found.");
-            }
+            httpResponse.sendError(401, "Not an LTI launch request");
         }
     }
 
-    private void doFilterWithIdentity(final HttpServletRequest httpRequest,
-            final HttpServletResponse httpResponse, final FilterChain chain,
-            final LtiUser ltiUser)
-            throws IOException, ServletException {
-        identityContext.setCurrentThreadUnderlyingIdentity(ltiUser);
-        identityContext.setCurrentThreadEffectiveIdentity(ltiUser);
-        try {
-            chain.doFilter(httpRequest, httpResponse);
-        }
-        finally {
-            identityContext.setCurrentThreadUnderlyingIdentity(null);
-            identityContext.setCurrentThreadEffectiveIdentity(null);
-        }
+    private boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
+        return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
     }
 
     private void handleBasicLtiRequest(final HttpServletRequest httpRequest,
@@ -132,18 +117,25 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             if (logger.isDebugEnabled()) {
                 final List<Entry<String, String>> parameters = message.getParameters();
                 for (final Entry<String, String> entry : parameters) {
-                    logger.debug(entry.getKey() + ": " + entry.getValue());
+                    logger.debug("LTI parameter {} => {}", entry.getKey(), entry.getValue());
                 }
             }
             final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
-
             final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-            // try to load from local cache if not throw exception
-            final String consumerKey = message.getConsumerKey();
 
+            /* Look up Delivery corresponding to this consumer key */
+            final String consumerKey = message.getConsumerKey();
             final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
             if (itemDelivery==null) {
                 httpResponse.sendError(403, "Forbidden - bad consumer key");
+                return;
+            }
+            if (!itemDelivery.isOpen()) {
+                httpResponse.sendError(403, "Delivery is not open");
+                return;
+            }
+            if (!itemDelivery.isLtiEnabled()) {
+                httpResponse.sendError(403, "Delivery is not LTI enabled");
                 return;
             }
 
@@ -153,22 +145,25 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             final OAuthAccessor accessor = new OAuthAccessor(consumer);
             accessor.tokenSecret = "";
             oAuthValidator.validateMessage(message, accessor);
-            final LtiUser ltiUser = createLtiUser(httpRequest, message);
+
+            final LtiUser ltiUser = obtainLtiUser(message);
             doFilterWithIdentity(httpRequest, httpResponse, chain, ltiUser);
         }
         catch (final OAuthProblemException e) {
+            /* FIXME: Log this better */
             logger.warn("OAuthProblemException", e);
             httpResponse.sendError(400, "Bad Request - Please submit a valid BasicLTI request.");
         }
         catch (final OAuthException e) {
+            /* FIXME: Log this better */
             logger.warn("OAuthException", e);
             httpResponse.sendError(403, "Forbidden - Please submit a valid BasicLTI request.");
         }
         catch (final URISyntaxException e) {
-            logger.warn("URISyntaxException", e);
-            throw new ServletException(e.getMessage());
+            throw QtiWorksRuntimeException.unexpectedException(e);
         }
     }
+
 
     private ItemDelivery lookupItemDelivery(final String consumerKey) {
         final int separatorPos = consumerKey.indexOf('-');
@@ -198,28 +193,59 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             logger.info("Token part {} of LTI consumer key {} did not match {}",
                     new Object[] { tokenPart, consumerKey, itemDelivery.getLtiConsumerKeyToken() });
         }
+
         /* Successful verification */
         return itemDelivery;
     }
 
-    private LtiUser createLtiUser(final HttpServletRequest request, final OAuthMessage requestMessage) throws OAuthProblemException, IOException {
-        requestMessage.requireParameters("roles", "resource_link_id", "user_id", "context_id");
-        final HttpSession session = request.getSession(true);
+    private LtiUser obtainLtiUser(final OAuthMessage requestMessage) throws IOException {
+        final String resourceLinkId = requestMessage.getParameter("resource_link_id"); /* Required */
+        final String contextId = requestMessage.getParameter("context_id"); /* Recommended */
+        final String userId = requestMessage.getParameter("user_id"); /* Recommended */
 
-        final LtiUser ltiUser = new LtiUser();
-        ltiUser.setSessionId(session.getId());
-        ltiUser.setLtiUserId(requestMessage.getParameter("user_id"));
-        ltiUser.setLisFullName(requestMessage.getParameter("lis_person_name_full"));
-        ltiUser.setLisGivenName(requestMessage.getParameter("lis_person_name_given"));
-        ltiUser.setLisFamilyName(requestMessage.getParameter("lis_person_name_family"));
-        ltiUser.setLisContactEmailPrimary(requestMessage.getParameter("lis_person_contact_email_primary"));
-        ltiUserDao.persist(ltiUser);
+        /* Create a unique key for looking up this user based on resource_link_id and user_id */
+        String logicalKey;
+        if (userId!=null) {
+            logicalKey = resourceLinkId + "/" + userId; /* This will be unique */
+        }
+        else {
+            /* No userId specified, so we'll have to synthesise something that will be unique enough */
+            logicalKey = resourceLinkId + "/" + Thread.currentThread().getId()
+                    + "/" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
+        }
 
-        session.setAttribute(LTI_USER_SESSION_ATTRIBUTE_NAME, ltiUser);
+        /* See if user already exists */
+        LtiUser ltiUser = ltiUserDao.findByLogicalKey(logicalKey);
+        if (ltiUser==null) {
+            ltiUser = new LtiUser();
+            ltiUser.setLogicalKey(logicalKey);
+            ltiUser.setLtiResourceLinkId(resourceLinkId);
+            ltiUser.setLtiContextId(contextId);
+            ltiUser.setLtiUserId(userId);
+            ltiUser.setLisFullName(requestMessage.getParameter("lis_person_name_full"));
+            ltiUser.setLisGivenName(requestMessage.getParameter("lis_person_name_given"));
+            ltiUser.setLisFamilyName(requestMessage.getParameter("lis_person_name_family"));
+            ltiUser.setLisContactEmailPrimary(requestMessage.getParameter("lis_person_contact_email_primary"));
+            ltiUserDao.persist(ltiUser);
+        }
+
+        logger.info("Obtained LTI user {}", ltiUser);
         return ltiUser;
     }
 
-    private boolean isBasicLtiRequest(final HttpServletRequest request) {
-        return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
+    private void doFilterWithIdentity(final HttpServletRequest httpRequest,
+            final HttpServletResponse httpResponse, final FilterChain chain,
+            final LtiUser ltiUser)
+            throws IOException, ServletException {
+        identityContext.setCurrentThreadUnderlyingIdentity(ltiUser);
+        identityContext.setCurrentThreadEffectiveIdentity(ltiUser);
+        try {
+            chain.doFilter(httpRequest, httpResponse);
+        }
+        finally {
+            identityContext.setCurrentThreadUnderlyingIdentity(null);
+            identityContext.setCurrentThreadEffectiveIdentity(null);
+        }
     }
+
 }

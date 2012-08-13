@@ -31,37 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+
+import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Controller for browsing and trying the public samples
  *
  * @author David McKain
  */
-public enum Privilege {
+@Controller
+public class LtiController {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    @Resource
+    private CandidateSessionStarter candidateSessionStarter;
 
-    CREATE_ASSESSMENT,
-    CHANGE_ASSESSMENT,
-    VIEW_ASSESSMENT,
-    RUN_INVALID_ASSESSMENT,
-    CREATE_ITEM_DELIVERY_OPTIONS,
-    ACCESS_ITEM_DELIVERY_OPTIONS,
-    CHANGE_ITEM_DELIVERY_OPTIONS,
+    @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
+    public String ltiLaunch(@PathVariable final long did)
+            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+        final String exitUrl = "/"; /* FIXME! */
 
-    CANDIDATE_ACCESS_ASSESSMENT,
-    CANDIDATE_ACCESS_CLOSED_DELIVERY,
-    CANDIDATE_ACCESS_ITEM_DELIVERY,
-    CANDIDATE_ACCESS_ITEM_DELIVERY_OPTIONS,
+        try {
+            final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+            return redirectToCandidateSession(candidateItemSession);
+        }
+        catch (final Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
 
-    ;
-
+    private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
+        return "redirect:/candidate/session/" + candidateItemSession.getId()
+                + "/" + candidateItemSession.getSessionToken();
+    }
 }
