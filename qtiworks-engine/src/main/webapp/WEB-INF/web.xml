@@ -123,7 +123,7 @@ Web deployment descriptor
   <!-- LTI authentication filter for anonymous services -->
   <filter>
     <filter-name>LtiAuthenticationFilter</filter-name>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.LtiAuthenticationFilter</filter-class>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>LtiAuthenticationFilter</filter-name>

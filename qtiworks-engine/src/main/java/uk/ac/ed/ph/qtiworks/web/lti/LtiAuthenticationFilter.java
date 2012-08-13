@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.web.lti;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -76,6 +77,8 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private static final Logger logger = LoggerFactory.getLogger(LtiAuthenticationFilter.class);
 
+    public static final String LTI_LAUNCH_DATA_REQUEST_PARAMETER = "qtiworks.web.lti.launch.data";
+
     private RequestTimestampContext requestTimestampContext;
     private IdentityContext identityContext;
     private ItemDeliveryDao itemDeliveryDao;
@@ -95,7 +98,6 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             final HttpServletResponse httpResponse, final FilterChain chain,
             final HttpSession session)
             throws IOException, ServletException {
-
         final boolean isBasicLtiRequest = isBasicLtiLaunchRequest(httpRequest);
         if (isBasicLtiRequest) {
             handleBasicLtiRequest(httpRequest, httpResponse, chain);
@@ -112,42 +114,40 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
     private void handleBasicLtiRequest(final HttpServletRequest httpRequest,
             final HttpServletResponse httpResponse,
             final FilterChain chain) throws IOException, ServletException {
+        final OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
+        if (logger.isDebugEnabled()) {
+            final List<Entry<String, String>> parameters = message.getParameters();
+            for (final Entry<String, String> entry : parameters) {
+                logger.debug("LTI parameter {} => {}", entry.getKey(), entry.getValue());
+            }
+        }
+        final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
+        final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
+
+        /* Look up Delivery corresponding to this consumer key */
+        final String consumerKey = message.getConsumerKey();
+        final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
+        if (itemDelivery==null) {
+            httpResponse.sendError(403, "Forbidden - bad consumer key");
+            return;
+        }
+
+        /* TODO: Move these to controller? */
+        if (!itemDelivery.isOpen()) {
+            httpResponse.sendError(403, "Delivery is not open");
+            return;
+        }
+        if (!itemDelivery.isLtiEnabled()) {
+            httpResponse.sendError(403, "Delivery is not LTI enabled");
+            return;
+        }
+
+        final String consumerSecret = itemDelivery.getLtiConsumerSecret();
+        final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, serviceProvider);
+        final OAuthAccessor accessor = new OAuthAccessor(consumer);
+        accessor.tokenSecret = "";
         try {
-            final OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
-            if (logger.isDebugEnabled()) {
-                final List<Entry<String, String>> parameters = message.getParameters();
-                for (final Entry<String, String> entry : parameters) {
-                    logger.debug("LTI parameter {} => {}", entry.getKey(), entry.getValue());
-                }
-            }
-            final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
-            final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-
-            /* Look up Delivery corresponding to this consumer key */
-            final String consumerKey = message.getConsumerKey();
-            final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
-            if (itemDelivery==null) {
-                httpResponse.sendError(403, "Forbidden - bad consumer key");
-                return;
-            }
-            if (!itemDelivery.isOpen()) {
-                httpResponse.sendError(403, "Delivery is not open");
-                return;
-            }
-            if (!itemDelivery.isLtiEnabled()) {
-                httpResponse.sendError(403, "Delivery is not LTI enabled");
-                return;
-            }
-
-            final String consumerSecret = itemDelivery.getLtiConsumerSecret();
-            final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, serviceProvider);
-
-            final OAuthAccessor accessor = new OAuthAccessor(consumer);
-            accessor.tokenSecret = "";
             oAuthValidator.validateMessage(message, accessor);
-
-            final LtiUser ltiUser = obtainLtiUser(message);
-            doFilterWithIdentity(httpRequest, httpResponse, chain, ltiUser);
         }
         catch (final OAuthProblemException e) {
             /* FIXME: Log this better */
@@ -162,8 +162,14 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         catch (final URISyntaxException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-    }
 
+        /* Extract launch data */
+        final LtiLaunchData ltiLaunchData = extractLtiLaunchData(message);
+        final LtiUser ltiUser = obtainLtiUser(itemDelivery, ltiLaunchData);
+
+        /* Continue... */
+        doFilterWithIdentity(httpRequest, httpResponse, chain, ltiLaunchData, ltiUser);
+    }
 
     private ItemDelivery lookupItemDelivery(final String consumerKey) {
         final int separatorPos = consumerKey.indexOf('-');
@@ -198,19 +204,32 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         return itemDelivery;
     }
 
-    private LtiUser obtainLtiUser(final OAuthMessage requestMessage) throws IOException {
-        final String resourceLinkId = requestMessage.getParameter("resource_link_id"); /* Required */
-        final String contextId = requestMessage.getParameter("context_id"); /* Recommended */
-        final String userId = requestMessage.getParameter("user_id"); /* Recommended */
+    private LtiLaunchData extractLtiLaunchData(final OAuthMessage requestMessage) throws IOException {
+        final LtiLaunchData data = new LtiLaunchData();
+        data.setResourceLinkId(requestMessage.getParameter("resource_link_id")); /* Required */
+        data.setContextId(requestMessage.getParameter("context_id")); /* Recommended */
+        data.setLaunchPresentationReturnUrl(requestMessage.getParameter("launch_presentation_return_url")); /* Recommended */
+        data.setToolConsumerInfoProductFamilyCode(requestMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
+        data.setToolConsumerInfoVersion(requestMessage.getParameter("tool_consume_info_version")); /* Optional but recommended */
+        data.setToolConsumerInstanceGuid(requestMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
+        data.setUserId(requestMessage.getParameter("user_id")); /* Recommended */
+        data.setLisPersonNameFamily(requestMessage.getParameter("lis_person_name_family")); /* Recommended but possibly suppressed */
+        data.setLisPersonNameFull(requestMessage.getParameter("lis_person_name_full")); /* Recommended but possibly suppressed */
+        data.setLisPersonNameGiven(requestMessage.getParameter("lis_person_name_given")); /* Recommended but possibly suppressed */
+        data.setLisPersonContactEmailPrimary(requestMessage.getParameter("lis_person_contact_email_primary")); /* Recommended but possibly suppressed */
+        return data;
+    }
 
-        /* Create a unique key for looking up this user based on resource_link_id and user_id */
+    private LtiUser obtainLtiUser(final ItemDelivery itemDelivery, final LtiLaunchData ltiLaunchData) {
+        /* Create a unique key for this user. Uniqueness will be enforced within deliveries too */
         String logicalKey;
+        final String userId = ltiLaunchData.getUserId();
         if (userId!=null) {
-            logicalKey = resourceLinkId + "/" + userId; /* This will be unique */
+            logicalKey = itemDelivery.getId() + "/" + userId; /* This will be unique */
         }
         else {
             /* No userId specified, so we'll have to synthesise something that will be unique enough */
-            logicalKey = resourceLinkId + "/" + Thread.currentThread().getId()
+            logicalKey = itemDelivery.getId() + "/" + Thread.currentThread().getId()
                     + "/" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
         }
 
@@ -219,13 +238,11 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         if (ltiUser==null) {
             ltiUser = new LtiUser();
             ltiUser.setLogicalKey(logicalKey);
-            ltiUser.setLtiResourceLinkId(resourceLinkId);
-            ltiUser.setLtiContextId(contextId);
             ltiUser.setLtiUserId(userId);
-            ltiUser.setLisFullName(requestMessage.getParameter("lis_person_name_full"));
-            ltiUser.setLisGivenName(requestMessage.getParameter("lis_person_name_given"));
-            ltiUser.setLisFamilyName(requestMessage.getParameter("lis_person_name_family"));
-            ltiUser.setLisContactEmailPrimary(requestMessage.getParameter("lis_person_contact_email_primary"));
+            ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull());
+            ltiUser.setLisGivenName(ltiLaunchData.getLisPersonNameGiven());
+            ltiUser.setLisFamilyName(ltiLaunchData.getLisPersonNameFamily());
+            ltiUser.setLisContactEmailPrimary(ltiLaunchData.getLisPersonContactEmailPrimary());
             ltiUserDao.persist(ltiUser);
         }
 
@@ -235,10 +252,12 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private void doFilterWithIdentity(final HttpServletRequest httpRequest,
             final HttpServletResponse httpResponse, final FilterChain chain,
-            final LtiUser ltiUser)
+            final LtiLaunchData ltiLaunchData, final LtiUser ltiUser)
             throws IOException, ServletException {
         identityContext.setCurrentThreadUnderlyingIdentity(ltiUser);
         identityContext.setCurrentThreadEffectiveIdentity(ltiUser);
+        putLaunchData(httpRequest, ltiLaunchData);
+        logger.info("LTI authentication successful: launch data is {} and user is {}", ltiLaunchData, ltiUser);
         try {
             chain.doFilter(httpRequest, httpResponse);
         }
@@ -248,4 +267,15 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         }
     }
 
+    private void putLaunchData(final HttpServletRequest httpRequest, final LtiLaunchData ltiLaunchData) {
+        httpRequest.setAttribute(LTI_LAUNCH_DATA_REQUEST_PARAMETER, ltiLaunchData);
+    }
+
+    public static LtiLaunchData getLaunchData(final HttpServletRequest httpRequest) {
+        final LtiLaunchData ltiLaunchData = (LtiLaunchData) httpRequest.getAttribute(LTI_LAUNCH_DATA_REQUEST_PARAMETER);
+        if (ltiLaunchData==null) {
+            throw new QtiWorksRuntimeException("Expected to find LtiLaunchData in HttpRequest as attribute " + LTI_LAUNCH_DATA_REQUEST_PARAMETER);
+        }
+        return ltiLaunchData;
+    }
 }

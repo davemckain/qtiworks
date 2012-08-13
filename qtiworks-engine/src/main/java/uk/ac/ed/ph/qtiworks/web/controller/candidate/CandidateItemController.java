@@ -265,10 +265,11 @@ public class CandidateItemController {
      * Terminates the given {@link CandidateItemSession}
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}/terminate", method=RequestMethod.POST)
-    public String terminateSession(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+    public String terminateSession(final HttpServletResponse httpServletResponse,
+            @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException, IOException {
         final CandidateItemSession candidateSession = candidateItemDeliveryService.terminateCandidateSession(xid, sessionToken);
-        return redirectToExitUrl(candidateSession.getExitUrl());
+        return redirectToExitUrl(httpServletResponse, candidateSession.getExitUrl());
     }
 
     //----------------------------------------------------
@@ -337,7 +338,20 @@ public class CandidateItemController {
         return "redirect:/candidate/session/" + xid + "/" + sessionToken;
     }
 
-    private String redirectToExitUrl(final String exitUrl) {
-        return "redirect:" + exitUrl;
+    private String redirectToExitUrl(final HttpServletResponse httpServletResponse, final String exitUrl)
+            throws IOException {
+        if (exitUrl!=null) {
+            if (exitUrl.startsWith("/")) {
+                /* Internal redirect */
+                return "redirect:" + exitUrl;
+            }
+            if (exitUrl.startsWith("http://") || exitUrl.startsWith("https://")) {
+                httpServletResponse.sendRedirect(exitUrl);
+                return null;
+            }
+        }
+        /* Not sure what to do here */
+        httpServletResponse.sendRedirect("about:blank");
+        return null;
     }
 }

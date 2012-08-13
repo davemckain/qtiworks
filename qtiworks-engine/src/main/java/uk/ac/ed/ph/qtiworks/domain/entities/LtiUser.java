@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.web.authn.LtiAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -72,16 +72,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     @Basic(optional=false)
     @Column(name="logical_key", updatable=false, unique=true)
     private String logicalKey;
-
-    /** LTI <code>resource_link_id</code> launch parameter. (Spec says this is required) */
-    @Basic(optional=false)
-    @Column(name="lti_resource_link_id", updatable=false, unique=false)
-    private String ltiResourceLinkId;
-
-    /** LTI <code>context_id</code> launch parameter. (Spec says this is recommended) */
-    @Basic(optional=true)
-    @Column(name="lti_context_id", updatable=false, unique=false)
-    private String ltiContextId;
 
     /** LTI <code>user_id</code> launch parameter. (Spec says this is recommended) */
     @Basic(optional=true)
@@ -126,24 +116,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     public void setLogicalKey(final String logicalKey) {
         this.logicalKey = logicalKey;
-    }
-
-
-    public String getLtiContextId() {
-        return ltiContextId;
-    }
-
-    public void setLtiContextId(final String ltiContextId) {
-        this.ltiContextId = ltiContextId;
-    }
-
-
-    public String getLtiResourceLinkId() {
-        return ltiResourceLinkId;
-    }
-
-    public void setLtiResourceLinkId(final String ltiResourceLinkId) {
-        this.ltiResourceLinkId = ltiResourceLinkId;
     }
 
 

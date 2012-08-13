@@ -37,10 +37,13 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,18 +62,15 @@ public class LtiController {
     private CandidateSessionStarter candidateSessionStarter;
 
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String ltiLaunch(@PathVariable final long did)
+    public String ltiLaunch(final HttpServletRequest httpRequest, @PathVariable final long did)
             throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
-        final String exitUrl = "/"; /* FIXME! */
+        final LtiLaunchData ltiLaunchData = LtiAuthenticationFilter.getLaunchData(httpRequest);
 
-        try {
-            final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
-            return redirectToCandidateSession(candidateItemSession);
-        }
-        catch (final Exception e) {
-            System.out.println(e);
-            return null;
-        }
+        /* FIXME: Decide what to do if this data is not passed */
+        final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
+
+        final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+        return redirectToCandidateSession(candidateItemSession);
     }
 
     private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
