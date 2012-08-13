@@ -585,7 +585,7 @@ public class AssessmentManagementService {
         delivery.setOpen(template.isOpen());
         delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setTitle(template.getTitle().trim());
-        delivery.setLtiConsumerKey(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
+        delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
         delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
         itemDeliveryDao.persist(delivery);
         return delivery;

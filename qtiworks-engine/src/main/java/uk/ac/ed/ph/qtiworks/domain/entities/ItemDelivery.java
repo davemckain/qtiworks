@@ -141,10 +141,14 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="lti_enabled")
     private boolean ltiEnabled;
 
-    /** LTI consumer key (if used) */
+    /**
+     * LTI consumer key "token" (if used)
+     * The full key will be a string of the form <code>id-TOKEN</code> as this makes it easier to
+     * look the keys up.
+     */
     @Basic(optional=true)
-    @Column(name="lti_consumer_key", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
-    private String ltiConsumerKey;
+    @Column(name="lti_consumer_key_token", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
+    private String ltiConsumerKeyToken;
 
     /** LTI consumer secret (if used) */
     @Basic(optional=true)
@@ -231,12 +235,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getLtiConsumerKey() {
-        return ltiConsumerKey;
+    public String getLtiConsumerKeyToken() {
+        return ltiConsumerKeyToken;
     }
 
-    public void setLtiConsumerKey(final String ltiConsumerKey) {
-        this.ltiConsumerKey = ltiConsumerKey;
+    public void setLtiConsumerKeyToken(final String ltiConsumerKeyToken) {
+        this.ltiConsumerKeyToken = ltiConsumerKeyToken;
     }
 
 

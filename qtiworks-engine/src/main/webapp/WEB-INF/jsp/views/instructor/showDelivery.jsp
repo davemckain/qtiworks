@@ -68,7 +68,7 @@ instructorAssessmentRouting (action -> URL)
     <div class="infoBox">
       <div class="cat">LTI launch URL</div>
       <%-- FIXME: Need independent URL here! --%>
-      <div class="value">http://www2.ph.ed.ac.uk/qtiworks/lti/launch/${itemDelivery.id}</div>
+      <div class="value">http://localhost:8080/qtiworks/lti/launch/${itemDelivery.id}</div>
     </div>
   </div>
 
@@ -77,7 +77,7 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_6">
     <div class="infoBox">
       <div class="cat">LTI consumer key</div>
-      <div class="value">${itemDelivery.ltiConsumerKey}</div>
+      <div class="value">${itemDelivery.id}-${itemDelivery.ltiConsumerKeyToken}</div>
     </div>
   </div>
   <div class="grid_6">
@@ -86,7 +86,6 @@ instructorAssessmentRouting (action -> URL)
       <div class="value">${itemDelivery.ltiConsumerSecret}</div>
     </div>
   </div>
-
 
   <h4>Actions</h4>
 
