@@ -93,12 +93,12 @@ public class CandidateItemController {
      * @throws IOException
      * @throws CandidateForbiddenException
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}", method=RequestMethod.GET)
-    public void renderItem(@PathVariable final long xid, @PathVariable final String sessionHash,
+    @RequestMapping(value="/session/{xid}/{sessionToken}", method=RequestMethod.GET)
+    public void renderItem(@PathVariable final long xid, @PathVariable final String sessionToken,
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
-        final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionHash;
+        final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
@@ -114,7 +114,7 @@ public class CandidateItemController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateItemDeliveryService.renderCurrentState(xid, sessionHash, renderingOptions, outputStreamer);
+        candidateItemDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
 
@@ -124,9 +124,9 @@ public class CandidateItemController {
     /**
      * Handles submission of candidate responses
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/attempt", method=RequestMethod.POST)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid,
-            @PathVariable final String sessionHash)
+            @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
@@ -138,10 +138,10 @@ public class CandidateItemController {
         }
 
         /* Call up service layer */
-        candidateItemDeliveryService.handleAttempt(xid, sessionHash, stringResponseMap, fileResponseMap);
+        candidateItemDeliveryService.handleAttempt(xid, sessionToken, stringResponseMap, fileResponseMap);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
@@ -203,71 +203,71 @@ public class CandidateItemController {
     /**
      * Resets the given {@link CandidateItemSession}
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/reset", method=RequestMethod.POST)
-    public String resetCandidateSession(@PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/reset", method=RequestMethod.POST)
+    public String resetCandidateSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.resetCandidateSession(xid, sessionHash);
+        candidateItemDeliveryService.resetCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
      * Re-initialises the given {@link CandidateItemSession}
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/reinit", method=RequestMethod.POST)
-    public String reinitSession(@PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/reinit", method=RequestMethod.POST)
+    public String reinitSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
-        candidateItemDeliveryService.reinitCandidateSession(xid, sessionHash);
+        candidateItemDeliveryService.reinitCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
      * Closes (but does not exit) the given {@link CandidateItemSession}
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/close", method=RequestMethod.POST)
-    public String closeSession(@PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/close", method=RequestMethod.POST)
+    public String closeSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.closeCandidateSession(xid, sessionHash);
+        candidateItemDeliveryService.closeCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
      * Transitions the given {@link CandidateItemSession} to solution state
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/solution", method=RequestMethod.POST)
-    public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/solution", method=RequestMethod.POST)
+    public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.transitionCandidateSessionToSolutionState(xid, sessionHash);
+        candidateItemDeliveryService.transitionCandidateSessionToSolutionState(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
      * Transitions the state of the {@link CandidateItemSession} so that it plays back the
      * {@link CandidateItemEvent} having the given ID (xeid).
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/playback/{xeid}", method=RequestMethod.POST)
-    public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final String sessionHash, @PathVariable final long xeid)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/playback/{xeid}", method=RequestMethod.POST)
+    public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final long xeid)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.setPlaybackState(xid, sessionHash, xeid);
+        candidateItemDeliveryService.setPlaybackState(xid, sessionToken, xeid);
 
         /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionHash);
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
      * Terminates the given {@link CandidateItemSession}
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/terminate", method=RequestMethod.POST)
-    public String terminateSession(@PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/terminate", method=RequestMethod.POST)
+    public String terminateSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateItemSession candidateSession = candidateItemDeliveryService.terminateCandidateSession(xid, sessionHash);
+        final CandidateItemSession candidateSession = candidateItemDeliveryService.terminateCandidateSession(xid, sessionToken);
         return redirectToExitUrl(candidateSession.getExitUrl());
     }
 
@@ -278,11 +278,11 @@ public class CandidateItemController {
      * Streams an {@link ItemResult} representing the current state of the given
      * {@link CandidateItemSession}
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionHash)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         response.setContentType("application/xml");
-        candidateItemDeliveryService.streamItemResult(xid, sessionHash, response.getOutputStream());
+        candidateItemDeliveryService.streamItemResult(xid, sessionToken, response.getOutputStream());
     }
 
     /**
@@ -290,9 +290,9 @@ public class CandidateItemController {
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/source", method=RequestMethod.GET)
+    @RequestMapping(value="/session/{xid}/{sessionToken}/source", method=RequestMethod.GET)
     public void streamPackageSource(@PathVariable final long xid,
-            @PathVariable final String sessionHash,
+            @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
@@ -302,7 +302,7 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateItemDeliveryService.streamAssessmentSource(xid, sessionHash, outputStreamer);
+            candidateItemDeliveryService.streamAssessmentSource(xid, sessionToken, outputStreamer);
         }
     }
 
@@ -312,12 +312,12 @@ public class CandidateItemController {
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
-    @RequestMapping(value="/session/{xid}/{sessionHash}/file", method=RequestMethod.GET)
-    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionHash,
+    @RequestMapping(value="/session/{xid}/{sessionToken}/file", method=RequestMethod.GET)
+    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateItemSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -333,8 +333,8 @@ public class CandidateItemController {
     //----------------------------------------------------
     // Redirections
 
-    private String redirectToRenderSession(final long xid, final String sessionHash) {
-        return "redirect:/candidate/session/" + xid + "/" + sessionHash;
+    private String redirectToRenderSession(final long xid, final String sessionToken) {
+        return "redirect:/candidate/session/" + xid + "/" + sessionToken;
     }
 
     private String redirectToExitUrl(final String exitUrl) {

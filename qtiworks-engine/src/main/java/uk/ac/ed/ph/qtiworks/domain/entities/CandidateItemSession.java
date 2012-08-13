@@ -67,14 +67,14 @@ public class CandidateItemSession implements BaseEntity {
     private Long id;
 
     /**
-     * Randomly-generated hash for this session. Used in conjunction with the <code>xid</code>
+     * Randomly-generated token for this session. Used in conjunction with the <code>xid</code>
      * in URLs referring to sessions to make it more difficult to hijack sessions.
      * <p>
-     * The hash is not necessarily unique so should not be used as a lookup key.
+     * The token is not necessarily unique so should not be used as a lookup key.
      */
     @Basic(optional=false)
-    @Column(name="hash", length=DomainConstants.CANDIDATE_SESSION_HASH_LENGTH)
-    private String sessionHash;
+    @Column(name="session_token", length=DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH)
+    private String sessionToken;
 
     /**
      * URL to go to once the session has been terminated.
@@ -111,12 +111,12 @@ public class CandidateItemSession implements BaseEntity {
     }
 
 
-    public String getSessionHash() {
-        return sessionHash;
+    public String getSessionToken() {
+        return sessionToken;
     }
 
-    public void setSessionHash(final String sessionHash) {
-        this.sessionHash = sessionHash;
+    public void setSessionToken(final String sessionToken) {
+        this.sessionToken = sessionToken;
     }
 
 

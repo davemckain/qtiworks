@@ -151,7 +151,7 @@ public class CandidateItemDeliveryService {
 
     /**
      * Looks up the {@link CandidateItemSession} having the given ID (xid)
-     * and checks the given sessionHash against that stored in the session as a means of
+     * and checks the given sessionToken against that stored in the session as a means of
      * "authentication".
      *
      * @param xid
@@ -160,11 +160,11 @@ public class CandidateItemDeliveryService {
      * @throws CandidateForbiddenException
      * @throws CandidateCandidatePrivilegeException
      */
-    public CandidateItemSession lookupCandidateItemSession(final long xid, final String sessionHash)
+    public CandidateItemSession lookupCandidateItemSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        Assert.ensureNotNull(sessionHash, "sessionHash");
+        Assert.ensureNotNull(sessionToken, "sessionToken");
         final CandidateItemSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
-        if (!sessionHash.equals(candidateItemSession.getSessionHash())) {
+        if (!sessionToken.equals(candidateItemSession.getSessionToken())) {
             logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
         return candidateItemSession;
@@ -184,11 +184,11 @@ public class CandidateItemDeliveryService {
      * Renders the current state of the {@link CandidateItemSession} having
      * the given ID (xid).
      */
-    public void renderCurrentState(final long xid, final String sessionHash,
+    public void renderCurrentState(final long xid, final String sessionToken,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         renderCurrentState(candidateItemSession, renderingOptions, outputStreamer);
     }
 
@@ -543,11 +543,11 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Attempt
 
-    public CandidateItemAttempt handleAttempt(final long xid, final String sessionHash,
+    public CandidateItemAttempt handleAttempt(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
@@ -674,9 +674,9 @@ public class CandidateItemDeliveryService {
      * Closes the {@link CandidateItemSession} having the given ID (xid), moving it
      * into {@link CandidateSessionState#CLOSED} state.
      */
-    public CandidateItemSession closeCandidateSession(final long xid, final String sessionHash)
+    public CandidateItemSession closeCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return closeCandidateSession(candidateItemSession);
     }
 
@@ -714,9 +714,9 @@ public class CandidateItemDeliveryService {
      * updated {@link CandidateItemSession}. At QTI level, this reruns template processing, so
      * randomised values will change as a result of this process.
      */
-    public CandidateItemSession reinitCandidateSession(final long xid, final String sessionHash)
+    public CandidateItemSession reinitCandidateSession(final long xid, final String sessionToken)
             throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return reinitCandidateSession(candidateItemSession);
     }
 
@@ -765,9 +765,9 @@ public class CandidateItemDeliveryService {
      * was in immediately after the last {@link CandidateItemEvent#REINIT_WHEN_INTERACTING} (if applicable),
      * or after the original {@link CandidateItemEvent#INIT}.
      */
-    public CandidateItemSession resetCandidateSession(final long xid, final String sessionHash)
+    public CandidateItemSession resetCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSession(candidateItemSession);
     }
 
@@ -821,9 +821,9 @@ public class CandidateItemDeliveryService {
     /**
      * Transitions the {@link CandidateItemSession} having the given ID (xid) into solution state.
      */
-    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid, final String sessionHash)
+    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return transitionCandidateSessionToSolutionState(candidateItemSession);
     }
 
@@ -863,9 +863,9 @@ public class CandidateItemDeliveryService {
      * Updates the state of the {@link CandidateItemSession} having the given ID (xid)
      * so that it will play back the {@link CandidateItemEvent} having the given ID (xeid).
      */
-    public CandidateItemSession setPlaybackState(final long xid, final String sessionHash, final long xeid)
+    public CandidateItemSession setPlaybackState(final long xid, final String sessionToken, final long xeid)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return setPlaybackState(candidateItemSession, xeid);
     }
 
@@ -916,9 +916,9 @@ public class CandidateItemDeliveryService {
      * {@link CandidateSessionState#INTERACTING} or {@link CandidateSessionState#CLOSED}
      * states.
      */
-    public CandidateItemSession terminateCandidateSession(final long xid, final String sessionHash)
+    public CandidateItemSession terminateCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return terminateCandidateSession(candidateItemSession);
     }
 
@@ -972,10 +972,10 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Candidate Source access
 
-    public void streamAssessmentSource(final long xid, final String sessionHash, final OutputStreamer outputStreamer)
+    public void streamAssessmentSource(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException, DomainEntityNotFoundException {
         Assert.ensureNotNull(outputStreamer, "outputStreamer");
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamAssessmentSource(candidateItemSession, outputStreamer);
     }
 
@@ -1002,10 +1002,10 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Candidate Result access
 
-    public void streamItemResult(final long xid, final String sessionHash, final OutputStream outputStream)
+    public void streamItemResult(final long xid, final String sessionToken, final OutputStream outputStream)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         Assert.ensureNotNull(outputStream, "outputStream");
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionHash);
+        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamItemResult(candidateItemSession, outputStream);
     }
 

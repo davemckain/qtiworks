@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
@@ -211,7 +212,7 @@ public class CandidateSessionStarter {
 
         /* Create new session and put into appropriate state */
         final CandidateItemSession candidateSession = new CandidateItemSession();
-        candidateSession.setSessionHash(ServiceUtilities.createSessionHash());
+        candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
         candidateSession.setItemDelivery(itemDelivery);

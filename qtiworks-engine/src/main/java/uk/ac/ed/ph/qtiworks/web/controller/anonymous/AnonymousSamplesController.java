@@ -107,6 +107,6 @@ public class AnonymousSamplesController {
 
     private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
         return "redirect:/candidate/session/" + candidateItemSession.getId()
-                + "/" + candidateItemSession.getSessionHash();
+                + "/" + candidateItemSession.getSessionToken();
     }
 }

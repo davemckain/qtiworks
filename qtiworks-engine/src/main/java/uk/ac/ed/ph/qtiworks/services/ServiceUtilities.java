@@ -124,10 +124,6 @@ public final class ServiceUtilities {
     /** "safe" characters used to encode random tokens */
     private static final char[] randomChars = "0123456789ABCDEFGHIJKLMNOPSQRTSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    public static String createSessionHash() {
-        return createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_HASH_LENGTH);
-    }
-
     public static String createRandomAlphanumericToken(final int length) {
         final char[] tokenBuilder = new char[length];
         synchronized (secureRandom) {

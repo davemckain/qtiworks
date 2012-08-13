@@ -139,7 +139,7 @@ public class AnonymousStandaloneItemRunner {
             final CandidateItemSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
 
             /* Redirect to candidate dispatcher */
-            return "redirect:/candidate/session/" + candidateSession.getId().longValue() + "/" + candidateSession.getSessionHash();
+            return "redirect:/candidate/session/" + candidateSession.getId().longValue() + "/" + candidateSession.getSessionToken();
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
