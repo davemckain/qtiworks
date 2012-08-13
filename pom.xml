@@ -18,7 +18,6 @@ All Rights Reserved
     <module>qtiworks-mathassess</module>
     <module>qtiworks-samples</module>
     <module>qtiworks-engine</module>
-    <module>qtiworks-ltitest</module>
     <module>qtiworks-unrefactored</module>
   </modules>
   <properties>
