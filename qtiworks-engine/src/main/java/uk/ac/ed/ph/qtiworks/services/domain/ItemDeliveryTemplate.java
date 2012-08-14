@@ -54,6 +54,8 @@ public final class ItemDeliveryTemplate {
     @Size(min=1)
     private String title;
 
+    private long dsid;
+
     private boolean open;
 
     private boolean ltiEnabled;
@@ -65,6 +67,15 @@ public final class ItemDeliveryTemplate {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+
+    public long getDsid() {
+        return dsid;
+    }
+
+    public void setDsid(final long dsid) {
+        this.dsid = dsid;
     }
 
 

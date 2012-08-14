@@ -590,6 +590,7 @@ public class AssessmentManagementService {
         final ItemDeliveryTemplate template = new ItemDeliveryTemplate();
         final long existingDeliveryCount = entityGraphService.countCallerDeliveries(assessment);
         template.setTitle("Item Delivery #" + (existingDeliveryCount+1));
+        template.setDsid(itemDeliverySettings.getId());
         template.setOpen(false);
         template.setLtiEnabled(false);
 
@@ -597,7 +598,7 @@ public class AssessmentManagementService {
         return createItemDelivery(assessment, itemDeliverySettings, template);
     }
 
-    public ItemDelivery createItemDelivery(final long aid, final long dsid, final ItemDeliveryTemplate template)
+    public ItemDelivery createItemDelivery(final long aid, final ItemDeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
         validateItemDeliveryTemplate(template);
@@ -607,6 +608,7 @@ public class AssessmentManagementService {
         ensureCallerMayChange(assessment);
 
         /* Look up settings and check privileges */
+        final long dsid = template.getDsid();
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
 
         /* Create and return new entity */
@@ -634,30 +636,17 @@ public class AssessmentManagementService {
         validateItemDeliveryTemplate(template);
 
         /* Look up delivery and check privileges */
-        final ItemDelivery delivery = lookupItemDelivery(did);
+        final ItemDelivery delivery = lookupOwnItemDelivery(did);
         ensureCallerMayChange(delivery.getAssessment());
+
+        /* Look up settings and check privileges */
+        final long dsid = template.getDsid();
+        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
 
         /* Update data */
         delivery.setOpen(template.isOpen());
         delivery.setTitle(template.getTitle().trim());
         delivery.setLtiEnabled(template.isLtiEnabled());
-        itemDeliveryDao.update(delivery);
-        return delivery;
-    }
-
-    /**
-     * Changes the {@link ItemDeliverySettings} used by the given {@link ItemDelivery}
-     */
-    public ItemDelivery updateItemDelivery(final long did, final long dsid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up delivery and check privileges */
-        final ItemDelivery delivery = lookupItemDelivery(did);
-        ensureCallerMayChange(delivery.getAssessment());
-
-        /* Look up settings and check privileges */
-        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
-
-        /* Update data */
         delivery.setItemDeliverySettings(itemDeliverySettings);
         itemDeliveryDao.update(delivery);
         return delivery;

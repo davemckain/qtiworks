@@ -82,7 +82,6 @@ instructorAssessmentRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit Delivery Properties</a></li>
-    <li>Change Delivery Settings</li>
     <li>
       <form action="${utils:escapeLink(deliveryRouting['try'])}" method="post">
         <input type="submit" value="Try out">

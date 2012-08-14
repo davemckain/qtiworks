@@ -389,6 +389,7 @@ public final class InstructorAssessmentManagementController {
         template.setTitle(delivery.getTitle());
         template.setOpen(delivery.isOpen());
         template.setLtiEnabled(delivery.isLtiEnabled());
+        template.setDsid(delivery.getItemDeliverySettings().getId());
 
         model.addAttribute(template);
         setupModelForDelivery(delivery, model);
@@ -449,6 +450,7 @@ public final class InstructorAssessmentManagementController {
         model.addAttribute(assessment);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", buildDeliveryRouting(delivery));
+        model.addAttribute(entityGraphService.getCallerItemDeliverySettings());
     }
 
     //------------------------------------------------------

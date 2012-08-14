@@ -9,10 +9,12 @@ Model:
 
 itemDeliveryTemplate
 itemDelivery
+itemDeliverySettingsList
 assessment
 assessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
+primaryRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -81,7 +83,34 @@ instructorAssessmentRouting (action -> URL)
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="workflowStep">4</div>
+          <div class="workflowStep">4<span class="required">*</span></div>
+        </div>
+        <div class="grid_11">
+          Select delivery settings:
+          <ul class="dsSelector">
+            <c:forEach var="ds" items="${itemDeliverySettingsList}">
+              <c:set var="checked" value="${itemDeliveryTemplate.dsid==ds.id}"/>
+              <li>
+                <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
+                <label for="dsid${ds.id}" class="dsTitle">
+                  ${ds.title}
+                </label>
+                <div class="dsPrompt">
+                  ${ds.prompt}
+                </div>
+              </li>
+            </c:forEach>
+          </ul>
+          <p>
+          <a href="${utils:escapeLink(instructorAssessmentRouting['listItemDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
+        </div>
+      </div>
+      <div class="clear"></div>
+    </fieldset>
+    <fieldset>
+      <div class="stdFormRow">
+        <div class="grid_1">
+          <div class="workflowStep">5</div>
         </div>
         <div class="grid_2">
           <label for="submit">Hit "Save"</label>
