@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -82,6 +83,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 public final class InstructorAssessmentManagementController {
+
+    @Resource
+    private QtiWorksSettings qtiWorksSettings;
 
     @Resource
     private InstructorRouter instructorRouter;
@@ -138,6 +142,7 @@ public final class InstructorAssessmentManagementController {
         primaryRouting.put("listItemDeliverySettings", instructorRouter.buildWebUrl("/deliverysettings"));
         primaryRouting.put("createItemDeliverySettings", instructorRouter.buildWebUrl("/deliverysettings/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
+
     }
 
     private void setupModelForAssessment(final long aid, final Model model)
@@ -355,7 +360,6 @@ public final class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery delivery = assessmentManagementService.lookupItemDelivery(did);
         setupModelForDelivery(delivery, model);
-
         return "showDelivery";
     }
 
@@ -420,6 +424,7 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
+        result.put("ltiLaunch", qtiWorksSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }
 

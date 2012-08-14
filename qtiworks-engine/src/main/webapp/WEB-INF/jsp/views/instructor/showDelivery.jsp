@@ -67,8 +67,7 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_12">
     <div class="infoBox">
       <div class="cat">LTI launch URL</div>
-      <%-- FIXME: Need independent URL here! --%>
-      <div class="value">http://localhost:8080/qtiworks/lti/launch/${itemDelivery.id}</div>
+      <div class="value">${fn:escapeXml(deliveryRouting['ltiLaunch'])}</div>
     </div>
   </div>
 
