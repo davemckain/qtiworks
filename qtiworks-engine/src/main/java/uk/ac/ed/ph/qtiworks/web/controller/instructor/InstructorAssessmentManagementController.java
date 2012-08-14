@@ -363,6 +363,15 @@ public final class InstructorAssessmentManagementController {
         return "showDelivery";
     }
 
+    @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
+    public String tryDelivery(final @PathVariable long did)
+            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+        final ItemDelivery itemDelivery = assessmentManagementService.lookupItemDelivery(did);
+        final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
+        final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);
+        return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionToken();
+    }
+
     /** (Deliveries are currently very simple so created using a sensible default) */
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
     public String createItemDelivery(final @PathVariable long aid)
@@ -424,6 +433,7 @@ public final class InstructorAssessmentManagementController {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
+        result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
         result.put("ltiLaunch", qtiWorksSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }
