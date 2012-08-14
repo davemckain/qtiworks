@@ -94,6 +94,8 @@ import org.w3c.dom.Document;
 /**
  * Top layer services for *managing* {@link Assessment}s and related entities.
  *
+ * FIXME: The permission controls here are now a bit odd. These need rethought and refactored!
+ *
  * @author David McKain
  */
 @Service
@@ -142,6 +144,17 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
     // Assessment access
+
+    /**
+     * Looks up the {@link Assessment} having the given ID (aid) and checks that
+     * the caller owns it.
+     */
+    public Assessment lookupOwnAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final Assessment result = assessmentDao.requireFindById(aid);
+        ensureCallerOwns(result);
+        return result;
+    }
 
     /**
      * Looks up the {@link Assessment} having the given ID (aid) and checks that
@@ -394,13 +407,18 @@ public class AssessmentManagementService {
         return caller;
     }
 
-    private User ensureCallerMayChange(final Assessment assessment)
+    private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.getOwner().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.CHANGE_ASSESSMENT, assessment);
+            throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
         }
         return caller;
+    }
+
+    private User ensureCallerMayChange(final Assessment assessment)
+            throws PrivilegeException {
+        return ensureCallerOwns(assessment);
     }
 
     /**
@@ -417,6 +435,13 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
     // CRUD for ItemDeliverySettings
+
+    public ItemDeliverySettings lookupOwnItemDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
+        ensureCallerOwns(itemDeliverySettings);
+        return itemDeliverySettings;
+    }
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -512,12 +537,17 @@ public class AssessmentManagementService {
         }
     }
 
-    private void ensureCallerMayChange(final ItemDeliverySettings itemDeliverySettings)
+    private void ensureCallerOwns(final ItemDeliverySettings itemDeliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.CHANGE_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+            throw new PrivilegeException(caller, Privilege.OWN_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
         }
+    }
+
+    private void ensureCallerMayChange(final ItemDeliverySettings itemDeliverySettings)
+            throws PrivilegeException {
+        ensureCallerOwns(itemDeliverySettings);
     }
 
     private User ensureCallerMayCreateItemDeliverySettings() throws PrivilegeException {
@@ -536,6 +566,13 @@ public class AssessmentManagementService {
             throws DomainEntityNotFoundException, PrivilegeException {
         final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
         ensureCallerMayAccess(itemDelivery.getAssessment());
+        return itemDelivery;
+    }
+
+    public ItemDelivery lookupOwnItemDelivery(final long did)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
+        ensureCallerOwns(itemDelivery.getAssessment());
         return itemDelivery;
     }
 

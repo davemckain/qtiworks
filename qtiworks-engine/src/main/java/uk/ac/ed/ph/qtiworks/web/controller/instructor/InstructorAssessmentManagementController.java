@@ -103,7 +103,7 @@ public final class InstructorAssessmentManagementController {
 
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
-    public String listCallerAssessments(final Model model) {
+    public String listOwnAssessments(final Model model) {
         final List<Assessment> assessments = entityGraphService.getCallerAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", buildAssessmentListRouting(assessments));
@@ -147,7 +147,7 @@ public final class InstructorAssessmentManagementController {
 
     private void setupModelForAssessment(final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
+        setupModelForAssessment(assessmentManagementService.lookupOwnAssessment(aid), model);
     }
 
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
@@ -199,9 +199,9 @@ public final class InstructorAssessmentManagementController {
      * Shows the Assessment having the given ID (aid)
      */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
-    public String showAssessment(final Model model, @PathVariable final long aid)
+    public String showOwnAssessment(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
         final List<ItemDeliverySettings> itemDeliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
 
@@ -217,7 +217,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
     public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
 
         final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
         command.setName(assessment.getName());
@@ -317,7 +317,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
 
         return runDelivery(aid, demoDelivery);
@@ -326,7 +326,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
 
@@ -346,7 +346,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/deliveries", method=RequestMethod.GET)
     public String listDeliveries(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final List<ItemDelivery> deliveries = entityGraphService.getCallerDeliveries(assessment);
         model.addAttribute(assessment);
         model.addAttribute(deliveries);
@@ -356,17 +356,17 @@ public final class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/delivery/{did}", method=RequestMethod.GET)
-    public String showDelivery(final Model model, @PathVariable final long did)
+    public String showOwnDelivery(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery delivery = assessmentManagementService.lookupItemDelivery(did);
+        final ItemDelivery delivery = assessmentManagementService.lookupOwnItemDelivery(did);
         setupModelForDelivery(delivery, model);
         return "showDelivery";
     }
 
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
-    public String tryDelivery(final @PathVariable long did)
+    public String tryOwnDelivery(final @PathVariable long did)
             throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
-        final ItemDelivery itemDelivery = assessmentManagementService.lookupItemDelivery(did);
+        final ItemDelivery itemDelivery = assessmentManagementService.lookupOwnItemDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);
         return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionToken();
@@ -383,7 +383,7 @@ public final class InstructorAssessmentManagementController {
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery delivery = assessmentManagementService.lookupItemDelivery(did);
+        final ItemDelivery delivery = assessmentManagementService.lookupOwnItemDelivery(did);
 
         final ItemDeliveryTemplate template = new ItemDeliveryTemplate();
         template.setTitle(delivery.getTitle());
@@ -440,7 +440,7 @@ public final class InstructorAssessmentManagementController {
 
     private void setupModelForDelivery(final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForDelivery(assessmentManagementService.lookupItemDelivery(did), model);
+        setupModelForDelivery(assessmentManagementService.lookupOwnItemDelivery(did), model);
     }
 
     private void setupModelForDelivery(final ItemDelivery delivery, final Model model) {
@@ -455,7 +455,7 @@ public final class InstructorAssessmentManagementController {
     // Management of ItemDeliverySettings
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
-    public String listItemDeliverySettings(final Model model) {
+    public String listOwnItemDeliverySettings(final Model model) {
         final List<ItemDeliverySettings> itemDeliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
         model.addAttribute(itemDeliverySettingsList);
         model.addAttribute("itemDeliverySettingsRouting", buildDeliverySettingsListRouting(itemDeliverySettingsList));
