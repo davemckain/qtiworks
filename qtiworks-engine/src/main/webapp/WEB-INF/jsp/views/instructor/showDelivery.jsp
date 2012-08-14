@@ -64,34 +64,25 @@ instructorAssessmentRouting (action -> URL)
 
   <div class="clear"></div>
 
-  <div class="grid_12">
-    <div class="infoBox">
-      <div class="cat">LTI launch URL</div>
-      <div class="value">${fn:escapeXml(deliveryRouting['ltiLaunch'])}</div>
-    </div>
-  </div>
-
-  <div class="clear"></div>
-
-  <div class="grid_6">
-    <div class="infoBox">
-      <div class="cat">LTI consumer key</div>
-      <div class="value">${itemDelivery.id}-${itemDelivery.ltiConsumerKeyToken}</div>
-    </div>
-  </div>
-  <div class="grid_6">
-    <div class="infoBox">
-      <div class="cat">LTI consumer secret</div>
-      <div class="value">${itemDelivery.ltiConsumerSecret}</div>
-    </div>
-  </div>
+  <h4>LTI launch details</h4>
+  <c:choose>
+    <c:when test="${itemDelivery.ltiEnabled}">
+      <ul>
+        <li><b>Launch URL</b>: ${fn:escapeXml(deliveryRouting['ltiLaunch'])}</li>
+        <li><b>Consumer Key</b>: <code>${itemDelivery.id}-${itemDelivery.ltiConsumerKeyToken}</code></li>
+        <li><b>Consumer Secret</b>: <code>${itemDelivery.ltiConsumerSecret}</code></li>
+      </ul>
+    </c:when>
+    <c:otherwise>
+      Details will appear here once you enable LTI for this Delivery.
+    </c:otherwise>
+  </c:choose>
 
   <h4>Actions</h4>
 
   <ul>
     <li><a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit Delivery Properties</a></li>
     <li>Change Delivery Settings</li>
-    <li>Get LTI Link</li>
     <li>Delete Delivery</li>
     <li>View Candidate attempt data</li>
 
