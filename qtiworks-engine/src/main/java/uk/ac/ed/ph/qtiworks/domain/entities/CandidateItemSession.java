@@ -78,9 +78,16 @@ public class CandidateItemSession implements BaseEntity {
 
     /**
      * URL to go to once the session has been terminated.
-     * This URL is expected to be within the QTIWorks webapp, so must start with '/'
+     * <p>
+     * If the URL starts with '/' then it is interpreted as an internal link within the webapp.
+     * <p>
+     * A URL starting <code>http://</code> or <code>https://</code> is interpreted as an
+     * absolute link to another system. Care must be taken to ensure this is not used
+     * maliciously.
+     * <p>
+     * A null URL will direct to a blank page afterwards.
      */
-    @Basic(optional=false)
+    @Basic(optional=true)
     @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
     private String exitUrl;
 

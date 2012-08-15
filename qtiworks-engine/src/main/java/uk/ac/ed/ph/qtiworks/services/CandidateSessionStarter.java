@@ -178,11 +178,11 @@ public class CandidateSessionStarter {
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
             throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
-        Assert.ensureNotNull(exitUrl, "exitUrl");
 
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Make sure delivery is open */
+        /* FIXME: This prevents instructors from trying out their own sessions! */
         if (!itemDelivery.isOpen()) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, itemDelivery);
         }

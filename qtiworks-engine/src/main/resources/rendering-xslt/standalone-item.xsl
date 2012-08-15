@@ -163,7 +163,7 @@ Renders a standalone assessmentItem
         <xsl:choose>
           <xsl:when test="$candidateSessionState='TERMINATED'">
             <p>
-              This assessment session is no longer available to you.
+              This assessment is now completed.
             </p>
           </xsl:when>
           <xsl:otherwise>
