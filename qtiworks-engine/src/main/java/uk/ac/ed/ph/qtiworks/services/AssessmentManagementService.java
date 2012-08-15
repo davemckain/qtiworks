@@ -693,7 +693,7 @@ public class AssessmentManagementService {
 
         /* Make sure package is valid */
         if (!currentAssessmentPackage.isValid()) {
-            throw new PrivilegeException(caller, assessment, Privilege.RUN_INVALID_ASSESSMENT);
+            throw new PrivilegeException(caller, assessment, Privilege.LAUNCH_INVALID_ASSESSMENT);
         }
 
         /* Create demo Delivery */

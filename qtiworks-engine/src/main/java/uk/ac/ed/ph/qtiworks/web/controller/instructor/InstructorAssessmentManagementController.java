@@ -334,7 +334,7 @@ public final class InstructorAssessmentManagementController {
     }
 
     private String runDelivery(final long aid, final ItemDelivery itemDelivery)
-            throws RuntimeValidationException {
+            throws RuntimeValidationException, PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);
         return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionToken();

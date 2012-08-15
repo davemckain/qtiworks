@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
@@ -84,6 +85,9 @@ public class CandidateSessionStarter {
     private CandidateDataServices candidateDataServices;
 
     @Resource
+    private EntityGraphService entityGraphService;
+
+    @Resource
     private AssessmentDao assessmentDao;
 
     @Resource
@@ -111,7 +115,7 @@ public class CandidateSessionStarter {
         final Assessment assessment = assessmentDao.requireFindById(aid);
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ASSESSMENT, assessment);
+            throw new PrivilegeException(caller, Privilege.LAUNCH_ASSESSMENT_AS_SAMPLE, assessment);
         }
         return assessment;
     }
@@ -134,13 +138,13 @@ public class CandidateSessionStarter {
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!itemDelivery.isOpen()) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_CLOSED_DELIVERY, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, itemDelivery);
         }
         final Assessment assessment = itemDelivery.getAssessment();
         if (!(assessment.isPublic()
                 || (itemDelivery.isLtiEnabled() && caller.getUserType()==UserType.LTI)
                 || caller.equals(assessment.getOwner()))) {
-            throw new PrivilegeException(caller, Privilege.CANDIDATE_ACCESS_ITEM_DELIVERY, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, itemDelivery);
         }
         return caller;
     }
@@ -157,12 +161,6 @@ public class CandidateSessionStarter {
     /**
      * Starts a new {@link CandidateItemSession} for the {@link ItemDelivery}
      * having the given ID (did).
-     *
-     * @param did
-     * @return
-     * @throws RuntimeValidationException
-     * @throws PrivilegeException
-     * @throws DomainEntityNotFoundException
      */
     public CandidateItemSession createCandidateSession(final long did, final String exitUrl)
             throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
@@ -175,11 +173,25 @@ public class CandidateSessionStarter {
      * @param itemDelivery
      * @return
      * @throws RuntimeValidationException
+     * @throws PrivilegeException
      */
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
-            throws RuntimeValidationException {
+            throws RuntimeValidationException, PrivilegeException {
         Assert.ensureNotNull(itemDelivery, "itemDelivery");
         Assert.ensureNotNull(exitUrl, "exitUrl");
+
+        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+
+        /* Make sure delivery is open */
+        if (!itemDelivery.isOpen()) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, itemDelivery);
+        }
+
+        /* Make sure underlying Assessment is valid */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        if (!assessmentPackage.isValid()) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, itemDelivery);
+        }
 
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();
@@ -193,11 +205,11 @@ public class CandidateSessionStarter {
          */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
 
-        /* Create new session and put into appropriate state */
+        /* Create new session and put into appropriate initial state */
         final CandidateItemSession candidateSession = new CandidateItemSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
-        candidateSession.setCandidate(identityContext.getCurrentThreadEffectiveIdentity());
+        candidateSession.setCandidate(candidate);
         candidateSession.setItemDelivery(itemDelivery);
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.persist(candidateSession);
