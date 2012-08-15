@@ -12,6 +12,14 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>1.0-DEV12 (15/08/2012)</h3>
+
+  <p>
+    This snapshot fills in more of the Instructor functionality, such as the
+    management of "deliveries" of an assessment. It also includes a first cut of the LTI
+    launch for assessments, as well as a number of less noticeable improvements.
+  </p>
+
   <h3>1.0-DEV11 (09/07/2012)</h3>
 
   <p>
