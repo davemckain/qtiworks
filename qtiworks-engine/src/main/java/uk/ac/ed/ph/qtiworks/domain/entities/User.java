@@ -79,9 +79,6 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    @Basic(optional=false)
-    @Column(name="login_disabled",updatable=true)
-    private boolean loginDisabled;
 
     @Basic(optional=false)
     @Column(name="user_type",updatable=false,length=10)
@@ -119,15 +116,6 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = ObjectUtilities.safeClone(creationTime);
-    }
-
-
-    public boolean isLoginDisabled() {
-        return loginDisabled;
-    }
-
-    public void setLoginDisabled(final boolean loginDisabled) {
-        this.loginDisabled = loginDisabled;
     }
 
 

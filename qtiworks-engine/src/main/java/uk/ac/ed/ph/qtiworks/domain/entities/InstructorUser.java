@@ -89,6 +89,10 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     @Column(name="last_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
     private String lastName;
 
+    @Basic(optional=false)
+    @Column(name="login_disabled",updatable=true)
+    private boolean loginDisabled;
+
     //------------------------------------------------------------
 
     public InstructorUser() {
@@ -166,6 +170,15 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     public void setSysAdmin(final boolean sysAdmin) {
         this.sysAdmin = sysAdmin;
+    }
+
+
+    public boolean isLoginDisabled() {
+        return loginDisabled;
+    }
+
+    public void setLoginDisabled(final boolean loginDisabled) {
+        this.loginDisabled = loginDisabled;
     }
 
     //------------------------------------------------------------
