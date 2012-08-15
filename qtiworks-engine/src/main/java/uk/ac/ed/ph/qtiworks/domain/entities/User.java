@@ -79,11 +79,14 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-
     @Basic(optional=false)
     @Column(name="user_type",updatable=false,length=10)
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @Basic(optional=false)
+    @Column(name="login_disabled",updatable=true)
+    private boolean loginDisabled;
 
     //------------------------------------------------------------
 
@@ -125,6 +128,15 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     protected void setUserType(final UserType userType) {
         this.userType = userType;
+    }
+
+
+    public boolean isLoginDisabled() {
+        return loginDisabled;
+    }
+
+    public void setLoginDisabled(final boolean loginDisabled) {
+        this.loginDisabled = loginDisabled;
     }
 
     //------------------------------------------------------------
