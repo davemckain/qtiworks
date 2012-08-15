@@ -69,7 +69,7 @@ instructorAssessmentRouting (action -> URL)
     <c:when test="${itemDelivery.ltiEnabled}">
       <ul>
         <li><b>Launch URL</b>: ${fn:escapeXml(deliveryRouting['ltiLaunch'])}</li>
-        <li><b>Consumer Key</b>: <code>${itemDelivery.id}-${itemDelivery.ltiConsumerKeyToken}</code></li>
+        <li><b>Consumer Key</b>: <code>${itemDelivery.id}X${itemDelivery.ltiConsumerKeyToken}</code></li>
         <li><b>Consumer Secret</b>: <code>${itemDelivery.ltiConsumerSecret}</code></li>
       </ul>
     </c:when>

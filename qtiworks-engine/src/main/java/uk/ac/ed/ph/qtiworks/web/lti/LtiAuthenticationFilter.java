@@ -166,7 +166,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
     }
 
     private ItemDelivery lookupItemDelivery(final String consumerKey) {
-        final int separatorPos = consumerKey.indexOf('-');
+        final int separatorPos = consumerKey.indexOf('X');
         if (separatorPos==-1) {
             logger.info("Unsupported syntax in LTI consumer key {}", consumerKey);
             return null;
