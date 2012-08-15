@@ -66,7 +66,7 @@ public class StandaloneWebValidator {
     public String showValidatorForm(final Model model) {
         final UploadAssessmentPackageCommand command = new UploadAssessmentPackageCommand();
         model.addAttribute(command);
-        return "public/validator/uploadForm";
+        return "validator/uploadForm";
     }
 
     @RequestMapping(value="/validator", method=RequestMethod.POST)
@@ -74,18 +74,18 @@ public class StandaloneWebValidator {
             final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
-            return "public/validator/uploadForm";
+            return "validator/uploadForm";
         }
 
         try {
             final AssessmentObjectValidationResult<?> result = validationService.importAndValidate(command.getFile());
             model.addAttribute("validationResult", result);
-            return "public/validator/validationResult";
+            return "validator/validationResult";
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(errors, "assessmentPackageUpload");
-            return "public/validator/uploadForm";
+            return "validator/uploadForm";
         }
     }
 }
