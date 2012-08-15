@@ -216,15 +216,17 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private LtiUser obtainLtiUser(final ItemDelivery itemDelivery, final LtiLaunchData ltiLaunchData) {
         /* Create a unique key for this user. Uniqueness will be enforced within deliveries too */
-        String logicalKey;
         final String userId = ltiLaunchData.getUserId();
-        if (userId!=null) {
-            logicalKey = itemDelivery.getId() + "/" + userId; /* This will be unique */
+        final String contextId = ltiLaunchData.getContextId();
+        final String logicalKey;
+        if (userId!=null && contextId!=null) {
+            /* FIXME: Convince myself that this will be unique! */
+            logicalKey = itemDelivery.getId() + "/" + contextId + "/" + userId;
         }
         else {
             /* No userId specified, so we'll have to synthesise something that will be unique enough */
-            logicalKey = itemDelivery.getId() + "/" + Thread.currentThread().getId()
-                    + "/" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
+            logicalKey = itemDelivery.getId() + "-" + Thread.currentThread().getId()
+                    + "-" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
         }
 
         /* See if user already exists */
