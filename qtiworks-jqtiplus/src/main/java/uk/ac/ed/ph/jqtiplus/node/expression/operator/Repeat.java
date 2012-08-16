@@ -116,6 +116,10 @@ public final class Repeat extends AbstractExpression {
             return NullValue.INSTANCE;
         }
 
+        /* FIXME!!!! This needs to recompute the child values on each run, rather than simply
+         * reuse them. Or does it? That needs clarified!
+         */
+
         /* Check runtime value of numberRepeats */
         final int computedNumberRepeats = getNumberRepeats().evaluate(context);
         if (computedNumberRepeats < 1) {
