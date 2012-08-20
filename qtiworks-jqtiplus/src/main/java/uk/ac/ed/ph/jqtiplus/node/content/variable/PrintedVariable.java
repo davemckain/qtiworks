@@ -36,20 +36,16 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -167,16 +163,6 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
                 }
             }
         }
-    }
-
-    public SingleValue evaluate(final ProcessingContext context) {
-        final Identifier identifier = getIdentifier();
-        final Value value = context.lookupVariableValue(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
-        if (!value.isNull() && !(value.getCardinality() == Cardinality.SINGLE && value.getCardinality() == Cardinality.RECORD)) {
-            throw new QtiEvaluationException("Outcome or response variable is wrong cardinality: " +
-                    value.getCardinality() + " Expected: " + Cardinality.SINGLE);
-        }
-        return (SingleValue) value;
     }
 
     @Override
