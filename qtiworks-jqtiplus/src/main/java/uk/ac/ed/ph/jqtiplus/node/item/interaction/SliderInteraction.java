@@ -226,8 +226,8 @@ public class SliderInteraction extends BlockInteraction {
      * @return value of reverse attribute
      * @see #setReverse
      */
-    public boolean getReverse() {
-        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getComputedNonNullValue();
+    public Boolean getReverse() {
+        return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getValue();
     }
 
     /**
