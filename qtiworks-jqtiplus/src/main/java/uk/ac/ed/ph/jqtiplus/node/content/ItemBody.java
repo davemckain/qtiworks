@@ -83,7 +83,7 @@ public class ItemBody extends BodyElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "itemBody";
 
-    public ItemBody(XmlNode parent) {
+    public ItemBody(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));
@@ -94,7 +94,7 @@ public class ItemBody extends BodyElement {
      *
      * @return true if any feedback should be shown; false otherwise;
      */
-    public boolean willShowFeedback(ItemProcessingContext itemContext) {
+    public boolean willShowFeedback(final ItemProcessingContext itemContext) {
         for (final FeedbackElement feedbackElement : getFeedbackInline()) {
             if (feedbackElement.isVisible(itemContext)) {
                 return true;
@@ -166,8 +166,8 @@ public class ItemBody extends BodyElement {
      * @return Map of interactions in the itemBody, keyed on responseIdentifier.
      */
     public Map<Identifier, Interaction> getInteractionMap() {
-        Map<Identifier, Interaction> result = new HashMap<Identifier, Interaction>();
-        for (Interaction interaction : getInteractions()) {
+        final Map<Identifier, Interaction> result = new HashMap<Identifier, Interaction>();
+        for (final Interaction interaction : getInteractions()) {
             result.put(interaction.getResponseIdentifier(), interaction);
         }
         return result;
@@ -184,7 +184,7 @@ public class ItemBody extends BodyElement {
      * @param responseIdentifier responseIdentifier to search with.
      * @return interaction with matching responseIdentifier, or null if not found.
      */
-    public Interaction getInteraction(Identifier responseIdentifier) {
+    public Interaction getInteraction(final Identifier responseIdentifier) {
         for (final Interaction interaction : getInteractions()) {
             if (interaction.getResponseIdentifier() != null && interaction.getResponseIdentifier().equals(responseIdentifier)) {
                 return interaction;
@@ -210,7 +210,7 @@ public class ItemBody extends BodyElement {
      * @param templateIdentifier templateIdentifier to search with.
      * @return unmodifiable list of templates with matching templateIdentifier, or null if not found.
      */
-    public List<TemplateElement> getTemplates(Identifier templateIdentifier) {
+    public List<TemplateElement> getTemplates(final Identifier templateIdentifier) {
         final List<TemplateElement> templates = new ArrayList<TemplateElement>();
         for (final TemplateElement template : getTemplates()) {
             if (template.getTemplateIdentifier() != null && template.getTemplateIdentifier().equals(templateIdentifier)) {
@@ -219,16 +219,6 @@ public class ItemBody extends BodyElement {
         }
 
         return Collections.unmodifiableList(templates);
-    }
-
-
-    /**
-     * Initialize the <code>itemBody</code> by initializing all the child <code>interactions</code>.
-     */
-    public void initialize() {
-        for (final Interaction interaction : getInteractions()) {
-            interaction.initialize(null);
-        }
     }
 
     @Override
