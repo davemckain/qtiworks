@@ -12,19 +12,19 @@
             XSD Data File Information
             -------------------------
             Author:         Colin Smythe
-            Date:           30th November, 2011
+            Date:           30th April, 2012
             Version:        1.0
             Status:         Final Release
-            Description:    This is the data model for the Accessible Portable Item Profile (APIP) v1.0 .
+            Description:    This is the data model for the Accessible Portable Item Protocol (APIP) v1.0 .
                             This defines the set of QTIv2.1 extensions.
 
             History:        Version 1.0 - the first release of this APIP v1.0 PSM data model extensions for QTIv2.1.
 
             License:        IPR, License and Distribution Notices
 
-                            This machine readable file is derived from IMS Global Learning Consortium (GLC) specification IMS [spec name] Version [x.x]
-                            found at http://www.imsglobal.org/[xxx] and the original IMS GLC schema binding or code base
-                            http://www.imsglobal.org/[binding document].
+                            This machine readable file is derived from IMS Global Learning Consortium (GLC) specification IMS Accessible Portable Item Protocol (APIP) Version 1.0
+                            found at http://www.imsglobal.org/apip and the original IMS GLC schema binding or code base
+                            http://www.imsglobal.org/apip.
 
                             Recipients of this document are requested to submit, with their comments, notification of any
                             relevant patent claims or other intellectual property rights of which they may be aware that might be
@@ -37,7 +37,7 @@
                             procedures with respect to rights in IMS GLC specifications can be found at the IMS GLC Intellectual Property
                             Rights web page: http://www.imsglobal.org/ipr/imsipr_policyFinal.pdf.
 
-                            Copyright (c) IMS Global Learning Consortium 1999-2011. All Rights Reserved.
+                            Copyright (c) IMS Global Learning Consortium 1999-2012. All Rights Reserved.
 
                             License Notice for Users
 
@@ -95,10 +95,12 @@
 
             Source XSLT File Information
             ----------------------------
-            XSL Generator:    UMLtoXSDTransformv0p9p5.xsl
+            XSL Generator:    UMLtoXSDTransformv1p0.xsl
             XSLT Processor:   Xalan
-            Release:          1.0 Beta 4
-            Date:             31st March, 2011
+            Release:          1.0
+            Date:             31st March, 2012
+            Autogen Engineer: Colin Smythe (IMS GLC, UK)
+            Autogen Date:     2012-04-16
 
             IMS GLC Auto-generation Binding Tool-kit (I-BAT)
             ------------------------------------------------
@@ -108,7 +110,7 @@
             claim on the materials created by third party users of this tool.  Details on how to use this tool
             are contained in the IMS GLC "I-BAT" Documentation available at the IMS GLC web-site.
 
-            Tool Copyright:  2005-2011 (c) IMS Global Learning Consortium Inc.  All Rights Reserved.
+            Tool Copyright:  2005-2012 (c) IMS Global Learning Consortium Inc.  All Rights Reserved.
         </xs:documentation>
     </xs:annotation>
 
@@ -200,8 +202,8 @@
 
                 <sch:rule abstract="false" context="apip:apipAccessibility/apip:accessibilityInfo/apip:accessElement/apip:relatedElementInfo">
 
-                    <sch:assert test="count(apip:verbal) = 0 or count(apip:verbal) = 1">
-                        [RULE for Local Attribute 1] Invalid number of "verbal" elements: <sch:value-of select="count(apip:verbal)"/>.
+                    <sch:assert test="count(apip:spoken) = 0 or count(apip:spoken) = 1">
+                        [RULE for Local Attribute 1] Invalid number of "spoken" elements: <sch:value-of select="count(apip:spoken)"/>.
                     </sch:assert>
 
                     <sch:assert test="count(apip:brailleText) = 0 or count(apip:brailleText) = 1">
@@ -308,7 +310,19 @@
 
     <!-- ================================================================================================== -->
 
-    <!-- Generate the simpleType elements based IMS data-types  ******************************************* -->
+    <!-- Generate the simpleType elements based on IMS data-types (Parameter) ***************************** -->
+
+    <!-- ================================================================================================== -->
+
+    <!-- Generate the simpleType elements based on IMS data-types (Derived) ******************************* -->
+
+    <!-- ================================================================================================== -->
+
+    <!-- Generate the simpleType elements based on IMS data-types (Union) ********************************* -->
+
+    <!-- ================================================================================================== -->
+
+    <!-- Generate the simpleType elements based on IMS data-types (Complex) ******************************* -->
 
     <!-- ================================================================================================== -->
 
@@ -657,7 +671,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:choice minOccurs = "0" maxOccurs = "unbounded">
-            <xs:element name="verbal" type="Verbal.Type" minOccurs = "0" maxOccurs = "1"/>
+            <xs:element name="spoken" type="Spoken.Type" minOccurs = "0" maxOccurs = "1"/>
             <xs:element name="brailleText" type="BrailleText.Type" minOccurs = "0" maxOccurs = "1"/>
             <xs:element name="tactileFile" type="TactileFile.Type" minOccurs = "0" maxOccurs = "1"/>
             <xs:element name="signing" type="Signing.Type" minOccurs = "0" maxOccurs = "1"/>
@@ -740,7 +754,7 @@
         <xs:sequence>
             <xs:element name="audioFileInfo" type="AudioFileInfo.Type" minOccurs = "0" maxOccurs = "1"/>
             <xs:element name="textString" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
-            <xs:element name="verbalText" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
+            <xs:element name="spokenText" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -778,6 +792,19 @@
             <xs:element name="minimumLength" type="xs:integer" minOccurs = "1" maxOccurs = "1"/>
             <xs:element name="minorIncrement" type="SILinearValue.Type" minOccurs = "0" maxOccurs = "1"/>
             <xs:element name="majorIncrement" type="SILinearValue.Type" minOccurs = "1" maxOccurs = "1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Spoken.Type" mixed="false">
+        <xs:annotation>
+            <xs:documentation source="umldocumentation">
+                The Spoken complexType is the container for the spoken accessibility content as an alternative to visual content.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="audioFileInfo" type="AudioFileInfo.Type" minOccurs = "0" maxOccurs = "unbounded"/>
+            <xs:element name="spokenText" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
+            <xs:element name="textToSpeechPronunciation" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -833,19 +860,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="Verbal.Type" mixed="false">
-        <xs:annotation>
-            <xs:documentation source="umldocumentation">
-                The Verbal complexType is the container for the verbal/audio accessibility content as an alternative to visual content.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="audioFileInfo" type="AudioFileInfo.Type" minOccurs = "0" maxOccurs = "unbounded"/>
-            <xs:element name="verbalText" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
-            <xs:element name="textToSpeechPronunciation" type="LabelledString.Type" minOccurs = "0" maxOccurs = "1"/>
-        </xs:sequence>
-    </xs:complexType>
-
     <xs:complexType name="VideoFileInfo.Type" mixed="false">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
@@ -859,34 +873,17 @@
         </xs:sequence>
         <xs:attribute name="contentLinkIdentifier" use="required" type="xs:ID"/>
         <xs:attribute name="mimeType" use="required" type="xs:normalizedString"/>
-        <xs:attribute name="signFileType" use="optional">
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="ASL"/>
-                    <xs:enumeration value="SignedEnglish"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="USLinearValue.Type">
+    <xs:complexType name="LabelledString.Type">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
-                The USLinearValue derivedType is the container for the linear measurements in terms of US units.
+                The LabelledString derivedType is the container for the text string labels that have their own content link identifier.
             </xs:documentation>
         </xs:annotation>
         <xs:simpleContent>
-            <xs:extension base="xs:decimal">
-                <xs:attribute name="unit" use="required">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:enumeration value="Inch"/>
-                            <xs:enumeration value="Foot"/>
-                            <xs:enumeration value="Yard"/>
-                            <xs:enumeration value="Mile"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
+            <xs:extension base="xs:string">
+                <xs:attribute name="contentLinkIdentifier" use="required" type="xs:ID"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -953,22 +950,35 @@
         </xs:simpleContent>
     </xs:complexType>
 
-    <xs:complexType name="LabelledString.Type">
+    <xs:complexType name="USLinearValue.Type">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
-                The LabelledString derivedType is the container for the text string labels that have their own content link identifier.
+                The USLinearValue derivedType is the container for the linear measurements in terms of US units.
             </xs:documentation>
         </xs:annotation>
         <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="contentLinkIdentifier" use="required" type="xs:ID"/>
+            <xs:extension base="xs:decimal">
+                <xs:attribute name="unit" use="required">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="Inch"/>
+                            <xs:enumeration value="Foot"/>
+                            <xs:enumeration value="Yard"/>
+                            <xs:enumeration value="Mile"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
     <!-- ================================================================================================== -->
 
-    <!-- Declaration of the elements ********************************************************************** -->
+    <!-- Declaration of the elements (Complex) ************************************************************ -->
+
+    <!-- ================================================================================================== -->
+
+    <!-- Declaration of the elements (Derived) ************************************************************* -->
 
     <!-- ================================================================================================== -->
 

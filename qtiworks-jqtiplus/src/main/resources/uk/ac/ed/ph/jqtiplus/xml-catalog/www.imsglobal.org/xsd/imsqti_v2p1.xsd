@@ -17,8 +17,8 @@
             XSD Data File Information
             -------------------------
             Author:         Colin Smythe
-            Date:           12th May, 2012
-            Version:        Draft 12
+            Date:           31st July, 2012
+            Version:        1.0
             Status:         Final Release
             Description:    This is the Platform Specific Model of the IMS QTI v2.1 Specification Information Model.
                             It is this representation that is used to produce the XSD binding for IMS QTI v2.1.
@@ -939,7 +939,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="maxChoices.ChoiceInteraction.Attr">
-        <xs:attribute name="maxChoices" use="optional" default="1" type="xs:int"/>
+        <xs:attribute name="maxChoices" use="optional" default="0" type="xs:int"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="minChoices.ChoiceInteraction.Attr">
@@ -1616,7 +1616,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="maxChoices.HotTextInteraction.Attr">
-        <xs:attribute name="maxChoices" use="optional" default="1" type="xs:int"/>
+        <xs:attribute name="maxChoices" use="optional" default="0" type="xs:int"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="minChoices.HotTextInteraction.Attr">
@@ -2203,7 +2203,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="maxChoices.SelectPointInteraction.Attr">
-        <xs:attribute name="maxChoices" use="optional" default="1" type="xs:int"/>
+        <xs:attribute name="maxChoices" use="optional" default="0" type="xs:int"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="xmlbase.GraphicGapMatchInteraction.Attr">
@@ -2475,7 +2475,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="maxChoices.HotspotInteraction.Attr">
-        <xs:attribute name="maxChoices" use="optional" default="1" type="xs:int"/>
+        <xs:attribute name="maxChoices" use="optional" default="0" type="xs:int"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HotspotChoice.Attr">
@@ -2992,7 +2992,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="maxChoices.PositionObjectInteraction.Attr">
-        <xs:attribute name="maxChoices" use="optional" default="1" type="xs:int"/>
+        <xs:attribute name="maxChoices" use="optional" default="0" type="xs:int"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="xmlbase.SliderInteraction.Attr">
@@ -3241,10 +3241,10 @@
             <xs:simpleType>
                 <xs:union>
                     <xs:simpleType>
-                        <xs:restriction base="VariableString.Type"/>
+                        <xs:restriction base="xs:double"/>
                     </xs:simpleType>
                     <xs:simpleType>
-                        <xs:restriction base="xs:double"/>
+                        <xs:restriction base="VariableString.Type"/>
                     </xs:simpleType>
                 </xs:union>
             </xs:simpleType>
@@ -3256,10 +3256,10 @@
             <xs:simpleType>
                 <xs:union>
                     <xs:simpleType>
-                        <xs:restriction base="VariableString.Type"/>
+                        <xs:restriction base="xs:double"/>
                     </xs:simpleType>
                     <xs:simpleType>
-                        <xs:restriction base="xs:double"/>
+                        <xs:restriction base="VariableString.Type"/>
                     </xs:simpleType>
                 </xs:union>
             </xs:simpleType>
@@ -3396,7 +3396,7 @@
                         <xs:restriction base="xs:string"/>
                     </xs:simpleType>
                     <xs:simpleType>
-                        <xs:restriction base="VariableString.Type"/>
+                        <xs:restriction base="EncVariableString.Type"/>
                     </xs:simpleType>
                 </xs:union>
             </xs:simpleType>
@@ -3721,7 +3721,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="VariableString.Type">
+    <xs:simpleType name="EncVariableString.Type">
         <xs:restriction base="xs:string">
             <xs:pattern value="\{[\i-[:]][\c-[:]]*\}"/>
         </xs:restriction>
@@ -3749,6 +3749,12 @@
     <xs:simpleType name="MimeType.Type">
         <xs:restriction base="xs:normalizedString">
             <xs:pattern value="[\p{IsBasicLatin}-[()&lt;&gt;@,;:\\&quot;/\[\]?=]]+/[\p{IsBasicLatin}-[()&lt;&gt;@,;:\\&quot;/\[\]?=]]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="VariableString.Type">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[\i-[:]][\c-[:]]*"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -9466,8 +9472,6 @@
 
     <xs:element name="outcomeCondition" type="OutcomeCondition.Type"/>
 
-    <xs:element name="outcomeDeclaration" type="OutcomeDeclaration.Type"/>
-
     <xs:element name="outcomeElse" type="OutcomeElse.Type"/>
 
     <xs:element name="outcomeElseIf" type="OutcomeIf.Type"/>
@@ -9505,8 +9509,6 @@
     <xs:element name="responseCondition" type="ResponseCondition.Type"/>
 
     <xs:element name="responseDeclaration" type="ResponseDeclaration.Type"/>
-
-    <xs:element name="responseProcessing" type="ResponseProcessing.Type"/>
 
     <xs:element name="responseProcessingFragment" type="ResponseProcessingFragment.Type"/>
 
@@ -9695,6 +9697,8 @@
     <xs:element name="assessmentItem" type="AssessmentItem.Type"/>
     <xs:element name="assessmentSection" type="AssessmentSection.Type"/>
     <xs:element name="assessmentTest" type="AssessmentTest.Type"/>
+    <xs:element name="outcomeDeclaration" type="OutcomeDeclaration.Type"/>
+    <xs:element name="responseProcessing" type="ResponseProcessing.Type"/>
 
     <!-- ================================================================================================== -->
 
