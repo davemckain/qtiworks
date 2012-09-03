@@ -53,7 +53,7 @@ public final class MultipleValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container and adds given <code>SingleValue</code> into it.
+     * Constructs <code>MultipleValue</code> containing the given value.
      *
      * @param value added <code>SingleValue</code>
      */
@@ -62,7 +62,7 @@ public final class MultipleValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container and adds all given <code>SingleValue</code>s into it.
+     * Constructs <code>MultipleValue</code> containing the given values.
      *
      * @param values added <code>SingleValue</code>s
      */
@@ -115,5 +115,18 @@ public final class MultipleValue extends ListValue {
             return false;
         }
         return container.containsAll(other.container);
+    }
+
+    @Override
+    public final int hashCode() {
+        /* Need an alternative calculation from usual in order to be compatible with equals().
+         * So let's add up the hashCode of each element, taking advantage of the commutativity
+         * of addition
+         */
+        int sum = 0;
+        for (final SingleValue singleValue : container) {
+            sum += singleValue.hashCode();
+        }
+        return sum;
     }
 }

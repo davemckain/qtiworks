@@ -54,12 +54,12 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setCorrectResponse";
 
-    public SetCorrectResponse(XmlNode parent) {
+    public SetCorrectResponse(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
@@ -71,7 +71,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
@@ -83,7 +83,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
@@ -95,10 +95,10 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
-        
-        Identifier identifier = getIdentifier();
+
+        final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             context.checkVariableReference(this, identifier);
         }

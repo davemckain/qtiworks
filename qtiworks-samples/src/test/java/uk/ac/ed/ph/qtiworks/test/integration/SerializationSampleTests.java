@@ -33,17 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.test.integration;
 
-import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
-import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
-import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
@@ -91,11 +90,11 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
-                StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                StompSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+//                StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+//                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+//                StompSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
+//                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
         );
     }
     
@@ -107,7 +106,14 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
         final QtiXmlObjectReader objectReader = createSampleObjectReader();
-        QtiXmlObjectReadResult<AssessmentItem> itemReadResult = objectReader.lookupRootObject(qtiSampleAssessment.assessmentClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
+        QtiXmlObjectReadResult<AssessmentItem> itemReadResult;
+        try {
+            itemReadResult = objectReader.lookupRootObject(qtiSampleAssessment.assessmentClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
+        }
+        catch (QtiXmlInterpretationException e) {
+            System.out.println("Model building errors: " + ObjectDumper.dumpObject(e.getQtiModelBuildingErrors(), DumpMode.DEEP));
+            throw e;
+        }
         AssessmentItem item = itemReadResult.getRootObject();
         
         XsltSerializationOptions serializationOptions = new XsltSerializationOptions();

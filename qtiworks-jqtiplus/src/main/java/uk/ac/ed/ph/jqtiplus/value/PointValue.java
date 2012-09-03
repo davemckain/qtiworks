@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Implementation of <code>BaseType</code> point value.
@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always point.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.value.IntegerValue
@@ -55,48 +55,23 @@ public final class PointValue extends SingleValue {
 
     private static final long serialVersionUID = -4496855150070341627L;
 
-    private int horizontalValue;
+    public static PointValue parseString(final String string) {
+        final int[] coords = DataTypeBinder.parsePoint(string);
+        return new PointValue(coords[0], coords[1]);
+    }
 
-    private int verticalValue;
+    private final int horizontalValue;
+    private final int verticalValue;
 
     /**
      * Constructs <code>PointValue</code> from given horizontal and vertical values.
-     * 
+     *
      * @param horizontalValue horizontal value
      * @param verticalValue vertical value
      */
-    public PointValue(int horizontalValue, int verticalValue) {
+    public PointValue(final int horizontalValue, final int verticalValue) {
         this.horizontalValue = horizontalValue;
         this.verticalValue = verticalValue;
-    }
-
-    /**
-     * Constructs <code>PointValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>PointValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>PointValue</code> is not valid
-     */
-    public PointValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid point '" + value + "'. Length is not valid.");
-        }
-
-        if (!value.equals(value.trim())) {
-            throw new QtiParseException("Invalid point '" + value + "'.");
-        }
-
-        final String[] parts = value.split(" ");
-        if (parts.length != 2) {
-            throw new QtiParseException("Invalid point '" + value + "'. Number of parts is not valid.");
-        }
-
-        try {
-            this.horizontalValue = IntegerValue.parseInteger(parts[0]);
-            this.verticalValue = IntegerValue.parseInteger(parts[1]);
-        }
-        catch (final QtiParseException ex) {
-            throw new QtiParseException("Invalid point '" + value + "'.", ex);
-        }
     }
 
     @Override
@@ -106,7 +81,7 @@ public final class PointValue extends SingleValue {
 
     /**
      * Returns horizontal value of this point.
-     * 
+     *
      * @return horizontal value of this point
      */
     public int horizontalValue() {
@@ -115,7 +90,7 @@ public final class PointValue extends SingleValue {
 
     /**
      * Returns vertical value of this point.
-     * 
+     *
      * @return vertical value of this point
      */
     public int verticalValue() {
@@ -123,13 +98,13 @@ public final class PointValue extends SingleValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof PointValue)) {
             return false;
         }
 
         final PointValue other = (PointValue) object;
-        return horizontalValue == other.horizontalValue 
+        return horizontalValue == other.horizontalValue
                 && verticalValue == other.verticalValue;
     }
 
@@ -140,6 +115,6 @@ public final class PointValue extends SingleValue {
 
     @Override
     public String toQtiString() {
-        return horizontalValue + " " + verticalValue;
+        return DataTypeBinder.toString(horizontalValue, verticalValue);
     }
 }

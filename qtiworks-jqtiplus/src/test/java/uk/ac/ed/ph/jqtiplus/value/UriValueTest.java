@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests <code>UriValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  */
 @RunWith(Parameterized.class)
@@ -50,39 +50,55 @@ public class UriValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null {false, new UriValue("uri"), null},
-                // NullValue {false, new UriValue("uri"), NullValue.INSTANCE},
-                // IdentifierValue {false, new UriValue("uri"), new IdentifierValue("identifier")},
-                // BooleanValue {false, new UriValue("uri"), BooleanValue.TRUE}, {false, new UriValue("uri"), BooleanValue.FALSE},
-                // IntegerValue {false, new UriValue("uri"), new IntegerValue(1)},
-                // FloatValue {false, new UriValue("uri"), new FloatValue(1)},
-                // StringValue {false, new UriValue("uri"), new StringValue("string")},
-                // PointValue {false, new UriValue("uri"), new PointValue(1, 1)},
-                // PairValue {false, new UriValue("uri"), new PairValue("ident1", "ident2")},
-                // DirectedPairValue {false, new UriValue("uri"), new DirectedPairValue("ident1", "ident2")},
-                // DurationValue {false, new UriValue("uri"), new DurationValue(1)},
-                // FileValue {false, new UriValue("uri"), new FileValue("file")},
-                // UriValue {true, new UriValue("uri"), new UriValue("uri")}, {false, new UriValue("uri"), new UriValue("Uri")}, {false, new UriValue("uri"), new UriValue("URI")}, {false, new UriValue("uri1"), new UriValue("uri2")},
-                // MultipleValue {false, new UriValue("uri"), new MultipleValue()}, {false, new UriValue("uri"), new MultipleValue(new UriValue("uri"))},
-                // OrderedValue {false, new UriValue("uri"), new OrderedValue()}, {false, new UriValue("uri"), new OrderedValue(new UriValue("uri"))},
-                // RecordValue {false, new UriValue("uri"), new RecordValue()}, {false, new UriValue("uri"), new RecordValue("identifier", new UriValue("uri"))},
+                // null
+                {false, new UriValue("uri"), null},
+                // NullValue
+                {false, new UriValue("uri"), NullValue.INSTANCE},
+                // IdentifierValue
+                {false, new UriValue("uri"), new IdentifierValue("identifier")},
+                // BooleanValue
+                {false, new UriValue("uri"), BooleanValue.TRUE}, {false, new UriValue("uri"), BooleanValue.FALSE},
+                // IntegerValue
+                {false, new UriValue("uri"), new IntegerValue(1)},
+                // FloatValue
+                {false, new UriValue("uri"), new FloatValue(1)},
+                // StringValue
+                {false, new UriValue("uri"), new StringValue("string")},
+                // PointValue
+                {false, new UriValue("uri"), new PointValue(1, 1)},
+                // PairValue
+                {false, new UriValue("uri"), new PairValue("ident1", "ident2")},
+                // DirectedPairValue
+                {false, new UriValue("uri"), new DirectedPairValue("ident1", "ident2")},
+                // DurationValue
+                {false, new UriValue("uri"), new DurationValue(1)},
+                // FileValue
+                {false, new UriValue("uri"), ValueTestUtils.createTestFileValue("file")},
+                // UriValue
+                {true, new UriValue("uri"), new UriValue("uri")}, {false, new UriValue("uri"), new UriValue("Uri")}, {false, new UriValue("uri"), new UriValue("URI")}, {false, new UriValue("uri1"), new UriValue("uri2")},
+                // MultipleValue
+                {false, new UriValue("uri"), new MultipleValue()}, {false, new UriValue("uri"), new MultipleValue(new UriValue("uri"))},
+                // OrderedValue
+                {false, new UriValue("uri"), new OrderedValue()}, {false, new UriValue("uri"), new OrderedValue(new UriValue("uri"))},
+                // RecordValue
+                {false, new UriValue("uri"), new RecordValue()}, {false, new UriValue("uri"), new RecordValue("identifier", new UriValue("uri"))},
                 });
     }
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public UriValueTest(boolean equals, Value value1, Value value2) {
+    public UriValueTest(final boolean equals, final Value value1, final Value value2) {
         super(equals, value1, value2);
     }
 }

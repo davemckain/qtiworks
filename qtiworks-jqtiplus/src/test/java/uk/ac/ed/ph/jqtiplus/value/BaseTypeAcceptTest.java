@@ -47,7 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests parsing <code>BaseType</code> from <code>String</code> representation.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  */
 @RunWith(Parameterized.class)
@@ -55,12 +55,13 @@ public class BaseTypeAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "identifier", BaseType.IDENTIFIER }, { "boolean", BaseType.BOOLEAN }, { "integer", BaseType.INTEGER },
+        return Arrays.asList(new Object[][] {
+                { "identifier", BaseType.IDENTIFIER }, { "boolean", BaseType.BOOLEAN }, { "integer", BaseType.INTEGER },
                 { "float", BaseType.FLOAT }, { "string", BaseType.STRING }, { "point", BaseType.POINT }, { "pair", BaseType.PAIR },
                 { "directedPair", BaseType.DIRECTED_PAIR }, { "duration", BaseType.DURATION }, { "file", BaseType.FILE }, { "uri", BaseType.URI },
         });
@@ -72,11 +73,11 @@ public class BaseTypeAcceptTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string <code>String</code> representation of <code>BaseType</code>
      * @param expectedBaseType expected parsed <code>BaseType</code>
      */
-    public BaseTypeAcceptTest(String string, BaseType expectedBaseType) {
+    public BaseTypeAcceptTest(final String string, final BaseType expectedBaseType) {
         this.string = string;
         this.expectedBaseType = expectedBaseType;
     }

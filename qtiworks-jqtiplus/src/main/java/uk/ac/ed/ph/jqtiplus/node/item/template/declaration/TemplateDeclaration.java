@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
  * <p>
  * Template variables are instantiated as part of an item session. Their values are initialized during templateProcessing and thereafter behave as constants
  * within the session.
- * 
+ *
  * @author Jonathon Hare
  */
 public class TemplateDeclaration extends VariableDeclaration {
@@ -60,15 +60,15 @@ public class TemplateDeclaration extends VariableDeclaration {
     public static final String ATTR_PARAM_VARIABLE_NAME = "paramVariable";
 
     /** Default value of paramVariable attribute. */
-    public static final Boolean ATTR_PARAM_VARIABLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_PARAM_VARIABLE_DEFAULT_VALUE = false;
 
     /** Name of mathVariable attribute in xml schema. */
     public static final String ATTR_MATH_VARIABLE_NAME = "mathVariable";
 
     /** Default value of mathVariable attribute. */
-    public static final Boolean ATTR_MATH_VARIABLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_MATH_VARIABLE_DEFAULT_VALUE = false;
 
-    public TemplateDeclaration(AssessmentItem parent) {
+    public TemplateDeclaration(final AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_PARAM_VARIABLE_NAME, ATTR_PARAM_VARIABLE_DEFAULT_VALUE, false));
@@ -82,7 +82,7 @@ public class TemplateDeclaration extends VariableDeclaration {
 
     /**
      * Gets value of paramVariable attribute.
-     * 
+     *
      * @return value of paramVariable attribute
      * @see #setParamVariable
      */
@@ -92,17 +92,17 @@ public class TemplateDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of paramVariable attribute.
-     * 
+     *
      * @param paramVariable new value of paramVariable attribute
      * @see #getParamVariable
      */
-    public void setParamVariable(Boolean paramVariable) {
+    public void setParamVariable(final Boolean paramVariable) {
         getAttributes().getBooleanAttribute(ATTR_PARAM_VARIABLE_NAME).setValue(paramVariable);
     }
 
     /**
      * Gets value of mathVariable attribute.
-     * 
+     *
      * @return value of mathVariable attribute
      * @see #setMathVariable
      */
@@ -112,11 +112,11 @@ public class TemplateDeclaration extends VariableDeclaration {
 
     /**
      * Sets new value of mathVariable attribute.
-     * 
+     *
      * @param mathVariable new value of mathVariable attribute
      * @see #getMathVariable
      */
-    public void setMathVariable(Boolean mathVariable) {
+    public void setMathVariable(final Boolean mathVariable) {
         getAttributes().getBooleanAttribute(ATTR_MATH_VARIABLE_NAME).setValue(mathVariable);
     }
 }

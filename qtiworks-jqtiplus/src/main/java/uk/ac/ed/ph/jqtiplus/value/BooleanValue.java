@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Implementation of <code>BaseType</code> boolean value.
@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always boolean.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -51,40 +51,24 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 public final class BooleanValue extends SingleValue {
 
     private static final long serialVersionUID = -5150274870390179580L;
-    
-    public static final BooleanValue[] values = { BooleanValue.FALSE, BooleanValue.TRUE };
 
     public static final BooleanValue FALSE = new BooleanValue(false);
-
     public static final BooleanValue TRUE = new BooleanValue(true);
+    public static final BooleanValue[] values = { BooleanValue.FALSE, BooleanValue.TRUE };
 
-    public static BooleanValue valueOf(boolean value) {
+    public static BooleanValue valueOf(final boolean value) {
         return value ? BooleanValue.TRUE : BooleanValue.FALSE;
     }
 
-    public static BooleanValue valueOf(String value) {
-        return valueOf(parseBoolean(value));
+    public static BooleanValue valueOf(final String value) {
+        return valueOf(DataTypeBinder.parseBoolean(value));
     }
 
     private final boolean booleanValue;
 
-    /**
-     * Constructs <code>BooleanValue</code> from given <code>boolean</code>.
-     * 
-     * @param value <code>boolean</code>
-     */
-    private BooleanValue(boolean value) {
+    /** (Private constructor - use static factory methods instead) */
+    private BooleanValue(final boolean value) {
         this.booleanValue = value;
-    }
-
-    /**
-     * Constructs <code>BooleanValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>BooleanValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>BooleanValue</code> is not valid
-     */
-    private BooleanValue(String value) {
-        this.booleanValue = parseBoolean(value);
     }
 
     @Override
@@ -92,17 +76,12 @@ public final class BooleanValue extends SingleValue {
         return BaseType.BOOLEAN;
     }
 
-    /**
-     * Returns the value of this <code>BooleanValue</code> as A <code>boolean</code>.
-     * 
-     * @return the value of this <code>BooleanValue</code> as A <code>boolean</code>
-     */
     public boolean booleanValue() {
         return booleanValue;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof BooleanValue)) {
             return false;
         }
@@ -117,33 +96,6 @@ public final class BooleanValue extends SingleValue {
 
     @Override
     public String toQtiString() {
-        return Boolean.toString(booleanValue);
-    }
-
-    /**
-     * Parses the <code>String</code> argument as A <code>boolean</code>.
-     * 
-     * @param value <code>String</code> representation of <code>boolean</code>
-     * @return parsed <code>boolean</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>boolean</code> is not valid
-     */
-    public static boolean parseBoolean(String value) {
-        if (value != null) {
-            value = value.trim();
-        }
-
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid boolean '" + value + "'. Length is not valid.");
-        }
-
-        if (value.equals("true") || value.equals("1")) {
-            return true;
-        }
-        else if (value.equals("false") || value.equals("0")) {
-            return false;
-        }
-        else {
-            throw new QtiParseException("Invalid boolean '" + value + "'.");
-        }
+        return DataTypeBinder.toString(booleanValue);
     }
 }

@@ -39,28 +39,28 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 /**
  * Attribute with {@link VariableReferenceIdentifier} value.
- * 
- * @author Jiri Kajaba
+ *
+ * @author David McKain
  */
-public class VariableReferenceIdentifierAttribute extends SingleAttribute<VariableReferenceIdentifier> {
+public final class VariableReferenceIdentifierAttribute extends SingleAttribute<VariableReferenceIdentifier> {
 
     private static final long serialVersionUID = 797959114072746763L;
 
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, boolean required) {
-        super(parent, localName, required);
+    public VariableReferenceIdentifierAttribute(final XmlNode owner, final String localName, final boolean required) {
+        super(owner, localName, required);
     }
 
-    public VariableReferenceIdentifierAttribute(XmlNode parent, String localName, VariableReferenceIdentifier defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
+    public VariableReferenceIdentifierAttribute(final XmlNode owner, final String localName, final VariableReferenceIdentifier defaultValue, final boolean required) {
+        super(owner, localName, defaultValue, required);
     }
 
     @Override
-    protected VariableReferenceIdentifier parseQtiString(String value) {
+    protected VariableReferenceIdentifier parseQtiString(final String value) {
         return new VariableReferenceIdentifier(value);
     }
-    
+
     @Override
-    protected String toQtiString(VariableReferenceIdentifier value) {
+    protected String toQtiString(final VariableReferenceIdentifier value) {
         return value.toString();
     }
 }

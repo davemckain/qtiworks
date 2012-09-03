@@ -53,7 +53,7 @@ public final class OrderedValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>OrderedValue</code> container and adds given <code>SingleValue</code> into it.
+     * Constructs <code>OrderedValue</code> containing the given value
      *
      * @param value added <code>SingleValue</code>
      */
@@ -62,7 +62,7 @@ public final class OrderedValue extends ListValue {
     }
 
     /**
-     * Constructs empty (NULL) <code>OrderedValue</code> container and adds all given <code>SingleValue</code>s into it.
+     * Constructs <code>OrderedValue</code> containing the given values
      *
      * @param values added <code>SingleValue</code>s
      */
@@ -111,13 +111,11 @@ public final class OrderedValue extends ListValue {
         for (int i = 0; i < container.size(); i++) {
             if (container.get(i).equals(firstValue)) {
                 // First value was found in this container.
-
                 boolean found = true;
 
                 // Compares rest of values (from 2nd to the last).
                 for (int j = 1; j < orderedValue.container.size(); j++) {
-                    if (i + j >= container.size())
-                    {
+                    if (i + j >= container.size()) {
                         return false; // End of this container. Stop searching.
                     }
 
@@ -128,8 +126,7 @@ public final class OrderedValue extends ListValue {
                     }
                 }
 
-                if (found)
-                {
+                if (found) {
                     return true; // Searching was not broken. All values were found in this container.
                 }
             }
@@ -140,20 +137,16 @@ public final class OrderedValue extends ListValue {
 
     @Override
     public boolean equals(final Object object) {
-        if (object == null) {
+        if (!(object instanceof OrderedValue)) {
             return false;
         }
 
-        if (isNull() && object instanceof Value && ((Value) object).isNull()) {
-            return true;
-        }
+        final OrderedValue other = (OrderedValue) object;
+        return container.equals(other.container);
+    }
 
-        if (!getClass().equals(object.getClass())) {
-            return false;
-        }
-
-        final OrderedValue value = (OrderedValue) object;
-
-        return container.equals(value.container);
+    @Override
+    public final int hashCode() {
+        return container.hashCode();
     }
 }

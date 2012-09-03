@@ -92,7 +92,7 @@ public class TextEntryInteractionTest {
                 { "TextEntryInteraction-basic-float.xml", "1", new FloatValue("1"), new StringValue("1"), true },
                 { "TextEntryInteraction-basic-float.xml", "1.0", new FloatValue("1.0"), new StringValue("1.0"), true },
                 { "TextEntryInteraction-basic-float.xml", "1.0e2", new FloatValue("1.0e2"), new StringValue("1.0e2"), true },
-                { "TextEntryInteraction-basic-integer.xml", "1", new IntegerValue("1"), new StringValue("1"), true },
+                { "TextEntryInteraction-basic-integer.xml", "1", IntegerValue.parseString("1"), new StringValue("1"), true },
                 { "TextEntryInteraction-basic-record.xml", "1", createRecordResult("1", 1.0, 1, 1, 0, 0, 1, null), new StringValue("1"), true },
                 { "TextEntryInteraction-basic-record.xml", "1.23e2", createRecordResult("1.23e2", 123.0, null, 1, 2, 0, 3, 2),
                         new StringValue("1.23e2"), true },

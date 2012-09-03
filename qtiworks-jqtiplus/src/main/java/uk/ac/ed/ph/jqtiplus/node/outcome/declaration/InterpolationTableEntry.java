@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 
 /**
  * Entry for interpolationTable.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class InterpolationTableEntry extends LookupTableEntry {
@@ -55,9 +55,9 @@ public class InterpolationTableEntry extends LookupTableEntry {
     public static final String ATTR_INCLUDE_BOUNDARY_NAME = "includeBoundary";
 
     /** Default value of includeBoundary attribute. */
-    public static final Boolean ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE = Boolean.TRUE;
+    public static final boolean ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE = true;
 
-    public InterpolationTableEntry(InterpolationTable parent) {
+    public InterpolationTableEntry(final InterpolationTable parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(0, new FloatAttribute(this, ATTR_SOURCE_VALUE_NAME, true));
@@ -66,7 +66,7 @@ public class InterpolationTableEntry extends LookupTableEntry {
 
     /**
      * Gets value of sourceValue attribute.
-     * 
+     *
      * @return value of sourceValue attribute
      * @see #setSourceValue
      */
@@ -77,17 +77,17 @@ public class InterpolationTableEntry extends LookupTableEntry {
 
     /**
      * Sets new value of sourceValue attribute.
-     * 
+     *
      * @param sourceValue new value of sourceValue attribute
      * @see #getSourceValue
      */
-    public void setSourceValue(Double sourceValue) {
+    public void setSourceValue(final Double sourceValue) {
         getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).setValue(sourceValue);
     }
 
     /**
      * Gets value of includeBoundary attribute.
-     * 
+     *
      * @return value of includeBoundary attribute
      * @see #setIncludeBoundary
      */
@@ -97,11 +97,11 @@ public class InterpolationTableEntry extends LookupTableEntry {
 
     /**
      * Sets new value of includeBoundary attribute.
-     * 
+     *
      * @param includeBoundary new value of includeBoundary attribute
      * @see #getIncludeBoundary
      */
-    public void setIncludeBoundary(Boolean includeBoundary) {
+    public void setIncludeBoundary(final Boolean includeBoundary) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).setValue(includeBoundary);
     }
 }

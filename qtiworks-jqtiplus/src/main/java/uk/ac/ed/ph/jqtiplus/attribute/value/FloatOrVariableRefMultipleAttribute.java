@@ -35,34 +35,28 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
-
-import java.util.List;
+import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 
 /**
- * Attribute with float values.
+ * Attribute with multiple floatOrVariableRef values
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class FloatMultipleAttribute extends MultipleAttribute<Double> {
+public final class FloatOrVariableRefMultipleAttribute extends MultipleAttribute<FloatOrVariableRef> {
 
     private static final long serialVersionUID = 1429666396177699288L;
 
-    public FloatMultipleAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public FloatOrVariableRefMultipleAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public FloatMultipleAttribute(final XmlNode parent, final String localName, final List<Double> defaultValue, final boolean required) {
-        super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
+    @Override
+    protected FloatOrVariableRef parseItemValue(final String value) {
+        return FloatOrVariableRef.parseString(value);
     }
 
     @Override
-    protected Double parseItemValue(final String value) {
-        return Double.valueOf(FloatValue.parseFloat(value));
-    }
-
-    @Override
-    protected String itemToQtiString(final Double item) {
+    protected String itemToQtiString(final FloatOrVariableRef item) {
         return item.toString();
     }
 }

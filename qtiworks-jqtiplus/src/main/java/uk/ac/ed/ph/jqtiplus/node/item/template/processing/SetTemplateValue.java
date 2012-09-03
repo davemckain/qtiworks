@@ -51,7 +51,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * with reference to A previously assigned value, in other words, the template
  * variable being set may appear in the expression where it takes the value
  * previously assigned to it.
- * 
+ *
  * @author Jonathon Hare
  */
 public class SetTemplateValue extends ProcessTemplateValue {
@@ -61,12 +61,12 @@ public class SetTemplateValue extends ProcessTemplateValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setTemplateValue";
 
-    public SetTemplateValue(XmlNode parent) {
+    public SetTemplateValue(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
@@ -78,7 +78,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
@@ -90,7 +90,7 @@ public class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
@@ -102,10 +102,10 @@ public class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
-        
-        Identifier identifier = getIdentifier();
+
+        final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             context.checkVariableReference(this, identifier);
         }

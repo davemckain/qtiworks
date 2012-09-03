@@ -94,7 +94,7 @@ public final class CasCompare extends MathAssessOperator {
 
         getAttributes().add(new ActionAttribute(this, ATTR_ACTION_NAME, MATHASSESS_NAMESPACE_URI, true));
         getAttributes().add(new StringAttribute(this, ATTR_CODE_NAME, MATHASSESS_NAMESPACE_URI, null, false));
-        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, Boolean.FALSE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, false, false));
     }
 
     /**

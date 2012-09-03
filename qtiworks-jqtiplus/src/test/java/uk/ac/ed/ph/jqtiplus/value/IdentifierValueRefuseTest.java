@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,7 +48,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>IdentifierValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +56,13 @@ public class IdentifierValueRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { null }, { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "iden.tifier" }, { "1identifier" },
+        return Arrays.asList(new Object[][] {
+                { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "iden.tifier" }, { "1identifier" },
                 { "identifier:identifier" }, { "`A" }, { "A`" }, { "�A" }, { "A�" }, { "!A" }, { "A!" }, { "\"A" }, { "A\"" }, { "�A" }, { "A�" }, { "$A" },
                 { "A$" }, { "%A" }, { "A%" }, { "^A" }, { "A^" }, { "&A" }, { "A&" }, { "*A" }, { "A*" }, { "(A" }, { "A(" }, { ")A" }, { "A)" }, { "=A" },
                 { "A=" }, { "+A" }, { "A+" }, { "[A" }, { "A[" }, { "{A" }, { "A{" }, { "]A" }, { "A]" }, { "}A" }, { "A}" }, { ";A" }, { "A;" }, { ":A" },
@@ -73,20 +75,20 @@ public class IdentifierValueRefuseTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      */
-    public IdentifierValueRefuseTest(String string) {
+    public IdentifierValueRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)
     public void testParseIdentifier() throws QtiParseException {
-        new IdentifierValue(string);
+        new IdentifierValue(new Identifier(string));
     }
 }

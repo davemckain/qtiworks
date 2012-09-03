@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Attribute with duration value.
@@ -56,7 +56,7 @@ public final class DurationAttribute extends SingleAttribute<Double> {
 
     @Override
     protected Double parseQtiString(final String value) {
-        return Double.valueOf(FloatValue.parseFloat(value));
+        return Double.valueOf(DataTypeBinder.parseFloat(value));
     }
 
     @Override

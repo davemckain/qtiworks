@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests <code>FloatValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
  */
 @RunWith(Parameterized.class)
@@ -50,39 +50,55 @@ public class FloatValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null {false, new FloatValue(1.2), null},
-                // NullValue {false, new FloatValue(1.2), NullValue.INSTANCE},
-                // IdentifierValue {false, new FloatValue(1.2), new IdentifierValue("identifier")},
-                // BooleanValue {false, new FloatValue(1.2), BooleanValue.TRUE}, {false, new FloatValue(1.2), BooleanValue.FALSE},
-                // IntegerValue {false, new FloatValue(1.2), new IntegerValue(1)},
-                // FloatValue {true, new FloatValue(1.2), new FloatValue(1.2)}, {false, new FloatValue(1.2), new FloatValue(3.4)},
-                // StringValue {false, new FloatValue(1.2), new StringValue("string")},
-                // PointValue {false, new FloatValue(1.2), new PointValue(1, 1)},
-                // PairValue {false, new FloatValue(1.2), new PairValue("ident1", "ident2")},
-                // DirectedPairValue {false, new FloatValue(1.2), new DirectedPairValue("ident1", "ident2")},
-                // DurationValue {false, new FloatValue(1.2), new DurationValue(1)},
-                // FileValue {false, new FloatValue(1.2), new FileValue("file")},
-                // UriValue {false, new FloatValue(1.2), new UriValue("uri")},
-                // MultipleValue {false, new FloatValue(1.2), new MultipleValue()}, {false, new FloatValue(1.2), new MultipleValue(new FloatValue(1.2))},
-                // OrderedValue {false, new FloatValue(1.2), new OrderedValue()}, {false, new FloatValue(1.2), new OrderedValue(new FloatValue(1.2))},
-                // RecordValue {false, new FloatValue(1.2), new RecordValue()}, {false, new FloatValue(1.2), new RecordValue("identifier", new FloatValue(1.2))},
+                // null
+                {false, new FloatValue(1.2), null},
+                // NullValue
+                {false, new FloatValue(1.2), NullValue.INSTANCE},
+                // IdentifierValue
+                {false, new FloatValue(1.2), new IdentifierValue("identifier")},
+                // BooleanValue
+                {false, new FloatValue(1.2), BooleanValue.TRUE}, {false, new FloatValue(1.2), BooleanValue.FALSE},
+                // IntegerValue
+                {false, new FloatValue(1.2), new IntegerValue(1)},
+                // FloatValue
+                {true, new FloatValue(1.2), new FloatValue(1.2)}, {false, new FloatValue(1.2), new FloatValue(3.4)},
+                // StringValue
+                {false, new FloatValue(1.2), new StringValue("string")},
+                // PointValue
+                {false, new FloatValue(1.2), new PointValue(1, 1)},
+                // PairValue
+                {false, new FloatValue(1.2), new PairValue("ident1", "ident2")},
+                // DirectedPairValue
+                {false, new FloatValue(1.2), new DirectedPairValue("ident1", "ident2")},
+                // DurationValue
+                {false, new FloatValue(1.2), new DurationValue(1)},
+                // FileValue
+                {false, new FloatValue(1.2), ValueTestUtils.createTestFileValue("file")},
+                // UriValue
+                {false, new FloatValue(1.2), new UriValue("uri")},
+                // MultipleValue
+                {false, new FloatValue(1.2), new MultipleValue()}, {false, new FloatValue(1.2), new MultipleValue(new FloatValue(1.2))},
+                // OrderedValue
+                {false, new FloatValue(1.2), new OrderedValue()}, {false, new FloatValue(1.2), new OrderedValue(new FloatValue(1.2))},
+                // RecordValue
+                {false, new FloatValue(1.2), new RecordValue()}, {false, new FloatValue(1.2), new RecordValue("identifier", new FloatValue(1.2))},
                 });
     }
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public FloatValueTest(boolean equals, Value value1, Value value2) {
+    public FloatValueTest(final boolean equals, final Value value1, final Value value2) {
         super(equals, value1, value2);
     }
 }

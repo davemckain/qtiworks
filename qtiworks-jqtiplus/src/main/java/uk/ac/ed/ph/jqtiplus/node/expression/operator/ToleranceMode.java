@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * Enumeration for equal expression.
- * 
+ *
  * @see Equal
  * @author Jiri Kajaba
  */
@@ -52,13 +52,9 @@ public enum ToleranceMode implements Stringifiable {
     EXACT("exact") {
 
         @Override
-        public boolean isEqual
-                (double firstNumber
-                        , double secondNumber
-                        , double tolerance1
-                        , double tolerance2
-                        , boolean includeLowerBound
-                        , boolean includeUpperBound) {
+        public boolean isEqual(final double firstNumber, final double secondNumber,
+                final double tolerance1, final double tolerance2,
+                final boolean includeLowerBound, final boolean includeUpperBound) {
             return firstNumber == secondNumber;
         }
     },
@@ -72,13 +68,9 @@ public enum ToleranceMode implements Stringifiable {
     ABSOLUTE("absolute") {
 
         @Override
-        public boolean isEqual
-                (double firstNumber
-                        , double secondNumber
-                        , double tolerance1
-                        , double tolerance2
-                        , boolean includeLowerBound
-                        , boolean includeUpperBound) {
+        public boolean isEqual(final double firstNumber, final double secondNumber,
+                final double tolerance1, final double tolerance2,
+                final boolean includeLowerBound, final boolean includeUpperBound) {
             final double lower = firstNumber - tolerance1;
 
             if (includeLowerBound && secondNumber < lower ||
@@ -105,13 +97,9 @@ public enum ToleranceMode implements Stringifiable {
     RELATIVE("relative") {
 
         @Override
-        public boolean isEqual
-                (double firstNumber
-                        , double secondNumber
-                        , double tolerance1
-                        , double tolerance2
-                        , boolean includeLowerBound
-                        , boolean includeUpperBound) {
+        public boolean isEqual(final double firstNumber, final double secondNumber,
+                final double tolerance1, final double tolerance2,
+                final boolean includeLowerBound, final boolean includeUpperBound) {
             final double lower = firstNumber * (1 - tolerance1 / 100);
 
             if (includeLowerBound && secondNumber < lower ||
@@ -145,17 +133,17 @@ public enum ToleranceMode implements Stringifiable {
 
     private String toleranceMode;
 
-    private ToleranceMode(String toleranceMode) {
+    private ToleranceMode(final String toleranceMode) {
         this.toleranceMode = toleranceMode;
     };
 
     /**
      * Returns true if given numbers are equal; false otherwise.
-     * 
+     *
      * @param firstNumber first number to compare
      * @param secondNumber second number to compare
-     * @param tolerance1 tolerance for lower boundary
-     * @param tolerance2 tolerance for upper boundary
+     * @param tolerance1 tolerance for lower boundary (0 if not specified)
+     * @param tolerance2 tolerance for upper boundary (0 if not specified)
      * @param includeLowerBound accept lower boundary
      * @param includeUpperBound accept upper boundary
      * @return true if given numbers are equal; false otherwise
@@ -170,11 +158,11 @@ public enum ToleranceMode implements Stringifiable {
 
     /**
      * Parses string representation of <code>ToleranceMode</code>.
-     * 
+     *
      * @param toleranceMode string representation of <code>ToleranceMode</code>
      * @return parsed <code>ToleranceMode</code>
      */
-    public static ToleranceMode parseToleranceMode(String toleranceMode) {
+    public static ToleranceMode parseToleranceMode(final String toleranceMode) {
         final ToleranceMode result = toleranceModes.get(toleranceMode);
 
         if (result == null) {

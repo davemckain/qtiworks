@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests <code>NullValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.NullValue
  */
 @RunWith(Parameterized.class)
@@ -50,39 +50,53 @@ public class NullValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null {false, NullValue.INSTANCE, null},
-                // NullValue {true, NullValue.INSTANCE, NullValue.INSTANCE},
-                // IdentifierValue {false, NullValue.INSTANCE, new IdentifierValue("identifier")},
-                // BooleanValue {false, NullValue.INSTANCE, BooleanValue.TRUE}, {false, NullValue.INSTANCE, BooleanValue.FALSE},
-                // IntegerValue {false, NullValue.INSTANCE, new IntegerValue(1)},
-                // FloatValue {false, NullValue.INSTANCE, new FloatValue(1)},
-                // StringValue {false, NullValue.INSTANCE, new StringValue("string")},
-                // PointValue {false, NullValue.INSTANCE, new PointValue(1, 1)},
-                // PairValue {false, NullValue.INSTANCE, new PairValue("ident1", "ident2")},
-                // DirectedPairValue {false, NullValue.INSTANCE, new DirectedPairValue("ident1", "ident2")},
-                // DurationValue {false, NullValue.INSTANCE, new DurationValue(1)},
-                // FileValue {false, NullValue.INSTANCE, new FileValue("file")},
-                // UriValue {false, NullValue.INSTANCE, new UriValue("uri")},
-                // MultipleValue {true, NullValue.INSTANCE, new MultipleValue()}, {false, NullValue.INSTANCE, new MultipleValue(new IntegerValue(1))},
-                // OrderedValue {true, NullValue.INSTANCE, new OrderedValue()}, {false, NullValue.INSTANCE, new OrderedValue(new IntegerValue(1))},
-                // RecordValue {true, NullValue.INSTANCE, new RecordValue()}, {false, NullValue.INSTANCE, new RecordValue("identifier", new IntegerValue(1))},
+                // NullValue
+                {true, NullValue.INSTANCE, NullValue.INSTANCE},
+                // IdentifierValue
+                {false, NullValue.INSTANCE, new IdentifierValue("identifier")},
+                // BooleanValue
+                {false, NullValue.INSTANCE, BooleanValue.TRUE}, {false, NullValue.INSTANCE, BooleanValue.FALSE},
+                // IntegerValue
+                {false, NullValue.INSTANCE, new IntegerValue(1)},
+                // FloatValue
+                {false, NullValue.INSTANCE, new FloatValue(1)},
+                // StringValue
+                {false, NullValue.INSTANCE, new StringValue("string")},
+                // PointValue
+                {false, NullValue.INSTANCE, new PointValue(1, 1)},
+                // PairValue
+                {false, NullValue.INSTANCE, new PairValue("ident1", "ident2")},
+                // DirectedPairValue
+                {false, NullValue.INSTANCE, new DirectedPairValue("ident1", "ident2")},
+                // DurationValue
+                {false, NullValue.INSTANCE, new DurationValue(1)},
+                // FileValue
+                {false, NullValue.INSTANCE, ValueTestUtils.createTestFileValue("file")},
+                // UriValue
+                {false, NullValue.INSTANCE, new UriValue("uri")},
+                // MultipleValue
+                {true, NullValue.INSTANCE, new MultipleValue()}, {false, NullValue.INSTANCE, new MultipleValue(new IntegerValue(1))},
+                // OrderedValue
+                {true, NullValue.INSTANCE, new OrderedValue()}, {false, NullValue.INSTANCE, new OrderedValue(new IntegerValue(1))},
+                // RecordValue
+                {true, NullValue.INSTANCE, new RecordValue()}, {false, NullValue.INSTANCE, new RecordValue("identifier", new IntegerValue(1))},
                 });
     }
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public NullValueTest(boolean equals, Value value1, Value value2) {
+    public NullValueTest(final boolean equals, final Value value1, final Value value2) {
         super(equals, value1, value2);
     }
 }

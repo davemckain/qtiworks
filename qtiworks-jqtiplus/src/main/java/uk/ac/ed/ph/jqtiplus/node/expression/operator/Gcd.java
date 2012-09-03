@@ -67,7 +67,7 @@ public final class Gcd extends AbstractFunctionalExpression {
 
     @Override
     protected final Value evaluateSelf(final Value[] childValues) {
-        BigInteger runningGcd = null; /* (Will become non-null whenever first non-NULL descendent is found) */
+        BigInteger runningGcd = null; /* (Will become non-null whenever first non-NULL descendant is found) */
         for (final Value childValue : childValues) {
             /* (Spec says any NULL -> NULL) */
             if (childValue.isNull()) {

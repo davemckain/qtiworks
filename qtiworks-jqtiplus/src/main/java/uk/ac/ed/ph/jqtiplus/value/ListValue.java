@@ -67,18 +67,17 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
     }
 
     /**
-     * Constructs empty (NULL) <code>ListValue</code> container and adds given <code>SingleValue</code> into it.
+     * Constructs <code>ListValue</code> containing the given <code>SingleValue</code>.
      *
      * @param value added <code>SingleValue</code>
      */
     public ListValue(final SingleValue value) {
         container = new ArrayList<SingleValue>();
-
         add(value);
     }
 
     /**
-     * Constructs empty (NULL) <code>ListValue</code> container and copies all given <code>SingleValue</code>s into it.
+     * Constructs <code>ListValue</code> containing copies of the given <code>SingleValue</code>s into it.
      *
      * @param values added <code>SingleValue</code>s
      */
@@ -231,11 +230,6 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
         catch (final CloneNotSupportedException e) {
             throw new QtiLogicException("Cannot clone container", e);
         }
-    }
-
-    @Override
-    public final int hashCode() {
-        return container.hashCode();
     }
 
     /**

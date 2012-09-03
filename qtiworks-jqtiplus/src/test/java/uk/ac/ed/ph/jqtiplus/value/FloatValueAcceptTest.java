@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -47,7 +49,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>FloatValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
  */
 @RunWith(Parameterized.class)
@@ -55,14 +57,16 @@ public class FloatValueAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // standard format {"123.45", 123.45}, {"+123.45", 123.45}, {"59", 59.0}, {"+59", 59.0}, {"3.9999", 3.9999}, {"+3.9999", 3.9999}, {"1.0", 1.0}, {"+1.0", 1.0}, {"1", 1.0}, {"+1", 1.0}, {"0.0", 0.0}, {"+0.0", 0.0}, {"-0.0", 0.0}, {"0", 0.0}, {"+0", 0.0}, {"-0", -0.0}, {"-1.0", -1.0}, {"-1", -1.0}, {"-3.9999", -3.9999}, {"-59", -59.0}, {"-123.45", -123.45},
-                // "E" format {"12.34E+5", 12.34E+5}, {"+12.34E+5", 12.34E+5}, {"-12.34E+5", -12.34E+5}, {"12.34e+5", 12.34E+5}, {"+12.34e+5", 12.34E+5}, {"-12.34e+5", -12.34E+5}, {"12.34E+05", 12.34E+5}, {"+12.34E+05", 12.34E+5}, {"-12.34E+05", -12.34E+5}, {"12.34e+05", 12.34E+5}, {"+12.34e+05", 12.34E+5}, {"-12.34e+05", -12.34E+5}, {"12.34E-5", 12.34E-5}, {"+12.34E-5", 12.34E-5}, {"-12.34E-5", -12.34E-5}, {"12.34e-5", 12.34E-5}, {"+12.34e-5", 12.34E-5}, {"-12.34e-5", -12.34E-5}, {"12.34E-05", 12.34E-5}, {"+12.34E-05", 12.34E-5}, {"-12.34E-05", -12.34E-5}, {"12.34e-05", 12.34E-5}, {"+12.34e-05", 12.34E-5}, {"-12.34e-05", -12.34E-5}, {"INF", Double.POSITIVE_INFINITY}, {"-INF", Double.NEGATIVE_INFINITY},
+                // standard format
+                {"123.45", 123.45}, {"+123.45", 123.45}, {"59", 59.0}, {"+59", 59.0}, {"3.9999", 3.9999}, {"+3.9999", 3.9999}, {"1.0", 1.0}, {"+1.0", 1.0}, {"1", 1.0}, {"+1", 1.0}, {"0.0", 0.0}, {"+0.0", 0.0}, {"-0.0", 0.0}, {"0", 0.0}, {"+0", 0.0}, {"-0", -0.0}, {"-1.0", -1.0}, {"-1", -1.0}, {"-3.9999", -3.9999}, {"-59", -59.0}, {"-123.45", -123.45},
+                // "E" format
+                {"12.34E+5", 12.34E+5}, {"+12.34E+5", 12.34E+5}, {"-12.34E+5", -12.34E+5}, {"12.34e+5", 12.34E+5}, {"+12.34e+5", 12.34E+5}, {"-12.34e+5", -12.34E+5}, {"12.34E+05", 12.34E+5}, {"+12.34E+05", 12.34E+5}, {"-12.34E+05", -12.34E+5}, {"12.34e+05", 12.34E+5}, {"+12.34e+05", 12.34E+5}, {"-12.34e+05", -12.34E+5}, {"12.34E-5", 12.34E-5}, {"+12.34E-5", 12.34E-5}, {"-12.34E-5", -12.34E-5}, {"12.34e-5", 12.34E-5}, {"+12.34e-5", 12.34E-5}, {"-12.34e-5", -12.34E-5}, {"12.34E-05", 12.34E-5}, {"+12.34E-05", 12.34E-5}, {"-12.34E-05", -12.34E-5}, {"12.34e-05", 12.34E-5}, {"+12.34e-05", 12.34E-5}, {"-12.34e-05", -12.34E-5}, {"INF", Double.POSITIVE_INFINITY}, {"-INF", Double.NEGATIVE_INFINITY},
                 // (No test for NaN, as NaN != NaN so this style of test doesn't work)
                 });
     }
@@ -73,11 +77,11 @@ public class FloatValueAcceptTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      * @param expectedFloat expected parsed value
      */
-    public FloatValueAcceptTest(String string, Double expectedFloat) {
+    public FloatValueAcceptTest(final String string, final Double expectedFloat) {
         this.string = string;
         this.expectedFloat = expectedFloat.doubleValue();
     }
@@ -87,7 +91,7 @@ public class FloatValueAcceptTest {
      */
     @Test
     public void testParseFloat() {
-        final double result = FloatValue.parseFloat(string);
+        final double result = DataTypeBinder.parseFloat(string);
         Assert.assertTrue("Failed on " + string + ": got " + result, expectedFloat == result);
     }
 }

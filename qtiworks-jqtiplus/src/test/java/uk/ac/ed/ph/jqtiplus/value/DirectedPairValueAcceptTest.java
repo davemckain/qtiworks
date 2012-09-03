@@ -85,6 +85,6 @@ public class DirectedPairValueAcceptTest {
      */
     @Test
     public void testParseDirectedPair() {
-        assertEquals(expectedDirectedPair, new DirectedPairValue(string));
+        assertEquals(expectedDirectedPair, DirectedPairValue.parseString(string));
     }
 }

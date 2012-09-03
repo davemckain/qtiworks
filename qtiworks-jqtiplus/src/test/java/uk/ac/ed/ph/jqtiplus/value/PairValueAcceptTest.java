@@ -85,6 +85,6 @@ public class PairValueAcceptTest {
      */
     @Test
     public void testParsePair() {
-        assertEquals(expectedPair, new PairValue(string));
+        assertEquals(expectedPair, PairValue.parseString(string));
     }
 }

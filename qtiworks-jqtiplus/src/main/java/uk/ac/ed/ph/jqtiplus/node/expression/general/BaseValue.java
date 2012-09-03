@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
  * The simplest expression returns a single value from the set defined by the given baseType.
  * <p>
  * Added optional attribute identifier.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -72,10 +72,10 @@ public class BaseValue extends AbstractFunctionalExpression {
 
     /**
      * Constructs expression.
-     * 
+     *
      * @param parent parent of this expression
      */
-    public BaseValue(ExpressionParent parent) {
+    public BaseValue(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, true));
@@ -91,7 +91,7 @@ public class BaseValue extends AbstractFunctionalExpression {
 
     /**
      * Gets value of baseType attribute.
-     * 
+     *
      * @return value of baseType attribute
      * @see #setBaseTypeAttrValue
      */
@@ -101,17 +101,17 @@ public class BaseValue extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of baseType attribute.
-     * 
+     *
      * @param baseType new value of baseType attribute.
      * @see #getBaseTypeAttrValue
      */
-    public void setBaseTypeAttrValue(BaseType baseType) {
+    public void setBaseTypeAttrValue(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
     /**
      * Gets single value of this baseValue.
-     * 
+     *
      * @return single value of this baseValue
      * @see #setSingleValue
      */
@@ -121,19 +121,19 @@ public class BaseValue extends AbstractFunctionalExpression {
 
     /**
      * Sets new single value of this baseValue.
-     * 
+     *
      * @param singleValue new single value of this baseValue
      * @see #getSingleValue
      */
-    public void setSingleValue(SingleValue singleValue) {
+    public void setSingleValue(final SingleValue singleValue) {
         this.singleValue = singleValue;
     }
 
     @Override
-    protected void loadChildren(Element element, LoadingContext context) {
-        if (getBaseTypeAttrValue() != null && element.getTextContent().length() != 0) {
+    protected void loadChildren(final Element element, final LoadingContext context) {
+        if (getBaseTypeAttrValue() != null) {
             try {
-                singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent());
+                this.singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
@@ -142,12 +142,12 @@ public class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(final QtiSaxFiringContext saxFiringContext) throws SAXException {
         saxFiringContext.fireText(singleValue.toQtiString());
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (singleValue != null) {
             return new BaseType[] { singleValue.getBaseType() };
         }
@@ -160,7 +160,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (singleValue == null) {
@@ -175,7 +175,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected SingleValue evaluateSelf(Value[] childValues) {
+    protected SingleValue evaluateSelf(final Value[] childValues) {
         return singleValue;
     }
 

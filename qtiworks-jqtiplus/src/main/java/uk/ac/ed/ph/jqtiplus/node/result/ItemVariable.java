@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
  * Variable is value (of any cardinality and/or baseType) with identifier.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class ItemVariable extends AbstractNode {
@@ -62,17 +62,17 @@ public abstract class ItemVariable extends AbstractNode {
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    public ItemVariable(AbstractResult parent, String localName) {
+    public ItemVariable(final AbstractResult parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
-        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME, true));
+        getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
     }
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -82,17 +82,17 @@ public abstract class ItemVariable extends AbstractNode {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(VariableReferenceIdentifier identifier) {
+    public void setIdentifier(final VariableReferenceIdentifier identifier) {
         getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of cardinality attribute.
-     * 
+     *
      * @return value of cardinality attribute
      * @see #setCardinality
      */
@@ -102,17 +102,17 @@ public abstract class ItemVariable extends AbstractNode {
 
     /**
      * Sets new value of cardinality attribute.
-     * 
+     *
      * @param cardinality new value of cardinality attribute
      * @see #getCardinality
      */
-    public void setCardinality(Cardinality cardinality) {
+    public void setCardinality(final Cardinality cardinality) {
         getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).setValue(cardinality);
     }
 
     /**
      * Gets value of baseType attribute.
-     * 
+     *
      * @return value of baseType attribute
      * @see #setBaseType
      */
@@ -122,11 +122,11 @@ public abstract class ItemVariable extends AbstractNode {
 
     /**
      * Sets new value of baseType attribute.
-     * 
+     *
      * @param baseType new value of baseType attribute
      * @see #getBaseType
      */
-    public void setBaseType(BaseType baseType) {
+    public void setBaseType(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 

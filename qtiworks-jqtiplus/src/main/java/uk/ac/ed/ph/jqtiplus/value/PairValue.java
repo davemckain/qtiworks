@@ -33,7 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -46,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always pair.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
@@ -56,28 +57,17 @@ public final class PairValue extends AbstractPairValue {
 
     private static final long serialVersionUID = -9157898996344626699L;
 
-    /**
-     * Constructs <code>PairValue</code> from given pair of identifiers.
-     * 
-     * @param sourceValue source (first) identifier
-     * @param destValue destination (second) identifier
-     */
-    public PairValue(Identifier sourceValue, Identifier destValue) {
+    public static PairValue parseString(final String value) {
+        final Pair<Identifier, Identifier> parsed = DataTypeBinder.parsePair(value);
+        return new PairValue(parsed.getFirst(), parsed.getSecond());
+    }
+
+    public PairValue(final Identifier sourceValue, final Identifier destValue) {
         super(sourceValue, destValue);
     }
 
-    public PairValue(String sourceValue, String destValue) {
+    public PairValue(final String sourceValue, final String destValue) {
         super(sourceValue, destValue);
-    }
-
-    /**
-     * Constructs <code>PairValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>PairValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>PairValue</code> is not valid
-     */
-    public PairValue(String value) {
-        super(value);
     }
 
     @Override
@@ -91,7 +81,7 @@ public final class PairValue extends AbstractPairValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof PairValue)) {
             return false;
         }
@@ -99,5 +89,11 @@ public final class PairValue extends AbstractPairValue {
         final PairValue other = (PairValue) object;
         return sourceValue.equals(other.sourceValue) && destValue.equals(other.destValue) ||
                 sourceValue.equals(other.destValue) && destValue.equals(other.sourceValue);
+    }
+
+    @Override
+    public final int hashCode() {
+        /* (hashCode() needs to reflect unordered pairing, so let's add hashCodes() of both elements) */
+        return sourceValue.hashCode() + destValue.hashCode();
     }
 }

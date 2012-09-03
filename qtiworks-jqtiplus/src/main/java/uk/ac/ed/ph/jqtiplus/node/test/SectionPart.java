@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 
 /**
  * Abstract super class for assessmentSection and assessmentItemRef.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class SectionPart extends AbstractPart {
@@ -51,20 +51,20 @@ public abstract class SectionPart extends AbstractPart {
     public static final String ATTR_REQUIRED_NAME = "required";
 
     /** Default value of required attribute. */
-    public static final Boolean ATTR_REQUIRED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
 
     /** Name of fixed attribute in xml schema. */
     public static final String ATTR_FIXED_NAME = "fixed";
 
     /** Default value of fixed attribute. */
-    public static final Boolean ATTR_FIXED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_FIXED_DEFAULT_VALUE = false;
 
     /**
      * Constructs part.
-     * 
+     *
      * @param parent parent of constructed part.
      */
-    public SectionPart(AbstractPart parent, String localName) {
+    public SectionPart(final AbstractPart parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, false));
@@ -78,7 +78,7 @@ public abstract class SectionPart extends AbstractPart {
 
     /**
      * Gets parent assessment section of this part or null if parent is test part.
-     * 
+     *
      * @return parent assessment section of this part or null if parent is test part
      */
     public AssessmentSection getParentSection() {
@@ -87,7 +87,7 @@ public abstract class SectionPart extends AbstractPart {
 
     /**
      * Gets value of required attribute.
-     * 
+     *
      * @return value of required attribute
      * @see #setRequired
      */
@@ -97,17 +97,17 @@ public abstract class SectionPart extends AbstractPart {
 
     /**
      * Sets new value of required attribute.
-     * 
+     *
      * @param required new value of required attribute
      * @see #getRequired
      */
-    public void setRequired(Boolean required) {
+    public void setRequired(final Boolean required) {
         getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
     }
 
     /**
      * Gets value of fixed attribute.
-     * 
+     *
      * @return value of fixed attribute
      * @see #setFixed
      */
@@ -117,11 +117,11 @@ public abstract class SectionPart extends AbstractPart {
 
     /**
      * Sets new value of fixed attribute.
-     * 
+     *
      * @param fixed new value of fixed attribute
      * @see #getFixed
      */
-    public void setFixed(Boolean fixed) {
+    public void setFixed(final Boolean fixed) {
         getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).setValue(fixed);
     }
 

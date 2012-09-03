@@ -50,11 +50,11 @@ public final class StringResponseData implements ResponseData {
 
     private final List<String> responseData;
 
-    public StringResponseData(List<String> responseData) {
+    public StringResponseData(final List<String> responseData) {
         this.responseData = new ArrayList<String>(responseData);
     }
 
-    public StringResponseData(String... responseData) {
+    public StringResponseData(final String... responseData) {
         if (responseData!=null) {
             this.responseData = new ArrayList<String>(Arrays.asList(responseData));
         }

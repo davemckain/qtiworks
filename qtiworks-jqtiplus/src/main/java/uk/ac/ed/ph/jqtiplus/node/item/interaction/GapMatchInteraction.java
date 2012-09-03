@@ -96,14 +96,14 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
 
     /**
      * Construct new interaction.
      *
      * @param parent Parent node
      */
-    public GapMatchInteraction(XmlNode parent) {
+    public GapMatchInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));
@@ -133,7 +133,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
@@ -172,7 +172,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
      * @param identifier given identifier
      * @return gapChoice with given identifier or null
      */
-    public GapChoice getGapChoice(Identifier identifier) {
+    public GapChoice getGapChoice(final Identifier identifier) {
         for (final GapChoice choice : getGapChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -183,7 +183,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -213,13 +213,13 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     }
 
     @Override
-    public void initialize(ItemSessionController itemSessionController) {
+    public void initialize(final ItemSessionController itemSessionController) {
         super.initialize(itemSessionController);
         itemSessionController.shuffleInteractionChoiceOrder(this, getGapChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {
@@ -294,7 +294,7 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
         return true;
     }
 
-    private boolean validateChoice(GapChoice choice, int responseAssociateCount) {
+    private boolean validateChoice(final GapChoice choice, final int responseAssociateCount) {
         final int matchMin = choice.getMatchMin();
         final int matchMax = choice.getMatchMax();
         if (responseAssociateCount < matchMin) {

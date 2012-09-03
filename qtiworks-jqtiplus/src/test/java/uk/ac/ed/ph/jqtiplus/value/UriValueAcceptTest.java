@@ -35,6 +35,8 @@ package uk.ac.ed.ph.jqtiplus.value;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -49,7 +51,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>UriValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.UriValue
  * @see java.net.URI
  */
@@ -58,14 +60,16 @@ public class UriValueAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         try {
-            return Arrays.asList(new Object[][] { { "http://www.example.com/", new URI("http://www.example.com/") },
-                    { "images/icon.gif", new URI("images/icon.gif") }, { "mailto:user@example.com", new URI("mailto:user@example.com") },
+            return Arrays.asList(new Object[][] {
+                    { "http://www.example.com/", new URI("http://www.example.com/") },
+                    { "images/icon.gif", new URI("images/icon.gif") },
+                    { "mailto:user@example.com", new URI("mailto:user@example.com") },
             });
         }
         catch (final URISyntaxException ex) {
@@ -79,11 +83,11 @@ public class UriValueAcceptTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      * @param expectedUri expected parsed value
      */
-    public UriValueAcceptTest(String string, URI expectedUri) {
+    public UriValueAcceptTest(final String string, final URI expectedUri) {
         this.string = string;
         this.expectedUri = expectedUri;
     }
@@ -93,6 +97,6 @@ public class UriValueAcceptTest {
      */
     @Test
     public void testParseUri() {
-        assertEquals(expectedUri, UriValue.parseUri(string));
+        assertEquals(expectedUri, DataTypeBinder.parseUri(string));
     }
 }

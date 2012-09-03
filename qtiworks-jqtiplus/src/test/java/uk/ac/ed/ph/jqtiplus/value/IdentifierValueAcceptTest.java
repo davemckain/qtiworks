@@ -35,6 +35,8 @@ package uk.ac.ed.ph.jqtiplus.value;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -47,7 +49,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests <code>IdentifierValue</code> implementation of parsing value from <code>String</code>.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  */
 @RunWith(Parameterized.class)
@@ -55,12 +57,13 @@ public class IdentifierValueAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "identifier", "identifier" }, { "Identifier", "Identifier" }, { "IdenTifier", "IdenTifier" },
+        return Arrays.asList(new Object[][] {
+                { "identifier", "identifier" }, { "Identifier", "Identifier" }, { "IdenTifier", "IdenTifier" },
                 { "IDENTIFIER", "IDENTIFIER" }, { "identifier-123_A", "identifier-123_A" }, { "_identifier", "_identifier" }, { "_Identifier", "_Identifier" },
                 { "_IdenTifier", "_IdenTifier" }, { "_IDENTIFIER", "_IDENTIFIER" }, { "_identifier-123_A", "_identifier-123_A" },
         });
@@ -72,11 +75,11 @@ public class IdentifierValueAcceptTest {
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param string parsed <code>String</code>
      * @param expectedIdentifier expected parsed value
      */
-    public IdentifierValueAcceptTest(String string, String expectedIdentifier) {
+    public IdentifierValueAcceptTest(final String string, final String expectedIdentifier) {
         this.string = string;
         this.expectedIdentifier = expectedIdentifier;
     }
@@ -86,6 +89,6 @@ public class IdentifierValueAcceptTest {
      */
     @Test
     public void testParseIdentifier() {
-        assertEquals(expectedIdentifier, new IdentifierValue(string).toQtiString());
+        assertEquals(expectedIdentifier, new IdentifierValue(new Identifier(string)).toQtiString());
     }
 }

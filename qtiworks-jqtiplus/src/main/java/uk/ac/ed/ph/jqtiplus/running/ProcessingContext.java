@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -75,4 +76,19 @@ public interface ProcessingContext {
      * @param permittedTypes
      */
     Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes);
+
+    /**
+     * Convenience method to look up the value of the variable referenced by the
+     * given {@link VariableReferenceIdentifier} and having the given permitted types.
+     * <p>
+     * If permittedTypes is empty, then it looks up ANY type of variable.
+     *
+     * @throws QtiEvaluationException if no variable (of the permitted type) has
+     *   the given identifier, or if the given reference is not appropriate
+     *   (e.g. using a dotted reference within an item)
+     *
+     * @param identifier
+     * @param permittedTypes
+     */
+    Value lookupVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
 }

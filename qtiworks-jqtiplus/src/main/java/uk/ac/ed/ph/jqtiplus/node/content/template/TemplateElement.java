@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -54,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Abstract parent of feedback elements
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class TemplateElement extends BodyElement {
@@ -73,7 +72,7 @@ public abstract class TemplateElement extends BodyElement {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public TemplateElement(XmlNode parent, String localName) {
+    public TemplateElement(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
@@ -83,7 +82,7 @@ public abstract class TemplateElement extends BodyElement {
 
     /**
      * Gets value of showHide attribute.
-     * 
+     *
      * @return value of showHide attribute
      * @see #setVisibilityMode
      */
@@ -93,17 +92,17 @@ public abstract class TemplateElement extends BodyElement {
 
     /**
      * Sets new value of showHide attribute.
-     * 
+     *
      * @param visibilityMode new value of showHide attribute
      * @see #getVisibilityMode
      */
-    public void setVisibilityMode(VisibilityMode visibilityMode) {
+    public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
     /**
      * Gets value of templateIdentifier attribute.
-     * 
+     *
      * @return value of templateIdentifier attribute
      * @see #setTemplateIdentifier
      */
@@ -113,17 +112,17 @@ public abstract class TemplateElement extends BodyElement {
 
     /**
      * Sets new value of templateIdentifier attribute.
-     * 
+     *
      * @param templateIdentifier new value of templateIdentifier attribute
      * @see #getTemplateIdentifier
      */
-    public void setTemplateIdentifier(Identifier templateIdentifier) {
+    public void setTemplateIdentifier(final Identifier templateIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).setValue(templateIdentifier);
     }
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier(Identifier)
      */
@@ -133,40 +132,32 @@ public abstract class TemplateElement extends BodyElement {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier()
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
-    public void validateAttributes(ValidationContext context) {
+    public void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        Identifier templateIdentifier = getTemplateIdentifier();
+        final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, templateIdentifier, VariableType.TEMPLATE);
+            context.checkVariableReference(this, templateIdentifier);
+            final VariableDeclaration declaration = context.checkVariableReference(this, templateIdentifier);
             if (declaration!=null) {
-                if (declaration.getCardinality() != null
-                        && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                    context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
-                            + " or "
-                            + Cardinality.MULTIPLE
-                            + ", but found: "
-                            + declaration.getCardinality()));
-                }
-    
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                    context.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
-                }
+                context.checkVariableType(this, declaration, VariableType.TEMPLATE);
+                context.checkCardinality(this, declaration, Cardinality.SINGLE, Cardinality.MULTIPLE);
+                context.checkBaseType(this, declaration, BaseType.IDENTIFIER);
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
@@ -176,10 +167,10 @@ public abstract class TemplateElement extends BodyElement {
 
     /**
      * Returns true if this feedback can be displayed.
-     * 
+     *
      * @return true if this feedback can be displayed; false otherwise
      */
-    public boolean isVisible(ItemProcessingContext itemContext) {
+    public boolean isVisible(final ItemProcessingContext itemContext) {
         final Value templateValue = itemContext.lookupVariableValue(getTemplateIdentifier(), VariableType.TEMPLATE);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 

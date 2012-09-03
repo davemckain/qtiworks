@@ -375,7 +375,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                 if (responseCardinality.isList()) {
                     final List<IntegerValue> values = new ArrayList<IntegerValue>(stringResponseData.size());
                     for (final String stringResponseDatum : stringResponseData) {
-                        values.add(new IntegerValue(stringResponseDatum, base));
+                        values.add(IntegerValue.parseString(stringResponseDatum, base));
                     }
 
                     if (responseCardinality == Cardinality.MULTIPLE) {
@@ -386,7 +386,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
                     }
                 }
                 else {
-                    result = new IntegerValue(stringResponseData.get(0), base);
+                    result = IntegerValue.parseString(stringResponseData.get(0), base);
                 }
             }
             else {

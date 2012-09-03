@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -44,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always identifier.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -55,17 +54,11 @@ public final class IdentifierValue extends SingleValue {
 
     private final Identifier identifierValue;
 
-    public IdentifierValue(Identifier value) {
+    public IdentifierValue(final Identifier value) {
         this.identifierValue = value;
     }
 
-    /**
-     * Constructs <code>IdentifierValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>IdentifierValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>IdentifierValue</code> is not valid
-     */
-    public IdentifierValue(String value) {
+    public IdentifierValue(final String value) {
         this(new Identifier(value));
     }
 
@@ -79,7 +72,7 @@ public final class IdentifierValue extends SingleValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof IdentifierValue)) {
             return false;
         }

@@ -52,7 +52,7 @@ import java.util.Map;
  * ordered - ordered list of values of same type
  * <p>
  * record - unordered list of values of different types
- * 
+ *
  * @author Jiri Kajaba
  */
 public enum Cardinality implements Stringifiable {
@@ -92,13 +92,13 @@ public enum Cardinality implements Stringifiable {
 
     private String cardinality;
 
-    private Cardinality(String cardinality) {
+    private Cardinality(final String cardinality) {
         this.cardinality = cardinality;
     }
 
     /**
      * Returns true if this cardinality is single; false otherwise.
-     * 
+     *
      * @return true if this cardinality is single; false otherwise
      */
     public boolean isSingle() {
@@ -107,7 +107,7 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns true if this cardinality is multiple or ordered; false otherwise.
-     * 
+     *
      * @return true if this cardinality is multiple or ordered; false otherwise
      */
     public boolean isList() {
@@ -116,7 +116,7 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns true if this cardinality is multiple; false otherwise.
-     * 
+     *
      * @return true if this cardinality is multiple; false otherwise
      */
     public boolean isMultiple() {
@@ -125,7 +125,7 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns true if this cardinality is ordered; false otherwise.
-     * 
+     *
      * @return true if this cardinality is ordered; false otherwise
      */
     public boolean isOrdered() {
@@ -134,11 +134,20 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns true if this cardinality is record; false otherwise.
-     * 
+     *
      * @return true if this cardinality is record; false otherwise
      */
     public boolean isRecord() {
         return this == RECORD;
+    }
+
+    public boolean isOneOf(final Cardinality... baseTypes) {
+        for (final Cardinality other : baseTypes) {
+            if (this==other) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -148,12 +157,12 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns parsed <code>Cardinality</code> from given <code>String</code>.
-     * 
+     *
      * @param cardinality <code>String</code> representation of <code>Cardinality</code>
      * @return parsed <code>Cardinality</code> from given <code>String</code>
      * @throws QtiParseException if given <code>String</code> is not valid <code>Cardinality</code>
      */
-    public static Cardinality parseCardinality(String cardinality) {
+    public static Cardinality parseCardinality(final String cardinality) {
         final Cardinality result = cardinalities.get(cardinality);
 
         if (result == null) {
@@ -165,12 +174,12 @@ public enum Cardinality implements Stringifiable {
 
     /**
      * Returns intersection of two given cardinalities sets (order is not important).
-     * 
+     *
      * @param firstSet first set of cardinalities
      * @param secondSet second set of cardinalities
      * @return intersection of two given cardinalities sets
      */
-    public static Cardinality[] intersection(Cardinality[] firstSet, Cardinality[] secondSet) {
+    public static Cardinality[] intersection(final Cardinality[] firstSet, final Cardinality[] secondSet) {
         final List<Cardinality> cardinalities = new ArrayList<Cardinality>();
 
         for (final Cardinality cardinality : firstSet) {

@@ -106,9 +106,9 @@ public class MediaInteraction extends BlockInteraction {
     public static final String ATTR_LOOP_NAME = "loop";
 
     /** Default value of loop attribute. */
-    public static final Boolean ATTR_LOOP_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_LOOP_DEFAULT_VALUE = false;
 
-    public MediaInteraction(XmlNode parent) {
+    public MediaInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_AUTOSTART_NAME, true));
@@ -125,7 +125,7 @@ public class MediaInteraction extends BlockInteraction {
      * @param autostart new value of autostart attribute
      * @see #getAutostart
      */
-    public void setAutostart(Boolean autostart) {
+    public void setAutostart(final Boolean autostart) {
         getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).setValue(autostart);
     }
 
@@ -145,7 +145,7 @@ public class MediaInteraction extends BlockInteraction {
      * @param minPlays new value of minPlays attribute
      * @see #getMinPlays
      */
-    public void setMinPlays(Integer minPlays) {
+    public void setMinPlays(final Integer minPlays) {
         getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).setValue(minPlays);
     }
 
@@ -165,7 +165,7 @@ public class MediaInteraction extends BlockInteraction {
      * @param maxPlays new value of maxPlays attribute
      * @see #getMaxPlays
      */
-    public void setMaxPlays(Integer maxPlays) {
+    public void setMaxPlays(final Integer maxPlays) {
         getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).setValue(maxPlays);
     }
 
@@ -195,7 +195,7 @@ public class MediaInteraction extends BlockInteraction {
      * @param loop new value of loop attribute
      * @see #getLoop
      */
-    public void setLoop(Boolean loop) {
+    public void setLoop(final Boolean loop) {
         getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).setValue(loop);
     }
 
@@ -229,12 +229,12 @@ public class MediaInteraction extends BlockInteraction {
      * @param object new object child
      * @see #getObject
      */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -250,7 +250,7 @@ public class MediaInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* We assume anything is valid here */
         return true;
     }

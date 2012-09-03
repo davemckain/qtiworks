@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 
 import java.io.File;
@@ -41,7 +42,7 @@ import java.io.File;
  * Implementation of <code>BaseType</code> file value.
  * <p>
  * This is a completely different implementation from JQTI, which stored files as a big String!
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author David McKain
@@ -49,22 +50,21 @@ import java.io.File;
 public final class FileValue extends SingleValue {
 
     private static final long serialVersionUID = 7627842431496721671L;
-    
+
     private File file;
     private String contentType;
     private String fileName;
-    
-    public FileValue(File file, String contentType) {
-        this(file, contentType, null);
-    }
-    
-    public FileValue(File file, String contentType, String fileName) {
+
+    public FileValue(final File file, final String contentType, final String fileName) {
+        Assert.ensureNotNull(file);
+        Assert.ensureNotNull(contentType);
+        Assert.ensureNotNull(fileName);
         this.file = file;
         this.contentType = contentType;
         this.fileName = fileName;
     }
-    
-    public FileValue(FileResponseData fileResponseData) {
+
+    public FileValue(final FileResponseData fileResponseData) {
         this.file = fileResponseData.getFile();
         this.contentType = fileResponseData.getContentType();
         this.fileName = fileResponseData.getFileName();
@@ -74,46 +74,48 @@ public final class FileValue extends SingleValue {
     public BaseType getBaseType() {
         return BaseType.FILE;
     }
-    
+
     public File getFile() {
         return file;
     }
-    
-    public void setFile(File file) {
+
+    public void setFile(final File file) {
         this.file = file;
     }
-    
+
     public String getContentType() {
         return contentType;
     }
 
-    
-    public void setContentType(String contentType) {
+
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
-    
+
     public String getFileName() {
         return fileName;
     }
 
-    
-    public void setFileName(String fileName) {
+
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof FileValue)) {
             return false;
         }
-        FileValue other = (FileValue) object;
-        return file.equals(other.file);
+        final FileValue other = (FileValue) object;
+        return file.equals(other.file)
+                && contentType.equals(other.contentType)
+                && fileName.equals(other.fileName);
     }
 
     @Override
     public int hashCode() {
-        return file.hashCode();
+        return (file.getAbsolutePath() + " " + contentType + " " + fileName).hashCode();
     }
 
     @Override

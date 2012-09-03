@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Implementation of <code>BaseType</code> duration value.
@@ -77,7 +78,7 @@ public final class DurationValue extends SingleValue {
      */
     public DurationValue(String value) {
         try {
-            this.doubleValue = FloatValue.parseFloat(value);
+            this.doubleValue = DataTypeBinder.parseFloat(value);
             if (doubleValue < 0) {
                 throw new QtiParseException("Invalid duration '" + value + "'. Duration cannot be negative.");
             }

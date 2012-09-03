@@ -96,7 +96,7 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
     public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
     /** Default value of shuffle attribute. */
-    public static final Boolean ATTR_SHUFFLE_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
 
     /** Name of maxAssociations attribute in xml schema. */
     public static final String ATTR_MAX_ASSOCIATIONS_NAME = "maxAssociations";

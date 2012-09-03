@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 
 import java.io.Serializable;
@@ -45,26 +46,26 @@ import java.io.Serializable;
  * represented by a different type for clarify.
  * <p>
  * CombiningChars and Extenders are not currently supported!
- * 
+ *
  * @author David McKain
  */
 public final class Identifier implements Serializable, Comparable<Identifier> {
 
     private static final long serialVersionUID = 1842878881636384148L;
-    
+
     private final String value;
 
     /**
      * @throws QtiParseException if value is not a valid identifier
      */
-    public Identifier(String value) {
+    public Identifier(final String value) {
         this(value, true);
     }
 
     /**
      * @throws QtiParseException if value is not a valid identifier
      */
-    public Identifier(String value, boolean verify) {
+    public Identifier(final String value, final boolean verify) {
         if (verify) {
             verifyIdentifier(value);
         }
@@ -86,7 +87,7 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof Identifier)) {
             return false;
         }
@@ -95,34 +96,32 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
     }
 
     @Override
-    public int compareTo(Identifier other) {
+    public int compareTo(final Identifier other) {
         return value.compareTo(other.value);
     }
 
     /**
      * @throws QtiParseException if <code>String</code> representation of <code>identifier</code> is not valid
      */
-    private static void verifyIdentifier(String value) {
-        if (value != null) {
-            value = value.trim();
-        }
+    private static void verifyIdentifier(final String value) {
+        Assert.ensureNotNull(value);
 
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid identifier '" + value + "'. Must not be null or blank.");
+        if (value.isEmpty()) {
+            throw new QtiParseException("Invalid identifier '" + value + "': Must not be empty");
         }
 
         /* First character. */
         if (!Character.isLetter(value.codePointAt(0)) && value.charAt(0) != '_') {
-            throw new QtiParseException("Invalid identifier '" + value + "'. First character '" + value.charAt(0) + "' is not valid.");
+            throw new QtiParseException("Invalid identifier '" + value + "': First character '" + value.charAt(0) + "' is not valid");
         }
 
         /* Rest of characters. */
         for (int i = 1; i < value.length(); i++) {
             if (value.charAt(i) == '.') {
-                throw new QtiParseException("Invalid identifier '" + value + "'. JQTI does not permit period (.) characters in this identifier.");
+                throw new QtiParseException("Invalid identifier '" + value + "': JQTI does not permit period (.) characters in this identifier");
             }
             if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-') {
-                throw new QtiParseException("Invalid identifier '" + value + "'. Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid.");
+                throw new QtiParseException("Invalid identifier '" + value + "': Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid");
             }
         }
     }

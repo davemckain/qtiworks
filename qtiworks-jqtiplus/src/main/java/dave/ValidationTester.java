@@ -21,8 +21,7 @@ import java.net.URI;
 public final class ValidationTester {
 
     public static void main(final String[] args) throws Exception {
-//        final URI inputUri = URI.create("classpath:/mathextensions.xml");
-        final URI inputUri = URI.create("classpath:/choice_v2p0.xml");
+        final URI inputUri = URI.create("classpath:/variableRefs.xml");
 
         System.out.println("Reading and validating");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();

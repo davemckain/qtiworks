@@ -84,6 +84,6 @@ public class PointValueAcceptTest {
      */
     @Test
     public void testParsePoint() {
-        assertEquals(expectedPoint, new PointValue(string));
+        assertEquals(expectedPoint, PointValue.parseString(string));
     }
 }

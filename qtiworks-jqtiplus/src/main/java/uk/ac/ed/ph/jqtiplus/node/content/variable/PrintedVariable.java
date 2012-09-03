@@ -33,32 +33,30 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
 /**
  * This is the only way how to show variables to actor.
- * 
+ *
  * @author Jonathon Hare
  */
-public class PrintedVariable extends BodyElement implements FlowStatic, InlineStatic, TextOrVariable {
+public final class PrintedVariable extends BodyElement implements FlowStatic, InlineStatic, TextOrVariable {
 
     private static final long serialVersionUID = 1096970249266471727L;
 
@@ -71,108 +69,141 @@ public class PrintedVariable extends BodyElement implements FlowStatic, InlineSt
     /** Name of format attribute in xml schema. */
     public static final String ATTR_FORMAT_NAME = "format";
 
+    /** Name of powerForm attribute in xml schema. */
+    public static final String ATTR_POWER_FORM_NAME = "powerForm";
+
     /** Name of base attribute in xml schema. */
     public static final String ATTR_BASE_NAME = "base";
+
+    /** Name of index attribute in xml schema. */
+    public static final String ATTR_INDEX_NAME = "index";
+
+    /** Name of delimiter attribute in xml schema. */
+    public static final String ATTR_DELIMTER_NAME = "delimiter";
+
+    /** Default value of delimiter attribute. */
+    public static final String ATTR_DELMITER_DEFAULT_VALUE = ";";
+
+    /** Name of field attribute in xml schema. */
+    public static final String ATTR_FIELD_NAME = "field";
+
+    /** Name of mapping indicator attribute in xml schema. */
+    public static final String ATTR_MAPPING_INDICATOR_NAME = "mappingIndicator";
+
+    /** Default value of mappingIndicator attribute. */
+    public static final String ATTR_MAPPING_INDICATOR_DEFAULT_VALUE = "=";
 
     /** Default value of base attribute. */
     public static final int ATTR_BASE_DEFAULT_VALUE = 10;
 
-    public PrintedVariable(XmlNode parent) {
+    public PrintedVariable(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_FORMAT_NAME, false));
-        getAttributes().add(new IntegerAttribute(this, ATTR_BASE_NAME, ATTR_BASE_DEFAULT_VALUE, false));
+        getAttributes().add(new BooleanAttribute(this, ATTR_POWER_FORM_NAME, false));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_BASE_NAME, new IntegerOrVariableRef(ATTR_BASE_DEFAULT_VALUE), false));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_INDEX_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_DELIMTER_NAME, ATTR_DELMITER_DEFAULT_VALUE, false));
+        getAttributes().add(new StringAttribute(this, ATTR_FIELD_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_MAPPING_INDICATOR_NAME, ATTR_MAPPING_INDICATOR_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of format attribute.
-     * 
-     * @return value of format attribute
-     * @see #setFormat
-     */
+
     public String getFormat() {
         return getAttributes().getStringAttribute(ATTR_FORMAT_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of format attribute.
-     * 
-     * @param format new value of format attribute
-     * @see #getFormat
-     */
-    public void setFormat(String format) {
+    public void setFormat(final String format) {
         getAttributes().getStringAttribute(ATTR_FORMAT_NAME).setValue(format);
     }
 
-    /**
-     * Gets value of base attribute.
-     * 
-     * @return value of base attribute
-     * @see #setBase
-     */
-    public int getBase() {
-        return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedNonNullValue();
+
+    public Boolean getPowerForm() {
+        return getAttributes().getBooleanAttribute(ATTR_POWER_FORM_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of base attribute.
-     * 
-     * @param base new value of base attribute
-     * @see #getBase
-     */
-    public void setBase(Integer base) {
-        getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
+    public void setPowerForm(final Boolean powerForm) {
+        getAttributes().getBooleanAttribute(ATTR_POWER_FORM_NAME).setValue(powerForm);
     }
+
+
+    public IntegerOrVariableRef getBase() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_BASE_NAME).getComputedValue();
+    }
+
+    public void setBase(final IntegerOrVariableRef base) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_BASE_NAME).setValue(base);
+    }
+
+
+    public IntegerOrVariableRef getIndex() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_INDEX_NAME).getComputedValue();
+    }
+
+    public void setIndex(final IntegerOrVariableRef base) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_BASE_NAME).setValue(base);
+    }
+
+
+    public String getDelimiter() {
+        return getAttributes().getStringAttribute(ATTR_DELIMTER_NAME).getComputedValue();
+    }
+
+    public void setDelimiter(final String delimiter) {
+        getAttributes().getStringAttribute(ATTR_DELIMTER_NAME).setValue(delimiter);
+    }
+
+
+    public String getField() {
+        return getAttributes().getStringAttribute(ATTR_FIELD_NAME).getComputedValue();
+    }
+
+    public void setField(final String field) {
+        getAttributes().getStringAttribute(ATTR_FIELD_NAME).setValue(field);
+    }
+
+
+    public String getMappingIndicator() {
+        return getAttributes().getStringAttribute(ATTR_MAPPING_INDICATOR_NAME).getComputedValue();
+    }
+
+    public void setMappingIndicator(final String mappingIndicator) {
+        getAttributes().getStringAttribute(ATTR_MAPPING_INDICATOR_NAME).setValue(mappingIndicator);
+    }
+
 
     @Override
-    public void validateAttributes(ValidationContext context) {
+    public void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getIdentifier() != null) {
-            VariableDeclaration declaration = context.checkVariableReference(this, getIdentifier(), VariableType.TEMPLATE, VariableType.OUTCOME);
+            final Identifier identifier = getIdentifier();
+            final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);
+            if (variableDeclaration!=null) {
+                context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
 
-            // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
-            // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
-            // pollute this code with too much MathAssess-specfic stuff.
-            //            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle())
-            //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()));
-            if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isRecord())) {
-                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + declaration.getCardinality()
-                        + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
+                // (FIXME! The following is now out of date wrt latest QTI 2.1 draft!)
+                // DM: For MathAssess, we're relaxing the following test to allow record variables (which is how we encode MathsContent variables)
+                // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
+                // pollute this code with too much MathAssess-specfic stuff.
+                //            if (variableDeclaration != null && variableDeclaration.getCardinality() != null && !variableDeclaration.getCardinality().isSingle())
+                //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()));
+                if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
+                    context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
+                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
+                }
             }
         }
-    }
-
-    public SingleValue evaluate(ProcessingContext context) {
-        final Identifier identifier = getIdentifier();
-        final Value value = context.lookupVariableValue(identifier, VariableType.OUTCOME, VariableType.TEMPLATE);
-        if (!value.isNull() && !(value.getCardinality() == Cardinality.SINGLE && value.getCardinality() == Cardinality.RECORD)) {
-            throw new QtiEvaluationException("Outcome or response variable is wrong cardinality: " +
-                    value.getCardinality() + " Expected: " + Cardinality.SINGLE);
-        }
-        return (SingleValue) value;
     }
 
     @Override

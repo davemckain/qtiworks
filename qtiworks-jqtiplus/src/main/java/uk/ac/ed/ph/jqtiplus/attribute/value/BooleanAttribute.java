@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,23 +48,23 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
+public final class BooleanAttribute extends SingleAttribute<Boolean> implements EnumerateAttribute<Boolean> {
 
     private static final long serialVersionUID = -6757069543350955429L;
 
     /** Read-only view of all allowed values */
     private static final List<Boolean> valuesView = Collections.unmodifiableList(Arrays.asList(Boolean.TRUE, Boolean.FALSE));
 
-    public BooleanAttribute(XmlNode parent, String localName, boolean required) {
+    public BooleanAttribute(final XmlNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public BooleanAttribute(XmlNode parent, String localName, Boolean defaultValue, boolean required) {
-        super(parent, localName, defaultValue, required);
+    public BooleanAttribute(final XmlNode parent, final String localName, final boolean defaultValue, final boolean required) {
+        super(parent, localName, Boolean.valueOf(defaultValue), required);
     }
 
-    public BooleanAttribute(XmlNode parent, String localName, String namespaceUri, Boolean defaultValue, boolean required) {
-        super(parent, localName, namespaceUri, defaultValue, required);
+    public BooleanAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean defaultValue, final boolean required) {
+        super(parent, localName, namespaceUri, Boolean.valueOf(defaultValue), required);
     }
 
     /**
@@ -72,7 +72,7 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
      * returning a raw boolean
      */
     public boolean getComputedNonNullValue() {
-        Boolean computed = super.getComputedValue();
+        final Boolean computed = super.getComputedValue();
         if (computed==null) {
             throw new QtiAttributeException("Did not expect boolean attribute " + getLocalName() + " to have a null computed value");
         }
@@ -80,22 +80,18 @@ public class BooleanAttribute extends SingleAttribute<Boolean> implements Enumer
     }
 
     @Override
-    protected Boolean parseQtiString(String value) {
-        return Boolean.valueOf(BooleanValue.parseBoolean(value));
-    }
-
-    @Override
-    protected String toQtiString(Boolean value) {
-        return value.toString();
-    }
-
-    /**
-     * Gets all supported values of this attribute.
-     *
-     * @return all supported values of this attribute
-     */
-    @Override
     public List<Boolean> getSupportedValues() {
         return valuesView;
     }
+
+    @Override
+    protected Boolean parseQtiString(final String value) {
+        return Boolean.valueOf(DataTypeBinder.parseBoolean(value));
+    }
+
+    @Override
+    protected String toQtiString(final Boolean value) {
+        return value.toString();
+    }
+
 }

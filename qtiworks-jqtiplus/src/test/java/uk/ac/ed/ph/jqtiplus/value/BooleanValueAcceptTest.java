@@ -35,6 +35,8 @@ package uk.ac.ed.ph.jqtiplus.value;
 
 import static org.junit.Assert.assertEquals;
 
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -84,6 +86,6 @@ public class BooleanValueAcceptTest {
      */
     @Test
     public void testParseBoolean() {
-        assertEquals(expectedBoolean, BooleanValue.parseBoolean(string));
+        assertEquals(expectedBoolean, DataTypeBinder.parseBoolean(string));
     }
 }

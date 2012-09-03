@@ -42,7 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests <code>PointValue</code> implementation of <code>equals</code> and <code>hashCode</code> methods.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.PointValue
  */
 @RunWith(Parameterized.class)
@@ -50,39 +50,55 @@ public class PointValueTest extends ValueTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                // null {false, new PointValue(1, 1), null},
-                // NullValue {false, new PointValue(1, 1), NullValue.INSTANCE},
-                // IdentifierValue {false, new PointValue(1, 1), new IdentifierValue("identifier")},
-                // BooleanValue {false, new PointValue(1, 1), BooleanValue.TRUE}, {false, new PointValue(1, 1), BooleanValue.FALSE},
-                // IntegerValue {false, new PointValue(1, 1), new IntegerValue(1)},
-                // FloatValue {false, new PointValue(1, 1), new FloatValue(1)},
-                // StringValue {false, new PointValue(1, 1), new StringValue("string")},
-                // PointValue {true, new PointValue(1, 1), new PointValue(1, 1)}, {false, new PointValue(1, 1), new PointValue(1, 2)}, {false, new PointValue(1, 1), new PointValue(2, 1)}, {false, new PointValue(1, 1), new PointValue(2, 2)},
-                // PairValue {false, new PointValue(1, 1), new PairValue("ident1", "ident2")},
-                // DirectedPairValue {false, new PointValue(1, 1), new DirectedPairValue("ident1", "ident2")},
-                // DurationValue {false, new PointValue(1, 1), new DurationValue(1)},
-                // FileValue {false, new PointValue(1, 1), new FileValue("file")},
-                // UriValue {false, new PointValue(1, 1), new UriValue("uri")},
-                // MultipleValue {false, new PointValue(1, 1), new MultipleValue()}, {false, new PointValue(1, 1), new MultipleValue(new PointValue(1, 1))},
-                // OrderedValue {false, new PointValue(1, 1), new OrderedValue()}, {false, new PointValue(1, 1), new OrderedValue(new PointValue(1, 1))},
-                // RecordValue {false, new PointValue(1, 1), new RecordValue()}, {false, new PointValue(1, 1), new RecordValue("identifier", new PointValue(1, 1))},
+                // null
+                {false, new PointValue(1, 1), null},
+                // NullValue
+                {false, new PointValue(1, 1), NullValue.INSTANCE},
+                // IdentifierValue
+                {false, new PointValue(1, 1), new IdentifierValue("identifier")},
+                // BooleanValue
+                {false, new PointValue(1, 1), BooleanValue.TRUE}, {false, new PointValue(1, 1), BooleanValue.FALSE},
+                // IntegerValue
+                {false, new PointValue(1, 1), new IntegerValue(1)},
+                // FloatValue
+                {false, new PointValue(1, 1), new FloatValue(1)},
+                // StringValue
+                {false, new PointValue(1, 1), new StringValue("string")},
+                // PointValue
+                {true, new PointValue(1, 1), new PointValue(1, 1)}, {false, new PointValue(1, 1), new PointValue(1, 2)}, {false, new PointValue(1, 1), new PointValue(2, 1)}, {false, new PointValue(1, 1), new PointValue(2, 2)},
+                // PairValue
+                {false, new PointValue(1, 1), new PairValue("ident1", "ident2")},
+                // DirectedPairValue
+                {false, new PointValue(1, 1), new DirectedPairValue("ident1", "ident2")},
+                // DurationValue
+                {false, new PointValue(1, 1), new DurationValue(1)},
+                // FileValue
+                {false, new PointValue(1, 1), ValueTestUtils.createTestFileValue("file")},
+                // UriValue
+                {false, new PointValue(1, 1), new UriValue("uri")},
+                // MultipleValue
+                {false, new PointValue(1, 1), new MultipleValue()}, {false, new PointValue(1, 1), new MultipleValue(new PointValue(1, 1))},
+                // OrderedValue
+                {false, new PointValue(1, 1), new OrderedValue()}, {false, new PointValue(1, 1), new OrderedValue(new PointValue(1, 1))},
+                // RecordValue
+                {false, new PointValue(1, 1), new RecordValue()}, {false, new PointValue(1, 1), new RecordValue("identifier", new PointValue(1, 1))},
                 });
     }
 
     /**
      * Constructs this test.
-     * 
+     *
      * @param equals true if given values are equal; false otherwise
      * @param value1 first value
      * @param value2 second value
      */
-    public PointValueTest(boolean equals, Value value1, Value value2) {
+    public PointValueTest(final boolean equals, final Value value1, final Value value2) {
         super(equals, value1, value2);
     }
 }

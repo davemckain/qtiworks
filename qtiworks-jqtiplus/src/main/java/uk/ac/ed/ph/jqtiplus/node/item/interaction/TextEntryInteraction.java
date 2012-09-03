@@ -219,7 +219,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
                     result = NullValue.INSTANCE;
                 }
                 else {
-                    result = new IntegerValue(responseString, base);
+                    result = IntegerValue.parseString(responseString, base);
                 }
             }
             else {
@@ -269,7 +269,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             value.add(KEY_INTEGER_VALUE_NAME, null);
         }
         else {
-            value.add(KEY_INTEGER_VALUE_NAME, new IntegerValue(responseStringAfterExp, base));
+            value.add(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
         }
 
         value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
@@ -284,7 +284,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
             value.add(KEY_NDP_NAME, new IntegerValue(frac));
         }
         else {
-            value.add(KEY_NDP_NAME, new IntegerValue(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
+            value.add(KEY_NDP_NAME, IntegerValue.parseString(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
         }
 
         int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
@@ -292,7 +292,7 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         value.add(KEY_NSF_NAME, new IntegerValue(nsf));
 
         if (exponentIndicator != null) {
-            value.add(KEY_EXPONENT_NAME, new IntegerValue(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
+            value.add(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
         }
         else {
             value.add(KEY_EXPONENT_NAME, null);

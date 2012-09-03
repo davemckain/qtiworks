@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -44,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */
@@ -60,11 +61,11 @@ public abstract class AbstractPairValue extends SingleValue {
 
     /**
      * Constructs <code>AbstractPairValue</code> from given pair of identifiers.
-     * 
+     *
      * @param sourceValue source (first) identifier
      * @param destValue destination (second) identifier
      */
-    public AbstractPairValue(Identifier sourceValue, Identifier destValue) {
+    public AbstractPairValue(final Identifier sourceValue, final Identifier destValue) {
         this.sourceValue = sourceValue;
         this.destValue = destValue;
     }
@@ -72,54 +73,21 @@ public abstract class AbstractPairValue extends SingleValue {
     /**
      * @throws QtiParseException if either value is not a valid identifier
      */
-    public AbstractPairValue(String sourceValue, String destValue) {
+    public AbstractPairValue(final String sourceValue, final String destValue) {
         this.sourceValue = new Identifier(sourceValue);
         this.destValue = new Identifier(destValue);
     }
 
     /**
-     * Constructs <code>AbstractPairValue</code> from given <code>String</code> representation.
-     * 
-     * @param value <code>String</code> representation of <code>AbstractPairValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>AbstractPairValue</code> is not valid
-     */
-    public AbstractPairValue(String value) {
-        if (value != null) {
-            value = value.trim();
-        }
-
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid pair '" + value + "'. Length is not valid.");
-        }
-
-        if (!value.equals(value.trim())) {
-            throw new QtiParseException("Invalid pair '" + value + "'.");
-        }
-
-        final String[] parts = value.split(" ");
-        if (parts.length != 2) {
-            throw new QtiParseException("Invalid pair '" + value + "'. Number of parts is not valid.");
-        }
-
-        try {
-            this.sourceValue = new Identifier(parts[0]);
-            this.destValue = new Identifier(parts[1]);
-        }
-        catch (final QtiParseException ex) {
-            throw new QtiParseException("Invalid pair '" + value + "'.", ex);
-        }
-    }
-
-    /**
      * Returns true if this pair is directed false otherwise.
-     * 
+     *
      * @return true if this pair is directed false otherwise
      */
     public abstract boolean isDirected();
 
     /**
      * Returns source (first) identifier.
-     * 
+     *
      * @return source (first) identifier
      */
     public final Identifier sourceValue() {
@@ -128,20 +96,15 @@ public abstract class AbstractPairValue extends SingleValue {
 
     /**
      * Returns destination (second) identifier.
-     * 
+     *
      * @return destination (second) identifier
      */
     public final Identifier destValue() {
         return destValue;
     }
-    
-    @Override
-    public final int hashCode() {
-        return (sourceValue + " " + destValue + " " + isDirected()).hashCode();
-    }
 
     @Override
     public final String toQtiString() {
-        return sourceValue + " " + destValue;
+        return DataTypeBinder.toString(sourceValue, destValue);
     }
 }

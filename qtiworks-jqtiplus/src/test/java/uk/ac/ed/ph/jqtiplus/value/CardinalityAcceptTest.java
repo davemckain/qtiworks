@@ -47,7 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests parsing <code>Cardinality</code> from <code>String</code> representation.
  * <p>
  * This test contains only valid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  */
 @RunWith(Parameterized.class)
@@ -55,12 +55,15 @@ public class CardinalityAcceptTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "single", Cardinality.SINGLE }, { "multiple", Cardinality.MULTIPLE }, { "ordered", Cardinality.ORDERED },
+        return Arrays.asList(new Object[][] {
+                { "single", Cardinality.SINGLE },
+                { "multiple", Cardinality.MULTIPLE },
+                { "ordered", Cardinality.ORDERED },
                 { "record", Cardinality.RECORD },
         });
     }
@@ -71,11 +74,11 @@ public class CardinalityAcceptTest {
 
     /**
      * Constructs test.
-     * 
+     *
      * @param string <code>String</code> representation of <code>Cardinality</code>
      * @param expectedCardinality expected parsed <code>Cardinality</code>
      */
-    public CardinalityAcceptTest(String string, Cardinality expectedCardinality) {
+    public CardinalityAcceptTest(final String string, final Cardinality expectedCardinality) {
         this.string = string;
         this.expectedCardinality = expectedCardinality;
     }

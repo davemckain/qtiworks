@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.UriValue;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.net.URI;
 
@@ -58,7 +58,7 @@ public final class UriAttribute extends SingleAttribute<URI> {
 
     @Override
     protected URI parseQtiString(String value) {
-        return UriValue.parseUri(value);
+        return DataTypeBinder.parseUri(value);
     }
     
     @Override

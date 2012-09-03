@@ -72,6 +72,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -454,7 +455,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
         else {
             /* Only allows specified types of variables */
-            for (final VariableType type : permittedTypes) {
+            CHECK_LOOP: for (final VariableType type : permittedTypes) {
                 switch (type) {
                     case TEMPLATE:
                         value = itemSessionState.getTemplateValue(identifier);
@@ -471,6 +472,9 @@ public final class ItemSessionController implements ItemProcessingContext {
                     default:
                         throw new QtiLogicException("Unexpected switch case");
                 }
+                if (value!=null) {
+                    break CHECK_LOOP;
+                }
             }
         }
         if (value==null) {
@@ -478,6 +482,15 @@ public final class ItemSessionController implements ItemProcessingContext {
                     + " and permitted type(s) " + Arrays.toString(permittedTypes));
         }
         return value;
+    }
+
+    @Override
+    public Value lookupVariableValue(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... permittedTypes) {
+        if (variableReferenceIdentifier.isDotted()) {
+            throw new QtiEvaluationException("Dotted variables cannot be used in items");
+        }
+        final Identifier itemVariableIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+        return lookupVariableValue(itemVariableIdentifier, permittedTypes);
     }
 
     public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {

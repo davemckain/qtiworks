@@ -55,7 +55,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * This attribute is now deprecated, the substring operator should be used instead. If true, then the comparison returns true if the first string contains the
  * second one, otherwise it returns true only if they match entirely.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Substring
@@ -75,9 +75,9 @@ public class StringMatch extends AbstractFunctionalExpression {
     public static final String ATTR_SUBSTRING_NAME = "substring";
 
     /** Default value of substring attribute. */
-    public static final Boolean ATTR_SUBSTRING_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_SUBSTRING_DEFAULT_VALUE = false;
 
-    public StringMatch(ExpressionParent parent) {
+    public StringMatch(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME, true));
@@ -86,7 +86,7 @@ public class StringMatch extends AbstractFunctionalExpression {
 
     /**
      * Gets value of caseSensitive attribute.
-     * 
+     *
      * @return value of caseSensitive attribute
      * @see #setCaseSensitive
      */
@@ -96,17 +96,17 @@ public class StringMatch extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of caseSensitive attribute.
-     * 
+     *
      * @param caseSensitive new value of caseSensitive attribute
      * @see #getCaseSensitive
      */
-    public void setCaseSensitive(Boolean caseSensitive) {
+    public void setCaseSensitive(final Boolean caseSensitive) {
         getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).setValue(caseSensitive);
     }
 
     /**
      * Gets value of substring attribute.
-     * 
+     *
      * @return value of substring attribute
      * @see #setSubString
      */
@@ -116,16 +116,16 @@ public class StringMatch extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of substring attribute.
-     * 
+     *
      * @param subString new value of substring attribute
      * @see #getSubString
      */
-    public void setSubString(Boolean subString) {
+    public void setSubString(final Boolean subString) {
         getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).setValue(subString);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

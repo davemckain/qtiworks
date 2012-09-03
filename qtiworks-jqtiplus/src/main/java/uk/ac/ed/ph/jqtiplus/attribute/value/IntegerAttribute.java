@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
  * Attribute with integer value.
@@ -66,14 +66,14 @@ public final class IntegerAttribute extends SingleAttribute<Integer> {
     public int getComputedNonNullValue() {
         final Integer computed = super.getComputedValue();
         if (computed==null) {
-            throw new QtiAttributeException("Did not expect integer attribute " + getLocalName() + " to have a null computed value");
+            throw new QtiAttributeException("Did not expect integer attribute '" + getLocalName() + "' to have a null computed value");
         }
         return computed.intValue();
     }
 
     @Override
     protected Integer parseQtiString(final String value) {
-        return Integer.valueOf(IntegerValue.parseInteger(value));
+        return Integer.valueOf(DataTypeBinder.parseInteger(value));
     }
 
     @Override

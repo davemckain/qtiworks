@@ -47,7 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Tests parsing <code>Cardinality</code> from <code>String</code> representation.
  * <p>
  * This test contains only invalid <code>String</code> representations.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  */
 @RunWith(Parameterized.class)
@@ -55,13 +55,16 @@ public class CardinalityRefuseTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "Single" }, { "SINGLE" }, { "Multiple" }, { "MULTIPLE" }, { "Ordered" }, { "ORDERED" }, { "Record" },
-                { "RECORD" },
+        return Arrays.asList(new Object[][] {
+                { "Single" }, { "SINGLE" },
+                { "Multiple" }, { "MULTIPLE" },
+                { "Ordered" }, { "ORDERED" },
+                { "Record" }, { "RECORD" },
         });
     }
 
@@ -69,16 +72,16 @@ public class CardinalityRefuseTest {
 
     /**
      * Constructs test.
-     * 
+     *
      * @param string <code>String</code> representation of <code>Cardinality</code>
      */
-    public CardinalityRefuseTest(String string) {
+    public CardinalityRefuseTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing <code>Cardinality</code> from <code>String</code> representation.
-     * 
+     *
      * @throws QtiParseException if test was successful
      */
     @Test(expected = QtiParseException.class)

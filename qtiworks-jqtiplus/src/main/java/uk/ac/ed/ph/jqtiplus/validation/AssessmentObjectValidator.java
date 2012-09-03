@@ -54,6 +54,8 @@ import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
 import java.util.List;
@@ -184,59 +186,96 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode source, final Identifier variableDeclarationIdentifier, final VariableType... allowedTypes) {
-            VariableDeclaration result = null;
+        public final VariableDeclaration checkVariableReference(final XmlNode owner, final Identifier variableDeclarationIdentifier) {
             try {
-                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    final StringBuilder messageBuilder = new StringBuilder("Variable with identifier ")
-                        .append(variableDeclarationIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
+                return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
             }
             catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
+                validationResult.add(new ValidationError(owner, e.getMessage()));
+                return null;
+            }
+        }
+
+        @Override
+        public final VariableDeclaration checkVariableReference(final XmlNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
+            try {
+                return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
+            }
+            catch (final VariableResolutionException e) {
+                validationResult.add(new ValidationError(owner, e.getMessage()));
+                return null;
+            }
+        }
+
+        @Override
+        public boolean checkVariableType(final XmlNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            if (variableDeclaration.isType(requiredTypes)) {
+                result = true;
+            }
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must be a ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].getName())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                messageBuilder.append(" variable but is a ")
+                    .append(variableDeclaration.getVariableType().getName())
+                    .append(" variable");
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
             }
             return result;
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode source, final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... allowedTypes) {
-            VariableDeclaration result = null;
-            try {
-                final VariableDeclaration declaration = resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-                if (declaration.isType(allowedTypes)) {
-                    result = declaration;
-                }
-                else {
-                    final StringBuilder messageBuilder = new StringBuilder("Variable referenced as ")
-                        .append(variableReferenceIdentifier)
-                        .append(" is a ")
-                        .append(declaration.getVariableType().getName())
-                        .append(" variable but must be a ");
-                    for (int i=0; i<allowedTypes.length; i++) {
-                        messageBuilder.append(allowedTypes[i].getName())
-                            .append(i < allowedTypes.length-1 ? ", " : " or ");
-                    }
-                    messageBuilder.append("variable");
-                    validationResult.add(new ValidationError(source, messageBuilder.toString()));
-                }
-
+        public boolean checkBaseType(final XmlNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            final BaseType baseType = variableDeclaration.getBaseType();
+            if (baseType!=null && baseType.isOneOf(requiredTypes)) {
+                result = true;
             }
-            catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(source, e.getMessage()));
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must have baseType ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].toQtiString())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                if (baseType!=null) {
+                    messageBuilder.append(" but has baseType ")
+                        .append(variableDeclaration.getBaseType().toQtiString());
+                }
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
+            }
+            return result;
+        }
+
+        @Override
+        public boolean checkCardinality(final XmlNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
+            Assert.ensureNotNull(variableDeclaration);
+            boolean result;
+            if (variableDeclaration.getCardinality().isOneOf(requiredTypes)) {
+                result = true;
+            }
+            else {
+                final StringBuilder messageBuilder = new StringBuilder("Variable ")
+                    .append(variableDeclaration)
+                    .append(" must have cardinality ");
+                for (int i=0; i<requiredTypes.length; i++) {
+                    messageBuilder.append(requiredTypes[i].toQtiString())
+                        .append(i < requiredTypes.length-1 ? ", " : " or ");
+                }
+                messageBuilder.append(" but has cardinality ")
+                    .append(variableDeclaration.getCardinality().toQtiString());
+                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                result = false;
             }
             return result;
         }

@@ -34,9 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.RoundingModeAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -47,10 +49,10 @@ import java.math.BigDecimal;
 
 /**
  * Implementation of the <tt>roundTo</tt> expression
- * 
+ *
  * @author David McKain
  */
-public class RoundTo extends AbstractFunctionalExpression {
+public class RoundTo extends AbstractExpression {
 
     private static final long serialVersionUID = 7637604241884891345L;
 
@@ -63,16 +65,16 @@ public class RoundTo extends AbstractFunctionalExpression {
     /** Name of figures attribute in xml schema. */
     public static final String ATTR_FIGURES_NAME = "figures";
 
-    public RoundTo(ExpressionParent parent) {
+    public RoundTo(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new RoundingModeAttribute(this, ATTR_ROUNDING_MODE_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_FIGURES_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_FIGURES_NAME, true));
     }
 
     /**
      * Gets value of roundingMode attribute.
-     * 
+     *
      * @return value of roundingMode attribute
      * @see #setRoundingMode
      */
@@ -82,53 +84,58 @@ public class RoundTo extends AbstractFunctionalExpression {
 
     /**
      * Sets new value of roundingMode attribute.
-     * 
+     *
      * @param roundingMode new value of roundingMode attribute
      * @see #getRoundingMode
      */
-    public void setRoundingMode(RoundingMode roundingMode) {
+    public void setRoundingMode(final RoundingMode roundingMode) {
         getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).setValue(roundingMode);
     }
 
     /**
      * Gets value of figures attribute.
-     * 
+     *
      * @return value of figures attribute
      * @see #setFigures
      */
-    public int getFigures() {
-        return getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getFigures() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).getValue();
     }
 
     /**
      * Sets new value of figures attribute.
-     * 
+     *
      * @param figures new value of figures attribute
      * @see #getFigures
      */
-    public void setFigures(Integer figures) {
-        getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME).setValue(figures);
+    public void setFigures(final IntegerOrVariableRef figures) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).setValue(figures);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getRoundingMode() != null) {
-            getRoundingMode().validateFigures(getAttributes().getIntegerAttribute(ATTR_FIGURES_NAME),
-                    context.getValidationResult(), getFigures());
+        final RoundingMode roundingMode = getRoundingMode();
+        if (roundingMode != null) {
+            roundingMode.validateFigures(getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME),
+                    context.getValidationResult());
         }
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
-        Value childValue = childValues[0];
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        final Value childValue = childValues[0];
         if (childValue.isNull()) {
             return NullValue.INSTANCE;
         }
-
         final double childNumber = ((NumberValue) childValue).doubleValue();
-        final BigDecimal rounded = getRoundingMode().round(childNumber, getFigures());
+        final int computedFigures = getFigures().evaluate(context);
+        if (computedFigures < 1) {
+            return NullValue.INSTANCE;
+        }
+        final BigDecimal rounded = getRoundingMode().round(childNumber, computedFigures);
+
         return new FloatValue(rounded.doubleValue());
     }
 }

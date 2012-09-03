@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -52,12 +54,12 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * the sub-expressions have values {true,true,false,NULL} then the operator results in NULL whereas
  * {true,false,false,NULL} results in false and {true,true,true,NULL} results in true. The result NULL
  * indicates that the correct value for the operator cannot be determined.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class AnyN extends AbstractFunctionalExpression {
+public class AnyN extends AbstractExpression {
 
     private static final long serialVersionUID = -2513872740143850055L;
 
@@ -70,75 +72,82 @@ public class AnyN extends AbstractFunctionalExpression {
     /** Name of max attribute in xml schema. */
     public static final String ATTR_MAXIMUM_NAME = "max";
 
-    public AnyN(ExpressionParent parent) {
+    public AnyN(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_MINIMUM_NAME, true));
-        getAttributes().add(new IntegerAttribute(this, ATTR_MAXIMUM_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MINIMUM_NAME, true));
+        getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MAXIMUM_NAME, true));
     }
 
     /**
      * Gets value of min attribute.
-     * 
+     *
      * @return value of min attribute
      * @see #setMinimum
      */
-    public int getMinimum() {
-        return getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getMin() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MINIMUM_NAME).getValue();
     }
 
     /**
      * Sets new value of min attribute.
-     * 
+     *
      * @param minimum new value of min attribute
      * @see #getMinimum
      */
-    public void setMinimum(Integer minimum) {
-        getAttributes().getIntegerAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
+    public void setMin(final IntegerOrVariableRef minimum) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
     }
 
     /**
      * Gets value of max attribute.
-     * 
+     *
      * @return value of max attribute
      * @see #setMaximum
      */
-    public int getMaximum() {
-        return getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).getComputedNonNullValue();
+    public IntegerOrVariableRef getMax() {
+        return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAXIMUM_NAME).getValue();
     }
 
     /**
      * Sets new value of max attribute.
-     * 
+     *
      * @param maximum new value of max attribute
      * @see #getMaximum
      */
-    public void setMaximum(Integer maximum) {
-        getAttributes().getIntegerAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
+    public void setMax(final IntegerOrVariableRef maximum) {
+        getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
-        int min = getMinimum();
-        int max = getMaximum();
-        if (min < 0) {
-            context.add(new ValidationWarning(this, "Attribute " + ATTR_MINIMUM_NAME + " (" + min +
-                    ") should be positive."));
+    protected void validateAttributes(final ValidationContext context) {
+        final IntegerOrVariableRef minComputer = getMin();
+        final IntegerOrVariableRef maxComputer = getMax();
+        if (minComputer.isInteger()) {
+            final int min = minComputer.getInteger();
+            if (min < 0) {
+                context.add(new ValidationWarning(this,
+                        "Attribute " + ATTR_MINIMUM_NAME
+                        + " (" + min + ") should be positive."));
+            }
+            if (maxComputer.isInteger()) {
+                final int max = maxComputer.getInteger();
+                if (max < min) {
+                    context.add(new ValidationWarning(this,
+                            "Attribute " + ATTR_MAXIMUM_NAME
+                            + " (" + max + ") should be greater than "
+                            + ATTR_MINIMUM_NAME + " (" + min + ")."));
+                }
+            }
         }
-
-        if (max < min) {
-            context.add(new ValidationWarning(this, "Attribute " + ATTR_MAXIMUM_NAME + " (" + max +
-                    ") should be greater than " + ATTR_MINIMUM_NAME + " (" + min + ")."));
-        }
-
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         int numberOfNull = 0;
         int numberOfTrue = 0;
-        
-        for (Value childValue : childValues) {
+
+        for (final Value childValue : childValues) {
             if (childValue.isNull()) {
                 numberOfNull++;
             }
@@ -147,8 +156,8 @@ public class AnyN extends AbstractFunctionalExpression {
             }
         }
 
-        final int minimum = getMinimum();
-        final int maximum = getMaximum() > 0 ? getMaximum() : 0;
+        final int minimum = getMin().evaluate(context);
+        final int maximum = getMax().evaluate(context);
 
         if (minimum > maximum) {
             return BooleanValue.FALSE;

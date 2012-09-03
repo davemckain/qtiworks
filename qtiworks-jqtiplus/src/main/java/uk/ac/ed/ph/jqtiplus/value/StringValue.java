@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 /**
  * Implementation of <code>BaseType</code> string value.
@@ -43,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always string.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -56,15 +57,12 @@ public final class StringValue extends SingleValue {
 
     /**
      * Constructs <code>StringValue</code> from given <code>String</code> representation.
-     * 
+     *
      * @param value <code>String</code> representation of <code>StringValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>StringValue</code> is not valid
      */
-    public StringValue(String value) {
-        if (value == null || value.length() == 0) {
-            throw new QtiParseException("Invalid string '" + value + "'. Length is not valid.");
-        }
-
+    public StringValue(final String value) {
+        Assert.ensureNotNull(value);
         this.stringValue = value;
     }
 
@@ -77,9 +75,9 @@ public final class StringValue extends SingleValue {
     public String toQtiString() {
         return stringValue;
     }
-    
+
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof StringValue)) {
             return false;
         }

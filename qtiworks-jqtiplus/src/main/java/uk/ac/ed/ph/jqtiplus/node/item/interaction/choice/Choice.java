@@ -88,7 +88,7 @@ public abstract class Choice extends BodyElement {
     public static final String ATTR_FIXED_NAME = "fixed";
 
     /** Default value of fixed attribute. */
-    public static final Boolean ATTR_FIXED_DEFAULT_VALUE = Boolean.FALSE;
+    public static final boolean ATTR_FIXED_DEFAULT_VALUE = false;
 
     /** Name of templateIdentifier attribute in xml schema. */
     public static final String ATTR_TEMPLATE_IDENTIFIER_NAME = "templateIdentifier";

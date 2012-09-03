@@ -1,0 +1,96 @@
+<!-- Tests the various *OrVariableRef possibilities -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="minimal" title="*OrVariableRef Examples" adaptive="false" timeDependent="false">
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <templateDeclaration identifier="N" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>2</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MIN" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>1</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MAX" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>5</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MIN_FLOAT" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="RANDOM_MAX_FLOAT" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>1.0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="PATTERN" cardinality="single" baseType="string">
+    <defaultValue>
+      <value>Hello.*</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="PATTERN_MATCH" cardinality="single" baseType="boolean"/>
+  <templateDeclaration identifier="INDEX" cardinality="single" baseType="string"/>
+  <templateDeclaration identifier="RANDOM_INTEGER" cardinality="single" baseType="integer"/>
+  <templateDeclaration identifier="RANDOM_FLOAT" cardinality="single" baseType="float"/>
+  <templateDeclaration identifier="REPEAT_NUMBER" cardinality="single" baseType="integer">
+    <defaultValue>
+      <value>2</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration identifier="REPEAT_RESULT" cardinality="ordered" baseType="integer"/>
+  <templateProcessing>
+    <setTemplateValue identifier="PATTERN_MATCH">
+      <patternMatch pattern="{PATTERN}">
+        <baseValue baseType="string">Hello There</baseValue>
+      </patternMatch>
+    </setTemplateValue>
+    <setTemplateValue identifier="INDEX">
+      <index n="N">
+        <ordered>
+          <baseValue baseType="string">Item 1</baseValue>
+          <baseValue baseType="string">Item 2</baseValue>
+          <baseValue baseType="string">Item 3</baseValue>
+        </ordered>
+      </index>
+    </setTemplateValue>
+    <!-- NOT WORKING
+    <setTemplateValue identifier="RANDOM_INTEGER">
+      <randomInteger min="RANDOM_MIN" max="RANDOM_MAX"/>
+    </setTemplateValue>
+    -->
+    <setTemplateValue identifier="RANDOM_INTEGER">
+      <randomInteger min="1" max="5"/>
+    </setTemplateValue>
+    <!-- NOT WORKING
+    <setTemplateValue identifier="RANDOM_FLOAT">
+      <randomFloat min="RANDOM_MIN_FLOAT" max="RANDOM_MAX_FLOAT"/>
+    </setTemplateValue>
+    -->
+    <setTemplateValue identifier="RANDOM_FLOAT">
+      <randomFloat min="0.0" max="5.0"/>
+    </setTemplateValue>
+    <setTemplateValue identifier="REPEAT_RESULT">
+      <repeat numberRepeats="REPEAT_NUMBER">
+        <baseValue baseType="integer">0</baseValue>
+        <baseValue baseType="integer">1</baseValue>
+      </repeat>
+    </setTemplateValue>
+  </templateProcessing>
+  <itemBody>
+    <p>PATTERN_MATCH = <printedVariable identifier="PATTERN_MATCH"/></p>
+    <p>N = <printedVariable identifier="INDEX"/></p>
+    <p>RANDOM_INTEGER = <printedVariable identifier="RANDOM_INTEGER"/></p>
+    <p>RANDOM_FLOAT = <printedVariable identifier="RANDOM_FLOAT"/></p>
+    <p>REPEAT_RESULT = <printedVariable identifier="REPEAT_RESULT"/></p>
+  </itemBody>
+</assessmentItem>

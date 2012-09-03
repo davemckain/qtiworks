@@ -46,12 +46,12 @@ import java.util.Map;
 
 /**
  * Enumeration for inside expression.
- * 
+ *
  * @see Inside
  * @author Jiri Kajaba
  */
 public enum Shape implements Stringifiable {
-    
+
     /**
      * The default shape refers to the entire area of the associated image.
      */
@@ -60,13 +60,13 @@ public enum Shape implements Stringifiable {
         private static final int COORDS_LENGTH = 0;
 
         @Override
-        public void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
             validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
         }
 
         @Override
-        public boolean isInside(int[] coords, PointValue point) {
-            return true; //always true 
+        public boolean isInside(final int[] coords, final PointValue point) {
+            return true; //always true
         }
     },
 
@@ -86,7 +86,7 @@ public enum Shape implements Stringifiable {
         private static final int BOTTOM_Y = 3;
 
         @Override
-        public void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
             validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
@@ -105,7 +105,7 @@ public enum Shape implements Stringifiable {
         }
 
         @Override
-        public boolean isInside(int[] coords, PointValue point) {
+        public boolean isInside(final int[] coords, final PointValue point) {
             final boolean result =
                     point.horizontalValue() >= coords[LEFT_X] &&
                             point.horizontalValue() <= coords[RIGHT_X] &&
@@ -130,7 +130,7 @@ public enum Shape implements Stringifiable {
         private static final int RADIUS = 2;
 
         @Override
-        public void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
             validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
@@ -143,7 +143,7 @@ public enum Shape implements Stringifiable {
         }
 
         @Override
-        public boolean isInside(int[] coords, PointValue point) {
+        public boolean isInside(final int[] coords, final PointValue point) {
             final double x = Math.pow(point.horizontalValue() - coords[CENTER_X], 2);
             final double y = Math.pow(point.verticalValue() - coords[CENTER_Y], 2);
 
@@ -159,7 +159,7 @@ public enum Shape implements Stringifiable {
         private static final int MINIMUM_COORDS_LENGTH = 6;
 
         @Override
-        public void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
             boolean sameLastPoint = false;
             if (coords.length > 1 && coords[0] == coords[coords.length - 2] && coords[1] == coords[coords.length - 1]) {
                 sameLastPoint = true;
@@ -186,19 +186,17 @@ public enum Shape implements Stringifiable {
         }
 
         @Override
-        public boolean isInside(int[] coords, PointValue point) {
+        public boolean isInside(final int[] coords, final PointValue point) {
             // If the last point of poly is not the same like first one append it.
-            if (coords[0] != coords[coords.length - 2] || coords[1] != coords[coords.length - 1]) {
-                final int[] newCoords = new int[coords.length + 2];
+            int[] co = coords;
+            if (co[0] != co[co.length - 2] || co[1] != co[co.length - 1]) {
+                final int[] newCoords = new int[co.length + 2];
+                System.arraycopy(co, 0, newCoords, 0, co.length);
 
-                for (int i = 0; i < coords.length; i++) {
-                    newCoords[i] = coords[i];
-                }
+                newCoords[newCoords.length - 2] = co[0];
+                newCoords[newCoords.length - 1] = co[1];
 
-                newCoords[newCoords.length - 2] = coords[0];
-                newCoords[newCoords.length - 1] = coords[1];
-
-                coords = newCoords;
+                co = newCoords;
             }
 
             // Sum the signed angles formed at the point (B) by each edge's endpoints (A, C).
@@ -211,13 +209,13 @@ public enum Shape implements Stringifiable {
             final int bx = point.horizontalValue();
             final int by = point.verticalValue();
 
-            for (int i = 0; i < coords.length - 3; i += 2) {
+            for (int i = 0; i < co.length - 3; i += 2) {
                 // First vertex (A).
-                final int ax = coords[i];
-                final int ay = coords[i + 1];
+                final int ax = co[i];
+                final int ay = co[i + 1];
                 // Third vertex (B).
-                final int cx = coords[i + 2];
-                final int cy = coords[i + 3];
+                final int cx = co[i + 2];
+                final int cy = co[i + 3];
 
                 // Distance between B and C.
                 final double a = Math.sqrt(Math.pow(bx - cx, 2) + Math.pow(by - cy, 2));
@@ -272,7 +270,7 @@ public enum Shape implements Stringifiable {
         private static final int V_RADIUS = 3;
 
         @Override
-        public void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
             validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
@@ -289,7 +287,7 @@ public enum Shape implements Stringifiable {
         }
 
         @Override
-        public boolean isInside(int[] coords, PointValue point) {
+        public boolean isInside(final int[] coords, final PointValue point) {
             final double x = Math.pow(point.horizontalValue() - coords[CENTER_X], 2) / Math.pow(coords[H_RADIUS], 2);
             final double y = Math.pow(point.verticalValue() - coords[CENTER_Y], 2) / Math.pow(coords[V_RADIUS], 2);
 
@@ -312,13 +310,13 @@ public enum Shape implements Stringifiable {
 
     private String shape;
 
-    private Shape(String shape) {
+    private Shape(final String shape) {
         this.shape = shape;
     };
 
     /**
      * Validates coords attribute.
-     * 
+     *
      * @param attribute attribute to be validated
      * @param result TODO
      * @param coords attribute's value to be validated
@@ -327,13 +325,13 @@ public enum Shape implements Stringifiable {
 
     /**
      * Validates length of coords attribute (number of coordinates).
-     * 
+     *
      * @param attribute attribute to be validated
      * @param result TODO
      * @param coords attribute's value to be validated
      * @param expectedLength expected length of coords attribute (number of coordinates)
      */
-    protected void validateCoordsLength(CoordsAttribute attribute, AbstractValidationResult result, int[] coords, int expectedLength) {
+    protected void validateCoordsLength(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords, final int expectedLength) {
         if (coords.length != expectedLength) {
             result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
                     toString() + " shape. Expected: " + expectedLength + ", but found: " + coords.length));
@@ -342,12 +340,12 @@ public enum Shape implements Stringifiable {
 
     /**
      * Validates if all coordinates are greater or equal than zero.
-     * 
+     *
      * @param attribute attribute to be validated
      * @param result TODO
      * @param coords attribute's value to be validated
      */
-    protected void validatePositiveCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords) {
+    protected void validatePositiveCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
         for (int i = 0; i < coords.length; i++) {
             if (coords[i] < 0) {
                 result.add(new AttributeValidationError(attribute, "Coordinte (" + coords[i] + ") at (" + (i + 1) +
@@ -358,7 +356,7 @@ public enum Shape implements Stringifiable {
 
     /**
      * Returns true if given <code>PointValue</code> is inside this <code>Shape</code>; false otherwise.
-     * 
+     *
      * @param coords coordinates of this shape
      * @param point given <code>PointValue</code>
      * @return true if given <code>PointValue</code> is inside this <code>Shape</code>; false otherwise
@@ -372,11 +370,11 @@ public enum Shape implements Stringifiable {
 
     /**
      * Parses string representation of <code>Shape</code>.
-     * 
+     *
      * @param shape string representation of <code>Shape</code>
      * @return parsed <code>Shape</code>
      */
-    public static Shape parseShape(String shape) {
+    public static Shape parseShape(final String shape) {
         final Shape result = shapes.get(shape);
 
         if (result == null) {

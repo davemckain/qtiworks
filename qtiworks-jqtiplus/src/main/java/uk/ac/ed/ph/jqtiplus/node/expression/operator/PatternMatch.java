@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
@@ -50,12 +52,12 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The syntax for the regular expression language is defined in Appendix F of <A href="http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#regexs">XML</A>.
  * <p>
  * Current implementation supports only java regular expression language definition!
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class PatternMatch extends AbstractFunctionalExpression {
+public class PatternMatch extends AbstractExpression {
 
     private static final long serialVersionUID = 2422777906725885061L;
 
@@ -65,39 +67,42 @@ public class PatternMatch extends AbstractFunctionalExpression {
     /** Name of pattern attribute in xml schema. */
     public static final String ATTR_PATTERN_NAME = "pattern";
 
-    public PatternMatch(ExpressionParent parent) {
+    public PatternMatch(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new StringAttribute(this, ATTR_PATTERN_NAME, true));
+        getAttributes().add(new StringOrVariableRefAttribute(this, ATTR_PATTERN_NAME, true));
     }
 
     /**
      * Gets value of pattern attribute.
-     * 
+     *
      * @return value of pattern attribute
      * @see #setPattern
      */
-    public String getPattern() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_NAME).getComputedValue();
+    public StringOrVariableRef getPattern() {
+        return getAttributes().getStringOrVariableRefAttribute(ATTR_PATTERN_NAME).getValue();
     }
 
     /**
      * Sets new value of pattern attribute.
-     * 
+     *
      * @param pattern new value of pattern attribute
      * @see #getPattern
      */
-    public void setPattern(String pattern) {
-        getAttributes().getStringAttribute(ATTR_PATTERN_NAME).setValue(pattern);
+    public void setPattern(final StringOrVariableRef pattern) {
+        getAttributes().getStringOrVariableRefAttribute(ATTR_PATTERN_NAME).setValue(pattern);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = ((StringValue) childValues[0]).toQtiString().matches(getPattern());
+        final String computedPattern = getPattern().evaluate(context);
+        final String childString =  ((StringValue) childValues[0]).toQtiString();
+
+        final boolean result = childString.matches(computedPattern);
         return BooleanValue.valueOf(result);
     }
 }

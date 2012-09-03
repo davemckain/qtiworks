@@ -46,6 +46,8 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
  * Callback interface used when {@link XmlNode}s validate themselves.
@@ -100,8 +102,44 @@ public interface ValidationContext {
 
     //------------------------------------------------------
 
-    VariableDeclaration checkVariableReference(XmlNode source, Identifier variableDeclarationIdentifier, VariableType... requiredTypes);
+    /**
+     * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
+     * A {@link ValidationError} is recorded if this is unsuccessful.
+     * <p>
+     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
+     */
+    VariableDeclaration checkVariableReference(XmlNode owner, Identifier variableDeclarationIdentifier);
 
-    VariableDeclaration checkVariableReference(XmlNode source, VariableReferenceIdentifier variableReferenceIdentifier, VariableType... allowedTypes);
+    /**
+     * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
+     * A {@link ValidationError} is recorded if this is unsuccessful.
+     * <p>
+     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
+     */
+    VariableDeclaration checkVariableReference(XmlNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s, returning
+     * true if successful.
+     *
+     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     */
+    boolean checkVariableType(XmlNode owner, VariableDeclaration variableDeclaration, VariableType... requiredTypes);
+
+    /**
+     * Checks that the given {@link VariableDeclaration} is of the given {@link BaseType}s, returning true
+     * if successful.
+     *
+     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     */
+    boolean checkBaseType(XmlNode owner, VariableDeclaration variableDeclaration, BaseType... requiedBaseTypes);
+
+    /**
+     * Checks that the given {@link VariableDeclaration} is of one of the stated items in the given
+     * {@link Cardinality} array, returning true if successful.
+     * re
+     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     */
+    boolean checkCardinality(XmlNode owner, VariableDeclaration variableDeclaration, Cardinality... requiredCardinalities);
 
 }
