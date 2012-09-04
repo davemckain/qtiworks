@@ -12,6 +12,21 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes</h2>
 
+  <h3>1.0-DEV13 (04/09/2012)</h3>
+
+  <p>
+    This snapshot finally adds in support for the <code>integerOrVariableRef</code>,
+    <code>floatOrVariableRef</code> and <code>stringOrVariableRef</code> types.
+    Most expressions that use these have been updated, though the behaviour when things
+    veer off the "happy path" is still not consistent and will require a bit more refactoring.
+  </p>
+  <p>
+    This snapshot also includes the latest (final?) version of the QTI 2.1 schema.
+    However, it does not support the new namespace for <code>assessmentResult</code> (and its
+    descendant elements), so results will still be reported in the original (and now wrong)
+    namespace. This will require a bit of refactoring to change.
+  </p>
+
   <h3>1.0-DEV12 (15/08/2012)</h3>
 
   <p>
