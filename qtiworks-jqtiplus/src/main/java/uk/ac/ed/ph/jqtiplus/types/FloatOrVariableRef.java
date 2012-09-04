@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
@@ -156,9 +156,9 @@ public final class FloatOrVariableRef implements Serializable {
         if (isVariableRef()) {
             final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
             if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.FLOAT) {
-                return ((IntegerValue) result).doubleValue();
+                return ((FloatValue) result).doubleValue();
             }
-            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to b float");
+            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be float");
         }
         else {
             return floatValue;
