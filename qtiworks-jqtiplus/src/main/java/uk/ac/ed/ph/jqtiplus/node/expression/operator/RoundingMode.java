@@ -110,7 +110,7 @@ public enum RoundingMode implements Stringifiable {
         public BigDecimal round(final double number, final int figures) {
             final BigDecimal numberDecimal = new BigDecimal(Double.toString(number));
 
-            return numberDecimal.setScale(Math.min(1,figures), java.math.RoundingMode.HALF_UP);
+            return numberDecimal.setScale(Math.max(1,figures), java.math.RoundingMode.HALF_UP);
         }
     };
 
