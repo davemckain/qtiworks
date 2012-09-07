@@ -33,6 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.web.lti;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
@@ -103,7 +107,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             handleBasicLtiRequest(httpRequest, httpResponse, chain);
         }
         else {
-            httpResponse.sendError(401, "Not an LTI launch request");
+            httpResponse.sendError(SC_UNAUTHORIZED, "Not an LTI launch request");
         }
     }
 
@@ -127,16 +131,16 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         /* Look up Delivery corresponding to this consumer key */
         final String consumerKey = message.getConsumerKey();
         if (consumerKey==null) {
-            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request - consumer key is null");
+            httpResponse.sendError(SC_BAD_REQUEST, "Bad request - consumer key is null");
             return;
         }
         final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
         if (itemDelivery==null) {
-            httpResponse.sendError(403, "Forbidden - bad consumer key");
+            httpResponse.sendError(SC_FORBIDDEN, "Forbidden - bad consumer key");
             return;
         }
         if (!itemDelivery.isLtiEnabled()) {
-            httpResponse.sendError(403, "Forbidden - delivery is not LTI enabled");
+            httpResponse.sendError(SC_FORBIDDEN, "Forbidden - delivery is not LTI enabled");
             return;
         }
 
@@ -150,12 +154,12 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         catch (final OAuthProblemException e) {
             /* FIXME: Log this better */
             logger.warn("OAuthProblemException", e);
-            httpResponse.sendError(400, "Bad Request - Please submit a valid BasicLTI request.");
+            httpResponse.sendError(SC_BAD_REQUEST, "Bad Request - Please submit a valid BasicLTI request.");
         }
         catch (final OAuthException e) {
             /* FIXME: Log this better */
             logger.warn("OAuthException", e);
-            httpResponse.sendError(403, "Forbidden - Please submit a valid BasicLTI request.");
+            httpResponse.sendError(SC_FORBIDDEN, "Forbidden - Please submit a valid BasicLTI request.");
         }
         catch (final URISyntaxException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
