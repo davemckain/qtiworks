@@ -126,6 +126,10 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
         /* Look up Delivery corresponding to this consumer key */
         final String consumerKey = message.getConsumerKey();
+        if (consumerKey==null) {
+            httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request - consumer key is null");
+            return;
+        }
         final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
         if (itemDelivery==null) {
             httpResponse.sendError(403, "Forbidden - bad consumer key");
