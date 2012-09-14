@@ -42,38 +42,38 @@ import org.w3c.dom.Node;
 
 /**
  * Node's attribute interface.
- * 
- * @param <V> the type of value encoded by this Attribute. 
- * 
+ *
+ * @param <V> the type of value encoded by this Attribute.
+ *
  * @author Jiri Kajaba
  */
 public interface Attribute<V> extends Validatable {
 
     /**
      * Gets the {@link XmlNode} owning this attribute.
-     * 
+     *
      * NB: This was previously called getParent()
-     * 
+     *
      * @return parent node of attribute
      */
     XmlNode getOwner();
 
     /**
      * Gets XML local name of attribute.
-     * 
+     *
      * @return name of attribute
      */
     String getLocalName();
-    
+
     /**
      * Gets the namespace URI for this attribute, with an empty String corresponding to
-     * "no namespace"
+     * "no namespace".
      */
     String getNamespaceUri();
-    
+
     /**
      * Computes a pseudo XPath expression for this Attribute.
-     * 
+     *
      * NOTE: This uses the form {nsURI}localName for non-QTI elements, so is not
      * a "proper" XPath.
      */
@@ -82,39 +82,39 @@ public interface Attribute<V> extends Validatable {
     /**
      * Returns true if attribute is mandatory; false otherwise (attribute is
      * optional).
-     * 
+     *
      * @return true if attribute is mandatory; false otherwise (attribute is
      *         optional)
      */
     boolean isRequired();
-    
+
     /**
      * Returns true if this attribute's value has been explicitly set.
      * <p>
      * This is equivalent to {@link #getValue()} returning non-null.
      */
     boolean isSet();
-    
+
     /**
      * Returns the default value of the attribute, which is the effective value used if the
      * attribute has not been explicitly set. This will be null if there is no default value.
      * The result of this should be assumed immutable.
      */
     V getDefaultValue();
-    
+
     /**
      * Gets the explicitly-set value of this attribute, returning null if this
      * attribute has not been explicitly set. The value should be assumed immutable.
      * <p>
      * In JQTI+, this will return null if the value has not been explicitly set. This is
      * different from the original JQTI behaviour!
-     * 
+     *
      * @see #getComputedValue()
-     * 
+     *
      * @return value of attribute
      */
     V getValue();
-    
+
     /**
      * Gets the "computed" value of this attribute, which is defined to be the
      * explicitly-set value (if not null), or the default value.
@@ -125,10 +125,10 @@ public interface Attribute<V> extends Validatable {
      * whether an attribute was explicitly set or reverted to default.)
      */
     V getComputedValue();
-    
+
     /**
      * Sets the value of this attribute.
-     * 
+     *
      * @param value new value of attribute, which may be null to indicate that the attribute's
      * value should be unset.
      */
@@ -137,7 +137,7 @@ public interface Attribute<V> extends Validatable {
     /**
      * Loads attribute's value from given source node.
      * Source node must contain attributes (one of them can be this attribute).
-     * 
+     *
      * @param node source node
      */
     void load(Element owner, Node node, LoadingContext context);
@@ -145,15 +145,15 @@ public interface Attribute<V> extends Validatable {
     /**
      * Loads attribute's value from given source string.
      * Source string must contain only attribute's value, nothing else.
-     * 
+     *
      * @param value source string
      */
     void load(Element owner, String value, LoadingContext context);
-    
+
     /**
      * Converts this Attribute's value to the String form used in
      * the QTI information model.
-     * 
+     *
      * @return attribute's value converted to string
      */
     String valueToQtiString();
@@ -161,7 +161,7 @@ public interface Attribute<V> extends Validatable {
     /**
      * Converts this Attribute's defaultValue to the String form used in
      * the QTI information model.
-     * 
+     *
      * @return attribute's defaultValue converted to string
      */
     String defaultValueToQtiString();

@@ -47,12 +47,13 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
 
     private static final long serialVersionUID = -3172377961902212482L;
 
-    /** Owner of this attribute. */
+    /** Owner of this attribute. Must not be null. */
     protected final XmlNode owner;
 
-    /** Name of this attribute. */
+    /** XML local name of this attribute. Must not be null. */
     protected final String localName;
 
+    /** XML namespace URI for this attribute, with an empty String corresponding to "no namespace". Must not be null */
     protected final String namespaceUri;
 
     /** Is this attribute mandatory (true) or optional (false). */
