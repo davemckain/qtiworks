@@ -1390,7 +1390,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="xmllang.DT.Attr">
-        <xs:attribute ref="xml:lang" use="required"/>
+        <xs:attribute ref="xml:lang" use="optional"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="label.DT.Attr">
@@ -4368,7 +4368,7 @@
         <xs:attributeGroup ref="extension.CustomOperator.Attr"/>
     </xs:complexType>
 
-    <xs:complexType name="DD.Type" mixed="false">
+    <xs:complexType name="DD.Type" mixed="true">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
                 The 'DD' complexType is the container for term definitions as per the HTML 'dd' markup.
@@ -4592,7 +4592,7 @@
         <xs:attributeGroup ref="responseIdentifier.DrawingInteraction.Attr"/>
     </xs:complexType>
 
-    <xs:complexType name="DT.Type" mixed="false">
+    <xs:complexType name="DT.Type" mixed="true">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
                 The 'DT' complexType is the container for term definitions as per the HTML 'dt' markup.
@@ -5644,52 +5644,54 @@
     <xs:complexType name="ItemBody.Type" mixed="false">
         <xs:annotation>
             <xs:documentation source="umldocumentation">
-                This is the container for the set of materials that are to be rendered as the question itself. The content model is XHML-based and combines with it the range of QTI interactions (an interaction defines the nature of the question e.g. multple choice, hotspot, etc.).
+                This is the container for the set of materials that are to be rendered as the question itself. The content model is XHTML-based and combines with it the range of QTI interactions (an interaction defines the nature of the question e.g. multple choice, hotspot, etc.). The rubric material can be interleaved with the block content.
             </xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element ref="rubricBlock" minOccurs = "0" maxOccurs = "unbounded"/>
-            <xs:choice minOccurs = "0" maxOccurs = "unbounded">
-                <xs:element ref="positionObjectStage" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="customInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="drawingInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="gapMatchInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="matchInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="graphicGapMatchInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="hotspotInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="graphicOrderInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="selectPointInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="graphicAssociateInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="sliderInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="choiceInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="mediaInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="hottextInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="orderInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="extendedTextInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="uploadInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="associateInteraction" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element name="feedbackBlock" type="FeedbackBlock.Type" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element name="templateBlock" type="TemplateBlock.Type" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="infoControl" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="m:math" minOccurs = "1" maxOccurs = "1"/>
-                <xs:element ref="xi:include" minOccurs = "1" maxOccurs = "1"/>
+            <xs:choice minOccurs = "1" maxOccurs = "unbounded">
+                <xs:element ref="rubricBlock" minOccurs = "1" maxOccurs = "1"/>
                 <xs:choice minOccurs = "1" maxOccurs = "1">
-                    <xs:element ref="pre" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h1" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h2" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h3" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h4" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h5" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="h6" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="p" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="address" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="dl" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="ol" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="hr" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="ul" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="blockquote" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="table" minOccurs = "1" maxOccurs = "1"/>
-                    <xs:element ref="div" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="positionObjectStage" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="customInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="drawingInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="gapMatchInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="matchInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="graphicGapMatchInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="hotspotInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="graphicOrderInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="selectPointInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="graphicAssociateInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="sliderInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="choiceInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="mediaInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="hottextInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="orderInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="extendedTextInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="uploadInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="associateInteraction" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element name="feedbackBlock" type="FeedbackBlock.Type" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element name="templateBlock" type="TemplateBlock.Type" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="infoControl" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="m:math" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:element ref="xi:include" minOccurs = "1" maxOccurs = "1"/>
+                    <xs:choice minOccurs = "1" maxOccurs = "1">
+                        <xs:element ref="pre" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h1" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h2" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h3" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h4" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h5" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="h6" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="p" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="address" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="dl" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="ol" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="hr" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="ul" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="blockquote" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="table" minOccurs = "1" maxOccurs = "1"/>
+                        <xs:element ref="div" minOccurs = "1" maxOccurs = "1"/>
+                    </xs:choice>
                 </xs:choice>
             </xs:choice>
         </xs:sequence>
