@@ -47,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Iterator;
 import java.util.List;
@@ -306,65 +305,6 @@ public abstract class AbstractNode implements XmlNode {
         }
 
         return true;
-    }
-
-    /**
-     * Prints indent into xml string.
-     *
-     * @param depth depth in xml tree (root = 0)
-     * @return xml string with printed indent
-     */
-    public static String getIndent(final int depth) {
-        final StringBuilder builder = new StringBuilder();
-        appendIndent(builder, depth);
-        return builder.toString();
-    }
-
-    /**
-     * Prints indent into xml string.
-     *
-     * @param depth depth in xml tree (root = 0)
-     */
-    public static void appendIndent(final StringBuilder builder, final int depth) {
-        for (int i = 0; i < depth; i++) {
-            builder.append(INDENT);
-        }
-    }
-
-    /** (This used to be used to turn Nodes into XML, but it's now only required for generating pseudo XPaths */
-    @ToRefactor
-    protected static String escapeForXmlString(final String text, final boolean asAttribute) {
-        final StringBuilder builder = new StringBuilder();
-        for (final char c : text.toCharArray()) {
-            switch (c) {
-                case '<':
-                    builder.append("&lt;");
-                    break;
-
-                case '>':
-                    builder.append("&gt;");
-                    break;
-
-                case '&':
-                    builder.append("&amp;");
-                    break;
-
-                case '"':
-                    if (asAttribute) {
-                        /* (We're always uk.ac.ed.ph.jqtiplus.writing attributes within double-quotes so need to escape in this case) */
-                        builder.append("&quot;");
-                    }
-                    else {
-                        builder.append('"');
-                    }
-                    break;
-
-                default:
-                    builder.append(c);
-                    break;
-            }
-        }
-        return builder.toString();
     }
 
     @Override

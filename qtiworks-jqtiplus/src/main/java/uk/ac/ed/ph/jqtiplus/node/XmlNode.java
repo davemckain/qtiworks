@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -50,10 +49,6 @@ import org.xml.sax.SAXException;
  * @author David McKain
  */
 public interface XmlNode extends Validatable, Iterable<XmlNode> {
-
-    /** Default indent. */
-    @ToRefactor
-    static final String INDENT = "  ";
 
     XmlSourceLocationInformation getSourceLocation();
 

@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -84,7 +85,7 @@ public class BaseValue extends AbstractFunctionalExpression {
     @Override
     public final String computeXPathComponent() {
         if (singleValue != null) {
-            return getQtiClassName() + "[.=\"" + escapeForXmlString(singleValue.toQtiString(), true) + "\"]";
+            return getQtiClassName() + "[.=\"" + StringUtilities.escapeForXmlString(singleValue.toQtiString(), true) + "\"]";
         }
         return super.computeXPathComponent();
     }

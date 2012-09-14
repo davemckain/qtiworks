@@ -250,4 +250,43 @@ public final class StringUtilities {
         throw new IllegalArgumentException("Argument must be "
         		+ trueValue + " or " + falseValue);
     }
+
+    //------------------------------------------------------------------------
+
+    /**
+     * This is used to generate pseudo XPaths only.
+     */
+    public static String escapeForXmlString(final String text, final boolean asAttribute) {
+        final StringBuilder builder = new StringBuilder();
+        for (final char c : text.toCharArray()) {
+            switch (c) {
+                case '<':
+                    builder.append("&lt;");
+                    break;
+
+                case '>':
+                    builder.append("&gt;");
+                    break;
+
+                case '&':
+                    builder.append("&amp;");
+                    break;
+
+                case '"':
+                    if (asAttribute) {
+                        /* (We're always be writing attributes within double-quotes so need to escape in this case) */
+                        builder.append("&quot;");
+                    }
+                    else {
+                        builder.append('"');
+                    }
+                    break;
+
+                default:
+                    builder.append(c);
+                    break;
+            }
+        }
+        return builder.toString();
+    }
 }

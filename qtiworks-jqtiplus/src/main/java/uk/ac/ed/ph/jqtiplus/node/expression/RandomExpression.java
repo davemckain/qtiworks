@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Parent of all expressions with random values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class RandomExpression extends AbstractExpression {
@@ -51,13 +51,13 @@ public abstract class RandomExpression extends AbstractExpression {
 
     private static Random randomGenerator = new Random();
 
-    public RandomExpression(ExpressionParent parent, String localName) {
+    public RandomExpression(final ExpressionParent parent, final String localName) {
         super(parent, localName);
     }
 
     /**
      * Gets value of seed attribute.
-     * 
+     *
      * @return value of seed attribute
      */
     protected abstract Long getSeedAttributeValue();
@@ -68,27 +68,24 @@ public abstract class RandomExpression extends AbstractExpression {
      * <li>returns value of seed attribute if defined</li>
      * <li>returns null otherwise</li>
      * </ol>
-     * 
+     *
      * @param depth depth of current expression in expression tree (root's depth = 0)
      * @return long seed for random generator
      */
-    private Long getSeed(int depth) {
+    private Long getSeed(final int depth) {
         final Long seed = getSeedAttributeValue();
-
-        logger.debug("{}Got seed: {}", getIndent(depth), seed);
-
         return seed;
     }
 
     /**
      * Gets a random number generator.
      * Generator will be created with seed if provided, otherwise the default generator is returned
-     * 
+     *
      * @param depth depth of current expression in expression tree (root's depth = 0)
      */
-    protected Random getRandomGenerator(int depth) {
+    protected Random getRandomGenerator(final int depth) {
         final Long seed = getSeed(depth);
-        
+
         return seed!=null ? new Random(seed) : randomGenerator;
     }
 }

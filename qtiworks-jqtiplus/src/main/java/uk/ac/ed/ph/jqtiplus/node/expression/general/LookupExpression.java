@@ -187,14 +187,14 @@ public abstract class LookupExpression extends AbstractExpression {
                 final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolved = testContext
                         .resolveDottedVariableReference(variableReferenceIdentifier);
                 if (resolved == null) {
-                    logger.error("{} Cannot find assessmentItemRef with identifier {}. Returning NULL value.", getIndent(depth), itemRefIdentifier);
+                    logger.error("Cannot find assessmentItemRef with identifier {}. Returning NULL value.", itemRefIdentifier);
                 }
                 else {
                     final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap = resolved.getSecond();
                     if (itemRefControllerMap.size() != 1) {
-                        logger.error("{}Lookup of variable {} with identifier in assessmentItemRef with identifier {} resulted in {} matches. "
+                        logger.error("Lookup of variable {} with identifier in assessmentItemRef with identifier {} resulted in {} matches. "
                                 + "The '.' notation in QTI only supports assessmentItemRefs that are selected exactly one. Returning NULL value.",
-                                new Object[] { getIndent(depth), itemVarIdentifier, itemRefIdentifier, itemRefControllerMap.size() });
+                                new Object[] { itemVarIdentifier, itemRefIdentifier, itemRefControllerMap.size() });
                     }
                     else {
                         final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.values().iterator().next();

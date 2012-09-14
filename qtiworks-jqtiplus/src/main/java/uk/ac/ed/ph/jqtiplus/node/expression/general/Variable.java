@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * The value of an item variable taken from an item instantiated multiple times from the same assessmentItemRef (through the use of selection withReplacement)
  * is taken from the last instance submitted if submission is simultaneous, otherwise it is undefined.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -85,7 +85,7 @@ public class Variable extends LookupExpression {
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
-    public Variable(ExpressionParent parent) {
+    public Variable(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
@@ -93,7 +93,7 @@ public class Variable extends LookupExpression {
 
     /**
      * Gets value of weightIdentifier attribute.
-     * 
+     *
      * @return value of weightIdentifier attribute
      * @see #setWeightIdentifier
      */
@@ -103,25 +103,25 @@ public class Variable extends LookupExpression {
 
     /**
      * Sets new value of weightIdentifier attribute.
-     * 
+     *
      * @param weightIdentifier new value of weightIdentifier attribute
      * @see #getWeightIdentifier
      */
-    public void setWeightIdentifier(Identifier weightIdentifier) {
+    public void setWeightIdentifier(final Identifier weightIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).setValue(weightIdentifier);
     }
 
     //----------------------------------------------------------------------
-    
+
     @Override
-    protected void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier,
-            VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedVariableReference(final ValidationContext context, final VariableReferenceIdentifier variableReferenceIdentifier,
+            final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
             if (context.isValidatingTest() && variableReferenceIdentifier.isDotted()) {
-                Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
-                ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
-                AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
+                final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
+                final ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
+                final AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
                 if (itemRef.getWeight(weightIdentifier) == null) {
                     context.getValidationResult().add(new ValidationWarning(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier));
                 }
@@ -136,33 +136,33 @@ public class Variable extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier) {
+    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
         return itemContext.lookupVariableValue(itemVariableIdentifier);
     }
 
     @Override
-    protected Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier) {
+    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
         return testContext.lookupVariableValue(testVariableIdentifier);
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
         Value result = itemRefController.getItemController().lookupVariableValue(itemVariableIdentifier);
 
         /* Maybe apply weight */
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier != null && result instanceof NumberValue) {
-            result = applyWeight(depth, itemRefController.getItemRef(), (NumberValue) result, weightIdentifier);
+            result = applyWeight(itemRefController.getItemRef(), (NumberValue) result, weightIdentifier);
         }
 
         return result;
     }
 
-    private FloatValue applyWeight(int depth, AssessmentItemRef itemRef, NumberValue value, Identifier weightIdentifier) {
+    private FloatValue applyWeight(final AssessmentItemRef itemRef, final NumberValue value, final Identifier weightIdentifier) {
         final double number = value.doubleValue();
         final double weight = itemRef.lookupWeight(weightIdentifier);
 
-        logger.debug("{}Applying weight with identifier {} having value {}.", new Object[] { getIndent(depth), weightIdentifier, weight });
+        logger.debug("Applying weight with identifier {} having value {}.", new Object[] { weightIdentifier, weight });
 
         final FloatValue result = new FloatValue(number * weight);
 
