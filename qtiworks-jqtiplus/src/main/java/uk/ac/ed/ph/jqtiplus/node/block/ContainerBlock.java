@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.ArrayList;
@@ -50,9 +50,9 @@ import org.xml.sax.SAXException;
 
 /**
  * FIXME: Clarify this Javadoc, cos this class doesn't do what it says!
- * 
+ *
  * Container block. Contains other blocks and no text content (it can contain one or more TextBlocks).
- * 
+ *
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
@@ -63,7 +63,7 @@ public abstract class ContainerBlock extends AbstractNode {
     /** Children of this block. */
     private final List<XmlNode> children;
 
-    public ContainerBlock(XmlNode parent, String localName) {
+    public ContainerBlock(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         children = new ArrayList<XmlNode>();
@@ -71,7 +71,7 @@ public abstract class ContainerBlock extends AbstractNode {
 
     /**
      * Gets children of this block.
-     * 
+     *
      * @return children of this block
      */
     public List<XmlNode> getChildren() {
@@ -79,7 +79,7 @@ public abstract class ContainerBlock extends AbstractNode {
     }
 
     @Override
-    protected void loadChildren(Element element, LoadingContext context) {
+    protected void loadChildren(final Element element, final LoadingContext context) {
         children.clear();
 
         final NodeList nodes = element.getChildNodes();
@@ -92,7 +92,7 @@ public abstract class ContainerBlock extends AbstractNode {
         }
     }
 
-    private void readChildNode(Node node, LoadingContext context) {
+    private void readChildNode(final Node node, final LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             final ForeignElement foreignElement = new ForeignElement(this, node.getLocalName(), node.getNamespaceURI());
             children.add(foreignElement);
@@ -108,14 +108,14 @@ public abstract class ContainerBlock extends AbstractNode {
     }
 
     @Override
-    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
         for (final XmlNode childNode : children) {
-            childNode.fireSaxEvents(saxFiringContext);
+            childNode.fireSaxEvents(qtiSaxDocumentFirer);
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         for (final XmlNode child : children) {

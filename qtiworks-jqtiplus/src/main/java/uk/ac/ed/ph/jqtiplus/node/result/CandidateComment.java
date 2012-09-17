@@ -35,14 +35,14 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
  * An optional comment supplied by the candidate (see allowComment).
- * 
+ *
  * @author Jiri Kajaba
  */
 public class CandidateComment extends AbstractNode {
@@ -57,27 +57,27 @@ public class CandidateComment extends AbstractNode {
 
     /**
      * Constructs block.
-     * 
+     *
      * @param parent parent of constructed block
      */
-    public CandidateComment(ItemResult parent) {
+    public CandidateComment(final ItemResult parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     /**
      * Constructs block and initialise its text content.
-     * 
+     *
      * @param parent parent of constructed block
      * @param textContent text content of constructed block
      */
-    public CandidateComment(ItemResult parent, String textContent) {
+    public CandidateComment(final ItemResult parent, final String textContent) {
         super(parent, QTI_CLASS_NAME);
         this.textContent = textContent;
     }
 
     /**
      * Gets text content of this block.
-     * 
+     *
      * @return text content of this block
      * @see #setTextContent
      */
@@ -87,21 +87,21 @@ public class CandidateComment extends AbstractNode {
 
     /**
      * Sets new text content of this block.
-     * 
+     *
      * @param textContent new text content of this block
      * @see #getTextContent
      */
-    public void setTextContent(String textContent) {
+    public void setTextContent(final String textContent) {
         this.textContent = textContent;
     }
 
     @Override
-    protected void loadChildren(Element element, LoadingContext context) {
+    protected void loadChildren(final Element element, final LoadingContext context) {
         textContent = element.getTextContent();
     }
 
     @Override
-    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
-        saxFiringContext.fireText(textContent);
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        qtiSaxDocumentFirer.fireText(textContent);
     }
 }

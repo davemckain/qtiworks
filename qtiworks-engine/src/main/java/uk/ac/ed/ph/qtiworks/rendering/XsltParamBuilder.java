@@ -42,8 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -150,13 +149,13 @@ public final class XsltParamBuilder {
             }
 
             @Override
-            public void fireSaxEvents(final SaxEventFirer saxEventFirer, final QtiSaxFiringContext qtiSaxFiringContext) throws SAXException {
+            public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
                 for (final List<RubricBlock> section : values) {
-                    saxEventFirer.fireStartElement(section, "section", QTIWORKS_NAMESPACE, new AttributesImpl());
+                    qtiSaxDocumentFirer.fireStartElement(section, "section", QTIWORKS_NAMESPACE, new AttributesImpl());
                     for (final RubricBlock block : section) {
                         block.fireSaxEvents(qtiSaxFiringContext);
                     }
-                    saxEventFirer.fireEndElement(section, "section", QTIWORKS_NAMESPACE);
+                    qtiSaxDocumentFirer.fireEndElement(section, "section", QTIWORKS_NAMESPACE);
                 }
             }
         }).buildDocument().getDocumentElement().getChildNodes();
@@ -178,7 +177,7 @@ public final class XsltParamBuilder {
             }
 
             @Override
-            public void fireSaxEvents(final SaxEventFirer saxEventFirer, final QtiSaxFiringContext qtiSaxFiringContext) throws SAXException {
+            public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
                 for (final XmlNode node : values) {
                     node.fireSaxEvents(qtiSaxFiringContext);
                 }

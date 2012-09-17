@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
@@ -97,13 +97,8 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
      */
     void load(Element sourceElement, LoadingContext context);
 
-    /**
-     * FIXME: Document this!
-     *
-     * @param saxFiringContext
-     * @throws SAXException
-     */
-    void fireSaxEvents(QtiSaxFiringContext saxFiringContext)
+    /** Callback used to serialize this Nodes. Do not call directly. */
+    void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)
             throws SAXException;
 
     /**

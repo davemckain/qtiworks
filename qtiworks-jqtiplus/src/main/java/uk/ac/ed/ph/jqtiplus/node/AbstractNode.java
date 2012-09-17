@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
@@ -197,16 +197,16 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public void fireSaxEvents(final QtiSaxFiringContext saxFiringContext) throws SAXException {
-        saxFiringContext.fireStartQtiElement(this);
-        fireBodySaxEvents(saxFiringContext);
-        saxFiringContext.fireEndQtiElement(this);
+    public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
+        qtiSaxDocumentFirer.fireStartQtiElement(this);
+        fireBodySaxEvents(qtiSaxDocumentFirer);
+        qtiSaxDocumentFirer.fireEndQtiElement(this);
     }
 
-    protected void fireBodySaxEvents(final QtiSaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
         for (final NodeGroup<?,?> nodeGroup : nodeGroups) {
             for (final XmlNode childNode : nodeGroup.getChildren()) {
-                childNode.fireSaxEvents(saxFiringContext);
+                childNode.fireSaxEvents(qtiSaxDocumentFirer);
             }
         }
     }

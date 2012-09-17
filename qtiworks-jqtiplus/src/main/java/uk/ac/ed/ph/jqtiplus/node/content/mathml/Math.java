@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
  * Implements a QTI MathML island. Only supports children in the form of {@link ForeignElement},
  * so validation of the content is left to the user. (Obviously xml schema validation
  * could help!)
- * 
+ *
  * @author Jonathon Hare
  */
 public class Math extends BodyElement implements BlockStatic, FlowStatic, InlineStatic {
@@ -69,7 +69,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     /** Children of this block. */
     private final List<XmlNode> children;
 
-    public Math(XmlNode parent) {
+    public Math(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
         children = new ArrayList<XmlNode>();
     }
@@ -80,7 +80,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected void loadChildren(Element element, LoadingContext context) {
+    protected void loadChildren(final Element element, final LoadingContext context) {
         children.clear();
         final NodeList nodes = element.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -93,7 +93,7 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
 
     }
 
-    private void readChildNode(Node node, LoadingContext context) {
+    private void readChildNode(final Node node, final LoadingContext context) {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             final ForeignElement foreignElement = new ForeignElement(this, node.getLocalName(), node.getNamespaceURI());
             children.add(foreignElement);
@@ -109,19 +109,19 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     @Override
-    protected void fireBodySaxEvents(QtiSaxFiringContext saxFiringContext) throws SAXException {
+    protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
         for (final XmlNode childNode : children) {
-            childNode.fireSaxEvents(saxFiringContext);
+            childNode.fireSaxEvents(qtiSaxDocumentFirer);
         }
     }
 
     @Override
-    public void load(Element sourceElement, LoadingContext context) {
+    public void load(final Element sourceElement, final LoadingContext context) {
         super.load(sourceElement, context);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         /* Do nothing here - we rely on schema validation */
     }
 }

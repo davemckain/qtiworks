@@ -37,10 +37,10 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.serialization.NamespacePrefixMappings;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
+import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
 
@@ -65,7 +65,7 @@ public final class XsltParamDocumentBuilder {
 
         List<? extends XmlNode> getQtiNodes();
 
-        void fireSaxEvents(SaxEventFirer saxEventFirer, QtiSaxFiringContext saxFiringContext)
+        void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)
                 throws SAXException;
     }
 
@@ -114,7 +114,7 @@ public final class XsltParamDocumentBuilder {
             final QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
 
             /* Now build stuff */
-            saxFirerCallback.fireSaxEvents(saxEventFirer, saxFiringContext);
+            saxFirerCallback.fireSaxEvents(saxEventFirer);
 
             /* Remove namespace prefixes from scope */
             saxEventFirer.fireEndDocumentAndPrefixMappings();

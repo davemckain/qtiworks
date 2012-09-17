@@ -31,53 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.content.basic;
+package uk.ac.ed.ph.jqtiplus.serialization2;
 
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
-import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
+import java.io.Serializable;
 
 /**
- * Text content block. Contains only text content and no children.
+ * Encapsulates options for serializing QTI Object by firing SAX events.
  *
- * @author Jonathon Hare
+ * @author David McKain
  */
-public class TextRun extends AbstractNode implements Content, FlowStatic, InlineStatic, TextOrVariable {
+public final class SaxFiringOptions implements Serializable {
 
-    private static final long serialVersionUID = -8609122687264674305L;
+    private static final long serialVersionUID = -7438651199833877599L;
 
-    /** Display name of this class. */
-    public static final String DISPLAY_NAME = "textRun";
+    private final NamespacePrefixMappings preferredPrefixMappings;
+    private boolean omitSchemaLocation;
 
-    /** Text content of this block. */
-    private String textContent;
-
-    public TextRun(final XmlNode parent, final String textContent) {
-        super(parent, DISPLAY_NAME);
-
-        this.textContent = textContent;
+    public SaxFiringOptions() {
+        this.preferredPrefixMappings = new NamespacePrefixMappings();
+        this.omitSchemaLocation = false;
     }
 
-    /**
-     * Gets text content of this block.
-     *
-     * @return text content of this block
-     */
-    public String getTextContent() {
-        return textContent;
+
+    public NamespacePrefixMappings getPreferredPrefixMappings() {
+        return preferredPrefixMappings;
     }
+
+
+    public boolean isOmitSchemaLocation() {
+        return omitSchemaLocation;
+    }
+
+    public void setOmitSchemaLocation(final boolean omitSchemaLocation) {
+        this.omitSchemaLocation = omitSchemaLocation;
+    }
+
 
     @Override
-    public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        qtiSaxDocumentFirer.fireText(textContent);
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
-
-    public void load(final Text sourceNode) {
-        textContent = sourceNode.getTextContent();
-    }
-
 }
