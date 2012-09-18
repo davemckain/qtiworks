@@ -131,12 +131,12 @@ public final class XmlResourceReader {
     private final LoadSaveResourceResolver schemaResourceResolver;
 
 
-    public XmlResourceReader(ResourceLocator schemaResourceLocator) {
+    public XmlResourceReader(final ResourceLocator schemaResourceLocator) {
         this(schemaResourceLocator, null, null);
     }
 
-    public XmlResourceReader(ResourceLocator schemaResourceLocator, Map<String, String> registeredSchemaMapTemplate,
-            SchemaCache schemaCache) {
+    public XmlResourceReader(final ResourceLocator schemaResourceLocator, final Map<String, String> registeredSchemaMapTemplate,
+            final SchemaCache schemaCache) {
         Assert.ensureNotNull(schemaResourceLocator, "schemaResourceLocator");
         this.schemaResourceLocator = schemaResourceLocator;
         this.registeredSchemaMap = registeredSchemaMapTemplate != null ? Collections.unmodifiableMap(registeredSchemaMapTemplate) : null;
@@ -176,8 +176,8 @@ public final class XmlResourceReader {
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(URI systemId, ResourceLocator inputResourceLocator,
-            ResourceLocator entityResourceLocator, boolean schemaValidating)
+    public XmlReadResult read(final URI systemId, final ResourceLocator inputResourceLocator,
+            final ResourceLocator entityResourceLocator, final boolean schemaValidating)
             throws XmlResourceNotFoundException {
         Assert.ensureNotNull(systemId, "systemId");
         Assert.ensureNotNull(inputResourceLocator, "inputResourceLocator");
@@ -202,8 +202,8 @@ public final class XmlResourceReader {
         }
     }
 
-    private XmlReadResult doRead(URI systemId, ResourceLocator inputResourceLocator,
-            ResourceLocator entityResourceLocator, boolean schemaValidating)
+    private XmlReadResult doRead(final URI systemId, final ResourceLocator inputResourceLocator,
+            final ResourceLocator entityResourceLocator, final boolean schemaValidating)
             throws XmlResourceNotFoundException, ParserConfigurationException, SAXException, IOException {
         final String systemIdString = systemId.toString();
         boolean parsed = false;
@@ -223,9 +223,9 @@ public final class XmlResourceReader {
         /* Set up SAX EntityResolver, which will record locator failures appropriately */
         final EntityResourceResolver entityResolver = new EntityResourceResolver(entityResourceLocator) {
             @Override
-            public InputSource onMiss(String publicId, String systemId) {
+            public InputSource onMiss(final String publicId, final String systemId) {
                 unresolvedEntitySystemIds.add(systemId);
-                InputSource emptyStringSource = new InputSource(new StringReader(""));
+                final InputSource emptyStringSource = new InputSource(new StringReader(""));
                 emptyStringSource.setSystemId(systemId);
                 return emptyStringSource;
             }
@@ -326,7 +326,7 @@ public final class XmlResourceReader {
         }
 
         /* Build up result */
-        XmlParseResult xmlParseResult = new XmlParseResult(systemId, parsed, validated,
+        final XmlParseResult xmlParseResult = new XmlParseResult(systemId, parsed, validated,
                 inputErrorHandler.warnings, inputErrorHandler.errors, inputErrorHandler.fatalErrors,
                 unresolvedEntitySystemIds, supportedSchemaNamespaces, unsupportedSchemaNamespaces);
         return new XmlReadResult(parsed ? document : null, xmlParseResult);
@@ -336,9 +336,9 @@ public final class XmlResourceReader {
      * Obtains the schema compiled from the given list of URIs, using a cached version if
      * possible.
      */
-    private Schema getSchema(List<String> schemaUris) {
+    private Schema getSchema(final List<String> schemaUris) {
         Schema result = null;
-        String key = schemaUris.toString();
+        final String key = schemaUris.toString();
         if (schemaCache!=null) {
             synchronized (schemaCache) {
                 result = schemaCache.getSchema(key);
@@ -362,18 +362,18 @@ public final class XmlResourceReader {
     /**
      * Compiles a schema from the given list of URIs.
      */
-    private Schema compileSchema(List<String> schemaUris) {
+    private Schema compileSchema(final List<String> schemaUris) {
         logger.trace("Compiling schema(s) with URI(s) {}", schemaUris);
         final Source[] schemaSources = new Source[schemaUris.size()];
         for (int i = 0; i < schemaSources.length; i++) {
-            final String schemaSystemId = schemaUris.get(i);
-            final InputStream schemaStream = schemaResourceLocator.findResource(URI.create(schemaSystemId));
+            final String schemaUri = schemaUris.get(i);
+            final InputStream schemaStream = schemaResourceLocator.findResource(URI.create(schemaUri));
             if (schemaStream==null) {
-                final String message = "schemaResourceLocator failed to locate schema with system ID " + schemaSystemId;
+                final String message = "schemaResourceLocator failed to locate schema with URI " + schemaUri;
                 logger.debug(message);
                 throw new XmlResourceReaderException(message);
             }
-            schemaSources[i] = new StreamSource(schemaStream, schemaSystemId);
+            schemaSources[i] = new StreamSource(schemaStream, schemaUri);
         }
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         sf.setResourceResolver(schemaResourceResolver);
@@ -381,7 +381,7 @@ public final class XmlResourceReader {
         try {
             return sf.newSchema(schemaSources);
         }
-        catch (SAXException e) {
+        catch (final SAXException e) {
             throw new XmlResourceReaderException("Unexpected Exception compiling schema(s) with URI(s)" + schemaUris, e);
         }
     }
@@ -403,17 +403,17 @@ public final class XmlResourceReader {
         }
 
         @Override
-        public void warning(SAXParseException exception) {
+        public void warning(final SAXParseException exception) {
             warnings.add(exception);
         }
 
         @Override
-        public void error(SAXParseException exception) {
+        public void error(final SAXParseException exception) {
             errors.add(exception);
         }
 
         @Override
-        public void fatalError(SAXParseException exception) throws SAXParseException {
+        public void fatalError(final SAXParseException exception) throws SAXParseException {
             fatalErrors.add(exception);
             throw exception;
         }
@@ -427,26 +427,26 @@ public final class XmlResourceReader {
 
         private final List<String> schemaUris;
 
-        public SchemaParsingErrorHandler(List<String> schemaUris) {
+        public SchemaParsingErrorHandler(final List<String> schemaUris) {
             this.schemaUris = schemaUris;
         }
 
         @Override
-        public void error(SAXParseException e) {
+        public void error(final SAXParseException e) {
             fail("error", e);
         }
 
         @Override
-        public void fatalError(SAXParseException e) {
+        public void fatalError(final SAXParseException e) {
             fail("fatalError", e);
         }
 
         @Override
-        public void warning(SAXParseException e) {
+        public void warning(final SAXParseException e) {
             fail("warning", e);
         }
 
-        private void fail(String errorLevel, SAXParseException e) {
+        private void fail(final String errorLevel, final SAXParseException e) {
             throw new XmlResourceReaderException("Unexpected SAXParseException at level "
                     + errorLevel
                     + " when parsing schema(s) with URI(s) "
@@ -455,7 +455,7 @@ public final class XmlResourceReader {
 
     }
 
-    private static InputStream ensureLocateInput(URI systemId, ResourceLocator inputResourceLocator)
+    private static InputStream ensureLocateInput(final URI systemId, final ResourceLocator inputResourceLocator)
             throws XmlResourceNotFoundException {
         logger.trace("Attempting to locate XML resource at {} using locator {}", systemId, inputResourceLocator);
         final InputStream inputStream = inputResourceLocator.findResource(systemId);
@@ -466,7 +466,7 @@ public final class XmlResourceReader {
         return inputStream;
     }
 
-    public static XmlSourceLocationInformation extractLocationInformation(Node elementOrTextNode) {
+    public static XmlSourceLocationInformation extractLocationInformation(final Node elementOrTextNode) {
         XmlSourceLocationInformation result = null;
         final Object locationData = elementOrTextNode.getUserData(LOCATION_INFORMATION_NAME);
         if (locationData != null && locationData instanceof XmlSourceLocationInformation) {
@@ -475,7 +475,7 @@ public final class XmlResourceReader {
         return result;
     }
 
-    private String getRegisteredSchemaLocation(String namespaceUri) {
+    private String getRegisteredSchemaLocation(final String namespaceUri) {
         return registeredSchemaMap != null ? registeredSchemaMap.get(namespaceUri) : null;
     }
 
