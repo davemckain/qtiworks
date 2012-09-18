@@ -53,12 +53,12 @@ import org.junit.Test;
  * @author David McKain
  */
 public class QtiXmlReaderTest {
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testReadNullUri() throws Exception {
         new QtiXmlReader().read(null, new ClassPathResourceLocator(), false);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testReadNullLocator() throws Exception {
         new QtiXmlReader().read(makeSystemId("choice.xml"), null, false);
@@ -177,14 +177,14 @@ public class QtiXmlReaderTest {
 
     //-------------------------------
 
-    private XmlReadResult readTestFile(String testFileName, boolean schemaValiadating) throws XmlResourceNotFoundException {
+    private XmlReadResult readTestFile(final String testFileName, final boolean schemaValiadating) throws XmlResourceNotFoundException {
         final QtiXmlReader reader = new QtiXmlReader();
         final ResourceLocator inputResourceLocator = new ClassPathResourceLocator();
         return reader.read(makeSystemId(testFileName), inputResourceLocator, schemaValiadating);
     }
 
-    private URI makeSystemId(String testFileName) {
-        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/io/reading/" + testFileName);
+    private URI makeSystemId(final String testFileName) {
+        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/reading/" + testFileName);
     }
 
 }
